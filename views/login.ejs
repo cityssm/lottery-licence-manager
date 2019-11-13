@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>
+    Log Into the Lottery Licence Manager
+  </title>
+  <link rel='stylesheet' href='/stylesheets/style.min.css' />
+  <link rel='stylesheet' href='/fa/css/all.min.css' />
+</head>
+
+<body>
+  <div class="container has-margin-t-3">
+    <div class="columns">
+      <div class="column is-6 is-offset-3">
+        <form method="post" action="/login">
+          <div class="card">
+            <header class="card-header">
+              <p class="card-header-title has-text-centered is-block">
+                <img src="/images/bingoBalls.png" alt="" /><br />
+                Log Into the Lottery Licence Manager</p>
+            </header>
+            <div class="card-content">
+              <% if (message !== "") { %>
+                <div class="message is-warning">
+                  <div class="message-header">
+                    <p>Warning</p>
+                  </div>
+                  <div class="message-body">
+                    <%= message %>
+                  </div>
+                </div>
+              <% } %>
+              <div class="field">
+                <div class="control has-icons-left">
+                  <input class="input" name="userName" type="text" placeholder="User Name" value="<%=userName %>" required />
+                  <span class="icon is-small is-left">
+                    <i class="fas fa-user"></i>
+                  </span>
+                </div>
+              </div>
+              <div class="field">
+                <div class="control has-icons-left">
+                  <input class="input" name="password" type="password" placeholder="Password" required />
+                  <span class="icon is-small is-left">
+                    <i class="fas fa-key"></i>
+                  </span>
+                </div>
+              </div>
+            </div>
+            <footer class="card-footer">
+              <button class="card-footer-item button is-white" type="submit">Log In</button>
+            </footer>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>

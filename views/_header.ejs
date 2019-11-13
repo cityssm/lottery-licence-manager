@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>
+    Lottery Licence Manager
+  </title>
+  <link rel='stylesheet' href='/stylesheets/style.min.css' />
+  <link rel='stylesheet' href='/fa/css/all.min.css' />
+</head>
+
+<body>
+  <div class="full-height">
+    <nav class="navbar has-margin-b-3" role="navigation" aria-label="main navigation">
+      <div class="container is-fluid">
+        <div class="navbar-menu">
+          <div class="navbar-start">
+            <a class="navbar-item" href="/dashboard">
+              <img src="/images/bingoBalls.png" alt="" height="28" />
+              Lottery Licence Manager
+            </a>
+
+            <a class="navbar-item" href="/organizations">
+              Organizations
+            </a>
+
+            <a class="navbar-item" href="/licences">
+              Licences
+            </a>
+
+            <a class="navbar-item" href="/events">
+              Events
+            </a>
+
+            <a class="navbar-item" href="/reports">
+              Reports
+            </a>
+          </div>
+
+          <div class="navbar-end">
+            <div class="navbar-item">
+              <div class="buttons">
+                <a class="button is-light" href="/logout">
+                  Log Out <%=user.userName %>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container is-fluid">

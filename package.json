@@ -1,0 +1,25 @@
+{
+  "name": "lottery-licence-manager",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.11.2",
+    "bcrypt": "^3.0.6",
+    "better-sqlite3": "^5.4.3",
+    "connect-sqlite3": "^0.9.11",
+    "cookie-parser": "^1.4.4",
+    "debug": "~2.6.9",
+    "ejs": "~2.6.1",
+    "express": "~4.16.1",
+    "express-session": "^1.17.0",
+    "http-errors": "~1.6.3",
+    "morgan": "~1.9.1"
+  },
+  "devDependencies": {
+    "bulma": "^0.8.0",
+    "bulma-utilities": "^0.3.6"
+  }
+}

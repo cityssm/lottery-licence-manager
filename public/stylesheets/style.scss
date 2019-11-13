@@ -1,0 +1,12 @@
+@import '../../node_modules/bulma/bulma';
+@import '../../node_modules/bulma-utilities/sass/bulma-utilities';
+
+
+.navbar-menu {
+  display: flex;
+}
+
+
+.full-height {
+  min-height: 100vh;
+}
