@@ -2,5 +2,7 @@
 node_modules/
 data/sessions.db
 data/users.db
+helpers/*.min.js
 routes/*.min.js
 app.min.js
+data/licences.db

@@ -1,8 +1,58 @@
 <%- include('_header'); -%>
+
 <h1 class="title">
   Lottery Licence Manager
 </h1>
-<p>
-  My page
-</p>
+<div class="columns">
+  <div class="column">
+    <a class="is-block has-margin-b-4" href="/organizations">
+      <div class="media">
+        <div class="media-left">
+          <i class="fas fa-3x fa-fw fa-users"></i>
+        </div>
+        <div class="media-content has-text-black">
+          <strong>Organizations</strong><br />
+          View and maintain organizations that hold lottery licences.
+        </div>
+      </div>
+    </a>
+    <a class="is-block has-margin-b-4" href="/licences">
+      <div class="media">
+        <div class="media-left">
+          <i class="fas fa-3x fa-fw fa-certificate"></i>
+        </div>
+        <div class="media-content has-text-black">
+          <strong>Licences</strong><br />
+          View and maintain lottery licences.
+        </div>
+      </div>
+    </a>
+    <a class="is-block" href="/events">
+      <div class="media">
+        <div class="media-left">
+          <i class="fas fa-3x fa-fw fa-calendar"></i>
+        </div>
+        <div class="media-content has-text-black">
+          <strong>Events</strong><br />
+          View and update events.
+        </div>
+      </div>
+    </a>
+  </div>
+  <div class="column">
+    <a class="is-block" href="/reports">
+      <div class="media">
+        <div class="media-left">
+          <i class="fas fa-3x fa-fw fa-file"></i>
+        </div>
+        <div class="media-content has-text-black">
+          <strong>Reports</strong><br />
+          Produce reports.
+        </div>
+      </div>
+    </a>
+  </div>
+
+</div>
+
 <%- include('_footer'); -%>

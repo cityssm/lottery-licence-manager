@@ -14,6 +14,10 @@ const SQLiteStore = require("connect-sqlite3")(session);
 
 const router_login = require("./routes/login");
 const router_dashboard = require("./routes/dashboard");
+const router_organizations = require("./routes/organizations");
+const router_licences = require("./routes/licences");
+const router_events = require("./routes/events");
+const router_reports = require("./routes/reports");
 
 
 const app = express();
@@ -95,6 +99,11 @@ app.get("/", sessionChecker, function(req, res) {
 });
 
 app.use("/dashboard", sessionChecker, router_dashboard);
+app.use("/organizations", sessionChecker, router_organizations);
+app.use("/licences", sessionChecker, router_licences);
+app.use("/events", sessionChecker, router_events);
+app.use("/reports", sessionChecker, router_reports);
+
 app.use("/login", router_login);
 
 app.get("/logout", function(req, res) {
