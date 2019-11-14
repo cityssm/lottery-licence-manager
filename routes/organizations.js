@@ -53,4 +53,86 @@ router.get("/new", function(req, res) {
 });
 
 
+router.post("/doSave", function(req, res) {
+  "use strict";
+
+  const licencesDB = require("better-sqlite3")("data/licences.db");
+  const nowMillis = Date.now();
+
+  if (req.body.organizationID === "") {
+
+    const info = licencesDB
+      .prepare("insert into Organizations (" +
+        "OrganizationName, OrganizationAddress1, OrganizationAddress2," +
+        " OrganizationCity, OrganizationProvince, OrganizationPostalCode," +
+        " RecordCreate_UserName, RecordCreate_TimeMillis," +
+        " RecordUpdate_UserName, RecordUpdate_TimeMillis)" +
+        " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
+      .run(
+        req.body.organizationName,
+        req.body.organizationAddress1,
+        req.body.organizationAddress2,
+        req.body.organizationCity,
+        req.body.organizationProvince,
+        req.body.organizationPostalCode,
+        req.session.user.userName,
+        nowMillis,
+        req.session.user.userName,
+        nowMillis
+      );
+
+    if (info.changes) {
+      res.json({
+        success: true,
+        organizationID: info.lastInsertRowid
+      });
+    } else {
+      res.json({
+        success: false,
+        message: "Error Saving"
+      });
+    }
+  } else {
+
+    const info = licencesDB
+      .prepare("update Organizations" +
+        " set OrganizationName = ?," +
+        " OrganizationAddress1 = ?," +
+        " OrganizationAddress2 = ?," +
+        " OrganizationCity = ?," +
+        " OrganizationProvince = ?," +
+        " OrganizationPostalCode = ?," +
+        " RecordUpdate_UserName = ?," +
+        " RecordUpdate_TimeMillis = ?" +
+        " where OrganizationID = ?" +
+        " and RecordDelete_TimeMillis is null")
+      .run(
+        req.body.organizationName,
+        req.body.organizationAddress1,
+        req.body.organizationAddress2,
+        req.body.organizationCity,
+        req.body.organizationProvince,
+        req.body.organizationPostalCode,
+        req.session.user.userName,
+        nowMillis,
+        req.body.organizationID
+      );
+
+      if (info.changes) {
+
+        res.json({
+          success: true,
+          message: "Organization Updated"
+        });
+      } else {
+        res.json({
+          success: false,
+          message: "Record Not Saved"
+        });
+      }
+
+  }
+});
+
+
 module.exports = router;

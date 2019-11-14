@@ -24,7 +24,7 @@ const app = express();
 
 
 /*
- * INITALIZE THE DATABASES 
+ * INITALIZE THE DATABASES
  */
 
 
@@ -71,7 +71,7 @@ app.use(session({
   }),
   key: sessionCookieName,
   secret: "cityssm/lottery-licence-manager",
-  resave: false,
+  resave: true,
   saveUninitialized: false,
   cookie: {
     expires: 3600000

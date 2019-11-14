@@ -26,6 +26,7 @@
       .then(function(responseJSON) {
 
         if (responseJSON.success && isCreate) {
+          window.llm.disableNavBlocker();
           window.location.href = "/organizations/" + responseJSON.organizationID;
         } else {
           formMessageEle.innerHTML = "<div class=\"is-size-7 " + (responseJSON.success ? "has-text-success" : "has-text-danger") + "\">" +
