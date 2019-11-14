@@ -1,0 +1,89 @@
+<%- include('_header'); -%>
+
+<h1 class="title">
+  <%= (isCreate ? "Create a New Organization" : "Update an Organization") %>
+</h1>
+
+<form id="form--organization">
+  <input id="organization--organizationID" name="organizationID" type="hidden" value="<%= organization.OrganizationID %>" />
+
+  <div class="field">
+    <label class="label" for="organization--organizationName">Organization Name</label>
+    <div class="control">
+      <input class="input" id="organization--organizationName" name="organizationName" type="text" value="<%= organization.OrganizationName %>" maxlength="100" required />
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="label" for="organization--organizationAddress1">Address</label>
+    <div class="control">
+      <input class="input" id="organization--organizationAddress1" name="organizationAddress1" type="text" value="<%= organization.OrganizationAddress1 %>" placeholder="Line 1" maxlength="50" />
+    </div>
+  </div>
+  <div class="field">
+    <div class="control">
+      <input class="input" id="organization--organizationAddress2" name="organizationAddress2" type="text" value="<%= organization.OrganizationAddress2 %>" placeholder="Line 2" maxlength="50" />
+    </div>
+  </div>
+
+  <div class="columns">
+    <div class="column">
+      <div class="field">
+        <label class="label" for="organization--organizationCity">City</label>
+        <div class="control">
+          <input class="input" id="organization--organizationCity" name="organizationCity" type="text" value="<%= organization.OrganizationCity %>" maxlength="20" />
+        </div>
+      </div>
+    </div>
+    <div class="column is-3">
+      <div class="field">
+        <label class="label" for="organization--organizationProvince">Province</label>
+        <div class="control">
+          <input class="input" id="organization--organizationProvince" name="organizationProvince" type="text" value="<%= organization.OrganizationProvince %>" maxlength="2" />
+        </div>
+      </div>
+    </div>
+    <div class="column is-3">
+      <div class="field">
+        <label class="label" for="organization--organizationPostalCode">Postal Code</label>
+        <div class="control">
+          <input class="input" id="organization--organizationPostalCode" name="organizationPostalCode" type="text" value="<%= organization.OrganizationPostalCode %>" minlength="5" maxlength="6" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <% if (isCreate) { %>
+    <div class="message is-info">
+      <div class="message-body">
+        Additional organization options, like the ability to add representatives,
+        will be available after the organization is created.
+      </div>
+    </div>
+  <% } %>
+
+  <div class="level">
+    <div class="level-left" id="container--form-message">
+      <div class="has-text-success is-size-7">Test Message</div>
+    </div>
+    <div class="level-right">
+      <div class="buttons">
+        <a class="button" href="/organizations">
+          Cancel
+        </a>
+        <button class="button is-success" type="submit">
+          <span class="icon">
+            <i class="fas fa-save"></i>
+          </span>
+          <span><%= (isCreate ? "Create New Organization and Continue" : "Update Organization") %></span>
+        </button>
+      </div>
+    </div>
+  </div>
+</form>
+
+<%- include('_footerA'); -%>
+
+<script src="/javascripts/organization-edit.min.js"></script>
+
+<%- include('_footerB'); -%>

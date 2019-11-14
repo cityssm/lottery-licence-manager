@@ -6,13 +6,9 @@ const sqlite = require("better-sqlite3");
 
 let dbInit = {
 
-  initUsersDB: function(session) {
+  initUsersDB: function() {
 
     "use strict";
-
-    if (session.dbInit_users) {
-      return false;
-    }
 
     const usersDB = sqlite("data/users.db");
 
@@ -37,20 +33,14 @@ let dbInit = {
 
       usersDB.close();
 
-      session.dbInit_users = true;
       return true;
     }
 
-    session.dbInit_users = true;
     return false;
   },
 
-  initLicencesDB: function(session) {
+  initLicencesDB: function() {
     "use strict";
-
-    if (session.dbInit_licences) {
-      return false;
-    }
 
     const licencesDB = sqlite("data/licences.db");
 
@@ -84,7 +74,6 @@ let dbInit = {
         ")").run();
     }
 
-    //session.dbInit_licences = true;
     return false;
   }
 };

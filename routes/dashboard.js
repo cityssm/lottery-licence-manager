@@ -6,7 +6,7 @@ const router = express.Router();
 router.get("/", function(req, res) {
   "use strict";
 
-  res.render("dashboard", req.session);
+  res.render("dashboard");
 });
 
 module.exports = router;

@@ -23,6 +23,16 @@ const router_reports = require("./routes/reports");
 const app = express();
 
 
+/*
+ * INITALIZE THE DATABASES 
+ */
+
+
+const dbInit = require("./helpers/dbInit");
+dbInit.initUsersDB();
+dbInit.initLicencesDB();
+
+
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
@@ -91,6 +101,14 @@ const sessionChecker = function(req, res, next) {
 /*
  * ROUTES
  */
+
+
+// make the user object available to the templates
+app.use(function(req, res, next) {
+  "use strict";
+  res.locals.user = req.session.user;
+  next();
+});
 
 
 app.get("/", sessionChecker, function(req, res) {

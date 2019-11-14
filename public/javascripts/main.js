@@ -1,7 +1,28 @@
-/* global document */
+/* global window, document */
 
 (function() {
   "use strict";
+
+  window.llm = {};
+
+  function navBlockerEventFn(e) {
+    const confirmationMessage = "You have unsaved changes that may be lost.";
+    e.returnValue = confirmationMessage;
+    return confirmationMessage;
+  }
+
+  window.llm.enableNavBlocker = function() {
+    window.addEventListener("beforeunload", navBlockerEventFn);
+  };
+
+  window.llm.disableNavBlocker = function() {
+    window.removeEventListener("beforeunload", navBlockerEventFn);
+  };
+
+
+  /*
+   * LOGOUT MODAL
+   */
 
   const logoutModalEle = document.getElementsByClassName("is-logout-modal")[0];
 

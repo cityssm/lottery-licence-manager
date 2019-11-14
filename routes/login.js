@@ -4,8 +4,6 @@
 const express = require("express");
 const router = express.Router();
 
-const dbInit = require("../helpers/dbInit");
-
 const bcrypt = require("bcrypt");
 
 
@@ -16,14 +14,12 @@ router.route("/")
 
     if (req.session.user && req.cookies.user_sid) {
       res.redirect("/dashboard");
+    } else {
+      res.render("login", {
+        userName: "",
+        message: ""
+      });
     }
-
-    const wasDbInitialized = dbInit.initUsersDB(req.session);
-
-    res.render("login", {
-      userName: "",
-      message: (wasDbInitialized ? "The Users Database was just created.  Please create some user records before attempting to log in." : "")
-    });
   })
   .post(function(req, res) {
 
@@ -64,8 +60,18 @@ router.route("/")
     }
 
     if (doLogin) {
+
+      const userPropertyRows = usersDB.prepare("select PropertyName, PropertyValue from UserProperties where UserName = ?").all(userName);
+
+      let userProperties = {};
+
+      for (let userPropertyIndex = 0; userPropertyIndex < userPropertyRows.length; userPropertyIndex += 1) {
+        userProperties[userPropertyRows[userPropertyIndex].PropertyName] = userPropertyRows[userPropertyIndex].PropertyValue;
+      }
+
       req.session.user = {
-        userName: userName
+        userName: userName,
+        userProperties: userProperties
       };
 
       res.redirect("/dashboard");
