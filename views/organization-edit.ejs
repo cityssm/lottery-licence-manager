@@ -1,5 +1,18 @@
 <%- include('_header'); -%>
 
+<nav class="breadcrumb">
+  <ul>
+    <li><a href="/dashboard">Home</a></li>
+    <li><a href="/organizations">Organizations</a></li>
+    <% if (isCreate) { %>
+      <li class="is-active"><a href="#" aria-current="page">New</a></li>
+    <% } else { %>
+      <li><a href="/organizations/<%= organization.OrganizationID %>"><%= organization.OrganizationName %></a></li>
+      <li class="is-active"><a href="#" aria-current="page">Update</a></li>
+    <% } %>
+  </ul>
+</nav>
+
 <h1 class="title">
   <%= (isCreate ? "Create a New Organization" : "Update an Organization") %>
 </h1>
@@ -64,7 +77,6 @@
 
   <div class="level">
     <div class="level-left" id="container--form-message">
-      <div class="has-text-success is-size-7">Test Message</div>
     </div>
     <div class="level-right">
       <div class="buttons">

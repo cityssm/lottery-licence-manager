@@ -5,9 +5,13 @@ const express = require("express");
 const router = express.Router();
 
 
+/*
+ * SEARCH
+ */
+
+
 router.get("/", function(req, res) {
   "use strict";
-
   res.render("organization-search");
 });
 
@@ -15,24 +19,9 @@ router.get("/", function(req, res) {
 router.post("/doSearch", function(req, res) {
   "use strict";
 
-  const licencesDB = require("better-sqlite3")("data/licences.db");
+  const licencesDB = require("../helpers/licencesDB");
 
-  let params = [];
-
-  let sql = "select OrganizationID, OrganizationName" +
-    " from Organizations" +
-    " where RecordDelete_TimeMillis is null";
-
-  if (req.body.organizationName && req.body.organizationName !== "") {
-    sql += " and instr(OrganizationName, ?)";
-    params.push(req.body.organizationName);
-  }
-
-  sql += " limit 100";
-
-  let rows = licencesDB.prepare(sql).all(params);
-
-  res.json(rows);
+  res.json(licencesDB.getOrganizations(req.body));
 });
 
 
@@ -43,11 +32,13 @@ router.get("/new", function(req, res) {
     res.redirect("/organizations");
   }
 
+  const config = require("../data/config");
+
   res.render("organization-edit", {
     isCreate: true,
     organization: {
-      OrganizationCity: "Sault Ste. Marie",
-      OrganizationProvince: "ON"
+      OrganizationCity: config.defaults.city || "",
+      OrganizationProvince: config.defaults.province || ""
     }
   });
 });
@@ -56,83 +47,81 @@ router.get("/new", function(req, res) {
 router.post("/doSave", function(req, res) {
   "use strict";
 
-  const licencesDB = require("better-sqlite3")("data/licences.db");
-  const nowMillis = Date.now();
+  const licencesDB = require("../helpers/licencesDB");
 
   if (req.body.organizationID === "") {
 
-    const info = licencesDB
-      .prepare("insert into Organizations (" +
-        "OrganizationName, OrganizationAddress1, OrganizationAddress2," +
-        " OrganizationCity, OrganizationProvince, OrganizationPostalCode," +
-        " RecordCreate_UserName, RecordCreate_TimeMillis," +
-        " RecordUpdate_UserName, RecordUpdate_TimeMillis)" +
-        " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
-      .run(
-        req.body.organizationName,
-        req.body.organizationAddress1,
-        req.body.organizationAddress2,
-        req.body.organizationCity,
-        req.body.organizationProvince,
-        req.body.organizationPostalCode,
-        req.session.user.userName,
-        nowMillis,
-        req.session.user.userName,
-        nowMillis
-      );
+    const newOrganizationID = licencesDB.createOrganization(req.body, req.session);
 
-    if (info.changes) {
+    res.json({
+      success: true,
+      organizationID: newOrganizationID
+    });
+
+  } else {
+
+    const changeCount = licencesDB.updateOrganization(req.body, req.session);
+
+    if (changeCount) {
       res.json({
         success: true,
-        organizationID: info.lastInsertRowid
+        message: "Organization Updated"
       });
     } else {
       res.json({
         success: false,
-        message: "Error Saving"
+        message: "Record Not Saved"
       });
     }
-  } else {
-
-    const info = licencesDB
-      .prepare("update Organizations" +
-        " set OrganizationName = ?," +
-        " OrganizationAddress1 = ?," +
-        " OrganizationAddress2 = ?," +
-        " OrganizationCity = ?," +
-        " OrganizationProvince = ?," +
-        " OrganizationPostalCode = ?," +
-        " RecordUpdate_UserName = ?," +
-        " RecordUpdate_TimeMillis = ?" +
-        " where OrganizationID = ?" +
-        " and RecordDelete_TimeMillis is null")
-      .run(
-        req.body.organizationName,
-        req.body.organizationAddress1,
-        req.body.organizationAddress2,
-        req.body.organizationCity,
-        req.body.organizationProvince,
-        req.body.organizationPostalCode,
-        req.session.user.userName,
-        nowMillis,
-        req.body.organizationID
-      );
-
-      if (info.changes) {
-
-        res.json({
-          success: true,
-          message: "Organization Updated"
-        });
-      } else {
-        res.json({
-          success: false,
-          message: "Record Not Saved"
-        });
-      }
 
   }
 });
+
+
+/*
+ * VIEW
+ */
+
+
+router.get("/:organizationID", function(req, res) {
+  "use strict";
+
+  const organizationID = req.params.organizationID;
+
+  const licencesDB = require("../helpers/licencesDB");
+
+  const organization = licencesDB.getOrganization(organizationID);
+
+  res.render("organization-view", {
+    organization: organization
+  });
+});
+
+
+/*
+ * CREATE / EDIT
+ */
+
+
+ router.get("/:organizationID/edit", function(req, res) {
+   "use strict";
+
+   const organizationID = req.params.organizationID;
+
+   if (req.session.user.userProperties.organizations_canEdit !== "true") {
+     res.redirect("/organizations/" + organizationID);
+   }
+
+   const licencesDB = require("../helpers/licencesDB");
+
+   const organization = licencesDB.getOrganization(organizationID);
+
+   res.render("organization-edit", {
+     isCreate: false,
+     organization: organization
+   });
+ });
+
 
 
 module.exports = router;

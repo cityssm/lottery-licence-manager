@@ -8,6 +8,8 @@
   const formEle = document.getElementById("form--filters");
   const searchResultsEle = document.getElementById("container--searchResults");
 
+  const canEdit = searchResultsEle.getAttribute("data-can-edit") === "true";
+
 
   function doOrganizationSearch(formEvent) {
 
@@ -46,6 +48,7 @@
           searchResultsEle.innerHTML = "<table class=\"table is-fullwidth is-striped is-hoverable\">" +
             "<thead><tr>" +
             "<th>Organization Name</th>" +
+            "<th>&nbsp;</th>" +
             "</tr></thead>" +
             "<tbody></tbody>" +
             "</table>";
@@ -64,12 +67,17 @@
             organizationNameLinkEle.href = "/organizations/" + organizationObj.OrganizationID;
             trEle.getElementsByTagName("td")[0].insertAdjacentElement("beforeend", organizationNameLinkEle);
 
+            trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right\">" +
+              (canEdit ? "<a title=\"Edit Organization\" href=\"/organizations/" + organizationObj.OrganizationID + "/edit\"><i class=\"fas fa-pencil-alt\"></i></a>" : "") +
+              "</td>");
+
             tbodyEle.insertAdjacentElement("beforeend", trEle);
           }
         }
 
       });
   }
+
 
   formEle.addEventListener("submit", doOrganizationSearch);
   doOrganizationSearch();

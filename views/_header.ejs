@@ -3,8 +3,12 @@
 
 <head>
   <title>
-    Lottery Licence Manager
+    <%= config.application.applicationName %>
   </title>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
   <link rel="icon" href="/images/favicon.png" />
   <link rel='stylesheet' href='/stylesheets/style.min.css' />
   <link rel='stylesheet' href='/fa/css/all.min.css' />
@@ -12,42 +16,56 @@
 
 <body>
   <div class="full-height">
-    <nav class="navbar has-margin-b-3" role="navigation" aria-label="main navigation">
-      <div class="container is-fluid">
-        <div class="navbar-menu">
-          <div class="navbar-start">
-            <a class="navbar-item" href="/dashboard">
-              <img src="/images/bingoBalls.png" alt="" height="28" />
-              Lottery Licence Manager
-            </a>
+    <nav class="navbar is-light has-margin-b-3" role="navigation" aria-label="main navigation">
 
-            <a class="navbar-item" href="/organizations">
-              Organizations
-            </a>
+      <div class="navbar-brand">
+        <a class="navbar-item" href="/dashboard">
+          <img src="<%= config.application.logoURL %>" alt="" height="28" />
+          <strong><%= config.application.applicationName %></strong>
+        </a>
 
-            <a class="navbar-item" href="/licences">
-              Licences
-            </a>
+        <a class="navbar-burger burger" id="navbar-burger--main" role="button" aria-label="menu" aria-expanded="false">
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+        </a>
+      </div>
 
-            <a class="navbar-item" href="/events">
-              Events
-            </a>
+      <div class="navbar-menu" id="navbar-menu--main">
+        <div class="navbar-start">
 
-            <a class="navbar-item" href="/reports">
-              Reports
-            </a>
-          </div>
+          <a class="navbar-item" href="/organizations">
+            Organizations
+          </a>
 
-          <div class="navbar-end">
-            <div class="navbar-item">
-              <div class="buttons">
-                <button class="button is-light is-logout-button" type="button">
-                  <span class="icon">
-                    <i class="fas fa-sign-out-alt"></i>
-                  </span>
-                  <span>Log Out <%=user.userName %></span>
-                </button>
-              </div>
+          <a class="navbar-item" href="/licences">
+            Licences
+          </a>
+
+          <a class="navbar-item" href="/events">
+            Events
+          </a>
+
+          <a class="navbar-item" href="/reports">
+            Reports
+          </a>
+        </div>
+
+        <div class="navbar-end">
+          <div class="navbar-item has-dropdown is-hoverable">
+            <a class="navbar-link">
+              <span class="icon">
+                <i class="fas fa-user"></i>
+              </span>
+              <span><%=user.userName %></span>
+            </a>
+            <div class="navbar-dropdown is-right">
+              <a class="navbar-item is-logout-button" role="button">
+                <span class="icon">
+                  <i class="fas fa-sign-out-alt"></i>
+                </span>
+                <span>Log Out</span>
+              </a>
             </div>
           </div>
         </div>

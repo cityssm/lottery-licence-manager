@@ -1,4 +1,5 @@
-/* global require, module */
+/* global require, console, module */
+/* eslint-disable no-console */
 
 
 const sqlite = require("better-sqlite3");
@@ -15,6 +16,8 @@ let dbInit = {
     const row = usersDB.prepare("select name from sqlite_master where type = 'table' and name = 'Users'").get();
 
     if (!row) {
+
+      console.warn("Creating users.db");
 
       usersDB.prepare("create table if not exists Users (" +
         "UserName varchar(30) primary key not null," +
@@ -40,6 +43,7 @@ let dbInit = {
   },
 
   initLicencesDB: function() {
+    
     "use strict";
 
     const licencesDB = sqlite("data/licences.db");
@@ -47,6 +51,8 @@ let dbInit = {
     const row = licencesDB.prepare("select name from sqlite_master where type = 'table' and name = 'Organizations'").get();
 
     if (!row) {
+
+      console.warn("Creating licences.db");
 
       licencesDB.prepare("create table if not exists Organizations (" +
         "OrganizationID integer primary key autoincrement," +

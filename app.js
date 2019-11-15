@@ -1,4 +1,5 @@
-/* global require, module, __dirname */
+/* global require, console, module, __dirname */
+/* eslint-disable no-console */
 
 
 const createError = require("http-errors");
@@ -18,6 +19,8 @@ const router_organizations = require("./routes/organizations");
 const router_licences = require("./routes/licences");
 const router_events = require("./routes/events");
 const router_reports = require("./routes/reports");
+
+const config = require("./data/config");
 
 
 const app = express();
@@ -73,8 +76,9 @@ app.use(session({
   secret: "cityssm/lottery-licence-manager",
   resave: true,
   saveUninitialized: false,
+  rolling: true,
   cookie: {
-    expires: 3600000
+    maxAge: 3600000
   }
 }));
 
@@ -107,6 +111,7 @@ const sessionChecker = function(req, res, next) {
 app.use(function(req, res, next) {
   "use strict";
   res.locals.user = req.session.user;
+  res.locals.config = config;
   next();
 });
 
@@ -127,6 +132,7 @@ app.use("/login", router_login);
 app.get("/logout", function(req, res) {
   "use strict";
   if (req.session.user && req.cookies.user_sid) {
+    req.session.destroy();
     res.clearCookie(sessionCookieName);
     res.redirect("/");
   } else {
@@ -151,6 +157,12 @@ app.use(function(err, req, res) {
   // render the error page
   res.status(err.status || 500);
   res.render("error");
+});
+
+
+app.listen(config.application.port || 3000, function() {
+  "use strict";
+  console.log("Server listening on port " + (config.application.port || 3000));
 });
 
 

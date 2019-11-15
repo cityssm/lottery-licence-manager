@@ -1,0 +1,30 @@
+<%- include('_header'); -%>
+
+<nav class="breadcrumb">
+  <ul>
+    <li><a href="/dashboard">Home</a></li>
+    <li><a href="/organizations">Organizations</a></li>
+    <li class="is-active"><a href="#" aria-current="page"><%= organization.OrganizationName %></a></li>
+  </ul>
+</nav>
+
+<div class="level">
+  <div class="level-left">
+    <h1 class="title">
+      <%= organization.OrganizationName %>
+    </h1>
+  </div>
+  <% if (user.userProperties.organizations_canEdit === "true") { %>
+    <div class="level-right">
+      <a class="button is-primary" href="/organizations/<%= organization.OrganizationID %>/edit">
+        <span class="icon is-small">
+          <i class="fas fa-pencil-alt"></i>
+        </span>
+        <span>Edit this Organization</span>
+      </a>
+    </div>
+  <% } %>
+</div>
+
+<%- include('_footerA'); -%>
+<%- include('_footerB'); -%>

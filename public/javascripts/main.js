@@ -5,6 +5,13 @@
 
   window.llm = {};
 
+
+  /*
+   * NAV BLOCKER
+   */
+
+  let isNavBlockerEnabled = false;
+
   function navBlockerEventFn(e) {
     const confirmationMessage = "You have unsaved changes that may be lost.";
     e.returnValue = confirmationMessage;
@@ -12,12 +19,28 @@
   }
 
   window.llm.enableNavBlocker = function() {
-    window.addEventListener("beforeunload", navBlockerEventFn);
+    if (!isNavBlockerEnabled) {
+      window.addEventListener("beforeunload", navBlockerEventFn);
+      isNavBlockerEnabled = true;
+    }
   };
 
   window.llm.disableNavBlocker = function() {
-    window.removeEventListener("beforeunload", navBlockerEventFn);
+    if (isNavBlockerEnabled) {
+      window.removeEventListener("beforeunload", navBlockerEventFn);
+      isNavBlockerEnabled = false;
+    }
   };
+
+
+  /*
+   * NAVBAR TOGGLE
+   */
+
+  document.getElementById("navbar-burger--main").addEventListener("click", function(clickEvent) {
+    clickEvent.currentTarget.classList.toggle("is-active");
+    document.getElementById("navbar-menu--main").classList.toggle("is-active");
+  });
 
 
   /*

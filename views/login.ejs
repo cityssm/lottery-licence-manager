@@ -1,10 +1,14 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
   <title>
-    Log Into the Lottery Licence Manager
+    Login: <%= config.application.applicationName %>
   </title>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
   <link rel="icon" href="/images/favicon.png" />
   <link rel='stylesheet' href='/stylesheets/style.min.css' />
   <link rel='stylesheet' href='/fa/css/all.min.css' />
@@ -18,8 +22,8 @@
           <div class="card">
             <header class="card-header">
               <p class="card-header-title has-text-centered is-block">
-                <img src="/images/bingoBalls.png" alt="" /><br />
-                Log Into the Lottery Licence Manager</p>
+                <img src="<%= config.application.logoURL %>" alt="" /><br />
+                <%= config.application.applicationName %></p>
             </header>
             <div class="card-content">
               <% if (message !== "") { %>

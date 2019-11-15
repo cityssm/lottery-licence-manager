@@ -1,5 +1,12 @@
 <%- include('_header'); -%>
 
+<nav class="breadcrumb">
+  <ul>
+    <li><a href="/dashboard">Home</a></li>
+    <li class="is-active"><a href="#" aria-current="page">Organizations</a></li>
+  </ul>
+</nav>
+
 <div class="level">
   <div class="level-left">
     <h1 class="title">
@@ -23,14 +30,17 @@
     <form id="form--filters">
       <div class="field">
         <label class="label" for="filter--organizationName">Organization Name</label>
-        <div class="control">
+        <div class="control has-icons-left">
           <input class="input" id="filter--organizationName" name="organizationName" type="text" />
+          <span class="icon is-small is-left">
+            <i class="fas fa-filter"></i>
+          </span>
         </div>
       </div>
     </form>
   </div>
   <div class="column">
-    <div id="container--searchResults"></div>
+    <div id="container--searchResults" data-can-edit="<%= user.userProperties.organizations_canEdit %>"></div>
   </div>
 </div>
 

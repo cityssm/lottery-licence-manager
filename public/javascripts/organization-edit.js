@@ -5,7 +5,6 @@
 (function() {
   "use strict";
 
-  window.llm.enableNavBlocker();
 
   const formEle = document.getElementById("form--organization");
   const formMessageEle = document.getElementById("container--form-message");
@@ -25,9 +24,10 @@
       })
       .then(function(responseJSON) {
 
+        window.llm.disableNavBlocker();
+
         if (responseJSON.success && isCreate) {
-          window.llm.disableNavBlocker();
-          window.location.href = "/organizations/" + responseJSON.organizationID;
+          window.location.href = "/organizations/" + responseJSON.organizationID + "/edit";
         } else {
           formMessageEle.innerHTML = "<div class=\"is-size-7 " + (responseJSON.success ? "has-text-success" : "has-text-danger") + "\">" +
             responseJSON.message +
@@ -37,4 +37,18 @@
   }
 
   formEle.addEventListener("submit", doOrganizationSave);
+
+
+  function setUnsavedChanges() {
+    window.llm.enableNavBlocker();
+    formMessageEle.innerHTML = "<div class=\"is-size-7 has-text-info\">" +
+      "<i class=\"fas fa-exclamation-triangle\"></i> Unsaved Changes" +
+      "</div>";
+  }
+
+  const inputEles = formEle.getElementsByClassName("input");
+
+  for (let inputIndex = 0; inputIndex < inputEles.length; inputIndex += 1) {
+    inputEles[inputIndex].addEventListener("change", setUnsavedChanges);
+  }
 }());

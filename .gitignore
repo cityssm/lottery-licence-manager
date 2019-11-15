@@ -1,8 +1,11 @@
 
-node_modules/
+app.min.js
+data/config-example.min.js
+data/config.js
+data/config.min.js
+data/licences.db
 data/sessions.db
 data/users.db
 helpers/*.min.js
+node_modules/
 routes/*.min.js
-app.min.js
-data/licences.db
