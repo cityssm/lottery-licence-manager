@@ -10,7 +10,7 @@
 
 <div class="level">
   <div class="level-left">
-    <h1 class="title">
+    <h1 class="title is-1">
       <%= organization.OrganizationName %>
     </h1>
   </div>
@@ -25,6 +25,13 @@
     </div>
   <% } %>
 </div>
+
+<p>
+  <%= organization.OrganizationAddress1 %><br />
+  <%= (organization.OrganizationAddress2 === "" ? "" : organization.OrganizationAddress1 + "<br />") %>
+  <%= organization.OrganizationCity + ", " + organization.OrganizationProvince %><br />
+  <%= organization.OrganizationPostalCode %>
+</p>
 
 <%- include('_footerA'); -%>
 <%- include('_footerB'); -%>

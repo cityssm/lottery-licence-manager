@@ -11,11 +11,7 @@
   const canEdit = searchResultsEle.getAttribute("data-can-edit") === "true";
 
 
-  function doOrganizationSearch(formEvent) {
-
-    if (formEvent) {
-      formEvent.preventDefault();
-    }
+  function doOrganizationSearch() {
 
     searchResultsEle.innerHTML = "<p class=\"has-text-centered has-text-grey-lighter\">" +
       "<i class=\"fas fa-3x fa-circle-notch fa-spin\"></i><br />" +
@@ -79,6 +75,15 @@
   }
 
 
-  formEle.addEventListener("submit", doOrganizationSearch);
+  formEle.addEventListener("submit", function(formEvent) {
+    formEvent.preventDefault();
+  });
+
+  const inputEles = formEle.getElementsByTagName("input");
+
+  for (let inputIndex = 0; inputIndex < inputEles.length; inputIndex += 1) {
+    inputEles[inputIndex].addEventListener("change", doOrganizationSearch);
+  }
+
   doOrganizationSearch();
 }());

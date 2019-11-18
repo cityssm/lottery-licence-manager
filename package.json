@@ -9,6 +9,7 @@
     "@fortawesome/fontawesome-free": "^5.11.2",
     "bcrypt": "^3.0.6",
     "better-sqlite3": "^5.4.3",
+    "bulma-extensions": "^6.2.7",
     "connect-sqlite3": "^0.9.11",
     "cookie-parser": "^1.4.4",
     "debug": "~2.6.9",

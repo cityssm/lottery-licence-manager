@@ -1,7 +1,13 @@
 @import '../../node_modules/bulma/bulma';
 @import '../../node_modules/bulma-utilities/sass/bulma-utilities';
+@import '../../node_modules/bulma-extensions/src/sass/index';
 
 
-.full-height {
+.is-justified-right {
+  justify-content: flex-end;
+}
+
+
+.is-full-height {
   min-height: 100vh;
 }

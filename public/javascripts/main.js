@@ -7,6 +7,24 @@
 
 
   /*
+   * MOADL TOGGLES
+   */
+
+  window.llm.showModal = function(modalEle) {
+    modalEle.classList.add("is-active");
+  };
+
+  window.llm.hideModal = function(internalEle_or_internalEvent) {
+
+    const internalEle = internalEle_or_internalEvent.currentTarget || internalEle_or_internalEvent;
+
+    const modalEle = (internalEle.classList.contains("modal") ? internalEle : internalEle.closest(".modal"));
+
+    modalEle.classList.remove("is-active");
+  };
+
+
+  /*
    * NAV BLOCKER
    */
 
@@ -51,12 +69,12 @@
 
   function openLogoutModal(clickEvent) {
     clickEvent.preventDefault();
-    logoutModalEle.classList.add("is-active");
+    window.llm.showModal(logoutModalEle);
   }
 
   function closeLogoutModal(clickEvent) {
     clickEvent.preventDefault();
-    logoutModalEle.classList.remove("is-active");
+    window.llm.hideModal(logoutModalEle);
   }
 
   const logoutBtnEles = document.getElementsByClassName("is-logout-button");
@@ -65,5 +83,9 @@
     logoutBtnEles[logoutBtnIndex].addEventListener("click", openLogoutModal);
   }
 
-  logoutModalEle.getElementsByClassName("modal-close")[0].addEventListener("click", closeLogoutModal);
+  const cancelButtonEles = logoutModalEle.getElementsByClassName("is-cancel-button");
+
+  for (let buttonIndex = 0; buttonIndex < cancelButtonEles.length; buttonIndex += 1) {
+    cancelButtonEles[buttonIndex].addEventListener("click", window.llm.hideModal);
+  }
 }());

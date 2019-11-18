@@ -103,24 +103,70 @@ router.get("/:organizationID", function(req, res) {
  */
 
 
- router.get("/:organizationID/edit", function(req, res) {
-   "use strict";
+router.get("/:organizationID/edit", function(req, res) {
+  "use strict";
 
-   const organizationID = req.params.organizationID;
+  const organizationID = req.params.organizationID;
 
-   if (req.session.user.userProperties.organizations_canEdit !== "true") {
-     res.redirect("/organizations/" + organizationID);
-   }
+  if (req.session.user.userProperties.organizations_canEdit !== "true") {
+    res.redirect("/organizations/" + organizationID);
+  }
 
-   const licencesDB = require("../helpers/licencesDB");
+  const licencesDB = require("../helpers/licencesDB");
 
-   const organization = licencesDB.getOrganization(organizationID);
+  const organization = licencesDB.getOrganization(organizationID);
 
-   res.render("organization-edit", {
-     isCreate: false,
-     organization: organization
-   });
- });
+  res.render("organization-edit", {
+    isCreate: false,
+    organization: organization
+  });
+});
+
+
+router.post("/:organizationID/doAddOrganizationRepresentative", function(req, res) {
+  "use strict";
+
+  if (req.session.user.userProperties.organizations_canEdit !== "true") {
+    res.json("not allowed");
+  }
+
+  const organizationID = req.params.organizationID;
+
+  const licencesDB = require("../helpers/licencesDB");
+
+  const representativeObj = licencesDB.addOrganizationRepresentative(organizationID, req.body);
+
+  if (representativeObj) {
+    res.json({
+      success: true,
+      organizationRepresentative: representativeObj
+    });
+  } else {
+    res.json({
+      success: false
+    });
+  }
+});
+
+
+router.post("/:organizationID/doSetDefaultRepresentative", function(req, res) {
+  "use strict";
+
+  if (req.session.user.userProperties.organizations_canEdit !== "true") {
+    res.json("not allowed");
+  }
+
+  const organizationID = req.params.organizationID;
+  const isDefaultRepresentativeIndex = req.body.isDefaultRepresentativeIndex;
+
+  const licencesDB = require("../helpers/licencesDB");
+
+  const success = licencesDB.setDefaultOrganizationRepresentative(organizationID, isDefaultRepresentativeIndex);
+
+  res.json({
+    success: success
+  });
+});
 
 
 

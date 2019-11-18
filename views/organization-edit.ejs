@@ -13,7 +13,7 @@
   </ul>
 </nav>
 
-<h1 class="title">
+<h1 class="title is-1">
   <%= (isCreate ? "Create a New Organization" : "Update an Organization") %>
 </h1>
 
@@ -80,7 +80,7 @@
     </div>
     <div class="level-right">
       <div class="buttons">
-        <a class="button" href="/organizations">
+        <a class="button" href="<%= (isCreate ? "/organizations" : "/organizations/" + organization.OrganizationID) %>">
           Cancel
         </a>
         <button class="button is-success" type="submit">
@@ -93,6 +93,132 @@
     </div>
   </div>
 </form>
+
+<% if (!isCreate) { %>
+
+  <div class="is-divider"></div>
+
+  <div class="level">
+    <div class="level-left">
+      <h2 class="title is-2">Organization Representatives</h2>
+    </div>
+    <div class="level-right">
+      <button class="button is-primary is-add-representative-button">
+        <span class="icon is-small">
+          <i class="fas fa-user-plus"></i>
+        </span>
+        <span>Add a Representative</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="modal is-add-representative-modal">
+    <div class="modal-background"></div>
+    <form>
+      <div class="modal-card">
+        <header class="modal-card-head">
+          <h3 class="modal-card-title">Add a Representative</h3>
+          <button class="delete is-cancel-button" aria-label="close" type="button"></button>
+        </header>
+        <section class="modal-card-body">
+          <div class="field">
+            <label class="label" for="organizationRepresentative--representativeName">Representative Name</label>
+            <div class="control">
+              <input class="input" id="organizationRepresentative--representativeName" name="representativeName" type="text" value="" maxlength="100" required />
+            </div>
+          </div>
+          <div class="field">
+            <label class="label" for="organizationRepresentative--representativeTitle">Representative Title</label>
+            <div class="control">
+              <input class="input" id="organizationRepresentative--representativeTitle" name="representativeTitle" type="text" value="" maxlength="100" />
+            </div>
+          </div>
+          <div class="field">
+            <label class="label" for="organizationRepresentative--representativeAddress1">Representative Address</label>
+            <div class="control">
+              <input class="input" id="organizationRepresentative--representativeAddress1" name="representativeAddress1" type="text" value="" placeholder="Line 1" maxlength="50" />
+            </div>
+          </div>
+          <div class="field">
+            <div class="control">
+              <input class="input" id="organizationRepresentative--representativeAddress2" name="representativeAddress2" type="text" value="" placeholder="Line 2" maxlength="50" />
+            </div>
+          </div>
+          <div class="field">
+            <label class="label" for="organizationRepresentative--representativeCity">City</label>
+            <div class="control">
+              <input class="input" id="organizationRepresentative--representativeCity" name="representativeCity" type="text" value="<%= config.defaults.city %>" maxlength="20" />
+            </div>
+          </div>
+          <div class="field">
+            <label class="label" for="organizationRepresentative--representativeProvince">Province</label>
+            <div class="control">
+              <input class="input" id="organizationRepresentative--representativeProvince" name="representativeProvince" type="text" value="<%= config.defaults.province %>" maxlength="2" />
+            </div>
+          </div>
+          <div class="field">
+            <label class="label" for="organizationRepresentative--representativePostalCode">Postal Code</label>
+            <div class="control">
+              <input class="input" id="organizationRepresentative--representativePostalCode" name="representativePostalCode" type="text" value="" minlength="5" maxlength="6" />
+            </div>
+          </div>
+        </section>
+        <footer class="modal-card-foot is-justified-right">
+          <button class="button is-cancel-button" type="button">Cancel</button>
+          <button class="button is-success" type="submit">Add Representative</button>
+        </footer>
+      </div>
+    </form>
+  </div>
+
+  <table class="table is-fullwidth is-striped is-hoverable is-representative-table">
+    <thead>
+      <tr>
+        <th>Default</th>
+        <th>Name</th>
+        <th>Address</th>
+        <th>City</th>
+        <th>Postal Code</th>
+        <th>&nbsp;</th>
+      </tr>
+    </thead>
+    <tbody>
+      <%
+        for (let index = 0; index < organization.organizationRepresentatives.length; index += 1) {
+          const representativeObj = organization.organizationRepresentatives[index];
+      %>
+        <tr data-representative-index="<%= representativeObj.RepresentativeIndex %>"
+          data-representative-name="<%= representativeObj.RepresentativeName %>"
+          data-representative-title="<%= representativeObj.RepresentativeTitle %>"
+          data-representative-address-1="<%= representativeObj.RepresentativeAddress1 %>"
+          data-representative-address-2="<%= representativeObj.RepresentativeAddress2 %>"
+          data-representative-city="<%= representativeObj.RepresentativeCity %>"
+          data-representative-province="<%= representativeObj.RepresentativeProvince %>"
+          data-representative-postal-code="<%= representativeObj.RepresentativePostalCode %>">
+          <td>
+            <div class="field">
+              <input class="is-checkradio is-info" id="representative-isDefault--<%= representativeObj.RepresentativeIndex %>" name="representative-isDefault" type="radio" value="<%= representativeObj.RepresentativeIndex %>" <%= (representativeObj.IsDefault === 1 ? " checked" : "") %> />
+              <label for="representative-isDefault--<%= representativeObj.RepresentativeIndex %>"></label>
+            </div>
+          </td>
+          <td>
+            <%= representativeObj.RepresentativeName %><br />
+            <%= representativeObj.RepresentativeTitle %>
+          </td>
+          <td>
+            <%= representativeObj.RepresentativeAddress1 %><br />
+            <%= representativeObj.RepresentativeAddress2 %>
+          </td>
+          <td><%= representativeObj.RepresentativeCity %>, <%= representativeObj.RepresentativeProvince %></td>
+          <td><%= representativeObj.RepresentativePostalCode %></td>
+          <td class="has-text-right">
+            <a class="is-edit-representative-button" href="#"><i class="fas fa-pencil-alt"></i></a>
+          </td>
+        </tr>
+      <% } %>
+    </tbody>
+  </table>
+<% } %>
 
 <%- include('_footerA'); -%>
 
