@@ -211,8 +211,18 @@
           </td>
           <td><%= representativeObj.RepresentativeCity %>, <%= representativeObj.RepresentativeProvince %></td>
           <td><%= representativeObj.RepresentativePostalCode %></td>
-          <td class="has-text-right">
-            <a class="is-edit-representative-button" href="#"><i class="fas fa-pencil-alt"></i></a>
+          <td>
+            <div class="buttons is-right has-addons">
+              <button class="button is-small is-edit-representative-button" type="button">
+                <span class="icon">
+                  <i class="fas fa-pencil-alt"></i>
+                </span>
+                <span>Edit</span>
+              </button>
+              <button class="button is-small is-delete-representative-button" type="button">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
           </td>
         </tr>
       <% } %>

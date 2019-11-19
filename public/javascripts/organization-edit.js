@@ -60,7 +60,7 @@
 
     // Default toggle
 
-    const updateDefaultRepresentative = function(changeEvent) {
+    const updateDefaultRepresentativeFn = function(changeEvent) {
 
       const defaultRepresentativeIndex = changeEvent.currentTarget.value;
 
@@ -81,8 +81,54 @@
 
     const radioEles = representativeTbodyEle.getElementsByTagName("input");
 
-    for (let radioIndex = 0; radioIndex < radioEles.length; radioIndex += 1) {
-      radioEles[radioIndex].addEventListener("change", updateDefaultRepresentative);
+    let eleIndex;
+
+    for (eleIndex = 0; eleIndex < radioEles.length; eleIndex += 1) {
+      radioEles[eleIndex].addEventListener("change", updateDefaultRepresentativeFn);
+    }
+
+    // delete
+
+    const deleteRepresentativeFn = function(clickEvent) {
+
+      clickEvent.preventDefault();
+
+      const trEle = clickEvent.currentTarget.closest("tr");
+
+      const representativeName = trEle.getAttribute("data-representative-name");
+
+      window.llm.confirmModal("Delete a Representative?",
+        "<p>Are you sure you want to delete the representative \"" + representativeName + "\"?</p>",
+        "Yes, Delete",
+        "warning",
+        function() {
+
+          window.fetch("/organizations/" + organizationID + "/doDeleteOrganizationRepresentative", {
+              method: "POST",
+              credentials: "include",
+              headers: {
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({
+                representativeIndex: trEle.getAttribute("data-representative-index")
+              })
+            })
+            .then(function(response) {
+              return response.json();
+            })
+            .then(function(responseJSON) {
+              if (responseJSON.success) {
+                trEle.remove();
+                showNoRepresentativesWarning();
+              }
+            });
+        });
+    };
+
+    const deleteBtnEles = representativeTbodyEle.getElementsByClassName("is-delete-representative-button");
+
+    for (eleIndex = 0; eleIndex < deleteBtnEles.length; eleIndex += 1) {
+      deleteBtnEles[eleIndex].addEventListener("click", deleteRepresentativeFn);
     }
 
     // Add
@@ -147,7 +193,7 @@
               "</div>" +
               "</td>");
 
-            trEle.getElementsByTagName("input")[0].addEventListener("change", updateDefaultRepresentative);
+            trEle.getElementsByTagName("input")[0].addEventListener("change", updateDefaultRepresentativeFn);
 
             let tdEle = document.createElement("td");
             tdEle.innerHTML = representativeObj.RepresentativeName + "<br />" + representativeObj.RepresentativeTitle;
@@ -165,9 +211,17 @@
             tdEle.innerHTML = representativeObj.RepresentativePostalCode;
             trEle.insertAdjacentElement("beforeend", tdEle);
 
-            trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right\">" +
-              "<a class=\"is-edit-representative-button\" href=\"#\"><i class=\"fas fa-pencil-alt\"></i></a>" +
+            trEle.insertAdjacentHTML("beforeend", "<td>" +
+              "<div class=\"buttons is-right has-addons\">" +
+              "<button class=\"button is-small is-edit-representative-button\" type=\"button\">" +
+              "<span class=\"icon\"><i class=\"fas fa-pencil-alt\"></i></span>" +
+              "<span>Edit</span></button>" +
+              "<button class=\"button is-small is-delete-representative-button\" type=\"button\">" +
+              "<i class=\"fas fa-trash\"></i>" +
+              "</button>" +
               "</td>");
+
+            trEle.getElementsByClassName("is-delete-representative-button")[0].addEventListener("click", deleteRepresentativeFn);
 
             representativeTbodyEle.insertAdjacentElement("beforeend", trEle);
 

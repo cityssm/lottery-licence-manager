@@ -175,6 +175,23 @@ let licencesDB = {
     };
   },
 
+  deleteOrganizationRepresentative: function(organizationID, representativeIndex) {
+
+    "use strict";
+
+    const db = sqlite(dbPath);
+
+    db
+      .prepare("delete from OrganizationRepresentatives" +
+        " where OrganizationID = ?" +
+        " and RepresentativeIndex = ?")
+      .run(organizationID, representativeIndex);
+
+    db.close();
+
+    return true;
+  },
+
   setDefaultOrganizationRepresentative: function(organizationID, representativeIndex) {
     "use strict";
 
