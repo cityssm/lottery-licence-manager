@@ -149,6 +149,32 @@ router.post("/:organizationID/doAddOrganizationRepresentative", function(req, re
 });
 
 
+router.post("/:organizationID/doEditOrganizationRepresentative", function(req, res) {
+  "use strict";
+
+  if (req.session.user.userProperties.organizations_canEdit !== "true") {
+    res.json("not allowed");
+  }
+
+  const organizationID = req.params.organizationID;
+
+  const licencesDB = require("../helpers/licencesDB");
+
+  const representativeObj = licencesDB.updateOrganizationRepresentative(organizationID, req.body);
+
+  if (representativeObj) {
+    res.json({
+      success: true,
+      organizationRepresentative: representativeObj
+    });
+  } else {
+    res.json({
+      success: false
+    });
+  }
+});
+
+
 router.post("/:organizationID/doDeleteOrganizationRepresentative", function(req, res) {
   "use strict";
 

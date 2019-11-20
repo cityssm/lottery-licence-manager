@@ -4,10 +4,16 @@
 
 
 .is-justified-right {
-  justify-content: flex-end;
+  //sass-lint:disable-block no-important
+  justify-content: flex-end !important;
 }
 
 
 .is-full-height {
   min-height: 100vh;
+}
+
+
+.is-width-1 {
+  width: 1px;
 }

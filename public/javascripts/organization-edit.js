@@ -131,6 +131,127 @@
       deleteBtnEles[eleIndex].addEventListener("click", deleteRepresentativeFn);
     }
 
+    // add / edit
+
+    const editRepresentativeModalEle = document.getElementsByClassName("is-edit-representative-modal")[0];
+    const editRepresentativeFormEle = editRepresentativeModalEle.getElementsByTagName("form")[0];
+
+    let editRepresentativeTrEle;
+
+    let openEditRepresentativeModalFn = function(clickEvent) {
+
+      editRepresentativeTrEle = clickEvent.currentTarget.closest("tr");
+
+      const representativeIndex = editRepresentativeTrEle.getAttribute("data-representative-index");
+
+      document.getElementById("editOrganizationRepresentative--representativeIndex").value = representativeIndex;
+      document.getElementById("editOrganizationRepresentative--representativeName").value = editRepresentativeTrEle.getAttribute("data-representative-name");
+      document.getElementById("editOrganizationRepresentative--representativeTitle").value = editRepresentativeTrEle.getAttribute("data-representative-title");
+      document.getElementById("editOrganizationRepresentative--representativeAddress1").value = editRepresentativeTrEle.getAttribute("data-representative-address-1");
+      document.getElementById("editOrganizationRepresentative--representativeAddress2").value = editRepresentativeTrEle.getAttribute("data-representative-address-2");
+      document.getElementById("editOrganizationRepresentative--representativeCity").value = editRepresentativeTrEle.getAttribute("data-representative-city");
+      document.getElementById("editOrganizationRepresentative--representativeProvince").value = editRepresentativeTrEle.getAttribute("data-representative-province");
+      document.getElementById("editOrganizationRepresentative--representativePostalCode").value = editRepresentativeTrEle.getAttribute("data-representative-postal-code");
+
+      document.getElementById("editOrganizationRepresentative--isDefault").value = document.getElementById("representative-isDefault--" + representativeIndex).checked ? "1" : "0";
+
+      window.llm.showModal(editRepresentativeModalEle);
+    };
+
+    const insertRepresentativeRowFn = function(representativeObj) {
+
+      const trEle = document.createElement("tr");
+
+      trEle.setAttribute("data-representative-index", representativeObj.RepresentativeIndex);
+      trEle.setAttribute("data-representative-name", representativeObj.RepresentativeName);
+      trEle.setAttribute("data-representative-title", representativeObj.RepresentativeTitle);
+      trEle.setAttribute("data-representative-address-1", representativeObj.RepresentativeAddress1);
+      trEle.setAttribute("data-representative-address-2", representativeObj.RepresentativeAddress2);
+      trEle.setAttribute("data-representative-city", representativeObj.RepresentativeCity);
+      trEle.setAttribute("data-representative-province", representativeObj.RepresentativeProvince);
+      trEle.setAttribute("data-representative-postal-code", representativeObj.RepresentativePostalCode);
+
+      trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-centered\">" +
+        "<div class=\"field\">" +
+        "<input class=\"is-checkradio is-info\" id=\"representative-isDefault--" + representativeObj.RepresentativeIndex + "\" name=\"representative-isDefault\" type=\"radio\"" + (representativeObj.IsDefault ? " checked" : "") + " />&nbsp;" +
+        "<label for=\"representative-isDefault--" + representativeObj.RepresentativeIndex + "\"></label>" +
+        "</div>" +
+        "</td>");
+
+      trEle.getElementsByTagName("input")[0].addEventListener("change", updateDefaultRepresentativeFn);
+
+      let tdEle = document.createElement("td");
+      tdEle.innerHTML = representativeObj.RepresentativeName + "<br />" +
+        "<small>" + representativeObj.RepresentativeTitle + "</small>";
+      trEle.insertAdjacentElement("beforeend", tdEle);
+
+      tdEle = document.createElement("td");
+      tdEle.innerHTML = representativeObj.RepresentativeAddress1 + "<br />" +
+        "<small>" + representativeObj.RepresentativeAddress2 + "</small>";
+      trEle.insertAdjacentElement("beforeend", tdEle);
+
+      tdEle = document.createElement("td");
+      tdEle.innerHTML = representativeObj.RepresentativeCity + ", " + representativeObj.RepresentativeProvince + "<br />" +
+        "<small>" + representativeObj.RepresentativePostalCode + "</small>";
+      trEle.insertAdjacentElement("beforeend", tdEle);
+
+      trEle.insertAdjacentHTML("beforeend", "<td>" +
+        "<div class=\"buttons is-right has-addons\">" +
+        "<button class=\"button is-small is-edit-representative-button\" type=\"button\">" +
+        "<span class=\"icon\"><i class=\"fas fa-pencil-alt\"></i></span>" +
+        "<span>Edit</span></button>" +
+        "<button class=\"button is-small is-delete-representative-button\" type=\"button\">" +
+        "<i class=\"fas fa-trash\"></i>" +
+        "</button>" +
+        "</td>");
+
+      trEle.getElementsByClassName("is-edit-representative-button")[0].addEventListener("click", openEditRepresentativeModalFn);
+      trEle.getElementsByClassName("is-delete-representative-button")[0].addEventListener("click", deleteRepresentativeFn);
+
+      representativeTbodyEle.insertAdjacentElement("beforeend", trEle);
+    };
+
+    // edit
+
+    const editBtnEles = representativeTbodyEle.getElementsByClassName("is-edit-representative-button");
+
+    for (eleIndex = 0; eleIndex < editBtnEles.length; eleIndex += 1) {
+      editBtnEles[eleIndex].addEventListener("click", openEditRepresentativeModalFn);
+    }
+
+    // close edit
+    let cancelButtonEles = editRepresentativeModalEle.getElementsByClassName("is-cancel-button");
+
+    for (let buttonIndex = 0; buttonIndex < cancelButtonEles.length; buttonIndex += 1) {
+      cancelButtonEles[buttonIndex].addEventListener("click", window.llm.hideModal);
+    }
+
+    editRepresentativeFormEle.addEventListener("submit", function(formEvent) {
+      formEvent.preventDefault();
+
+      window.fetch("/organizations/" + organizationID + "/doEditOrganizationRepresentative", {
+          method: "POST",
+          credentials: "include",
+          body: new URLSearchParams(new FormData(formEvent.currentTarget))
+        })
+        .then(function(response) {
+          return response.json();
+        })
+        .then(function(responseJSON) {
+
+          if (responseJSON.success) {
+
+            editRepresentativeTrEle.remove();
+            editRepresentativeTrEle = null;
+
+            // create row
+
+            insertRepresentativeRowFn(responseJSON.organizationRepresentative);
+            window.llm.hideModal(editRepresentativeModalEle);
+          }
+        });
+    });
+
     // Add
 
     const addRepresentativeModalEle = document.getElementsByClassName("is-add-representative-modal")[0];
@@ -143,7 +264,7 @@
     });
 
     // close add
-    const cancelButtonEles = addRepresentativeModalEle.getElementsByClassName("is-cancel-button");
+    cancelButtonEles = addRepresentativeModalEle.getElementsByClassName("is-cancel-button");
 
     for (let buttonIndex = 0; buttonIndex < cancelButtonEles.length; buttonIndex += 1) {
       cancelButtonEles[buttonIndex].addEventListener("click", window.llm.hideModal);
@@ -172,59 +293,7 @@
             }
 
             // create row
-
-            const representativeObj = responseJSON.organizationRepresentative;
-
-            const trEle = document.createElement("tr");
-
-            trEle.setAttribute("data-representative-index", representativeObj.RepresentativeIndex);
-            trEle.setAttribute("data-representative-name", representativeObj.RepresentativeName);
-            trEle.setAttribute("data-representative-title", representativeObj.RepresentativeTitle);
-            trEle.setAttribute("data-representative-address-1", representativeObj.RepresentativeAddress1);
-            trEle.setAttribute("data-representative-address-2", representativeObj.RepresentativeAddress2);
-            trEle.setAttribute("data-representative-city", representativeObj.RepresentativeCity);
-            trEle.setAttribute("data-representative-province", representativeObj.RepresentativeProvince);
-            trEle.setAttribute("data-representative-postal-code", representativeObj.RepresentativePostalCode);
-
-            trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-centered\">" +
-              "<div class=\"field\">" +
-              "<input class=\"is-checkradio is-info\" id=\"representative-isDefault--" + representativeObj.RepresentativeIndex + "\" name=\"representative-isDefault\" type=\"radio\"" + (representativeObj.IsDefault ? " checked" : "") + " />&nbsp;" +
-              "<label for=\"representative-isDefault--" + representativeObj.RepresentativeIndex + "\"></label>" +
-              "</div>" +
-              "</td>");
-
-            trEle.getElementsByTagName("input")[0].addEventListener("change", updateDefaultRepresentativeFn);
-
-            let tdEle = document.createElement("td");
-            tdEle.innerHTML = representativeObj.RepresentativeName + "<br />" + representativeObj.RepresentativeTitle;
-            trEle.insertAdjacentElement("beforeend", tdEle);
-
-            tdEle = document.createElement("td");
-            tdEle.innerHTML = representativeObj.RepresentativeAddress1 + "<br />" + representativeObj.RepresentativeAddress2;
-            trEle.insertAdjacentElement("beforeend", tdEle);
-
-            tdEle = document.createElement("td");
-            tdEle.innerHTML = representativeObj.RepresentativeCity + ", " + representativeObj.RepresentativeProvince;
-            trEle.insertAdjacentElement("beforeend", tdEle);
-
-            tdEle = document.createElement("td");
-            tdEle.innerHTML = representativeObj.RepresentativePostalCode;
-            trEle.insertAdjacentElement("beforeend", tdEle);
-
-            trEle.insertAdjacentHTML("beforeend", "<td>" +
-              "<div class=\"buttons is-right has-addons\">" +
-              "<button class=\"button is-small is-edit-representative-button\" type=\"button\">" +
-              "<span class=\"icon\"><i class=\"fas fa-pencil-alt\"></i></span>" +
-              "<span>Edit</span></button>" +
-              "<button class=\"button is-small is-delete-representative-button\" type=\"button\">" +
-              "<i class=\"fas fa-trash\"></i>" +
-              "</button>" +
-              "</td>");
-
-            trEle.getElementsByClassName("is-delete-representative-button")[0].addEventListener("click", deleteRepresentativeFn);
-
-            representativeTbodyEle.insertAdjacentElement("beforeend", trEle);
-
+            insertRepresentativeRowFn(responseJSON.organizationRepresentative);
             window.llm.hideModal(addRepresentativeModalEle);
           }
         });

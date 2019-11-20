@@ -33,5 +33,60 @@
   <%= organization.OrganizationPostalCode %>
 </p>
 
+<div class="is-divider"></div>
+
+<h2 class="title is-3">Organization Representatives</h2>
+
+<% if (organization.organizationRepresentatives.length === 0) { %>
+
+    <div class="message is-warning">
+      <div class="message-body">
+        There are no representatives associated with this organization.
+      </div>
+    </div>
+
+<% } else { %>
+
+  <table class="table is-fullwidth is-striped is-hoverable is-representative-table">
+    <thead>
+      <tr>
+        <th class="is-width-1">Default</th>
+        <th>Name</th>
+        <th>Address</th>
+        <th>City</th>
+      </tr>
+    </thead>
+    <tbody>
+      <%
+        for (let index = 0; index < organization.organizationRepresentatives.length; index += 1) {
+          const representativeObj = organization.organizationRepresentatives[index];
+      %>
+        <tr data-representative-index="<%= representativeObj.RepresentativeIndex %>">
+          <td>
+            <% if (representativeObj.IsDefault === 1) { %>
+              <i class="far fa-lg fa-dot-circle has-text-info"></i>
+            <% } else { %>
+              <i class="far fa-lg fa-circle has-text-grey-lighter"></i>
+            <% } %>
+          </td>
+          <td>
+            <%= representativeObj.RepresentativeName %><br />
+            <small><%= representativeObj.RepresentativeTitle %></small>
+          </td>
+          <td>
+            <%= representativeObj.RepresentativeAddress1 %><br />
+            <small><%= representativeObj.RepresentativeAddress2 %></small>
+          </td>
+          <td>
+            <%= representativeObj.RepresentativeCity %>, <%= representativeObj.RepresentativeProvince %><br />
+            <small><%= representativeObj.RepresentativePostalCode %></small>
+          </td>
+        </tr>
+      <% } %>
+    </tbody>
+  </table>
+
+<% } %>
+
 <%- include('_footerA'); -%>
 <%- include('_footerB'); -%>

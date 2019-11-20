@@ -175,6 +175,43 @@ let licencesDB = {
     };
   },
 
+  updateOrganizationRepresentative: function(organizationID, reqBody) {
+    "use strict";
+
+    const db = sqlite(dbPath);
+
+    db.prepare("update OrganizationRepresentatives" +
+        " set RepresentativeName = ?," +
+        " RepresentativeTitle = ?," +
+        " RepresentativeAddress1 = ?," +
+        " RepresentativeAddress2 = ?," +
+        " RepresentativeCity = ?," +
+        " RepresentativeProvince = ?," +
+        " RepresentativePostalCode = ?" +
+        " where OrganizationID = ?" +
+        " and RepresentativeIndex = ?")
+      .run(reqBody.representativeName, reqBody.representativeTitle,
+        reqBody.representativeAddress1, reqBody.representativeAddress2,
+        reqBody.representativeCity, reqBody.representativeProvince, reqBody.representativePostalCode,
+        organizationID, reqBody.representativeIndex
+      );
+
+    db.close();
+
+    return {
+      OrganizationID: organizationID,
+      RepresentativeIndex: reqBody.representativeIndex,
+      RepresentativeName: reqBody.representativeName,
+      RepresentativeTitle: reqBody.representativeTitle,
+      RepresentativeAddress1: reqBody.representativeAddress1,
+      RepresentativeAddress2: reqBody.representativeAddress2,
+      RepresentativeCity: reqBody.representativeCity,
+      RepresentativeProvince: reqBody.representativeProvince,
+      RepresentativePostalCode: reqBody.representativePostalCode,
+      IsDefault: reqBody.isDefault
+    };
+  },
+
   deleteOrganizationRepresentative: function(organizationID, representativeIndex) {
 
     "use strict";

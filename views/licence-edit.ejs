@@ -1,0 +1,26 @@
+<%- include('_header'); -%>
+
+<nav class="breadcrumb">
+  <ul>
+    <li><a href="/dashboard">Home</a></li>
+    <li><a href="/licences">Licences</a></li>
+    <% if (isCreate) { %>
+      <li class="is-active"><a href="#" aria-current="page">New Licence</a></li>
+    <% } else { %>
+      <li><a href="/licences/<%= organization.LicenceID %>">Licence #<%= organization.LicenceID %></a></li>
+      <li class="is-active"><a href="#" aria-current="page">Update</a></li>
+    <% } %>
+  </ul>
+</nav>
+
+<h1 class="title is-1">
+  <%= (isCreate ? "Create a New Licence" : "Update an Existing Licence") %>
+</h1>
+
+<%= organization.OrganizationName %>
+
+<%- include('_footerA'); -%>
+
+<script src="/javascripts/organization-edit.min.js"></script>
+
+<%- include('_footerB'); -%>

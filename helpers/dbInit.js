@@ -43,7 +43,7 @@ let dbInit = {
   },
 
   initLicencesDB: function() {
-    
+
     "use strict";
 
     const licencesDB = sqlite("data/licences.db");
@@ -54,12 +54,14 @@ let dbInit = {
 
       console.warn("Creating licences.db");
 
+      // organizations
+
       licencesDB.prepare("create table if not exists Organizations (" +
         "OrganizationID integer primary key autoincrement," +
         " OrganizationName varchar(100) not null," +
         " OrganizationAddress1 varchar(50), OrganizationAddress2 varchar(50)," +
         " OrganizationCity varchar(20), OrganizationProvince varchar(2)," +
-        " OrganizationPostalCode varchar(6)," +
+        " OrganizationPostalCode varchar(7)," +
         " RecordCreate_UserName varchar(30) not null," +
         " RecordCreate_TimeMillis integer not null," +
         " RecordUpdate_UserName varchar(30) not null," +
@@ -76,8 +78,73 @@ let dbInit = {
         " RepresentativeCity varchar(20), RepresentativeProvince varchar(2)," +
         " RepresentativePostalCode varchar(6)," +
         " IsDefault bit not null default 0," +
-        " primary key (OrganizationID, RepresentativeIndex)" +
+        " primary key (OrganizationID, RepresentativeIndex)," +
+        " foreign key (OrganizationID) references Organizations (OrganizationID)" +
         ")").run();
+
+      // licences
+
+      licencesDB.prepare("create table if not exists LotteryLicences (" +
+        "LicenceID integer primary key autoincrement," +
+        " OrganizationID integer not null," +
+        " ApplicationDate integer not null," +
+        " LicenceType char(2) not null," +
+
+        " StartDate integer, EndDate integer," +
+        " StartTime integer, EndTime integer," +
+
+        " Location varchar(100)," +
+        " LicenceDetails text," +
+        " TermsConditions text," +
+
+        " ExternalLicenceNumber varchar(20)," +
+        " ExternalReceiptNumber varchar(20)," +
+
+        " RecordCreate_UserName varchar(30) not null," +
+        " RecordCreate_TimeMillis integer not null," +
+        " RecordUpdate_UserName varchar(30) not null," +
+        " RecordUpdate_TimeMillis integer not null," +
+        " RecordDelete_UserName varchar(30)," +
+        " RecordDelete_TimeMillis integer," +
+
+        " foreign key (OrganizationID) references Organizations (OrganizationID)" +
+        ")").run();
+
+      licencesDB.prepare("create table if not exists LotteryLicenceFields (" +
+        "LicenceID integer not null," +
+        " FieldKey varchar(20) not null," +
+        " FieldValue text," +
+
+        " primary key (LicenceID, FieldKey)," +
+        " foreign key (LicenceID) references LotteryLicences (LicenceID)" +
+        ") without rowid").run();
+
+      // events
+
+      licencesDB.prepare("create table if not exists LotteryEvents (" +
+        "LicenceID integer not null," +
+        " EventDate integer not null," +
+
+        " RecordCreate_UserName varchar(30) not null," +
+        " RecordCreate_TimeMillis integer not null," +
+        " RecordUpdate_UserName varchar(30) not null," +
+        " RecordUpdate_TimeMillis integer not null," +
+        " RecordDelete_UserName varchar(30)," +
+        " RecordDelete_TimeMillis integer," +
+
+        " primary key (LicenceID, EventDate)," +
+        " foreign key (LicenceID) references LotteryLicences (LicenceID)" +
+        ") without rowid").run();
+
+      licencesDB.prepare("create table if not exists LotteryEventFields (" +
+        "LicenceID integer not null," +
+        " EventDate integer not null," +
+        " FieldKey varchar(20) not null," +
+        " FieldValue text," +
+
+        " primary key (LicenceID, EventDate, FieldKey)," +
+        " foreign key (LicenceID, EventDate) references LotteryEvents (LicenceID, EventDate)" +
+        ") without rowid").run();
     }
 
     return false;

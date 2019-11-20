@@ -1,0 +1,32 @@
+<%- include('_header'); -%>
+
+<nav class="breadcrumb">
+  <ul>
+    <li><a href="/dashboard">Home</a></li>
+    <li class="is-active"><a href="#" aria-current="page">Licences</a></li>
+  </ul>
+</nav>
+
+<div class="level">
+  <div class="level-left">
+    <h1 class="title is-1">
+      Find a Licence
+    </h1>
+  </div>
+  <% if (user.userProperties.licences_canEdit === "true") { %>
+    <div class="level-right">
+      <a class="button is-primary" href="/licences/new">
+        <span class="icon is-small">
+          <i class="fas fa-plus"></i>
+        </span>
+        <span>Create a New Licence</span>
+      </a>
+    </div>
+  <% } %>
+</div>
+
+<%- include('_footerA'); -%>
+
+<script src="/javascripts/organization-edit.min.js"></script>
+
+<%- include('_footerB'); -%>

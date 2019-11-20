@@ -63,8 +63,23 @@
             organizationNameLinkEle.href = "/organizations/" + organizationObj.OrganizationID;
             trEle.getElementsByTagName("td")[0].insertAdjacentElement("beforeend", organizationNameLinkEle);
 
-            trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right\">" +
-              (canEdit ? "<a title=\"Edit Organization\" href=\"/organizations/" + organizationObj.OrganizationID + "/edit\"><i class=\"fas fa-pencil-alt\"></i></a>" : "") +
+            trEle.insertAdjacentHTML("beforeend", "<td>" +
+              (canEdit ?
+                "<div class=\"field has-addons is-justified-right\">" +
+                "<p class=\"control\">" +
+                "<a class=\"button is-small\" title=\"Edit Organization\" href=\"/organizations/" + organizationObj.OrganizationID + "/edit\">" +
+                "<span class=\"icon\"><i class=\"fas fa-pencil-alt\"></i></span>" +
+                "<span>Edit</span>" +
+                "</a>" +
+                "</p>" +
+                "<p class=\"control\">" +
+                "<a class=\"button is-small\" href=\"/licences/new/" + organizationObj.OrganizationID + "\">" +
+                "<span class=\"icon\"><i class=\"fas fa-certificate\"></i></span>" +
+                "<span>New</span>" +
+                "</a>" +
+                "</p>" +
+                "</div>" :
+                "") +
               "</td>");
 
             tbodyEle.insertAdjacentElement("beforeend", trEle);
