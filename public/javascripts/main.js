@@ -7,6 +7,52 @@
 
 
   /*
+   * BULMA CALENDAR DEFAULT OPTIONS
+   */
+
+  window.llm.bulmaCalendarOptions = {
+    //displayMode: "inline",
+    showHeader: false,
+    showFooter: false,
+    enableYearSwitch: false,
+
+    dateFormat: "YYYY/MM/DD",
+    disabledWeekDays: [0, 6],
+    color: "link",
+    icons: {
+      previous: "<i class=\"fas fa-chevron-left\"></i>",
+      next: "<i class=\"fas fa-chevron-right\"></i>",
+      date: "<i class=\"fas fa-calendar\"></i>"
+    }
+  };
+
+
+  window.llm.fixBulmaCalendars = function(scopeEle) {
+
+    if (!scopeEle) {
+      scopeEle = document;
+    }
+
+    // fix clear buttons
+
+    const bulmaClearButtonEles = scopeEle.getElementsByClassName("datetimepicker-clear-button");
+
+    for (let eleIndex = 0; eleIndex < bulmaClearButtonEles.length; eleIndex += 1) {
+      bulmaClearButtonEles[eleIndex].setAttribute("type", "button");
+    }
+
+    // fix next and previous month buttons
+
+    const bulmaNavButtonEles = scopeEle.querySelectorAll(".datepicker-nav-previous, .datepicker-nav-next");
+
+    for (let eleIndex = 0; eleIndex < bulmaNavButtonEles.length; eleIndex += 1) {
+      bulmaNavButtonEles[eleIndex].classList.remove("is-text");
+      bulmaNavButtonEles[eleIndex].classList.add("is-" + window.llm.bulmaCalendarOptions.color);
+    }
+  };
+
+
+  /*
    * MODAL TOGGLES
    */
 
@@ -39,7 +85,7 @@
         "<h3 class=\"modal-card-title\"></h3>" +
         "</header>") +
       ("<section class=\"modal-card-body\">" + bodyHTML + "</section>") +
-      ("<footer class=\"modal-card-foot is-justified-right\">" +
+      ("<footer class=\"modal-card-foot justify-right\">" +
         "<button class=\"button is-cancel-button\" type=\"button\">Cancel</button>" +
         "<button class=\"button is-ok-button is-" + contextualColorName + "\" type=\"button\">" + okButtonHTML + "</button>" +
         "</footer>") +

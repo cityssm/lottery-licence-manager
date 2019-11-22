@@ -3,6 +3,8 @@
 const express = require("express");
 const router = express.Router();
 
+const dateFns = require("../helpers/dateFns");
+
 router.get("/", function(req, res) {
   "use strict";
   res.render("licence-search");
@@ -21,11 +23,17 @@ router.get(["/new", "/new/:organizationID"], function(req, res) {
 
   if (organizationID && organizationID !== "") {
     const licencesDB = require("../helpers/licencesDB");
-     organization = licencesDB.getOrganization(organizationID);
+    organization = licencesDB.getOrganization(organizationID);
   }
+
+  const currentDateAsString = dateFns.dateToString(new Date());
 
   res.render("licence-edit", {
     isCreate: true,
+    licence: {
+      LicenceID: "(New Licence Number)",
+      ApplicationDateString: currentDateAsString
+    },
     organization: organization
   });
 });

@@ -21,6 +21,6 @@
   },
   "devDependencies": {
     "bulma": "^0.8.0",
-    "bulma-utilities": "^0.3.6"
+    "bulma-helpers": "^0.3.8"
   }
 }

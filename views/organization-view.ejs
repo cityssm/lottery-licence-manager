@@ -8,14 +8,14 @@
   </ul>
 </nav>
 
-<div class="level">
-  <div class="level-left">
+<div class="columns">
+  <div class="column">
     <h1 class="title is-1">
       <%= organization.OrganizationName %>
     </h1>
   </div>
   <% if (user.userProperties.organizations_canEdit === "true") { %>
-    <div class="level-right">
+    <div class="column is-narrow has-text-right">
       <a class="button is-primary" href="/organizations/<%= organization.OrganizationID %>/edit">
         <span class="icon is-small">
           <i class="fas fa-pencil-alt"></i>
@@ -50,7 +50,7 @@
   <table class="table is-fullwidth is-striped is-hoverable is-representative-table">
     <thead>
       <tr>
-        <th class="is-width-1">Default</th>
+        <th class="has-width-5">Default</th>
         <th>Name</th>
         <th>Address</th>
         <th>City</th>

@@ -56,6 +56,7 @@ app.use(cookieParser());
 
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/fa", express.static(__dirname + "/node_modules/@fortawesome/fontawesome-free"));
+app.use("/bulmaExtensions", express.static(__dirname + "/node_modules/bulma-extensions"));
 
 
 /*

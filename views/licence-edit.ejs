@@ -17,10 +17,100 @@
   <%= (isCreate ? "Create a New Licence" : "Update an Existing Licence") %>
 </h1>
 
-<%= organization.OrganizationName %>
+<form id="form--licence">
+
+  <div class="columns has-margin-b-0">
+    <div class="column">
+      <div class="field">
+        <label class="label" for="licence--licenceID">Licence ID</label>
+        <div class="control">
+          <input class="input has-background-light has-cursor-not-allowed" id="licence--licenceID" name="licenceID" type="text" value="<%= licence.LicenceID %>" readonly required />
+        </div>
+      </div>
+    </div>
+    <div class="column">
+      <div class="field">
+        <label class="label" for="licence--externalLicenceNumber"><%= (((config.licences || {}).externalLicenceNumber || {}).fieldLabel || "External Licence Number") %></label>
+        <div class="control">
+          <input class="input" id="licence--externalLicenceNumber" name="externalLicenceNumber" type="text" value="<%= licence.ExternalLicenceNumber %>" maxlength="20" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="columns">
+    <div class="column">
+      <input id="licence--organizationID" name="organizationID" type="hidden" value="<%= organization.organizationID %>" />
+      <label class="label" for="licence--organization">Organization</label>
+      <div class="field has-addons">
+        <div class="control is-expanded">
+          <input class="input has-background-light has-cursor-not-allowed" id="licence--organization" type="text" value="<%= organization.OrganizationName %>" readonly required />
+        </div>
+        <div class="control">
+          <button class="button is-organization-lookup-button" type="button">
+            <span class="icon"><i class="fas fa-search"></i></span>
+            <span>Lookup</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="columns">
+    <div class="column">
+      <div class="field">
+        <label class="label" for="licence--applicationDateString">Application Date</label>
+        <div class="control">
+          <input class="input is-info" id="licence--applicationDateString" name="applicationDateString" type="date" value="<%= licence.ApplicationDateString %>" />
+        </div>
+      </div>
+    </div>
+    <div class="column">
+      <div class="field">
+        <label class="label" for="licence--licenceType">Licence Type</label>
+        <div class="control">
+          <div class="select is-fullwidth">
+            <select id="licence--licenceType" name="licenceType" required>
+              <option value="">(Select a Licence Type)</option>
+              <%
+                const licenceTypes = config.licenceTypes || [];
+                for (let licenceTypeIndex = 0; licenceTypeIndex < licenceTypes.length; licenceTypeIndex += 1) {
+                  const licenceType = licenceTypes[licenceTypeIndex];
+              %>
+              <option value="<%= licenceType.licenceTypeKey %>"><%= licenceType.licenceType %></option>
+              <%
+                }
+              %>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</form>
+
+<div class="modal is-organization-lookup-modal">
+  <div class="modal-background"></div>
+  <form>
+    <div class="modal-card">
+      <header class="modal-card-head">
+        <h3 class="modal-card-title">Select an Organization</h3>
+        <button class="delete is-cancel-button" aria-label="close" type="button"></button>
+      </header>
+      <section class="modal-card-body">
+
+      </section>
+      <footer class="modal-card-foot justify-right">
+        <button class="button is-cancel-button" type="button">Cancel</button>
+      </footer>
+    </div>
+  </form>
+</div>
 
 <%- include('_footerA'); -%>
 
-<script src="/javascripts/organization-edit.min.js"></script>
+<script src="/bulmaExtensions/bulma-calendar/dist/js/bulma-calendar.min.js"></script>
+<script src="/javascripts/licence-edit.min.js"></script>
 
 <%- include('_footerB'); -%>

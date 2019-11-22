@@ -23,7 +23,7 @@
   <div class="field">
     <label class="label" for="organization--organizationName">Organization Name</label>
     <div class="control">
-      <input class="input" id="organization--organizationName" name="organizationName" type="text" value="<%= organization.OrganizationName %>" maxlength="100" autocomplete="off" required />
+      <input class="input" id="organization--organizationName" name="organizationName" type="text" value="<%= organization.OrganizationName %>" maxlength="100" autocomplete="off" <%= (isCreate ? " autofocus " : "") %> required />
     </div>
   </div>
 
@@ -115,7 +115,7 @@
   <table class="table is-fullwidth is-striped is-hoverable is-representative-table">
     <thead>
       <tr>
-        <th class="is-width-1">Default</th>
+        <th class="has-width-50">Default</th>
         <th>Name</th>
         <th>Address</th>
         <th>City</th>
@@ -222,7 +222,7 @@
             </div>
           </div>
         </section>
-        <footer class="modal-card-foot is-justified-right">
+        <footer class="modal-card-foot justify-right">
           <button class="button is-cancel-button" type="button">Cancel</button>
           <button class="button is-success" type="submit">Add Representative</button>
         </footer>
@@ -283,7 +283,7 @@
             </div>
           </div>
         </section>
-        <footer class="modal-card-foot is-justified-right">
+        <footer class="modal-card-foot justify-right">
           <button class="button is-cancel-button" type="button">Cancel</button>
           <button class="button is-success" type="submit">Update Representative</button>
         </footer>

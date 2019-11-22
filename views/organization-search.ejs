@@ -7,14 +7,14 @@
   </ul>
 </nav>
 
-<div class="level">
-  <div class="level-left">
+<div class="columns">
+  <div class="column">
     <h1 class="title is-1">
       Find an Organization
     </h1>
   </div>
   <% if (user.userProperties.organizations_canEdit === "true") { %>
-    <div class="level-right">
+    <div class="column is-narrow has-text-right">
       <a class="button is-primary" href="/organizations/new">
         <span class="icon is-small">
           <i class="fas fa-plus"></i>

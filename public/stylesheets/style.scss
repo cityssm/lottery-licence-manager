@@ -1,19 +1,34 @@
 @import '../../node_modules/bulma/bulma';
-@import '../../node_modules/bulma-utilities/sass/bulma-utilities';
-@import '../../node_modules/bulma-extensions/src/sass/index';
+@import '../../node_modules/bulma-helpers/bulma-helpers';
+@import '../../node_modules/bulma-extensions/bulma-calendar/src/sass/index';
+@import '../../node_modules/bulma-extensions/bulma-divider/src/sass/index';
 
 
-.is-justified-right {
-  //sass-lint:disable-block no-important
-  justify-content: flex-end !important;
-}
-
-
-.is-full-height {
+.has-min-page-height {
   min-height: 100vh;
 }
 
 
-.is-width-1 {
-  width: 1px;
+/*
+ * Date time picker
+ */
+
+.datetimepicker-dummy {
+
+  &::before {
+    display: none;
+  }
+
+  .datetimepicker-dummy-wrapper {
+    border-radius: $input-radius;
+  }
+
+  .datetimepicker-dummy-wrapper .datetimepicker-dummy-input:first-child {
+    padding-left: $textarea-padding;
+    text-indent: 0;
+  }
+
+  .datetimepicker-clear-button {
+    font-weight: bold;
+  }
 }

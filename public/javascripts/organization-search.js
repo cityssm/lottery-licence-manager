@@ -65,7 +65,7 @@
 
             trEle.insertAdjacentHTML("beforeend", "<td>" +
               (canEdit ?
-                "<div class=\"field has-addons is-justified-right\">" +
+                "<div class=\"field has-addons justify-right\">" +
                 "<p class=\"control\">" +
                 "<a class=\"button is-small\" title=\"Edit Organization\" href=\"/organizations/" + organizationObj.OrganizationID + "/edit\">" +
                 "<span class=\"icon\"><i class=\"fas fa-pencil-alt\"></i></span>" +
