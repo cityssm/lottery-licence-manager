@@ -88,7 +88,7 @@ let dbInit = {
         "LicenceID integer primary key autoincrement," +
         " OrganizationID integer not null," +
         " ApplicationDate integer not null," +
-        " LicenceType char(2) not null," +
+        " LicenceTypeKey char(2) not null," +
 
         " StartDate integer, EndDate integer," +
         " StartTime integer, EndTime integer," +

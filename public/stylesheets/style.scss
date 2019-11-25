@@ -10,8 +10,32 @@
 
 
 /*
+ * Form elements
+ */
+
+.textarea {
+  resize: vertical;
+}
+
+.input[type='number'] {
+  -moz-appearance: textfield;
+
+  &::-webkit-inner-spin-button,
+  &::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+}
+
+
+/*
  * Date time picker
  */
+
+.has-inline-datepicker .datetimepicker,
+.has-inline-timepicker .datetimepicker {
+  max-width: none;
+}
 
 .datetimepicker-dummy {
 
@@ -21,14 +45,14 @@
 
   .datetimepicker-dummy-wrapper {
     border-radius: $input-radius;
-  }
 
-  .datetimepicker-dummy-wrapper .datetimepicker-dummy-input:first-child {
-    padding-left: $textarea-padding;
-    text-indent: 0;
-  }
+    .datetimepicker-dummy-input:first-child {
+      padding-left: $textarea-padding;
+      text-indent: 0;
+    }
 
-  .datetimepicker-clear-button {
-    font-weight: bold;
+    .datetimepicker-clear-button {
+      font-weight: bold;
+    }
   }
 }

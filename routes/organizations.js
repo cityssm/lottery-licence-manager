@@ -21,7 +21,16 @@ router.post("/doSearch", function(req, res) {
 
   const licencesDB = require("../helpers/licencesDB");
 
-  res.json(licencesDB.getOrganizations(req.body));
+  res.json(licencesDB.getOrganizations(req.body, true));
+});
+
+
+router.get("/doGetAll", function(req, res) {
+  "use strict";
+
+  const licencesDB = require("../helpers/licencesDB");
+
+  res.json(licencesDB.getOrganizations({}, false));
 });
 
 

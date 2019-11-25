@@ -32,10 +32,16 @@ router.get(["/new", "/new/:organizationID"], function(req, res) {
     isCreate: true,
     licence: {
       LicenceID: "(New Licence Number)",
-      ApplicationDateString: currentDateAsString
+      ApplicationDateString: currentDateAsString,
+      StartDateString: currentDateAsString,
+      EndDateString: currentDateAsString,
+
+      StartTimeString: "0:00",
+      EndTimeString: "0:05"
     },
     organization: organization
   });
 });
+
 
 module.exports = router;

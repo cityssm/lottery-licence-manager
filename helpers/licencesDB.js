@@ -7,7 +7,7 @@ const dbPath = "data/licences.db";
 
 let licencesDB = {
 
-  getOrganizations: function(reqBody) {
+  getOrganizations: function(reqBody, useLimit) {
     "use strict";
 
     const db = sqlite(dbPath, {
@@ -30,7 +30,9 @@ let licencesDB = {
       params.push(reqBody.representativeName.toLowerCase());
     }
 
-    sql += " limit 100";
+    if (useLimit) {
+      sql += " limit 100";
+    }
 
     let rows = db.prepare(sql).all(params);
 

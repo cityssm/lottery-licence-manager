@@ -19,7 +19,7 @@
 
 <form id="form--licence">
 
-  <div class="columns has-margin-b-0">
+  <div class="columns is-multiline has-margin-b-0">
     <div class="column">
       <div class="field">
         <label class="label" for="licence--licenceID">Licence ID</label>
@@ -36,15 +36,13 @@
         </div>
       </div>
     </div>
-  </div>
 
-  <div class="columns">
-    <div class="column">
+    <div class="column is-full">
       <input id="licence--organizationID" name="organizationID" type="hidden" value="<%= organization.organizationID %>" />
       <label class="label" for="licence--organization">Organization</label>
       <div class="field has-addons">
         <div class="control is-expanded">
-          <input class="input has-background-light has-cursor-not-allowed" id="licence--organization" type="text" value="<%= organization.OrganizationName %>" readonly required />
+          <input class="input has-background-light has-cursor-not-allowed" id="licence--organizationName" type="text" value="<%= organization.OrganizationName %>" readonly required />
         </div>
         <div class="control">
           <button class="button is-organization-lookup-button" type="button">
@@ -54,30 +52,30 @@
         </div>
       </div>
     </div>
-  </div>
 
-  <div class="columns">
-    <div class="column">
+    <div class="column is-half">
       <div class="field">
         <label class="label" for="licence--applicationDateString">Application Date</label>
         <div class="control">
-          <input class="input is-info" id="licence--applicationDateString" name="applicationDateString" type="date" value="<%= licence.ApplicationDateString %>" />
+          <input id="licence--applicationDateString" name="applicationDateString" type="date" value="<%= licence.ApplicationDateString %>" />
         </div>
       </div>
     </div>
-    <div class="column">
+    <div class="column is-half">
       <div class="field">
-        <label class="label" for="licence--licenceType">Licence Type</label>
+        <label class="label" for="licence--licenceTypeKey">Licence Type</label>
         <div class="control">
           <div class="select is-fullwidth">
-            <select id="licence--licenceType" name="licenceType" required>
+            <select id="licence--licenceTypeKey" name="licenceTypeKey" required>
               <option value="">(Select a Licence Type)</option>
               <%
                 const licenceTypes = config.licenceTypes || [];
                 for (let licenceTypeIndex = 0; licenceTypeIndex < licenceTypes.length; licenceTypeIndex += 1) {
                   const licenceType = licenceTypes[licenceTypeIndex];
               %>
-              <option value="<%= licenceType.licenceTypeKey %>"><%= licenceType.licenceType %></option>
+              <option value="<%= licenceType.licenceTypeKey %>" <%= (licence.LicenceTypeKey === licenceType.licenceTypeKey ? " selected" : "") %>>
+                <%= licenceType.licenceType %>
+              </option>
               <%
                 }
               %>
@@ -86,7 +84,86 @@
         </div>
       </div>
     </div>
+
+    <div class="column is-half">
+      <div class="field has-inline-datepicker">
+        <label class="label">Date Range</label>
+        <div class="control">
+          <input id="licence--startEndDateString" name="startEndDateString" data-display-mode="inline" data-show-header="true" data-is-range="true" data-start-date="<%= licence.StartDateString %>" data-end-date="<%= licence.EndDateString %>" type="date" />
+        </div>
+      </div>
+    </div>
+    <div class="column is-half has-inline-timepicker">
+      <div class="field">
+        <label class="label">Time Range</label>
+        <div class="control">
+          <input class="input" id="licence--startEndTimeString" name="startEndTimeString" data-is-range="true" data-start-time="<%= licence.StartTimeString %>" data-end-time="<%= licence.EndTimeString %>" type="time" />
+        </div>
+      </div>
+    </div>
+
+    <div class="column is-full">
+      <div class="field">
+        <label class="label" for="licence--licenceDetails">Licence Details</label>
+        <div class="control">
+          <textarea class="textarea" id="licence--licenceDetails" name="licenceDetails" rows="1"><%= licence.LicenceDetails %></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="column is-full">
+      <div class="field">
+        <label class="label" for="licence--termsConditions">Terms and Conditions</label>
+        <div class="control">
+          <textarea class="textarea" id="licence--termsConditions" name="termsConditions" rows="2"><%= licence.TermsConditions %></textarea>
+        </div>
+      </div>
+    </div>
   </div>
+
+  <%
+    for (let licenceTypeIndex = 0; licenceTypeIndex < licenceTypes.length; licenceTypeIndex += 1) {
+      const licenceType = licenceTypes[licenceTypeIndex];
+  %>
+    <fieldset class="container-licenceTypeFields <%= (licence.LicenceTypeKey === licenceType.licenceTypeKey ? "" : " is-hidden") %>" id="container-licenceTypeFields--<%= licenceType.licenceTypeKey %>" <%= (licence.licenceTypeKey === licenceType.licenceTypeKey ? "" : " disabled") %>>
+      <legend class="title is-4"><%= licenceType.licenceType %></legend>
+      <%
+        const licenceFields = licenceType.licenceFields || [];
+        let fieldKeys = "";
+
+        for (let fieldIndex = 0; fieldIndex < licenceFields.length; fieldIndex += 1) {
+          const licenceField = licenceFields[fieldIndex];
+
+          const inputName = licenceType.licenceTypeKey + "-" + licenceField.fieldKey;
+
+          fieldKeys += "," + inputName;
+
+          const inputAttributes = licenceField.inputAttributes || {};
+
+          if (!inputAttributes.type) {
+            inputAttributes.type = "text";
+          }
+
+          let inputAttributesString = "";
+
+          for (let attributeName in inputAttributes) {
+            inputAttributesString += " " + attributeName + "=\"" + inputAttributes[attributeName] + "\"";
+          }
+      %>
+        <div class="field">
+          <label class="label" for="licence--<%=inputName %>"><%= licenceField.fieldLabel || licenceField.fieldKey %></label>
+          <div class="control">
+            <input class="input" id="licence--<%= inputName %>" name="<%= inputName %>" <%- inputAttributesString %> />
+          </div>
+        </div>
+      <%
+        }
+      %>
+      <input name="fieldKeys" type="hidden" value="<%= fieldKeys %>" />
+    </fieldset>
+  <%
+    }
+  %>
+
 
 </form>
 
@@ -99,7 +176,18 @@
         <button class="delete is-cancel-button" aria-label="close" type="button"></button>
       </header>
       <section class="modal-card-body">
-
+        <div class="control has-icons-left">
+          <input class="input" id="organizationLookup--searchStr" type="text" placeholder="Filter Organizations" disabled />
+          <span class="icon is-left">
+            <i class="fas fa-filter"></i>
+          </span>
+        </div>
+        <div class="has-margin-top-20" id="container--organizationLookup">
+          <p class="has-text-centered has-text-grey-lighter">
+            <i class="fas fa-3x fa-circle-notch fa-spin"></i><br />
+            Loading organizations...
+          </p>
+        </div>
       </section>
       <footer class="modal-card-foot justify-right">
         <button class="button is-cancel-button" type="button">Cancel</button>
@@ -110,7 +198,11 @@
 
 <%- include('_footerA'); -%>
 
-<script src="/bulmaExtensions/bulma-calendar/dist/js/bulma-calendar.min.js"></script>
+<script>
+  const config_licenceTypes = <%- JSON.stringify(config.licenceTypes || []) %>;
+</script>
+
+<script src="/bulmaExtensions/bulma-calendar/dist/js/bulma-calendar.js"></script>
 <script src="/javascripts/licence-edit.min.js"></script>
 
 <%- include('_footerB'); -%>

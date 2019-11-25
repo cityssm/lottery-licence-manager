@@ -7,22 +7,74 @@
 
 
   /*
+   * HELPERS
+   */
+
+  window.llm.clearElement = function(ele) {
+    while (ele.firstChild) {
+      ele.removeChild(ele.firstChild);
+    }
+  };
+
+
+  /*
    * BULMA CALENDAR DEFAULT OPTIONS
    */
 
   window.llm.bulmaCalendarOptions = {
-    //displayMode: "inline",
     showHeader: false,
     showFooter: false,
     enableYearSwitch: false,
 
     dateFormat: "YYYY/MM/DD",
-    disabledWeekDays: [0, 6],
+    //disabledWeekDays: [0, 6],
     color: "link",
     icons: {
       previous: "<i class=\"fas fa-chevron-left\"></i>",
       next: "<i class=\"fas fa-chevron-right\"></i>",
       date: "<i class=\"fas fa-calendar\"></i>"
+    }
+  };
+
+  window.llm.bulmaTimeOptions = {
+    displayMode: "inline",
+    showHeader: false,
+    showFooter: true,
+    //enableYearSwitch: false,
+
+    dateFormat: "YYYY/MM/DD",
+    startDate: "1970/01/01",
+    endDate: "1970/01/01",
+
+    timeFormat: "HH:mm",
+    color: "link",
+
+    onReady: function(readyEvent) {
+
+      console.log(readyEvent.data);
+
+      const ele = readyEvent.data.element;
+
+      let startTimeString = ele.getAttribute("data-start-time").split(":");
+
+      if (startTimeString.length >= 2) {
+        const startTime = new Date();
+        startTime.setHours(startTimeString[0]);
+        startTime.setMinutes(startTimeString[1]);
+        readyEvent.data.timePicker.start = startTime;
+      }
+
+      let endTimeString = ele.getAttribute("data-end-time").split(":");
+
+      if (endTimeString.length >= 2) {
+        const endTime = new Date();
+        endTime.setHours(endTimeString[0]);
+        endTime.setMinutes(endTimeString[1]);
+        readyEvent.data.timePicker.end = endTime;
+      }
+
+      readyEvent.data.timePicker.refresh();
+
     }
   };
 
@@ -48,6 +100,22 @@
     for (let eleIndex = 0; eleIndex < bulmaNavButtonEles.length; eleIndex += 1) {
       bulmaNavButtonEles[eleIndex].classList.remove("is-text");
       bulmaNavButtonEles[eleIndex].classList.add("is-" + window.llm.bulmaCalendarOptions.color);
+    }
+  };
+
+
+  window.llm.fixBulmaTimes = function(scopeEle) {
+
+    if (!scopeEle) {
+      scopeEle = document;
+    }
+
+    // fix next and previous month buttons
+
+    const bulmaInputEles = scopeEle.querySelectorAll(".timepicker-input-number, .timepicker-time-divider");
+
+    for (let eleIndex = 0; eleIndex < bulmaInputEles.length; eleIndex += 1) {
+      bulmaInputEles[eleIndex].classList.add("has-text-" + window.llm.bulmaTimeOptions.color);
     }
   };
 
