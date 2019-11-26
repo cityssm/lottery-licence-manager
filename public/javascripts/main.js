@@ -21,6 +21,7 @@
    * BULMA CALENDAR DEFAULT OPTIONS
    */
 
+  /*
   window.llm.bulmaCalendarOptions = {
     showHeader: false,
     showFooter: false,
@@ -36,8 +37,9 @@
     }
   };
 
+
   window.llm.bulmaTimeOptions = {
-    displayMode: "inline",
+    //displayMode: "inline",
     showHeader: false,
     showFooter: true,
     //enableYearSwitch: false,
@@ -74,6 +76,7 @@
       }
 
       readyEvent.data.timePicker.refresh();
+      readyEvent.data.timePicker.render();
 
     }
   };
@@ -118,7 +121,8 @@
       bulmaInputEles[eleIndex].classList.add("has-text-" + window.llm.bulmaTimeOptions.color);
     }
   };
-
+  */
+  
 
   /*
    * MODAL TOGGLES

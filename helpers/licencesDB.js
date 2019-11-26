@@ -4,6 +4,9 @@
 const sqlite = require("better-sqlite3");
 const dbPath = "data/licences.db";
 
+const dateRegex = new RegExp("-", "g");
+const timeRegex = new RegExp(":", "g");
+
 
 let licencesDB = {
 
@@ -248,6 +251,83 @@ let licencesDB = {
     db.close();
 
     return true;
+  },
+
+
+  createLicence: function(reqBody, reqSession) {
+    "use strict";
+
+    const db = sqlite(dbPath);
+
+    const nowMillis = Date.now();
+
+    const info = db.prepare("insert into LotteryLicences (" +
+        "OrganizationID, ApplicationDate, LicenceTypeKey," +
+        " StartDate, EndDate, StartTime, EndTime," +
+        " Location, LicenceDetails, TermsConditions," +
+        " ExternalLicenceNumber, ExternalReceiptNumber," +
+        " RecordCreate_UserName, RecordCreate_TimeMillis," +
+        " RecordUpdate_UserName, RecordUpdate_TimeMillis)" +
+        " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
+      .run(
+        reqBody.organizationID,
+        reqBody.applicationDateString.replace(dateRegex, ""),
+        reqBody.licenceTypeKey,
+        reqBody.startDateString.replace(dateRegex, ""),
+        reqBody.endDateString.replace(dateRegex, ""),
+        reqBody.startTimeString.replace(timeRegex, ""),
+        reqBody.endTimeString.replace(timeRegex, ""),
+        reqBody.location,
+        reqBody.licenceDetails,
+        reqBody.termsConditions,
+        reqBody.externalLicenceNumber,
+        reqBody.externalReceiptNumber,
+        reqSession.user.userName,
+        nowMillis,
+        reqSession.user.userName,
+        nowMillis
+      );
+
+    const licenceID = info.lastInsertRowid;
+
+    // fields
+
+    const fieldKeys = reqBody.fieldKeys.substring(1).split(",");
+
+    for (let fieldIndex = 0; fieldIndex < fieldKeys.length; fieldIndex += 1) {
+
+      db.prepare("insert into LotteryLicenceFields" +
+          " (LicenceID, FieldKey, FieldValue)" +
+          " values (?, ?, ?)")
+        .run(licenceID, fieldKeys[fieldIndex], reqBody[fieldKeys[fieldIndex]]);
+    }
+
+
+    // events
+
+    for (let eventIndex = 0; eventIndex < reqBody.eventDate.length; eventIndex += 1) {
+
+      db.prepare("insert into LotteryEvents (" +
+          "LicenceID, EventDate," +
+          " RecordCreate_UserName, RecordCreate_TimeMillis," +
+          " RecordUpdate_UserName, RecordUpdate_TimeMillis)" +
+          " values (?, ?, ?, ?, ?, ?)")
+        .run(
+          licenceID,
+          reqBody.eventDate[eventIndex].replace(dateRegex, ""),
+          reqSession.user.userName,
+          nowMillis,
+          reqSession.user.userName,
+          nowMillis);
+    }
+
+    db.close();
+
+    return licenceID;
+  },
+
+  updateLicence: function(reqBody, reqSession) {
+    "use strict";
   }
 };
 

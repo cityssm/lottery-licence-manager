@@ -31,17 +31,46 @@ router.get(["/new", "/new/:organizationID"], function(req, res) {
   res.render("licence-edit", {
     isCreate: true,
     licence: {
-      LicenceID: "(New Licence Number)",
       ApplicationDateString: currentDateAsString,
       StartDateString: currentDateAsString,
       EndDateString: currentDateAsString,
-
-      StartTimeString: "0:00",
-      EndTimeString: "0:05"
+      StartTimeString: "00:00",
+      EndTimeString: "00:00"
     },
     organization: organization
   });
 });
 
+router.post("/doSave", function(req, res) {
+  "use strict";
+
+  const licencesDB = require("../helpers/licencesDB");
+
+  if (req.body.licenceID === "") {
+
+    const newLicenceID = licencesDB.createLicence(req.body, req.session);
+
+    res.json({
+      success: true,
+      licenceID: newLicenceID
+    });
+
+  } else {
+
+    const changeCount = licencesDB.updateLicence(req.body, req.session);
+
+    if (changeCount) {
+      res.json({
+        success: true,
+        message: "Licence Updated"
+      });
+    } else {
+      res.json({
+        success: false,
+        message: "Record Not Saved"
+      });
+    }
+  }
+});
 
 module.exports = router;

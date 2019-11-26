@@ -18,13 +18,12 @@
 </h1>
 
 <form id="form--licence">
-
   <div class="columns is-multiline has-margin-b-0">
     <div class="column">
       <div class="field">
         <label class="label" for="licence--licenceID">Licence ID</label>
         <div class="control">
-          <input class="input has-background-light has-cursor-not-allowed" id="licence--licenceID" name="licenceID" type="text" value="<%= licence.LicenceID %>" readonly required />
+          <input class="input has-background-light has-cursor-not-allowed" id="licence--licenceID" name="licenceID" type="text" value="<%= licence.LicenceID %>" placeholder="(New Licence Number)" readonly required />
         </div>
       </div>
     </div>
@@ -38,7 +37,7 @@
     </div>
 
     <div class="column is-full">
-      <input id="licence--organizationID" name="organizationID" type="hidden" value="<%= organization.organizationID %>" />
+      <input id="licence--organizationID" name="organizationID" type="hidden" value="<%= organization.OrganizationID %>" />
       <label class="label" for="licence--organization">Organization</label>
       <div class="field has-addons">
         <div class="control is-expanded">
@@ -57,7 +56,7 @@
       <div class="field">
         <label class="label" for="licence--applicationDateString">Application Date</label>
         <div class="control">
-          <input id="licence--applicationDateString" name="applicationDateString" type="date" value="<%= licence.ApplicationDateString %>" />
+          <input class="input" id="licence--applicationDateString" name="applicationDateString" type="date" value="<%= licence.ApplicationDateString %>" required />
         </div>
       </div>
     </div>
@@ -72,10 +71,14 @@
                 const licenceTypes = config.licenceTypes || [];
                 for (let licenceTypeIndex = 0; licenceTypeIndex < licenceTypes.length; licenceTypeIndex += 1) {
                   const licenceType = licenceTypes[licenceTypeIndex];
+
+                  if (!licenceType.isActive && licence.LicenceTypeKey !== licenceType.licenceTypeKey) {
+                    continue;
+                  }
               %>
-              <option value="<%= licenceType.licenceTypeKey %>" <%= (licence.LicenceTypeKey === licenceType.licenceTypeKey ? " selected" : "") %>>
-                <%= licenceType.licenceType %>
-              </option>
+                  <option value="<%= licenceType.licenceTypeKey %>" <%= (licence.LicenceTypeKey === licenceType.licenceTypeKey ? " selected" : "") %>>
+                    <%= licenceType.licenceType %>
+                  </option>
               <%
                 }
               %>
@@ -85,19 +88,54 @@
       </div>
     </div>
 
-    <div class="column is-half">
-      <div class="field has-inline-datepicker">
-        <label class="label">Date Range</label>
-        <div class="control">
-          <input id="licence--startEndDateString" name="startEndDateString" data-display-mode="inline" data-show-header="true" data-is-range="true" data-start-date="<%= licence.StartDateString %>" data-end-date="<%= licence.EndDateString %>" type="date" />
+    <div class="column is-full">
+      <div class="field">
+        <label class="label" for="licence--location">Location</label>
+        <input class="input" id="licence--location" name="location" type="text" value="<%= licence.Location %>" maxlength="100" />
+      </div>
+    </div>
+
+    <div class="column is-one-quarter">
+      <div class="field">
+        <label class="label" for="startDateString">Start Date</label>
+        <div class="control has-icons-left">
+          <input class="input" id="licence--startDateString" name="startDateString" type="date" value="<%= licence.StartDateString %>" min="<%= licence.ApplicationDateString %>" max="<%= licence.EndDateString %>" required />
+          <span class="icon is-left">
+            <i class="fas fa-play"></i>
+          </span>
         </div>
       </div>
     </div>
-    <div class="column is-half has-inline-timepicker">
+    <div class="column is-one-quarter">
       <div class="field">
-        <label class="label">Time Range</label>
-        <div class="control">
-          <input class="input" id="licence--startEndTimeString" name="startEndTimeString" data-is-range="true" data-start-time="<%= licence.StartTimeString %>" data-end-time="<%= licence.EndTimeString %>" type="time" />
+        <label class="label" for="endDateString">End Date</label>
+        <div class="control has-icons-left">
+          <input class="input" id="licence--endDateString" name="endDateString" type="date" value="<%= licence.EndDateString %>" min="<%= licence.StartDateString %>" required />
+          <span class="icon is-left">
+            <i class="fas fa-stop"></i>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="column is-one-quarter">
+      <div class="field">
+        <label class="label" for="licence--startTimeString">Start Time</label>
+        <div class="control has-icons-left">
+          <input class="input" id="licence--startTimeString" name="startTimeString" type="time" value="<%= licence.StartTimeString %>" step="300" required />
+          <span class="icon is-left">
+            <i class="fas fa-play"></i>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="column is-one-quarter">
+      <div class="field">
+        <label class="label" for="licence--endTimeString">End Time</label>
+        <div class="control has-icons-left">
+          <input class="input" id="licence--endTimeString" name="endTimeString" type="time" value="<%= licence.EndTimeString %>" step="300" required />
+          <span class="icon is-left">
+            <i class="fas fa-stop"></i>
+          </span>
         </div>
       </div>
     </div>
@@ -117,6 +155,40 @@
           <textarea class="textarea" id="licence--termsConditions" name="termsConditions" rows="2"><%= licence.TermsConditions %></textarea>
         </div>
       </div>
+    </div>
+  </div>
+
+  <h2 class="title is-4">Events</h2>
+
+  <div class="columns">
+    <div class="column is-one-third">
+      <div class="box has-background-light">
+        <label class="label" for="eventCalc--eventCount">Number of Events</label>
+        <div class="field has-addons">
+          <div class="control">
+            <input class="input has-text-right" id="eventCalc--eventCount" type="number" min="1" max="366" step="1" value="1" />
+          </div>
+          <div class="control">
+            <span class="button is-static">event(s)</span>
+          </div>
+        </div>
+
+        <label class="label" for="eventCalc--dayInterval">Interval</label>
+        <div class="field has-addons">
+          <div class="control">
+            <input class="input has-text-right" id="eventCalc--dayInterval" type="number" min="1" max="90" step="1" value="7" />
+          </div>
+          <div class="control">
+            <span class="button is-static">day(s)</span>
+          </div>
+        </div>
+
+        <button class="button is-small is-fullwidth is-calculate-events-button" type="button">Calculate and Add</button>
+      </div>
+    </div>
+    <div class="column">
+      <div id="container--events"></div>
+      <button class="button is-small is-fullwidth is-add-event-button has-margin-top-10" type="button">Add an Event Date</button>
     </div>
   </div>
 
@@ -164,7 +236,23 @@
     }
   %>
 
-
+  <div class="level">
+    <div class="level-left" id="container--form-message">
+    </div>
+    <div class="level-right">
+      <div class="buttons">
+        <a class="button" href="<%= (isCreate ? "/licences" : "/licences/" + licence.LicenceID) %>">
+          Cancel
+        </a>
+        <button class="button is-success" type="submit">
+          <span class="icon">
+            <i class="fas fa-save"></i>
+          </span>
+          <span><%= (isCreate ? "Create New Licence and Continue" : "Update Licence") %></span>
+        </button>
+      </div>
+    </div>
+  </div>
 </form>
 
 <div class="modal is-organization-lookup-modal">
@@ -202,7 +290,6 @@
   const config_licenceTypes = <%- JSON.stringify(config.licenceTypes || []) %>;
 </script>
 
-<script src="/bulmaExtensions/bulma-calendar/dist/js/bulma-calendar.js"></script>
 <script src="/javascripts/licence-edit.min.js"></script>
 
 <%- include('_footerB'); -%>

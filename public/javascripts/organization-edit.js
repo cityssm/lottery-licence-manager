@@ -7,12 +7,12 @@
 
   const formEle = document.getElementById("form--organization");
   const formMessageEle = document.getElementById("container--form-message");
-  const isCreate = document.getElementById("organization--organizationID").value === "";
   const organizationID = document.getElementById("organization--organizationID").value;
+  const isCreate = organizationID === "";
 
   // Main record update
 
-  function doOrganizationSave(formEvent) {
+  formEle.addEventListener("submit", function (formEvent) {
     formEvent.preventDefault();
 
     window.fetch("/organizations/doSave", {
@@ -35,9 +35,8 @@
             "</div>";
         }
       });
-  }
+  });
 
-  formEle.addEventListener("submit", doOrganizationSave);
 
   if (!isCreate) {
 
@@ -299,6 +298,7 @@
         });
     });
   }
+
 
   // Nav blocker
 

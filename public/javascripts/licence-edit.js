@@ -1,11 +1,74 @@
 /* global window, document */
-/* global bulmaCalendar */
+/* global URLSearchParams, FormData */
 
 
 (function() {
   "use strict";
 
-  // initialize organization lookup
+
+  /*
+   * FORM
+   */
+
+  const formEle = document.getElementById("form--licence");
+  const formMessageEle = document.getElementById("container--form-message");
+  const licenceID = document.getElementById("licence--licenceID").value;
+  const isCreate = licenceID === "";
+
+  formEle.addEventListener("submit", function(formEvent) {
+    formEvent.preventDefault();
+
+    // ensure at least one event
+
+
+
+    // ensure event dates are distinct
+
+    window.fetch("/licences/doSave", {
+        method: "post",
+        credentials: "include",
+        body: new URLSearchParams(new FormData(formEle))
+      })
+      .then(function(response) {
+        return response.json();
+      })
+      .then(function(responseJSON) {
+
+        window.llm.disableNavBlocker();
+
+        if (responseJSON.success && isCreate) {
+          window.location.href = "/licences/" + responseJSON.licenceID + "/edit";
+        } else {
+          formMessageEle.innerHTML = "<div class=\"is-size-7 " + (responseJSON.success ? "has-text-success" : "has-text-danger") + "\">" +
+            responseJSON.message +
+            "</div>";
+        }
+      });
+  });
+
+
+  // Nav blocker
+
+  function setUnsavedChanges() {
+    window.llm.enableNavBlocker();
+    formMessageEle.innerHTML = "<div class=\"is-size-7 has-text-info\">" +
+      "<i class=\"fas fa-exclamation-triangle\"></i> Unsaved Changes" +
+      "</div>";
+  }
+
+  const inputEles = formEle.querySelectorAll("input, select, textarea");
+
+  for (let inputIndex = 0; inputIndex < inputEles.length; inputIndex += 1) {
+    if (inputEles[inputIndex].name !== "") {
+      inputEles[inputIndex].addEventListener("change", setUnsavedChanges);
+    }
+  }
+
+
+  /*
+   * ORGANIZATION LOOKUP
+   */
+
 
   let organizationList = [];
 
@@ -96,15 +159,10 @@
   }
 
 
-  // initialize calendars
+  /*
+   * LICENCE TYPE
+   */
 
-  bulmaCalendar.attach("[type='date']", window.llm.bulmaCalendarOptions);
-  window.llm.fixBulmaCalendars();
-  bulmaCalendar.attach("[type='time']", window.llm.bulmaTimeOptions);
-  window.llm.fixBulmaTimes();
-
-
-  // initialize licence type select
 
   const licenceType_selectEle = document.getElementById("licence--licenceTypeKey");
   const licenceType_fieldContainerEles = document.getElementsByClassName("container-licenceTypeFields");
@@ -128,4 +186,111 @@
   }
 
   licenceType_selectEle.addEventListener("change", licenceType_refreshFields);
+
+
+  /*
+   * DATES
+   */
+
+
+  const startDateEle = document.getElementById("licence--startDateString");
+  const endDateEle = document.getElementById("licence--endDateString");
+  const events_containerEle = document.getElementById("container--events");
+
+  function dates_setMin() {
+
+    const startDateString = startDateEle.value;
+
+    endDateEle.setAttribute("min", startDateString);
+
+    const eventDateEles = events_containerEle.getElementsByTagName("input");
+
+    for (let eleIndex = 0; eleIndex < eventDateEles.length; eleIndex += 1) {
+      eventDateEles[eleIndex].setAttribute("min", startDateString);
+    }
+  }
+
+  function dates_setMax() {
+
+    const endDateString = endDateEle.value;
+
+    startDateEle.setAttribute("max", endDateString);
+
+    const eventDateEles = events_containerEle.getElementsByTagName("input");
+
+    for (let eleIndex = 0; eleIndex < eventDateEles.length; eleIndex += 1) {
+      eventDateEles[eleIndex].setAttribute("max", endDateString);
+    }
+  }
+
+  document.getElementById("licence--applicationDateString").addEventListener("change", function(changeEvent) {
+    startDateEle.setAttribute("min", changeEvent.currentTarget.value);
+  });
+
+  startDateEle.addEventListener("change", dates_setMin);
+  endDateEle.addEventListener("change", dates_setMax);
+
+
+  /*
+   * EVENTS
+   */
+
+
+  function events_remove(clickEvent) {
+
+    clickEvent.currentTarget.closest(".field").remove();
+  }
+
+  function events_add(eventDate) {
+
+    let eventDateString = "";
+
+    if (eventDate && eventDate instanceof Date) {
+      eventDateString = eventDate.getFullYear() + "-" +
+        ("00" + (eventDate.getMonth() + 1)).slice(-2) + "-" +
+        ("00" + eventDate.getDate()).slice(-2);
+    }
+
+    events_containerEle.insertAdjacentHTML("beforeend", "<div class=\"field has-addons\">" +
+      "<div class=\"control is-expanded has-icons-left\">" +
+      "<input class=\"input is-small\" name=\"eventDate\" type=\"date\"" +
+      " value=\"" + eventDateString + "\"" +
+      " min=\"" + startDateEle.value + "\"" +
+      " max=\"" + endDateEle.value + "\"" +
+      " required />" +
+      "<span class=\"icon is-left\">" +
+      "<i class=\"fas fa-calendar\"></i>" +
+      "</span>" +
+      "</div>" +
+      "<div class=\"control\">" +
+      "<a class=\"button is-small is-danger\" role=\"button\" title=\"Remove Event\"><i class=\"fas fa-trash\"></i></a>" +
+      "</div>" +
+      "</div>");
+
+    const buttonEles = events_containerEle.getElementsByTagName("a");
+    buttonEles[buttonEles.length - 1].addEventListener("click", events_remove);
+  }
+
+  document.getElementsByClassName("is-calculate-events-button")[0].addEventListener("click", function() {
+
+    const eventCount = parseInt(document.getElementById("eventCalc--eventCount").value);
+    const dayInterval = parseInt(document.getElementById("eventCalc--dayInterval").value);
+
+    let dateSplit = endDateEle.value.split("-");
+
+    const endDate = new Date(dateSplit[0], parseInt(dateSplit[1]) - 1, dateSplit[2]);
+
+    dateSplit = startDateEle.value.split("-");
+
+    let eventDate = new Date(dateSplit[0], parseInt(dateSplit[1]) - 1, dateSplit[2]);
+
+    for (let eventNum = 0; eventNum < eventCount && eventDate.getTime() <= endDate.getTime(); eventNum += 1) {
+
+      events_add(eventDate);
+
+      eventDate.setDate(eventDate.getDate() + dayInterval);
+    }
+  });
+
+  document.getElementsByClassName("is-add-event-button")[0].addEventListener("click", events_add);
 }());
