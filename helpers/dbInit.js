@@ -76,7 +76,7 @@ let dbInit = {
         " RepresentativeTitle varchar(100)," +
         " RepresentativeAddress1 varchar(50), RepresentativeAddress2 varchar(50)," +
         " RepresentativeCity varchar(20), RepresentativeProvince varchar(2)," +
-        " RepresentativePostalCode varchar(6)," +
+        " RepresentativePostalCode varchar(7)," +
         " IsDefault bit not null default 0," +
         " primary key (OrganizationID, RepresentativeIndex)," +
         " foreign key (OrganizationID) references Organizations (OrganizationID)" +
@@ -94,6 +94,7 @@ let dbInit = {
         " StartTime integer, EndTime integer," +
 
         " Location varchar(100)," +
+        " Municipality varchar(100)," +
         " LicenceDetails text," +
         " TermsConditions text," +
 

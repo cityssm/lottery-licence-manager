@@ -7,15 +7,29 @@
     <% if (isCreate) { %>
       <li class="is-active"><a href="#" aria-current="page">New Licence</a></li>
     <% } else { %>
-      <li><a href="/licences/<%= organization.LicenceID %>">Licence #<%= organization.LicenceID %></a></li>
+      <li><a href="/licences/<%= licence.LicenceID %>">Licence #<%= licence.LicenceID %></a></li>
       <li class="is-active"><a href="#" aria-current="page">Update</a></li>
     <% } %>
   </ul>
 </nav>
 
-<h1 class="title is-1">
-  <%= (isCreate ? "Create a New Licence" : "Update an Existing Licence") %>
-</h1>
+<div class="columns">
+  <div class="column">
+    <h1 class="title is-1">
+      <%= (isCreate ? "Create a New Licence" : "Update an Existing Licence") %>
+    </h1>
+  </div>
+  <% if (!isCreate) { %>
+    <div class="column is-narrow has-text-right">
+      <a class="button is-primary" href="/licences/<%= licence.LicenceID %>/print">
+        <span class="icon is-small">
+          <i class="fas fa-pdf"></i>
+        </span>
+        <span>Print Licence</span>
+      </a>
+    </div>
+  <% } %>
+</div>
 
 <form id="form--licence">
   <div class="columns is-multiline has-margin-b-0">
@@ -95,11 +109,18 @@
       </div>
     </div>
 
+    <div class="column is-full">
+      <div class="field">
+        <label class="label" for="licence--municipality">Municipality</label>
+        <input class="input" id="licence--municipality" name="municipality" type="text" value="<%= licence.Municipality %>" maxlength="100" />
+      </div>
+    </div>
+
     <div class="column is-one-quarter">
       <div class="field">
         <label class="label" for="startDateString">Start Date</label>
         <div class="control has-icons-left">
-          <input class="input" id="licence--startDateString" name="startDateString" type="date" value="<%= licence.StartDateString %>" min="<%= licence.ApplicationDateString %>" max="<%= licence.EndDateString %>" required />
+          <input class="input" id="licence--startDateString" name="startDateString" type="date" value="<%= licence.StartDateString %>" min="<%= licence.ApplicationDateString %>" required />
           <span class="icon is-left">
             <i class="fas fa-play"></i>
           </span>
@@ -187,7 +208,23 @@
       </div>
     </div>
     <div class="column">
-      <div id="container--events"></div>
+      <div id="container--events">
+        <%
+          for (let eventIndex = 0; eventIndex < licence.events.length; eventIndex += 1) {
+            const eventObj = licence.events[eventIndex];
+        %>
+          <div class="field">
+            <div class="control is-expanded has-icons-left">
+              <input class="input is-small" name="eventDate" type="date" value="<%= eventObj.EventDateString %>" min="<%= licence.StartDateString %>" max="<%= licence.EndDateString %>" required readonly />
+              <span class="icon is-left">
+                <i class="fas fa-calendar"></i>
+              </span>
+            </div>
+          </div>
+        <%
+          }
+        %>
+      </div>
       <button class="button is-small is-fullwidth is-add-event-button has-margin-top-10" type="button">Add an Event Date</button>
     </div>
   </div>
@@ -196,7 +233,7 @@
     for (let licenceTypeIndex = 0; licenceTypeIndex < licenceTypes.length; licenceTypeIndex += 1) {
       const licenceType = licenceTypes[licenceTypeIndex];
   %>
-    <fieldset class="container-licenceTypeFields <%= (licence.LicenceTypeKey === licenceType.licenceTypeKey ? "" : " is-hidden") %>" id="container-licenceTypeFields--<%= licenceType.licenceTypeKey %>" <%= (licence.licenceTypeKey === licenceType.licenceTypeKey ? "" : " disabled") %>>
+    <fieldset class="container-licenceTypeFields <%= (licence.LicenceTypeKey === licenceType.licenceTypeKey ? "" : " is-hidden") %>" id="container-licenceTypeFields--<%= licenceType.licenceTypeKey %>" <%= (licence.LicenceTypeKey === licenceType.licenceTypeKey ? "" : " disabled") %>>
       <legend class="title is-4"><%= licenceType.licenceType %></legend>
       <%
         const licenceFields = licenceType.licenceFields || [];
@@ -206,6 +243,22 @@
           const licenceField = licenceFields[fieldIndex];
 
           const inputName = licenceType.licenceTypeKey + "-" + licenceField.fieldKey;
+
+          let fieldValue = "";
+
+          if (!isCreate) {
+            for (let savedFieldIndex = 0; savedFieldIndex < licence.licenceFields.length; savedFieldIndex += 1) {
+              if (licence.licenceFields[savedFieldIndex].FieldKey === inputName) {
+                licence.licenceFields[savedFieldIndex].isDisplayed = true;
+                fieldValue = licence.licenceFields[savedFieldIndex].FieldValue;
+                break;
+              }
+            }
+          }
+
+          if (!licenceField.isActive && fieldValue === "") {
+            continue;
+          }
 
           fieldKeys += "," + inputName;
 
@@ -222,12 +275,29 @@
           }
       %>
         <div class="field">
-          <label class="label" for="licence--<%=inputName %>"><%= licenceField.fieldLabel || licenceField.fieldKey %></label>
+          <label class="label" for="licence--<%= inputName %>"><%= licenceField.fieldLabel || licenceField.fieldKey %></label>
           <div class="control">
-            <input class="input" id="licence--<%= inputName %>" name="<%= inputName %>" <%- inputAttributesString %> />
+            <input class="input" id="licence--<%= inputName %>" name="<%= inputName %>" value="<%= fieldValue %>" <%- inputAttributesString %> />
           </div>
         </div>
       <%
+        }
+
+        if (!isCreate) {
+          for (let savedFieldIndex = 0; savedFieldIndex < licence.licenceFields.length; savedFieldIndex += 1) {
+            const savedField = licence.licenceFields[savedFieldIndex];
+            if (!savedField.isDisplayed) {
+
+      %>
+            <div class="field">
+              <label class="label" for="licence--<%= savedField.FieldKey %>"><%= savedField.FieldKey %></label>
+              <div class="control">
+                <input class="input" id="licence--<%= savedField.FieldKey %>" name="<%= savedField.FieldKey %>" type="text" value="<%= savedField.FieldValue %>" />
+              </div>
+            </div>
+      <%
+            }
+          }
         }
       %>
       <input name="fieldKeys" type="hidden" value="<%= fieldKeys %>" />

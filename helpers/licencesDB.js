@@ -1,11 +1,10 @@
 /* global require, module */
 
 
+const dateTimeFns = require("./dateTimeFns");
+
 const sqlite = require("better-sqlite3");
 const dbPath = "data/licences.db";
-
-const dateRegex = new RegExp("-", "g");
-const timeRegex = new RegExp(":", "g");
 
 
 let licencesDB = {
@@ -254,6 +253,57 @@ let licencesDB = {
   },
 
 
+  getLicence: function(licenceID) {
+    "use strict";
+
+    const db = sqlite(dbPath, {
+      readonly: true
+    });
+
+    const licenceObj = db.prepare("select * from LotteryLicences" +
+        " where RecordDelete_TimeMillis is null" +
+        " and LicenceID = ?")
+      .get(licenceID);
+
+    if (licenceObj) {
+
+      licenceObj.ApplicationDateString = dateTimeFns.dateIntegerToString(licenceObj.ApplicationDate || 0);
+
+      licenceObj.StartDateString = dateTimeFns.dateIntegerToString(licenceObj.StartDate || 0);
+      licenceObj.EndDateString = dateTimeFns.dateIntegerToString(licenceObj.EndDate || 0);
+
+      licenceObj.StartTimeString = dateTimeFns.timeIntegerToString(licenceObj.StartTime || 0);
+      licenceObj.EndTimeString = dateTimeFns.timeIntegerToString(licenceObj.EndTime || 0);
+
+
+      const fieldList = db.prepare("select * from LotteryLicenceFields" +
+          " where LicenceID = ?")
+        .all(licenceID);
+
+      licenceObj.licenceFields = fieldList;
+
+
+      const eventList = db.prepare("select * from LotteryEvents" +
+          " where LicenceID = ?" +
+          " and RecordDelete_TimeMillis is null" +
+          " order by EventDate")
+        .all(licenceID);
+
+      for (let eventIndex = 0; eventIndex < eventList.length; eventIndex += 1) {
+        const eventObj = eventList[eventIndex];
+        eventObj.EventDateString = dateTimeFns.dateIntegerToString(eventObj.EventDate);
+      }
+
+      licenceObj.events = eventList;
+
+    }
+
+    db.close();
+
+    return licenceObj;
+  },
+
+
   createLicence: function(reqBody, reqSession) {
     "use strict";
 
@@ -264,20 +314,21 @@ let licencesDB = {
     const info = db.prepare("insert into LotteryLicences (" +
         "OrganizationID, ApplicationDate, LicenceTypeKey," +
         " StartDate, EndDate, StartTime, EndTime," +
-        " Location, LicenceDetails, TermsConditions," +
+        " Location, Municipality, LicenceDetails, TermsConditions," +
         " ExternalLicenceNumber, ExternalReceiptNumber," +
         " RecordCreate_UserName, RecordCreate_TimeMillis," +
         " RecordUpdate_UserName, RecordUpdate_TimeMillis)" +
-        " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
+        " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
       .run(
         reqBody.organizationID,
-        reqBody.applicationDateString.replace(dateRegex, ""),
+        dateTimeFns.dateStringToInteger(reqBody.applicationDateString),
         reqBody.licenceTypeKey,
-        reqBody.startDateString.replace(dateRegex, ""),
-        reqBody.endDateString.replace(dateRegex, ""),
-        reqBody.startTimeString.replace(timeRegex, ""),
-        reqBody.endTimeString.replace(timeRegex, ""),
+        dateTimeFns.dateStringToInteger(reqBody.startDateString),
+        dateTimeFns.dateStringToInteger(reqBody.endDateString),
+        dateTimeFns.timeStringToInteger(reqBody.startTimeString),
+        dateTimeFns.timeStringToInteger(reqBody.endTimeString),
         reqBody.location,
+        reqBody.municipality,
         reqBody.licenceDetails,
         reqBody.termsConditions,
         reqBody.externalLicenceNumber,
@@ -307,14 +358,14 @@ let licencesDB = {
 
     for (let eventIndex = 0; eventIndex < reqBody.eventDate.length; eventIndex += 1) {
 
-      db.prepare("insert into LotteryEvents (" +
+      db.prepare("insert or ignore into LotteryEvents (" +
           "LicenceID, EventDate," +
           " RecordCreate_UserName, RecordCreate_TimeMillis," +
           " RecordUpdate_UserName, RecordUpdate_TimeMillis)" +
           " values (?, ?, ?, ?, ?, ?)")
         .run(
           licenceID,
-          reqBody.eventDate[eventIndex].replace(dateRegex, ""),
+          dateTimeFns.dateStringToInteger(reqBody.eventDate[eventIndex]),
           reqSession.user.userName,
           nowMillis,
           reqSession.user.userName,
@@ -326,8 +377,96 @@ let licencesDB = {
     return licenceID;
   },
 
+
   updateLicence: function(reqBody, reqSession) {
     "use strict";
+
+    const db = sqlite(dbPath);
+
+    const nowMillis = Date.now();
+
+    const info = db.prepare("update LotteryLicences" +
+        " set OrganizationID = ?," +
+        " ApplicationDate = ?," +
+        " LicenceTypeKey = ?," +
+        " StartDate = ?," +
+        " EndDate = ?," +
+        " StartTime = ?," +
+        " EndTime = ?," +
+        " Location = ?," +
+        " Municipality = ?," +
+        " LicenceDetails = ?," +
+        " TermsConditions = ?," +
+        " ExternalLicenceNumber = ?," +
+        " ExternalReceiptNumber = ?," +
+        " RecordUpdate_UserName = ?," +
+        " RecordUpdate_TimeMillis = ?" +
+        " where LicenceID = ?" +
+        " and RecordDelete_TimeMillis is null")
+      .run(
+        reqBody.organizationID,
+        dateTimeFns.dateStringToInteger(reqBody.applicationDateString),
+        reqBody.licenceTypeKey,
+        dateTimeFns.dateStringToInteger(reqBody.startDateString),
+        dateTimeFns.dateStringToInteger(reqBody.endDateString),
+        dateTimeFns.timeStringToInteger(reqBody.startTimeString),
+        dateTimeFns.timeStringToInteger(reqBody.endTimeString),
+        reqBody.location,
+        reqBody.municipality,
+        reqBody.licenceDetails,
+        reqBody.termsConditions,
+        reqBody.externalLicenceNumber,
+        reqBody.externalReceiptNumber,
+        reqSession.user.userName,
+        nowMillis,
+        reqBody.licenceID
+      );
+
+    const changeCount = info.changes;
+
+    if (!changeCount) {
+      db.close();
+      return changeCount;
+    }
+
+    // fields
+
+    db.prepare("delete from LotteryLicenceFields" +
+        " where LicenceID = ?")
+      .run(reqBody.licenceID);
+
+    const fieldKeys = reqBody.fieldKeys.substring(1).split(",");
+
+    for (let fieldIndex = 0; fieldIndex < fieldKeys.length; fieldIndex += 1) {
+
+      db.prepare("insert into LotteryLicenceFields" +
+          " (LicenceID, FieldKey, FieldValue)" +
+          " values (?, ?, ?)")
+        .run(reqBody.licenceID, fieldKeys[fieldIndex], reqBody[fieldKeys[fieldIndex]]);
+    }
+
+
+    // events
+
+    for (let eventIndex = 0; eventIndex < reqBody.eventDate.length; eventIndex += 1) {
+
+      db.prepare("insert or ignore into LotteryEvents (" +
+          "LicenceID, EventDate," +
+          " RecordCreate_UserName, RecordCreate_TimeMillis," +
+          " RecordUpdate_UserName, RecordUpdate_TimeMillis)" +
+          " values (?, ?, ?, ?, ?, ?)")
+        .run(
+          reqBody.licenceID,
+          dateTimeFns.dateStringToInteger(reqBody.eventDate[eventIndex]),
+          reqSession.user.userName,
+          nowMillis,
+          reqSession.user.userName,
+          nowMillis);
+    }
+
+    db.close();
+
+    return changeCount;
   }
 };
 

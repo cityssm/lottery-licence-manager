@@ -6,9 +6,7 @@ const router = express.Router();
 router.get("/", function(req, res) {
   "use strict";
 
-  res.render("events", {
-    session: req.session
-  });
+  res.render("event-search");
 });
 
 module.exports = router;

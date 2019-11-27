@@ -6,7 +6,7 @@ const router = express.Router();
 router.get("/", function(req, res) {
   "use strict";
 
-  res.render("reports", {
+  res.render("report-search", {
     session: req.session
   });
 });

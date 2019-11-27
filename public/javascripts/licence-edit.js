@@ -15,6 +15,8 @@
   const licenceID = document.getElementById("licence--licenceID").value;
   const isCreate = licenceID === "";
 
+  let events_areModified = false;
+
   formEle.addEventListener("submit", function(formEvent) {
     formEvent.preventDefault();
 
@@ -34,14 +36,22 @@
       })
       .then(function(responseJSON) {
 
-        window.llm.disableNavBlocker();
+        if (responseJSON.success) {
+          window.llm.disableNavBlocker();
+        }
 
         if (responseJSON.success && isCreate) {
           window.location.href = "/licences/" + responseJSON.licenceID + "/edit";
+
         } else {
-          formMessageEle.innerHTML = "<div class=\"is-size-7 " + (responseJSON.success ? "has-text-success" : "has-text-danger") + "\">" +
-            responseJSON.message +
-            "</div>";
+
+          if (responseJSON.success && events_areModified) {
+            window.location.reload(true);
+          } else {
+            formMessageEle.innerHTML = "<div class=\"is-size-7 " + (responseJSON.success ? "has-text-success" : "has-text-danger") + "\">" +
+              responseJSON.message +
+              "</div>";
+          }
         }
       });
   });
@@ -203,6 +213,10 @@
 
     endDateEle.setAttribute("min", startDateString);
 
+    if (endDateEle.value < startDateString) {
+      endDateEle.value = startDateString;
+    }
+
     const eventDateEles = events_containerEle.getElementsByTagName("input");
 
     for (let eleIndex = 0; eleIndex < eventDateEles.length; eleIndex += 1) {
@@ -213,8 +227,6 @@
   function dates_setMax() {
 
     const endDateString = endDateEle.value;
-
-    startDateEle.setAttribute("max", endDateString);
 
     const eventDateEles = events_containerEle.getElementsByTagName("input");
 
@@ -237,8 +249,10 @@
 
 
   function events_remove(clickEvent) {
-
     clickEvent.currentTarget.closest(".field").remove();
+
+    events_areModified = true;
+    setUnsavedChanges();
   }
 
   function events_add(eventDate) {
@@ -269,6 +283,9 @@
 
     const buttonEles = events_containerEle.getElementsByTagName("a");
     buttonEles[buttonEles.length - 1].addEventListener("click", events_remove);
+
+    events_areModified = true;
+    setUnsavedChanges();
   }
 
   document.getElementsByClassName("is-calculate-events-button")[0].addEventListener("click", function() {

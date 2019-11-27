@@ -1,0 +1,352 @@
+<html>
+<head>
+  <style>
+    /* base styles */
+
+    * {
+      box-sizing: border-box;
+      font-size: 10pt;
+    }
+
+    html {
+      font-family: Arial, sans-serif;
+    }
+
+    .page {
+      margin: 0.25in 0.5in;
+    }
+
+    table td {
+
+      padding: 0;
+      margin: 0;
+    }
+
+    .container {
+      padding: 5px 10px;
+    }
+
+    .field {
+      padding: 5px 10px;
+      border: 1px solid #333;
+      min-height: 30px;
+      width: 100%;
+      background-color: #fff;
+    }
+
+    /* bulma-like styles */
+
+    .has-padding-right-10 {
+      padding-right: 10px;
+    }
+
+    .has-padding-bottom-5 {
+      padding-bottom: 5px;
+    }
+
+    .has-margin-bottom-10 {
+      margin-bottom: 10px;
+    }
+
+
+    .is-7pt {
+      font-size: 7pt;
+    }
+
+    .is-8pt {
+      font-size: 8pt;
+    }
+
+    .is-12pt {
+      font-size: 12pt;
+    }
+
+    .is-16pt {
+      font-size: 16pt;
+    }
+
+    .is-20pt {
+      font-size: 20pt;
+    }
+
+    .is-24pt {
+      font-size: 24pt;
+    }
+
+
+    .has-text-weight-bold {
+      font-weight: bold;
+    }
+
+    .has-text-nowrap {
+      white-space: nowrap;
+    }
+
+    .has-text-centered {
+      text-align: center;
+    }
+
+    .has-text-right {
+      text-align: right;
+    }
+
+    .has-text-red {
+      color: #f33;
+    }
+
+    .is-fullwidth {
+      width: 100%;
+    }
+
+    .is-half {
+      width: 50%;
+    }
+
+    .is-one-sixth {
+      width: 16.66%;
+    }
+
+    .is-one-third {
+      width: 33.33%;
+    }
+
+    .is-two-thirds {
+      width: 66.66%;
+    }
+
+    .has-min-height-50 {
+      min-height: 50px;
+    }
+
+    .has-min-height-100 {
+      min-height: 100px;
+    }
+
+    .has-min-height-150 {
+      min-height: 150px;
+    }
+
+    .has-vertical-align-top {
+      vertical-align: top;
+    }
+
+
+    .has-background-blue {
+      background-color: #eff;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="page">
+    <table>
+      <tbody>
+        <tr>
+          <td class="has-padding-right-10">
+            <img src="/images/ontarioCoatOfArms.svg" alt="" style="height:55px" />
+          </td>
+          <td class="has-padding-right-10 is-8pt">
+            Alcohol and<br />
+            Gaming Commission<br />
+            of Ontario
+          </td>
+          <td class="has-padding-right-10 is-8pt">
+            Commission des<br />
+            alcools et des jeux de<br />
+            l'Ontario
+          </td>
+          <td class="has-padding-right-10 is-24pt has-text-weight-bold">
+            Lottery Licence<br />
+            Licence de loterie
+          </td>
+          <td class="has-text-right">
+            <span class="has-text-weight-bold is-16pt">M</span>
+            <span class="has-text-red is-20pt"><%= licence.ExternalLicenceNumber %></span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="container has-background-blue has-margin-bottom-10">
+      <div class="has-text-weight-bold">
+        Licensee/Titulaire de licence<br />
+        Address (no. of street, name of street, suite no., city/town, province, postal code)<br />
+        Adresse (n° de rue, nom de rue, bureau, ville, province, code postal)
+      </div>
+      <div class="field">
+        <%= organization.OrganizationName %><br />
+        <%= organization.OrganizationAddress1 %><br />
+        <%= organization.OrganizationAddress2 %><br />
+        <%= organization.OrganizationCity %>, <%  organization.OrganizationProvince %> &nbsp;<%= organization.OrganizationPostalCode %>
+      </div>
+    </div>
+
+    <div class="container has-background-blue has-margin-bottom-10">
+      <table>
+        <tbody>
+          <tr>
+            <td class="has-text-nowrap has-padding-right-10">
+              Type of Lottery Scheme<br />
+              Genre de loterie
+            </td>
+            <td class="is-fullwidth">
+              <div class="field">
+                <%
+                  let licenceType = {};
+                  for (let typeIndex = 0; typeIndex < config.licenceTypes.length; typeIndex += 1) {
+                    if (config.licenceTypes[typeIndex].licenceTypeKey === licence.LicenceTypeKey) {
+                      licenceType = config.licenceTypes[typeIndex];
+                      break;
+                    }
+                  }
+                %><%= licenceType.licenceType || licence.LicenceTypeKey  %>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td class="has-text-nowrap has-padding-right-10">
+              Location/Lieu
+            </td>
+            <td class="is-fullwidth">
+              <div class="field"><%= licence.Location %></div>
+            </td>
+          </tr>
+          <tr>
+            <td class="has-text-nowrap has-padding-right-10">
+              Municipality/Municipalité
+            </td>
+            <td class="is-fullwidth">
+              <div class="field"><%= licence.Municipality %></div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="container has-background-blue has-margin-bottom-10">
+      <table class="is-fullwidth">
+        <tbody>
+          <tr>
+            <td class="has-padding-right-10 is-two-thirds" rowspan="2">
+              Specific date(s) of the lottery event(s) (yyyy/mm/dd)<br />
+              Date(s) spécifique(s) de la loterie (aaaa/mm/jj)
+            </td>
+            <td class="has-text-nowrap" colspan="2">
+              Specific time(s) of the lottery event(s)<br />
+              Heure(s) spécifique(s) de la loterie
+            </td>
+          </tr>
+          <tr>
+            <td class="is-one-sixth">From/de (HH:MM)</td>
+            <td class="is-one-sixth">To/à (HH/MM)</td>
+          </tr>
+          <tr>
+            <td class="has-padding-right-10 is-two-thirds">
+              <div class="field has-min-height-150">
+                <% for (let eventIndex = 0; eventIndex < licence.events.length; eventIndex += 1) { %>
+                  <%= (eventIndex === 0 ? "" : ", ") + licence.events[eventIndex].EventDateString.replace(/-/g, "/"); %>
+                <% } %>
+              </div>
+            </td>
+            <td class="has-vertical-align-top is-one-sixth has-padding-right-10">
+              <div class="field has-min-height-150"><%= licence.StartTimeString %></div>
+            </td>
+            <td class="has-vertical-align-top is-one-sixth">
+              <div class="field has-min-height-150"><%= licence.EndTimeString %></div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <table>
+      <tbody>
+        <tr>
+          <td class="has-padding-bottom-5 has-padding-right-10">
+            Total value of all prizes in any lottery conducted under this<br />
+            licence not to exceed $ ------ in cash,<br />
+            or merchandise or articles at equivalent market value.
+          </td>
+          <td class="has-padding-bottom-5">
+            La valeur totale des prix d'une loterie organisée en vertu de<br />
+            la présente licence ne doit pas excéder ------ $<br />
+            en espèces ou valeur équivalente en nature.
+          </td>
+        </tr>
+        <tr>
+          <td class="is-half">
+            The licensee must observe all terms and conditions of<br />
+            this licence as agreed to in its application.<br />
+            The conduct of this lottery scheme is restricted to the<br />
+            dates, hours and limits specified on this licence.
+          </td>
+          <td>
+            L'organisme autorisé doit se conformer à toutes les<br />
+            modalités dont il a convenu dans la demande de<br />
+            licence. On doit conduire la loterie selon les dates,<br />
+            heures et limites qui y sont indiquées.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="container has-background-blue has-magin-bottom-10">
+      <div class="has-text-weight-bold">
+        Special Terms and Conditions/Modalités spéciales
+      </div>
+      <div class="field has-min-height-100">
+        <%= licence.TermsConditions %>
+      </div>
+    </div>
+
+    <table class="is-fullwidth">
+      <tbody>
+        <tr>
+          <td class="is-half">
+            <div class="container has-background-blue">
+              Date of Issue (yyyy/mm/dd)<br />
+              Date de délivrance de la licence (aaaa/mm/jj)
+              <div class="field">
+                <%= licence.ApplicationDateString.replace(/-/g, "/") %>
+              </div>
+            </div>
+          </td>
+          <td>
+            <div class="container has-background-blue">
+              Licence Fees<br />
+              Droits - licence
+              <div class="field"></div>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Registrar of Alcohol and Gaming<br />
+            Registrateur des alcools et des jeux
+          </td>
+          <td>
+            <div class="container has-background-blue">
+              Licensing Officer/Agent de délivrance des licences
+              <div class="field has-min-height-50"></div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <table class="is-fullwidth">
+      <tbody>
+        <tr>
+          <td class="is-one-third is-7pt has-text-nowrap">
+            6006 (2012/01) &copy; Queen's Printer for Ontario, 2012
+          </td>
+          <td class="is-one-third is-12pt has-text-nowrap has-text-centered has-text-weight-bold">
+            Not Transferable/Non cessible
+          </td>
+          <td>&nbsp;</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>

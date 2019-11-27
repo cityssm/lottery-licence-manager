@@ -9,7 +9,6 @@ const router = express.Router();
 
 router.route("/")
   .get(function(req, res) {
-
     "use strict";
 
     if (req.session.user && req.cookies.user_sid) {

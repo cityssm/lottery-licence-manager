@@ -80,9 +80,11 @@
     </div>
     <div class="level-right">
       <div class="buttons">
-        <a class="button" href="<%= (isCreate ? "/organizations" : "/organizations/" + organization.OrganizationID) %>">
-          Cancel
-        </a>
+        <% if (isCreate) { %>
+          <a class="button" href="<%= (isCreate ? "/organizations" : "/organizations/" + organization.OrganizationID) %>">
+            Cancel
+          </a>
+        <% } %>
         <button class="button is-success" type="submit">
           <span class="icon">
             <i class="fas fa-save"></i>
@@ -279,7 +281,7 @@
           <div class="field">
             <label class="label" for="editOrganizationRepresentative--representativePostalCode">Postal Code</label>
             <div class="control">
-              <input class="input" id="editOrganizationRepresentative--representativePostalCode" name="representativePostalCode" type="text" value="" minlength="5" maxlength="6" autocomplete="off" />
+              <input class="input" id="editOrganizationRepresentative--representativePostalCode" name="representativePostalCode" type="text" value="" minlength="5" maxlength="7" autocomplete="off" />
             </div>
           </div>
         </section>
