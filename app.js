@@ -20,7 +20,7 @@ const router_licences = require("./routes/licences");
 const router_events = require("./routes/events");
 const router_reports = require("./routes/reports");
 
-const config = require("./data/config");
+let configFns = require("./helpers/configFns");
 
 
 const app = express();
@@ -56,7 +56,6 @@ app.use(cookieParser());
 
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/fa", express.static(__dirname + "/node_modules/@fortawesome/fontawesome-free"));
-app.use("/bulma-calendar", express.static(__dirname + "/node_modules/bulma-calendar"));
 
 
 /*
@@ -108,11 +107,12 @@ const sessionChecker = function(req, res, next) {
  */
 
 
-// make the user object available to the templates
+// make the user and config objects available to the templates
 app.use(function(req, res, next) {
   "use strict";
   res.locals.user = req.session.user;
-  res.locals.config = config;
+  res.locals.config = configFns.config;
+  res.locals.configFns = configFns;
   next();
 });
 
@@ -161,9 +161,9 @@ app.use(function(err, req, res) {
 });
 
 
-app.listen(config.application.port || 3000, function() {
+app.listen(configFns.getProperty("application.port", 3000), function() {
   "use strict";
-  console.log("Server listening on port " + (config.application.port || 3000));
+  console.log("Server listening on port " + configFns.getProperty("application.port", 3000));
 });
 
 

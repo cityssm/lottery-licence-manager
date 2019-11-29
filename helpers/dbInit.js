@@ -98,6 +98,8 @@ let dbInit = {
         " LicenceDetails text," +
         " TermsConditions text," +
 
+        " TotalPrizeValue decimal(10,2)," +
+
         " ExternalLicenceNumber varchar(20)," +
         " ExternalReceiptNumber varchar(20)," +
 

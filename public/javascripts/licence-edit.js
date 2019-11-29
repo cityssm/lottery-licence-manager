@@ -16,13 +16,19 @@
   const isCreate = licenceID === "";
 
   let events_areModified = false;
+  const events_containerEle = document.getElementById("container--events");
 
   formEle.addEventListener("submit", function(formEvent) {
     formEvent.preventDefault();
 
     // ensure at least one event
 
+    const eventDateInputEles = events_containerEle.getElementsByTagName("input");
 
+    if (eventDateInputEles.length === 0) {
+      window.llm.alertModal("Event Date Error", "Please ensure there is at least one event date.", "OK", "warning");
+      return;
+    }
 
     // ensure event dates are distinct
 
@@ -48,13 +54,44 @@
           if (responseJSON.success && events_areModified) {
             window.location.reload(true);
           } else {
-            formMessageEle.innerHTML = "<div class=\"is-size-7 " + (responseJSON.success ? "has-text-success" : "has-text-danger") + "\">" +
+            formMessageEle.innerHTML = "<span class=\"" + (responseJSON.success ? "has-text-success" : "has-text-danger") + "\">" +
               responseJSON.message +
-              "</div>";
+              "</span>";
           }
         }
       });
   });
+
+  if (!isCreate) {
+
+    document.getElementsByClassName("is-delete-button")[0].addEventListener("click", function(clickEvent) {
+      clickEvent.preventDefault();
+
+      window.llm.confirmModal("Delete Licence?", "Are you sure you want to delete this licence?", "Yes, Delete", "danger", function() {
+
+        window.fetch("/licences/doDelete", {
+            method: "post",
+            credentials: "include",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              licenceID: licenceID
+            })
+          })
+          .then(function(response) {
+            return response.json();
+          })
+          .then(function(responseJSON) {
+
+            if (responseJSON.success) {
+              window.llm.disableNavBlocker();
+              window.location.href = "/licences";
+            }
+          });
+      });
+    });
+  }
 
 
   // Nav blocker
@@ -62,7 +99,7 @@
   function setUnsavedChanges() {
     window.llm.enableNavBlocker();
     formMessageEle.innerHTML = "<div class=\"is-size-7 has-text-info\">" +
-      "<i class=\"fas fa-exclamation-triangle\"></i> Unsaved Changes" +
+      "<i class=\"fas fa-exclamation-triangle\" aria-hidden=\"true\"></i> Unsaved Changes" +
       "</div>";
   }
 
@@ -162,7 +199,7 @@
     window.llm.showModal(organizationLookup_modalEle);
   });
 
-  const cancelButtonEles = organizationLookup_modalEle.getElementsByClassName("is-cancel-button");
+  let cancelButtonEles = organizationLookup_modalEle.getElementsByClassName("is-cancel-button");
 
   for (let buttonIndex = 0; buttonIndex < cancelButtonEles.length; buttonIndex += 1) {
     cancelButtonEles[buttonIndex].addEventListener("click", window.llm.hideModal);
@@ -205,7 +242,6 @@
 
   const startDateEle = document.getElementById("licence--startDateString");
   const endDateEle = document.getElementById("licence--endDateString");
-  const events_containerEle = document.getElementById("container--events");
 
   function dates_setMin() {
 
@@ -288,6 +324,8 @@
     setUnsavedChanges();
   }
 
+  const eventCalculator_modalEle = document.getElementsByClassName("is-event-calculator-modal")[0];
+
   document.getElementsByClassName("is-calculate-events-button")[0].addEventListener("click", function() {
 
     const eventCount = parseInt(document.getElementById("eventCalc--eventCount").value);
@@ -307,7 +345,20 @@
 
       eventDate.setDate(eventDate.getDate() + dayInterval);
     }
+
+    window.llm.hideModal(eventCalculator_modalEle);
   });
+
+
+  document.getElementsByClassName("is-event-calculator-button")[0].addEventListener("click", function() {
+    window.llm.showModal(eventCalculator_modalEle);
+  });
+
+  cancelButtonEles = eventCalculator_modalEle.getElementsByClassName("is-cancel-button");
+
+  for (let buttonIndex = 0; buttonIndex < cancelButtonEles.length; buttonIndex += 1) {
+    cancelButtonEles[buttonIndex].addEventListener("click", window.llm.hideModal);
+  }
 
   document.getElementsByClassName("is-add-event-button")[0].addEventListener("click", events_add);
 }());

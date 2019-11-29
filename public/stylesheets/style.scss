@@ -8,6 +8,12 @@
   min-height: 100vh;
 }
 
+@media screen and (min-width: 769px), print {
+  .has-desktop-max-width-700 {
+    max-width: 700px;
+  }
+}
+
 
 /*
  * Form elements
@@ -29,30 +35,14 @@
 
 
 /*
- * Date time picker
+ * Tabs
  */
 
-.has-inline-datepicker .datetimepicker,
-.has-inline-timepicker .datetimepicker {
-  max-width: none;
-}
 
-.datetimepicker-dummy {
+.tab-content {
+  display: none;
 
-  &::before {
-    display: none;
-  }
-
-  .datetimepicker-dummy-wrapper {
-    border-radius: $input-radius;
-
-    .datetimepicker-dummy-input:first-child {
-      padding-left: $textarea-padding;
-      text-indent: 0;
-    }
-
-    .datetimepicker-clear-button {
-      font-weight: bold;
-    }
+  &.is-active {
+    display: block;
   }
 }

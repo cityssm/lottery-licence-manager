@@ -3,7 +3,7 @@
 const express = require("express");
 const router = express.Router();
 
-const config = require("../data/config");
+const configFns = require("../helpers/configFns");
 
 const dateTimeFns = require("../helpers/dateTimeFns");
 const licencesDB = require("../helpers/licencesDB");
@@ -18,7 +18,8 @@ router.get(["/new", "/new/:organizationID"], function(req, res) {
   "use strict";
 
   if (req.session.user.userProperties.licences_canEdit !== "true") {
-    res.redirect("/licences");
+    res.redirect("/licences/?error=accessDenied");
+    return;
   }
 
   const organizationID = req.params.organizationID;
@@ -35,7 +36,7 @@ router.get(["/new", "/new/:organizationID"], function(req, res) {
     isCreate: true,
     licence: {
       ApplicationDateString: currentDateAsString,
-      Municipality: config.defaults.city,
+      Municipality: configFns.getProperty("config.defaults.city", ""),
       StartDateString: currentDateAsString,
       EndDateString: currentDateAsString,
       StartTimeString: "00:00",
@@ -48,6 +49,11 @@ router.get(["/new", "/new/:organizationID"], function(req, res) {
 
 router.post("/doSave", function(req, res) {
   "use strict";
+
+  if (req.session.user.userProperties.licences_canEdit !== "true") {
+    res.redirect("/licences/?error=accessDenied");
+    return;
+  }
 
   if (req.body.licenceID === "") {
 
@@ -76,6 +82,39 @@ router.post("/doSave", function(req, res) {
   }
 });
 
+router.post("/doDelete", function(req, res) {
+  "use strict";
+
+  if (req.session.user.userProperties.licences_canEdit !== "txrue") {
+    res.json("not allowed");
+    return;
+  }
+
+  if (req.body.licenceID === "") {
+
+    res.json({
+      success: false,
+      message: "Licence ID Unavailable"
+    });
+
+  } else {
+
+    const changeCount = licencesDB.deleteLicence(req.body.licenceID, req.session);
+
+    if (changeCount) {
+      res.json({
+        success: true,
+        message: "Licence Deleted"
+      });
+    } else {
+      res.json({
+        success: false,
+        message: "Licence Not Saved"
+      });
+    }
+  }
+});
+
 router.get("/:licenceID", function(req, res) {
   "use strict";
 
@@ -84,23 +123,24 @@ router.get("/:licenceID", function(req, res) {
   const licence = licencesDB.getLicence(licenceID);
 
   if (!licence) {
-    res.redirect("/licences");
-  } else {
-
-    const organization = licencesDB.getOrganization(licence.OrganizationID);
-
-    res.render("licence-view", {
-      licence: licence,
-      organization: organization
-    });
+    res.redirect("/licences/?error=licenceNotFound");
+    return;
   }
+
+  const organization = licencesDB.getOrganization(licence.OrganizationID);
+
+  res.render("licence-view", {
+    licence: licence,
+    organization: organization
+  });
 });
 
 router.get("/:licenceID/edit", function(req, res) {
   "use strict";
 
   if (req.session.user.userProperties.licences_canEdit !== "true") {
-    res.redirect("/licences");
+    res.redirect("/licences/?error=accessDenied");
+    return;
   }
 
   const licenceID = req.params.licenceID;
@@ -108,17 +148,17 @@ router.get("/:licenceID/edit", function(req, res) {
   const licence = licencesDB.getLicence(licenceID);
 
   if (!licence) {
-    res.redirect("/licences");
-  } else {
-
-    const organization = licencesDB.getOrganization(licence.OrganizationID);
-
-    res.render("licence-edit", {
-      isCreate: false,
-      licence: licence,
-      organization: organization
-    });
+    res.redirect("/licences/?error=licenceNotFound");
+    return;
   }
+
+  const organization = licencesDB.getOrganization(licence.OrganizationID);
+
+  res.render("licence-edit", {
+    isCreate: false,
+    licence: licence,
+    organization: organization
+  });
 });
 
 router.get("/:licenceID/print", function(req, res, next) {
@@ -129,43 +169,42 @@ router.get("/:licenceID/print", function(req, res, next) {
   const licence = licencesDB.getLicence(licenceID);
 
   if (!licence) {
-    res.redirect("/licences");
-
-  } else {
-
-    const organization = licencesDB.getOrganization(licence.OrganizationID);
-
-    const path = require("path");
-    const ejs = require("ejs");
-    const pdf = require("html-pdf");
-
-    ejs.renderFile(path.join(__dirname, "../reports/", config.licences.printTemplate), {
-        config: config,
-        licence: licence,
-        organization: organization
-      }, {},
-      function(ejsErr, ejsData) {
-        if (ejsErr) {
-          next();
-        } else {
-
-          let options = {
-            "format": "Letter",
-            "base": "http://localhost:" + config.application.port
-          };
-
-          pdf.create(ejsData, options).toStream(function(pdfErr, pdfStream) {
-            if (pdfErr) {
-              res.send(pdfErr);
-            } else {
-              res.setHeader("Content-Disposition", "attachment; filename=licence-" + licenceID + ".pdf");
-              res.setHeader("Content-Type", "application/pdf");
-              pdfStream.pipe(res);
-            }
-          });
-        }
-      });
+    res.redirect("/licences/?error=licenceNotFound");
+    return;
   }
+
+  const organization = licencesDB.getOrganization(licence.OrganizationID);
+
+  const path = require("path");
+  const ejs = require("ejs");
+  const pdf = require("html-pdf");
+
+  ejs.renderFile(path.join(__dirname, "../reports/", configFns.getProperty("config.licences.printTemplate", "licence-print")), {
+      config: configFns.config,
+      licence: licence,
+      organization: organization
+    }, {},
+    function(ejsErr, ejsData) {
+      if (ejsErr) {
+        next();
+      } else {
+
+        let options = {
+          "format": "Letter",
+          "base": "http://localhost:" + configFns.config.application.port
+        };
+
+        pdf.create(ejsData, options).toStream(function(pdfErr, pdfStream) {
+          if (pdfErr) {
+            res.send(pdfErr);
+          } else {
+            res.setHeader("Content-Disposition", "attachment; filename=licence-" + licenceID + ".pdf");
+            res.setHeader("Content-Type", "application/pdf");
+            pdfStream.pipe(res);
+          }
+        });
+      }
+    });
 });
 
 module.exports = router;

@@ -30,9 +30,9 @@
         if (responseJSON.success && isCreate) {
           window.location.href = "/organizations/" + responseJSON.organizationID + "/edit";
         } else {
-          formMessageEle.innerHTML = "<div class=\"is-size-7 " + (responseJSON.success ? "has-text-success" : "has-text-danger") + "\">" +
+          formMessageEle.innerHTML = "<span class=\"" + (responseJSON.success ? "has-text-success" : "has-text-danger") + "\">" +
             responseJSON.message +
-            "</div>";
+            "</span>";
         }
       });
   });
@@ -99,7 +99,7 @@
       window.llm.confirmModal("Delete a Representative?",
         "<p>Are you sure you want to delete the representative \"" + representativeName + "\"?</p>",
         "Yes, Delete",
-        "warning",
+        "danger",
         function() {
 
           window.fetch("/organizations/" + organizationID + "/doDeleteOrganizationRepresentative", {
@@ -314,4 +314,9 @@
   for (let inputIndex = 0; inputIndex < inputEles.length; inputIndex += 1) {
     inputEles[inputIndex].addEventListener("change", setUnsavedChanges);
   }
+
+
+  // licence tabs
+
+  window.llm.initializeTabs(document.getElementById("tabs--licences"));
 }());

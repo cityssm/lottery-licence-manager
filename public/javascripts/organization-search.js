@@ -73,7 +73,7 @@
                 "</a>" +
                 "</p>" +
                 "<p class=\"control\">" +
-                "<a class=\"button is-small\" href=\"/licences/new/" + organizationObj.OrganizationID + "\">" +
+                "<a class=\"button is-small\" title=\"Create a New Licence\" href=\"/licences/new/" + organizationObj.OrganizationID + "\">" +
                 "<span class=\"icon\"><i class=\"fas fa-certificate\"></i></span>" +
                 "<span>New</span>" +
                 "</a>" +

@@ -21,9 +21,7 @@ router.route("/")
     }
   })
   .post(function(req, res) {
-
     "use strict";
-
 
     let userName = req.body.userName;
     const passwordPlain = req.body.password;

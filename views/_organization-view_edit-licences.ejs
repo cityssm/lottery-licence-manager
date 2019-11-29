@@ -1,0 +1,113 @@
+<div class="columns has-margin-top-20">
+  <div class="column">
+    <h2 class="title is-3">Lottery Licences</h2>
+  </div>
+  <% if (user.userProperties.licences_canEdit === "true") { %>
+    <div class="column is-narrow has-text-right">
+      <a class="button is-primary is-small" href="/licences/new/<%= organization.OrganizationID %>">
+        <span class="icon is-small">
+          <i class="fas fa-certificate"></i>
+        </span>
+        <span>Create a New Licence</span>
+      </a>
+    </div>
+  <% } %>
+</div>
+
+<%
+  let licenceTheadHTML = "<tr>" +
+    "<th>" + configFns.getProperty("licences.externalLicenceNumber.fieldLabel", "External Licence Number") + "</th>" +
+    "<th>Licence Type</th>" +
+    "<th>Event Details</th>" +
+    "<th>From</th>" +
+    "<th>To</th>" +
+    "<th></th>" +
+    "</tr>";
+
+  let rows_active = "";
+  let rows_past = "";
+
+  for (let licenceIndex = 0; licenceIndex < licences.length; licenceIndex += 1) {
+
+    const licence = licences[licenceIndex];
+
+    let licenceType = {};
+    for (let typeIndex = 0; typeIndex < config.licenceTypes.length; typeIndex += 1) {
+      if (config.licenceTypes[typeIndex].licenceTypeKey === licence.LicenceTypeKey) {
+        licenceType = config.licenceTypes[typeIndex];
+        break;
+      }
+    }
+
+    let rowHTML = "<tr>" +
+      "<td>" +
+        "<a href=\"/licences/" + licence.LicenceID + "\">" +
+        stringFns.escapeHTML(licence.ExternalLicenceNumber) +
+        "</a>" +
+        "</td>" +
+      "<td>" + (licenceType.licenceType || licence.LicenceTypeKey) + "</td>" +
+      "<td>" + stringFns.escapeHTML(licence.LicenceDetails) + "</td>" +
+      "<td>" + licence.StartDateString + "</td>" +
+      "<td>" + licence.EndDateString + "</td>" +
+      "<td>" +
+        "<div class=\"buttons is-right has-addons\">" +
+          (user.userProperties.licences_canEdit ?
+          "<a class=\"button is-small\" href=\"/licences/" + licence.LicenceID + "/edit\" title=\"Edit Licence\"><span class=\"icon\"><i class=\"fas fa-pencil-alt\"></i></span><span>Edit</span></a>" :
+          "") +
+        "<a class=\"button is-small\" href=\"/licences/" + licence.LicenceID + "/print\" title=\"Print Licence\" target=\"_blank\">" +
+        "<i class=\"fas fa-print\" aria-hidden=\"true\"></i>" +
+        "<span class=\"sr-only\">Print Licence</span>" +
+        "</a>" +
+        "</div>" +
+        "</td>" +
+      "</tr>";
+
+    if (licence.EndDate < currentDateInteger) {
+      rows_past += rowHTML;
+    } else {
+      rows_active += rowHTML;
+    }
+  }
+%>
+
+<div class="tabs" id="tabs--licences">
+  <ul>
+    <li class="is-active"><a href="#tab--licences-active">Active Licences</a></li>
+    <li><a href="#tab--licences-past">Past Licences</a></li>
+  </ul>
+</div>
+
+<div class="tab-container">
+  <div class="tab-content is-active" id="tab--licences-active">
+    <% if (rows_active === "") { %>
+      <div class="message is-info">
+        <div class="message-body">
+          <%= organization.OrganizationName %> has no active licences.
+        </div>
+      </div>
+    <% } else { %>
+      <table class="table is-fullwidth is-striped is-hoverable">
+        <thead>
+          <%- licenceTheadHTML %>
+        </thead>
+        <tbody><%- rows_active %></tbody>
+      </table>
+    <% } %>
+  </div>
+  <div class="tab-content" id="tab--licences-past">
+    <% if (rows_past === "") { %>
+      <div class="message is-info">
+        <div class="message-body">
+          <%= organization.OrganizationName %> has no past licences.
+        </div>
+      </div>
+    <% } else { %>
+      <table class="table is-fullwidth is-striped is-hoverable">
+        <thead>
+          <%- licenceTheadHTML %>
+        </thead>
+        <tbody><%- rows_past %></tbody>
+      </table>
+    <% } %>
+  </div>
+</div>

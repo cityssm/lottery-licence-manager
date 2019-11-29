@@ -18,113 +18,6 @@
 
 
   /*
-   * BULMA CALENDAR DEFAULT OPTIONS
-   */
-
-  /*
-  window.llm.bulmaCalendarOptions = {
-    showHeader: false,
-    showFooter: false,
-    enableYearSwitch: false,
-
-    dateFormat: "YYYY/MM/DD",
-    //disabledWeekDays: [0, 6],
-    color: "link",
-    icons: {
-      previous: "<i class=\"fas fa-chevron-left\"></i>",
-      next: "<i class=\"fas fa-chevron-right\"></i>",
-      date: "<i class=\"fas fa-calendar\"></i>"
-    }
-  };
-
-
-  window.llm.bulmaTimeOptions = {
-    //displayMode: "inline",
-    showHeader: false,
-    showFooter: true,
-    //enableYearSwitch: false,
-
-    dateFormat: "YYYY/MM/DD",
-    startDate: "1970/01/01",
-    endDate: "1970/01/01",
-
-    timeFormat: "HH:mm",
-    color: "link",
-
-    onReady: function(readyEvent) {
-
-      console.log(readyEvent.data);
-
-      const ele = readyEvent.data.element;
-
-      let startTimeString = ele.getAttribute("data-start-time").split(":");
-
-      if (startTimeString.length >= 2) {
-        const startTime = new Date();
-        startTime.setHours(startTimeString[0]);
-        startTime.setMinutes(startTimeString[1]);
-        readyEvent.data.timePicker.start = startTime;
-      }
-
-      let endTimeString = ele.getAttribute("data-end-time").split(":");
-
-      if (endTimeString.length >= 2) {
-        const endTime = new Date();
-        endTime.setHours(endTimeString[0]);
-        endTime.setMinutes(endTimeString[1]);
-        readyEvent.data.timePicker.end = endTime;
-      }
-
-      readyEvent.data.timePicker.refresh();
-      readyEvent.data.timePicker.render();
-
-    }
-  };
-
-
-  window.llm.fixBulmaCalendars = function(scopeEle) {
-
-    if (!scopeEle) {
-      scopeEle = document;
-    }
-
-    // fix clear buttons
-
-    const bulmaClearButtonEles = scopeEle.getElementsByClassName("datetimepicker-clear-button");
-
-    for (let eleIndex = 0; eleIndex < bulmaClearButtonEles.length; eleIndex += 1) {
-      bulmaClearButtonEles[eleIndex].setAttribute("type", "button");
-    }
-
-    // fix next and previous month buttons
-
-    const bulmaNavButtonEles = scopeEle.querySelectorAll(".datepicker-nav-previous, .datepicker-nav-next");
-
-    for (let eleIndex = 0; eleIndex < bulmaNavButtonEles.length; eleIndex += 1) {
-      bulmaNavButtonEles[eleIndex].classList.remove("is-text");
-      bulmaNavButtonEles[eleIndex].classList.add("is-" + window.llm.bulmaCalendarOptions.color);
-    }
-  };
-
-
-  window.llm.fixBulmaTimes = function(scopeEle) {
-
-    if (!scopeEle) {
-      scopeEle = document;
-    }
-
-    // fix next and previous month buttons
-
-    const bulmaInputEles = scopeEle.querySelectorAll(".timepicker-input-number, .timepicker-time-divider");
-
-    for (let eleIndex = 0; eleIndex < bulmaInputEles.length; eleIndex += 1) {
-      bulmaInputEles[eleIndex].classList.add("has-text-" + window.llm.bulmaTimeOptions.color);
-    }
-  };
-  */
-  
-
-  /*
    * MODAL TOGGLES
    */
 
@@ -146,38 +39,110 @@
    * CONFIRM MODAL
    */
 
-  window.llm.confirmModal = function(titleString, bodyHTML, okButtonHTML, contextualColorName, callbackFn) {
+  function confirmModalFn(modalOptions) {
 
     const modalEle = document.createElement("div");
     modalEle.className = "modal is-active";
 
+    const contextualColorName = modalOptions.contextualColorName || "info";
+
+    const titleString = modalOptions.titleString || "";
+    const bodyHTML = modalOptions.bodyHTML || "";
+
+    const cancelButtonHTML = modalOptions.cancelButtomHTML || "Cancel";
+    const okButtonHTML = modalOptions.okButtonHTML || "OK";
+
+
     modalEle.innerHTML = "<div class=\"modal-background\"></div>" +
       "<div class=\"modal-card\">" +
       ("<header class=\"modal-card-head has-background-" + contextualColorName + "\">" +
-        "<h3 class=\"modal-card-title\"></h3>" +
+        "<h3 class=\"modal-card-title" + (contextualColorName === "danger" ? " has-text-white" : "") + "\"></h3>" +
         "</header>") +
       ("<section class=\"modal-card-body\">" + bodyHTML + "</section>") +
       ("<footer class=\"modal-card-foot justify-right\">" +
-        "<button class=\"button is-cancel-button\" type=\"button\">Cancel</button>" +
+        (modalOptions.hideCancelButton ?
+          "" :
+          "<button class=\"button is-cancel-button\" type=\"button\">" + cancelButtonHTML + "</button>") +
         "<button class=\"button is-ok-button is-" + contextualColorName + "\" type=\"button\">" + okButtonHTML + "</button>" +
         "</footer>") +
       "</div>";
 
     modalEle.getElementsByClassName("modal-card-title")[0].innerText = titleString;
 
-    modalEle.getElementsByClassName("is-cancel-button")[0].addEventListener("click", function() {
-      modalEle.remove();
-    });
+    if (!modalOptions.hideCancelButton) {
+      modalEle.getElementsByClassName("is-cancel-button")[0].addEventListener("click", function() {
+        modalEle.remove();
+      });
+    }
 
     const okButtonEle = modalEle.getElementsByClassName("is-ok-button")[0];
     okButtonEle.addEventListener("click", function() {
       modalEle.remove();
-      callbackFn();
+      if (modalOptions.callbackFn) {
+        modalOptions.callbackFn();
+      }
     });
 
     document.body.insertAdjacentElement("beforeend", modalEle);
 
     okButtonEle.focus();
+  }
+
+  window.llm.confirmModal = function(titleString, bodyHTML, okButtonHTML, contextualColorName, callbackFn) {
+    confirmModalFn({
+      contextualColorName: contextualColorName,
+      titleString: titleString,
+      bodyHTML: bodyHTML,
+      okButtonHTML: okButtonHTML,
+      callbackFn: callbackFn
+    });
+  };
+
+  window.llm.alertModal = function(titleString, bodyHTML, okButtonHTML, contextualColorName) {
+    confirmModalFn({
+      contextualColorName: contextualColorName,
+      titleString: titleString,
+      bodyHTML: bodyHTML,
+      hideCancelButton: true,
+      okButtonHTML: okButtonHTML
+    });
+  };
+
+
+  /*
+   * TABS
+   */
+
+  window.llm.initializeTabs = function(tabsListEle) {
+
+    const listItemEles = tabsListEle.getElementsByTagName("li");
+
+    function tabClickFn(clickEvent) {
+      clickEvent.preventDefault();
+
+      const tabLinkEle = clickEvent.currentTarget;
+      const tabContentEle = document.getElementById(tabLinkEle.getAttribute("href").substring(1));
+
+      // remove is-active from all tabs
+      for (let index = 0; index < listItemEles.length; index += 1) {
+        listItemEles[index].classList.remove("is-active");
+      }
+
+      // add is-active to the selected tab
+      tabLinkEle.parentNode.classList.add("is-active");
+
+      const tabContentEles = tabContentEle.parentNode.getElementsByClassName("tab-content");
+
+      for (let index = 0; index < tabContentEles.length; index += 1) {
+        tabContentEles[index].classList.remove("is-active");
+      }
+
+      tabContentEle.classList.add("is-active");
+    }
+
+    for (let index = 0; index < listItemEles.length; index += 1) {
+      listItemEles[index].getElementsByTagName("a")[0].addEventListener("click", tabClickFn);
+    }
   };
 
 
@@ -223,10 +188,11 @@
    */
 
 
-  function openLogoutModal() {
+  function openLogoutModal(clickEvent) {
+    clickEvent.preventDefault();
     window.llm.confirmModal("Log Out?",
       "<p>Are you sure you want to log out?</p>",
-      "Log Out",
+      "<span class=\"icon\"><i class=\"fas fa-sign-out-alt\" aria-hidden=\"true\"></i></span><span>Log Out</span>",
       "warning",
       function() {
         window.location.href = "/logout";

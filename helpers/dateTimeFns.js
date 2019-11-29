@@ -19,6 +19,13 @@ let dateTimeFns = {
       ("0" + (dateObj.getDate())).slice(-2);
   },
 
+  dateToInteger: function(dateObj) {
+    "use strict";
+    return (dateObj.getFullYear() * 10000) +
+      (dateObj.getMonth() * 100) + 100 +
+      dateObj.getDate();
+  },
+
   dateStringToInteger: function(dateString) {
     "use strict";
     return parseInt(("0" + dateString).replace(/-/g, ""));

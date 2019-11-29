@@ -16,9 +16,9 @@
   </div>
   <% if (user.userProperties.organizations_canEdit === "true") { %>
     <div class="column is-narrow has-text-right">
-      <a class="button is-primary" href="/organizations/<%= organization.OrganizationID %>/edit">
+      <a class="button is-link" href="/organizations/<%= organization.OrganizationID %>/edit">
         <span class="icon is-small">
-          <i class="fas fa-pencil-alt"></i>
+          <i class="fas fa-pencil-alt" aria-hidden="true"></i>
         </span>
         <span>Edit this Organization</span>
       </a>
@@ -33,9 +33,7 @@
   <%= organization.OrganizationPostalCode %>
 </p>
 
-<div class="is-divider"></div>
-
-<h2 class="title is-3">Organization Representatives</h2>
+<h2 class="title is-3 has-margin-top-20">Organization Representatives</h2>
 
 <% if (organization.organizationRepresentatives.length === 0) { %>
 
@@ -50,7 +48,7 @@
   <table class="table is-fullwidth is-striped is-hoverable is-representative-table">
     <thead>
       <tr>
-        <th class="has-width-5">Default</th>
+        <th class="has-width-50">Default</th>
         <th>Name</th>
         <th>Address</th>
         <th>City</th>
@@ -64,9 +62,10 @@
         <tr data-representative-index="<%= representativeObj.RepresentativeIndex %>">
           <td>
             <% if (representativeObj.IsDefault === 1) { %>
-              <i class="far fa-lg fa-dot-circle has-text-info"></i>
+              <i class="far fa-lg fa-dot-circle has-text-info" title="Default Representative" aria-hidden="true"></i>
+              <span class="sr-only">Default Representative</span>
             <% } else { %>
-              <i class="far fa-lg fa-circle has-text-grey-lighter"></i>
+              <i class="far fa-lg fa-circle has-text-grey-lighter" aria-hidden="true"></i>
             <% } %>
           </td>
           <td>
@@ -88,5 +87,12 @@
 
 <% } %>
 
+<%- include('_organization-view_edit-licences'); -%>
+
 <%- include('_footerA'); -%>
+
+<script>
+  window.llm.initializeTabs(document.getElementById("tabs--licences"));
+</script>
+
 <%- include('_footerB'); -%>

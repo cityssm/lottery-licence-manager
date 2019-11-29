@@ -38,7 +38,8 @@ router.get("/new", function(req, res) {
   "use strict";
 
   if (req.session.user.userProperties.organizations_canEdit !== "true") {
-    res.redirect("/organizations");
+    res.redirect("/organizations/?error=accessDenied");
+    return;
   }
 
   const config = require("../data/config");
@@ -101,8 +102,23 @@ router.get("/:organizationID", function(req, res) {
 
   const organization = licencesDB.getOrganization(organizationID);
 
+  if (!organization) {
+    res.redirect("/organizations/?error=organizationNotFound");
+    return;
+  }
+
+  const dateTimeFns = require("../helpers/dateTimeFns");
+  const stringFns = require("../helpers/stringFns");
+
+  const licences = licencesDB.getLicences({
+    organizationID: organizationID
+  }, false);
+
   res.render("organization-view", {
-    organization: organization
+    organization: organization,
+    licences: licences,
+    currentDateInteger: dateTimeFns.dateToInteger(new Date()),
+    stringFns: stringFns
   });
 });
 
@@ -118,16 +134,32 @@ router.get("/:organizationID/edit", function(req, res) {
   const organizationID = req.params.organizationID;
 
   if (req.session.user.userProperties.organizations_canEdit !== "true") {
-    res.redirect("/organizations/" + organizationID);
+    res.redirect("/organizations/" + organizationID + "/?error=accessDenied");
+    return;
   }
 
   const licencesDB = require("../helpers/licencesDB");
 
   const organization = licencesDB.getOrganization(organizationID);
 
+  if (!organization) {
+    res.redirect("/organizations/?error=organizationNotFound");
+    return;
+  }
+
+  const dateTimeFns = require("../helpers/dateTimeFns");
+  const stringFns = require("../helpers/stringFns");
+
+  const licences = licencesDB.getLicences({
+    organizationID: organizationID
+  }, false) || [];
+
   res.render("organization-edit", {
     isCreate: false,
-    organization: organization
+    organization: organization,
+    licences: licences,
+    currentDateInteger: dateTimeFns.dateToInteger(new Date()),
+    stringFns: stringFns
   });
 });
 
@@ -137,6 +169,7 @@ router.post("/:organizationID/doAddOrganizationRepresentative", function(req, re
 
   if (req.session.user.userProperties.organizations_canEdit !== "true") {
     res.json("not allowed");
+    return;
   }
 
   const organizationID = req.params.organizationID;
@@ -163,6 +196,7 @@ router.post("/:organizationID/doEditOrganizationRepresentative", function(req, r
 
   if (req.session.user.userProperties.organizations_canEdit !== "true") {
     res.json("not allowed");
+    return;
   }
 
   const organizationID = req.params.organizationID;
@@ -189,6 +223,7 @@ router.post("/:organizationID/doDeleteOrganizationRepresentative", function(req,
 
   if (req.session.user.userProperties.organizations_canEdit !== "true") {
     res.json("not allowed");
+    return;
   }
 
   const organizationID = req.params.organizationID;
@@ -209,6 +244,7 @@ router.post("/:organizationID/doSetDefaultRepresentative", function(req, res) {
 
   if (req.session.user.userProperties.organizations_canEdit !== "true") {
     res.json("not allowed");
+    return;
   }
 
   const organizationID = req.params.organizationID;

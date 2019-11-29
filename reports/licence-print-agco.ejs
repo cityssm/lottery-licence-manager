@@ -264,12 +264,12 @@
         <tr>
           <td class="has-padding-bottom-5 has-padding-right-10">
             Total value of all prizes in any lottery conducted under this<br />
-            licence not to exceed $ ------ in cash,<br />
+            licence not to exceed $ <%= licence.TotalPrizeValue %> in cash,<br />
             or merchandise or articles at equivalent market value.
           </td>
           <td class="has-padding-bottom-5">
             La valeur totale des prix d'une loterie organisée en vertu de<br />
-            la présente licence ne doit pas excéder ------ $<br />
+            la présente licence ne doit pas excéder <%= licence.TotalPrizeValue %> $<br />
             en espèces ou valeur équivalente en nature.
           </td>
         </tr>
@@ -315,7 +315,17 @@
             <div class="container has-background-blue">
               Licence Fees<br />
               Droits - licence
-              <div class="field"></div>
+              <div class="field">
+                <table class="is-fullwidth">
+                  <tbody>
+                    <tr>
+                      <td>$</td>
+                      <td class="is-fullwidth"></td>
+                      <td>$</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
           </td>
         </tr>

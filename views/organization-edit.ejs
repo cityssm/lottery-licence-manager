@@ -17,7 +17,7 @@
   <%= (isCreate ? "Create a New Organization" : "Update an Organization") %>
 </h1>
 
-<form id="form--organization">
+<form class="has-margin-bottom-20" id="form--organization">
   <input id="organization--organizationID" name="organizationID" type="hidden" value="<%= organization.OrganizationID %>" />
 
   <div class="field">
@@ -75,39 +75,34 @@
     </div>
   <% } %>
 
-  <div class="level">
-    <div class="level-left" id="container--form-message">
-    </div>
-    <div class="level-right">
-      <div class="buttons">
-        <% if (isCreate) { %>
-          <a class="button" href="<%= (isCreate ? "/organizations" : "/organizations/" + organization.OrganizationID) %>">
-            Cancel
-          </a>
-        <% } %>
-        <button class="button is-success" type="submit">
-          <span class="icon">
-            <i class="fas fa-save"></i>
-          </span>
-          <span><%= (isCreate ? "Create New Organization and Continue" : "Update Organization") %></span>
-        </button>
-      </div>
-    </div>
+  <div class="has-text-right">
+    <span class="is-inline-block has-margin-top-10 has-margin-right-10 is-size-7" id="container--form-message"></span>
+
+    <% if (isCreate) { %>
+      <a class="button" href="/organizations">
+        Cancel
+      </a>
+    <% } %>
+    <button class="button is-success" type="submit">
+      <span class="icon">
+        <i class="fas fa-save" aria-hidden="true"></i>
+      </span>
+      <span><%= (isCreate ? "Create New Organization and Continue" : "Update Organization") %></span>
+    </button>
   </div>
+
 </form>
 
 <% if (!isCreate) { %>
 
-  <div class="is-divider"></div>
-
-  <div class="level">
-    <div class="level-left">
+  <div class="columns">
+    <div class="column">
       <h2 class="title is-3">Organization Representatives</h2>
     </div>
-    <div class="level-right">
-      <button class="button is-primary is-add-representative-button">
+    <div class="column is-narrow has-text-right">
+      <button class="button is-primary is-small is-add-representative-button">
         <span class="icon is-small">
-          <i class="fas fa-user-plus"></i>
+          <i class="fas fa-user-plus" aria-hidden="true"></i>
         </span>
         <span>Add a Representative</span>
       </button>
@@ -157,14 +152,15 @@
           </td>
           <td>
             <div class="buttons is-right has-addons">
-              <button class="button is-small is-edit-representative-button" type="button">
+              <button class="button is-small is-edit-representative-button" type="button" title="Edit Representative">
                 <span class="icon">
-                  <i class="fas fa-pencil-alt"></i>
+                  <i class="fas fa-pencil-alt" aria-hidden="true"></i>
                 </span>
                 <span>Edit</span>
               </button>
-              <button class="button is-small is-delete-representative-button" type="button">
-                <i class="fas fa-trash"></i>
+              <button class="button is-small has-text-danger is-delete-representative-button" type="button" title="Delete Representative">
+                <i class="fas fa-trash" aria-hidden="true"></i>
+                <span class="sr-only">Delete</span>
               </button>
             </div>
           </td>
@@ -220,7 +216,7 @@
           <div class="field">
             <label class="label" for="addOrganizationRepresentative--representativePostalCode">Postal Code</label>
             <div class="control">
-              <input class="input" id="addOrganizationRepresentative--representativePostalCode" name="representativePostalCode" type="text" value="" minlength="5" maxlength="6" autocomplete="off" />
+              <input class="input" id="addOrganizationRepresentative--representativePostalCode" name="representativePostalCode" type="text" value="" minlength="5" maxlength="7" autocomplete="off" />
             </div>
           </div>
         </section>
@@ -292,9 +288,9 @@
       </div>
     </form>
   </div>
-
-
 <% } %>
+
+<%- include('_organization-view_edit-licences'); -%>
 
 <%- include('_footerA'); -%>
 
