@@ -6,7 +6,7 @@
     <div class="column is-narrow has-text-right">
       <a class="button is-primary is-small" href="/licences/new/<%= organization.OrganizationID %>">
         <span class="icon is-small">
-          <i class="fas fa-certificate"></i>
+          <i class="fas fa-certificate" aria-hidden="true"></i>
         </span>
         <span>Create a New Licence</span>
       </a>
@@ -21,7 +21,7 @@
     "<th>Event Details</th>" +
     "<th>From</th>" +
     "<th>To</th>" +
-    "<th></th>" +
+    "<th><span class=\"sr-only\">Options</span></th>" +
     "</tr>";
 
   let rows_active = "";

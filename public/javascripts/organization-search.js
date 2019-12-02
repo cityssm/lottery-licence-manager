@@ -44,7 +44,7 @@
           searchResultsEle.innerHTML = "<table class=\"table is-fullwidth is-striped is-hoverable\">" +
             "<thead><tr>" +
             "<th>Organization Name</th>" +
-            "<th>&nbsp;</th>" +
+            "<th><span class=\"sr-only\">Options</span></th>" +
             "</tr></thead>" +
             "<tbody></tbody>" +
             "</table>";

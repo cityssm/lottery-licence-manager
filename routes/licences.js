@@ -14,6 +14,12 @@ router.get("/", function(req, res) {
   res.render("licence-search");
 });
 
+router.post("/doSearch", function(req, res) {
+  "use strict";
+
+  res.json(licencesDB.getLicences(req.body, true, true));
+});
+
 router.get(["/new", "/new/:organizationID"], function(req, res) {
   "use strict";
 
@@ -175,11 +181,13 @@ router.get("/:licenceID/print", function(req, res, next) {
 
   const organization = licencesDB.getOrganization(licence.OrganizationID);
 
+  console.log("here");
+
   const path = require("path");
   const ejs = require("ejs");
   const pdf = require("html-pdf");
 
-  ejs.renderFile(path.join(__dirname, "../reports/", configFns.getProperty("config.licences.printTemplate", "licence-print")), {
+  ejs.renderFile(path.join(__dirname, "../reports/", configFns.getProperty("licences.printTemplate", "licence-print")), {
       config: configFns.config,
       licence: licence,
       organization: organization
@@ -190,9 +198,12 @@ router.get("/:licenceID/print", function(req, res, next) {
       } else {
 
         let options = {
-          "format": "Letter",
-          "base": "http://localhost:" + configFns.config.application.port
+          format: "Letter",
+          base: "http://localhost:" + configFns.config.application.port,
+          phantomArgs: ["--local-url-access=false"]
         };
+
+
 
         pdf.create(ejsData, options).toStream(function(pdfErr, pdfStream) {
           if (pdfErr) {

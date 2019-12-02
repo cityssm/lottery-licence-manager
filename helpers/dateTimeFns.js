@@ -31,6 +31,8 @@ let dateTimeFns = {
     return parseInt(("0" + dateString).replace(/-/g, ""));
   },
 
+  months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+
   // time
 
   timeIntegerToString: function(timeInteger) {

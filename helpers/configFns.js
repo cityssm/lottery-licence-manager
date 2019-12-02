@@ -1,4 +1,5 @@
-/* global require, module */
+/* global require, module, console */
+/* eslint-disable no-console */
 
 
 let config;

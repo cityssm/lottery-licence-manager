@@ -255,8 +255,12 @@ let licencesDB = {
   },
 
 
-  getLicences: function(reqBody_or_paramsObj, useLimit) {
+  getLicences: function(reqBody_or_paramsObj, includeOrganization, useLimit) {
     "use strict";
+
+    if (reqBody_or_paramsObj.organizationName && reqBody_or_paramsObj.organizationName !== "") {
+      includeOrganization = true;
+    }
 
     const db = sqlite(dbPath, {
       readonly: true
@@ -264,19 +268,47 @@ let licencesDB = {
 
     let params = [];
 
-    let sql = "select LicenceID, OrganizationID, ApplicationDate, LicenceTypeKey," +
-      " StartDate, StartTime, EndDate, EndTime," +
-      " Location, Municipality, LicenceDetails, TermsConditions," +
-      " ExternalLicenceNumber" +
-      " from LotteryLicences" +
-      " where RecordDelete_TimeMillis is null";
+    let sql = "select l.LicenceID, l.OrganizationID," +
+      (includeOrganization ?
+        " o.OrganizationName," :
+        "") +
+      " l.ApplicationDate, l.LicenceTypeKey," +
+      " l.StartDate, l.StartTime, l.EndDate, l.EndTime," +
+      " l.Location, l.Municipality, l.LicenceDetails, l.TermsConditions," +
+      " l.ExternalLicenceNumber" +
+      " from LotteryLicences l" +
+      (includeOrganization ?
+        " left join Organizations o on l.OrganizationID = o.OrganizationID" :
+        ""
+      ) +
+      " where l.RecordDelete_TimeMillis is null";
 
     if (reqBody_or_paramsObj.organizationID && reqBody_or_paramsObj.organizationID !== "") {
-      sql += " and OrganizationID = ?";
+      sql += " and l.OrganizationID = ?";
       params.push(reqBody_or_paramsObj.organizationID);
     }
 
-    sql += " order by EndDate desc, StartDate desc, LicenceID";
+    if (reqBody_or_paramsObj.organizationName && reqBody_or_paramsObj.organizationName !== "") {
+      sql += " and o.OrganizationName = ?";
+      params.push(reqBody_or_paramsObj.organizationName);
+    }
+
+    if (reqBody_or_paramsObj.licenceTypeKey && reqBody_or_paramsObj.licenceTypeKey !== "") {
+      sql += " and l.LicenceTypeKey = ?";
+      params.push(reqBody_or_paramsObj.licenceTypeKey);
+    }
+
+    if (reqBody_or_paramsObj.licenceStatus) {
+      if (reqBody_or_paramsObj.licenceStatus === "past") {
+        sql += " and l.EndDate < ?";
+        params.push(dateTimeFns.dateToInteger(new Date()));
+      } else if (reqBody_or_paramsObj.licenceStatus === "active") {
+        sql += " and l.EndDate >= ?";
+        params.push(dateTimeFns.dateToInteger(new Date()));
+      }
+    }
+
+    sql += " order by l.EndDate desc, l.StartDate desc, l.LicenceID";
 
     if (useLimit) {
       sql += " limit 100";
@@ -572,9 +604,35 @@ let licencesDB = {
         licenceID
       );
 
-      db.close();
+    db.close();
 
     return info.changes;
+  },
+
+  getEvents: function(year, month) {
+    "use strict";
+
+    const db = sqlite(dbPath, {
+      readonly: true
+    });
+
+    let rows = db.prepare("select e.EventDate," +
+        " l.LicenceID, l.ExternalLicenceNumber, l.LicenceTypeKey, l.LicenceDetails," +
+        " l.StartTime, l.EndTime," +
+        " o.OrganizationName" +
+        " from LotteryEvents e" +
+        " left join LotteryLicences l on e.LicenceID = l.LicenceID" +
+        " where e.RecordDelete_TimeMillis is null" +
+        " and l.RecordDelete_TimeMillis is null" +
+        " and o.RecordDelete_TimeMillis is null" +
+        " and e.EventDate > ((? * 10000) + (? * 100))" +
+        " and e.EventDate < ((? * 10000) + (? * 100) + 99)" +
+        " order by e.EventDate, l.StartTime")
+      .all(year, month, year, month);
+
+    db.close();
+
+    return rows;
   }
 };
 

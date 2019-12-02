@@ -17,7 +17,7 @@
     <div class="column in-narrow has-text-right">
       <a class="button is-primary" href="/licences/new">
         <span class="icon is-small">
-          <i class="fas fa-plus"></i>
+          <i class="fas fa-plus" aria-hidden="true"></i>
         </span>
         <span>Create a New Licence</span>
       </a>
@@ -25,6 +25,67 @@
   <% } %>
 </div>
 
+<div class="columns">
+  <div class="column is-one-third">
+    <form id="form--filters">
+      <div class="field">
+        <label class="label" for="filter--licenceTypeKey">Licence Types</label>
+        <div class="control has-icons-left">
+          <div class="select is-fullwidth">
+            <select id="filter--licenceTypeKey" name="licenceTypeKey">
+              <option value="">(All Types)</option>
+              <%
+                const licenceTypes = configFns.getProperty("licenceTypes", []);
+                for (let typeIndex = 0; typeIndex < licenceTypes.length; typeIndex += 1) {
+                  const licenceTypeJSON = licenceTypes[typeIndex];
+                  if (!licenceTypeJSON.isActive) {
+                    continue;
+                  }
+              %>
+                  <option value="<%= licenceTypeJSON.licenceTypeKey %>"><%= licenceTypeJSON.licenceType %></option>
+              <%
+                }
+              %>
+            </select>
+          </div>
+          <span class="icon is-small is-left">
+            <i class="fas fa-filter" aria-hidden="true"></i>
+          </span>
+        </div>
+      </div>
+      <div class="field">
+        <label class="label" for="filter--organizationName">Organization Name</label>
+        <div class="control has-icons-left">
+          <input class="input" id="filter--organizationName" name="organizationName" type="text" />
+          <span class="icon is-small is-left">
+            <i class="fas fa-filter" aria-hidden="true"></i>
+          </span>
+        </div>
+      </div>
+      <div class="field">
+        <label class="label" for="filter--licenceStatus">Status</label>
+        <div class="control has-icons-left">
+          <div class="select is-fullwidth">
+            <select id="filter--licenceStatus" name="licenceStatus">
+              <option value="">(All Statuses)</option>
+              <option value="active">Active</option>
+              <option value="past">Past</option>
+            </select>
+          </div>
+          <span class="icon is-small is-left">
+            <i class="fas fa-filter" aria-hidden="true"></i>
+          </span>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="column">
+    <div id="container--searchResults" data-can-edit="<%= user.userProperties.licences_canEdit %>" data-external-licence-number-label="<%= configFns.getProperty("licences.externalLicenceNumber.fieldLabel", "External Licence Number") %>"></div>
+  </div>
+</div>
+
 <%- include('_footerA'); -%>
+
+<script src="/javascripts/licence-search.min.js"></script>
 
 <%- include('_footerB'); -%>

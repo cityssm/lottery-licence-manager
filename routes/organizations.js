@@ -4,6 +4,8 @@
 const express = require("express");
 const router = express.Router();
 
+const licencesDB = require("../helpers/licencesDB");
+
 
 /*
  * SEARCH
@@ -19,16 +21,12 @@ router.get("/", function(req, res) {
 router.post("/doSearch", function(req, res) {
   "use strict";
 
-  const licencesDB = require("../helpers/licencesDB");
-
   res.json(licencesDB.getOrganizations(req.body, true));
 });
 
 
 router.get("/doGetAll", function(req, res) {
   "use strict";
-
-  const licencesDB = require("../helpers/licencesDB");
 
   res.json(licencesDB.getOrganizations({}, false));
 });
@@ -56,8 +54,6 @@ router.get("/new", function(req, res) {
 
 router.post("/doSave", function(req, res) {
   "use strict";
-
-  const licencesDB = require("../helpers/licencesDB");
 
   if (req.body.organizationID === "") {
 
@@ -98,8 +94,6 @@ router.get("/:organizationID", function(req, res) {
 
   const organizationID = req.params.organizationID;
 
-  const licencesDB = require("../helpers/licencesDB");
-
   const organization = licencesDB.getOrganization(organizationID);
 
   if (!organization) {
@@ -112,7 +106,7 @@ router.get("/:organizationID", function(req, res) {
 
   const licences = licencesDB.getLicences({
     organizationID: organizationID
-  }, false);
+  }, false, false);
 
   res.render("organization-view", {
     organization: organization,
@@ -138,8 +132,6 @@ router.get("/:organizationID/edit", function(req, res) {
     return;
   }
 
-  const licencesDB = require("../helpers/licencesDB");
-
   const organization = licencesDB.getOrganization(organizationID);
 
   if (!organization) {
@@ -152,7 +144,7 @@ router.get("/:organizationID/edit", function(req, res) {
 
   const licences = licencesDB.getLicences({
     organizationID: organizationID
-  }, false) || [];
+  }, false, false) || [];
 
   res.render("organization-edit", {
     isCreate: false,
@@ -173,8 +165,6 @@ router.post("/:organizationID/doAddOrganizationRepresentative", function(req, re
   }
 
   const organizationID = req.params.organizationID;
-
-  const licencesDB = require("../helpers/licencesDB");
 
   const representativeObj = licencesDB.addOrganizationRepresentative(organizationID, req.body);
 
@@ -200,8 +190,6 @@ router.post("/:organizationID/doEditOrganizationRepresentative", function(req, r
   }
 
   const organizationID = req.params.organizationID;
-
-  const licencesDB = require("../helpers/licencesDB");
 
   const representativeObj = licencesDB.updateOrganizationRepresentative(organizationID, req.body);
 
@@ -229,8 +217,6 @@ router.post("/:organizationID/doDeleteOrganizationRepresentative", function(req,
   const organizationID = req.params.organizationID;
   const representativeIndex = req.body.representativeIndex;
 
-  const licencesDB = require("../helpers/licencesDB");
-
   const success = licencesDB.deleteOrganizationRepresentative(organizationID, representativeIndex);
 
   res.json({
@@ -249,8 +235,6 @@ router.post("/:organizationID/doSetDefaultRepresentative", function(req, res) {
 
   const organizationID = req.params.organizationID;
   const isDefaultRepresentativeIndex = req.body.isDefaultRepresentativeIndex;
-
-  const licencesDB = require("../helpers/licencesDB");
 
   const success = licencesDB.setDefaultOrganizationRepresentative(organizationID, isDefaultRepresentativeIndex);
 

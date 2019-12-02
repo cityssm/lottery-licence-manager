@@ -17,49 +17,50 @@
 <body>
   <div class="has-min-page-height">
     <nav class="navbar is-light has-margin-bottom-20" role="navigation" aria-label="main navigation">
-
-      <div class="navbar-brand">
-        <a class="navbar-item" href="/dashboard">
-          <img src="<%= config.application.logoURL %>" alt="" height="28" />
-          <strong><%= config.application.applicationName %></strong>
-        </a>
-
-        <a class="navbar-burger burger" id="navbar-burger--main" role="button" aria-label="menu" aria-expanded="false">
-          <span aria-hidden="true"></span>
-          <span aria-hidden="true"></span>
-          <span aria-hidden="true"></span>
-        </a>
-      </div>
-
-      <div class="navbar-menu" id="navbar-menu--main">
-        <div class="navbar-start">
-
-          <a class="navbar-item" href="/organizations">
-            Organizations
+      <div class="container">
+        <div class="navbar-brand">
+          <a class="navbar-item" href="/dashboard">
+            <img src="<%= config.application.logoURL %>" alt="" height="28" />
+            <strong><%= config.application.applicationName %></strong>
           </a>
 
-          <a class="navbar-item" href="/licences">
-            Licences
-          </a>
-
-          <a class="navbar-item" href="/events">
-            Events
-          </a>
-
-          <a class="navbar-item" href="/reports">
-            Reports
+          <a class="navbar-burger burger" id="navbar-burger--main" role="button" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
           </a>
         </div>
 
-        <div class="navbar-end">
-          <a class="navbar-item is-logout-button" role="button" href="#">
-            <span class="icon">
-              <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
-            </span>
-            <span>Log Out <%=user.userName %></span>
-          </a>
+        <div class="navbar-menu" id="navbar-menu--main">
+          <div class="navbar-start">
+
+            <a class="navbar-item" href="/organizations">
+              Organizations
+            </a>
+
+            <a class="navbar-item" href="/licences">
+              Licences
+            </a>
+
+            <a class="navbar-item" href="/events">
+              Events
+            </a>
+
+            <a class="navbar-item" href="/reports">
+              Reports
+            </a>
+          </div>
+
+          <div class="navbar-end">
+            <a class="navbar-item is-logout-button" role="button" href="#">
+              <span class="icon">
+                <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
+              </span>
+              <span>Log Out <%=user.userName %></span>
+            </a>
+          </div>
         </div>
       </div>
     </nav>
 
-    <main class="container is-fluid">
+    <main class="container has-padding-left-15 has-padding-right-15 has-margin-auto">
