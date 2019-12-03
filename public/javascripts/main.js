@@ -79,7 +79,7 @@
         "<h3 class=\"modal-card-title" + (contextualColorName === "danger" ? " has-text-white" : "") + "\"></h3>" +
         "</header>") +
       ("<section class=\"modal-card-body\">" + bodyHTML + "</section>") +
-      ("<footer class=\"modal-card-foot justify-right\">" +
+      ("<footer class=\"modal-card-foot justify-flex-end\">" +
         (modalOptions.hideCancelButton ?
           "" :
           "<button class=\"button is-cancel-button\" type=\"button\">" + cancelButtonHTML + "</button>") +
