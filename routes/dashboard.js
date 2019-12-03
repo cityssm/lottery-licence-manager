@@ -6,7 +6,9 @@ const router = express.Router();
 router.get("/", function(req, res) {
   "use strict";
 
-  res.render("dashboard");
+  res.render("dashboard", {
+    headTitle: "Dashboard"
+  });
 });
 
 module.exports = router;

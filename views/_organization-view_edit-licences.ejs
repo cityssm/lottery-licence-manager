@@ -16,7 +16,7 @@
 
 <%
   let licenceTheadHTML = "<tr>" +
-    "<th>" + configFns.getProperty("licences.externalLicenceNumber.fieldLabel", "External Licence Number") + "</th>" +
+    "<th>" + configFns.getProperty("licences.externalLicenceNumber.fieldLabel") + "</th>" +
     "<th>Licence Type</th>" +
     "<th>Event Details</th>" +
     "<th>From</th>" +
@@ -27,14 +27,16 @@
   let rows_active = "";
   let rows_past = "";
 
+  const licenceTypes = configFns.getProperty("licenceTypes");
+
   for (let licenceIndex = 0; licenceIndex < licences.length; licenceIndex += 1) {
 
     const licence = licences[licenceIndex];
 
     let licenceType = {};
-    for (let typeIndex = 0; typeIndex < config.licenceTypes.length; typeIndex += 1) {
-      if (config.licenceTypes[typeIndex].licenceTypeKey === licence.LicenceTypeKey) {
-        licenceType = config.licenceTypes[typeIndex];
+    for (let typeIndex = 0; typeIndex < licenceTypes.length; typeIndex += 1) {
+      if (licenceTypes[typeIndex].licenceTypeKey === licence.LicenceTypeKey) {
+        licenceType = licenceTypes[typeIndex];
         break;
       }
     }
@@ -52,9 +54,9 @@
       "<td>" +
         "<div class=\"buttons is-right has-addons\">" +
           (user.userProperties.licences_canEdit ?
-          "<a class=\"button is-small\" href=\"/licences/" + licence.LicenceID + "/edit\" title=\"Edit Licence\"><span class=\"icon\"><i class=\"fas fa-pencil-alt\"></i></span><span>Edit</span></a>" :
+          "<a class=\"button is-small\" href=\"/licences/" + licence.LicenceID + "/edit\" data-tooltip=\"Edit Licence\"><span class=\"icon\"><i class=\"fas fa-pencil-alt\"></i></span><span>Edit</span></a>" :
           "") +
-        "<a class=\"button is-small\" href=\"/licences/" + licence.LicenceID + "/print\" title=\"Print Licence\" target=\"_blank\">" +
+        "<a class=\"button is-small\" href=\"/licences/" + licence.LicenceID + "/print\" data-tooltip=\"Print Licence\" target=\"_blank\">" +
         "<i class=\"fas fa-print\" aria-hidden=\"true\"></i>" +
         "<span class=\"sr-only\">Print Licence</span>" +
         "</a>" +

@@ -1,9 +1,9 @@
 /* global require, console, module, __dirname */
-/* eslint-disable no-console */
 
 
 const createError = require("http-errors");
 const express = require("express");
+const compression = require("compression");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
@@ -41,6 +41,7 @@ app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 
 
+app.use(compression());
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({
@@ -111,7 +112,6 @@ const sessionChecker = function(req, res, next) {
 app.use(function(req, res, next) {
   "use strict";
   res.locals.user = req.session.user;
-  res.locals.config = configFns.config;
   res.locals.configFns = configFns;
   next();
 });
@@ -161,9 +161,11 @@ app.use(function(err, req, res) {
 });
 
 
-app.listen(configFns.getProperty("application.port", 3000), function() {
+app.listen(configFns.getProperty("application.port"), function() {
   "use strict";
-  console.log("Server listening on port " + configFns.getProperty("application.port", 3000));
+
+  // eslint-disable-next-line no-console
+  console.log("Server listening on port " + configFns.getProperty("application.port"));
 });
 
 

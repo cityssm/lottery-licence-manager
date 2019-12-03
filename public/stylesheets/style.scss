@@ -1,16 +1,24 @@
 @import '../../node_modules/bulma/bulma';
 @import '../../node_modules/bulma-helpers/bulma-helpers';
-/* @import '../../node_modules/bulma-calendar/src/sass/index'; */
 @import '../../node_modules/bulma-divider/src/sass/index';
+@import '../../node_modules/bulma-tooltip/src/sass/index';
 
 
-.has-min-page-height {
-  min-height: 100vh;
+@media screen {
+  .has-min-page-height {
+    min-height: 100vh;
+  }
 }
 
 @media screen and (min-width: 769px), print {
   .has-desktop-max-width-700 {
     max-width: 700px;
+  }
+}
+
+@media print {
+  .is-hidden-print {
+    display: none;
   }
 }
 

@@ -25,9 +25,9 @@
   <% } %>
 </div>
 
-<div class="columns">
-  <div class="column is-one-third">
-    <form id="form--filters">
+<form id="form--filters">
+  <div class="columns">
+    <div class="column is-one-third">
       <div class="field">
         <label class="label" for="filter--licenceTypeKey">Licence Types</label>
         <div class="control has-icons-left">
@@ -35,7 +35,7 @@
             <select id="filter--licenceTypeKey" name="licenceTypeKey">
               <option value="">(All Types)</option>
               <%
-                const licenceTypes = configFns.getProperty("licenceTypes", []);
+                const licenceTypes = configFns.getProperty("licenceTypes");
                 for (let typeIndex = 0; typeIndex < licenceTypes.length; typeIndex += 1) {
                   const licenceTypeJSON = licenceTypes[typeIndex];
                   if (!licenceTypeJSON.isActive) {
@@ -53,6 +53,8 @@
           </span>
         </div>
       </div>
+    </div>
+    <div class="column is-one-third">
       <div class="field">
         <label class="label" for="filter--organizationName">Organization Name</label>
         <div class="control has-icons-left">
@@ -62,13 +64,15 @@
           </span>
         </div>
       </div>
+    </div>
+    <div class="column is-one-third">
       <div class="field">
         <label class="label" for="filter--licenceStatus">Status</label>
         <div class="control has-icons-left">
           <div class="select is-fullwidth">
             <select id="filter--licenceStatus" name="licenceStatus">
               <option value="">(All Statuses)</option>
-              <option value="active">Active</option>
+              <option value="active" selected>Active</option>
               <option value="past">Past</option>
             </select>
           </div>
@@ -77,12 +81,12 @@
           </span>
         </div>
       </div>
-    </form>
+    </div>
   </div>
-  <div class="column">
-    <div id="container--searchResults" data-can-edit="<%= user.userProperties.licences_canEdit %>" data-external-licence-number-label="<%= configFns.getProperty("licences.externalLicenceNumber.fieldLabel", "External Licence Number") %>"></div>
-  </div>
-</div>
+</form>
+
+<div class="has-margin-top-20" id="container--searchResults" data-can-edit="<%= user.userProperties.licences_canEdit %>" data-external-licence-number-label="<%= configFns.getProperty("licences.externalLicenceNumber.fieldLabel") %>"></div>
+
 
 <%- include('_footerA'); -%>
 

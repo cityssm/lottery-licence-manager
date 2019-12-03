@@ -14,7 +14,7 @@
   function doOrganizationSearch() {
 
     searchResultsEle.innerHTML = "<p class=\"has-text-centered has-text-grey-lighter\">" +
-      "<i class=\"fas fa-3x fa-circle-notch fa-spin\"></i><br />" +
+      "<i class=\"fas fa-3x fa-circle-notch fa-spin\" aria-hidden=\"true\"></i><br />" +
       "<em>Loading organizations..." +
       "</p>";
 
@@ -67,14 +67,14 @@
               (canEdit ?
                 "<div class=\"field has-addons justify-flex-end\">" +
                 "<p class=\"control\">" +
-                "<a class=\"button is-small\" title=\"Edit Organization\" href=\"/organizations/" + organizationObj.OrganizationID + "/edit\">" +
-                "<span class=\"icon\"><i class=\"fas fa-pencil-alt\"></i></span>" +
+                "<a class=\"button is-small\" data-tooltip=\"Edit Organization\" href=\"/organizations/" + organizationObj.OrganizationID + "/edit\">" +
+                "<span class=\"icon\"><i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i></span>" +
                 "<span>Edit</span>" +
                 "</a>" +
                 "</p>" +
                 "<p class=\"control\">" +
-                "<a class=\"button is-small\" title=\"Create a New Licence\" href=\"/licences/new/" + organizationObj.OrganizationID + "\">" +
-                "<span class=\"icon\"><i class=\"fas fa-certificate\"></i></span>" +
+                "<a class=\"button is-small\" data-tooltip=\"Create a New Licence\" href=\"/licences/new/" + organizationObj.OrganizationID + "\">" +
+                "<span class=\"icon\"><i class=\"fas fa-certificate\" aria-hidden=\"true\"></i></span>" +
                 "<span>New</span>" +
                 "</a>" +
                 "</p>" +

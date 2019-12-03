@@ -622,6 +622,7 @@ let licencesDB = {
         " o.OrganizationName" +
         " from LotteryEvents e" +
         " left join LotteryLicences l on e.LicenceID = l.LicenceID" +
+        " left join Organizations o on l.OrganizationID = o.OrganizationID" +
         " where e.RecordDelete_TimeMillis is null" +
         " and l.RecordDelete_TimeMillis is null" +
         " and o.RecordDelete_TimeMillis is null" +
@@ -632,7 +633,33 @@ let licencesDB = {
 
     db.close();
 
+    for (let eventIndex = 0; eventIndex < rows.length; eventIndex += 1) {
+      const eventObj = rows[eventIndex];
+
+      eventObj.EventDateString = dateTimeFns.dateIntegerToString(eventObj.EventDate);
+
+      eventObj.StartTimeString = dateTimeFns.timeIntegerToString(eventObj.StartTime || 0);
+      eventObj.EndTimeString = dateTimeFns.timeIntegerToString(eventObj.EndTime || 0);
+    }
+
     return rows;
+  },
+
+  getEvent: function(licenceID, eventDate) {
+    "use strict";
+
+    const db = sqlite(dbPath, {
+      readonly: true
+    });
+
+    const eventObj = db.prepare("select * from LotteryEvents" +
+      " where RecordDelete_TimeMillis is null" +
+      " and LicenceID = ?" +
+      " and EventDate = ?").get(licenceID, eventDate);
+
+    db.close();
+
+    return eventObj;
   }
 };
 

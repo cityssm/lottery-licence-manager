@@ -5,6 +5,7 @@ const express = require("express");
 const router = express.Router();
 
 const licencesDB = require("../helpers/licencesDB");
+const configFns = require("../helpers/configFns");
 
 
 /*
@@ -14,7 +15,9 @@ const licencesDB = require("../helpers/licencesDB");
 
 router.get("/", function(req, res) {
   "use strict";
-  res.render("organization-search");
+  res.render("organization-search", {
+    headTitle: "Organizations"
+  });
 });
 
 
@@ -40,13 +43,12 @@ router.get("/new", function(req, res) {
     return;
   }
 
-  const config = require("../data/config");
-
   res.render("organization-edit", {
+    headTitle: "Organization Create",
     isCreate: true,
     organization: {
-      OrganizationCity: config.defaults.city || "",
-      OrganizationProvince: config.defaults.province || ""
+      OrganizationCity: configFns.getProperty("defaults.city"),
+      OrganizationProvince: configFns.getProperty("defaults.province")
     }
   });
 });
@@ -109,6 +111,7 @@ router.get("/:organizationID", function(req, res) {
   }, false, false);
 
   res.render("organization-view", {
+    headTitle: organization.OrganizationName,
     organization: organization,
     licences: licences,
     currentDateInteger: dateTimeFns.dateToInteger(new Date()),
@@ -147,6 +150,7 @@ router.get("/:organizationID/edit", function(req, res) {
   }, false, false) || [];
 
   res.render("organization-edit", {
+    headTitle: "Organization Update",
     isCreate: false,
     organization: organization,
     licences: licences,

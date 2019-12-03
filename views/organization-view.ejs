@@ -62,10 +62,10 @@
         <tr data-representative-index="<%= representativeObj.RepresentativeIndex %>">
           <td>
             <% if (representativeObj.IsDefault === 1) { %>
-              <i class="far fa-lg fa-dot-circle has-text-info" title="Default Representative" aria-hidden="true"></i>
+              <span data-tooltip="Default Representative"><i class="far fa-lg fa-fw fa-dot-circle has-text-info" aria-hidden="true"></i></span>
               <span class="sr-only">Default Representative</span>
             <% } else { %>
-              <i class="far fa-lg fa-circle has-text-grey-lighter" aria-hidden="true"></i>
+              <i class="far fa-lg fa-fw fa-circle has-text-grey-lighter" aria-hidden="true"></i>
             <% } %>
           </td>
           <td>

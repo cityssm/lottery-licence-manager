@@ -16,13 +16,23 @@
     }
   };
 
-
   window.llm.escapeHTML = function(str) {
     return String(str)
       .replace(/&/g, "&amp;")
       .replace(/</g, "&lt;")
       .replace(/>/g, "&gt;")
       .replace(/"/g, "&quot;");
+  };
+
+  window.llm.arrayToObject = function (array, objectKey) {
+
+    let obj = {};
+
+    for (let arrayIndex = 0; arrayIndex < array.length; arrayIndex += 1) {
+      obj[array[arrayIndex][objectKey]] = array[arrayIndex];
+    }
+
+    return obj;
   };
 
 

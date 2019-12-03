@@ -3,13 +3,14 @@
 
 <head>
   <title>
-    <%= configFns.getProperty("application.applicationName", "Lottery Licence Manager") %>
+    <%= headTitle %>: <%= configFns.getProperty("application.applicationName") %>
   </title>
 
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
   <link rel="icon" href="/images/favicon.png" />
+
   <link rel="stylesheet" href="/stylesheets/style.min.css" />
   <link rel="stylesheet" href="/fa/css/all.min.css" />
 </head>
@@ -20,8 +21,8 @@
       <div class="container">
         <div class="navbar-brand">
           <a class="navbar-item" href="/dashboard">
-            <img src="<%= config.application.logoURL %>" alt="" height="28" />
-            <strong><%= config.application.applicationName %></strong>
+            <img class="has-margin-right-10" src="<%= configFns.getProperty("application.logoURL") %>" alt="" height="28" />
+            <strong><%= configFns.getProperty("application.applicationName") %></strong>
           </a>
 
           <a class="navbar-burger burger" id="navbar-burger--main" role="button" aria-label="menu" aria-expanded="false">
@@ -35,26 +36,38 @@
           <div class="navbar-start">
 
             <a class="navbar-item" href="/organizations">
-              Organizations
+              <span class="icon has-margin-right-5">
+                <i class="fas fa-fw fa-users" aria-hidden="true"></i>
+              </span>
+              <span>Organizations</span>
             </a>
 
             <a class="navbar-item" href="/licences">
-              Licences
+              <span class="icon has-margin-right-5">
+                <i class="fas fa-fw fa-certificate" aria-hidden="true"></i>
+              </span>
+              <span>Licences</span>
             </a>
 
             <a class="navbar-item" href="/events">
-              Events
+              <span class="icon has-margin-right-5">
+                <i class="fas fa-fw fa-calendar" aria-hidden="true"></i>
+              </span>
+              <span>Events</span>
             </a>
 
             <a class="navbar-item" href="/reports">
-              Reports
+              <span class="icon has-margin-right-5">
+                <i class="fas fa-fw fa-file" aria-hidden="true"></i>
+              </span>
+              <span>Reports</span>
             </a>
           </div>
 
           <div class="navbar-end">
             <a class="navbar-item is-logout-button" role="button" href="#">
-              <span class="icon">
-                <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
+              <span class="icon has-margin-right-5">
+                <i class="fas fa-fw fa-sign-out-alt" aria-hidden="true"></i>
               </span>
               <span>Log Out <%=user.userName %></span>
             </a>

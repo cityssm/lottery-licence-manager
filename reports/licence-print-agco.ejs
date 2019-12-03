@@ -192,10 +192,11 @@
             <td class="is-fullwidth">
               <div class="field">
                 <%
+                  const licenceTypes = configFns.getProperty("licenceTypes");
                   let licenceType = {};
-                  for (let typeIndex = 0; typeIndex < config.licenceTypes.length; typeIndex += 1) {
-                    if (config.licenceTypes[typeIndex].licenceTypeKey === licence.LicenceTypeKey) {
-                      licenceType = config.licenceTypes[typeIndex];
+                  for (let typeIndex = 0; typeIndex < licenceTypes.length; typeIndex += 1) {
+                    if (licenceTypes[typeIndex].licenceTypeKey === licence.LicenceTypeKey) {
+                      licenceType = licenceTypes[typeIndex];
                       break;
                     }
                   }

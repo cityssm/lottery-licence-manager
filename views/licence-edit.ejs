@@ -32,30 +32,49 @@
 </div>
 
 <form id="form--licence">
-  <div class="columns is-multiline">
+
+  <div class="columns">
     <div class="column">
       <div class="field">
         <label class="label" for="licence--licenceID">Licence ID</label>
-        <div class="control">
+        <div class="control has-icons-left">
           <input class="input has-background-light has-cursor-not-allowed" id="licence--licenceID" name="licenceID" type="text" value="<%= licence.LicenceID %>" placeholder="(New Licence Number)" readonly required />
+          <span class="icon is-left">
+            <i class="fas fa-key" aria-hidden="true"></i>
+          </span>
         </div>
       </div>
     </div>
     <div class="column">
       <div class="field">
-        <label class="label" for="licence--externalLicenceNumber"><%= (((config.licences || {}).externalLicenceNumber || {}).fieldLabel || "External Licence Number") %></label>
+        <label class="label" for="licence--externalLicenceNumber"><%= configFns.getProperty("licences.externalLicenceNumber.fieldLabel") %></label>
         <div class="control">
           <input class="input" id="licence--externalLicenceNumber" name="externalLicenceNumber" type="text" value="<%= licence.ExternalLicenceNumber %>" maxlength="20" />
         </div>
       </div>
     </div>
-
+    <div class="column">
+      <div class="field">
+        <label class="label" for="licence--applicationDateString">Application Date</label>
+        <div class="control has-icons-left">
+          <input class="input" id="licence--applicationDateString" name="applicationDateString" type="date" value="<%= licence.ApplicationDateString %>" required />
+          <span class="icon is-left">
+            <i class="fas fa-calendar" aria-hidden="true"></i>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="columns">
     <div class="column is-full">
       <input id="licence--organizationID" name="organizationID" type="hidden" value="<%= organization.OrganizationID %>" />
       <label class="label" for="licence--organization">Organization</label>
       <div class="field has-addons">
-        <div class="control is-expanded">
+        <div class="control has-icons-left is-expanded">
           <input class="input has-background-light has-cursor-not-allowed" id="licence--organizationName" type="text" value="<%= organization.OrganizationName %>" readonly required />
+          <span class="icon is-left">
+            <i class="fas fa-users" aria-hidden="true"></i>
+          </span>
         </div>
         <div class="control">
           <button class="button is-organization-lookup-button" type="button">
@@ -65,57 +84,34 @@
         </div>
       </div>
     </div>
-
-    <div class="column is-half">
-      <div class="field">
-        <label class="label" for="licence--applicationDateString">Application Date</label>
-        <div class="control">
-          <input class="input" id="licence--applicationDateString" name="applicationDateString" type="date" value="<%= licence.ApplicationDateString %>" required />
-        </div>
-      </div>
-    </div>
-    <div class="column is-half">
-      <div class="field">
-        <label class="label" for="licence--licenceTypeKey">Licence Type</label>
-        <div class="control">
-          <div class="select is-fullwidth">
-            <select id="licence--licenceTypeKey" name="licenceTypeKey" required>
-              <option value="">(Select a Licence Type)</option>
-              <%
-                const licenceTypes = config.licenceTypes || [];
-                for (let licenceTypeIndex = 0; licenceTypeIndex < licenceTypes.length; licenceTypeIndex += 1) {
-                  const licenceType = licenceTypes[licenceTypeIndex];
-
-                  if (!licenceType.isActive && licence.LicenceTypeKey !== licenceType.licenceTypeKey) {
-                    continue;
-                  }
-              %>
-                  <option value="<%= licenceType.licenceTypeKey %>" <%= (licence.LicenceTypeKey === licenceType.licenceTypeKey ? " selected" : "") %>>
-                    <%= licenceType.licenceType %>
-                  </option>
-              <%
-                }
-              %>
-            </select>
-          </div>
-        </div>
-      </div>
-    </div>
+  </div>
+  <div class="columns">
 
     <div class="column is-two-thirds">
       <div class="field">
         <label class="label" for="licence--location">Location</label>
-        <input class="input" id="licence--location" name="location" type="text" value="<%= licence.Location %>" maxlength="100" />
+        <div class="control has-icons-left">
+          <input class="input" id="licence--location" name="location" type="text" value="<%= licence.Location %>" maxlength="100" />
+          <span class="icon is-left">
+            <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
+          </span>
+        </div>
       </div>
     </div>
 
     <div class="column is-one-third">
       <div class="field">
         <label class="label" for="licence--municipality">Municipality</label>
-        <input class="input" id="licence--municipality" name="municipality" type="text" value="<%= licence.Municipality %>" maxlength="100" />
+        <div class="control has-icons-left">
+          <input class="input" id="licence--municipality" name="municipality" type="text" value="<%= licence.Municipality %>" maxlength="100" />
+          <span class="icon is-left">
+            <i class="fas fa-city" aria-hidden="true"></i>
+          </span>
+        </div>
       </div>
     </div>
-
+  </div>
+  <div class="columns is-multiline">
     <div class="column is-one-quarter">
       <div class="field">
         <label class="label" for="startDateString">Start Date</label>
@@ -179,7 +175,35 @@
       </div>
     </div>
 
-    <div class="column is-full">
+
+    <div class="column is-half">
+      <div class="field">
+        <label class="label" for="licence--licenceTypeKey">Licence Type</label>
+        <div class="control">
+          <div class="select is-fullwidth">
+            <select id="licence--licenceTypeKey" name="licenceTypeKey" required>
+              <option value="">(Select a Licence Type)</option>
+              <%
+                const licenceTypes = configFns.getProperty("licenceTypes");
+                for (let licenceTypeIndex = 0; licenceTypeIndex < licenceTypes.length; licenceTypeIndex += 1) {
+                  const licenceType = licenceTypes[licenceTypeIndex];
+
+                  if (!licenceType.isActive && licence.LicenceTypeKey !== licenceType.licenceTypeKey) {
+                    continue;
+                  }
+              %>
+                  <option value="<%= licenceType.licenceTypeKey %>" <%= (licence.LicenceTypeKey === licenceType.licenceTypeKey ? " selected" : "") %>>
+                    <%= licenceType.licenceType %>
+                  </option>
+              <%
+                }
+              %>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="column is-half">
       <div class="field">
         <label class="label" for="licence--totalPrizeValue">Total Prize Value</label>
         <div class="control has-icons-left">
@@ -222,7 +246,10 @@
           }
         %>
       </div>
-      <button class="button is-small is-fullwidth is-add-event-button has-margin-top-10" type="button">Add an Event Date</button>
+      <button class="button is-small is-fullwidth is-add-event-button has-margin-top-10" type="button">
+        <span class="icon"><i class="fas fa-plus" aria-hidden="true"></i></span>
+        <span>Add an Event Date</span>
+      </button>
 
       <div class="modal is-event-calculator-modal">
         <div class="modal-background"></div>
@@ -408,7 +435,7 @@
 <%- include('_footerA'); -%>
 
 <script>
-  const config_licenceTypes = <%- JSON.stringify(config.licenceTypes || []) %>;
+  const config_licenceTypes = <%- JSON.stringify(configFns.getProperty("licenceTypes")) %>;
 </script>
 
 <script src="/javascripts/licence-edit.min.js"></script>

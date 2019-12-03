@@ -11,14 +11,18 @@ const licencesDB = require("../helpers/licencesDB");
 
 router.get("/", function(req, res) {
   "use strict";
-  res.render("licence-search");
+  res.render("licence-search", {
+    headTitle: "Licences"
+  });
 });
+
 
 router.post("/doSearch", function(req, res) {
   "use strict";
 
   res.json(licencesDB.getLicences(req.body, true, true));
 });
+
 
 router.get(["/new", "/new/:organizationID"], function(req, res) {
   "use strict";
@@ -39,10 +43,11 @@ router.get(["/new", "/new/:organizationID"], function(req, res) {
   const currentDateAsString = dateTimeFns.dateToString(new Date());
 
   res.render("licence-edit", {
+    headTitle: "Licence Create",
     isCreate: true,
     licence: {
       ApplicationDateString: currentDateAsString,
-      Municipality: configFns.getProperty("config.defaults.city", ""),
+      Municipality: configFns.getProperty("defaults.city"),
       StartDateString: currentDateAsString,
       EndDateString: currentDateAsString,
       StartTimeString: "00:00",
@@ -52,6 +57,7 @@ router.get(["/new", "/new/:organizationID"], function(req, res) {
     organization: organization
   });
 });
+
 
 router.post("/doSave", function(req, res) {
   "use strict";
@@ -136,6 +142,7 @@ router.get("/:licenceID", function(req, res) {
   const organization = licencesDB.getOrganization(licence.OrganizationID);
 
   res.render("licence-view", {
+    headTitle: "Licence #" + licenceID,
     licence: licence,
     organization: organization
   });
@@ -161,6 +168,7 @@ router.get("/:licenceID/edit", function(req, res) {
   const organization = licencesDB.getOrganization(licence.OrganizationID);
 
   res.render("licence-edit", {
+    headTitle: "Licence Update",
     isCreate: false,
     licence: licence,
     organization: organization
@@ -181,14 +189,12 @@ router.get("/:licenceID/print", function(req, res, next) {
 
   const organization = licencesDB.getOrganization(licence.OrganizationID);
 
-  console.log("here");
-
   const path = require("path");
   const ejs = require("ejs");
   const pdf = require("html-pdf");
 
-  ejs.renderFile(path.join(__dirname, "../reports/", configFns.getProperty("licences.printTemplate", "licence-print")), {
-      config: configFns.config,
+  ejs.renderFile(path.join(__dirname, "../reports/", configFns.getProperty("licences.printTemplate")), {
+      configFns: configFns,
       licence: licence,
       organization: organization
     }, {},
@@ -199,7 +205,7 @@ router.get("/:licenceID/print", function(req, res, next) {
 
         let options = {
           format: "Letter",
-          base: "http://localhost:" + configFns.config.application.port,
+          base: "http://localhost:" + configFns.getProperty("application.port"),
           phantomArgs: ["--local-url-access=false"]
         };
 

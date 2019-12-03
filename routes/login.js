@@ -5,8 +5,6 @@ const express = require("express");
 const router = express.Router();
 
 
-
-
 router.route("/")
   .get(function(req, res) {
     "use strict";
@@ -30,7 +28,6 @@ router.route("/")
     const userObj = usersDB.getUser(userName, passwordPlain);
 
     if (userObj) {
-
       req.session.user = userObj;
       res.redirect("/dashboard");
 

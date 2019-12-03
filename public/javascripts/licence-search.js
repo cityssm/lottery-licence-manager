@@ -66,34 +66,35 @@
             trEle.innerHTML =
               "<td>" +
               "<a href=\"/licences/" + licenceObj.LicenceID + "\">" +
-               window.llm.escapeHTML(licenceObj.ExternalLicenceNumber) +
-               "</a>" +
-                "</td>" +
+              window.llm.escapeHTML(licenceObj.ExternalLicenceNumber) + "<br />" +
+              "<small>Licence #" + licenceObj.LicenceID + "</small>" +
+              "</a>" +
+              "</td>" +
               "<td>" + window.llm.escapeHTML(licenceObj.OrganizationName) + "</td>" +
               "<td>" + (licenceType || licenceObj.LicenceTypeKey) + "<br />" +
               "<small>" + window.llm.escapeHTML(licenceObj.LicenceDetails) + "</small>" +
               "</td>" +
 
               ("<td>" +
-                "<i class=\"fas fa-fw fa-play\" aria-hidden=\"true\"></i> " + licenceObj.StartDateString + "<br />" +
-                "<i class=\"fas fa-fw fa-stop\" aria-hidden=\"true\"></i> " + licenceObj.EndDateString +
+                "<span class=\"has-tooltip-right\" data-tooltip=\"Start Date\"><i class=\"fas fa-fw fa-play\" aria-hidden=\"true\"></i> " + licenceObj.StartDateString + "</span><br />" +
+                "<span class=\"has-tooltip-right\" data-tooltip=\"End Date\"><i class=\"fas fa-fw fa-stop\" aria-hidden=\"true\"></i> " + licenceObj.EndDateString + "</span>" +
                 "</td>") +
 
               "<td>" +
               "<div class=\"field has-addons justify-flex-end\">" +
               (canEdit ?
                 "<p class=\"control\">" +
-                "<a class=\"button is-small\" title=\"Edit Licence\" href=\"/licences/" + licenceObj.LicenceID + "/edit\">" +
+                "<a class=\"button is-small\" data-tooltip=\"Edit Licence\" href=\"/licences/" + licenceObj.LicenceID + "/edit\">" +
                 "<span class=\"icon\"><i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i></span>" +
                 "<span>Edit</span>" +
                 "</a>" +
                 "</p>" : "") +
-              "<p class=\"control\">" +
-              "<a class=\"button is-small\" title=\"Print Licence\" href=\"/licences/" + licenceObj.LicenceID + "/print\" target=\"_blank\">" +
-              "<i class=\"fas fa-print\" aria-hidden=\"true\"></i>" +
-              "<span class=\"sr-only\">Print</span>" +
-              "</a>" +
-              "</p>" +
+              ("<p class=\"control\">" +
+                "<a class=\"button is-small\" data-tooltip=\"Print Licence\" href=\"/licences/" + licenceObj.LicenceID + "/print\" target=\"_blank\">" +
+                "<i class=\"fas fa-print\" aria-hidden=\"true\"></i>" +
+                "<span class=\"sr-only\">Print</span>" +
+                "</a>" +
+                "</p>") +
               "</div>" +
               "</td>";
 
@@ -111,7 +112,6 @@
     const optionEle = licenceTypeOptionEles[optionIndex];
     licenceType_keyToName[optionEle.value] = optionEle.innerText;
   }
-  console.log(licenceType_keyToName);
 
 
   formEle.addEventListener("submit", function(formEvent) {

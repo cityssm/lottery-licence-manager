@@ -133,6 +133,8 @@
     document.getElementById("licence--organizationName").value = organizationEle.getAttribute("data-organization-name");
 
     window.llm.hideModal(organizationEle);
+
+    setUnsavedChanges();
   }
 
   function organizationLookup_refreshResults() {
@@ -313,7 +315,7 @@
       "</span>" +
       "</div>" +
       "<div class=\"control\">" +
-      "<a class=\"button is-small is-danger\" role=\"button\" title=\"Remove Event\"><i class=\"fas fa-trash\"></i></a>" +
+      "<a class=\"button is-small is-danger has-tooltip-right\" role=\"button\" data-tooltip=\"Remove Event\"><i class=\"fas fa-trash\"></i></a>" +
       "</div>" +
       "</div>");
 

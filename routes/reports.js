@@ -7,7 +7,7 @@ router.get("/", function(req, res) {
   "use strict";
 
   res.render("report-search", {
-    session: req.session
+    headTitle: "Reports"
   });
 });
 

@@ -1,56 +1,126 @@
 <%- include('_header'); -%>
 
 <h1 class="title is-1">
-  <%= config.application.applicationName %>
+  <%= configFns.getProperty("application.applicationName") %>
 </h1>
+
 <div class="columns">
   <div class="column">
-    <a class="is-block has-margin-bottom-20" href="/organizations">
-      <div class="media">
-        <div class="media-left">
-          <i class="fas fa-3x fa-fw fa-users"></i>
-        </div>
-        <div class="media-content has-text-black">
-          <strong>Organizations</strong><br />
-          View and maintain organizations that hold lottery licences.
-        </div>
-      </div>
-    </a>
-    <a class="is-block has-margin-bottom-20" href="/licences">
-      <div class="media">
-        <div class="media-left">
-          <i class="fas fa-3x fa-fw fa-certificate"></i>
-        </div>
-        <div class="media-content has-text-black">
-          <strong>Licences</strong><br />
-          View and maintain lottery licences.
+    <div class="card">
+      <div class="card-content">
+        <div class="media">
+          <div class="media-left">
+            <i class="fas fa-3x fa-fw fa-users"></i>
+          </div>
+          <div class="media-content has-text-black">
+            <h2 class="title is-3">
+              <a href="/organizations">Organizations</a>
+            </h2>
+            View and maintain organizations that hold lottery licences.
+          </div>
         </div>
       </div>
-    </a>
-    <a class="is-block" href="/events">
-      <div class="media">
-        <div class="media-left">
-          <i class="fas fa-3x fa-fw fa-calendar"></i>
-        </div>
-        <div class="media-content has-text-black">
-          <strong>Events</strong><br />
-          View and update events.
-        </div>
+      <div class="card-footer">
+        <a class="card-footer-item" href="/organizations">
+          <span class="icon">
+            <i class="fas fa-search" aria-hidden="true"></i>
+          </span>
+          Find</a>
+        <% if (user.userProperties.organizations_canEdit === "true") { %>
+          <a class="card-footer-item" href="/organizations/new">
+            <span class="icon">
+              <i class="fas fa-plus" aria-hidden="true"></i>
+            </span>
+            Create
+          </a>
+        <% } %>
       </div>
-    </a>
+    </div>
   </div>
   <div class="column">
-    <a class="is-block" href="/reports">
-      <div class="media">
-        <div class="media-left">
-          <i class="fas fa-3x fa-fw fa-file"></i>
-        </div>
-        <div class="media-content has-text-black">
-          <strong>Reports</strong><br />
-          Produce reports.
+    <div class="card">
+      <div class="card-content">
+        <div class="media">
+          <div class="media-left">
+            <i class="fas fa-3x fa-fw fa-certificate"></i>
+          </div>
+          <div class="media-content has-text-black">
+            <h2 class="title is-3 is-marginless">
+              <a href="/licences">Lottery Licences</a>
+            </h2>
+            <p>View and maintain lottery licences.</p>
+          </div>
         </div>
       </div>
-    </a>
+      <div class="card-footer">
+        <a class="card-footer-item" href="/licences">
+          <span class="icon">
+            <i class="fas fa-search" aria-hidden="true"></i>
+          </span>
+          Find</a>
+        <% if (user.userProperties.organizations_canEdit === "true") { %>
+          <a class="card-footer-item" href="/licences/new">
+            <span class="icon">
+              <i class="fas fa-plus" aria-hidden="true"></i>
+            </span>
+            Create
+          </a>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="columns">
+  <div class="column">
+    <div class="card">
+      <div class="card-content">
+        <div class="media">
+          <div class="media-left">
+            <i class="fas fa-3x fa-fw fa-calendar"></i>
+          </div>
+          <div class="media-content has-text-black">
+            <h2 class="title is-3 is-marginless">
+              <a href="/events">Lottery Events</a>
+            </h2>
+            <p>View and update events.</p>
+          </div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <a class="card-footer-item" href="/events">
+          <span class="icon">
+            <i class="fas fa-search" aria-hidden="true"></i>
+          </span>
+          Find
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="column">
+    <div class="card">
+      <div class="card-content">
+        <div class="media">
+          <div class="media-left">
+            <i class="fas fa-3x fa-fw fa-file"></i>
+          </div>
+          <div class="media-content has-text-black">
+            <h2 class="title is-3 is-marginless">
+              <a href="/reports">Report Library</a>
+            </h2>
+            <p>Produce reports and export data.</p>
+          </div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <a class="card-footer-item" href="/reports">
+          <span class="icon">
+            <i class="fas fa-search" aria-hidden="true"></i>
+          </span>
+          Find
+        </a>
+      </div>
+    </div>
   </div>
 
 </div>

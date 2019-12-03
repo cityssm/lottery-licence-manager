@@ -3,7 +3,7 @@
 
 <head>
   <title>
-    Login: <%= config.application.applicationName %>
+    Login: <%= configFns.getProperty("application.applicationName") %>
   </title>
 
   <meta charset="utf-8">
@@ -18,19 +18,19 @@
   <div class="columns is-vcentered is-centered has-min-page-height">
     <div class="column is-half-widescreen is-two-thirds-desktop is-three-quarters-tablet">
       <div class="box has-margin-10">
-        <div class="columns">
+        <div class="columns is-vcentered">
           <div class="column">
-            <img src="<%= config.application.logoURL %>" alt="" />
+            <img src="<%= configFns.getProperty("application.logoURL") %>" alt="" />
           </div>
           <div class="column">
             <h1 class="title is-3 has-text-centered">
-              <%= config.application.applicationName %>
+              <%= configFns.getProperty("application.applicationName") %>
             </h1>
             <form method="post" action="/login">
               <div class="field">
                 <label class="sr-only" for="login--userName">User Name</label>
-                <div class="control has-icons-left">
-                  <input class="input" id="login--userName" name="userName" type="text" title="User Name" placeholder="User Name" value="<%=userName %>" autofocus required />
+                <div class="control has-icons-left has-tooltip-right" data-tooltip="User Name">
+                  <input class="input" id="login--userName" name="userName" type="text" placeholder="User Name" value="<%=userName %>" autofocus required />
                   <span class="icon is-small is-left">
                     <i class="fas fa-user" aria-hidden="true"></i>
                   </span>
@@ -38,8 +38,8 @@
               </div>
               <div class="field">
                 <label class="sr-only" for="login--password">Password</label>
-                <div class="control has-icons-left">
-                  <input class="input" id="login--password" name="password" type="password" title="Password" placeholder="Password" required />
+                <div class="control has-icons-left has-tooltip-right" data-tooltip="Password" >
+                  <input class="input" id="login--password" name="password" type="password" placeholder="Password" required />
                   <span class="icon is-small is-left">
                     <i class="fas fa-key" aria-hidden="true"></i>
                   </span>

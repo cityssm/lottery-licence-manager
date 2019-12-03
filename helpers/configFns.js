@@ -6,14 +6,30 @@ let config;
 try {
   config = require("../data/config");
 } catch (e) {
-  console.log("Using \"config-example.js\".  To customize, create your own \"config.js\" in the \"data\" folder.");
-  config = require("../data/config-example");
+  config = {};
+  console.log("No \"config.js\" found.  To customize, create your own \"config.js\" in the \"data\" folder.  See \"config-example.js\" to get started.");
 }
+
+
+const configFallbackValues = {
+  "application.applicationName": "Lottery Licence System",
+  "application.logoURL": "/images/bingoBalls.png",
+  "application.port": 3000,
+
+  "defaults.city": "",
+  "defaults.province": "ON",
+
+  "licences.externalLicenceNumber.fieldLabel": "External Licence Number",
+
+  "licences.printTemplate": "licence-print",
+
+  "licenceTypes": []
+};
 
 
 let configFns = {
 
-  getProperty: function(propertyName, fallbackValue) {
+  getProperty: function(propertyName) {
     "use strict";
 
     const propertyNameSplit = propertyName.split(".");
@@ -24,7 +40,7 @@ let configFns = {
       currentObj = currentObj[propertyNameSplit[index]];
 
       if (!currentObj) {
-        return fallbackValue;
+        return configFallbackValues[propertyName];
       }
     }
 
