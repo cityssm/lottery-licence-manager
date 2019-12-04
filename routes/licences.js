@@ -24,10 +24,21 @@ router.post("/doSearch", function(req, res) {
 });
 
 
+router.post("/doGetDistinctLocations", function(req, res) {
+  "use strict";
+
+  const municipality = req.body.municipality;
+
+  const locations = licencesDB.getDistinctLicenceLocations(municipality);
+
+  res.json(locations);
+});
+
+
 router.get(["/new", "/new/:organizationID"], function(req, res) {
   "use strict";
 
-  if (req.session.user.userProperties.licences_canEdit !== "true") {
+  if (req.session.user.userProperties.canCreate !== "true") {
     res.redirect("/licences/?error=accessDenied");
     return;
   }
@@ -42,6 +53,8 @@ router.get(["/new", "/new/:organizationID"], function(req, res) {
 
   const currentDateAsString = dateTimeFns.dateToString(new Date());
 
+  let distinctLocations = licencesDB.getDistinctLicenceLocations(configFns.getProperty("defaults.city"));
+
   res.render("licence-edit", {
     headTitle: "Licence Create",
     isCreate: true,
@@ -54,7 +67,8 @@ router.get(["/new", "/new/:organizationID"], function(req, res) {
       EndTimeString: "00:00",
       events: []
     },
-    organization: organization
+    organization: organization,
+    distinctLocations: distinctLocations
   });
 });
 
@@ -62,8 +76,8 @@ router.get(["/new", "/new/:organizationID"], function(req, res) {
 router.post("/doSave", function(req, res) {
   "use strict";
 
-  if (req.session.user.userProperties.licences_canEdit !== "true") {
-    res.redirect("/licences/?error=accessDenied");
+  if (req.session.user.userProperties.canCreate !== "true") {
+    res.json("not allowed");
     return;
   }
 
@@ -94,10 +108,11 @@ router.post("/doSave", function(req, res) {
   }
 });
 
+
 router.post("/doDelete", function(req, res) {
   "use strict";
 
-  if (req.session.user.userProperties.licences_canEdit !== "txrue") {
+  if (req.session.user.userProperties.canCreate !== "true") {
     res.json("not allowed");
     return;
   }
@@ -127,6 +142,7 @@ router.post("/doDelete", function(req, res) {
   }
 });
 
+
 router.get("/:licenceID", function(req, res) {
   "use strict";
 
@@ -141,22 +157,37 @@ router.get("/:licenceID", function(req, res) {
 
   const organization = licencesDB.getOrganization(licence.OrganizationID);
 
+  let canUpdate = false;
+
+  if (req.session.user.userProperties.canUpdate === "true") {
+    canUpdate = true;
+
+  } else if (req.session.user.userProperties.canCreate === "true" &&
+    licence.RecordCreate_UserName === req.session.user.userName &&
+    licence.RecordUpdate_UserName === req.session.user.userName ||
+    licence.RecordUpdate_TimeMillis + configFns.getProperty("user.createUpdateWindowMillis") > Date.now()) {
+
+    canUpdate = true;
+  }
+
   res.render("licence-view", {
     headTitle: "Licence #" + licenceID,
     licence: licence,
-    organization: organization
+    organization: organization,
+    canUpdate: canUpdate
   });
 });
+
 
 router.get("/:licenceID/edit", function(req, res) {
   "use strict";
 
-  if (req.session.user.userProperties.licences_canEdit !== "true") {
-    res.redirect("/licences/?error=accessDenied");
+  const licenceID = req.params.licenceID;
+
+  if (req.session.user.userProperties.canCreate !== "true") {
+    res.redirect("/licences/" + licenceID + "/?error=accessDenied");
     return;
   }
-
-  const licenceID = req.params.licenceID;
 
   const licence = licencesDB.getLicence(licenceID);
 
@@ -165,15 +196,33 @@ router.get("/:licenceID/edit", function(req, res) {
     return;
   }
 
+  if (req.session.user.userProperties.canUpdate !== "true") {
+
+    if (licence.RecordCreate_UserName !== req.session.user.userName ||
+      licence.RecordUpdate_UserName !== req.session.user.userName ||
+      licence.RecordUpdate_TimeMillis + configFns.getProperty("user.createUpdateWindowMillis") < Date.now()) {
+
+      res.redirect("/licences/" + licenceID + "/?error=accessDenied");
+      return;
+    }
+  }
+
   const organization = licencesDB.getOrganization(licence.OrganizationID);
+
+  let distinctLocations = licencesDB.getDistinctLicenceLocations(licence.Municipality);
+
+  let feeCalculation = configFns.getProperty("licences.feeCalculationFn")(licence);
 
   res.render("licence-edit", {
     headTitle: "Licence Update",
     isCreate: false,
     licence: licence,
-    organization: organization
+    organization: organization,
+    distinctLocations: distinctLocations,
+    feeCalculation: feeCalculation
   });
 });
+
 
 router.get("/:licenceID/print", function(req, res, next) {
   "use strict";
@@ -209,8 +258,6 @@ router.get("/:licenceID/print", function(req, res, next) {
           phantomArgs: ["--local-url-access=false"]
         };
 
-
-
         pdf.create(ejsData, options).toStream(function(pdfErr, pdfStream) {
           if (pdfErr) {
             res.send(pdfErr);
@@ -223,5 +270,6 @@ router.get("/:licenceID/print", function(req, res, next) {
       }
     });
 });
+
 
 module.exports = router;

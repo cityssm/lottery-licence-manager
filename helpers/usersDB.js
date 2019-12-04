@@ -1,6 +1,9 @@
 /* global require, module */
 
 
+const configFns = require("./configFns");
+
+
 const sqlite = require("better-sqlite3");
 const dbPath = "data/users.db";
 
@@ -55,9 +58,9 @@ let usersDB = {
       return null;
     }
 
-    // Get user paroperties
+    // Get user properties
 
-    let userProperties = {};
+    let userProperties = configFns.getProperty("user.defaultProperties");
 
     const userPropertyRows = db.prepare("select PropertyName, PropertyValue" +
       " from UserProperties" +

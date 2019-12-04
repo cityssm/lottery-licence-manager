@@ -14,7 +14,7 @@
       <%= organization.OrganizationName %>
     </h1>
   </div>
-  <% if (user.userProperties.organizations_canEdit === "true") { %>
+  <% if (canUpdate) { %>
     <div class="column is-narrow has-text-right">
       <a class="button is-link" href="/organizations/<%= organization.OrganizationID %>/edit">
         <span class="icon is-small">

@@ -8,7 +8,7 @@
   const formEle = document.getElementById("form--filters");
   const searchResultsEle = document.getElementById("container--searchResults");
 
-  const canEdit = searchResultsEle.getAttribute("data-can-edit") === "true";
+  const canUpdate = searchResultsEle.getAttribute("data-can-update") === "true";
 
 
   function doOrganizationSearch() {
@@ -64,7 +64,7 @@
             trEle.getElementsByTagName("td")[0].insertAdjacentElement("beforeend", organizationNameLinkEle);
 
             trEle.insertAdjacentHTML("beforeend", "<td>" +
-              (canEdit ?
+              (canUpdate ?
                 "<div class=\"field has-addons justify-flex-end\">" +
                 "<p class=\"control\">" +
                 "<a class=\"button is-small\" data-tooltip=\"Edit Organization\" href=\"/organizations/" + organizationObj.OrganizationID + "/edit\">" +

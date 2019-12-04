@@ -9,6 +9,10 @@ const dbPath = "data/licences.db";
 
 let licencesDB = {
 
+  /*
+   * ORGANIZATIONS
+   */
+
   getOrganizations: function(reqBody, useLimit) {
     "use strict";
 
@@ -71,6 +75,7 @@ let licencesDB = {
 
     return organizationObj;
   },
+
 
   createOrganization: function(reqBody, reqSession) {
     "use strict";
@@ -157,12 +162,14 @@ let licencesDB = {
         " RepresentativeName, RepresentativeTitle," +
         " RepresentativeAddress1, RepresentativeAddress2," +
         " RepresentativeCity, RepresentativeProvince, RepresentativePostalCode," +
+        " RepresentativePhoneNumber," +
         " IsDefault)" +
-        " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
+        " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
       .run(organizationID, newRepresentativeIndex,
         reqBody.representativeName, reqBody.representativeTitle,
         reqBody.representativeAddress1, reqBody.representativeAddress2,
         reqBody.representativeCity, reqBody.representativeProvince, reqBody.representativePostalCode,
+        reqBody.representativePhoneNumber,
         newIsDefault);
 
     db.close();
@@ -177,6 +184,7 @@ let licencesDB = {
       RepresentativeCity: reqBody.representativeCity,
       RepresentativeProvince: reqBody.representativeProvince,
       RepresentativePostalCode: reqBody.representativePostalCode,
+      RepresentativePhoneNumber: reqBody.representativePhoneNumber,
       IsDefault: newIsDefault
     };
   },
@@ -193,12 +201,14 @@ let licencesDB = {
         " RepresentativeAddress2 = ?," +
         " RepresentativeCity = ?," +
         " RepresentativeProvince = ?," +
-        " RepresentativePostalCode = ?" +
+        " RepresentativePostalCode = ?," +
+        " RepresentativePhoneNumber = ?" +
         " where OrganizationID = ?" +
         " and RepresentativeIndex = ?")
       .run(reqBody.representativeName, reqBody.representativeTitle,
         reqBody.representativeAddress1, reqBody.representativeAddress2,
         reqBody.representativeCity, reqBody.representativeProvince, reqBody.representativePostalCode,
+        reqBody.representativePhoneNumber,
         organizationID, reqBody.representativeIndex
       );
 
@@ -214,6 +224,7 @@ let licencesDB = {
       RepresentativeCity: reqBody.representativeCity,
       RepresentativeProvince: reqBody.representativeProvince,
       RepresentativePostalCode: reqBody.representativePostalCode,
+      RepresentativePhoneNumber: reqBody.representativePhoneNumber,
       IsDefault: reqBody.isDefault
     };
   },
@@ -254,6 +265,9 @@ let licencesDB = {
     return true;
   },
 
+  /*
+   * LICENCES
+   */
 
   getLicences: function(reqBody_or_paramsObj, includeOrganization, useLimit) {
     "use strict";
@@ -383,6 +397,31 @@ let licencesDB = {
     return licenceObj;
   },
 
+  getDistinctLicenceLocations: function(municipality) {
+    "use strict";
+
+    const db = sqlite(dbPath, {
+      readonly: true
+    });
+
+    const rows = db.prepare("select distinct Location" +
+        " from LotteryLicences" +
+        " where RecordDelete_TimeMillis is null" +
+        " and Municipality = ?" +
+        " order by Location")
+      .all(municipality);
+
+    db.close();
+
+    let list = new Array(rows.length);
+
+    for (let index = 0; index < rows.length; index += 1) {
+      list[index] = rows[index].Location;
+    }
+
+    return list;
+  },
+
 
   createLicence: function(reqBody, reqSession) {
     "use strict";
@@ -445,7 +484,7 @@ let licencesDB = {
           " RecordUpdate_UserName, RecordUpdate_TimeMillis)" +
           " values (?, ?, ?, ?, ?, ?)")
         .run(
-          reqBody.licenceID,
+          licenceID,
           dateTimeFns.dateStringToInteger(reqBody.eventDate),
           reqSession.user.userName,
           nowMillis,
@@ -461,7 +500,7 @@ let licencesDB = {
             " RecordUpdate_UserName, RecordUpdate_TimeMillis)" +
             " values (?, ?, ?, ?, ?, ?)")
           .run(
-            reqBody.licenceID,
+            licenceID,
             dateTimeFns.dateStringToInteger(reqBody.eventDate[eventIndex]),
             reqSession.user.userName,
             nowMillis,
@@ -474,7 +513,6 @@ let licencesDB = {
 
     return licenceID;
   },
-
 
   updateLicence: function(reqBody, reqSession) {
     "use strict";
@@ -609,6 +647,10 @@ let licencesDB = {
     return info.changes;
   },
 
+  /*
+   * EVENTS
+   */
+
   getEvents: function(year, month) {
     "use strict";
 
@@ -617,7 +659,7 @@ let licencesDB = {
     });
 
     let rows = db.prepare("select e.EventDate," +
-        " l.LicenceID, l.ExternalLicenceNumber, l.LicenceTypeKey, l.LicenceDetails," +
+        " l.LicenceID, l.ExternalLicenceNumber, l.LicenceTypeKey, l.LicenceDetails, l.Location," +
         " l.StartTime, l.EndTime," +
         " o.OrganizationName" +
         " from LotteryEvents e" +
@@ -653,9 +695,10 @@ let licencesDB = {
     });
 
     const eventObj = db.prepare("select * from LotteryEvents" +
-      " where RecordDelete_TimeMillis is null" +
-      " and LicenceID = ?" +
-      " and EventDate = ?").get(licenceID, eventDate);
+        " where RecordDelete_TimeMillis is null" +
+        " and LicenceID = ?" +
+        " and EventDate = ?")
+      .get(licenceID, eventDate);
 
     db.close();
 

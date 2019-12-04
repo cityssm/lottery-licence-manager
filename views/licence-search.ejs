@@ -13,7 +13,7 @@
       Find a Licence
     </h1>
   </div>
-  <% if (user.userProperties.licences_canEdit === "true") { %>
+  <% if (user.userProperties.canCreate === "true") { %>
     <div class="column in-narrow has-text-right">
       <a class="button is-primary" href="/licences/new">
         <span class="icon is-small">
@@ -85,7 +85,7 @@
   </div>
 </form>
 
-<div class="has-margin-top-20" id="container--searchResults" data-can-edit="<%= user.userProperties.licences_canEdit %>" data-external-licence-number-label="<%= configFns.getProperty("licences.externalLicenceNumber.fieldLabel") %>"></div>
+<div class="has-margin-top-20" id="container--searchResults" data-can-create="<%= user.userProperties.canCreate %>" data-can-update="<%= user.userProperties.canUpdate %>" data-external-licence-number-label="<%= configFns.getProperty("licences.externalLicenceNumber.fieldLabel") %>"></div>
 
 
 <%- include('_footerA'); -%>

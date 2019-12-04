@@ -4,8 +4,9 @@
 const express = require("express");
 const router = express.Router();
 
-const licencesDB = require("../helpers/licencesDB");
 const configFns = require("../helpers/configFns");
+
+const licencesDB = require("../helpers/licencesDB");
 
 
 /*
@@ -38,7 +39,7 @@ router.get("/doGetAll", function(req, res) {
 router.get("/new", function(req, res) {
   "use strict";
 
-  if (req.session.user.userProperties.organizations_canEdit !== "true") {
+  if (req.session.user.userProperties.canCreate !== "true") {
     res.redirect("/organizations/?error=accessDenied");
     return;
   }
@@ -56,6 +57,11 @@ router.get("/new", function(req, res) {
 
 router.post("/doSave", function(req, res) {
   "use strict";
+
+  if (req.session.user.userProperties.canCreate !== "true") {
+    res.json("not allowed");
+    return;
+  }
 
   if (req.body.organizationID === "") {
 
@@ -110,12 +116,26 @@ router.get("/:organizationID", function(req, res) {
     organizationID: organizationID
   }, false, false);
 
+  let canUpdate = false;
+
+  if (req.session.user.userProperties.canUpdate === "true") {
+    canUpdate = true;
+
+  } else if (req.session.user.userProperties.canCreate === "true" &&
+    organization.RecordCreate_UserName === req.session.user.userName &&
+    organization.RecordUpdate_UserName === req.session.user.userName ||
+    organization.RecordUpdate_TimeMillis + configFns.getProperty("user.createUpdateWindowMillis") > Date.now()) {
+
+    canUpdate = true;
+  }
+
   res.render("organization-view", {
     headTitle: organization.OrganizationName,
     organization: organization,
     licences: licences,
     currentDateInteger: dateTimeFns.dateToInteger(new Date()),
-    stringFns: stringFns
+    stringFns: stringFns,
+    canUpdate: canUpdate
   });
 });
 
@@ -130,8 +150,8 @@ router.get("/:organizationID/edit", function(req, res) {
 
   const organizationID = req.params.organizationID;
 
-  if (req.session.user.userProperties.organizations_canEdit !== "true") {
-    res.redirect("/organizations/" + organizationID + "/?error=accessDenied");
+  if (req.session.user.userProperties.canCreate !== "true") {
+    res.redirect("/organizations/" + organizationID + "/?error=accessDenied-noCreate");
     return;
   }
 
@@ -140,6 +160,17 @@ router.get("/:organizationID/edit", function(req, res) {
   if (!organization) {
     res.redirect("/organizations/?error=organizationNotFound");
     return;
+  }
+
+  if (req.session.user.userProperties.canUpdate !== "true") {
+
+    if (organization.RecordCreate_UserName !== req.session.user.userName ||
+      organization.RecordUpdate_UserName !== req.session.user.userName ||
+      organization.RecordUpdate_TimeMillis + configFns.getProperty("user.createUpdateWindowMillis") < Date.now()) {
+
+      res.redirect("/organizations/" + organizationID + "/?error=accessDenied-noUpdate");
+      return;
+    }
   }
 
   const dateTimeFns = require("../helpers/dateTimeFns");
@@ -163,7 +194,7 @@ router.get("/:organizationID/edit", function(req, res) {
 router.post("/:organizationID/doAddOrganizationRepresentative", function(req, res) {
   "use strict";
 
-  if (req.session.user.userProperties.organizations_canEdit !== "true") {
+  if (req.session.user.userProperties.canCreate !== "true") {
     res.json("not allowed");
     return;
   }
@@ -188,7 +219,7 @@ router.post("/:organizationID/doAddOrganizationRepresentative", function(req, re
 router.post("/:organizationID/doEditOrganizationRepresentative", function(req, res) {
   "use strict";
 
-  if (req.session.user.userProperties.organizations_canEdit !== "true") {
+  if (req.session.user.userProperties.canCreate !== "true") {
     res.json("not allowed");
     return;
   }
@@ -213,7 +244,7 @@ router.post("/:organizationID/doEditOrganizationRepresentative", function(req, r
 router.post("/:organizationID/doDeleteOrganizationRepresentative", function(req, res) {
   "use strict";
 
-  if (req.session.user.userProperties.organizations_canEdit !== "true") {
+  if (req.session.user.userProperties.canCreate !== "true") {
     res.json("not allowed");
     return;
   }
@@ -232,7 +263,7 @@ router.post("/:organizationID/doDeleteOrganizationRepresentative", function(req,
 router.post("/:organizationID/doSetDefaultRepresentative", function(req, res) {
   "use strict";
 
-  if (req.session.user.userProperties.organizations_canEdit !== "true") {
+  if (req.session.user.userProperties.canCreate !== "true") {
     res.json("not allowed");
     return;
   }

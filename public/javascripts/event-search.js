@@ -12,7 +12,7 @@
 
   const resultsEle = document.getElementById("container--events");
 
-  const canEdit = resultsEle.getAttribute("data-can-edit") === "true";
+  const canUpdate = resultsEle.getAttribute("data-can-update") === "true";
 
   function getEvents() {
 
@@ -75,7 +75,7 @@
 
             currentDateListEle.insertAdjacentHTML("beforeend", "<li class=\"list-item\">" +
               "<div class=\"columns\">" +
-              ("<div class=\"column\">" +
+              ("<div class=\"column is-1\">" +
                 "<a href=\"/events/" + eventObj.LicenceID + "/" + eventObj.EventDate + "\">" +
                 window.llm.escapeHTML(eventObj.ExternalLicenceNumber) + "<br />" +
                 "<small>Licence #" + eventObj.LicenceID + "</small>" +
@@ -88,9 +88,13 @@
                 licenceType + "<br />" +
                 "<small>" + window.llm.escapeHTML(eventObj.LicenceDetails) + "</small>" +
                 "</div>") +
-              (canEdit ?
+                ("<div class=\"column\">" +
+                  window.llm.escapeHTML(eventObj.Location) + "<br />" +
+                  "<small>" + eventObj.StartTimeString + " to " + eventObj.EndTimeString + "</small>" +
+                  "</div>") +
+              (canUpdate ?
                 "<div class=\"column is-narrow is-hidden-print\">" +
-                "<a class=\"button\" href=\"/events/" + eventObj.LicenceID + "/" + eventObj.EventDate + "/edit\">" +
+                "<a class=\"button is-small\" href=\"/events/" + eventObj.LicenceID + "/" + eventObj.EventDate + "/edit\">" +
                 "<span class=\"icon\"><i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i></span>" +
                 "<span>Edit</span>" +
                 "</a>" +
@@ -127,6 +131,9 @@
 
     getEvents();
   });
+
+  filterMonthEle.addEventListener("change", getEvents);
+  filterYearEle.addEventListener("change", getEvents);
 
 
 

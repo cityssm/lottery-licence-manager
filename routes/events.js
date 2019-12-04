@@ -4,6 +4,7 @@ const express = require("express");
 const router = express.Router();
 
 const licencesDB = require("../helpers/licencesDB");
+const configFns = require("../helpers/configFns");
 
 
 
@@ -51,7 +52,7 @@ router.get("/:licenceID/:eventDate", function(req, res) {
 router.get("/:licenceID/:eventDate/edit", function(req, res) {
   "use strict";
 
-  if (req.session.user.userProperties.events_canEdit !== "true") {
+  if (req.session.user.userProperties.canCreate !== "true") {
     res.redirect("/events/?error=accessDenied");
     return;
   }
@@ -64,6 +65,17 @@ router.get("/:licenceID/:eventDate/edit", function(req, res) {
   if (!eventObj) {
     res.redirect("/events/?error=eventNotFound");
     return;
+  }
+
+  if (req.session.user.userProperties.canUpdate !== "true") {
+
+    if (eventObj.RecordCreate_UserName !== req.session.user.userName ||
+      eventObj.RecordUpdate_UserName !== req.session.user.userName ||
+      eventObj.RecordUpdate_TimeMillis + configFns.getProperty("user.createUpdateWindowMillis") < Date.now()) {
+
+      res.redirect("/events/" + licenceID + "/" + eventDate + "/?error=accessDenied");
+      return;
+    }
   }
 
   const licence = licencesDB.getLicence(licenceID);

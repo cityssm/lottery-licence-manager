@@ -11,13 +11,14 @@
   const searchResultsEle = document.getElementById("container--searchResults");
 
   const externalLicenceNumberLabel = searchResultsEle.getAttribute("data-external-licence-number-label");
-  const canEdit = searchResultsEle.getAttribute("data-can-edit") === "true";
+
+  const canUpdate = searchResultsEle.getAttribute("data-can-update") === "true";
 
 
   function doLicenceSearch() {
 
     searchResultsEle.innerHTML = "<p class=\"has-text-centered has-text-grey-lighter\">" +
-      "<i class=\"fas fa-3x fa-circle-notch fa-spin\"></i><br />" +
+      "<i class=\"fas fa-3x fa-circle-notch fa-spin\" aria-hidden=\"true\"></i><br />" +
       "<em>Loading licences..." +
       "</p>";
 
@@ -82,7 +83,7 @@
 
               "<td>" +
               "<div class=\"field has-addons justify-flex-end\">" +
-              (canEdit ?
+              (canUpdate ?
                 "<p class=\"control\">" +
                 "<a class=\"button is-small\" data-tooltip=\"Edit Licence\" href=\"/licences/" + licenceObj.LicenceID + "/edit\">" +
                 "<span class=\"icon\"><i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i></span>" +

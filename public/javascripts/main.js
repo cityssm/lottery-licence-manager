@@ -24,7 +24,7 @@
       .replace(/"/g, "&quot;");
   };
 
-  window.llm.arrayToObject = function (array, objectKey) {
+  window.llm.arrayToObject = function(array, objectKey) {
 
     let obj = {};
 

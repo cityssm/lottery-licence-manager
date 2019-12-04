@@ -77,6 +77,7 @@ let dbInit = {
         " RepresentativeAddress1 varchar(50), RepresentativeAddress2 varchar(50)," +
         " RepresentativeCity varchar(20), RepresentativeProvince varchar(2)," +
         " RepresentativePostalCode varchar(7)," +
+        " RepresentativePhoneNumber varchar(30)," +
         " IsDefault bit not null default 0," +
         " primary key (OrganizationID, RepresentativeIndex)," +
         " foreign key (OrganizationID) references Organizations (OrganizationID)" +
@@ -87,6 +88,7 @@ let dbInit = {
       licencesDB.prepare("create table if not exists LotteryLicences (" +
         "LicenceID integer primary key autoincrement," +
         " OrganizationID integer not null," +
+        " ExternalLicenceNumber varchar(20)," +
         " ApplicationDate integer not null," +
         " LicenceTypeKey char(2) not null," +
 
@@ -98,10 +100,11 @@ let dbInit = {
         " LicenceDetails text," +
         " TermsConditions text," +
 
-        " TotalPrizeValue decimal(10,2)," +
+        " TotalPrizeValue decimal(10, 2)," +
 
-        " ExternalLicenceNumber varchar(20)," +
         " ExternalReceiptNumber varchar(20)," +
+        " LicenceCost decimal(10, 2)," +
+        " LicenceIsPaid boolean not null default 0," +
 
         " RecordCreate_UserName varchar(30) not null," +
         " RecordCreate_TimeMillis integer not null," +

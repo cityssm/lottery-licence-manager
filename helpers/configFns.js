@@ -1,5 +1,4 @@
 /* global require, module, console */
-/* eslint-disable no-console */
 
 
 let config;
@@ -7,6 +6,8 @@ try {
   config = require("../data/config");
 } catch (e) {
   config = {};
+
+  // eslint-disable-next-line no-console
   console.log("No \"config.js\" found.  To customize, create your own \"config.js\" in the \"data\" folder.  See \"config-example.js\" to get started.");
 }
 
@@ -16,10 +17,25 @@ const configFallbackValues = {
   "application.logoURL": "/images/bingoBalls.png",
   "application.port": 3000,
 
+  "user.createUpdateWindowMillis": 60 * 60 * 1000,
+  "user.defaultProperties": {
+    canCreate: "false",
+    canUpdate: "false"
+  },
+
   "defaults.city": "",
   "defaults.province": "ON",
 
   "licences.externalLicenceNumber.fieldLabel": "External Licence Number",
+
+  "licences.feeCalculationFn": function() {
+    "use strict";
+    return {
+      fee: 10,
+      message: "Using base licence fee.",
+      licenceHsErrors: false
+    };
+  },
 
   "licences.printTemplate": "licence-print",
 

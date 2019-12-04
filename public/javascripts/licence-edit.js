@@ -98,7 +98,7 @@
 
   function setUnsavedChanges() {
     window.llm.enableNavBlocker();
-    formMessageEle.innerHTML = "<div class=\"is-size-7 has-text-info\">" +
+    formMessageEle.innerHTML = "<div class=\"has-text-info\">" +
       "<i class=\"fas fa-exclamation-triangle\" aria-hidden=\"true\"></i> Unsaved Changes" +
       "</div>";
   }
@@ -206,6 +206,42 @@
   for (let buttonIndex = 0; buttonIndex < cancelButtonEles.length; buttonIndex += 1) {
     cancelButtonEles[buttonIndex].addEventListener("click", window.llm.hideModal);
   }
+
+
+  /*
+   * LOCATION DATALIST
+   */
+
+  document.getElementById("licence--municipality").addEventListener("change", function(changeEvent) {
+
+    const municipality = changeEvent.currentTarget.value;
+
+    window.fetch("/licences/doGetDistinctLocations", {
+        method: "POST",
+        credentials: "include",
+        body: JSON.stringify({
+          municipality: municipality
+        }),
+        headers: {
+          "Content-Type": "application/json"
+        }
+      })
+      .then(function(response) {
+        return response.json();
+      })
+      .then(function(locationListRes) {
+
+        const datalistEle = document.getElementById("datalist--licence--location");
+        datalistEle.innerHTML = "";
+
+        for (let index = 0; index < locationListRes.length; index += 1) {
+
+          const optionEle = document.createElement("option");
+          optionEle.value = locationListRes[index];
+          datalistEle.insertAdjacentElement("beforeend", optionEle);
+        }
+      });
+  });
 
 
   /*

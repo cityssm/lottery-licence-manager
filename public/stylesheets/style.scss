@@ -8,6 +8,14 @@
   .has-min-page-height {
     min-height: 100vh;
   }
+
+  .is-fixed-bottom {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 5;
+  }
 }
 
 @media screen and (min-width: 769px), print {
@@ -18,7 +26,7 @@
 
 @media print {
   .is-hidden-print {
-    display: none;
+    display: none !important;
   }
 }
 

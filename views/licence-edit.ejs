@@ -86,19 +86,6 @@
     </div>
   </div>
   <div class="columns">
-
-    <div class="column is-two-thirds">
-      <div class="field">
-        <label class="label" for="licence--location">Location</label>
-        <div class="control has-icons-left">
-          <input class="input" id="licence--location" name="location" type="text" value="<%= licence.Location %>" maxlength="100" />
-          <span class="icon is-left">
-            <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
-          </span>
-        </div>
-      </div>
-    </div>
-
     <div class="column is-one-third">
       <div class="field">
         <label class="label" for="licence--municipality">Municipality</label>
@@ -109,6 +96,22 @@
           </span>
         </div>
       </div>
+    </div>
+    <div class="column is-two-thirds">
+      <div class="field">
+        <label class="label" for="licence--location">Location</label>
+        <div class="control has-icons-left">
+          <input class="input" id="licence--location" name="location" type="text" value="<%= licence.Location %>" maxlength="100" list="datalist--licence--location" required />
+          <span class="icon is-left">
+            <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
+          </span>
+        </div>
+      </div>
+      <datalist id="datalist--licence--location">
+        <% for (let locationIndex = 0; locationIndex < distinctLocations.length; locationIndex += 1) { %>
+          <option value="<%= distinctLocations[locationIndex] %>" />
+        <% } %>
+      </datalist>
     </div>
   </div>
   <div class="columns is-multiline">
@@ -246,7 +249,7 @@
           }
         %>
       </div>
-      <button class="button is-small is-fullwidth is-add-event-button has-margin-top-10" type="button">
+      <button class="button is-small is-fullwidth is-add-event-button has-margin-top-10 is-hidden-print" type="button">
         <span class="icon"><i class="fas fa-plus" aria-hidden="true"></i></span>
         <span>Add an Event Date</span>
       </button>
@@ -292,7 +295,9 @@
           const licenceType = licenceTypes[licenceTypeIndex];
       %>
         <fieldset class="container-licenceTypeFields <%= (licence.LicenceTypeKey === licenceType.licenceTypeKey ? "" : " is-hidden") %>" id="container-licenceTypeFields--<%= licenceType.licenceTypeKey %>" <%= (licence.LicenceTypeKey === licenceType.licenceTypeKey ? "" : " disabled") %>>
-          <legend class="title is-4">Additional <%= licenceType.licenceType %> Fields</legend>
+          <legend>
+            <h2 class="title is-4 has-padding-bottom-10">Additional <%= licenceType.licenceType %> Fields</h2>
+          </legend>
           <%
             const licenceFields = licenceType.licenceFields || [];
             let fieldKeys = "";
@@ -366,8 +371,16 @@
     </div>
   </div>
 
-  <div class="has-text-right">
-    <span class="is-inline-block has-margin-top-10 has-margin-right-10 is-size-7" id="container--form-message"></span>
+  <% if (isCreate) { %>
+    <div class="message is-info">
+      <div class="message-body">
+        Once created, an ID will be generated for the licence that can be associated with any necessary payments.
+      </div>
+    </div>
+  <% } %>
+
+  <div class="has-text-right is-fixed-bottom has-padding-10 has-background-grey-lighter">
+    <span class="is-inline-block has-margin-top-10 has-margin-right-10" id="container--form-message"></span>
 
     <% if (isCreate) { %>
       <a class="button" href="/licences">
@@ -402,6 +415,48 @@
     <% } %>
   </div>
 </form>
+
+ <% if (!isCreate) { %>
+  <fieldset>
+    <legend>
+      <h2 class="title is-4 has-margin-bottom-10">Licence Payment Details</h2>
+    </legend>
+    <div class="columns">
+      <% if (!licence.LicenceIsPaid) { %>
+        <div class="column is-4">
+          <div class="card">
+            <div class="card-content">
+              <div class="columns">
+                <div class="column">
+                  <strong>Fee Calculation</strong>
+                </div>
+                <div class="column is-narrow">
+                  <strong>$<%= feeCalculation.fee %></strong>
+                </div>
+              </div>
+              <p class="has-text-right is-size-7"><%= feeCalculation.message %></p>
+            </div>
+          </div>
+        </div>
+        <div class="column">
+          <div class="columns">
+            <div class="column">
+              <div class="field">
+                <label class="label" for="licencePayment--licenceCost">Recorded Licence Fee</label>
+                <div class="control has-icons-left">
+                  <input class="input" id="licencePayment--licenceCost" name="licenceCost" type="number" value="<%= licence.LicenceCost || feeCalculation.fee %>" min="0.00" max="99999999.99" step="0.01" required onwheel="return false;" />
+                  <span class="icon is-left">
+                    <i class="fas fa-dollar-sign" aria-hidden="true"></i>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% } %>
+    </div>
+  </fieldset>
+<% } %>
 
 <div class="modal is-organization-lookup-modal">
   <div class="modal-background"></div>

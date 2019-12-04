@@ -18,6 +18,68 @@ config.defaults.city = "Sault Ste. Marie";
 config.defaults.province = "ON";
 
 
+config.licences = {
+  feeCalculationFn: function(licenceObj) {
+    "use strict";
+
+    const totalPrizeValue = (licenceObj.TotalPrizeValue || 0.0);
+
+    const licenceFeeMin = 10;
+
+    const calculatedLicenceFee = totalPrizeValue * 0.03;
+
+    let fee = Math.max(licenceFeeMin, calculatedLicenceFee);
+    let message = (fee === licenceFeeMin ?
+      "Base minimum licence fee." :
+      "3% of $" + licenceObj.TotalPrizeValue);
+    let licenceHasErrors = false;
+
+    // check the total prize value
+
+    if (licenceObj.LicenceTypeKey === "RA") {
+
+      const licenceFields = licenceObj.licenceFields;
+
+      // get the minimum ticket cost
+
+      let ticketCost = parseFloat(licenceFields.ticketCost || "0");
+
+      if (licenceFields.discount1_tickets !== "" && licenceFields.discount1_cost !== "") {
+        const discountTicketCost = parseFloat(licenceFields.discount1_cost) / parseInt(licenceFields.discount1_tickets);
+        ticketCost = Math.min(ticketCost, discountTicketCost);
+      }
+
+      if (licenceFields.discount2_tickets !== "" && licenceFields.discount2_cost !== "") {
+        const discountTicketCost = parseFloat(licenceFields.discount2_cost) / parseInt(licenceFields.discount2_tickets);
+        ticketCost = Math.min(ticketCost, discountTicketCost);
+      }
+
+      if (licenceFields.discount3_tickets !== "" && licenceFields.discount3_cost !== "") {
+        const discountTicketCost = parseFloat(licenceFields.discount3_cost) / parseInt(licenceFields.discount3_tickets);
+        ticketCost = Math.min(ticketCost, discountTicketCost);
+      }
+
+      // calculate the minimum prize value
+
+      let minPotentialTakeIn = ticketCost * parseInt(licenceFields.ticketCount || "0");
+
+      let minPrizeValue = minPotentialTakeIn * 0.2;
+
+      if (totalPrizeValue < minPrizeValue) {
+        licenceHasErrors = true;
+        message = "Total Prize Value must be a minimum of $" + minPrizeValue + ".";
+      }
+    }
+
+    return {
+      fee: fee.toFixed(2),
+      message: message,
+      licenceHasErrors: licenceHasErrors
+    };
+  }
+};
+
+
 config.licenceTypes = [{
   licenceTypeKey: "BA",
   licenceType: "Bazaar",

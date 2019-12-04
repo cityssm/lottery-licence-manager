@@ -151,6 +151,7 @@
       document.getElementById("editOrganizationRepresentative--representativeCity").value = editRepresentativeTrEle.getAttribute("data-representative-city");
       document.getElementById("editOrganizationRepresentative--representativeProvince").value = editRepresentativeTrEle.getAttribute("data-representative-province");
       document.getElementById("editOrganizationRepresentative--representativePostalCode").value = editRepresentativeTrEle.getAttribute("data-representative-postal-code");
+      document.getElementById("editOrganizationRepresentative--representativePhoneNumber").value = editRepresentativeTrEle.getAttribute("data-representative-phone-number");
 
       document.getElementById("editOrganizationRepresentative--isDefault").value = document.getElementById("representative-isDefault--" + representativeIndex).checked ? "1" : "0";
 
@@ -169,6 +170,7 @@
       trEle.setAttribute("data-representative-city", representativeObj.RepresentativeCity);
       trEle.setAttribute("data-representative-province", representativeObj.RepresentativeProvince);
       trEle.setAttribute("data-representative-postal-code", representativeObj.RepresentativePostalCode);
+      trEle.setAttribute("data-representative-phone-number", representativeObj.RepresentativePhoneNumber);
 
       trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-centered\">" +
         "<div class=\"field\">" +
@@ -194,13 +196,18 @@
         "<small>" + representativeObj.RepresentativePostalCode + "</small>";
       trEle.insertAdjacentElement("beforeend", tdEle);
 
+      tdEle = document.createElement("td");
+      tdEle.innerHTML = representativeObj.RepresentativePhoneNumber;
+      trEle.insertAdjacentElement("beforeend", tdEle);
+
       trEle.insertAdjacentHTML("beforeend", "<td>" +
         "<div class=\"buttons is-right has-addons\">" +
-        "<button class=\"button is-small is-edit-representative-button\" type=\"button\">" +
-        "<span class=\"icon\"><i class=\"fas fa-pencil-alt\"></i></span>" +
+        "<button class=\"button is-small is-edit-representative-button\" data-tooltip=\"Edit Representative\" type=\"button\">" +
+        "<span class=\"icon\"><i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i></span>" +
         "<span>Edit</span></button>" +
-        "<button class=\"button is-small is-delete-representative-button\" type=\"button\">" +
-        "<i class=\"fas fa-trash\"></i>" +
+        "<button class=\"button is-small has-text-danger is-delete-representative-button\" data-tooltip=\"Delete Representative\" type=\"button\">" +
+        "<i class=\"fas fa-trash\" aria-hidden=\"true\"></i>" +
+        "<span class=\"sr-only\">Delete</span>" +
         "</button>" +
         "</td>");
 
@@ -297,6 +304,16 @@
           }
         });
     });
+
+    addRepresentativeModalEle.getElementsByClassName("is-copy-organization-address-button")[0].addEventListener("click", function(clickEvent) {
+      clickEvent.preventDefault();
+
+      document.getElementById("addOrganizationRepresentative--representativeAddress1").value = document.getElementById("organization--organizationAddress1").value;
+      document.getElementById("addOrganizationRepresentative--representativeAddress2").value = document.getElementById("organization--organizationAddress2").value;
+      document.getElementById("addOrganizationRepresentative--representativeCity").value = document.getElementById("organization--organizationCity").value;
+      document.getElementById("addOrganizationRepresentative--representativeProvince").value = document.getElementById("organization--organizationProvince").value;
+      document.getElementById("addOrganizationRepresentative--representativePostalCode").value = document.getElementById("organization--organizationPostalCode").value;
+    });
   }
 
 
@@ -304,8 +321,8 @@
 
   function setUnsavedChanges() {
     window.llm.enableNavBlocker();
-    formMessageEle.innerHTML = "<div class=\"is-size-7 has-text-info\">" +
-      "<i class=\"fas fa-exclamation-triangle\"></i> Unsaved Changes" +
+    formMessageEle.innerHTML = "<div class=\"has-text-info\">" +
+      "<i class=\"fas fa-exclamation-triangle\" aria-hidden=\"true\"></i> Unsaved Changes" +
       "</div>";
   }
 

@@ -75,8 +75,8 @@
     </div>
   <% } %>
 
-  <div class="has-text-right">
-    <span class="is-inline-block has-margin-top-10 has-margin-right-10 is-size-7" id="container--form-message"></span>
+  <div class="has-text-right is-fixed-bottom has-padding-10 has-background-grey-lighter">
+    <span class="is-inline-block has-margin-top-10 has-margin-right-10" id="container--form-message"></span>
 
     <% if (isCreate) { %>
       <a class="button" href="/organizations">
@@ -116,6 +116,7 @@
         <th>Name</th>
         <th>Address</th>
         <th>City</th>
+        <th>Phone Number</th>
         <th>
           <span class="sr-only">Options</span>
         </th>
@@ -133,7 +134,8 @@
           data-representative-address-2="<%= representativeObj.RepresentativeAddress2 %>"
           data-representative-city="<%= representativeObj.RepresentativeCity %>"
           data-representative-province="<%= representativeObj.RepresentativeProvince %>"
-          data-representative-postal-code="<%= representativeObj.RepresentativePostalCode %>">
+          data-representative-postal-code="<%= representativeObj.RepresentativePostalCode %>"
+          data-representative-phone-number="<%= representativeObj.RepresentativePhoneNumber %>">
           <td>
             <div class="field">
               <input class="is-checkradio is-info" id="representative-isDefault--<%= representativeObj.RepresentativeIndex %>" name="representative-isDefault" type="radio" value="<%= representativeObj.RepresentativeIndex %>" <%= (representativeObj.IsDefault === 1 ? " checked" : "") %> />
@@ -151,6 +153,9 @@
           <td>
             <%= representativeObj.RepresentativeCity %>, <%= representativeObj.RepresentativeProvince %><br />
             <small><%= representativeObj.RepresentativePostalCode %></small>
+          </td>
+          <td>
+            <%= representativeObj.RepresentativePhoneNumber %>
           </td>
           <td>
             <div class="buttons is-right has-addons">
@@ -189,13 +194,19 @@
           <div class="field">
             <label class="label" for="addOrganizationRepresentative--representativeTitle">Representative Title</label>
             <div class="control">
-              <input class="input" id="addOrganizationRepresentative--representativeTitle" name="representativeTitle" type="text" value="" maxlength="100" autocomplete="off" />
+              <input class="input" id="addOrganizationRepresentative--representativeTitle" name="representativeTitle" type="text" value="" maxlength="100" autocomplete="off" required />
             </div>
           </div>
-          <div class="field">
-            <label class="label" for="addOrganizationRepresentative--representativeAddress1">Representative Address</label>
+          <label class="label" for="addOrganizationRepresentative--representativeAddress1">Representative Address</label>
+          <div class="field has-addons">
+            <div class="control is-expanded">
+              <input class="input" id="addOrganizationRepresentative--representativeAddress1" name="representativeAddress1" type="text" value="" placeholder="Line 1" maxlength="50" autocomplete="off" required />
+            </div>
             <div class="control">
-              <input class="input" id="addOrganizationRepresentative--representativeAddress1" name="representativeAddress1" type="text" value="" placeholder="Line 1" maxlength="50" autocomplete="off" />
+              <a class="button is-copy-organization-address-button" data-tooltip="Copy Organization" role="button">
+                <span class="icon"><i class="fas fa-copy" aria-hidden="true"></i></span>
+                <span>Copy</span>
+              </a>
             </div>
           </div>
           <div class="field">
@@ -203,22 +214,40 @@
               <input class="input" id="addOrganizationRepresentative--representativeAddress2" name="representativeAddress2" type="text" value="" placeholder="Line 2" maxlength="50" autocomplete="off" />
             </div>
           </div>
-          <div class="field">
-            <label class="label" for="addOrganizationRepresentative--representativeCity">City</label>
-            <div class="control">
-              <input class="input" id="addOrganizationRepresentative--representativeCity" name="representativeCity" type="text" value="<%= configFns.getProperty("defaults.city") %>" maxlength="20" />
+          <div class="columns">
+            <div class="column is-8">
+              <div class="field">
+                <label class="label" for="addOrganizationRepresentative--representativeCity">City</label>
+                <div class="control">
+                  <input class="input" id="addOrganizationRepresentative--representativeCity" name="representativeCity" type="text" value="<%= configFns.getProperty("defaults.city") %>" maxlength="20" required />
+                </div>
+              </div>
+            </div>
+            <div class="column">
+              <div class="field">
+                <label class="label" for="addOrganizationRepresentative--representativeProvince">Province</label>
+                <div class="control">
+                  <input class="input" id="addOrganizationRepresentative--representativeProvince" name="representativeProvince" type="text" value="<%= configFns.getProperty("defaults.province") %>" maxlength="2" required />
+                </div>
+              </div>
             </div>
           </div>
-          <div class="field">
-            <label class="label" for="addOrganizationRepresentative--representativeProvince">Province</label>
-            <div class="control">
-              <input class="input" id="addOrganizationRepresentative--representativeProvince" name="representativeProvince" type="text" value="<%= configFns.getProperty("defaults.province") %>" maxlength="2" />
+          <div class="columns">
+            <div class="column is-6">
+              <div class="field">
+                <label class="label" for="addOrganizationRepresentative--representativePostalCode">Postal Code</label>
+                <div class="control">
+                  <input class="input" id="addOrganizationRepresentative--representativePostalCode" name="representativePostalCode" type="text" value="" minlength="5" maxlength="7" autocomplete="off" required />
+                </div>
+              </div>
             </div>
-          </div>
-          <div class="field">
-            <label class="label" for="addOrganizationRepresentative--representativePostalCode">Postal Code</label>
-            <div class="control">
-              <input class="input" id="addOrganizationRepresentative--representativePostalCode" name="representativePostalCode" type="text" value="" minlength="5" maxlength="7" autocomplete="off" />
+            <div class="column">
+              <div class="field">
+                <label class="label" for="addOrganizationRepresentative--representativePhoneNumber">Phone Number</label>
+                <div class="control">
+                  <input class="input" id="addOrganizationRepresentative--representativePhoneNumber" name="representativePhoneNumber" type="tel" value="" minlength="10" maxlength="30" pattern="^\+?[(]?\d{3}[)]?[ -]?\d{3}[ -]?\d{4}" autocomplete="off" required />
+                </div>
+              </div>
             </div>
           </div>
         </section>
@@ -250,13 +279,13 @@
           <div class="field">
             <label class="label" for="editOrganizationRepresentative--representativeTitle">Representative Title</label>
             <div class="control">
-              <input class="input" id="editOrganizationRepresentative--representativeTitle" name="representativeTitle" type="text" value="" maxlength="100" autocomplete="off" />
+              <input class="input" id="editOrganizationRepresentative--representativeTitle" name="representativeTitle" type="text" value="" maxlength="100" autocomplete="off" required />
             </div>
           </div>
           <div class="field">
             <label class="label" for="editOrganizationRepresentative--representativeAddress1">Representative Address</label>
             <div class="control">
-              <input class="input" id="editOrganizationRepresentative--representativeAddress1" name="representativeAddress1" type="text" value="" placeholder="Line 1" maxlength="50" autocomplete="off" />
+              <input class="input" id="editOrganizationRepresentative--representativeAddress1" name="representativeAddress1" type="text" value="" placeholder="Line 1" maxlength="50" autocomplete="off" required />
             </div>
           </div>
           <div class="field">
@@ -264,22 +293,40 @@
               <input class="input" id="editOrganizationRepresentative--representativeAddress2" name="representativeAddress2" type="text" value="" placeholder="Line 2" maxlength="50" autocomplete="off" />
             </div>
           </div>
-          <div class="field">
-            <label class="label" for="editOrganizationRepresentative--representativeCity">City</label>
-            <div class="control">
-              <input class="input" id="editOrganizationRepresentative--representativeCity" name="representativeCity" type="text" value="" maxlength="20" />
+          <div class="columns">
+            <div class="column is-8">
+              <div class="field">
+                <label class="label" for="editOrganizationRepresentative--representativeCity">City</label>
+                <div class="control">
+                  <input class="input" id="editOrganizationRepresentative--representativeCity" name="representativeCity" type="text" value="" maxlength="20" required />
+                </div>
+              </div>
+            </div>
+            <div class="column">
+              <div class="field">
+                <label class="label" for="editOrganizationRepresentative--representativeProvince">Province</label>
+                <div class="control">
+                  <input class="input" id="editOrganizationRepresentative--representativeProvince" name="representativeProvince" type="text" value="" maxlength="2" required />
+                </div>
+              </div>
             </div>
           </div>
-          <div class="field">
-            <label class="label" for="editOrganizationRepresentative--representativeProvince">Province</label>
-            <div class="control">
-              <input class="input" id="editOrganizationRepresentative--representativeProvince" name="representativeProvince" type="text" value="" maxlength="2" />
+          <div class="columns">
+            <div class="column is-6">
+              <div class="field">
+                <label class="label" for="editOrganizationRepresentative--representativePostalCode">Postal Code</label>
+                <div class="control">
+                  <input class="input" id="editOrganizationRepresentative--representativePostalCode" name="representativePostalCode" type="text" value="" minlength="5" maxlength="7" autocomplete="off" required />
+                </div>
+              </div>
             </div>
-          </div>
-          <div class="field">
-            <label class="label" for="editOrganizationRepresentative--representativePostalCode">Postal Code</label>
-            <div class="control">
-              <input class="input" id="editOrganizationRepresentative--representativePostalCode" name="representativePostalCode" type="text" value="" minlength="5" maxlength="7" autocomplete="off" />
+            <div class="column">
+              <div class="field">
+                <label class="label" for="editOrganizationRepresentative--representativePhoneNumber">Phone Number</label>
+                <div class="control">
+                  <input class="input" id="editOrganizationRepresentative--representativePhoneNumber" name="representativePhoneNumber" type="tel" value="" minlength="10" maxlength="30" pattern="^\+?[(]?\d{3}[)]?[ -]?\d{3}[ -]?\d{4}" autocomplete="off" required />
+                </div>
+              </div>
             </div>
           </div>
         </section>

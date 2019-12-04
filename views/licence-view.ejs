@@ -14,7 +14,7 @@
       Licence #<%= licence.LicenceID %>
     </h1>
   </div>
-  <% if (user.userProperties.licences_canEdit === "true") { %>
+  <% if (canUpdate) { %>
     <div class="column is-narrow has-text-right">
       <a class="button is-link" href="/licences/<%= licence.LicenceID %>/edit">
         <span class="icon is-small">
