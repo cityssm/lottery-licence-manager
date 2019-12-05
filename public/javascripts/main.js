@@ -72,13 +72,16 @@
     const cancelButtonHTML = modalOptions.cancelButtomHTML || "Cancel";
     const okButtonHTML = modalOptions.okButtonHTML || "OK";
 
+    const contextualColorIsDark = true;
 
     modalEle.innerHTML = "<div class=\"modal-background\"></div>" +
       "<div class=\"modal-card\">" +
       ("<header class=\"modal-card-head has-background-" + contextualColorName + "\">" +
-        "<h3 class=\"modal-card-title" + (contextualColorName === "danger" ? " has-text-white" : "") + "\"></h3>" +
+        "<h3 class=\"modal-card-title" + (contextualColorIsDark ? " has-text-white" : "") + "\"></h3>" +
         "</header>") +
-      ("<section class=\"modal-card-body\">" + bodyHTML + "</section>") +
+      (bodyHTML === "" ?
+        "" :
+        "<section class=\"modal-card-body\">" + bodyHTML + "</section>") +
       ("<footer class=\"modal-card-foot justify-flex-end\">" +
         (modalOptions.hideCancelButton ?
           "" :

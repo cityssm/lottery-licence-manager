@@ -38,10 +38,14 @@ router.post("/doGetDistinctLocations", function(req, res) {
 router.get(["/new", "/new/:organizationID"], function(req, res) {
   "use strict";
 
+  // check permission
+
   if (req.session.user.userProperties.canCreate !== "true") {
     res.redirect("/licences/?error=accessDenied");
     return;
   }
+
+  // get organization (if set)
 
   const organizationID = req.params.organizationID;
 
@@ -51,7 +55,21 @@ router.get(["/new", "/new/:organizationID"], function(req, res) {
     organization = licencesDB.getOrganization(organizationID);
   }
 
+  // use current date as default
+
   const currentDateAsString = dateTimeFns.dateToString(new Date());
+
+  // get next external licence number
+
+  let externalLicenceNumber = "";
+
+  const licenceNumberCalculationType = configFns.getProperty("licences.externalLicenceNumber.newCalculation");
+
+  if (licenceNumberCalculationType === "range") {
+    externalLicenceNumber = licencesDB.getNextExternalLicenceNumberFromRange();
+  }
+
+  // get distinct locations for datalist
 
   let distinctLocations = licencesDB.getDistinctLicenceLocations(configFns.getProperty("defaults.city"));
 
@@ -59,6 +77,7 @@ router.get(["/new", "/new/:organizationID"], function(req, res) {
     headTitle: "Licence Create",
     isCreate: true,
     licence: {
+      ExternalLicenceNumber: externalLicenceNumber,
       ApplicationDateString: currentDateAsString,
       Municipality: configFns.getProperty("defaults.city"),
       StartDateString: currentDateAsString,
@@ -97,7 +116,7 @@ router.post("/doSave", function(req, res) {
     if (changeCount) {
       res.json({
         success: true,
-        message: "Licence Updated"
+        message: "Licence updated successfully."
       });
     } else {
       res.json({
@@ -105,6 +124,54 @@ router.post("/doSave", function(req, res) {
         message: "Record Not Saved"
       });
     }
+  }
+});
+
+
+router.post("/doMarkLicenceFeePaid", function(req, res) {
+  "use strict";
+
+  if (req.session.user.userProperties.canCreate !== "true") {
+    res.json("not allowed");
+    return;
+  }
+
+  const changeCount = licencesDB.markLicenceFeePaid(req.body, req.session);
+
+  if (changeCount) {
+    res.json({
+      success: true,
+      message: "Licence Fee Paid"
+    });
+  } else {
+    res.json({
+      success: false,
+      message: "Record Not Saved"
+    });
+  }
+});
+
+
+router.post("/doRemoveLicenceFee", function(req, res) {
+  "use strict";
+
+  if (req.session.user.userProperties.canCreate !== "true") {
+    res.json("not allowed");
+    return;
+  }
+
+  const changeCount = licencesDB.markLicenceFeeUnpaid(req.body.licenceID, req.session);
+
+  if (changeCount) {
+    res.json({
+      success: true,
+      message: "Licence Fee Payment Removed"
+    });
+  } else {
+    res.json({
+      success: false,
+      message: "Record Not Saved"
+    });
   }
 });
 
@@ -233,6 +300,11 @@ router.get("/:licenceID/print", function(req, res, next) {
 
   if (!licence) {
     res.redirect("/licences/?error=licenceNotFound");
+    return;
+  }
+
+  if (!licence.LicenceFeeIsPaid) {
+    res.redirect("/licences/?error=licenceFeeNotPaid");
     return;
   }
 

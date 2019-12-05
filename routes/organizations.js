@@ -79,7 +79,7 @@ router.post("/doSave", function(req, res) {
     if (changeCount) {
       res.json({
         success: true,
-        message: "Organization Updated"
+        message: "Organization updated successfully."
       });
     } else {
       res.json({

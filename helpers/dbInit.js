@@ -88,7 +88,10 @@ let dbInit = {
       licencesDB.prepare("create table if not exists LotteryLicences (" +
         "LicenceID integer primary key autoincrement," +
         " OrganizationID integer not null," +
+
         " ExternalLicenceNumber varchar(20)," +
+        " ExternalLicenceNumberInteger bigint not null," +
+
         " ApplicationDate integer not null," +
         " LicenceTypeKey char(2) not null," +
 
@@ -103,8 +106,8 @@ let dbInit = {
         " TotalPrizeValue decimal(10, 2)," +
 
         " ExternalReceiptNumber varchar(20)," +
-        " LicenceCost decimal(10, 2)," +
-        " LicenceIsPaid boolean not null default 0," +
+        " LicenceFee decimal(10, 2)," +
+        " LicenceFeeIsPaid boolean not null default 0," +
 
         " RecordCreate_UserName varchar(30) not null," +
         " RecordCreate_TimeMillis integer not null," +
@@ -115,6 +118,10 @@ let dbInit = {
 
         " foreign key (OrganizationID) references Organizations (OrganizationID)" +
         ")").run();
+
+      licencesDB.prepare("create index if not exists LotteryLicences_ExternalLicenceNumberInteger_Index" +
+        " on LotteryLicences (ExternalLicenceNumberInteger desc)" +
+        " where ExternalLicenceNumberInteger <> -1").run();
 
       licencesDB.prepare("create table if not exists LotteryLicenceFields (" +
         "LicenceID integer not null," +
@@ -151,6 +158,39 @@ let dbInit = {
         " primary key (LicenceID, EventDate, FieldKey)," +
         " foreign key (LicenceID, EventDate) references LotteryEvents (LicenceID, EventDate)" +
         ") without rowid").run();
+
+      // settings
+
+      licencesDB.prepare("create table if not exists ApplicationSettings (" +
+        "SettingKey varchar(50) primary key not null," +
+        " SettingName varchar(100) not null," +
+        " SettingDescription text," +
+        " SettingValue text," +
+        " RecordUpdate_UserName varchar(30) not null," +
+        " RecordUpdate_TimeMillis integer not null" +
+        ") without rowid").run();
+
+      // default settings
+
+      let settingInsertSQL = "insert or ignore into ApplicationSettings" +
+        " (SettingKey, SettingName, SettingDescription, SettingValue, RecordUpdate_UserName, RecordUpdate_TimeMillis)" +
+        " values (?, ?, ?, ?, ?, ?)";
+
+      licencesDB.prepare(settingInsertSQL)
+        .run("licences.externalLicenceNumber.range.start",
+          "External Licence Number: Range Start",
+          "When External Licence Numbers are generated using a range, this value will be used as the minimum for the range.",
+          "-1",
+          "init",
+          Date.now());
+
+      licencesDB.prepare(settingInsertSQL)
+        .run("licences.externalLicenceNumber.range.end",
+          "External Licence Number: Range End",
+          "When External Licence Numbers are generated using a range, this value will be used as the maximum for the range.",
+          "0",
+          "init",
+          Date.now());
     }
 
     return false;

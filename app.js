@@ -19,11 +19,7 @@ const router_organizations = require("./routes/organizations");
 const router_licences = require("./routes/licences");
 const router_events = require("./routes/events");
 const router_reports = require("./routes/reports");
-
-let configFns = require("./helpers/configFns");
-
-
-const app = express();
+const router_admin = require("./routes/admin");
 
 
 /*
@@ -34,6 +30,14 @@ const app = express();
 const dbInit = require("./helpers/dbInit");
 dbInit.initUsersDB();
 dbInit.initLicencesDB();
+
+
+/*
+ * INITIALIZE APP
+ */
+
+
+const app = express();
 
 
 // view engine setup
@@ -108,6 +112,9 @@ const sessionChecker = function(req, res, next) {
  */
 
 
+let configFns = require("./helpers/configFns");
+
+
 // make the user and config objects available to the templates
 app.use(function(req, res, next) {
   "use strict";
@@ -127,6 +134,7 @@ app.use("/organizations", sessionChecker, router_organizations);
 app.use("/licences", sessionChecker, router_licences);
 app.use("/events", sessionChecker, router_events);
 app.use("/reports", sessionChecker, router_reports);
+app.use("/admin", sessionChecker, router_admin);
 
 app.use("/login", router_login);
 

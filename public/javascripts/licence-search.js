@@ -81,22 +81,23 @@
                 "<span class=\"has-tooltip-right\" data-tooltip=\"End Date\"><i class=\"fas fa-fw fa-stop\" aria-hidden=\"true\"></i> " + licenceObj.EndDateString + "</span>" +
                 "</td>") +
 
-              "<td>" +
-              "<div class=\"field has-addons justify-flex-end\">" +
+              "<td class=\"has-text-right\">" +
+
               (canUpdate ?
-                "<p class=\"control\">" +
+
                 "<a class=\"button is-small\" data-tooltip=\"Edit Licence\" href=\"/licences/" + licenceObj.LicenceID + "/edit\">" +
                 "<span class=\"icon\"><i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i></span>" +
                 "<span>Edit</span>" +
-                "</a>" +
-                "</p>" : "") +
-              ("<p class=\"control\">" +
+                "</a> " : "") +
+              (licenceObj.LicenceFeeIsPaid ?
+
                 "<a class=\"button is-small\" data-tooltip=\"Print Licence\" href=\"/licences/" + licenceObj.LicenceID + "/print\" target=\"_blank\">" +
                 "<i class=\"fas fa-print\" aria-hidden=\"true\"></i>" +
                 "<span class=\"sr-only\">Print</span>" +
-                "</a>" +
-                "</p>") +
+                "</a>" :
+              "<span class=\"tag is-warning\">Unpaid</span>") +
               "</div>" +
+
               "</td>";
 
             tbodyEle.insertAdjacentElement("beforeend", trEle);

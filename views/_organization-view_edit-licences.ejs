@@ -66,16 +66,17 @@
       "<td>" + stringFns.escapeHTML(licence.LicenceDetails) + "</td>" +
       "<td>" + licence.StartDateString + "</td>" +
       "<td>" + licence.EndDateString + "</td>" +
-      "<td>" +
-        "<div class=\"buttons is-right has-addons\">" +
-          (canEdit ?
-          "<a class=\"button is-small\" href=\"/licences/" + licence.LicenceID + "/edit\" data-tooltip=\"Edit Licence\"><span class=\"icon\"><i class=\"fas fa-pencil-alt\"></i></span><span>Edit</span></a>" :
+      "<td class=\"has-text-right\">" +
+        (canEdit ?
+          "<a class=\"button is-small\" href=\"/licences/" + licence.LicenceID + "/edit\" data-tooltip=\"Edit Licence\"><span class=\"icon\"><i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i></span><span>Edit</span></a> " :
           "") +
-        "<a class=\"button is-small\" href=\"/licences/" + licence.LicenceID + "/print\" data-tooltip=\"Print Licence\" target=\"_blank\">" +
-        "<i class=\"fas fa-print\" aria-hidden=\"true\"></i>" +
-        "<span class=\"sr-only\">Print Licence</span>" +
-        "</a>" +
-        "</div>" +
+        (licence.LicenceFeeIsPaid ?
+          "<a class=\"button is-small\" href=\"/licences/" + licence.LicenceID + "/print\" data-tooltip=\"Print Licence\" target=\"_blank\">" +
+          "<i class=\"fas fa-print\" aria-hidden=\"true\"></i>" +
+          "<span class=\"sr-only\">Print Licence</span>" +
+          "</a>" :
+          "<span class=\"tag is-warning\">Unpaid</span>") +
+
         "</td>" +
       "</tr>";
 

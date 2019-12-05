@@ -19,7 +19,7 @@
       <%= (isCreate ? "Create a New Licence" : "Update an Existing Licence") %>
     </h1>
   </div>
-  <% if (!isCreate) { %>
+  <% if (licence.LicenceFeeIsPaid) { %>
     <div class="column is-narrow has-text-right">
       <a class="button is-link" href="/licences/<%= licence.LicenceID %>/print" target="_blank">
         <span class="icon is-small">
@@ -117,7 +117,7 @@
   <div class="columns is-multiline">
     <div class="column is-one-quarter">
       <div class="field">
-        <label class="label" for="startDateString">Start Date</label>
+        <label class="label" for="licence--startDateString">Start Date</label>
         <div class="control has-icons-left">
           <input class="input" id="licence--startDateString" name="startDateString" type="date" value="<%= licence.StartDateString %>" min="<%= licence.ApplicationDateString %>" required />
           <span class="icon is-left">
@@ -128,7 +128,7 @@
     </div>
     <div class="column is-one-quarter">
       <div class="field">
-        <label class="label" for="endDateString">End Date</label>
+        <label class="label" for="licence--endDateString">End Date</label>
         <div class="control has-icons-left">
           <input class="input" id="licence--endDateString" name="endDateString" type="date" value="<%= licence.EndDateString %>" min="<%= licence.StartDateString %>" required />
           <span class="icon is-left">
@@ -416,47 +416,108 @@
   </div>
 </form>
 
- <% if (!isCreate) { %>
-  <fieldset>
-    <legend>
-      <h2 class="title is-4 has-margin-bottom-10">Licence Payment Details</h2>
-    </legend>
-    <div class="columns">
-      <% if (!licence.LicenceIsPaid) { %>
-        <div class="column is-4">
-          <div class="card">
-            <div class="card-content">
-              <div class="columns">
-                <div class="column">
-                  <strong>Fee Calculation</strong>
-                </div>
-                <div class="column is-narrow">
-                  <strong>$<%= feeCalculation.fee %></strong>
-                </div>
-              </div>
-              <p class="has-text-right is-size-7"><%= feeCalculation.message %></p>
-            </div>
-          </div>
-        </div>
-        <div class="column">
+
+<%
+  if (!isCreate) {
+    if (licence.LicenceFeeIsPaid) {
+%>
+  <h2 class="title is-4">Licence Fee Payment</h2>
+
+  <div class="columns align-items-flex-end">
+    <div class="column">
+      <p>
+        <strong>Fee Collected</strong><br />
+        $<%= licence.LicenceFee.toFixed(2) %>
+      </p>
+    </div>
+    <div class="column">
+      <p>
+        <strong><%= configFns.getProperty("licences.externalReceiptNumber.fieldLabel") %></strong><br />
+        <%= licence.ExternalReceiptNumber %>
+      </p>
+    </div>
+    <div class="column">
+      <button class="button is-danger is-remove-licence-fee-button" type="button">
+        <span class="icon"><i class="fas fa-ban"></i></span>
+        <span>Remove Fee Payment</span>
+      </button>
+    </div>
+  </div>
+<%
+    } else {
+%>
+  <div class="columns">
+    <div class="column">
+      <h2 class="title is-4">Licence Fee Payment Status</h2>
+    </div>
+    <div class="column is-narrow">
+      <span class="tag is-warning">Unpaid</span>
+    </div>
+  </div>
+  <div class="columns">
+    <div class="column is-4">
+      <div class="card">
+        <div class="card-content">
           <div class="columns">
             <div class="column">
+              <strong>Fee Calculation</strong>
+            </div>
+            <div class="column is-narrow">
+              <strong>$<%= feeCalculation.fee %></strong>
+            </div>
+          </div>
+          <p class="has-text-right is-size-7"><%= feeCalculation.message %></p>
+        </div>
+      </div>
+    </div>
+    <div class="column">
+      <form id="form--licenceFee">
+        <fieldset>
+          <input name="licenceID" type="hidden" value="<%= licence.LicenceID %>" />
+          <div class="message is-warning is-hidden-enabled">
+            <div class="message-body">
+              Changes have been made that could impact the fee calculation.
+              Save the licence changes before taking any fee payments.
+            </div>
+          </div>
+          <div class="columns align-items-flex-end">
+            <div class="column">
               <div class="field">
-                <label class="label" for="licencePayment--licenceCost">Recorded Licence Fee</label>
+                <label class="label" for="licencePayment--licenceFee">
+                  Licence Fee Collected
+                </label>
                 <div class="control has-icons-left">
-                  <input class="input" id="licencePayment--licenceCost" name="licenceCost" type="number" value="<%= licence.LicenceCost || feeCalculation.fee %>" min="0.00" max="99999999.99" step="0.01" required onwheel="return false;" />
+                  <input class="input" id="licencePayment--licenceFee" name="licenceFee" type="number" value="<%= feeCalculation.fee %>" min="0.00" max="99999999.99" step="0.01" required onwheel="return false;" />
                   <span class="icon is-left">
                     <i class="fas fa-dollar-sign" aria-hidden="true"></i>
                   </span>
                 </div>
               </div>
             </div>
+            <div class="column">
+              <div class="field">
+                <label class="label" for="licence--externalReceiptNumber"><%= configFns.getProperty("licences.externalReceiptNumber.fieldLabel") %></label>
+                <div class="control">
+                  <input class="input" id="licence--externalReceiptNumber" name="externalReceiptNumber" type="text" maxlength="20" required />
+                </div>
+              </div>
+            </div>
+            <div class="column is-narrow">
+              <button class="button is-primary" type="submit">
+                <span class="icon"><i class="far fa-money-bill-alt" aria-hidden="true"></i></span>
+                <span>Mark Fee as Paid</span>
+              </button>
+            </div>
           </div>
-        </div>
-      <% } %>
+        </fieldset>
+      </form>
     </div>
-  </fieldset>
-<% } %>
+  </div>
+<%
+    }
+  }
+%>
+
 
 <div class="modal is-organization-lookup-modal">
   <div class="modal-background"></div>

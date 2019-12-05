@@ -15,7 +15,10 @@
   const licenceID = document.getElementById("licence--licenceID").value;
   const isCreate = licenceID === "";
 
-  let events_areModified = false;
+  const feeFormEle = document.getElementById("form--licenceFee");
+
+  let doRefreshAfterSave = false;
+
   const events_containerEle = document.getElementById("container--events");
 
   formEle.addEventListener("submit", function(formEvent) {
@@ -31,6 +34,8 @@
     }
 
     // ensure event dates are distinct
+
+    formMessageEle.innerHTML = "Saving... <i class=\"fas fa-circle-notch fa-spin\" aria-hidden=\"true\"></i>";
 
     window.fetch("/licences/doSave", {
         method: "post",
@@ -51,19 +56,20 @@
 
         } else {
 
-          if (responseJSON.success && events_areModified) {
+          if (responseJSON.success && doRefreshAfterSave) {
             window.location.reload(true);
+
           } else {
-            formMessageEle.innerHTML = "<span class=\"" + (responseJSON.success ? "has-text-success" : "has-text-danger") + "\">" +
-              responseJSON.message +
-              "</span>";
+            formMessageEle.innerHTML = "";
+
+            window.llm.alertModal(responseJSON.message, "", "OK",
+              responseJSON.success ? "success" : "danger");
           }
         }
       });
   });
 
   if (!isCreate) {
-
     document.getElementsByClassName("is-delete-button")[0].addEventListener("click", function(clickEvent) {
       clickEvent.preventDefault();
 
@@ -96,11 +102,18 @@
 
   // Nav blocker
 
-  function setUnsavedChanges() {
+  function setUnsavedChanges(changeEvent) {
+
     window.llm.enableNavBlocker();
+
     formMessageEle.innerHTML = "<div class=\"has-text-info\">" +
       "<i class=\"fas fa-exclamation-triangle\" aria-hidden=\"true\"></i> Unsaved Changes" +
       "</div>";
+
+    if (feeFormEle && changeEvent && changeEvent.currentTarget.type === "number") {
+      feeFormEle.getElementsByTagName("fieldset")[0].setAttribute("disabled", "disabled");
+      doRefreshAfterSave = true;
+    }
   }
 
   const inputEles = formEle.querySelectorAll("input, select, textarea");
@@ -325,7 +338,7 @@
   function events_remove(clickEvent) {
     clickEvent.currentTarget.closest(".field").remove();
 
-    events_areModified = true;
+    doRefreshAfterSave = true;
     setUnsavedChanges();
   }
 
@@ -347,18 +360,21 @@
       " max=\"" + endDateEle.value + "\"" +
       " required />" +
       "<span class=\"icon is-left\">" +
-      "<i class=\"fas fa-calendar\"></i>" +
+      "<i class=\"fas fa-calendar\" aria-hidden=\"true\"></i>" +
       "</span>" +
       "</div>" +
       "<div class=\"control\">" +
-      "<a class=\"button is-small is-danger has-tooltip-right\" role=\"button\" data-tooltip=\"Remove Event\"><i class=\"fas fa-trash\"></i></a>" +
+      "<a class=\"button is-small is-danger has-tooltip-right\" role=\"button\" data-tooltip=\"Remove Event\">" +
+      "<i class=\"fas fa-trash\" aria-hidden=\"true\"></i>" +
+      "<span class=\"sr-only\">Remove Event</span>" +
+      "</a>" +
       "</div>" +
       "</div>");
 
     const buttonEles = events_containerEle.getElementsByTagName("a");
     buttonEles[buttonEles.length - 1].addEventListener("click", events_remove);
 
-    events_areModified = true;
+    doRefreshAfterSave = true;
     setUnsavedChanges();
   }
 
@@ -399,4 +415,83 @@
   }
 
   document.getElementsByClassName("is-add-event-button")[0].addEventListener("click", events_add);
+
+
+  /*
+   * FEE PAYMENT
+   */
+
+  if (!isCreate) {
+
+    if (feeFormEle) {
+
+      // mark fee as paid form
+
+      const submitFn_feeForm = function() {
+
+        window.fetch("/licences/doMarkLicenceFeePaid", {
+            method: "POST",
+            credentials: "include",
+            body: new URLSearchParams(new FormData(feeFormEle))
+          })
+          .then(function(response) {
+            return response.json();
+          })
+          .then(function(responseJSON) {
+
+            if (responseJSON.success) {
+              window.llm.disableNavBlocker();
+              window.location.reload(true);
+            }
+          });
+      };
+
+      feeFormEle.addEventListener("submit", function(formEvent) {
+        formEvent.preventDefault();
+
+        window.llm.confirmModal("Mark Fee as Paid?",
+          "Are you sure you want to mark the licence fee as paid?",
+          "Yes, Paid",
+          "info",
+          submitFn_feeForm);
+      });
+
+    } else {
+
+      const confirmFn_removeFee = function() {
+
+        window.fetch("/licences/doRemoveLicenceFee", {
+            method: "POST",
+            credentials: "include",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              licenceID: licenceID
+            })
+          })
+          .then(function(response) {
+            return response.json();
+          })
+          .then(function(responseJSON) {
+
+            if (responseJSON.success) {
+              window.llm.disableNavBlocker();
+              window.location.reload(true);
+            }
+          });
+      };
+
+      // button to remove payment
+
+      document.getElementsByClassName("is-remove-licence-fee-button")[0].addEventListener("click", function() {
+
+        window.llm.confirmModal("Remove Fee Payment?",
+          "Are you sure you want to remove the fee payment and change the licence to unpaid?",
+          "Yes, Remove Payment",
+          "danger",
+          confirmFn_removeFee);
+      });
+    }
+  }
 }());

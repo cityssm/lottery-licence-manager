@@ -7,6 +7,22 @@ const sqlite = require("better-sqlite3");
 const dbPath = "data/licences.db";
 
 
+function getApplicationSetting(db, settingKey) {
+  "use strict";
+
+  const row = db.prepare("select SettingValue" +
+      " from ApplicationSettings" +
+      " where SettingKey = ?")
+    .get(settingKey);
+
+  if (row) {
+    return row.SettingValue || "";
+  } else {
+    return "";
+  }
+}
+
+
 let licencesDB = {
 
   /*
@@ -289,7 +305,7 @@ let licencesDB = {
       " l.ApplicationDate, l.LicenceTypeKey," +
       " l.StartDate, l.StartTime, l.EndDate, l.EndTime," +
       " l.Location, l.Municipality, l.LicenceDetails, l.TermsConditions," +
-      " l.ExternalLicenceNumber" +
+      " l.ExternalLicenceNumber, l.LicenceFeeIsPaid" +
       " from LotteryLicences l" +
       (includeOrganization ?
         " left join Organizations o on l.OrganizationID = o.OrganizationID" :
@@ -397,6 +413,44 @@ let licencesDB = {
     return licenceObj;
   },
 
+  getNextExternalLicenceNumberFromRange: function() {
+    "use strict";
+
+    const db = sqlite(dbPath, {
+      readonly: true
+    });
+
+    let rangeStart = parseInt(getApplicationSetting(db, "licences.externalLicenceNumber.range.start") || "-1");
+
+    let rangeEnd = parseInt(getApplicationSetting(db, "licences.externalLicenceNumber.range.end") || "0");
+
+    let row = db.prepare("select max(ExternalLicenceNumberInteger) as MaxExternalLicenceNumberInteger" +
+        " from LotteryLicences" +
+        " where ExternalLicenceNumberInteger >= ?" +
+        " and ExternalLicenceNumberInteger <= ?")
+      .get(rangeStart, rangeEnd);
+
+    db.close();
+
+    if (!row) {
+      return rangeStart;
+    }
+
+    let maxExternalLicenceNumber = row.MaxExternalLicenceNumberInteger;
+
+    if (!maxExternalLicenceNumber) {
+      return rangeStart;
+    }
+
+    let newExternalLicenceNumber = maxExternalLicenceNumber + 1;
+
+    if (newExternalLicenceNumber > rangeEnd) {
+      return -1;
+    }
+
+    return newExternalLicenceNumber;
+  },
+
   getDistinctLicenceLocations: function(municipality) {
     "use strict";
 
@@ -430,11 +484,19 @@ let licencesDB = {
 
     const nowMillis = Date.now();
 
+    let externalLicenceNumberInteger = -1;
+
+    try {
+      externalLicenceNumberInteger = parseInt(reqBody.externalLicenceNumber);
+    } catch (e) {
+      externalLicenceNumberInteger = -1;
+    }
+
     const info = db.prepare("insert into LotteryLicences (" +
         "OrganizationID, ApplicationDate, LicenceTypeKey," +
         " StartDate, EndDate, StartTime, EndTime," +
         " Location, Municipality, LicenceDetails, TermsConditions, TotalPrizeValue," +
-        " ExternalLicenceNumber, ExternalReceiptNumber," +
+        " ExternalLicenceNumber, ExternalLicenceNumberInteger," +
         " RecordCreate_UserName, RecordCreate_TimeMillis," +
         " RecordUpdate_UserName, RecordUpdate_TimeMillis)" +
         " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
@@ -452,7 +514,7 @@ let licencesDB = {
         reqBody.termsConditions,
         reqBody.totalPrizeValue,
         reqBody.externalLicenceNumber,
-        reqBody.externalReceiptNumber,
+        externalLicenceNumberInteger,
         reqSession.user.userName,
         nowMillis,
         reqSession.user.userName,
@@ -521,6 +583,14 @@ let licencesDB = {
 
     const nowMillis = Date.now();
 
+    let externalLicenceNumberInteger = -1;
+
+    try {
+      externalLicenceNumberInteger = parseInt(reqBody.externalLicenceNumber);
+    } catch (e) {
+      externalLicenceNumberInteger = -1;
+    }
+
     const info = db.prepare("update LotteryLicences" +
         " set OrganizationID = ?," +
         " ApplicationDate = ?," +
@@ -535,7 +605,7 @@ let licencesDB = {
         " TermsConditions = ?," +
         " TotalPrizeValue = ?," +
         " ExternalLicenceNumber = ?," +
-        " ExternalReceiptNumber = ?," +
+        " ExternalLicenceNumberInteger = ?," +
         " RecordUpdate_UserName = ?," +
         " RecordUpdate_TimeMillis = ?" +
         " where LicenceID = ?" +
@@ -554,7 +624,7 @@ let licencesDB = {
         reqBody.termsConditions,
         reqBody.totalPrizeValue,
         reqBody.externalLicenceNumber,
-        reqBody.externalReceiptNumber,
+        externalLicenceNumberInteger,
         reqSession.user.userName,
         nowMillis,
         reqBody.licenceID
@@ -647,6 +717,66 @@ let licencesDB = {
     return info.changes;
   },
 
+  markLicenceFeePaid: function(reqBody, reqSession) {
+    "use strict";
+
+    const db = sqlite(dbPath);
+
+    const nowMillis = Date.now();
+
+    const info = db.prepare("update LotteryLicences" +
+        " set LicenceFee = ?," +
+        " ExternalReceiptNumber = ?," +
+        " LicenceFeeIsPaid = 1," +
+        " RecordUpdate_UserName = ?," +
+        " RecordUpdate_TimeMillis = ?" +
+        " where LicenceID = ?" +
+        " and RecordDelete_TimeMillis is null" +
+        " and LicenceFeeIsPaid = 0")
+      .run(
+        reqBody.licenceFee,
+        reqBody.externalReceiptNumber,
+        reqSession.user.userName,
+        nowMillis,
+        reqBody.licenceID
+      );
+
+    const changeCount = info.changes;
+
+    db.close();
+
+    return changeCount;
+  },
+
+  markLicenceFeeUnpaid: function(licenceID, reqSession) {
+    "use strict";
+
+    const db = sqlite(dbPath);
+
+    const nowMillis = Date.now();
+
+    const info = db.prepare("update LotteryLicences" +
+        " set LicenceFee = null," +
+        " ExternalReceiptNumber = null," +
+        " LicenceFeeIsPaid = 0," +
+        " RecordUpdate_UserName = ?," +
+        " RecordUpdate_TimeMillis = ?" +
+        " where LicenceID = ?" +
+        " and RecordDelete_TimeMillis is null" +
+        " and LicenceFeeIsPaid = 1")
+      .run(
+        reqSession.user.userName,
+        nowMillis,
+        licenceID
+      );
+
+    const changeCount = info.changes;
+
+    db.close();
+
+    return changeCount;
+  },
+
   /*
    * EVENTS
    */
@@ -703,6 +833,38 @@ let licencesDB = {
     db.close();
 
     return eventObj;
+  },
+
+  /*
+   * APPLICATION SETTINGS
+   */
+
+  getApplicationSettings: function() {
+    "use strict";
+
+    const db = sqlite(dbPath, {
+      readonly: true
+    });
+
+    const rows = db.prepare("select * from ApplicationSettings");
+
+    db.close();
+
+    return rows;
+  },
+
+  getApplicationSetting: function(settingKey) {
+    "use strict";
+
+    const db = sqlite(dbPath, {
+      readonly: true
+    });
+
+    const settingValue = getApplicationSetting(db, settingKey);
+
+    db.close();
+
+    return settingValue;
   }
 };
 

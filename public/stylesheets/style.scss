@@ -31,6 +31,11 @@
 }
 
 
+fieldset:enabled .is-hidden-enabled {
+  display: none;
+}
+
+
 /*
  * Form elements
  */
@@ -44,8 +49,8 @@
 
   &::-webkit-inner-spin-button,
   &::-webkit-outer-spin-button {
-    -webkit-appearance: none;
     margin: 0;
+    -webkit-appearance: none;
   }
 }
 

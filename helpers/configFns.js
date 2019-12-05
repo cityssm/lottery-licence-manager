@@ -2,6 +2,7 @@
 
 
 let config;
+
 try {
   config = require("../data/config");
 } catch (e) {
@@ -20,13 +21,15 @@ const configFallbackValues = {
   "user.createUpdateWindowMillis": 60 * 60 * 1000,
   "user.defaultProperties": {
     canCreate: "false",
-    canUpdate: "false"
+    canUpdate: "false",
+    isAdmin: "false"
   },
 
   "defaults.city": "",
   "defaults.province": "ON",
 
   "licences.externalLicenceNumber.fieldLabel": "External Licence Number",
+  "licences.externalLicenceNumber.newCalculation": "",
 
   "licences.feeCalculationFn": function() {
     "use strict";

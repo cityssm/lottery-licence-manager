@@ -12,8 +12,10 @@
 
   // Main record update
 
-  formEle.addEventListener("submit", function (formEvent) {
+  formEle.addEventListener("submit", function(formEvent) {
     formEvent.preventDefault();
+
+    formMessageEle.innerHTML = "Saving... <i class=\"fas fa-circle-notch fa-spin\" aria-hidden=\"true\"></i>";
 
     window.fetch("/organizations/doSave", {
         method: "post",
@@ -25,14 +27,18 @@
       })
       .then(function(responseJSON) {
 
-        window.llm.disableNavBlocker();
+        if (responseJSON.success) {
+          window.llm.disableNavBlocker();
+        }
 
         if (responseJSON.success && isCreate) {
           window.location.href = "/organizations/" + responseJSON.organizationID + "/edit";
+
         } else {
-          formMessageEle.innerHTML = "<span class=\"" + (responseJSON.success ? "has-text-success" : "has-text-danger") + "\">" +
-            responseJSON.message +
-            "</span>";
+          formMessageEle.innerHTML = "";
+
+          window.llm.alertModal(responseJSON.message, "", "OK",
+            responseJSON.success ? "success" : "danger");
         }
       });
   });
@@ -267,6 +273,7 @@
     document.getElementsByClassName("is-add-representative-button")[0].addEventListener("click", function() {
       addRepresentativeFormEle.reset();
       window.llm.showModal(addRepresentativeModalEle);
+      document.getElementById("addOrganizationRepresentative--representativeName").focus();
     });
 
     // close add
