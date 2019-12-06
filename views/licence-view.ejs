@@ -14,17 +14,213 @@
       Licence #<%= licence.LicenceID %>
     </h1>
   </div>
-  <% if (canUpdate) { %>
-    <div class="column is-narrow has-text-right">
+  <div class="column is-narrow has-text-right">
+    <% if (canUpdate) { %>
       <a class="button is-link" href="/licences/<%= licence.LicenceID %>/edit">
         <span class="icon is-small">
           <i class="fas fa-pencil-alt" aria-hidden="true"></i>
         </span>
         <span>Edit this Licence</span>
       </a>
-    </div>
-  <% } %>
+    <% } %>
+    <% if (licence.LicenceFeeIsPaid) { %>
+      <a class="button is-link" href="/licences/<%= licence.LicenceID %>/print" target="_blank">
+        <span class="icon is-small">
+          <i class="fas fa-print" aria-hidden="true"></i>
+        </span>
+        <span>Print Licence</span>
+      </a>
+    <% } %>
+  </div>
 </div>
+
+<div class="columns">
+  <div class="column">
+    <p>
+      <strong>Licence ID</strong><br />
+      <%= licence.LicenceID %>
+    </p>
+  </div>
+  <div class="column">
+    <p>
+      <strong><%= configFns.getProperty("licences.externalLicenceNumber.fieldLabel") %></strong><br />
+      <%= licence.ExternalLicenceNumber %>
+    </p>
+  </div>
+  <div class="column">
+    <p>
+      <strong>Application Date</strong><br />
+      <%= licence.ApplicationDateString %>
+    </p>
+  </div>
+</div>
+
+<div class="columns">
+  <div class="column">
+    <p>
+      <strong>Organization</strong><br />
+      <a href="/organizations/<%= organization.OrganizationID %>"><%= organization.OrganizationName %></a>
+    </p>
+  </div>
+</div>
+
+<div class="columns">
+  <div class="column is-6">
+    <p>
+      <strong>Municipality</strong><br />
+      <%= licence.Municipality %>
+    </p>
+  </div>
+  <div class="column is-6">
+    <p>
+      <strong>Location</strong><br />
+      <%= licence.Location %>
+    </p>
+  </div>
+</div>
+
+<div class="columns">
+  <div class="column is-3">
+    <p>
+      <strong>Start Date</strong><br />
+      <%= licence.StartDateString %>
+    </p>
+  </div>
+  <div class="column is-3">
+    <p>
+      <strong>End Date</strong><br />
+      <%= licence.EndDateString %>
+    </p>
+  </div>
+  <div class="column is-3">
+    <p>
+      <strong>Start Time</strong><br />
+      <%= licence.StartTimeString %>
+    </p>
+  </div>
+  <div class="column is-3">
+    <p>
+      <strong>End Time</strong><br />
+      <%= licence.EndTimeString %>
+    </p>
+  </div>
+</div>
+
+<div class="columns">
+  <div class="column is-6">
+    <p>
+      <strong>Licence Details</strong><br />
+      <%= licence.LicenceDetails %>
+    </p>
+  </div>
+  <div class="column is-6">
+    <p>
+      <strong>Terms and Conditions</strong><br />
+      <%= licence.TermsConditions %>
+    </p>
+  </div>
+</div>
+
+<div class="columns">
+  <div class="column is-6">
+    <p>
+      <strong>Licence Type</strong><br />
+      <%
+        const licenceType = configFns.getLicenceType(licence.LicenceTypeKey);
+      %>
+      <%= (licenceType ? licenceType.licenceType : licence.LicenceTypeKey) %>
+    </p>
+  </div>
+  <div class="column is-6">
+    <p>
+      <strong>Total Prize Value</strong><br />
+      $ <%= licence.TotalPrizeValue.toFixed(2) %>
+    </p>
+  </div>
+</div>
+
+<div class="columns">
+  <div class="column">
+    <h2 class="title is-4">Event Dates</h2>
+    <ol class="fa-ul">
+      <% for (let eventIndex = 0; eventIndex < licence.events.length; eventIndex += 1) { %>
+        <li class="has-margin-bottom-10">
+          <span class="fa-li"><i class="fas fa-calendar"></i></span>
+          <%= licence.events[eventIndex].EventDateString %></li>
+      <% } %>
+    </ol>
+  </div>
+  <div class="column">
+    <h2 class="title is-4">
+      Additional <%= (licenceType ? licenceType.licenceType : licence.LicenceTypeKey) %> Fields
+    </h2>
+    <%
+      const licenceFields = licenceType.licenceFields || [];
+      let fieldKeys = "";
+
+      for (let fieldIndex = 0; fieldIndex < licenceFields.length; fieldIndex += 1) {
+        const licenceField = licenceFields[fieldIndex];
+
+        const inputName = licenceType.licenceTypeKey + "-" + licenceField.fieldKey;
+
+        let fieldValue = "";
+
+        for (let savedFieldIndex = 0; savedFieldIndex < licence.licenceFields.length; savedFieldIndex += 1) {
+          if (licence.licenceFields[savedFieldIndex].FieldKey === inputName) {
+            licence.licenceFields[savedFieldIndex].isDisplayed = true;
+            fieldValue = licence.licenceFields[savedFieldIndex].FieldValue;
+            break;
+          }
+        }
+
+        if (fieldValue === "") {
+          continue;
+        }
+    %>
+      <p class="has-margin-bottom-10">
+        <strong><%= licenceField.fieldLabel || licenceField.fieldKey %></strong><br />
+        <%= fieldValue %>
+      </p>
+    <%
+      }
+
+      for (let savedFieldIndex = 0; savedFieldIndex < licence.licenceFields.length; savedFieldIndex += 1) {
+        const savedField = licence.licenceFields[savedFieldIndex];
+        if (!savedField.isDisplayed) {
+    %>
+          <p>
+            <strong><%= savedField.FieldKey %></strong><br />
+            <%= savedField.FieldValue %>
+          </p>
+    <%
+        }
+      }
+    %>
+  </div>
+  <div class="column">
+    <h2 class="title is-4">Licence Fee Payment</h2>
+
+    <% if (licence.LicenceFeeIsPaid) { %>
+      <p class="has-margin-bottom-10">
+        <strong>Fee Collected</strong><br />
+        $<%= licence.LicenceFee.toFixed(2) %>
+      </p>
+
+      <p>
+        <strong><%= configFns.getProperty("licences.externalReceiptNumber.fieldLabel") %></strong><br />
+        <%= licence.ExternalReceiptNumber %>
+      </p>
+    <% } else { %>
+      <div class="message is-info">
+        <div class="message-body">
+          This licence is currently unpaid.
+        </div>
+      </div>
+    <% } %>
+  </div>
+</div>
+
+
 
 <%- include('_footerA'); -%>
 

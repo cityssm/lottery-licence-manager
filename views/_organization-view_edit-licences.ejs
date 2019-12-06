@@ -59,7 +59,8 @@
     let rowHTML = "<tr>" +
       "<td>" +
         "<a href=\"/licences/" + licence.LicenceID + "\">" +
-        stringFns.escapeHTML(licence.ExternalLicenceNumber) +
+        stringFns.escapeHTML(licence.ExternalLicenceNumber) + "<br />" +
+        "<small>Licence #" + licence.LicenceID + "</small>" +
         "</a>" +
         "</td>" +
       "<td>" + (licenceType.licenceType || licence.LicenceTypeKey) + "</td>" +

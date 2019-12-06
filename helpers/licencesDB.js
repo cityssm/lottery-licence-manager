@@ -846,7 +846,7 @@ let licencesDB = {
       readonly: true
     });
 
-    const rows = db.prepare("select * from ApplicationSettings");
+    const rows = db.prepare("select * from ApplicationSettings").all();
 
     db.close();
 
@@ -865,6 +865,32 @@ let licencesDB = {
     db.close();
 
     return settingValue;
+  },
+
+  updateApplicationSetting: function(settingKey, settingValue, reqSession) {
+    "use strict";
+
+    const db = sqlite(dbPath);
+
+    const nowMillis = Date.now();
+
+    const info = db.prepare("update ApplicationSettings" +
+        " set SettingValue = ?," +
+        " RecordUpdate_UserName = ?," +
+        " RecordUpdate_TimeMillis = ?" +
+        " where SettingKey = ?")
+      .run(
+        settingValue,
+        reqSession.user.userName,
+        nowMillis,
+        settingKey
+      );
+
+    const changeCount = info.changes;
+
+    db.close();
+
+    return changeCount;
   }
 };
 

@@ -25,5 +25,50 @@
   </div>
 </div>
 
+<table class="table is-striped is-hoverable is-fullwidth">
+  <thead>
+    <tr>
+      <th>Setting</th>
+      <th class="has-width-300">Value</th>
+      <th class="has-width-200">Update Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    <%
+      for (let settingIndex = 0; settingIndex < applicationSettings.length; settingIndex += 1) {
+        const setting = applicationSettings[settingIndex];
+    %>
+      <tr>
+        <td>
+          <label class="has-text-weight-bold" for="settingValue--<%= settingIndex %>"><%= setting.SettingName %></label><br />
+          <small><%= setting.SettingDescription %></small>
+        </td>
+        <td>
+          <form class="form--applicationSetting">
+            <input name="settingKey" type="hidden" value="<%= setting.SettingKey %>" />
+            <div class="field has-addons">
+              <div class="control">
+                <input class="input" id="settingValue--<%= settingIndex %>" name="settingValue" type="text" value="<%= setting.SettingValue %>" />
+              </div>
+              <div class="control">
+                <button class="button is-success" data-tooltip="Save Setting" type="submit">
+                  <i class="fas fa-save" aria-hidden="true"></i>
+                  <span class="sr-only">Save Setting</span>
+                </button>
+              </div>
+            </div>
+          </form>
+        </td>
+        <td><small class="formMessage"></small></td>
+      </tr>
+    <%
+      }
+    %>
+  </tbody>
+</table>
+
 <%- include('_footerA'); -%>
+
+<script src="/javascripts/admin-applicationSettings.min.js"></script>
+
 <%- include('_footerB'); -%>

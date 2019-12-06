@@ -38,7 +38,7 @@
     formMessageEle.innerHTML = "Saving... <i class=\"fas fa-circle-notch fa-spin\" aria-hidden=\"true\"></i>";
 
     window.fetch("/licences/doSave", {
-        method: "post",
+        method: "POST",
         credentials: "include",
         body: new URLSearchParams(new FormData(formEle))
       })
@@ -122,6 +122,24 @@
     if (inputEles[inputIndex].name !== "") {
       inputEles[inputIndex].addEventListener("change", setUnsavedChanges);
     }
+  }
+
+
+  /*
+   * EXTERNAL LICENCE NUMBER
+   */
+
+
+  const externalLicenceNumberUnlockBtnEles = document.getElementsByClassName("is-external-licence-number-unlock-button");
+
+  if (externalLicenceNumberUnlockBtnEles.length) {
+    externalLicenceNumberUnlockBtnEles[0].addEventListener("click", function() {
+      const externalLicenceNumberEle = document.getElementById("licence--externalLicenceNumber");
+      externalLicenceNumberEle.classList.remove("has-background-light");
+      externalLicenceNumberEle.classList.remove("has-cursor-not-allowed");
+      externalLicenceNumberEle.removeAttribute("readonly");
+      externalLicenceNumberEle.focus();
+    });
   }
 
 

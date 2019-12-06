@@ -72,7 +72,7 @@
     const cancelButtonHTML = modalOptions.cancelButtomHTML || "Cancel";
     const okButtonHTML = modalOptions.okButtonHTML || "OK";
 
-    const contextualColorIsDark = true;
+    const contextualColorIsDark = (contextualColorName === "warning" ? false : true);
 
     modalEle.innerHTML = "<div class=\"modal-background\"></div>" +
       "<div class=\"modal-card\">" +

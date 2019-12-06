@@ -46,24 +46,41 @@ const configFallbackValues = {
 };
 
 
+function getProperty(propertyName) {
+  "use strict";
+
+  const propertyNameSplit = propertyName.split(".");
+
+  let currentObj = config;
+
+  for (let index = 0; index < propertyNameSplit.length; index += 1) {
+    currentObj = currentObj[propertyNameSplit[index]];
+
+    if (!currentObj) {
+      return configFallbackValues[propertyName];
+    }
+  }
+
+  return currentObj;
+}
+
+
 let configFns = {
 
-  getProperty: function(propertyName) {
+  getProperty: getProperty,
+
+  getLicenceType: function(licenceTypeKey) {
     "use strict";
 
-    const propertyNameSplit = propertyName.split(".");
+    const licenceTypes = getProperty("licenceTypes");
 
-    let currentObj = config;
-
-    for (let index = 0; index < propertyNameSplit.length; index += 1) {
-      currentObj = currentObj[propertyNameSplit[index]];
-
-      if (!currentObj) {
-        return configFallbackValues[propertyName];
+    for (let index = 0; index < licenceTypes.length; index += 1) {
+      if (licenceTypes[index].licenceTypeKey === licenceTypeKey) {
+        return licenceTypes[index];
       }
     }
 
-    return currentObj;
+    return null;
   },
 
   config: config
