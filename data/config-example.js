@@ -94,11 +94,73 @@ config.licenceTypes = [{
       max: 100,
       step: 1
     }
+  }],
+  eventFields: [{
+    fieldKey: "wheelCount",
+    fieldLabel: "Number of Wheels",
+    isActive: true,
+    inputAttributes: {
+      type: "number",
+      min: 0,
+      max: 100,
+      step: 1
+    }
   }]
 }, {
   licenceTypeKey: "BI",
   licenceType: "Bingo",
-  isActive: true
+  isActive: true,
+  eventFields: [{
+    fieldKey: "playerCount",
+    fieldLabel: "Number of Players",
+    isActive: true,
+    inputAttributes: {
+      type: "number",
+      min: 0,
+      max: 10000,
+      step: 1
+    }
+  }, {
+    fieldKey: "cardsCount",
+    fieldLabel: "Number of Cards Sold",
+    isActive: true,
+    inputAttributes: {
+      type: "number",
+      min: 0,
+      max: 100000,
+      step: 1
+    }
+  }, {
+    fieldKey: "hallRentalCost",
+    fieldLabel: "Hall Rental",
+    isActive: true,
+    inputAttributes: {
+      type: "number",
+      min: 0,
+      max: 10000.00,
+      step: 0.01
+    }
+  }, {
+    fieldKey: "honorariumCost",
+    fieldLabel: "Honorariums",
+    isActive: true,
+    inputAttributes: {
+      type: "number",
+      min: 0,
+      max: 10000.00,
+      step: 0.01
+    }
+  }, {
+    fieldKey: "otherCost",
+    fieldLabel: "Other Costs",
+    isActive: true,
+    inputAttributes: {
+      type: "number",
+      min: 0,
+      max: 10000.00,
+      step: 0.01
+    }
+  }]
 }, {
   licenceTypeKey: "NV",
   licenceType: "Nevada",
@@ -130,6 +192,77 @@ config.licenceTypes = [{
       min: 0,
       max: 1000000,
       step: 1
+    }
+  }],
+  eventFields: [{
+    fieldKey: "retailerCommission",
+    fieldLabel: "Retailer Commission",
+    isActive: true,
+    inputAttributes: {
+      type: "number",
+      min: 0,
+      max: 10000.00,
+      step: 0.01
+    }
+  }, {
+    fieldKey: "retailerHST",
+    fieldLabel: "Retailer HST",
+    isActive: true,
+    inputAttributes: {
+      type: "number",
+      min: 0,
+      max: 10000.00,
+      step: 0.01
+    }
+  }, {
+    fieldKey: "distributorCommission",
+    fieldLabel: "Distributor Commission",
+    isActive: true,
+    inputAttributes: {
+      type: "number",
+      min: 0,
+      max: 10000.00,
+      step: 0.01
+    }
+  }, {
+    fieldKey: "distributorHST",
+    fieldLabel: "Distributor HST",
+    isActive: true,
+    inputAttributes: {
+      type: "number",
+      min: 0,
+      max: 10000.00,
+      step: 0.01
+    }
+  }, {
+    fieldKey: "accFee",
+    fieldLabel: "Acc Fee",
+    isActive: true,
+    inputAttributes: {
+      type: "number",
+      min: 0,
+      max: 10000.00,
+      step: 0.01
+    }
+  }, {
+    fieldKey: "boxCount",
+    fieldLabel: "Number of Boxes",
+    isActive: true,
+    inputAttributes: {
+      type: "number",
+      min: 0,
+      max: 1000,
+      step: 1
+    }
+  }, {
+    fieldKey: "boxCost",
+    fieldLabel: "Cost per Box",
+    isActive: true,
+    inputAttributes: {
+      type: "number",
+      min: 0,
+      max: 10000.00,
+      step: 0.01
     }
   }]
 }, {
@@ -226,7 +359,39 @@ config.licenceTypes = [{
       max: 2000.00,
       step: 0.01
     }
+  }],
+  eventFields: [{
+    fieldKey: "ticketsPrintedCount",
+    fieldLabel: "Tickets Printed",
+    isActive: true,
+    inputAttributes: {
+      type: "number",
+      min: 0,
+      max: 1000000,
+      step: 1
+    }
+  }, {
+    fieldKey: "ticketsSoldCount",
+    fieldLabel: "Tickets Sold",
+    isActive: true,
+    inputAttributes: {
+      type: "number",
+      min: 0,
+      max: 1000000,
+      step: 1
+    }
+  }, {
+    fieldKey: "ticketCost",
+    fieldLabel: "Cost per Ticket",
+    isActive: true,
+    inputAttributes: {
+      type: "number",
+      min: 0.00,
+      max: 1000.00,
+      step: 0.01
+    }
   }]
 }];
+
 
 module.exports = config;
