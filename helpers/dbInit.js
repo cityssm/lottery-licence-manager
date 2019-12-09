@@ -20,18 +20,18 @@ let dbInit = {
       console.warn("Creating users.db");
 
       usersDB.prepare("create table if not exists Users (" +
-        "UserName varchar(30) primary key not null," +
-        " FirstName varchar(50), LastName varchar(50)," +
-        " IsActive boolean not null default 1," +
-        " TempPassword varchar(50), PasswordHash char(60))" +
+        "userName varchar(30) primary key not null," +
+        " firstName varchar(50), lastName varchar(50)," +
+        " isActive boolean not null default 1," +
+        " tempPassword varchar(50), passwordHash char(60))" +
         " without rowid").run();
 
       usersDB.prepare("create table if not exists UserProperties (" +
-        "UserName varchar(30) not null," +
-        " PropertyName varchar(100) not null," +
-        " PropertyValue text," +
-        " primary key (UserName, PropertyName)" +
-        " foreign key (UserName) references Users (UserName))" +
+        "userName varchar(30) not null," +
+        " propertyName varchar(100) not null," +
+        " propertyValue text," +
+        " primary key (userName, propertyName)" +
+        " foreign key (userName) references Users (userName))" +
         " without rowid").run();
 
       usersDB.close();
@@ -57,123 +57,140 @@ let dbInit = {
       // organizations
 
       licencesDB.prepare("create table if not exists Organizations (" +
-        "OrganizationID integer primary key autoincrement," +
-        " OrganizationName varchar(100) not null," +
-        " OrganizationAddress1 varchar(50), OrganizationAddress2 varchar(50)," +
-        " OrganizationCity varchar(20), OrganizationProvince varchar(2)," +
-        " OrganizationPostalCode varchar(7)," +
-        " RecordCreate_UserName varchar(30) not null," +
-        " RecordCreate_TimeMillis integer not null," +
-        " RecordUpdate_UserName varchar(30) not null," +
-        " RecordUpdate_TimeMillis integer not null," +
-        " RecordDelete_UserName varchar(30)," +
-        " RecordDelete_TimeMillis integer" +
+        "organizationID integer primary key autoincrement," +
+        " organizationName varchar(100) not null," +
+        " organizationAddress1 varchar(50)," +
+        " organizationAddress2 varchar(50)," +
+        " organizationCity varchar(20)," +
+        " organizationProvince varchar(2)," +
+        " organizationPostalCode varchar(7)," +
+        " recordCreate_userName varchar(30) not null," +
+        " recordCreate_timeMillis integer not null," +
+        " recordUpdate_userName varchar(30) not null," +
+        " recordUpdate_timeMillis integer not null," +
+        " recordDelete_userName varchar(30)," +
+        " recordDelete_timeMillis integer" +
         ")").run();
 
       licencesDB.prepare("create table if not exists OrganizationRepresentatives (" +
-        "OrganizationID integer not null, RepresentativeIndex smallint not null," +
-        " RepresentativeName varchar(100) not null," +
-        " RepresentativeTitle varchar(100)," +
-        " RepresentativeAddress1 varchar(50), RepresentativeAddress2 varchar(50)," +
-        " RepresentativeCity varchar(20), RepresentativeProvince varchar(2)," +
-        " RepresentativePostalCode varchar(7)," +
-        " RepresentativePhoneNumber varchar(30)," +
-        " IsDefault bit not null default 0," +
-        " primary key (OrganizationID, RepresentativeIndex)," +
-        " foreign key (OrganizationID) references Organizations (OrganizationID)" +
+        "organizationID integer not null," +
+        " representativeIndex smallint not null," +
+        " representativeName varchar(100) not null," +
+        " representativeTitle varchar(100)," +
+        " representativeAddress1 varchar(50)," +
+        " representativeAddress2 varchar(50)," +
+        " representativeCity varchar(20)," +
+        " representativeProvince varchar(2)," +
+        " representativePostalCode varchar(7)," +
+        " representativePhoneNumber varchar(30)," +
+        " isDefault bit not null default 0," +
+        " primary key (organizationID, representativeIndex)," +
+        " foreign key (organizationID) references Organizations (organizationID)" +
         ")").run();
 
       // licences
 
       licencesDB.prepare("create table if not exists LotteryLicences (" +
-        "LicenceID integer primary key autoincrement," +
-        " OrganizationID integer not null," +
+        "licenceID integer primary key autoincrement," +
+        " organizationID integer not null," +
 
-        " ExternalLicenceNumber varchar(20)," +
-        " ExternalLicenceNumberInteger bigint not null," +
+        " externalLicenceNumber varchar(20)," +
+        " externalLicenceNumberInteger bigint not null," +
 
-        " ApplicationDate integer not null," +
-        " LicenceTypeKey char(2) not null," +
+        " applicationDate integer not null," +
+        " licenceTypeKey char(2) not null," +
 
-        " StartDate integer, EndDate integer," +
-        " StartTime integer, EndTime integer," +
+        " startDate integer, endDate integer," +
+        " startTime integer, endTime integer," +
 
-        " Location varchar(100)," +
-        " Municipality varchar(100)," +
-        " LicenceDetails text," +
-        " TermsConditions text," +
+        " location varchar(100)," +
+        " municipality varchar(100)," +
+        " licenceDetails text," +
+        " termsConditions text," +
 
-        " TotalPrizeValue decimal(10, 2)," +
+        " totalPrizeValue decimal(10, 2)," +
 
-        " ExternalReceiptNumber varchar(20)," +
-        " LicenceFee decimal(10, 2)," +
-        " LicenceFeeIsPaid boolean not null default 0," +
+        " externalReceiptNumber varchar(20)," +
+        " licenceFee decimal(10, 2)," +
+        " licenceFeeIsPaid boolean not null default 0," +
 
-        " RecordCreate_UserName varchar(30) not null," +
-        " RecordCreate_TimeMillis integer not null," +
-        " RecordUpdate_UserName varchar(30) not null," +
-        " RecordUpdate_TimeMillis integer not null," +
-        " RecordDelete_UserName varchar(30)," +
-        " RecordDelete_TimeMillis integer," +
+        " recordCreate_userName varchar(30) not null," +
+        " recordCreate_timeMillis integer not null," +
+        " recordUpdate_userName varchar(30) not null," +
+        " recordUpdate_timeMillis integer not null," +
+        " recordDelete_userName varchar(30)," +
+        " recordDelete_timeMillis integer," +
 
-        " foreign key (OrganizationID) references Organizations (OrganizationID)" +
+        " foreign key (organizationID) references Organizations (organizationID)" +
         ")").run();
 
       licencesDB.prepare("create index if not exists LotteryLicences_ExternalLicenceNumberInteger_Index" +
-        " on LotteryLicences (ExternalLicenceNumberInteger desc)" +
-        " where ExternalLicenceNumberInteger <> -1").run();
+        " on LotteryLicences (externalLicenceNumberInteger desc)" +
+        " where externalLicenceNumberInteger <> -1").run();
 
       licencesDB.prepare("create table if not exists LotteryLicenceFields (" +
-        "LicenceID integer not null," +
-        " FieldKey varchar(20) not null," +
-        " FieldValue text," +
+        "licenceID integer not null," +
+        " fieldKey varchar(20) not null," +
+        " fieldValue text," +
 
-        " primary key (LicenceID, FieldKey)," +
-        " foreign key (LicenceID) references LotteryLicences (LicenceID)" +
+        " primary key (licenceID, fieldKey)," +
+        " foreign key (licenceID) references LotteryLicences (licenceID)" +
         ") without rowid").run();
 
       // events
 
       licencesDB.prepare("create table if not exists LotteryEvents (" +
-        "LicenceID integer not null," +
-        " EventDate integer not null," +
+        "licenceID integer not null," +
+        " eventDate integer not null," +
 
-        " RecordCreate_UserName varchar(30) not null," +
-        " RecordCreate_TimeMillis integer not null," +
-        " RecordUpdate_UserName varchar(30) not null," +
-        " RecordUpdate_TimeMillis integer not null," +
-        " RecordDelete_UserName varchar(30)," +
-        " RecordDelete_TimeMillis integer," +
+        " bank_name varchar(50)," +
+        " bank_address varchar(50)," +
+        " bank_accountNumber varchar(20)," +
+        " bank_accountBalance decimal(12, 2)," +
 
-        " primary key (LicenceID, EventDate)," +
-        " foreign key (LicenceID) references LotteryLicences (LicenceID)" +
+        " costs_receipts decimal(10, 2)," +
+        " costs_admin decimal(10, 2)," +
+        " costs_prizesAwarded decimal(10, 2)," +
+        " costs_charitableDonations decimal(10, 2)," +
+        " costs_netProceeds decimal(10, 2)," +
+        " costs_amountDonated decimal(10, 2)," +
+
+        " recordCreate_userName varchar(30) not null," +
+        " recordCreate_timeMillis integer not null," +
+        " recordUpdate_userName varchar(30) not null," +
+        " recordUpdate_timeMillis integer not null," +
+        " recordDelete_userName varchar(30)," +
+        " recordDelete_timeMillis integer," +
+
+        " primary key (licenceID, eventDate)," +
+        " foreign key (licenceID) references LotteryLicences (licenceID)" +
         ") without rowid").run();
 
       licencesDB.prepare("create table if not exists LotteryEventFields (" +
-        "LicenceID integer not null," +
-        " EventDate integer not null," +
-        " FieldKey varchar(20) not null," +
-        " FieldValue text," +
+        "licenceID integer not null," +
+        " eventDate integer not null," +
+        " fieldKey varchar(20) not null," +
+        " fieldValue text," +
 
-        " primary key (LicenceID, EventDate, FieldKey)," +
-        " foreign key (LicenceID, EventDate) references LotteryEvents (LicenceID, EventDate)" +
+        " primary key (licenceID, eventDate, fieldKey)," +
+        " foreign key (licenceID, eventDate) references LotteryEvents (licenceID, eventDate)" +
         ") without rowid").run();
 
       // settings
 
       licencesDB.prepare("create table if not exists ApplicationSettings (" +
-        "SettingKey varchar(50) primary key not null," +
-        " SettingName varchar(100) not null," +
-        " SettingDescription text," +
-        " SettingValue text," +
-        " RecordUpdate_UserName varchar(30) not null," +
-        " RecordUpdate_TimeMillis integer not null" +
+        "settingKey varchar(50) primary key not null," +
+        " settingName varchar(100) not null," +
+        " settingDescription text," +
+        " settingValue text," +
+        " recordUpdate_userName varchar(30) not null," +
+        " recordUpdate_timeMillis integer not null" +
         ") without rowid").run();
 
       // default settings
 
       let settingInsertSQL = "insert or ignore into ApplicationSettings" +
-        " (SettingKey, SettingName, SettingDescription, SettingValue, RecordUpdate_UserName, RecordUpdate_TimeMillis)" +
+        " (settingKey, settingName, settingDescription, settingValue, recordUpdate_userName, recordUpdate_timeMillis)" +
         " values (?, ?, ?, ?, ?, ?)";
 
       licencesDB.prepare(settingInsertSQL)

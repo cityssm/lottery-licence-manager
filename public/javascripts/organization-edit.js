@@ -168,42 +168,42 @@
 
       const trEle = document.createElement("tr");
 
-      trEle.setAttribute("data-representative-index", representativeObj.RepresentativeIndex);
-      trEle.setAttribute("data-representative-name", representativeObj.RepresentativeName);
-      trEle.setAttribute("data-representative-title", representativeObj.RepresentativeTitle);
-      trEle.setAttribute("data-representative-address-1", representativeObj.RepresentativeAddress1);
-      trEle.setAttribute("data-representative-address-2", representativeObj.RepresentativeAddress2);
-      trEle.setAttribute("data-representative-city", representativeObj.RepresentativeCity);
-      trEle.setAttribute("data-representative-province", representativeObj.RepresentativeProvince);
-      trEle.setAttribute("data-representative-postal-code", representativeObj.RepresentativePostalCode);
-      trEle.setAttribute("data-representative-phone-number", representativeObj.RepresentativePhoneNumber);
+      trEle.setAttribute("data-representative-index", representativeObj.representativeIndex);
+      trEle.setAttribute("data-representative-name", representativeObj.representativeName);
+      trEle.setAttribute("data-representative-title", representativeObj.representativeTitle);
+      trEle.setAttribute("data-representative-address-1", representativeObj.representativeAddress1);
+      trEle.setAttribute("data-representative-address-2", representativeObj.representativeAddress2);
+      trEle.setAttribute("data-representative-city", representativeObj.representativeCity);
+      trEle.setAttribute("data-representative-province", representativeObj.representativeProvince);
+      trEle.setAttribute("data-representative-postal-code", representativeObj.representativePostalCode);
+      trEle.setAttribute("data-representative-phone-number", representativeObj.representativePhoneNumber);
 
       trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-centered\">" +
         "<div class=\"field\">" +
-        "<input class=\"is-checkradio is-info\" id=\"representative-isDefault--" + representativeObj.RepresentativeIndex + "\" name=\"representative-isDefault\" type=\"radio\"" + (representativeObj.IsDefault ? " checked" : "") + " />&nbsp;" +
-        "<label for=\"representative-isDefault--" + representativeObj.RepresentativeIndex + "\"></label>" +
+        "<input class=\"is-checkradio is-info\" id=\"representative-isDefault--" + representativeObj.representativeIndex + "\" name=\"representative-isDefault\" type=\"radio\"" + (representativeObj.isDefault ? " checked" : "") + " />&nbsp;" +
+        "<label for=\"representative-isDefault--" + representativeObj.representativeIndex + "\"></label>" +
         "</div>" +
         "</td>");
 
       trEle.getElementsByTagName("input")[0].addEventListener("change", updateDefaultRepresentativeFn);
 
       let tdEle = document.createElement("td");
-      tdEle.innerHTML = representativeObj.RepresentativeName + "<br />" +
-        "<small>" + representativeObj.RepresentativeTitle + "</small>";
+      tdEle.innerHTML = representativeObj.representativeName + "<br />" +
+        "<small>" + representativeObj.representativeTitle + "</small>";
       trEle.insertAdjacentElement("beforeend", tdEle);
 
       tdEle = document.createElement("td");
-      tdEle.innerHTML = representativeObj.RepresentativeAddress1 + "<br />" +
-        "<small>" + representativeObj.RepresentativeAddress2 + "</small>";
+      tdEle.innerHTML = representativeObj.representativeAddress1 + "<br />" +
+        "<small>" + representativeObj.representativeAddress2 + "</small>";
       trEle.insertAdjacentElement("beforeend", tdEle);
 
       tdEle = document.createElement("td");
-      tdEle.innerHTML = representativeObj.RepresentativeCity + ", " + representativeObj.RepresentativeProvince + "<br />" +
-        "<small>" + representativeObj.RepresentativePostalCode + "</small>";
+      tdEle.innerHTML = representativeObj.representativeCity + ", " + representativeObj.representativeProvince + "<br />" +
+        "<small>" + representativeObj.representativePostalCode + "</small>";
       trEle.insertAdjacentElement("beforeend", tdEle);
 
       tdEle = document.createElement("td");
-      tdEle.innerHTML = representativeObj.RepresentativePhoneNumber;
+      tdEle.innerHTML = representativeObj.representativePhoneNumber;
       trEle.insertAdjacentElement("beforeend", tdEle);
 
       trEle.insertAdjacentHTML("beforeend", "<td>" +

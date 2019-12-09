@@ -21,6 +21,8 @@ const router_events = require("./routes/events");
 const router_reports = require("./routes/reports");
 const router_admin = require("./routes/admin");
 
+const configFns = require("./helpers/configFns");
+
 
 /*
  * INITALIZE THE DATABASES
@@ -68,7 +70,7 @@ app.use("/fa", express.static(__dirname + "/node_modules/@fortawesome/fontawesom
  */
 
 
-const sessionCookieName = "user_sid";
+const sessionCookieName = configFns.getProperty("session.cookieName");
 
 
 // initialize session
@@ -78,12 +80,12 @@ app.use(session({
     db: "sessions.db"
   }),
   key: sessionCookieName,
-  secret: "cityssm/lottery-licence-manager",
+  secret: configFns.getProperty("session.secret"),
   resave: true,
   saveUninitialized: false,
   rolling: true,
   cookie: {
-    maxAge: 3600000
+    maxAge: configFns.getProperty("session.maxAgeMillis")
   }
 }));
 
@@ -112,8 +114,6 @@ const sessionChecker = function(req, res, next) {
  */
 
 
-let configFns = require("./helpers/configFns");
-
 
 // make the user and config objects available to the templates
 app.use(function(req, res, next) {
@@ -140,7 +140,7 @@ app.use("/login", router_login);
 
 app.get("/logout", function(req, res) {
   "use strict";
-  if (req.session.user && req.cookies.user_sid) {
+  if (req.session.user && req.cookies[sessionCookieName]) {
     req.session.destroy();
     res.clearCookie(sessionCookieName);
     res.redirect("/");

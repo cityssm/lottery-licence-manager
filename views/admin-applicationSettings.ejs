@@ -40,15 +40,15 @@
     %>
       <tr>
         <td>
-          <label class="has-text-weight-bold" for="settingValue--<%= settingIndex %>"><%= setting.SettingName %></label><br />
-          <small><%= setting.SettingDescription %></small>
+          <label class="has-text-weight-bold" for="settingValue--<%= settingIndex %>"><%= setting.settingName %></label><br />
+          <small><%= setting.settingDescription %></small>
         </td>
         <td>
           <form class="form--applicationSetting">
-            <input name="settingKey" type="hidden" value="<%= setting.SettingKey %>" />
+            <input name="settingKey" type="hidden" value="<%= setting.settingKey %>" />
             <div class="field has-addons">
               <div class="control">
-                <input class="input" id="settingValue--<%= settingIndex %>" name="settingValue" type="text" value="<%= setting.SettingValue %>" />
+                <input class="input" id="settingValue--<%= settingIndex %>" name="settingValue" type="text" value="<%= setting.settingValue %>" />
               </div>
               <div class="control">
                 <button class="button is-success" data-tooltip="Save Setting" type="submit">

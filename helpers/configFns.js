@@ -18,6 +18,10 @@ const configFallbackValues = {
   "application.logoURL": "/images/bingoBalls.png",
   "application.port": 3000,
 
+  "session.cookieName": "lottery-licence-manager-user-sid",
+  "session.secret": "cityssm/lottery-licence-manager",
+  "session.maxAgeMillis": 60 * 60 * 1000,
+
   "user.createUpdateWindowMillis": 60 * 60 * 1000,
   "user.defaultProperties": {
     canCreate: "false",

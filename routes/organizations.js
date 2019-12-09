@@ -25,14 +25,14 @@ router.get("/", function(req, res) {
 router.post("/doSearch", function(req, res) {
   "use strict";
 
-  res.json(licencesDB.getOrganizations(req.body, true));
+  res.json(licencesDB.getOrganizations(req.body, true, req.session));
 });
 
 
 router.get("/doGetAll", function(req, res) {
   "use strict";
 
-  res.json(licencesDB.getOrganizations({}, false));
+  res.json(licencesDB.getOrganizations({}, false, req.session));
 });
 
 
@@ -48,8 +48,8 @@ router.get("/new", function(req, res) {
     headTitle: "Organization Create",
     isCreate: true,
     organization: {
-      OrganizationCity: configFns.getProperty("defaults.city"),
-      OrganizationProvince: configFns.getProperty("defaults.province")
+      organizationCity: configFns.getProperty("defaults.city"),
+      organizationProvince: configFns.getProperty("defaults.province")
     }
   });
 });
@@ -102,7 +102,7 @@ router.get("/:organizationID", function(req, res) {
 
   const organizationID = req.params.organizationID;
 
-  const organization = licencesDB.getOrganization(organizationID);
+  const organization = licencesDB.getOrganization(organizationID, req.session);
 
   if (!organization) {
     res.redirect("/organizations/?error=organizationNotFound");
@@ -116,26 +116,13 @@ router.get("/:organizationID", function(req, res) {
     organizationID: organizationID
   }, false, false);
 
-  let canUpdate = false;
-
-  if (req.session.user.userProperties.canUpdate === "true") {
-    canUpdate = true;
-
-  } else if (req.session.user.userProperties.canCreate === "true" &&
-    organization.RecordCreate_UserName === req.session.user.userName &&
-    organization.RecordUpdate_UserName === req.session.user.userName ||
-    organization.RecordUpdate_TimeMillis + configFns.getProperty("user.createUpdateWindowMillis") > Date.now()) {
-
-    canUpdate = true;
-  }
 
   res.render("organization-view", {
-    headTitle: organization.OrganizationName,
+    headTitle: organization.organizationName,
     organization: organization,
     licences: licences,
     currentDateInteger: dateTimeFns.dateToInteger(new Date()),
-    stringFns: stringFns,
-    canUpdate: canUpdate
+    stringFns: stringFns
   });
 });
 
@@ -155,22 +142,16 @@ router.get("/:organizationID/edit", function(req, res) {
     return;
   }
 
-  const organization = licencesDB.getOrganization(organizationID);
+  const organization = licencesDB.getOrganization(organizationID, req.session);
 
   if (!organization) {
     res.redirect("/organizations/?error=organizationNotFound");
     return;
   }
 
-  if (req.session.user.userProperties.canUpdate !== "true") {
-
-    if (organization.RecordCreate_UserName !== req.session.user.userName ||
-      organization.RecordUpdate_UserName !== req.session.user.userName ||
-      organization.RecordUpdate_TimeMillis + configFns.getProperty("user.createUpdateWindowMillis") < Date.now()) {
-
-      res.redirect("/organizations/" + organizationID + "/?error=accessDenied-noUpdate");
-      return;
-    }
+  if (!organization.canUpdate) {
+    res.redirect("/organizations/" + organizationID + "/?error=accessDenied-noUpdate");
+    return;
   }
 
   const dateTimeFns = require("../helpers/dateTimeFns");
@@ -178,7 +159,7 @@ router.get("/:organizationID/edit", function(req, res) {
 
   const licences = licencesDB.getLicences({
     organizationID: organizationID
-  }, false, false) || [];
+  }, false, false, req.session) || [];
 
   res.render("organization-edit", {
     headTitle: "Organization Update",

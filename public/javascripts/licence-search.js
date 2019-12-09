@@ -12,8 +12,6 @@
 
   const externalLicenceNumberLabel = searchResultsEle.getAttribute("data-external-licence-number-label");
 
-  const canUpdate = searchResultsEle.getAttribute("data-can-update") === "true";
-
 
   function doLicenceSearch() {
 
@@ -60,38 +58,38 @@
           for (let licenceIndex = 0; licenceIndex < licenceList.length; licenceIndex += 1) {
 
             const licenceObj = licenceList[licenceIndex];
-            const licenceType = licenceType_keyToName[licenceObj.LicenceTypeKey];
+            const licenceType = licenceType_keyToName[licenceObj.licenceTypeKey];
 
             const trEle = document.createElement("tr");
 
             trEle.innerHTML =
               "<td>" +
-              "<a href=\"/licences/" + licenceObj.LicenceID + "\">" +
-              window.llm.escapeHTML(licenceObj.ExternalLicenceNumber) + "<br />" +
-              "<small>Licence #" + licenceObj.LicenceID + "</small>" +
+              "<a href=\"/licences/" + licenceObj.licenceID + "\">" +
+              window.llm.escapeHTML(licenceObj.externalLicenceNumber) + "<br />" +
+              "<small>Licence #" + licenceObj.licenceID + "</small>" +
               "</a>" +
               "</td>" +
-              "<td>" + window.llm.escapeHTML(licenceObj.OrganizationName) + "</td>" +
-              "<td>" + (licenceType || licenceObj.LicenceTypeKey) + "<br />" +
-              "<small>" + window.llm.escapeHTML(licenceObj.LicenceDetails) + "</small>" +
+              "<td>" + window.llm.escapeHTML(licenceObj.organizationName) + "</td>" +
+              "<td>" + (licenceType || licenceObj.licenceTypeKey) + "<br />" +
+              "<small>" + window.llm.escapeHTML(licenceObj.licenceDetails) + "</small>" +
               "</td>" +
 
               ("<td>" +
-                "<span class=\"has-tooltip-right\" data-tooltip=\"Start Date\"><i class=\"fas fa-fw fa-play\" aria-hidden=\"true\"></i> " + licenceObj.StartDateString + "</span><br />" +
-                "<span class=\"has-tooltip-right\" data-tooltip=\"End Date\"><i class=\"fas fa-fw fa-stop\" aria-hidden=\"true\"></i> " + licenceObj.EndDateString + "</span>" +
+                "<span class=\"has-tooltip-right\" data-tooltip=\"Start Date\"><i class=\"fas fa-fw fa-play\" aria-hidden=\"true\"></i> " + licenceObj.startDateString + "</span><br />" +
+                "<span class=\"has-tooltip-right\" data-tooltip=\"End Date\"><i class=\"fas fa-fw fa-stop\" aria-hidden=\"true\"></i> " + licenceObj.endDateString + "</span>" +
                 "</td>") +
 
               "<td class=\"has-text-right\">" +
 
-              (canUpdate ?
+              (licenceObj.canUpdate ?
 
-                "<a class=\"button is-small\" data-tooltip=\"Edit Licence\" href=\"/licences/" + licenceObj.LicenceID + "/edit\">" +
+                "<a class=\"button is-small\" data-tooltip=\"Edit Licence\" href=\"/licences/" + licenceObj.licenceID + "/edit\">" +
                 "<span class=\"icon\"><i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i></span>" +
                 "<span>Edit</span>" +
                 "</a> " : "") +
-              (licenceObj.LicenceFeeIsPaid ?
+              (licenceObj.licenceFeeIsPaid ?
 
-                "<a class=\"button is-small\" data-tooltip=\"Print Licence\" href=\"/licences/" + licenceObj.LicenceID + "/print\" target=\"_blank\">" +
+                "<a class=\"button is-small\" data-tooltip=\"Print Licence\" href=\"/licences/" + licenceObj.licenceID + "/print\" target=\"_blank\">" +
                 "<i class=\"fas fa-print\" aria-hidden=\"true\"></i>" +
                 "<span class=\"sr-only\">Print</span>" +
                 "</a>" :

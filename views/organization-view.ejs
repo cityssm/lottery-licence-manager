@@ -4,19 +4,19 @@
   <ul>
     <li><a href="/dashboard">Home</a></li>
     <li><a href="/organizations">Organizations</a></li>
-    <li class="is-active"><a href="#" aria-current="page"><%= organization.OrganizationName %></a></li>
+    <li class="is-active"><a href="#" aria-current="page"><%= organization.organizationName %></a></li>
   </ul>
 </nav>
 
 <div class="columns">
   <div class="column">
     <h1 class="title is-1">
-      <%= organization.OrganizationName %>
+      <%= organization.organizationName %>
     </h1>
   </div>
-  <% if (canUpdate) { %>
+  <% if (organization.canUpdate) { %>
     <div class="column is-narrow has-text-right">
-      <a class="button is-link" href="/organizations/<%= organization.OrganizationID %>/edit">
+      <a class="button is-link" href="/organizations/<%= organization.organizationID %>/edit">
         <span class="icon is-small">
           <i class="fas fa-pencil-alt" aria-hidden="true"></i>
         </span>
@@ -27,10 +27,10 @@
 </div>
 
 <p>
-  <%= organization.OrganizationAddress1 %><br />
-  <%= (organization.OrganizationAddress2 === "" ? "" : organization.OrganizationAddress1 + "<br />") %>
-  <%= organization.OrganizationCity + ", " + organization.OrganizationProvince %><br />
-  <%= organization.OrganizationPostalCode %>
+  <%= organization.organizationAddress1 %><br />
+  <%= (organization.organizationAddress2 === "" ? "" : organization.organizationAddress2) %><br />
+  <%= organization.organizationCity + ", " + organization.organizationProvince %><br />
+  <%= organization.organizationPostalCode %>
 </p>
 
 <h2 class="title is-3 has-margin-top-20">Organization Representatives</h2>
@@ -59,9 +59,9 @@
         for (let index = 0; index < organization.organizationRepresentatives.length; index += 1) {
           const representativeObj = organization.organizationRepresentatives[index];
       %>
-        <tr data-representative-index="<%= representativeObj.RepresentativeIndex %>">
+        <tr data-representative-index="<%= representativeObj.representativeIndex %>">
           <td>
-            <% if (representativeObj.IsDefault === 1) { %>
+            <% if (representativeObj.isDefault === 1) { %>
               <span data-tooltip="Default Representative"><i class="far fa-lg fa-fw fa-dot-circle has-text-info" aria-hidden="true"></i></span>
               <span class="sr-only">Default Representative</span>
             <% } else { %>
@@ -69,16 +69,16 @@
             <% } %>
           </td>
           <td>
-            <%= representativeObj.RepresentativeName %><br />
-            <small><%= representativeObj.RepresentativeTitle %></small>
+            <%= representativeObj.representativeName %><br />
+            <small><%= representativeObj.representativeTitle %></small>
           </td>
           <td>
-            <%= representativeObj.RepresentativeAddress1 %><br />
-            <small><%= representativeObj.RepresentativeAddress2 %></small>
+            <%= representativeObj.representativeAddress1 %><br />
+            <small><%= representativeObj.representativeAddress2 %></small>
           </td>
           <td>
-            <%= representativeObj.RepresentativeCity %>, <%= representativeObj.RepresentativeProvince %><br />
-            <small><%= representativeObj.RepresentativePostalCode %></small>
+            <%= representativeObj.representativeCity %>, <%= representativeObj.representativeProvince %><br />
+            <small><%= representativeObj.representativePostalCode %></small>
           </td>
         </tr>
       <% } %>

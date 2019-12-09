@@ -8,7 +8,7 @@
   const formEle = document.getElementById("form--filters");
   const searchResultsEle = document.getElementById("container--searchResults");
 
-  const canUpdate = searchResultsEle.getAttribute("data-can-update") === "true";
+  const canCreate = searchResultsEle.getAttribute("data-can-create") === "true";
 
 
   function doOrganizationSearch() {
@@ -59,17 +59,18 @@
             trEle.innerHTML = "<td></td>";
 
             const organizationNameLinkEle = document.createElement("a");
-            organizationNameLinkEle.innerText = organizationObj.OrganizationName;
-            organizationNameLinkEle.href = "/organizations/" + organizationObj.OrganizationID;
+            organizationNameLinkEle.innerText = organizationObj.organizationName;
+            organizationNameLinkEle.href = "/organizations/" + organizationObj.organizationID;
             trEle.getElementsByTagName("td")[0].insertAdjacentElement("beforeend", organizationNameLinkEle);
 
             trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right\">" +
-              (canUpdate ?
-                "<a class=\"button is-small\" data-tooltip=\"Edit Organization\" href=\"/organizations/" + organizationObj.OrganizationID + "/edit\">" +
+              (organizationObj.canUpdate ?
+                "<a class=\"button is-small\" data-tooltip=\"Edit Organization\" href=\"/organizations/" + organizationObj.organizationID + "/edit\">" +
                 "<span class=\"icon\"><i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i></span>" +
                 "<span>Edit</span>" +
-                "</a> " +
-                "<a class=\"button is-small\" data-tooltip=\"Create a New Licence\" href=\"/licences/new/" + organizationObj.OrganizationID + "\">" +
+                "</a>" : "") +
+              (canCreate ?
+                " <a class=\"button is-small\" data-tooltip=\"Create a New Licence\" href=\"/licences/new/" + organizationObj.organizationID + "\">" +
                 "<span class=\"icon\"><i class=\"fas fa-certificate\" aria-hidden=\"true\"></i></span>" +
                 "<span>New</span>" +
                 "</a>" :

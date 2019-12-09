@@ -4,7 +4,7 @@
   </div>
   <% if (user.userProperties.canCreate === "true") { %>
     <div class="column is-narrow has-text-right">
-      <a class="button is-primary is-small" href="/licences/new/<%= organization.OrganizationID %>">
+      <a class="button is-primary is-small" href="/licences/new/<%= organization.organizationID %>">
         <span class="icon is-small">
           <i class="fas fa-certificate" aria-hidden="true"></i>
         </span>
@@ -35,44 +35,31 @@
 
     let licenceType = {};
     for (let typeIndex = 0; typeIndex < licenceTypes.length; typeIndex += 1) {
-      if (licenceTypes[typeIndex].licenceTypeKey === licence.LicenceTypeKey) {
+      if (licenceTypes[typeIndex].licenceTypeKey === licence.licenceTypeKey) {
         licenceType = licenceTypes[typeIndex];
         break;
       }
     }
 
-    let canEdit = false;
-
-    if (user.userProperties.canUpdate == "true") {
-      canEdit = true;
-
-    } else if (user.userProperties.canCreate == "true") {
-
-      if (licence.RecordCreate_UserName === user.userName &&
-        licence.RecordUpdate_UserName === user.userName &&
-        licence.RecordUpdate_TimeMillis + configFns.getProperty("user.createUpdateWindowMillis") > Date.now()) {
-
-        canEdit = true;
-      }
-    }
+    let canEdit = licence.canUpdate;
 
     let rowHTML = "<tr>" +
       "<td>" +
-        "<a href=\"/licences/" + licence.LicenceID + "\">" +
-        stringFns.escapeHTML(licence.ExternalLicenceNumber) + "<br />" +
-        "<small>Licence #" + licence.LicenceID + "</small>" +
+        "<a href=\"/licences/" + licence.licenceID + "\">" +
+        stringFns.escapeHTML(licence.externalLicenceNumber) + "<br />" +
+        "<small>Licence #" + licence.licenceID + "</small>" +
         "</a>" +
         "</td>" +
-      "<td>" + (licenceType.licenceType || licence.LicenceTypeKey) + "</td>" +
-      "<td>" + stringFns.escapeHTML(licence.LicenceDetails) + "</td>" +
-      "<td>" + licence.StartDateString + "</td>" +
-      "<td>" + licence.EndDateString + "</td>" +
+      "<td>" + (licenceType.licenceType || licence.licenceTypeKey) + "</td>" +
+      "<td>" + stringFns.escapeHTML(licence.licenceDetails) + "</td>" +
+      "<td>" + licence.startDateString + "</td>" +
+      "<td>" + licence.endDateString + "</td>" +
       "<td class=\"has-text-right\">" +
         (canEdit ?
-          "<a class=\"button is-small\" href=\"/licences/" + licence.LicenceID + "/edit\" data-tooltip=\"Edit Licence\"><span class=\"icon\"><i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i></span><span>Edit</span></a> " :
+          "<a class=\"button is-small\" href=\"/licences/" + licence.licenceID + "/edit\" data-tooltip=\"Edit Licence\"><span class=\"icon\"><i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i></span><span>Edit</span></a> " :
           "") +
         (licence.LicenceFeeIsPaid ?
-          "<a class=\"button is-small\" href=\"/licences/" + licence.LicenceID + "/print\" data-tooltip=\"Print Licence\" target=\"_blank\">" +
+          "<a class=\"button is-small\" href=\"/licences/" + licence.licenceID + "/print\" data-tooltip=\"Print Licence\" target=\"_blank\">" +
           "<i class=\"fas fa-print\" aria-hidden=\"true\"></i>" +
           "<span class=\"sr-only\">Print Licence</span>" +
           "</a>" :
@@ -81,7 +68,7 @@
         "</td>" +
       "</tr>";
 
-    if (licence.EndDate < currentDateInteger) {
+    if (licence.endDate < currentDateInteger) {
       rows_past += rowHTML;
     } else {
       rows_active += rowHTML;
@@ -101,7 +88,7 @@
     <% if (rows_active === "") { %>
       <div class="message is-info">
         <div class="message-body">
-          <%= organization.OrganizationName %> has no active licences.
+          <%= organization.organizationName %> has no active licences.
         </div>
       </div>
     <% } else { %>
@@ -117,7 +104,7 @@
     <% if (rows_past === "") { %>
       <div class="message is-info">
         <div class="message-body">
-          <%= organization.OrganizationName %> has no past licences.
+          <%= organization.organizationName %> has no past licences.
         </div>
       </div>
     <% } else { %>

@@ -7,7 +7,7 @@
     <% if (isCreate) { %>
       <li class="is-active"><a href="#" aria-current="page">New Licence</a></li>
     <% } else { %>
-      <li><a href="/licences/<%= licence.LicenceID %>">Licence #<%= licence.LicenceID %></a></li>
+      <li><a href="/licences/<%= licence.licenceID %>">Licence #<%= licence.licenceID %></a></li>
       <li class="is-active"><a href="#" aria-current="page">Update</a></li>
     <% } %>
   </ul>
@@ -19,9 +19,9 @@
       <%= (isCreate ? "Create a New Licence" : "Update an Existing Licence") %>
     </h1>
   </div>
-  <% if (licence.LicenceFeeIsPaid) { %>
+  <% if (licence.licenceFeeIsPaid) { %>
     <div class="column is-narrow has-text-right">
-      <a class="button is-link" href="/licences/<%= licence.LicenceID %>/print" target="_blank">
+      <a class="button is-link" href="/licences/<%= licence.licenceID %>/print" target="_blank">
         <span class="icon is-small">
           <i class="fas fa-print" aria-hidden="true"></i>
         </span>
@@ -38,7 +38,7 @@
       <div class="field">
         <label class="label" for="licence--licenceID">Licence ID</label>
         <div class="control has-icons-left">
-          <input class="input has-background-light has-cursor-not-allowed" id="licence--licenceID" name="licenceID" type="text" value="<%= licence.LicenceID %>" placeholder="(New Licence Number)" readonly required />
+          <input class="input has-background-light has-cursor-not-allowed" id="licence--licenceID" name="licenceID" type="text" value="<%= licence.licenceID %>" placeholder="(New Licence Number)" readonly required />
           <span class="icon is-left">
             <i class="fas fa-key" aria-hidden="true"></i>
           </span>
@@ -55,7 +55,7 @@
       <label class="label" for="licence--externalLicenceNumber"><%= configFns.getProperty("licences.externalLicenceNumber.fieldLabel") %></label>
       <div class="field has-addons">
         <div class="control is-expanded">
-          <input class="input <%= (licenceNumberIsReadOnly ? " has-background-light has-cursor-not-allowed" : "") %>" id="licence--externalLicenceNumber" name="externalLicenceNumber" type="text" value="<%= licence.ExternalLicenceNumber %>" maxlength="20" readonly />
+          <input class="input <%= (licenceNumberIsReadOnly ? " has-background-light has-cursor-not-allowed" : "") %>" id="licence--externalLicenceNumber" name="externalLicenceNumber" type="text" value="<%= licence.externalLicenceNumber %>" maxlength="20" readonly />
         </div>
         <% if (licenceNumberIsReadOnly) { %>
           <div class="control">
@@ -71,7 +71,7 @@
       <div class="field">
         <label class="label" for="licence--applicationDateString">Application Date</label>
         <div class="control has-icons-left">
-          <input class="input" id="licence--applicationDateString" name="applicationDateString" type="date" value="<%= licence.ApplicationDateString %>" required />
+          <input class="input" id="licence--applicationDateString" name="applicationDateString" type="date" value="<%= licence.applicationDateString %>" required />
           <span class="icon is-left">
             <i class="fas fa-calendar" aria-hidden="true"></i>
           </span>
@@ -81,11 +81,11 @@
   </div>
   <div class="columns">
     <div class="column is-full">
-      <input id="licence--organizationID" name="organizationID" type="hidden" value="<%= organization.OrganizationID %>" />
+      <input id="licence--organizationID" name="organizationID" type="hidden" value="<%= organization.organizationID %>" />
       <label class="label" for="licence--organization">Organization</label>
       <div class="field has-addons">
         <div class="control has-icons-left is-expanded">
-          <input class="input has-background-light has-cursor-not-allowed" id="licence--organizationName" type="text" value="<%= organization.OrganizationName %>" readonly required />
+          <input class="input has-background-light has-cursor-not-allowed" id="licence--organizationName" type="text" value="<%= organization.organizationName %>" readonly required />
           <span class="icon is-left">
             <i class="fas fa-users" aria-hidden="true"></i>
           </span>
@@ -104,7 +104,7 @@
       <div class="field">
         <label class="label" for="licence--municipality">Municipality</label>
         <div class="control has-icons-left">
-          <input class="input" id="licence--municipality" name="municipality" type="text" value="<%= licence.Municipality %>" maxlength="100" />
+          <input class="input" id="licence--municipality" name="municipality" type="text" value="<%= licence.municipality %>" maxlength="100" />
           <span class="icon is-left">
             <i class="fas fa-city" aria-hidden="true"></i>
           </span>
@@ -115,7 +115,7 @@
       <div class="field">
         <label class="label" for="licence--location">Location</label>
         <div class="control has-icons-left">
-          <input class="input" id="licence--location" name="location" type="text" value="<%= licence.Location %>" maxlength="100" list="datalist--licence--location" required />
+          <input class="input" id="licence--location" name="location" type="text" value="<%= licence.location %>" maxlength="100" list="datalist--licence--location" required />
           <span class="icon is-left">
             <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
           </span>
@@ -133,7 +133,7 @@
       <div class="field">
         <label class="label" for="licence--startDateString">Start Date</label>
         <div class="control has-icons-left">
-          <input class="input" id="licence--startDateString" name="startDateString" type="date" value="<%= licence.StartDateString %>" min="<%= licence.ApplicationDateString %>" required />
+          <input class="input" id="licence--startDateString" name="startDateString" type="date" value="<%= licence.startDateString %>" min="<%= licence.applicationDateString %>" required />
           <span class="icon is-left">
             <i class="fas fa-play" aria-hidden="true"></i>
           </span>
@@ -144,7 +144,7 @@
       <div class="field">
         <label class="label" for="licence--endDateString">End Date</label>
         <div class="control has-icons-left">
-          <input class="input" id="licence--endDateString" name="endDateString" type="date" value="<%= licence.EndDateString %>" min="<%= licence.StartDateString %>" required />
+          <input class="input" id="licence--endDateString" name="endDateString" type="date" value="<%= licence.endDateString %>" min="<%= licence.startDateString %>" required />
           <span class="icon is-left">
             <i class="fas fa-stop" aria-hidden="true"></i>
           </span>
@@ -155,7 +155,7 @@
       <div class="field">
         <label class="label" for="licence--startTimeString">Start Time</label>
         <div class="control has-icons-left">
-          <input class="input" id="licence--startTimeString" name="startTimeString" type="time" value="<%= licence.StartTimeString %>" step="300" required />
+          <input class="input" id="licence--startTimeString" name="startTimeString" type="time" value="<%= licence.startTimeString %>" step="300" required />
           <span class="icon is-left">
             <i class="fas fa-play" aria-hidden="true"></i>
           </span>
@@ -166,7 +166,7 @@
       <div class="field">
         <label class="label" for="licence--endTimeString">End Time</label>
         <div class="control has-icons-left">
-          <input class="input" id="licence--endTimeString" name="endTimeString" type="time" value="<%= licence.EndTimeString %>" step="300" required />
+          <input class="input" id="licence--endTimeString" name="endTimeString" type="time" value="<%= licence.endTimeString %>" step="300" required />
           <span class="icon is-left">
             <i class="fas fa-stop" aria-hidden="true"></i>
           </span>
@@ -179,7 +179,7 @@
       <div class="field">
         <label class="label" for="licence--licenceDetails">Licence Details</label>
         <div class="control">
-          <textarea class="textarea" id="licence--licenceDetails" name="licenceDetails" rows="2"><%= licence.LicenceDetails %></textarea>
+          <textarea class="textarea" id="licence--licenceDetails" name="licenceDetails" rows="2"><%= licence.licenceDetails %></textarea>
         </div>
       </div>
     </div>
@@ -188,7 +188,7 @@
       <div class="field">
         <label class="label" for="licence--termsConditions">Terms and Conditions</label>
         <div class="control">
-          <textarea class="textarea" id="licence--termsConditions" name="termsConditions" rows="2"><%= licence.TermsConditions %></textarea>
+          <textarea class="textarea" id="licence--termsConditions" name="termsConditions" rows="2"><%= licence.termsConditions %></textarea>
         </div>
       </div>
     </div>
@@ -206,11 +206,11 @@
                 for (let licenceTypeIndex = 0; licenceTypeIndex < licenceTypes.length; licenceTypeIndex += 1) {
                   const licenceType = licenceTypes[licenceTypeIndex];
 
-                  if (!licenceType.isActive && licence.LicenceTypeKey !== licenceType.licenceTypeKey) {
+                  if (!licenceType.isActive && licence.licenceTypeKey !== licenceType.licenceTypeKey) {
                     continue;
                   }
               %>
-                  <option value="<%= licenceType.licenceTypeKey %>" <%= (licence.LicenceTypeKey === licenceType.licenceTypeKey ? " selected" : "") %>>
+                  <option value="<%= licenceType.licenceTypeKey %>" <%= (licence.licenceTypeKey === licenceType.licenceTypeKey ? " selected" : "") %>>
                     <%= licenceType.licenceType %>
                   </option>
               <%
@@ -225,7 +225,7 @@
       <div class="field">
         <label class="label" for="licence--totalPrizeValue">Total Prize Value</label>
         <div class="control has-icons-left">
-          <input class="input" id="licence--totalPrizeValue" name="totalPrizeValue" type="number" value="<%= licence.TotalPrizeValue %>" min="0.00" max="99999999.99" step="0.01" required onwheel="return false;" />
+          <input class="input" id="licence--totalPrizeValue" name="totalPrizeValue" type="number" value="<%= licence.totalPrizeValue %>" min="0.00" max="99999999.99" step="0.01" required onwheel="return false;" />
           <span class="icon is-left">
             <i class="fas fa-dollar-sign" aria-hidden="true"></i>
           </span>
@@ -254,7 +254,7 @@
         %>
           <div class="field">
             <div class="control is-expanded has-icons-left">
-              <input class="input is-small" name="eventDate" type="date" value="<%= eventObj.EventDateString %>" min="<%= licence.StartDateString %>" max="<%= licence.EndDateString %>" required readonly />
+              <input class="input is-small" name="eventDate" type="date" value="<%= eventObj.eventDateString %>" min="<%= licence.startDateString %>" max="<%= licence.endDateString %>" required readonly />
               <span class="icon is-left">
                 <i class="fas fa-calendar" aria-hidden="true"></i>
               </span>
@@ -309,7 +309,7 @@
         for (let licenceTypeIndex = 0; licenceTypeIndex < licenceTypes.length; licenceTypeIndex += 1) {
           const licenceType = licenceTypes[licenceTypeIndex];
       %>
-        <fieldset class="container-licenceTypeFields <%= (licence.LicenceTypeKey === licenceType.licenceTypeKey ? "" : " is-hidden") %>" id="container-licenceTypeFields--<%= licenceType.licenceTypeKey %>" <%= (licence.LicenceTypeKey === licenceType.licenceTypeKey ? "" : " disabled") %>>
+        <fieldset class="container-licenceTypeFields <%= (licence.licenceTypeKey === licenceType.licenceTypeKey ? "" : " is-hidden") %>" id="container-licenceTypeFields--<%= licenceType.licenceTypeKey %>" <%= (licence.licenceTypeKey === licenceType.licenceTypeKey ? "" : " disabled") %>>
           <legend>
             <h2 class="title is-4 has-padding-bottom-10">Additional <%= licenceType.licenceType %> Fields</h2>
           </legend>
@@ -326,9 +326,9 @@
 
               if (!isCreate) {
                 for (let savedFieldIndex = 0; savedFieldIndex < licence.licenceFields.length; savedFieldIndex += 1) {
-                  if (licence.licenceFields[savedFieldIndex].FieldKey === inputName) {
+                  if (licence.licenceFields[savedFieldIndex].fieldKey === inputName) {
                     licence.licenceFields[savedFieldIndex].isDisplayed = true;
-                    fieldValue = licence.licenceFields[savedFieldIndex].FieldValue;
+                    fieldValue = licence.licenceFields[savedFieldIndex].fieldValue;
                     break;
                   }
                 }
@@ -368,9 +368,9 @@
                   fieldKeys += "," + savedField.FieldKey;
           %>
                 <div class="field">
-                  <label class="label" for="licence--<%= savedField.FieldKey %>-<%= licenceType.licenceTypeKey %>"><%= savedField.FieldKey %></label>
+                  <label class="label" for="licence--<%= savedField.fieldKey %>-<%= licenceType.licenceTypeKey %>"><%= savedField.fieldKey %></label>
                   <div class="control">
-                    <input class="input" id="licence--<%= savedField.FieldKey %>-<%= licenceType.licenceTypeKey %>" name="<%= savedField.FieldKey %>" type="text" value="<%= savedField.FieldValue %>" />
+                    <input class="input" id="licence--<%= savedField.fieldKey %>-<%= licenceType.licenceTypeKey %>" name="<%= savedField.fieldKey %>" type="text" value="<%= savedField.fieldValue %>" />
                   </div>
                 </div>
           <%
@@ -434,7 +434,7 @@
 
 <%
   if (!isCreate) {
-    if (licence.LicenceFeeIsPaid) {
+    if (licence.licenceFeeIsPaid) {
 %>
   <h2 class="title is-4">Licence Fee Payment</h2>
 
@@ -442,13 +442,13 @@
     <div class="column">
       <p>
         <strong>Fee Collected</strong><br />
-        $<%= licence.LicenceFee.toFixed(2) %>
+        $<%= licence.licenceFee.toFixed(2) %>
       </p>
     </div>
     <div class="column">
       <p>
         <strong><%= configFns.getProperty("licences.externalReceiptNumber.fieldLabel") %></strong><br />
-        <%= licence.ExternalReceiptNumber %>
+        <%= licence.externalReceiptNumber %>
       </p>
     </div>
     <div class="column">
@@ -488,7 +488,7 @@
     <div class="column">
       <form id="form--licenceFee">
         <fieldset>
-          <input name="licenceID" type="hidden" value="<%= licence.LicenceID %>" />
+          <input name="licenceID" type="hidden" value="<%= licence.licenceID %>" />
           <div class="message is-warning is-hidden-enabled">
             <div class="message-body">
               Changes have been made that could impact the fee calculation.

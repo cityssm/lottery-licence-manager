@@ -20,7 +20,7 @@ router.get("/", function(req, res) {
 router.post("/doSearch", function(req, res) {
   "use strict";
 
-  res.json(licencesDB.getLicences(req.body, true, true));
+  res.json(licencesDB.getLicences(req.body, true, true, req.session));
 });
 
 
@@ -52,7 +52,7 @@ router.get(["/new", "/new/:organizationID"], function(req, res) {
   let organization = {};
 
   if (organizationID && organizationID !== "") {
-    organization = licencesDB.getOrganization(organizationID);
+    organization = licencesDB.getOrganization(organizationID, req.session);
   }
 
   // use current date as default
@@ -77,13 +77,13 @@ router.get(["/new", "/new/:organizationID"], function(req, res) {
     headTitle: "Licence Create",
     isCreate: true,
     licence: {
-      ExternalLicenceNumber: externalLicenceNumber,
-      ApplicationDateString: currentDateAsString,
-      Municipality: configFns.getProperty("defaults.city"),
-      StartDateString: currentDateAsString,
-      EndDateString: currentDateAsString,
-      StartTimeString: "00:00",
-      EndTimeString: "00:00",
+      externalLicenceNumber: externalLicenceNumber,
+      applicationDateString: currentDateAsString,
+      municipality: configFns.getProperty("defaults.city"),
+      startDateString: currentDateAsString,
+      endDateString: currentDateAsString,
+      startTimeString: "00:00",
+      endTimeString: "00:00",
       events: []
     },
     organization: organization,
@@ -215,33 +215,19 @@ router.get("/:licenceID", function(req, res) {
 
   const licenceID = req.params.licenceID;
 
-  const licence = licencesDB.getLicence(licenceID);
+  const licence = licencesDB.getLicence(licenceID, req.session);
 
   if (!licence) {
     res.redirect("/licences/?error=licenceNotFound");
     return;
   }
 
-  const organization = licencesDB.getOrganization(licence.OrganizationID);
-
-  let canUpdate = false;
-
-  if (req.session.user.userProperties.canUpdate === "true") {
-    canUpdate = true;
-
-  } else if (req.session.user.userProperties.canCreate === "true" &&
-    licence.RecordCreate_UserName === req.session.user.userName &&
-    licence.RecordUpdate_UserName === req.session.user.userName ||
-    licence.RecordUpdate_TimeMillis + configFns.getProperty("user.createUpdateWindowMillis") > Date.now()) {
-
-    canUpdate = true;
-  }
+  const organization = licencesDB.getOrganization(licence.organizationID, req.session);
 
   res.render("licence-view", {
     headTitle: "Licence #" + licenceID,
     licence: licence,
-    organization: organization,
-    canUpdate: canUpdate
+    organization: organization
   });
 });
 
@@ -256,27 +242,21 @@ router.get("/:licenceID/edit", function(req, res) {
     return;
   }
 
-  const licence = licencesDB.getLicence(licenceID);
+  const licence = licencesDB.getLicence(licenceID, req.session);
 
   if (!licence) {
     res.redirect("/licences/?error=licenceNotFound");
     return;
+
+  } else if (!licence.canUpdate) {
+    res.redirect("/licences/" + licenceID + "/?error=accessDenied");
+    return;
   }
 
-  if (req.session.user.userProperties.canUpdate !== "true") {
 
-    if (licence.RecordCreate_UserName !== req.session.user.userName ||
-      licence.RecordUpdate_UserName !== req.session.user.userName ||
-      licence.RecordUpdate_TimeMillis + configFns.getProperty("user.createUpdateWindowMillis") < Date.now()) {
+  const organization = licencesDB.getOrganization(licence.organizationID, req.session);
 
-      res.redirect("/licences/" + licenceID + "/?error=accessDenied");
-      return;
-    }
-  }
-
-  const organization = licencesDB.getOrganization(licence.OrganizationID);
-
-  let distinctLocations = licencesDB.getDistinctLicenceLocations(licence.Municipality);
+  let distinctLocations = licencesDB.getDistinctLicenceLocations(licence.municipality);
 
   let feeCalculation = configFns.getProperty("licences.feeCalculationFn")(licence);
 
@@ -296,19 +276,19 @@ router.get("/:licenceID/print", function(req, res, next) {
 
   const licenceID = req.params.licenceID;
 
-  const licence = licencesDB.getLicence(licenceID);
+  const licence = licencesDB.getLicence(licenceID, req.session);
 
   if (!licence) {
     res.redirect("/licences/?error=licenceNotFound");
     return;
   }
 
-  if (!licence.LicenceFeeIsPaid) {
+  if (!licence.licenceFeeIsPaid) {
     res.redirect("/licences/?error=licenceFeeNotPaid");
     return;
   }
 
-  const organization = licencesDB.getOrganization(licence.OrganizationID);
+  const organization = licencesDB.getOrganization(licence.organizationID, req.session);
 
   const path = require("path");
   const ejs = require("ejs");

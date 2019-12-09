@@ -7,7 +7,7 @@
     <% if (isCreate) { %>
       <li class="is-active"><a href="#" aria-current="page">New Organization</a></li>
     <% } else { %>
-      <li><a href="/organizations/<%= organization.OrganizationID %>"><%= organization.OrganizationName %></a></li>
+      <li><a href="/organizations/<%= organization.organizationID %>"><%= organization.organizationName %></a></li>
       <li class="is-active"><a href="#" aria-current="page">Update</a></li>
     <% } %>
   </ul>
@@ -18,24 +18,24 @@
 </h1>
 
 <form class="has-margin-bottom-20" id="form--organization">
-  <input id="organization--organizationID" name="organizationID" type="hidden" value="<%= organization.OrganizationID %>" />
+  <input id="organization--organizationID" name="organizationID" type="hidden" value="<%= organization.organizationID %>" />
 
   <div class="field">
     <label class="label" for="organization--organizationName">Organization Name</label>
     <div class="control">
-      <input class="input" id="organization--organizationName" name="organizationName" type="text" value="<%= organization.OrganizationName %>" maxlength="100" autocomplete="off" <%= (isCreate ? " autofocus " : "") %> required />
+      <input class="input" id="organization--organizationName" name="organizationName" type="text" value="<%= organization.organizationName %>" maxlength="100" autocomplete="off" <%= (isCreate ? " autofocus " : "") %> required />
     </div>
   </div>
 
   <div class="field">
     <label class="label" for="organization--organizationAddress1">Address</label>
     <div class="control">
-      <input class="input" id="organization--organizationAddress1" name="organizationAddress1" type="text" value="<%= organization.OrganizationAddress1 %>" placeholder="Line 1" maxlength="50" autocomplete="off" />
+      <input class="input" id="organization--organizationAddress1" name="organizationAddress1" type="text" value="<%= organization.organizationAddress1 %>" placeholder="Line 1" maxlength="50" autocomplete="off" />
     </div>
   </div>
   <div class="field">
     <div class="control">
-      <input class="input" id="organization--organizationAddress2" name="organizationAddress2" type="text" value="<%= organization.OrganizationAddress2 %>" placeholder="Line 2" maxlength="50" autocomplete="off" />
+      <input class="input" id="organization--organizationAddress2" name="organizationAddress2" type="text" value="<%= organization.organizationAddress2 %>" placeholder="Line 2" maxlength="50" autocomplete="off" />
     </div>
   </div>
 
@@ -44,7 +44,7 @@
       <div class="field">
         <label class="label" for="organization--organizationCity">City</label>
         <div class="control">
-          <input class="input" id="organization--organizationCity" name="organizationCity" type="text" value="<%= organization.OrganizationCity %>" maxlength="20" autocomplete="off" />
+          <input class="input" id="organization--organizationCity" name="organizationCity" type="text" value="<%= organization.organizationCity %>" maxlength="20" autocomplete="off" />
         </div>
       </div>
     </div>
@@ -52,7 +52,7 @@
       <div class="field">
         <label class="label" for="organization--organizationProvince">Province</label>
         <div class="control">
-          <input class="input" id="organization--organizationProvince" name="organizationProvince" type="text" value="<%= organization.OrganizationProvince %>" maxlength="2" autocomplete="off" />
+          <input class="input" id="organization--organizationProvince" name="organizationProvince" type="text" value="<%= organization.organizationProvince %>" maxlength="2" autocomplete="off" />
         </div>
       </div>
     </div>
@@ -60,7 +60,7 @@
       <div class="field">
         <label class="label" for="organization--organizationPostalCode">Postal Code</label>
         <div class="control">
-          <input class="input" id="organization--organizationPostalCode" name="organizationPostalCode" type="text" value="<%= organization.OrganizationPostalCode %>" minlength="5" maxlength="7" autocomplete="off" />
+          <input class="input" id="organization--organizationPostalCode" name="organizationPostalCode" type="text" value="<%= organization.organizationPostalCode %>" minlength="5" maxlength="7" autocomplete="off" />
         </div>
       </div>
     </div>
@@ -127,35 +127,35 @@
         for (let index = 0; index < organization.organizationRepresentatives.length; index += 1) {
           const representativeObj = organization.organizationRepresentatives[index];
       %>
-        <tr data-representative-index="<%= representativeObj.RepresentativeIndex %>"
-          data-representative-name="<%= representativeObj.RepresentativeName %>"
-          data-representative-title="<%= representativeObj.RepresentativeTitle %>"
-          data-representative-address-1="<%= representativeObj.RepresentativeAddress1 %>"
-          data-representative-address-2="<%= representativeObj.RepresentativeAddress2 %>"
-          data-representative-city="<%= representativeObj.RepresentativeCity %>"
-          data-representative-province="<%= representativeObj.RepresentativeProvince %>"
-          data-representative-postal-code="<%= representativeObj.RepresentativePostalCode %>"
-          data-representative-phone-number="<%= representativeObj.RepresentativePhoneNumber %>">
+        <tr data-representative-index="<%= representativeObj.representativeIndex %>"
+          data-representative-name="<%= representativeObj.representativeName %>"
+          data-representative-title="<%= representativeObj.representativeTitle %>"
+          data-representative-address-1="<%= representativeObj.representativeAddress1 %>"
+          data-representative-address-2="<%= representativeObj.representativeAddress2 %>"
+          data-representative-city="<%= representativeObj.representativeCity %>"
+          data-representative-province="<%= representativeObj.representativeProvince %>"
+          data-representative-postal-code="<%= representativeObj.representativePostalCode %>"
+          data-representative-phone-number="<%= representativeObj.representativePhoneNumber %>">
           <td>
             <div class="field">
-              <input class="is-checkradio is-info" id="representative-isDefault--<%= representativeObj.RepresentativeIndex %>" name="representative-isDefault" type="radio" value="<%= representativeObj.RepresentativeIndex %>" <%= (representativeObj.IsDefault === 1 ? " checked" : "") %> />
-              <label for="representative-isDefault--<%= representativeObj.RepresentativeIndex %>"></label>
+              <input class="is-checkradio is-info" id="representative-isDefault--<%= representativeObj.representativeIndex %>" name="representative-isDefault" type="radio" value="<%= representativeObj.representativeIndex %>" <%= (representativeObj.isDefault === 1 ? " checked" : "") %> />
+              <label for="representative-isDefault--<%= representativeObj.representativeIndex %>"></label>
             </div>
           </td>
           <td>
-            <%= representativeObj.RepresentativeName %><br />
-            <small><%= representativeObj.RepresentativeTitle %></small>
+            <%= representativeObj.representativeName %><br />
+            <small><%= representativeObj.representativeTitle %></small>
           </td>
           <td>
-            <%= representativeObj.RepresentativeAddress1 %><br />
-            <small><%= representativeObj.RepresentativeAddress2 %></small>
+            <%= representativeObj.representativeAddress1 %><br />
+            <small><%= representativeObj.representativeAddress2 %></small>
           </td>
           <td>
-            <%= representativeObj.RepresentativeCity %>, <%= representativeObj.RepresentativeProvince %><br />
-            <small><%= representativeObj.RepresentativePostalCode %></small>
+            <%= representativeObj.representativeCity %>, <%= representativeObj.representativeProvince %><br />
+            <small><%= representativeObj.representativePostalCode %></small>
           </td>
           <td>
-            <%= representativeObj.RepresentativePhoneNumber %>
+            <%= representativeObj.representativePhoneNumber %>
           </td>
           <td>
             <div class="buttons is-right has-addons">

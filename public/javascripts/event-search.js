@@ -57,18 +57,18 @@
           for (let eventIndex = 0; eventIndex < eventList.length; eventIndex += 1) {
 
             const eventObj = eventList[eventIndex];
-            const licenceTypeObj = licenceTypes[eventObj.LicenceTypeKey];
+            const licenceTypeObj = licenceTypes[eventObj.licenceTypeKey];
 
-            const licenceType = licenceTypeObj ? licenceTypeObj.licenceType : eventObj.LicenceTypeKey;
+            const licenceType = licenceTypeObj ? licenceTypeObj.licenceType : eventObj.licenceTypeKey;
 
-            if (currentDate !== eventObj.EventDate) {
+            if (currentDate !== eventObj.eventDate) {
 
               if (currentDate !== 0) {
                 resultsEle.insertAdjacentElement("beforeend", currentDateListEle);
               }
 
-              currentDate = eventObj.EventDate;
-              resultsEle.insertAdjacentHTML("beforeend", "<h2 class=\"title is-4\">" + eventObj.EventDateString + "</h2>");
+              currentDate = eventObj.eventDate;
+              resultsEle.insertAdjacentHTML("beforeend", "<h2 class=\"title is-4\">" + eventObj.eventDateString + "</h2>");
               currentDateListEle = document.createElement("ul");
               currentDateListEle.className = "list";
             }
@@ -76,25 +76,25 @@
             currentDateListEle.insertAdjacentHTML("beforeend", "<li class=\"list-item\">" +
               "<div class=\"columns\">" +
               ("<div class=\"column is-1\">" +
-                "<a href=\"/events/" + eventObj.LicenceID + "/" + eventObj.EventDate + "\">" +
-                window.llm.escapeHTML(eventObj.ExternalLicenceNumber) + "<br />" +
-                "<small>Licence #" + eventObj.LicenceID + "</small>" +
+                "<a href=\"/events/" + eventObj.licenceID + "/" + eventObj.eventDate + "\">" +
+                window.llm.escapeHTML(eventObj.externalLicenceNumber) + "<br />" +
+                "<small>Licence #" + eventObj.licenceID + "</small>" +
                 "</a>" +
                 "</div>") +
               ("<div class=\"column\">" +
-                window.llm.escapeHTML(eventObj.OrganizationName) +
+                window.llm.escapeHTML(eventObj.organizationName) +
                 "</div>") +
               ("<div class=\"column\">" +
                 licenceType + "<br />" +
-                "<small>" + window.llm.escapeHTML(eventObj.LicenceDetails) + "</small>" +
+                "<small>" + window.llm.escapeHTML(eventObj.licenceDetails) + "</small>" +
                 "</div>") +
                 ("<div class=\"column\">" +
-                  window.llm.escapeHTML(eventObj.Location) + "<br />" +
-                  "<small>" + eventObj.StartTimeString + " to " + eventObj.EndTimeString + "</small>" +
+                  window.llm.escapeHTML(eventObj.location) + "<br />" +
+                  "<small>" + eventObj.startTimeString + " to " + eventObj.endTimeString + "</small>" +
                   "</div>") +
               (canUpdate ?
                 "<div class=\"column is-narrow is-hidden-print\">" +
-                "<a class=\"button is-small\" href=\"/events/" + eventObj.LicenceID + "/" + eventObj.EventDate + "/edit\">" +
+                "<a class=\"button is-small\" href=\"/events/" + eventObj.licenceID + "/" + eventObj.eventDate + "/edit\">" +
                 "<span class=\"icon\"><i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i></span>" +
                 "<span>Edit</span>" +
                 "</a>" +

@@ -1,0 +1,76 @@
+<div class="panel">
+  <h2 class="panel-heading">
+    Licence Details
+  </h2>
+  <div class="panel-block is-block">
+    <div class="columns">
+      <div class="column is-6">
+        <p>
+          <strong>Organization</strong><br />
+          <a href="/organizations/<%= organization.organizationID %>"><%= organization.organizationName %></a>
+        </p>
+      </div>
+      <div class="column is-3">
+        <p>
+          <strong><%= configFns.getProperty("licences.externalLicenceNumber.fieldLabel") %></strong><br />
+          <%= licence.externalLicenceNumber %>
+        </p>
+      </div>
+      <div class="column is-3">
+        <p>
+          <strong>File Number</strong><br />
+          <%= licence.licenceID %>
+        </p>
+      </div>
+    </div>
+    <div class="columns">
+      <div class="column is-3">
+        <p>
+          <strong>Event Date</strong><br />
+          <%= event.eventDateString %>
+        </p>
+      </div>
+      <div class="column is-3">
+        <%
+          const licenceType = configFns.getLicenceType(licence.licenceTypeKey);
+        %>
+        <p>
+          <strong>Licence Type</strong><br />
+          <%= (licenceType ? licenceType.licenceType : licence.licenceTypeKey) %>
+        </p>
+      </div>
+      <div class="column is-6">
+        <p>
+          <strong>Location</strong><br />
+          <%= licence.location %>
+        </p>
+      </div>
+    </div>
+    <div class="columns">
+      <div class="column is-3">
+        <p>
+          <strong>Start Date</strong><br />
+          <%= licence.startDateString %>
+        </p>
+      </div>
+      <div class="column is-3">
+        <p>
+          <strong>End Date</strong><br />
+          <%= licence.endDateString %>
+        </p>
+      </div>
+      <div class="column is-3">
+        <p>
+          <strong>Start Time</strong><br />
+          <%= licence.startTimeString %>
+        </p>
+      </div>
+      <div class="column is-3">
+        <p>
+          <strong>End Time</strong><br />
+          <%= licence.endTimeString %>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

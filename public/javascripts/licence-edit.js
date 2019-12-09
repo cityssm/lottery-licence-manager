@@ -182,7 +182,7 @@
       let doDisplayRecord = true;
 
       const organizationObj = organizationList[organizationIndex];
-      const organizationName = organizationObj.OrganizationName.toLowerCase();
+      const organizationName = organizationObj.organizationName.toLowerCase();
 
       for (let searchStringIndex = 0; searchStringIndex < searchStringSplit.length; searchStringIndex += 1) {
         if (organizationName.indexOf(searchStringSplit[searchStringIndex]) === -1) {
@@ -196,9 +196,9 @@
 
         const listItemEle = document.createElement("a");
         listItemEle.className = "list-item";
-        listItemEle.setAttribute("data-organization-id", organizationObj.OrganizationID);
-        listItemEle.setAttribute("data-organization-name", organizationObj.OrganizationName);
-        listItemEle.innerText = organizationObj.OrganizationName;
+        listItemEle.setAttribute("data-organization-id", organizationObj.organizationID);
+        listItemEle.setAttribute("data-organization-name", organizationObj.organizationName);
+        listItemEle.innerText = organizationObj.organizationName;
         listItemEle.addEventListener("click", organizationLookup_setOrganization);
         listEle.insertAdjacentElement("beforeend", listItemEle);
       }

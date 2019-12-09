@@ -4,19 +4,19 @@
   <ul>
     <li><a href="/dashboard">Home</a></li>
     <li><a href="/licences">Licences</a></li>
-    <li class="is-active"><a href="#" aria-current="page">Licence #<%= licence.LicenceID %></a></li>
+    <li class="is-active"><a href="#" aria-current="page">Licence #<%= licence.licenceID %></a></li>
   </ul>
 </nav>
 
 <div class="columns">
   <div class="column">
     <h1 class="title is-1">
-      Licence #<%= licence.LicenceID %>
+      Licence #<%= licence.licenceID %>
     </h1>
   </div>
   <div class="column is-narrow has-text-right">
-    <% if (canUpdate) { %>
-      <a class="button is-link" href="/licences/<%= licence.LicenceID %>/edit">
+    <% if (licence.canUpdate) { %>
+      <a class="button is-link" href="/licences/<%= licence.licenceID %>/edit">
         <span class="icon is-small">
           <i class="fas fa-pencil-alt" aria-hidden="true"></i>
         </span>
@@ -24,7 +24,7 @@
       </a>
     <% } %>
     <% if (licence.LicenceFeeIsPaid) { %>
-      <a class="button is-link" href="/licences/<%= licence.LicenceID %>/print" target="_blank">
+      <a class="button is-link" href="/licences/<%= licence.licenceID %>/print" target="_blank">
         <span class="icon is-small">
           <i class="fas fa-print" aria-hidden="true"></i>
         </span>
@@ -38,19 +38,19 @@
   <div class="column">
     <p>
       <strong>Licence ID</strong><br />
-      <%= licence.LicenceID %>
+      <%= licence.licenceID %>
     </p>
   </div>
   <div class="column">
     <p>
       <strong><%= configFns.getProperty("licences.externalLicenceNumber.fieldLabel") %></strong><br />
-      <%= licence.ExternalLicenceNumber %>
+      <%= licence.externalLicenceNumber %>
     </p>
   </div>
   <div class="column">
     <p>
       <strong>Application Date</strong><br />
-      <%= licence.ApplicationDateString %>
+      <%= licence.applicationDateString %>
     </p>
   </div>
 </div>
@@ -59,7 +59,7 @@
   <div class="column">
     <p>
       <strong>Organization</strong><br />
-      <a href="/organizations/<%= organization.OrganizationID %>"><%= organization.OrganizationName %></a>
+      <a href="/organizations/<%= organization.organizationID %>"><%= organization.organizationName %></a>
     </p>
   </div>
 </div>
@@ -68,13 +68,13 @@
   <div class="column is-6">
     <p>
       <strong>Municipality</strong><br />
-      <%= licence.Municipality %>
+      <%= licence.municipality %>
     </p>
   </div>
   <div class="column is-6">
     <p>
       <strong>Location</strong><br />
-      <%= licence.Location %>
+      <%= licence.location %>
     </p>
   </div>
 </div>
@@ -83,25 +83,25 @@
   <div class="column is-3">
     <p>
       <strong>Start Date</strong><br />
-      <%= licence.StartDateString %>
+      <%= licence.startDateString %>
     </p>
   </div>
   <div class="column is-3">
     <p>
       <strong>End Date</strong><br />
-      <%= licence.EndDateString %>
+      <%= licence.endDateString %>
     </p>
   </div>
   <div class="column is-3">
     <p>
       <strong>Start Time</strong><br />
-      <%= licence.StartTimeString %>
+      <%= licence.startTimeString %>
     </p>
   </div>
   <div class="column is-3">
     <p>
       <strong>End Time</strong><br />
-      <%= licence.EndTimeString %>
+      <%= licence.endTimeString %>
     </p>
   </div>
 </div>
@@ -110,13 +110,13 @@
   <div class="column is-6">
     <p>
       <strong>Licence Details</strong><br />
-      <%= licence.LicenceDetails %>
+      <%= licence.licenceDetails %>
     </p>
   </div>
   <div class="column is-6">
     <p>
       <strong>Terms and Conditions</strong><br />
-      <%= licence.TermsConditions %>
+      <%= licence.termsConditions %>
     </p>
   </div>
 </div>
@@ -126,15 +126,15 @@
     <p>
       <strong>Licence Type</strong><br />
       <%
-        const licenceType = configFns.getLicenceType(licence.LicenceTypeKey);
+        const licenceType = configFns.getLicenceType(licence.licenceTypeKey);
       %>
-      <%= (licenceType ? licenceType.licenceType : licence.LicenceTypeKey) %>
+      <%= (licenceType ? licenceType.licenceType : licence.licenceTypeKey) %>
     </p>
   </div>
   <div class="column is-6">
     <p>
       <strong>Total Prize Value</strong><br />
-      $ <%= licence.TotalPrizeValue.toFixed(2) %>
+      $ <%= licence.totalPrizeValue.toFixed(2) %>
     </p>
   </div>
 </div>
@@ -146,8 +146,8 @@
       <% for (let eventIndex = 0; eventIndex < licence.events.length; eventIndex += 1) { %>
         <li class="has-margin-bottom-10">
           <span class="fa-li"><i class="fas fa-calendar"></i></span>
-          <a href="/events/<%= licence.LicenceID %>/<%=licence.events[eventIndex].EventDate %>">
-            <%= licence.events[eventIndex].EventDateString %>
+          <a href="/events/<%= licence.licenceID %>/<%=licence.events[eventIndex].eventDate %>">
+            <%= licence.events[eventIndex].eventDateString %>
           </a>
         </li>
       <% } %>
@@ -155,7 +155,7 @@
   </div>
   <div class="column">
     <h2 class="title is-4">
-      Additional <%= (licenceType ? licenceType.licenceType : licence.LicenceTypeKey) %> Fields
+      Additional <%= (licenceType ? licenceType.licenceType : licence.licenceTypeKey) %> Fields
     </h2>
     <%
       const licenceFields = licenceType.licenceFields || [];
@@ -169,9 +169,9 @@
         let fieldValue = "";
 
         for (let savedFieldIndex = 0; savedFieldIndex < licence.licenceFields.length; savedFieldIndex += 1) {
-          if (licence.licenceFields[savedFieldIndex].FieldKey === inputName) {
+          if (licence.licenceFields[savedFieldIndex].fieldKey === inputName) {
             licence.licenceFields[savedFieldIndex].isDisplayed = true;
-            fieldValue = licence.licenceFields[savedFieldIndex].FieldValue;
+            fieldValue = licence.licenceFields[savedFieldIndex].fieldValue;
             break;
           }
         }
@@ -192,8 +192,8 @@
         if (!savedField.isDisplayed) {
     %>
           <p>
-            <strong><%= savedField.FieldKey %></strong><br />
-            <%= savedField.FieldValue %>
+            <strong><%= savedField.fieldKey %></strong><br />
+            <%= savedField.fieldValue %>
           </p>
     <%
         }
@@ -203,15 +203,15 @@
   <div class="column">
     <h2 class="title is-4">Licence Fee Payment</h2>
 
-    <% if (licence.LicenceFeeIsPaid) { %>
+    <% if (licence.licenceFeeIsPaid) { %>
       <p class="has-margin-bottom-10">
         <strong>Fee Collected</strong><br />
-        $<%= licence.LicenceFee.toFixed(2) %>
+        $<%= licence.licenceFee.toFixed(2) %>
       </p>
 
       <p>
         <strong><%= configFns.getProperty("licences.externalReceiptNumber.fieldLabel") %></strong><br />
-        <%= licence.ExternalReceiptNumber %>
+        <%= licence.externalReceiptNumber %>
       </p>
     <% } else { %>
       <div class="message is-info">

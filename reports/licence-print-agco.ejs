@@ -161,7 +161,7 @@
           </td>
           <td class="has-text-right">
             <span class="has-text-weight-bold is-16pt">M</span>
-            <span class="has-text-red is-20pt"><%= licence.ExternalLicenceNumber %></span>
+            <span class="has-text-red is-20pt"><%= licence.externalLicenceNumber %></span>
           </td>
         </tr>
       </tbody>
@@ -174,10 +174,10 @@
         Adresse (n° de rue, nom de rue, bureau, ville, province, code postal)
       </div>
       <div class="field">
-        <%= organization.OrganizationName %><br />
-        <%= organization.OrganizationAddress1 %><br />
-        <%= organization.OrganizationAddress2 %><br />
-        <%= organization.OrganizationCity %>, <%  organization.OrganizationProvince %> &nbsp;<%= organization.OrganizationPostalCode %>
+        <%= organization.organizationName %><br />
+        <%= organization.organizationAddress1 %><br />
+        <%= organization.organizationAddress2 %><br />
+        <%= organization.organizationCity %>, <%  organization.organizationProvince %> &nbsp;<%= organization.organizationPostalCode %>
       </div>
     </div>
 
@@ -195,12 +195,12 @@
                   const licenceTypes = configFns.getProperty("licenceTypes");
                   let licenceType = {};
                   for (let typeIndex = 0; typeIndex < licenceTypes.length; typeIndex += 1) {
-                    if (licenceTypes[typeIndex].licenceTypeKey === licence.LicenceTypeKey) {
+                    if (licenceTypes[typeIndex].licenceTypeKey === licence.licenceTypeKey) {
                       licenceType = licenceTypes[typeIndex];
                       break;
                     }
                   }
-                %><%= licenceType.licenceType || licence.LicenceTypeKey  %>
+                %><%= licenceType.licenceType || licence.licenceTypeKey  %>
               </div>
             </td>
           </tr>
@@ -209,7 +209,7 @@
               Location/Lieu
             </td>
             <td class="is-fullwidth">
-              <div class="field"><%= licence.Location %></div>
+              <div class="field"><%= licence.location %></div>
             </td>
           </tr>
           <tr>
@@ -217,7 +217,7 @@
               Municipality/Municipalité
             </td>
             <td class="is-fullwidth">
-              <div class="field"><%= licence.Municipality %></div>
+              <div class="field"><%= licence.municipality %></div>
             </td>
           </tr>
         </tbody>
@@ -245,15 +245,15 @@
             <td class="has-padding-right-10 is-two-thirds">
               <div class="field has-min-height-150">
                 <% for (let eventIndex = 0; eventIndex < licence.events.length; eventIndex += 1) { %>
-                  <%= (eventIndex === 0 ? "" : ", ") + licence.events[eventIndex].EventDateString.replace(/-/g, "/"); %>
+                  <%= (eventIndex === 0 ? "" : ", ") + licence.events[eventIndex].eventDateString.replace(/-/g, "/"); %>
                 <% } %>
               </div>
             </td>
             <td class="has-vertical-align-top is-one-sixth has-padding-right-10">
-              <div class="field has-min-height-150"><%= licence.StartTimeString %></div>
+              <div class="field has-min-height-150"><%= licence.startTimeString %></div>
             </td>
             <td class="has-vertical-align-top is-one-sixth">
-              <div class="field has-min-height-150"><%= licence.EndTimeString %></div>
+              <div class="field has-min-height-150"><%= licence.endTimeString %></div>
             </td>
           </tr>
         </tbody>
@@ -296,7 +296,7 @@
         Special Terms and Conditions/Modalités spéciales
       </div>
       <div class="field has-min-height-100">
-        <%= licence.TermsConditions %>
+        <%= licence.termsConditions %>
       </div>
     </div>
 
@@ -308,7 +308,7 @@
               Date of Issue (yyyy/mm/dd)<br />
               Date de délivrance de la licence (aaaa/mm/jj)
               <div class="field">
-                <%= licence.ApplicationDateString.replace(/-/g, "/") %>
+                <%= licence.applicationDateString.replace(/-/g, "/") %>
               </div>
             </div>
           </td>
@@ -321,7 +321,7 @@
                   <tbody>
                     <tr>
                       <td>$</td>
-                      <td class="is-fullwidth"><%= licence.LicenceFee.toFixed(2) %></td>
+                      <td class="is-fullwidth"><%= licence.licenceFee.toFixed(2) %></td>
                       <td>$</td>
                     </tr>
                   </tbody>

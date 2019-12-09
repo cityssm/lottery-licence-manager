@@ -1,0 +1,21 @@
+<%- include('_header'); -%>
+
+<nav class="breadcrumb">
+  <ul>
+    <li><a href="/dashboard">Home</a></li>
+    <li><a href="/events">Events</a></li>
+    <li class="is-active"><a href="#" aria-current="page">
+      Licence #<%= event.licenceID %>
+      <span class="icon"><i class="fas fa-calendar" aria-hidden="true"></i></span>
+      <%= event.eventDateString %></a></li>
+  </ul>
+</nav>
+
+<%- include('_event-view_edit-snapshot'); -%>
+
+
+<%- include('_footerA'); -%>
+
+<script src="/javascripts/event-edit.min.js"></script>
+
+<%- include('_footerB'); -%>

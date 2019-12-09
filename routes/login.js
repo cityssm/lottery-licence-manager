@@ -4,12 +4,16 @@
 const express = require("express");
 const router = express.Router();
 
+const configFns = require("../helpers/configFns");
+
 
 router.route("/")
   .get(function(req, res) {
     "use strict";
 
-    if (req.session.user && req.cookies.user_sid) {
+    const sessionCookieName = configFns.getProperty("session.cookieName");
+
+    if (req.session.user && req.cookies[sessionCookieName]) {
       res.redirect("/dashboard");
     } else {
       res.render("login", {

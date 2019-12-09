@@ -19,10 +19,10 @@ let usersDB = {
 
     // Check if an active user exists
 
-    const row = db.prepare("select UserName, TempPassword, PasswordHash" +
+    const row = db.prepare("select userName, tempPassword, passwordHash" +
         " from Users" +
-        " where IsActive = 1" +
-        " and UserName = ?")
+        " where isActive = 1" +
+        " and userName = ?")
       .get(userName);
 
     if (!row) {
@@ -32,24 +32,24 @@ let usersDB = {
 
     // Check if the password matches
 
-    userName = row.UserName;
+    userName = row.userName;
 
     let passwordIsValid = false;
 
-    if (row.TempPassword && row.TempPassword !== "" && row.TempPassword === passwordPlain) {
+    if (row.tempPassword && row.tempPassword !== "" && row.tempPassword === passwordPlain) {
 
       passwordIsValid = true;
 
       const hash = bcrypt.hashSync(passwordPlain, 10);
 
       db.prepare("update Users" +
-          " set TempPassword = null," +
-          " PasswordHash = ?" +
-          " where UserName = ?")
+          " set tempPassword = null," +
+          " passwordHash = ?" +
+          " where userName = ?")
         .run(hash, userName);
 
 
-    } else if (row.PasswordHash && row.PasswordHash !== "" && bcrypt.compareSync(passwordPlain, row.PasswordHash)) {
+    } else if (row.passwordHash && row.passwordHash !== "" && bcrypt.compareSync(passwordPlain, row.passwordHash)) {
       passwordIsValid = true;
     }
 
@@ -62,13 +62,13 @@ let usersDB = {
 
     let userProperties = configFns.getProperty("user.defaultProperties");
 
-    const userPropertyRows = db.prepare("select PropertyName, PropertyValue" +
+    const userPropertyRows = db.prepare("select propertyName, propertyValue" +
       " from UserProperties" +
-      " where UserName = ?")
+      " where userName = ?")
       .all(userName);
 
     for (let userPropertyIndex = 0; userPropertyIndex < userPropertyRows.length; userPropertyIndex += 1) {
-      userProperties[userPropertyRows[userPropertyIndex].PropertyName] = userPropertyRows[userPropertyIndex].PropertyValue;
+      userProperties[userPropertyRows[userPropertyIndex].propertyName] = userPropertyRows[userPropertyIndex].propertyValue;
     }
 
     db.close();
