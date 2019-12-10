@@ -22,7 +22,7 @@ config.licences = {
   feeCalculationFn: function(licenceObj) {
     "use strict";
 
-    const totalPrizeValue = (licenceObj.TotalPrizeValue || 0.0);
+    const totalPrizeValue = (licenceObj.totalPrizeValue || 0.0);
 
     const licenceFeeMin = 10;
 
@@ -31,12 +31,12 @@ config.licences = {
     let fee = Math.max(licenceFeeMin, calculatedLicenceFee);
     let message = (fee === licenceFeeMin ?
       "Base minimum licence fee." :
-      "3% of $" + licenceObj.TotalPrizeValue);
+      "3% of $" + licenceObj.totalPrizeValue);
     let licenceHasErrors = false;
 
     // check the total prize value
 
-    if (licenceObj.LicenceTypeKey === "RA") {
+    if (licenceObj.licenceTypeKey === "RA") {
 
       const licenceFields = licenceObj.licenceFields;
 

@@ -6,39 +6,31 @@
     <div class="columns">
       <div class="column is-6">
         <p>
-          <strong>Organization</strong><br />
-          <a href="/organizations/<%= organization.organizationID %>"><%= organization.organizationName %></a>
+          <strong>Licence ID</strong><br />
+          <a class="has-tooltip-right" data-tooltip="View Licence (In a New Window)" href="/licences/<%= licence.licenceID %>" target="_blank">
+            <%= licence.licenceID %>
+          </a>
         </p>
       </div>
-      <div class="column is-3">
+      <div class="column is-6">
         <p>
           <strong><%= configFns.getProperty("licences.externalLicenceNumber.fieldLabel") %></strong><br />
           <%= licence.externalLicenceNumber %>
         </p>
       </div>
-      <div class="column is-3">
+    </div>
+    <div class="columns">
+      <div class="column is-6">
         <p>
-          <strong>File Number</strong><br />
-          <%= licence.licenceID %>
+          <strong>Organization</strong><br />
+          <a class="has-tooltip-right" data-tooltip="View Organization (In a New Window)" href="/organizations/<%= organization.organizationID %>" target="_blank">
+            <%= organization.organizationName %>
+          </a>
         </p>
       </div>
     </div>
     <div class="columns">
-      <div class="column is-3">
-        <p>
-          <strong>Event Date</strong><br />
-          <%= event.eventDateString %>
-        </p>
-      </div>
-      <div class="column is-3">
-        <%
-          const licenceType = configFns.getLicenceType(licence.licenceTypeKey);
-        %>
-        <p>
-          <strong>Licence Type</strong><br />
-          <%= (licenceType ? licenceType.licenceType : licence.licenceTypeKey) %>
-        </p>
-      </div>
+
       <div class="column is-6">
         <p>
           <strong>Location</strong><br />
@@ -69,6 +61,48 @@
         <p>
           <strong>End Time</strong><br />
           <%= licence.endTimeString %>
+        </p>
+      </div>
+    </div>
+    <div class="columns">
+      <div class="column is-6">
+        <p>
+          <strong>Licence Details</strong><br />
+          <%= licence.licenceDetails %>
+        </p>
+      </div>
+
+    </div>
+    <div class="columns">
+      <div class="column is-3">
+        <%
+          const licenceType = configFns.getLicenceType(licence.licenceTypeKey);
+        %>
+        <p>
+          <strong>Licence Type</strong><br />
+          <%= (licenceType ? licenceType.licenceType : licence.licenceTypeKey) %>
+        </p>
+      </div>
+      <div class="column is-3">
+        <p>
+          <strong>Total Prize Value</strong><br />
+          $ <%= licence.totalPrizeValue.toFixed(2) %>
+        </p>
+      </div>
+      <div class="column is-3">
+        <p>
+          <strong>Licence Fee</strong><br />
+          <% if (licence.licenceFeeIsPaid) { %>
+            $ <%= licence.licenceFee.toFixed(2) %>
+          <% } else { %>
+            <span class="tag is-warning">Unpaid</span>
+          <% } %>
+        </p>
+      </div>
+      <div class="column is-3">
+        <p>
+          <strong>Number of Events</strong><br />
+          <%= licence.events.length %>
         </p>
       </div>
     </div>

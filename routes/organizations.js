@@ -114,7 +114,7 @@ router.get("/:organizationID", function(req, res) {
 
   const licences = licencesDB.getLicences({
     organizationID: organizationID
-  }, false, false);
+  }, false, false, req.session);
 
 
   res.render("organization-view", {

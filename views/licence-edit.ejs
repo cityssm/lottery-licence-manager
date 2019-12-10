@@ -365,7 +365,7 @@
               for (let savedFieldIndex = 0; savedFieldIndex < licence.licenceFields.length; savedFieldIndex += 1) {
                 const savedField = licence.licenceFields[savedFieldIndex];
                 if (!savedField.isDisplayed) {
-                  fieldKeys += "," + savedField.FieldKey;
+                  fieldKeys += "," + savedField.fieldKey;
           %>
                 <div class="field">
                   <label class="label" for="licence--<%= savedField.fieldKey %>-<%= licenceType.licenceTypeKey %>"><%= savedField.fieldKey %></label>
@@ -411,7 +411,7 @@
     <% if (!isCreate) { %>
       <div class="dropdown is-hoverable is-right is-up">
         <div class="dropdown-trigger">
-          <button class="button" type="button" aria-haspopup="true" aria-controls="dropdown-menu3">
+          <button class="button" type="button" aria-haspopup="true">
             <span>Options</span>
             <span class="icon">
               <i class="fas fa-angle-up" aria-hidden="true"></i>

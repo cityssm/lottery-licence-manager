@@ -452,7 +452,7 @@ let licencesDB = {
       licenceObj.licenceFields = fieldList;
 
 
-      const eventList = db.prepare("select * from LotteryEvents" +
+      const eventList = db.prepare("select eventDate from LotteryEvents" +
           " where licenceID = ?" +
           " and recordDelete_timeMillis is null" +
           " order by eventDate")
@@ -587,10 +587,15 @@ let licencesDB = {
 
     for (let fieldIndex = 0; fieldIndex < fieldKeys.length; fieldIndex += 1) {
 
-      db.prepare("insert into LotteryLicenceFields" +
-          " (licenceID, fieldKey, fieldValue)" +
-          " values (?, ?, ?)")
-        .run(licenceID, fieldKeys[fieldIndex], reqBody[fieldKeys[fieldIndex]]);
+      const fieldKey = fieldKeys[fieldIndex];
+      const fieldValue = reqBody[fieldKey];
+
+      if (fieldValue !== "") {
+        db.prepare("insert into LotteryLicenceFields" +
+            " (licenceID, fieldKey, fieldValue)" +
+            " values (?, ?, ?)")
+          .run(licenceID, fieldKey, fieldValue);
+      }
     }
 
 
@@ -705,10 +710,15 @@ let licencesDB = {
 
     for (let fieldIndex = 0; fieldIndex < fieldKeys.length; fieldIndex += 1) {
 
-      db.prepare("insert into LotteryLicenceFields" +
-          " (licenceID, fieldKey, fieldValue)" +
-          " values (?, ?, ?)")
-        .run(reqBody.licenceID, fieldKeys[fieldIndex], reqBody[fieldKeys[fieldIndex]]);
+      const fieldKey = fieldKeys[fieldIndex];
+      const fieldValue = reqBody[fieldKey];
+
+      if (fieldValue !== "") {
+        db.prepare("insert into LotteryLicenceFields" +
+            " (licenceID, fieldKey, fieldValue)" +
+            " values (?, ?, ?)")
+          .run(reqBody.licenceID, fieldKey, fieldValue);
+      }
     }
 
 
@@ -891,14 +901,21 @@ let licencesDB = {
         " and eventDate = ?")
       .get(licenceID, eventDate);
 
-    db.close();
-
     eventObj.eventDateString = dateTimeFns.dateIntegerToString(eventObj.eventDate);
 
     eventObj.startTimeString = dateTimeFns.timeIntegerToString(eventObj.startTime || 0);
     eventObj.endTimeString = dateTimeFns.timeIntegerToString(eventObj.endTime || 0);
 
     eventObj.canUpdate = canUpdateObject("event", eventObj, reqSession);
+
+    const rows = db.prepare("select fieldKey, fieldValue" +
+        " from LotteryEventFields" +
+        " where licenceID = ? and eventDate = ?")
+      .all(licenceID, eventDate);
+
+    eventObj.eventFields = rows || [];
+
+    db.close();
 
     return eventObj;
   },
