@@ -70,13 +70,14 @@
   });
 
   if (!isCreate) {
+
     document.getElementsByClassName("is-delete-button")[0].addEventListener("click", function(clickEvent) {
       clickEvent.preventDefault();
 
-      window.llm.confirmModal("Delete Licence?", "Are you sure you want to delete this licence?", "Yes, Delete", "danger", function() {
+      window.llm.confirmModal("Delete Licence?", "Are you sure you want to delete this licence and all events associated with it?", "Yes, Delete", "danger", function() {
 
         window.fetch("/licences/doDelete", {
-            method: "post",
+            method: "POST",
             credentials: "include",
             headers: {
               "Content-Type": "application/json"

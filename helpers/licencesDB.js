@@ -601,9 +601,9 @@ let licencesDB = {
 
     // events
 
-    if (reqBody.eventDate.constructor === String) {
+    if (typeof(reqBody.eventDate) === "string") {
 
-      db.prepare("insert or ignore into LotteryEvents (" +
+      db.prepare("insert into LotteryEvents (" +
           "licenceID, eventDate," +
           " recordCreate_userName, recordCreate_timeMillis," +
           " recordUpdate_userName, recordUpdate_timeMillis)" +
@@ -616,7 +616,8 @@ let licencesDB = {
           reqSession.user.userName,
           nowMillis);
 
-    } else {
+    } else if (typeof(reqBody.eventDate) === "object") {
+
       for (let eventIndex = 0; eventIndex < reqBody.eventDate.length; eventIndex += 1) {
 
         db.prepare("insert or ignore into LotteryEvents (" +
@@ -724,7 +725,22 @@ let licencesDB = {
 
     // events
 
-    if (reqBody.eventDate.constructor === String) {
+    if (typeof(reqBody.eventDate) !== "undefined") {
+
+      // purge any deleted events to avoid conflicts
+
+      db.prepare("delete from LotteryEventFields" +
+          " where licenceID = ?" +
+          " and eventDate in (select eventDate from LotteryEvents where licenceID = ? and recordDelete_timeMillis is not null)")
+        .run(reqBody.licenceID, reqBody.licenceID);
+
+      db.prepare("delete from LotteryEvents" +
+          " where licenceID = ?" +
+          " and recordDelete_timeMillis is not null")
+        .run(reqBody.licenceID);
+    }
+
+    if (typeof(reqBody.eventDate) === "string") {
 
       db.prepare("insert or ignore into LotteryEvents (" +
           "licenceID, eventDate," +
@@ -739,7 +755,8 @@ let licencesDB = {
           reqSession.user.userName,
           nowMillis);
 
-    } else {
+    } else if (typeof(reqBody.eventDate) === "object") {
+
       for (let eventIndex = 0; eventIndex < reqBody.eventDate.length; eventIndex += 1) {
 
         db.prepare("insert or ignore into LotteryEvents (" +
@@ -780,9 +797,24 @@ let licencesDB = {
         licenceID
       );
 
+    let changeCount = info.changes;
+
+    if (changeCount) {
+      db.prepare("update LotteryEvents" +
+          " set recordDelete_userName = ?," +
+          " recordDelete_timeMillis = ?" +
+          " where licenceID = ?" +
+          " and recordDelete_timeMillis is null")
+        .run(
+          reqSession.user.userName,
+          nowMillis,
+          licenceID
+        );
+    }
+
     db.close();
 
-    return info.changes;
+    return changeCount;
   },
 
   markLicenceFeePaid: function(reqBody, reqSession) {
@@ -901,23 +933,127 @@ let licencesDB = {
         " and eventDate = ?")
       .get(licenceID, eventDate);
 
-    eventObj.eventDateString = dateTimeFns.dateIntegerToString(eventObj.eventDate);
+    if (eventObj) {
 
-    eventObj.startTimeString = dateTimeFns.timeIntegerToString(eventObj.startTime || 0);
-    eventObj.endTimeString = dateTimeFns.timeIntegerToString(eventObj.endTime || 0);
+      eventObj.eventDateString = dateTimeFns.dateIntegerToString(eventObj.eventDate);
 
-    eventObj.canUpdate = canUpdateObject("event", eventObj, reqSession);
+      eventObj.startTimeString = dateTimeFns.timeIntegerToString(eventObj.startTime || 0);
+      eventObj.endTimeString = dateTimeFns.timeIntegerToString(eventObj.endTime || 0);
 
-    const rows = db.prepare("select fieldKey, fieldValue" +
-        " from LotteryEventFields" +
-        " where licenceID = ? and eventDate = ?")
-      .all(licenceID, eventDate);
+      eventObj.canUpdate = canUpdateObject("event", eventObj, reqSession);
 
-    eventObj.eventFields = rows || [];
+      const rows = db.prepare("select fieldKey, fieldValue" +
+          " from LotteryEventFields" +
+          " where licenceID = ? and eventDate = ?")
+        .all(licenceID, eventDate);
+
+      eventObj.eventFields = rows || [];
+    }
 
     db.close();
 
     return eventObj;
+  },
+
+  updateEvent: function(reqBody, reqSession) {
+    "use strict";
+
+    const db = sqlite(dbPath);
+
+    const nowMillis = Date.now();
+
+    const info = db.prepare("update LotteryEvents" +
+        " set bank_name = ?," +
+        " bank_address = ?," +
+        " bank_accountNumber = ?," +
+        " bank_accountBalance = ?," +
+        " costs_receipts = ?," +
+        " costs_admin = ?," +
+        " costs_prizesAwarded = ?," +
+        " costs_charitableDonations = ?," +
+        " costs_netProceeds = ?," +
+        " costs_amountDonated = ?," +
+        " recordUpdate_userName = ?," +
+        " recordUpdate_timeMillis = ?" +
+        " where licenceID = ?" +
+        " and eventDate = ?" +
+        " and recordDelete_timeMillis is null")
+      .run(
+        reqBody.bank_name,
+        reqBody.bank_address,
+        reqBody.bank_accountNumber,
+        reqBody.bank_accountBalance,
+        reqBody.costs_receipts,
+        reqBody.costs_admin,
+        reqBody.costs_prizesAwarded,
+        reqBody.costs_charitableDonations,
+        reqBody.costs_netProceeds,
+        reqBody.costs_amountDonated,
+        reqSession.user.userName,
+        nowMillis,
+        reqBody.licenceID,
+        reqBody.eventDate
+      );
+
+    const changeCount = info.changes;
+
+    if (!changeCount) {
+      db.close();
+      return changeCount;
+    }
+
+    // fields
+
+    db.prepare("delete from LotteryEventFields" +
+        " where licenceID = ?" +
+        " and eventDate = ?")
+      .run(reqBody.licenceID, reqBody.eventDate);
+
+    const fieldKeys = reqBody.fieldKeys.substring(1).split(",");
+
+    for (let fieldIndex = 0; fieldIndex < fieldKeys.length; fieldIndex += 1) {
+
+      const fieldKey = fieldKeys[fieldIndex];
+      const fieldValue = reqBody[fieldKey];
+
+      if (fieldValue !== "") {
+        db.prepare("insert into LotteryEventFields" +
+            " (licenceID, eventDate, fieldKey, fieldValue)" +
+            " values (?, ?, ?, ?)")
+          .run(reqBody.licenceID, reqBody.eventDate, fieldKey, fieldValue);
+      }
+    }
+
+    db.close();
+
+    return changeCount;
+  },
+
+  deleteEvent: function(licenceID, eventDate, reqSession) {
+    "use strict";
+
+    const db = sqlite(dbPath);
+
+    const nowMillis = Date.now();
+
+    const info = db.prepare("update LotteryEvents" +
+        " set recordDelete_userName = ?," +
+        " recordDelete_timeMillis = ?" +
+        " where licenceID = ?" +
+        " and eventDate = ?" +
+        " and recordDelete_timeMillis is null")
+      .run(
+        reqSession.user.userName,
+        nowMillis,
+        licenceID,
+        eventDate
+      );
+
+    let changeCount = info.changes;
+
+    db.close();
+
+    return changeCount;
   },
 
   /*

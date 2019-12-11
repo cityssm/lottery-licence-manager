@@ -63,8 +63,8 @@ let usersDB = {
     let userProperties = configFns.getProperty("user.defaultProperties");
 
     const userPropertyRows = db.prepare("select propertyName, propertyValue" +
-      " from UserProperties" +
-      " where userName = ?")
+        " from UserProperties" +
+        " where userName = ?")
       .all(userName);
 
     for (let userPropertyIndex = 0; userPropertyIndex < userPropertyRows.length; userPropertyIndex += 1) {
@@ -77,6 +77,66 @@ let usersDB = {
       userName: userName,
       userProperties: userProperties
     };
+  },
+
+
+  getAllUsers: function() {
+    "use strict";
+
+    const db = sqlite(dbPath, {
+      readonly: true
+    });
+
+    const rows = db.prepare("select userName, firstName, lastName" +
+        " from Users" +
+        " where isActive = 1" +
+        " order by userName")
+      .all();
+
+    db.close();
+
+    return rows;
+  },
+
+  updateUser: function(reqBody) {
+    "use strict";
+
+    const db = sqlite(dbPath);
+
+    const info = db.prepare("update Users" +
+        " set firstName = ?," +
+        " lastName = ?" +
+        " where userName = ?" +
+        " and isActive = 1")
+      .run(reqBody.firstName,
+        reqBody.lastName,
+        reqBody.userName);
+
+    db.close();
+
+    return info.changes;
+  },
+
+  resetPassword: function(userName) {
+    "use strict";
+
+    const freshPassword = require("fresh-password");
+
+    const newPasswordPlain = freshPassword.generate();
+
+    const hash = bcrypt.hashSync(newPasswordPlain, 10);
+
+    const db = sqlite(dbPath);
+
+    db.prepare("update Users" +
+        " set tempPassword = null," +
+        " passwordHash = ?" +
+        " where userName = ?")
+      .run(hash, userName);
+
+    db.close();
+
+    return newPasswordPlain;
   }
 };
 

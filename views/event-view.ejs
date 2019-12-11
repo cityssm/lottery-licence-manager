@@ -1,0 +1,173 @@
+<%- include('_header'); -%>
+
+<div class="columns">
+  <div class="column">
+    <nav class="breadcrumb">
+      <ul>
+        <li><a href="/dashboard">Home</a></li>
+        <li><a href="/events">Events</a></li>
+        <li class="is-active"><a href="#" aria-current="page">
+          Events for Licence #<%= event.licenceID %>
+        </a></li>
+      </ul>
+    </nav>
+  </div>
+  <div class="column is-narrow">
+    <% if (event.canUpdate) { %>
+      <a class="button is-link" href="/events/<%= licence.licenceID %>/<%= event.eventDate %>/edit">
+        <span class="icon is-small">
+          <i class="fas fa-pencil-alt" aria-hidden="true"></i>
+        </span>
+        <span>Edit this Event</span>
+      </a>
+    <% } %>
+    <div class="field is-horizontal is-inline-flex has-margin-left-20">
+      <div class="field-label is-small">
+        <label class="label is-nowrap" for="eventNav--eventDate">Switch Dates</label>
+      </div>
+      <div class="field-body">
+        <div class="control has-icons-left">
+          <div class="select is-small">
+            <select id="eventNav--eventDate" data-licence-id="<%= licence.licenceID %>" data-is-edit="false">
+              <% for (let index = 0; index < licence.events.length; index += 1) { %>
+                <option value="<%= licence.events[index].eventDate %>" <%= (event.eventDate === licence.events[index].eventDate ? " selected" : "") %>>
+                  <%= licence.events[index].eventDateString %>
+                </option>
+              <% } %>
+            </select>
+          </div>
+          <div class="icon is-left">
+            <i class="fas fa-calendar" aria-hidden="true"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<%- include('_event-view_edit-snapshot'); -%>
+
+  <div class="columns">
+    <div class="column is-3">
+      <%
+        const licenceType = configFns.getLicenceType(licence.licenceTypeKey);
+      %>
+      <h2 class="title is-4">
+        <%= (licenceType ? licenceType.licenceType : licence.licenceTypeKey) %> Fields
+      </h2>
+      <%
+        const eventFields = licenceType.eventFields || [];
+
+        for (let fieldIndex = 0; fieldIndex < eventFields.length; fieldIndex += 1) {
+          const eventField = eventFields[fieldIndex];
+
+          const inputName = licenceType.licenceTypeKey + "-" + eventField.fieldKey;
+
+          let fieldValue = "";
+
+          for (let savedFieldIndex = 0; savedFieldIndex < event.eventFields.length; savedFieldIndex += 1) {
+            if (event.eventFields[savedFieldIndex].fieldKey === inputName) {
+              event.eventFields[savedFieldIndex].isDisplayed = true;
+              fieldValue = event.eventFields[savedFieldIndex].fieldValue;
+              break;
+            }
+          }
+
+          if (fieldValue === "") {
+            continue;
+          }
+
+          const inputAttributes = eventField.inputAttributes || {};
+
+          if (!inputAttributes.type) {
+            inputAttributes.type = "text";
+          }
+
+          let inputAttributesString = "";
+
+          for (let attributeName in inputAttributes) {
+            inputAttributesString += " " + attributeName + "=\"" + inputAttributes[attributeName] + "\"";
+          }
+      %>
+        <p class="has-margin-bottom-10">
+          <strong><%= eventField.fieldLabel || eventField.fieldKey %></strong><br />
+          <%= fieldValue %>
+        </p>
+      <%
+        }
+
+        for (let savedFieldIndex = 0; savedFieldIndex < event.eventFields.length; savedFieldIndex += 1) {
+          const savedField = event.eventFields[savedFieldIndex];
+          if (!savedField.isDisplayed) {
+      %>
+        <p class="has-margin-bottom-10">
+          <strong><%= savedField.fieldKey %></strong><br />
+          <%= savedField.fieldValue %>
+        </p>
+      <%
+          }
+        }
+      %>
+    </div>
+    <div class="column is-6">
+
+      <h2 class="title is-4">Bank Information</h2>
+
+      <p class="has-margin-bottom-10">
+        <strong>Name</strong><br />
+        <%= event.bank_name %>
+      </p>
+      <p class="has-margin-bottom-10">
+        <strong>Address</strong><br />
+        <%= event.bank_address %>
+      </p>
+      <div class="columns">
+        <div class="column">
+          <p class="has-margin-bottom-10">
+            <strong>Account Number</strong><br />
+            <%= event.bank_accountNumber %>
+          </p>
+        </div>
+        <div class="column">
+          <p>
+            <strong>Account Balance</strong><br />
+            <%= (event.bank_accountBalance ? "$ " + event.bank_accountBalance.toFixed(2) : "") %>
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="column is-3">
+      <h2 class="title is-4">Costs</h2>
+      <p class="has-margin-bottom-10">
+        <strong>Receipts</strong><br />
+        <%= (event.costs_receipts ? "$ " + event.costs_receipts.toFixed(2) : "") %>
+      </p>
+      <p class="has-margin-bottom-10">
+        <strong>Administration</strong><br />
+        <%= (event.costs_admin ? "$ " + event.costs_admin.toFixed(2) : "") %>
+      </p>
+      <p class="has-margin-bottom-10">
+        <strong>Prizes Awarded</strong><br />
+        <%= (event.costs_prizesAwarded ? "$ " + event.costs_prizesAwarded.toFixed(2) : "") %>
+      </p>
+      <p class="has-margin-bottom-10">
+        <strong>Charitable Donations</strong><br />
+        <%= (event.costs_charitableDonations ? "$ " + event.costs_charitableDonations.toFixed(2) : "") %>
+      </p>
+      <p class="has-margin-bottom-10">
+        <strong>Net Proceeds</strong><br />
+        <%= (event.costs_netProceeds ? "$ " + event.costs_netProceeds.toFixed(2) : "") %>
+      </p>
+      <p class="has-margin-bottom-10">
+        <strong>Prize Amount Donated</strong><br />
+        <%= (event.costs_amountDonated ? "$ " + event.costs_amountDonated.toFixed(2) : "") %>
+      </p>
+    </div>
+  </div>
+
+<%- include('_footerA'); -%>
+
+<script src="/javascripts/event-viewEdit.min.js"></script>
+
+<%- include('_footerB'); -%>

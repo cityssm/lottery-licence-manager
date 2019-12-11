@@ -52,7 +52,7 @@ router.get(["/new", "/new/:organizationID"], function(req, res) {
   let organization = {};
 
   if (organizationID && organizationID !== "") {
-    organization = licencesDB.getOrganization(organizationID, req.session);
+    organization = licencesDB.getOrganization(organizationID, req.session) || {};
   }
 
   // use current date as default
@@ -87,7 +87,8 @@ router.get(["/new", "/new/:organizationID"], function(req, res) {
       events: []
     },
     organization: organization,
-    distinctLocations: distinctLocations
+    distinctLocations: distinctLocations,
+    dateTimeFns: dateTimeFns
   });
 });
 
@@ -96,7 +97,10 @@ router.post("/doSave", function(req, res) {
   "use strict";
 
   if (req.session.user.userProperties.canCreate !== "true") {
-    res.json("not allowed");
+    res.json({
+      success: false,
+      message: "Not Allowed"
+    });
     return;
   }
 
@@ -132,7 +136,10 @@ router.post("/doMarkLicenceFeePaid", function(req, res) {
   "use strict";
 
   if (req.session.user.userProperties.canCreate !== "true") {
-    res.json("not allowed");
+    res.json({
+      success: false,
+      message: "Not Allowed"
+    });
     return;
   }
 
@@ -156,7 +163,10 @@ router.post("/doRemoveLicenceFee", function(req, res) {
   "use strict";
 
   if (req.session.user.userProperties.canCreate !== "true") {
-    res.json("not allowed");
+    res.json({
+      success: false,
+      message: "Not Allowed"
+    });
     return;
   }
 
@@ -180,7 +190,10 @@ router.post("/doDelete", function(req, res) {
   "use strict";
 
   if (req.session.user.userProperties.canCreate !== "true") {
-    res.json("not allowed");
+    res.json({
+      success: false,
+      message: "Not Allowed"
+    });
     return;
   }
 
@@ -203,7 +216,7 @@ router.post("/doDelete", function(req, res) {
     } else {
       res.json({
         success: false,
-        message: "Licence Not Saved"
+        message: "Licence Not Deleted"
       });
     }
   }
@@ -261,12 +274,13 @@ router.get("/:licenceID/edit", function(req, res) {
   let feeCalculation = configFns.getProperty("licences.feeCalculationFn")(licence);
 
   res.render("licence-edit", {
-    headTitle: "Licence Update",
+    headTitle: "Licence #" + licenceID + " Update",
     isCreate: false,
     licence: licence,
     organization: organization,
     distinctLocations: distinctLocations,
-    feeCalculation: feeCalculation
+    feeCalculation: feeCalculation,
+    dateTimeFns: dateTimeFns
   });
 });
 

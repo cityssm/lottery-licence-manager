@@ -20,7 +20,7 @@
       <div class="field-body">
         <div class="control has-icons-left">
           <div class="select is-small">
-            <select id="eventNav--eventDate">
+            <select id="eventNav--eventDate" data-licence-id="<%= licence.licenceID %>" data-is-edit="true">
               <% for (let index = 0; index < licence.events.length; index += 1) { %>
                 <option value="<%= licence.events[index].eventDate %>" <%= (event.eventDate === licence.events[index].eventDate ? " selected" : "") %>>
                   <%= licence.events[index].eventDateString %>
@@ -112,6 +112,7 @@
           }
         }
       %>
+      <input name="fieldKeys" type="hidden" value="<%= fieldKeys %>" />
     </div>
     <div class="column is-6">
 
@@ -120,13 +121,13 @@
       <div class="field">
         <label class="label" for="event--bank_name">Name</label>
         <div class="control">
-          <input class="input" id="event--bank_name" id="bank_name" type="text" maxlength="50" value="<%= event.bank_name %>" />
+          <input class="input" id="event--bank_name" name="bank_name" type="text" maxlength="50" value="<%= event.bank_name %>" />
         </div>
       </div>
       <div class="field">
         <label class="label" for="event--bank_address">Address</label>
         <div class="control">
-          <input class="input" id="event--bank_address" id="bank_address" type="text" maxlength="50" value="<%= event.bank_address %>" />
+          <input class="input" id="event--bank_address" name="bank_address" type="text" maxlength="50" value="<%= event.bank_address %>" />
         </div>
       </div>
       <div class="columns">
@@ -134,7 +135,7 @@
           <div class="field">
             <label class="label" for="event--bank_accountNumber">Account Number</label>
             <div class="control">
-              <input class="input" id="event--bank_accountNumber" id="bank_accountNumber" type="text" maxlength="20" value="<%= event.bank_accountNumber %>" />
+              <input class="input" id="event--bank_accountNumber" name="bank_accountNumber" type="text" maxlength="20" value="<%= event.bank_accountNumber %>" />
             </div>
           </div>
         </div>
@@ -142,7 +143,7 @@
           <div class="field">
             <label class="label" for="event--bank_accountBalance">Account Balance</label>
             <div class="control has-icons-left">
-              <input class="input" id="event--bank_accountBalance" id="bank_accountBalance" type="number" max="1000000000" step="0.01" value="<%= event.bank_accountBalance %>" onwheel="return false;" />
+              <input class="input" id="event--bank_accountBalance" name="bank_accountBalance" type="number" max="1000000000" step="0.01" value="<%= event.bank_accountBalance %>" onwheel="return false;" />
               <span class="icon is-left">
                 <i class="fas fa-dollar-sign" aria-hidden="true"></i>
               </span>
@@ -156,7 +157,7 @@
       <div class="field">
         <label class="label" for="event--costs_receipts">Receipts</label>
         <div class="control has-icons-left">
-          <input class="input" id="event--costs_receipts" id="costs_receipts" type="number" min="0" max="10000000" step="0.01" value="<%= event.costs_receipts %>" onwheel="return false;" />
+          <input class="input" id="event--costs_receipts" name="costs_receipts" type="number" min="0" max="10000000" step="0.01" value="<%= event.costs_receipts %>" onwheel="return false;" />
           <span class="icon is-left">
             <i class="fas fa-dollar-sign" aria-hidden="true"></i>
           </span>
@@ -165,7 +166,7 @@
       <div class="field">
         <label class="label" for="event--costs_admin">Administration</label>
         <div class="control has-icons-left">
-          <input class="input" id="event--costs_admin" id="costs_admin" type="number" min="0" max="10000000" step="0.01" value="<%= event.costs_admin %>" onwheel="return false;"/>
+          <input class="input" id="event--costs_admin" name="costs_admin" type="number" min="0" max="10000000" step="0.01" value="<%= event.costs_admin %>" onwheel="return false;"/>
           <span class="icon is-left">
             <i class="fas fa-dollar-sign" aria-hidden="true"></i>
           </span>
@@ -174,7 +175,7 @@
       <div class="field">
         <label class="label" for="event--costs_prizesAwarded">Prizes Awarded</label>
         <div class="control has-icons-left">
-          <input class="input" id="event--costs_prizesAwarded" id="costs_prizesAwarded" type="number" min="0" max="10000000" step="0.01" value="<%= event.costs_prizesAwarded %>" onwheel="return false;" />
+          <input class="input" id="event--costs_prizesAwarded" name="costs_prizesAwarded" type="number" min="0" max="10000000" step="0.01" value="<%= event.costs_prizesAwarded %>" onwheel="return false;" />
           <span class="icon is-left">
             <i class="fas fa-dollar-sign" aria-hidden="true"></i>
           </span>
@@ -183,7 +184,7 @@
       <div class="field">
         <label class="label" for="event--costs_charitableDonations">Charitable Donations</label>
         <div class="control has-icons-left">
-          <input class="input" id="event--costs_charitableDonations" id="costs_charitableDonations" type="number" min="0" max="10000000" step="0.01" value="<%= event.costs_charitableDonations %>" onwheel="return false;" />
+          <input class="input" id="event--costs_charitableDonations" name="costs_charitableDonations" type="number" min="0" max="10000000" step="0.01" value="<%= event.costs_charitableDonations %>" onwheel="return false;" />
           <span class="icon is-left">
             <i class="fas fa-dollar-sign" aria-hidden="true"></i>
           </span>
@@ -192,7 +193,7 @@
       <div class="field">
         <label class="label" for="event--costs_netProceeds">Net Proceeds</label>
         <div class="control has-icons-left">
-          <input class="input" id="event--costs_netProceeds" id="costs_netProceeds" type="number" min="0" max="10000000" step="0.01" value="<%= event.costs_netProceeds %>" onwheel="return false;" />
+          <input class="input" id="event--costs_netProceeds" name="costs_netProceeds" type="number" min="0" max="10000000" step="0.01" value="<%= event.costs_netProceeds %>" onwheel="return false;" />
           <span class="icon is-left">
             <i class="fas fa-dollar-sign" aria-hidden="true"></i>
           </span>
@@ -201,7 +202,7 @@
       <div class="field">
         <label class="label" for="event--costs_amountDonated">Prize Amount Donated</label>
         <div class="control has-icons-left">
-          <input class="input" id="event--costs_amountDonated" id="costs_amountDonated" type="number" min="0" max="10000000" step="0.01" value="<%= event.costs_amountDonated %>" onwheel="return false;" />
+          <input class="input" id="event--costs_amountDonated" name="costs_amountDonated" type="number" min="0" max="10000000" step="0.01" value="<%= event.costs_amountDonated %>" onwheel="return false;" />
           <span class="icon is-left">
             <i class="fas fa-dollar-sign" aria-hidden="true"></i>
           </span>
@@ -210,7 +211,7 @@
     </div>
   </div>
 
-  <div class="has-text-right is-fixed-bottom has-padding-10 has-background-grey-lighter">
+  <div class="has-text-right is-fixed-bottom has-padding-10 has-background-grey-light">
     <span class="is-inline-block has-margin-top-10 has-margin-right-10" id="container--form-message"></span>
 
     <button class="button is-success" type="submit">
@@ -242,6 +243,7 @@
 
 <%- include('_footerA'); -%>
 
+<script src="/javascripts/event-viewEdit.min.js"></script>
 <script src="/javascripts/event-edit.min.js"></script>
 
 <%- include('_footerB'); -%>

@@ -5,6 +5,10 @@ const router = express.Router();
 
 
 const licencesDB = require("../helpers/licencesDB");
+const usersDB = require("../helpers/usersDB");
+
+
+// Application Settings
 
 
 router.get("/applicationSettings", function(req, res) {
@@ -28,7 +32,10 @@ router.post("/doSaveApplicationSetting", function(req, res) {
   "use strict";
 
   if (req.session.user.userProperties.isAdmin !== "true") {
-    res.redirect("/dashboard/?error=accessDenied");
+    res.json({
+      success: false,
+      message: "Not Allowed"
+    });
     return;
   }
 
@@ -41,6 +48,66 @@ router.post("/doSaveApplicationSetting", function(req, res) {
     success: (changeCount === 1)
   });
 });
+
+
+// User Management
+
+
+router.get("/userManagement", function(req, res) {
+  "use strict";
+
+  if (req.session.user.userProperties.isAdmin !== "true") {
+    res.redirect("/dashboard/?error=accessDenied");
+    return;
+  }
+
+  const users = usersDB.getAllUsers();
+
+  res.render("admin-userManagement", {
+    headTitle: "User Management",
+    users: users
+  });
+});
+
+
+router.post("/doUpdateUser", function(req, res) {
+  "use strict";
+
+  if (req.session.user.userProperties.isAdmin !== "true") {
+    res.json({
+      success: false,
+      message: "Not Allowed"
+    });
+    return;
+  }
+
+  const changeCount = usersDB.updateUser(req.body);
+
+  res.json({
+    success: (changeCount === 1)
+  });
+});
+
+
+router.post("/doResetPassword", function(req, res) {
+  "use strict";
+
+  if (req.session.user.userProperties.isAdmin !== "true") {
+    res.json({
+      success: false,
+      message: "Not Allowed"
+    });
+    return;
+  }
+
+  const newPassword = usersDB.resetPassword(req.body.userName);
+
+  res.json({
+    success: true,
+    newPassword: newPassword
+  });
+});
+
 
 
 module.exports = router;

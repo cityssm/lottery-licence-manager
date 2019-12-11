@@ -25,6 +25,70 @@ router.post("/doSearch", function(req, res) {
 });
 
 
+router.post("/doSave", function(req, res) {
+  "use strict";
+
+  if (req.session.user.userProperties.canUpdate !== "true") {
+    res.json({
+      success: false,
+      message: "Not Allowed"
+    });
+    return;
+  }
+
+  let changeCount = licencesDB.updateEvent(req.body, req.session);
+
+  if (changeCount) {
+    res.json({
+      success: true,
+      message: "Event updated successfully."
+    });
+  } else {
+    res.json({
+      success: false,
+      message: "Record Not Saved"
+    });
+  }
+});
+
+
+router.post("/doDelete", function(req, res) {
+  "use strict";
+
+  if (req.session.user.userProperties.canUpdate !== "true") {
+    res.json({
+      success: false,
+      message: "Not Allowed"
+    });
+    return;
+  }
+
+  if (req.body.licenceID === "" || req.body.eventDate === "") {
+
+    res.json({
+      success: false,
+      message: "Licence ID or Event Date Unavailable"
+    });
+
+  } else {
+
+    const changeCount = licencesDB.deleteEvent(req.body.licenceID, req.body.eventDate, req.session);
+
+    if (changeCount) {
+      res.json({
+        success: true,
+        message: "Event Deleted"
+      });
+    } else {
+      res.json({
+        success: false,
+        message: "Event Not Deleted"
+      });
+    }
+  }
+});
+
+
 router.get("/:licenceID/:eventDate", function(req, res) {
   "use strict";
 
@@ -53,7 +117,7 @@ router.get("/:licenceID/:eventDate", function(req, res) {
 router.get("/:licenceID/:eventDate/edit", function(req, res) {
   "use strict";
 
-  if (req.session.user.userProperties.canCreate !== "true") {
+  if (req.session.user.userProperties.canUpdate !== "true") {
     res.redirect("/events/?error=accessDenied");
     return;
   }

@@ -142,16 +142,24 @@
 <div class="columns">
   <div class="column">
     <h2 class="title is-4">Event Dates</h2>
-    <ol class="fa-ul">
-      <% for (let eventIndex = 0; eventIndex < licence.events.length; eventIndex += 1) { %>
-        <li class="has-margin-bottom-10">
-          <span class="fa-li"><i class="fas fa-calendar"></i></span>
-          <a href="/events/<%= licence.licenceID %>/<%=licence.events[eventIndex].eventDate %>">
-            <%= licence.events[eventIndex].eventDateString %>
-          </a>
-        </li>
-      <% } %>
-    </ol>
+    <% if (licence.events.length === 0) { %>
+      <div class="message is-warning">
+        <div class="message-body">
+          There are no events associated with this licence.
+        </div>
+      </div>
+    <% } else { %>
+      <ol class="fa-ul">
+        <% for (let eventIndex = 0; eventIndex < licence.events.length; eventIndex += 1) { %>
+          <li class="has-margin-bottom-10">
+            <span class="fa-li"><i class="fas fa-calendar"></i></span>
+            <a href="/events/<%= licence.licenceID %>/<%=licence.events[eventIndex].eventDate %>">
+              <%= licence.events[eventIndex].eventDateString %>
+            </a>
+          </li>
+        <% } %>
+      </ol>
+    <% } %>
   </div>
   <div class="column">
     <h2 class="title is-4">

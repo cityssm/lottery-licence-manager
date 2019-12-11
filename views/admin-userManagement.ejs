@@ -1,0 +1,116 @@
+<%- include('_header'); -%>
+
+<nav class="breadcrumb">
+  <ul>
+    <li><a href="/dashboard">Home</a></li>
+    <li class="is-active">
+      <a href="#" aria-current="page">
+        <span class="icon"><i class="fas fa-cog" aria-hidden="true"></i></span>
+        <span>User Management</span>
+      </a>
+    </li>
+  </ul>
+</nav>
+
+<div class="columns">
+  <div class="column">
+    <h1 class="title is-1">
+      User Management
+    </h1>
+  </div>
+  <div class="column is-narrow has-text-right">
+    <button class="button is-primary is-create-user-button" type="button">
+      <span class="icon">
+        <i class="fas fa-plus" aria-hidden="true"></i>
+      </span>
+      <span>Create a User</span>
+    </a>
+  </div>
+</div>
+
+<div class="panel" id="container--users">
+  <div class="panel-block is-block">
+    <div class="columns has-text-weight-bold">
+      <div class="column is-2">User Name</div>
+      <div class="column is-6">Name</div>
+      <div class="column">Options</div>
+    </div>
+  </div>
+  <%
+    for (let userIndex = 0; userIndex < users.length; userIndex += 1) {
+      const userObj = users[userIndex];
+  %>
+    <div class="panel-block is-block" data-user-name="<%= userObj.userName %>" >
+      <div class="columns">
+        <div class="column is-2">
+          <i class="fas fa-user" aria-hidden="true"></i>
+          <%= userObj.userName %>
+        </div>
+        <div class="column is-6">
+          <form class="form--user">
+            <input name="userName" type="hidden" value="<%= userObj.userName %>" />
+            <div class="columns">
+              <div class="column" data-tooltip="First Name">
+                <input class="input" name="firstName" value="<%= userObj.firstName %>" placeholder="First Name" maxlength="50" required />
+              </div>
+              <div class="column" data-tooltip="Last Name">
+                <input class="input" name="lastName" value="<%= userObj.lastName %>" placeholder="Last Name" maxlength="50" required />
+              </div>
+              <div class="column is-narrow">
+                <button class="button is-primary" type="submit">
+                  Update Name
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="column">
+          <button class="button is-warning is-password-reset-button" type="button">
+            <span class="icon"><i class="fas fa-key" aria-hidden="true"></i></span>
+            <span>Reset Password</span>
+          </button>
+          <% if (userObj.userName !== user.userName) { %>
+            <button class="button is-danger is-delete-user-button" type="button">
+              Delete User
+            </button>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  <%
+    }
+  %>
+</div>
+
+<div class="modal is-create-user-modal">
+  <div class="modal-background"></div>
+  <form>
+    <div class="modal-card">
+      <header class="modal-card-head">
+        <h3 class="modal-card-title">Create a New User</h3>
+        <button class="delete is-cancel-button" aria-label="close" type="button"></button>
+      </header>
+      <section class="modal-card-body">
+        <div class="field">
+          <label for="createUser--userName">New User Name</label>
+          <div class="control has-icons-left">
+            <input class="input" id="createUser--userName" type="text" placeholder="Filter Organizations" maxlength="30" required />
+            <span class="icon is-left">
+              <i class="fas fa-user" aria-hidden="true"></i>
+            </span>
+          </div>
+        </div>
+      </section>
+      <footer class="modal-card-foot justify-right">
+        <button class="button is-cancel-button" type="button">Cancel</button>
+        <button class="button is-primary" type="submit">Create User</button>
+      </footer>
+    </div>
+  </form>
+</div>
+
+<%- include('_footerA'); -%>
+
+<script src="/javascripts/admin-userManagement.min.js"></script>
+
+<%- include('_footerB'); -%>
