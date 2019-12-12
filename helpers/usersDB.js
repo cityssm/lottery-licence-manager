@@ -60,7 +60,7 @@ let usersDB = {
 
     // Get user properties
 
-    let userProperties = configFns.getProperty("user.defaultProperties");
+    let userProperties = Object.assign({}, configFns.getProperty("user.defaultProperties"));
 
     const userPropertyRows = db.prepare("select propertyName, propertyValue" +
         " from UserProperties" +
@@ -98,6 +98,69 @@ let usersDB = {
     return rows;
   },
 
+  getUserProperties: function(userName) {
+    "use strict";
+
+    const db = sqlite(dbPath, {
+      readonly: true
+    });
+
+    let userProperties = Object.assign({}, configFns.getProperty("user.defaultProperties"));
+
+    const userPropertyRows = db.prepare("select propertyName, propertyValue" +
+        " from UserProperties" +
+        " where userName = ?")
+      .all(userName);
+
+    for (let userPropertyIndex = 0; userPropertyIndex < userPropertyRows.length; userPropertyIndex += 1) {
+      userProperties[userPropertyRows[userPropertyIndex].propertyName] = userPropertyRows[userPropertyIndex].propertyValue;
+    }
+
+    db.close();
+
+    return userProperties;
+  },
+
+  createUser: function(reqBody) {
+    "use strict";
+
+    const freshPassword = require("fresh-password");
+    const newPasswordPlain = freshPassword.generate();
+    const hash = bcrypt.hashSync(newPasswordPlain, 10);
+
+    const db = sqlite(dbPath);
+
+    const row = db.prepare("select isActive" +
+        " from Users" +
+        " where userName = ?")
+      .get(reqBody.userName);
+
+    if (row) {
+      if (row.isActive) {
+        db.close();
+        return false;
+
+      } else {
+        db.prepare("update Users" +
+            " set firstName = ?," +
+            " lastName = ?," +
+            " tempPassword = null," +
+            " passwordHash = ?," +
+            " isActive = 1" +
+            " where userName = ?")
+          .run();
+      }
+
+    } else {
+      db.prepare("insert into Users" +
+          " (userName, firstName, lastName, isActive, passwordHash)" +
+          " values (?, ?, ?, 1, ?)")
+        .run(reqBody.userName, reqBody.firstName, reqBody.lastName, hash);
+    }
+
+    return newPasswordPlain;
+  },
+
   updateUser: function(reqBody) {
     "use strict";
 
@@ -117,13 +180,29 @@ let usersDB = {
     return info.changes;
   },
 
+  updateUserProperty: function(reqBody) {
+    "use strict";
+
+    const db = sqlite(dbPath);
+
+    const info = db.prepare("update UserProperties" +
+        " set propertyValue = ?" +
+        " where userName = ?" +
+        " and propertyName = ?")
+      .run(reqBody.propertyValue,
+        reqBody.userName,
+        reqBody.propertyName);
+
+    db.close();
+
+    return info.changes;
+  },
+
   resetPassword: function(userName) {
     "use strict";
 
     const freshPassword = require("fresh-password");
-
     const newPasswordPlain = freshPassword.generate();
-
     const hash = bcrypt.hashSync(newPasswordPlain, 10);
 
     const db = sqlite(dbPath);

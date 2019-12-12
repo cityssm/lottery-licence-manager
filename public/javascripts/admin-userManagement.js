@@ -5,28 +5,16 @@
 (function() {
   "use strict";
 
-  // create user
+  /*
+   * create user
+   */
 
-  const createUserModalEle = document.getElementsByClassName("is-create-user-modal")[0];
+  const createUser_modalEle = document.getElementsByClassName("is-create-user-modal")[0];
 
-  createUserModalEle.getElementsByTagName("form")[0].addEventListener("submit", function(formEvent) {
-    formEvent.preventDefault();
-  });
-
-  document.getElementsByClassName("is-create-user-button")[0].addEventListener("click", function() {
-    window.llm.showModal(createUserModalEle);
-  });
-
-  // existing users
-
-  const userContainerEle = document.getElementById("container--users");
-
-  // update user
-
-  function submitFn_updateUser(formEvent) {
+  createUser_modalEle.getElementsByTagName("form")[0].addEventListener("submit", function(formEvent) {
     formEvent.preventDefault();
 
-    window.fetch("/admin/doUpdateUser", {
+    window.fetch("/admin/doCreateUser", {
         method: "POST",
         credentials: "include",
         body: new URLSearchParams(new FormData(formEvent.currentTarget))
@@ -36,67 +24,191 @@
       })
       .then(function(responseJSON) {
         if (responseJSON.success) {
-          window.llm.alertModal("User Updated Successfully", "", "OK",
-            "success");
+          window.location.reload(true);
+        }
+      });
+  });
 
-        } else {
-          window.llm.alertModal("User Not Updated", "Please try again.", "OK",
-            "danger");
+  document.getElementsByClassName("is-create-user-button")[0].addEventListener("click", function() {
+    window.llm.showModal(createUser_modalEle);
+  });
+
+  let cancelButtonEles = createUser_modalEle.getElementsByClassName("is-cancel-button");
+
+  for (let buttonIndex = 0; buttonIndex < cancelButtonEles.length; buttonIndex += 1) {
+    cancelButtonEles[buttonIndex].addEventListener("click", window.llm.hideModal);
+  }
+
+  // existing users
+
+  const userContainerEle = document.getElementById("container--users");
+
+  /*
+   * update user
+   */
+
+  const updateUser_modalEle = document.getElementsByClassName("is-update-user-modal")[0];
+  const updateUser_userNameSpanEles = updateUser_modalEle.getElementsByClassName("container--userName");
+
+  window.llm.initializeTabs(updateUser_modalEle.getElementsByClassName("tabs")[0].getElementsByTagName("ul")[0]);
+
+  function submitFn_updateUserSetting(formEvent) {
+    formEvent.preventDefault();
+
+    window.fetch("/admin/doUpdateUserProperty", {
+        method: "POST",
+        credentials: "include",
+        body: new URLSearchParams(new FormData(formEvent.currentTarget))
+      })
+      .then(function(response) {
+        return response.json();
+      })
+      .then(function(responseJSON) {
+        if (responseJSON.success) {
+          
         }
       });
   }
 
-  const userFormEles = userContainerEle.getElementsByClassName("form--user");
+  function clickFn_updateUser(clickEvent) {
 
-  for (let formIndex = 0; formIndex < userFormEles.length; formIndex += 1) {
-    userFormEles[formIndex].addEventListener("submit", submitFn_updateUser);
+    const linkEle = clickEvent.currentTarget;
+
+    const userName = linkEle.getAttribute("data-user-name");
+    const firstName = linkEle.getAttribute("data-first-name");
+    const lastName = linkEle.getAttribute("data-last-name");
+
+    // spans
+    for (let index = 0; index < updateUser_userNameSpanEles.length; index += 1) {
+      updateUser_userNameSpanEles[index].innerText = userName;
+    }
+
+    // name form
+    document.getElementById("updateUser--userName").value = userName;
+    document.getElementById("updateUser--firstName").value = firstName;
+    document.getElementById("updateUser--lastName").value = lastName;
+
+    // properties form
+    document.getElementById("userProperties--userName").value = userName;
+
+    const userPropertiesContainerEle = document.getElementById("container--userProperties");
+
+    window.llm.clearElement(userPropertiesContainerEle);
+
+    window.fetch("/admin/doGetUserProperties", {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          userName: userName
+        })
+      })
+      .then(function(response) {
+        return response.json();
+      })
+      .then(function(userPropertiesJSON) {
+
+        for (let propertyName in userPropertiesJSON) {
+          if (userPropertiesJSON.hasOwnProperty(propertyName)) {
+
+            const propertyValue = userPropertiesJSON[propertyName];
+
+            const formEle = document.createElement("form");
+
+            formEle.innerHTML =
+              "<input name=\"userName\" type=\"hidden\" value=\"" + userName + "\" />" +
+              "<input name=\"propertyName\" type=\"hidden\" value=\"" + propertyName + "\" />" +
+              "<div class=\"columns\">" +
+              "<div class=\"column is-4\">" + propertyName + "</div>" +
+              ("<div class=\"column\">" +
+                "<div class=\"field has-addons\">" +
+                "<div class=\"control is-expanded\">" +
+                "<input class=\"input\" name=\"propertyValue\" type=\"text\" value=\"" + window.llm.escapeHTML(propertyValue) + "\" />" +
+                "</div>" +
+                "<div class=\"control\">" +
+                "<button class=\"button\" type=\"submit\">" +
+                "Save" +
+                "</button>" +
+                "</div>" +
+                "</div>" +
+                "</div>") +
+              "</div>";
+
+            formEle.addEventListener("submit", submitFn_updateUserSetting);
+
+            userPropertiesContainerEle.insertAdjacentElement("beforeend", formEle);
+          }
+        }
+      });
+
+
+    // password form
+    document.getElementById("resetPassword--userName").value = userName;
+
+    document.getElementById("resetPassword--newPassword").closest(".message").setAttribute("hidden", "hidden");
+
+    window.llm.showModal(updateUser_modalEle);
   }
 
-  // reset password
+  const updateUserButtonEles = userContainerEle.getElementsByTagName("a");
 
-  function clickFn_resetPassword(clickEvent) {
+  for (let buttonIndex = 0; buttonIndex < updateUserButtonEles.length; buttonIndex += 1) {
+    updateUserButtonEles[buttonIndex].addEventListener("click", clickFn_updateUser);
+  }
 
-    const userName = clickEvent.currentTarget.closest(".panel-block").getAttribute("data-user-name");
+  cancelButtonEles = updateUser_modalEle.getElementsByClassName("is-cancel-button");
 
-    const resetFn = function() {
+  for (let buttonIndex = 0; buttonIndex < cancelButtonEles.length; buttonIndex += 1) {
+    cancelButtonEles[buttonIndex].addEventListener("click", window.llm.hideModal);
+  }
 
-      window.fetch("/admin/doResetPassword", {
+  // user name
+
+  document.getElementById("tab--updateUser-name").getElementsByTagName("form")[0]
+    .addEventListener("submit", function(formEvent) {
+      formEvent.preventDefault();
+
+      window.fetch("/admin/doUpdateUser", {
           method: "POST",
           credentials: "include",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            userName: userName
-          })
+          body: new URLSearchParams(new FormData(formEvent.currentTarget))
         })
         .then(function(response) {
           return response.json();
         })
         .then(function(responseJSON) {
           if (responseJSON.success) {
-            window.llm.alertModal("Password Reset Successfully",
-              "<p>The password for \"" + userName + "\" has been reset to <strong>" + responseJSON.newPassword + "</strong>.</p>",
-              "OK",
-              "success");
-
-          } else {
-            window.llm.alertModal("Password Not Updated", "Please try again.", "OK",
-              "danger");
+            window.location.reload(true);
           }
         });
-    };
+    });
 
-    window.llm.confirmModal("Reset Password?",
-      "Are you sure you want to reset the password for \"" + userName + "\"?",
-      "Yes, Reset",
-      "warning",
-      resetFn);
-  }
+  // reset password
 
-  const resetButtonEles = userContainerEle.getElementsByClassName("is-password-reset-button");
+  document.getElementById("tab--updateUser-password").getElementsByTagName("form")[0]
+    .addEventListener("submit", function(formEvent) {
 
-  for (let buttonIndex = 0; buttonIndex < resetButtonEles.length; buttonIndex += 1) {
-    resetButtonEles[buttonIndex].addEventListener("click", clickFn_resetPassword);
-  }
+      formEvent.preventDefault();
+
+      window.fetch("/admin/doResetPassword", {
+          method: "POST",
+          credentials: "include",
+          body: new URLSearchParams(new FormData(formEvent.currentTarget))
+        })
+        .then(function(response) {
+          return response.json();
+        })
+        .then(function(responseJSON) {
+          if (responseJSON.success) {
+
+            const newPasswordEle = document.getElementById("resetPassword--newPassword");
+
+            newPasswordEle.innerText = responseJSON.newPassword;
+
+            newPasswordEle.closest(".message").removeAttribute("hidden");
+          }
+        });
+    });
 }());
