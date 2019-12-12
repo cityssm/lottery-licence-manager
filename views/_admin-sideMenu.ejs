@@ -1,0 +1,17 @@
+<nav class="panel">
+  <div class="panel-heading">
+    Administrator Tools
+  </div>
+  <a class="panel-block <%= (headTitle === "Application Settings" ? " is-active" : "") %>" href="/admin/applicationSettings">
+    <span class="panel-icon">
+      <i class="fas fa-cogs" aria-hidden="true"></i>
+    </span>
+    Application Settings
+  </a>
+  <a class="panel-block <%= (headTitle === "User Management" ? " is-active" : "") %>" href="/admin/userManagement">
+    <span class="panel-icon">
+      <i class="fas fa-user-cog" aria-hidden="true"></i>
+    </span>
+    User Management
+  </a>
+</nav>

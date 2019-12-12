@@ -1,71 +1,78 @@
 <%- include('_header'); -%>
 
-<nav class="breadcrumb">
-  <ul>
-    <li><a href="/dashboard">Home</a></li>
-    <li class="is-active">
-      <a href="#" aria-current="page">
-        <span class="icon"><i class="fas fa-cog" aria-hidden="true"></i></span>
-        <span>Application Settings</span>
-      </a>
-    </li>
-  </ul>
-</nav>
+<div class="columns">
+  <div class="column is-3">
+    <%- include("_admin-sideMenu"); -%>
+  </div>
+  <div class="column">
+    <nav class="breadcrumb">
+      <ul>
+        <li><a href="/dashboard">Home</a></li>
+        <li class="is-active">
+          <a href="#" aria-current="page">
+            <span class="icon"><i class="fas fa-cog" aria-hidden="true"></i></span>
+            <span>Application Settings</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
 
-<h1 class="title is-1">
-  Application Settings
-</h1>
+    <h1 class="title is-1">
+      Application Settings
+    </h1>
 
-<div class="message is-warning">
-  <div class="message-body">
-    <p>
-      <strong>Please proceed with caution.</strong><br />
-      The settings below have the ability to tweak the behaviour of the application as a whole.
-    </p>
+    <div class="message is-warning">
+      <div class="message-body">
+        <p>
+          <strong>Please proceed with caution.</strong><br />
+          The settings below have the ability to tweak the behaviour of the application as a whole.
+        </p>
+      </div>
+    </div>
+
+    <table class="table is-striped is-hoverable is-fullwidth">
+      <thead>
+        <tr>
+          <th>Setting</th>
+          <th class="has-width-300">Value</th>
+          <th class="has-width-200">Update Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <%
+          for (let settingIndex = 0; settingIndex < applicationSettings.length; settingIndex += 1) {
+            const setting = applicationSettings[settingIndex];
+        %>
+          <tr>
+            <td>
+              <label class="has-text-weight-bold" for="settingValue--<%= settingIndex %>"><%= setting.settingName %></label><br />
+              <small><%= setting.settingDescription %></small>
+            </td>
+            <td>
+              <form class="form--applicationSetting">
+                <input name="settingKey" type="hidden" value="<%= setting.settingKey %>" />
+                <div class="field has-addons">
+                  <div class="control">
+                    <input class="input" id="settingValue--<%= settingIndex %>" name="settingValue" type="text" value="<%= setting.settingValue %>" />
+                  </div>
+                  <div class="control">
+                    <button class="button is-success" data-tooltip="Save Setting" type="submit">
+                      <i class="fas fa-save" aria-hidden="true"></i>
+                      <span class="sr-only">Save Setting</span>
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </td>
+            <td><small class="formMessage"></small></td>
+          </tr>
+        <%
+          }
+        %>
+      </tbody>
+    </table>
   </div>
 </div>
-
-<table class="table is-striped is-hoverable is-fullwidth">
-  <thead>
-    <tr>
-      <th>Setting</th>
-      <th class="has-width-300">Value</th>
-      <th class="has-width-200">Update Status</th>
-    </tr>
-  </thead>
-  <tbody>
-    <%
-      for (let settingIndex = 0; settingIndex < applicationSettings.length; settingIndex += 1) {
-        const setting = applicationSettings[settingIndex];
-    %>
-      <tr>
-        <td>
-          <label class="has-text-weight-bold" for="settingValue--<%= settingIndex %>"><%= setting.settingName %></label><br />
-          <small><%= setting.settingDescription %></small>
-        </td>
-        <td>
-          <form class="form--applicationSetting">
-            <input name="settingKey" type="hidden" value="<%= setting.settingKey %>" />
-            <div class="field has-addons">
-              <div class="control">
-                <input class="input" id="settingValue--<%= settingIndex %>" name="settingValue" type="text" value="<%= setting.settingValue %>" />
-              </div>
-              <div class="control">
-                <button class="button is-success" data-tooltip="Save Setting" type="submit">
-                  <i class="fas fa-save" aria-hidden="true"></i>
-                  <span class="sr-only">Save Setting</span>
-                </button>
-              </div>
-            </div>
-          </form>
-        </td>
-        <td><small class="formMessage"></small></td>
-      </tr>
-    <%
-      }
-    %>
-  </tbody>
-</table>
 
 <%- include('_footerA'); -%>
 

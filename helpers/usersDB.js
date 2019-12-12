@@ -185,13 +185,24 @@ let usersDB = {
 
     const db = sqlite(dbPath);
 
-    const info = db.prepare("update UserProperties" +
-        " set propertyValue = ?" +
-        " where userName = ?" +
-        " and propertyName = ?")
-      .run(reqBody.propertyValue,
-        reqBody.userName,
-        reqBody.propertyName);
+    let info;
+
+    if (reqBody.propertyValue === "") {
+      info = db.prepare("delete from UserProperties" +
+          " where userName = ?" +
+          " and propertyName = ?")
+        .run(reqBody.userName,
+          reqBody.propertyName);
+    } else {
+
+      info = db.prepare("replace into UserProperties" +
+          " (userName, propertyName, propertyValue)" +
+          " values (?, ?, ?)")
+        .run(reqBody.userName,
+          reqBody.propertyName,
+          reqBody.propertyValue
+        );
+    }
 
     db.close();
 

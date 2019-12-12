@@ -1,53 +1,57 @@
 <%- include('_header'); -%>
 
-<nav class="breadcrumb">
-  <ul>
-    <li><a href="/dashboard">Home</a></li>
-    <li class="is-active">
-      <a href="#" aria-current="page">
-        <span class="icon"><i class="fas fa-cog" aria-hidden="true"></i></span>
-        <span>User Management</span>
-      </a>
-    </li>
-  </ul>
-</nav>
-
 <div class="columns">
+  <div class="column is-3">
+    <%- include("_admin-sideMenu"); -%>
+  </div>
   <div class="column">
-    <h1 class="title is-1">
-      User Management
-    </h1>
-  </div>
-  <div class="column is-narrow has-text-right">
-    <button class="button is-primary is-create-user-button" type="button">
-      <span class="icon">
-        <i class="fas fa-plus" aria-hidden="true"></i>
-      </span>
-      <span>Create a User</span>
-    </a>
-  </div>
-</div>
-
-<div class="panel" id="container--users">
-  <%
-    for (let userIndex = 0; userIndex < users.length; userIndex += 1) {
-      const userObj = users[userIndex];
-  %>
-    <a class="panel-block is-block" data-user-name="<%= userObj.userName %>" data-first-name="<%= userObj.firstName %>" data-last-name="<%= userObj.lastName %>">
-      <div class="columns">
-        <div class="column is-narrow">
-          <i class="fas fa-user" aria-hidden="true"></i>
-        </div>
-        <div class="column"><%= userObj.userName %></div>
-        <div class="column"><%= userObj.firstName %></div>
-        <div class="column"><%= userObj.lastName %></div>
+    <nav class="breadcrumb">
+      <ul>
+        <li><a href="/dashboard">Home</a></li>
+        <li class="is-active">
+          <a href="#" aria-current="page">
+            <span class="icon"><i class="fas fa-cog" aria-hidden="true"></i></span>
+            <span>User Management</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+    <div class="columns">
+      <div class="column">
+        <h1 class="title is-1">
+          User Management
+        </h1>
       </div>
-    </a>
-  <%
-    }
-  %>
+      <div class="column is-narrow has-text-right">
+        <button class="button is-primary is-create-user-button" type="button">
+          <span class="icon">
+            <i class="fas fa-plus" aria-hidden="true"></i>
+          </span>
+          <span>Create a User</span>
+        </button>
+      </div>
+    </div>
+    <div class="panel" id="container--users">
+      <%
+      for (let userIndex = 0; userIndex < users.length; userIndex += 1) {
+        const userObj = users[userIndex];
+        %>
+        <a class="panel-block is-block" data-user-name="<%= userObj.userName %>" data-first-name="<%= userObj.firstName %>" data-last-name="<%= userObj.lastName %>">
+          <div class="columns">
+            <div class="column is-narrow">
+              <i class="fas fa-user" aria-hidden="true"></i>
+            </div>
+            <div class="column"><%= userObj.userName %></div>
+            <div class="column"><%= userObj.firstName %></div>
+            <div class="column"><%= userObj.lastName %></div>
+          </div>
+        </a>
+        <%
+      }
+      %>
+    </div>
+  </div>
 </div>
-
 
 <div class="modal is-create-user-modal">
   <div class="modal-background"></div>
@@ -93,7 +97,6 @@
     </div>
   </form>
 </div>
-
 
 <div class="modal is-update-user-modal">
   <div class="modal-background"></div>
@@ -168,7 +171,7 @@
               <div class="has-text-right">
                 <button class="button is-warning" type="submit">Reset Password</button>
               </div>
-              <div class="message is-info" hidden>
+              <div class="message is-info has-margin-top-10" hidden>
                 <div class="message-body">
                   <p>
                     The password for <em class="container--userName"></em> has been reset.
@@ -182,7 +185,7 @@
         </div>
       </section>
       <footer class="modal-card-foot justify-right">
-        <button class="button is-cancel-button" type="button">Cancel</button>
+        <button class="button is-cancel-button" type="button">Close</button>
       </footer>
     </div>
 </div>

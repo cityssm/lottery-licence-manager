@@ -55,19 +55,45 @@
   function submitFn_updateUserSetting(formEvent) {
     formEvent.preventDefault();
 
+    const formEle = formEvent.currentTarget;
+
     window.fetch("/admin/doUpdateUserProperty", {
         method: "POST",
         credentials: "include",
-        body: new URLSearchParams(new FormData(formEvent.currentTarget))
+        body: new URLSearchParams(new FormData(formEle))
       })
       .then(function(response) {
         return response.json();
       })
       .then(function(responseJSON) {
         if (responseJSON.success) {
-          
+
+          const inputEle = formEle.getElementsByClassName("input")[0];
+
+          inputEle.classList.add("is-success");
+          inputEle.classList.remove("is-danger");
+
+          const submitBtnEle = formEle.getElementsByTagName("button")[0];
+
+          submitBtnEle.classList.add("is-success");
+          submitBtnEle.classList.remove("is-danger");
         }
       });
+  }
+
+  function keyupFn_markSettingUnsaved(keyupEvent) {
+
+    const inputEle = keyupEvent.currentTarget;
+
+    inputEle.classList.add("is-danger");
+    inputEle.classList.remove("is-primary");
+    inputEle.classList.remove("is-success");
+
+    const submitBtnEle = inputEle.closest(".field").getElementsByTagName("button")[0];
+
+    submitBtnEle.classList.add("is-danger");
+    submitBtnEle.classList.remove("is-primary");
+    submitBtnEle.classList.remove("is-success");
   }
 
   function clickFn_updateUser(clickEvent) {
@@ -89,7 +115,6 @@
     document.getElementById("updateUser--lastName").value = lastName;
 
     // properties form
-    document.getElementById("userProperties--userName").value = userName;
 
     const userPropertiesContainerEle = document.getElementById("container--userProperties");
 
@@ -110,8 +135,12 @@
       })
       .then(function(userPropertiesJSON) {
 
+        let propertyIndex = 0;
+
         for (let propertyName in userPropertiesJSON) {
           if (userPropertiesJSON.hasOwnProperty(propertyName)) {
+
+            propertyIndex += 1;
 
             const propertyValue = userPropertiesJSON[propertyName];
 
@@ -121,20 +150,26 @@
               "<input name=\"userName\" type=\"hidden\" value=\"" + userName + "\" />" +
               "<input name=\"propertyName\" type=\"hidden\" value=\"" + propertyName + "\" />" +
               "<div class=\"columns\">" +
-              "<div class=\"column is-4\">" + propertyName + "</div>" +
+              ("<div class=\"column is-4\">" +
+                "<label class=\"label\" for=\"userProperties--propertyValue-" + propertyIndex + "\">" +
+                propertyName +
+                "</label>" +
+                "</div>") +
               ("<div class=\"column\">" +
                 "<div class=\"field has-addons\">" +
                 "<div class=\"control is-expanded\">" +
-                "<input class=\"input\" name=\"propertyValue\" type=\"text\" value=\"" + window.llm.escapeHTML(propertyValue) + "\" />" +
+                "<input class=\"input is-primary\" id=\"userProperties--propertyValue-" + propertyIndex + "\" name=\"propertyValue\" type=\"text\" value=\"" + window.llm.escapeHTML(propertyValue) + "\" placeholder=\"(Use Default)\" />" +
                 "</div>" +
                 "<div class=\"control\">" +
-                "<button class=\"button\" type=\"submit\">" +
+                "<button class=\"button is-outlined is-primary\" type=\"submit\">" +
                 "Save" +
                 "</button>" +
                 "</div>" +
                 "</div>" +
                 "</div>") +
               "</div>";
+
+            formEle.getElementsByClassName("input")[0].addEventListener("keyup", keyupFn_markSettingUnsaved);
 
             formEle.addEventListener("submit", submitFn_updateUserSetting);
 
