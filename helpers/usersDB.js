@@ -7,6 +7,7 @@ const configFns = require("./configFns");
 const sqlite = require("better-sqlite3");
 const dbPath = "data/users.db";
 
+
 const bcrypt = require("bcrypt");
 
 
@@ -40,7 +41,7 @@ let usersDB = {
 
       passwordIsValid = true;
 
-      const hash = bcrypt.hashSync(passwordPlain, 10);
+      const hash = bcrypt.hashSync(userName + "::" + passwordPlain, 10);
 
       db.prepare("update Users" +
           " set tempPassword = null," +
@@ -49,7 +50,7 @@ let usersDB = {
         .run(hash, userName);
 
 
-    } else if (row.passwordHash && row.passwordHash !== "" && bcrypt.compareSync(passwordPlain, row.passwordHash)) {
+    } else if (row.passwordHash && row.passwordHash !== "" && bcrypt.compareSync(userName + "::" + passwordPlain, row.passwordHash)) {
       passwordIsValid = true;
     }
 
@@ -79,6 +80,48 @@ let usersDB = {
     };
   },
 
+  tryResetPassword: function(userName, oldPasswordPlain, newPasswordPlain) {
+    "use strict";
+
+    const db = sqlite(dbPath);
+
+    const row = db.prepare("select passwordHash from Users" +
+        " where userName = ?" +
+        " and isActive = 1")
+      .get(userName);
+
+    if (!row) {
+      db.close();
+      return {
+        success: false,
+        message: "User record not found."
+      };
+    }
+
+    const oldPasswordMatches = bcrypt.compareSync(userName + "::" + oldPasswordPlain, row.passwordHash);
+
+    if (!oldPasswordMatches) {
+      db.close();
+      return {
+        success: false,
+        message: "Old password does not match."
+      };
+    }
+
+    const newPasswordHash = bcrypt.hashSync(userName + "::" + newPasswordPlain, 10);
+
+    db.prepare("update Users" +
+        " set passwordHash = ?" +
+        " where userName = ?")
+      .run(newPasswordHash, userName);
+
+    db.close();
+
+    return {
+      success: true,
+      message: "Password updated successfully."
+    };
+  },
 
   getAllUsers: function() {
     "use strict";
@@ -209,12 +252,12 @@ let usersDB = {
     return info.changes;
   },
 
-  resetPassword: function(userName) {
+  generateNewPassword: function(userName) {
     "use strict";
 
     const freshPassword = require("fresh-password");
     const newPasswordPlain = freshPassword.generate();
-    const hash = bcrypt.hashSync(newPasswordPlain, 10);
+    const hash = bcrypt.hashSync(userName + ":: " + newPasswordPlain, 10);
 
     const db = sqlite(dbPath);
 

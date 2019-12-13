@@ -1,8 +1,15 @@
 <%- include('_header'); -%>
 
-<h1 class="title is-1">
-  <%= configFns.getProperty("application.applicationName") %>
-</h1>
+<div class="columns">
+  <div class="column">
+    <h1 class="title is-1">
+      <%= configFns.getProperty("application.applicationName") %>
+    </h1>
+  </div>
+  <div class="column is-narrow has-text-right">
+    <button class="button is-change-password-button" type="button">Change Password</button>
+  </div>
+</div>
 
 <div class="columns">
   <div class="column">
@@ -181,5 +188,44 @@
   </div>
 <% } %>
 
+<div class="modal is-change-password-modal">
+  <div class="modal-background"></div>
+  <div class="modal-card">
+    <header class="modal-card-head">
+      <h3 class="modal-card-title">Change Your Password</h3>
+      <button class="delete is-cancel-button" aria-label="close" type="button"></button>
+    </header>
+    <form>
+      <section class="modal-card-body">
+        <div class="field">
+          <label class="label" for="changePassword--oldPassword">Current Password</label>
+          <div class="control">
+            <input class="input" id="changePassword--oldPassword" name="oldPassword" type="password" autocomplete="current-password" required />
+          </div>
+        </div>
+        <div class="field">
+          <label class="label" for="changePassword--newPassword">New Password</label>
+          <div class="control">
+            <input class="input" id="changePassword--newPassword" name="newPassword" type="password" autocomplete="new-password" minlength="8" required />
+          </div>
+        </div>
+        <div class="field">
+          <label class="label" for="changePassword--newPasswordConfirm">Confirm New Password</label>
+          <div class="control">
+            <input class="input" id="changePassword--newPasswordConfirm" type="password" autocomplete="new-password" required />
+          </div>
+        </div>
+      </section>
+      <footer class="modal-card-foot justify-right">
+        <button class="button is-cancel-button" type="button">Cancel</button>
+        <button class="button is-primary" type="submit">Update Password</button>
+      </footer>
+    </form>
+  </div>
+</div>
+
 <%- include('_footerA'); -%>
+
+<script src="/javascripts/dashboard.min.js"></script>
+
 <%- include('_footerB'); -%>

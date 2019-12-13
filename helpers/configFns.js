@@ -16,7 +16,7 @@ try {
 const configFallbackValues = {
   "application.applicationName": "Lottery Licence System",
   "application.logoURL": "/images/bingoBalls.png",
-  "application.port": 3000,
+  "application.httpPort": 3000,
 
   "session.cookieName": "lottery-licence-manager-user-sid",
   "session.secret": "cityssm/lottery-licence-manager",

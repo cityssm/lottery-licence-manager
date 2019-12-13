@@ -69,6 +69,30 @@ function canUpdateObject(objType, obj, reqSession) {
 
 let licencesDB = {
 
+  getRawRowsColumns: function(sql, params) {
+    "use strict";
+
+    const db = sqlite(dbPath, {
+      readonly: true
+    });
+
+    const stmt = db.prepare(sql);
+
+    stmt.raw(true);
+
+    const rows = stmt.all(params);
+    const columns = stmt.columns();
+
+    stmt.raw(false);
+
+    db.close();
+
+    return {
+      rows: rows,
+      columns: columns
+    };
+  },
+
   /*
    * ORGANIZATIONS
    */

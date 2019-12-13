@@ -9,7 +9,16 @@ config.application = {};
 config.application.applicationName = "Lottery Licence Manager";
 config.application.logoURL = "/images/bingoBalls.png";
 
-config.application.port = 3000;
+config.application.httpPort = 3000;
+
+/*
+config.application.https = {
+  port: 3030,
+  keyPath: "./ssl/key.pem",
+  certPath: "./ssl/cert.pem",
+  passphrase: "lottery-licence-manager"
+};
+*/
 
 
 config.defaults = {};

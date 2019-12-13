@@ -148,7 +148,7 @@ router.post("/doResetPassword", function(req, res) {
     return;
   }
 
-  const newPassword = usersDB.resetPassword(req.body.userName);
+  const newPassword = usersDB.generateNewPassword(req.body.userName);
 
   res.json({
     success: true,

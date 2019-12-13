@@ -11,6 +11,7 @@ const licencesDB = require("../helpers/licencesDB");
 
 router.get("/", function(req, res) {
   "use strict";
+
   res.render("licence-search", {
     headTitle: "Licences"
   });
@@ -328,7 +329,7 @@ router.get("/:licenceID/print", function(req, res, next) {
           if (pdfErr) {
             res.send(pdfErr);
           } else {
-            res.setHeader("Content-Disposition", "attachment; filename=licence-" + licenceID + ".pdf");
+            res.setHeader("Content-Disposition", "attachment; filename=licence-" + licenceID + "-" + licence.recordUpdate_timeMillis + ".pdf");
             res.setHeader("Content-Type", "application/pdf");
             pdfStream.pipe(res);
           }

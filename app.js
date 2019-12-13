@@ -3,6 +3,8 @@
 
 const createError = require("http-errors");
 const express = require("express");
+const https = require("https");
+const fs = require("fs");
 const compression = require("compression");
 const path = require("path");
 const cookieParser = require("cookie-parser");
@@ -142,6 +144,7 @@ app.get("/logout", function(req, res) {
   "use strict";
   if (req.session.user && req.cookies[sessionCookieName]) {
     req.session.destroy();
+    req.session = null;
     res.clearCookie(sessionCookieName);
     res.redirect("/");
   } else {
@@ -169,12 +172,34 @@ app.use(function(err, req, res) {
 });
 
 
-app.listen(configFns.getProperty("application.port"), function() {
-  "use strict";
+/*
+ * Open ports
+ */
 
-  // eslint-disable-next-line no-console
-  console.log("Server listening on port " + configFns.getProperty("application.port"));
-});
 
+const httpPort = configFns.getProperty("application.httpPort");
+
+if (httpPort) {
+  app.listen(httpPort, function() {
+    "use strict";
+
+    // eslint-disable-next-line no-console
+    console.log("HTTP listening on port " + httpPort);
+  });
+}
+
+const httpsConfig = configFns.getProperty("application.https");
+
+if (httpsConfig) {
+  https.createServer({
+      key: fs.readFileSync(httpsConfig.keyPath),
+      cert: fs.readFileSync(httpsConfig.certPath),
+      passphrase: httpsConfig.passphrase
+    }, app)
+    .listen(httpsConfig.port);
+
+    // eslint-disable-next-line no-console
+    console.log("HTTPS listening on port " + httpsConfig.port);
+}
 
 module.exports = app;

@@ -9,3 +9,4 @@ data/users.db
 helpers/*.min.js
 node_modules/
 routes/*.min.js
+*.pem
