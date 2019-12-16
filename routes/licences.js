@@ -54,6 +54,10 @@ router.get(["/new", "/new/:organizationID"], function(req, res) {
 
   if (organizationID && organizationID !== "") {
     organization = licencesDB.getOrganization(organizationID, req.session) || {};
+
+    if (!organization.isEligibleForLicences) {
+      organization = {};
+    }
   }
 
   // use current date as default

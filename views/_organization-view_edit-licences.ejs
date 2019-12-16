@@ -2,7 +2,7 @@
   <div class="column">
     <h2 class="title is-3">Lottery Licences</h2>
   </div>
-  <% if (user.userProperties.canCreate === "true") { %>
+  <% if (user.userProperties.canCreate === "true" && organization.isEligibleForLicences) { %>
     <div class="column is-narrow has-text-right">
       <a class="button is-primary is-small" href="/licences/new/<%= organization.organizationID %>">
         <span class="icon is-small">
@@ -25,7 +25,9 @@
     "</tr>";
 
   let rows_active = "";
+  let count_active = 0;
   let rows_past = "";
+  let count_past = 0;
 
   const licenceTypes = configFns.getProperty("licenceTypes");
 
@@ -51,7 +53,7 @@
         "</a>" +
         "</td>" +
       "<td>" + (licenceType.licenceType || licence.licenceTypeKey) + "</td>" +
-      "<td>" + stringFns.escapeHTML(licence.licenceDetails) + "</td>" +
+      "<td class=\"has-newline-chars\">" + stringFns.escapeHTML(licence.licenceDetails) + "</td>" +
       "<td>" + licence.startDateString + "</td>" +
       "<td>" + licence.endDateString + "</td>" +
       "<td class=\"has-text-right\">" +
@@ -70,16 +72,18 @@
 
     if (licence.endDate < currentDateInteger) {
       rows_past += rowHTML;
+      count_past += 1;
     } else {
       rows_active += rowHTML;
+      count_active += 1;
     }
   }
 %>
 
 <div class="tabs" id="tabs--licences">
   <ul>
-    <li class="is-active"><a href="#tab--licences-active">Active Licences</a></li>
-    <li><a href="#tab--licences-past">Past Licences</a></li>
+    <li class="is-active"><a href="#tab--licences-active">Active Licences <%- (count_active > 0 ? " <span class=\"tag is-info has-margin-left-10\">" + count_active + "</span>" : "") %></a></li>
+    <li><a href="#tab--licences-past">Past Licences <%- (count_past > 0 ? " <span class=\"tag is-info has-margin-left-10\">" + count_past + "</span>" : "") %></a></li>
   </ul>
 </div>
 

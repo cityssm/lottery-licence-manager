@@ -20,50 +20,78 @@
 <form class="has-margin-bottom-20" id="form--organization">
   <input id="organization--organizationID" name="organizationID" type="hidden" value="<%= organization.organizationID %>" />
 
-  <div class="field">
-    <label class="label" for="organization--organizationName">Organization Name</label>
-    <div class="control">
-      <input class="input" id="organization--organizationName" name="organizationName" type="text" value="<%= organization.organizationName %>" maxlength="100" autocomplete="off" <%= (isCreate ? " autofocus " : "") %> required />
-    </div>
-  </div>
-
-  <div class="field">
-    <label class="label" for="organization--organizationAddress1">Address</label>
-    <div class="control">
-      <input class="input" id="organization--organizationAddress1" name="organizationAddress1" type="text" value="<%= organization.organizationAddress1 %>" placeholder="Line 1" maxlength="50" autocomplete="off" />
-    </div>
-  </div>
-  <div class="field">
-    <div class="control">
-      <input class="input" id="organization--organizationAddress2" name="organizationAddress2" type="text" value="<%= organization.organizationAddress2 %>" placeholder="Line 2" maxlength="50" autocomplete="off" />
-    </div>
-  </div>
-
   <div class="columns">
     <div class="column">
       <div class="field">
-        <label class="label" for="organization--organizationCity">City</label>
+        <label class="label" for="organization--organizationName">Organization Name</label>
         <div class="control">
-          <input class="input" id="organization--organizationCity" name="organizationCity" type="text" value="<%= organization.organizationCity %>" maxlength="20" autocomplete="off" />
+          <input class="input" id="organization--organizationName" name="organizationName" type="text" value="<%= organization.organizationName %>" maxlength="100" autocomplete="off" <%= (isCreate ? " autofocus " : "") %> required />
         </div>
       </div>
-    </div>
-    <div class="column is-3">
+
       <div class="field">
-        <label class="label" for="organization--organizationProvince">Province</label>
+        <label class="label" for="organization--organizationAddress1">Address</label>
         <div class="control">
-          <input class="input" id="organization--organizationProvince" name="organizationProvince" type="text" value="<%= organization.organizationProvince %>" maxlength="2" autocomplete="off" />
+          <input class="input" id="organization--organizationAddress1" name="organizationAddress1" type="text" value="<%= organization.organizationAddress1 %>" placeholder="Line 1" maxlength="50" autocomplete="off" />
         </div>
       </div>
-    </div>
-    <div class="column is-3">
       <div class="field">
-        <label class="label" for="organization--organizationPostalCode">Postal Code</label>
         <div class="control">
-          <input class="input" id="organization--organizationPostalCode" name="organizationPostalCode" type="text" value="<%= organization.organizationPostalCode %>" minlength="5" maxlength="7" autocomplete="off" />
+          <input class="input" id="organization--organizationAddress2" name="organizationAddress2" type="text" value="<%= organization.organizationAddress2 %>" placeholder="Line 2" maxlength="50" autocomplete="off" />
+        </div>
+      </div>
+
+      <div class="columns">
+        <div class="column">
+          <div class="field">
+            <label class="label" for="organization--organizationCity">City</label>
+            <div class="control">
+              <input class="input" id="organization--organizationCity" name="organizationCity" type="text" value="<%= organization.organizationCity %>" maxlength="20" autocomplete="off" list="organization--organizationCity-datalist" />
+              <datalist id="organization--organizationCity-datalist">
+                <option value="<%= configFns.getProperty("defaults.city") %>" />
+              </datalist>
+            </div>
+          </div>
+        </div>
+        <div class="column is-3">
+          <div class="field">
+            <label class="label" for="organization--organizationProvince">Province</label>
+            <div class="control">
+              <input class="input" id="organization--organizationProvince" name="organizationProvince" type="text" value="<%= organization.organizationProvince %>" maxlength="2" autocomplete="off" />
+            </div>
+          </div>
+        </div>
+        <div class="column is-3">
+          <div class="field">
+            <label class="label" for="organization--organizationPostalCode">Postal Code</label>
+            <div class="control">
+              <input class="input" id="organization--organizationPostalCode" name="organizationPostalCode" type="text" value="<%= organization.organizationPostalCode %>" minlength="5" maxlength="7" autocomplete="off" />
+            </div>
+          </div>
         </div>
       </div>
     </div>
+    <% if (!isCreate) { %>
+      <div class="column is-4">
+        <div class="field">
+          <label class="label" for="organization--isEligibleForLicences">New Licence Eligibility</label>
+          <div class="control">
+            <div class="select is-fullwidth">
+              <select id="organization--isEligibleForLicences" name="isEligibleForLicences">
+                <option value="1" <%= (organization.isEligibleForLicences ? " selected": "") %>>Eligible for New Licences</option>
+                <option value="0" <%= (organization.isEligibleForLicences ? "": " selected") %>>Not Eligible</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="field">
+          <label class="label" for="organization--organizationNote">Notes</label>
+          <div class="control">
+            <textarea class="textarea" id="organization--organizationNote" name="organizationNote"><%= organization.organizationNote %></textarea>
+          </div>
+        </div>
+      </div>
+    <% } %>
   </div>
 
   <% if (isCreate) { %>

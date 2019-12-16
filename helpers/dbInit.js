@@ -64,6 +64,10 @@ let dbInit = {
         " organizationCity varchar(20)," +
         " organizationProvince varchar(2)," +
         " organizationPostalCode varchar(7)," +
+
+        " isEligibleForLicences bit not null default 1," +
+        " organizationNote text," +
+
         " recordCreate_userName varchar(30) not null," +
         " recordCreate_timeMillis integer not null," +
         " recordUpdate_userName varchar(30) not null," +

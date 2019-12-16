@@ -26,12 +26,35 @@
   <% } %>
 </div>
 
-<p>
-  <%= organization.organizationAddress1 %><br />
-  <%= (organization.organizationAddress2 === "" ? "" : organization.organizationAddress2) %><br />
-  <%= organization.organizationCity + ", " + organization.organizationProvince %><br />
-  <%= organization.organizationPostalCode %>
-</p>
+<div class="columns">
+  <div class="column">
+    <p>
+      <%= organization.organizationAddress1 %><br />
+      <%= (organization.organizationAddress2 === "" ? "" : organization.organizationAddress2) %><br />
+      <%= organization.organizationCity + ", " + organization.organizationProvince %><br />
+      <%= organization.organizationPostalCode %>
+    </p>
+  </div>
+  <div class="column is-4">
+    <% if (organization.isEligibleForLicences) { %>
+      <p>
+        <i class="fas fa-check has-text-success has-margin-right-10" aria-hidden="true"></i>
+        Eligible for New Licences
+      </p>
+    <% } else { %>
+      <p>
+        <i class="fas fa-times has-text-danger has-margin-right-10" aria-hidden="true"></i>
+        <strong>Not Eligible for New Licences</strong>
+      </p>
+    <% } %>
+    <% if (organization.organizationNote && organization.organizationNote !== "") { %>
+      <p class="has-margin-top-10">
+        <strong>Notes</strong><br />
+        <span class="has-newline-chars"><%= organization.organizationNote %></span>
+      </p>
+    <% } %>
+  </div>
+</div>
 
 <h2 class="title is-3 has-margin-top-20">Organization Representatives</h2>
 

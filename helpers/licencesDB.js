@@ -104,24 +104,31 @@ let licencesDB = {
       readonly: true
     });
 
-    let params = [];
+    let params = [
+      dateTimeFns.dateToInteger(new Date())
+    ];
 
-    let sql = "select organizationID, organizationName," +
-      " recordCreate_userName, recordCreate_timeMillis, recordUpdate_userName, recordUpdate_timeMillis" +
-      " from Organizations" +
-      " where recordDelete_TimeMillis is null";
+    let sql = "select o.organizationID, o.organizationName, o.isEligibleForLicences," +
+      " sum(case when l.endDate >= ? then 1 else 0 end) as licences_activeCount," +
+      " max(l.endDate) as licences_endDateMax," +
+      " o.recordCreate_userName, o.recordCreate_timeMillis, o.recordUpdate_userName, o.recordUpdate_timeMillis" +
+      " from Organizations o" +
+      " left join LotteryLicences l on o.organizationID = l.organizationID and l.recordDelete_timeMillis is null" +
+      " where o.recordDelete_TimeMillis is null";
 
     if (reqBody.organizationName && reqBody.organizationName !== "") {
-      sql += " and instr(lower(organizationName), ?)";
+      sql += " and instr(lower(o.organizationName), ?)";
       params.push(reqBody.organizationName.toLowerCase());
     }
 
     if (reqBody.representativeName && reqBody.representativeName !== "") {
-      sql += " and organizationID in (select organizationID from OrganizationRepresentatives where instr(lower(representativeName), ?))";
+      sql += " and o.organizationID in (select organizationID from OrganizationRepresentatives where instr(lower(representativeName), ?))";
       params.push(reqBody.representativeName.toLowerCase());
     }
 
-    sql += " order by organizationName, organizationID";
+    sql += " group by o.organizationID, o.organizationName," +
+      " o.recordCreate_userName, o.recordCreate_timeMillis, o.recordUpdate_userName, o.recordUpdate_timeMillis" +
+      " order by o.organizationName, o.organizationID";
 
     if (useLimit) {
       sql += " limit 100";
@@ -133,6 +140,7 @@ let licencesDB = {
 
     for (let rowIndex = 0; rowIndex < rows.length; rowIndex += 1) {
       rows[rowIndex].canUpdate = canUpdateObject("organization", rows[rowIndex], reqSession);
+      rows[rowIndex].licences_endDateMaxString = dateTimeFns.dateIntegerToString(rows[rowIndex].licences_endDateMax || 0);
     }
 
     return rows;
@@ -213,6 +221,8 @@ let licencesDB = {
         " organizationCity = ?," +
         " organizationProvince = ?," +
         " organizationPostalCode = ?," +
+        " isEligibleForLicences = ?," +
+        " organizationNote = ?," +
         " recordUpdate_userName = ?," +
         " recordUpdate_timeMillis = ?" +
         " where organizationID = ?" +
@@ -224,6 +234,8 @@ let licencesDB = {
         reqBody.organizationCity,
         reqBody.organizationProvince,
         reqBody.organizationPostalCode,
+        reqBody.isEligibleForLicences,
+        reqBody.organizationNote,
         reqSession.user.userName,
         nowMillis,
         reqBody.organizationID

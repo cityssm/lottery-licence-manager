@@ -43,8 +43,8 @@
 
           searchResultsEle.innerHTML = "<table class=\"table is-fullwidth is-striped is-hoverable\">" +
             "<thead><tr>" +
-            "<th>Organization Name</th>" +
-            "<th><span class=\"sr-only\">Options</span></th>" +
+            "<th" + (canCreate ? " colspan=\"2\"" : "") + ">Organization</th>" +
+            "<th" + (canCreate ? " colspan=\"2\"" : "") + ">Licences</th>" +
             "</tr></thead>" +
             "<tbody></tbody>" +
             "</table>";
@@ -59,23 +59,55 @@
             trEle.innerHTML = "<td></td>";
 
             const organizationNameLinkEle = document.createElement("a");
+
+            if (!organizationObj.isEligibleForLicences) {
+              organizationNameLinkEle.className = "has-text-danger";
+              organizationNameLinkEle.setAttribute("data-tooltip", "Not Eligible for New Licences");
+            }
+
             organizationNameLinkEle.innerText = organizationObj.organizationName;
             organizationNameLinkEle.href = "/organizations/" + organizationObj.organizationID;
             trEle.getElementsByTagName("td")[0].insertAdjacentElement("beforeend", organizationNameLinkEle);
 
-            trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right\">" +
-              (organizationObj.canUpdate ?
-                "<a class=\"button is-small\" data-tooltip=\"Edit Organization\" href=\"/organizations/" + organizationObj.organizationID + "/edit\">" +
-                "<span class=\"icon\"><i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i></span>" +
-                "<span>Edit</span>" +
-                "</a>" : "") +
-              (canCreate ?
-                " <a class=\"button is-small\" data-tooltip=\"Create a New Licence\" href=\"/licences/new/" + organizationObj.organizationID + "\">" +
-                "<span class=\"icon\"><i class=\"fas fa-certificate\" aria-hidden=\"true\"></i></span>" +
-                "<span>New</span>" +
-                "</a>" :
-                "") +
-              "</td>");
+            if (canCreate) {
+              trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right\">" +
+                (organizationObj.canUpdate ?
+                  "<a class=\"button is-small\" data-tooltip=\"Edit Organization\" href=\"/organizations/" + organizationObj.organizationID + "/edit\">" +
+                  "<span class=\"icon\"><i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i></span>" +
+                  "<span>Edit</span>" +
+                  "</a>" :
+                  "") +
+                "</td>");
+            }
+
+            let licenceHTML = "";
+
+            if (organizationObj.licences_activeCount > 0) {
+
+              licenceHTML = "<span class=\"tag is-info\" data-tooltip=\"Number of Active Licences\">" +
+                "<i class=\"fas fa-certificate has-margin-right-5\" aria-hidden=\"true\"></i> " + organizationObj.licences_activeCount +
+                "</span>";
+
+            } else if (organizationObj.licences_endDateMax) {
+
+              licenceHTML = "<span class=\"tag is-info is-light\" data-tooltip=\"Last Licence End Date\">" +
+                "<i class=\"fas fa-stop has-margin-right-5\" aria-hidden=\"true\"></i> " + organizationObj.licences_endDateMaxString +
+                "</span>";
+            }
+
+
+            trEle.insertAdjacentHTML("beforeend", "<td>" + licenceHTML + "</td>");
+
+            if (canCreate) {
+
+              trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right\">" +
+                (organizationObj.isEligibleForLicences ?
+                  "<a class=\"button is-small\" data-tooltip=\"Create a New Licence\" href=\"/licences/new/" + organizationObj.organizationID + "\">" +
+                  "<span class=\"icon\"><i class=\"fas fa-certificate\" aria-hidden=\"true\"></i></span>" +
+                  "<span>New</span>" +
+                  "</a>" : "") +
+                "</td>");
+            }
 
             tbodyEle.insertAdjacentElement("beforeend", trEle);
           }

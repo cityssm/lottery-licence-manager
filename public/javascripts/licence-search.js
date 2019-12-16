@@ -74,12 +74,12 @@
               "<small>" + window.llm.escapeHTML(licenceObj.licenceDetails) + "</small>" +
               "</td>" +
 
-              ("<td>" +
+              ("<td class=\"is-nowrap\">" +
                 "<span class=\"has-tooltip-right\" data-tooltip=\"Start Date\"><i class=\"fas fa-fw fa-play\" aria-hidden=\"true\"></i> " + licenceObj.startDateString + "</span><br />" +
                 "<span class=\"has-tooltip-right\" data-tooltip=\"End Date\"><i class=\"fas fa-fw fa-stop\" aria-hidden=\"true\"></i> " + licenceObj.endDateString + "</span>" +
                 "</td>") +
 
-              "<td class=\"has-text-right\">" +
+              "<td class=\"has-text-right is-nowrap\">" +
 
               (licenceObj.canUpdate ?
 

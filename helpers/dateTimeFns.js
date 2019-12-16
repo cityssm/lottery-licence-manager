@@ -8,6 +8,10 @@ let dateTimeFns = {
   dateIntegerToString: function(dateInteger) {
     "use strict";
 
+    if (dateInteger === 0) {
+      return "";
+    }
+
     let dateString = dateInteger.toString();
     return dateString.substring(0, 4) + "-" + dateString.substring(4, 6) + "-" + dateString.substring(6, 8);
   },

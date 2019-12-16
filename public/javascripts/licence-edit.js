@@ -183,6 +183,11 @@
       let doDisplayRecord = true;
 
       const organizationObj = organizationList[organizationIndex];
+
+      if (!organizationObj.isEligibleForLicences) {
+        continue;
+      }
+
       const organizationName = organizationObj.organizationName.toLowerCase();
 
       for (let searchStringIndex = 0; searchStringIndex < searchStringSplit.length; searchStringIndex += 1) {

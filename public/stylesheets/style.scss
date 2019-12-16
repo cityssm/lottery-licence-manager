@@ -39,6 +39,10 @@ fieldset:enabled .is-hidden-enabled {
   white-space: nowrap;
 }
 
+.has-newline-chars {
+  white-space: pre-wrap;
+}
+
 
 /*
  * Form elements

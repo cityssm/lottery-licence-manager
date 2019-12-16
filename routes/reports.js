@@ -35,14 +35,26 @@ router.all("/:reportName", function(req, res) {
         " o.recordUpdate_userName, o.recordUpdate_timeMillis" +
         " from Organizations o" +
         " left join OrganizationRepresentatives r on o.organizationID = r.organizationID and r.isDefault = 1" +
-        " where o.recordDelete_timeMillis is null";
+        " where o.recordDelete_timeMillis is null" +
+        " and o.isEligibleForLicences = 1";
+
+      break;
+
+    case "organizations-ineligible":
+
+      sql = "select o.organizationID, o.organizationName, o.organizationAddress1, o.organizationAddress2," +
+        " o.organizationCity, o.organizationProvince, o.organizationPostalCode, o.organizationNote," +
+        " o.recordDelete_userName, o.recordDelete_timeMillis" +
+        " from Organizations o" +
+        " where o.recordDelete_timeMillis is null" +
+        " and o.isEligibleForLicences = 0";
 
       break;
 
     case "organizations-deleted":
 
       sql = "select o.organizationID, o.organizationName, o.organizationAddress1, o.organizationAddress2," +
-        " o.organizationCity, o.organizationProvince, o.organizationPostalCode," +
+        " o.organizationCity, o.organizationProvince, o.organizationPostalCode, o.isEligibleForLicences, o.organizationNote," +
         " o.recordDelete_userName, o.recordDelete_timeMillis" +
         " from Organizations o" +
         " where o.recordDelete_timeMillis is not null";
