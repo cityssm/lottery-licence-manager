@@ -2,16 +2,22 @@
   <div class="column">
     <h2 class="title is-3">Lottery Licences</h2>
   </div>
-  <% if (user.userProperties.canCreate === "true" && organization.isEligibleForLicences) { %>
-    <div class="column is-narrow has-text-right">
+  <div class="column is-narrow has-text-right">
+    <a class="button is-small" href="/reports/licences-byOrganization?organizationID=<%= organization.organizationID %>">
+      <span class="icon is-small">
+        <i class="fas fa-file-download" aria-hidden="true"></i>
+      </span>
+      <span>Export Licences</span>
+    </a>
+    <% if (user.userProperties.canCreate === "true" && organization.isEligibleForLicences) { %>
       <a class="button is-primary is-small" href="/licences/new/<%= organization.organizationID %>">
         <span class="icon is-small">
           <i class="fas fa-certificate" aria-hidden="true"></i>
         </span>
         <span>Create a New Licence</span>
       </a>
-    </div>
-  <% } %>
+    <% } %>
+  </div>
 </div>
 
 <%

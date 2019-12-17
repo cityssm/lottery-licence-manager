@@ -59,7 +59,9 @@
   <div class="column">
     <p>
       <strong>Organization</strong><br />
-      <a href="/organizations/<%= organization.organizationID %>"><%= organization.organizationName %></a>
+      <a <%- (organization.isEligibleForLicences ? "" : " class=\"has-text-danger\"") %> href="/organizations/<%= organization.organizationID %>">
+        <%= organization.organizationName %>
+      </a>
     </p>
   </div>
 </div>
@@ -141,93 +143,108 @@
 
 <div class="columns">
   <div class="column">
-    <h2 class="title is-4">Event Dates</h2>
-    <% if (licence.events.length === 0) { %>
-      <div class="message is-warning">
-        <div class="message-body">
-          There are no events associated with this licence.
+    <div class="panel">
+      <h2 class="panel-heading">Event Dates</h2>
+      <% if (licence.events.length === 0) { %>
+        <div class="panel-block">
+          <div class="message is-warning">
+            <div class="message-body">
+              There are no events associated with this licence.
+            </div>
+          </div>
         </div>
-      </div>
-    <% } else { %>
-      <ol class="fa-ul">
+      <% } else { %>
         <% for (let eventIndex = 0; eventIndex < licence.events.length; eventIndex += 1) { %>
-          <li class="has-margin-bottom-10">
-            <span class="fa-li"><i class="fas fa-calendar"></i></span>
-            <a href="/events/<%= licence.licenceID %>/<%=licence.events[eventIndex].eventDate %>">
-              <%= licence.events[eventIndex].eventDateString %>
-            </a>
-          </li>
+          <a class="panel-block" href="/events/<%= licence.licenceID %>/<%=licence.events[eventIndex].eventDate %>">
+            <span class="panel-icon">
+              <i class="fas fa-calendar" aria-hidden="true"></i>
+            </span>
+            <%= licence.events[eventIndex].eventDateString %>
+          </a>
         <% } %>
-      </ol>
-    <% } %>
+      <% } %>
+    </div>
   </div>
   <div class="column">
-    <h2 class="title is-4">
-      Additional <%= (licenceType ? licenceType.licenceType : licence.licenceTypeKey) %> Fields
-    </h2>
-    <%
-      const licenceFields = licenceType.licenceFields || [];
-      let fieldKeys = "";
+    <div class="panel">
+      <h2 class="panel-heading">
+        Additional <%= (licenceType ? licenceType.licenceType : licence.licenceTypeKey) %> Fields
+      </h2>
+      <%
+        const licenceFields = licenceType.licenceFields || [];
+        let fieldKeys = "";
 
-      for (let fieldIndex = 0; fieldIndex < licenceFields.length; fieldIndex += 1) {
-        const licenceField = licenceFields[fieldIndex];
+        for (let fieldIndex = 0; fieldIndex < licenceFields.length; fieldIndex += 1) {
+          const licenceField = licenceFields[fieldIndex];
 
-        const inputName = licenceType.licenceTypeKey + "-" + licenceField.fieldKey;
+          const inputName = licenceType.licenceTypeKey + "-" + licenceField.fieldKey;
 
-        let fieldValue = "";
+          let fieldValue = "";
+
+          for (let savedFieldIndex = 0; savedFieldIndex < licence.licenceFields.length; savedFieldIndex += 1) {
+            if (licence.licenceFields[savedFieldIndex].fieldKey === inputName) {
+              licence.licenceFields[savedFieldIndex].isDisplayed = true;
+              fieldValue = licence.licenceFields[savedFieldIndex].fieldValue;
+              break;
+            }
+          }
+
+          if (fieldValue === "") {
+            continue;
+          }
+      %>
+      <div class="panel-block">
+        <p>
+          <strong><%= licenceField.fieldLabel || licenceField.fieldKey %></strong><br />
+          <%= fieldValue %>
+        </p>
+      </div>
+      <%
+        }
 
         for (let savedFieldIndex = 0; savedFieldIndex < licence.licenceFields.length; savedFieldIndex += 1) {
-          if (licence.licenceFields[savedFieldIndex].fieldKey === inputName) {
-            licence.licenceFields[savedFieldIndex].isDisplayed = true;
-            fieldValue = licence.licenceFields[savedFieldIndex].fieldValue;
-            break;
+          const savedField = licence.licenceFields[savedFieldIndex];
+          if (!savedField.isDisplayed) {
+      %>
+          <div class="panel-block">
+            <p>
+              <strong><%= savedField.fieldKey %></strong><br />
+              <%= savedField.fieldValue %>
+            </p>
+          </div>
+      <%
           }
         }
-
-        if (fieldValue === "") {
-          continue;
-        }
-    %>
-      <p class="has-margin-bottom-10">
-        <strong><%= licenceField.fieldLabel || licenceField.fieldKey %></strong><br />
-        <%= fieldValue %>
-      </p>
-    <%
-      }
-
-      for (let savedFieldIndex = 0; savedFieldIndex < licence.licenceFields.length; savedFieldIndex += 1) {
-        const savedField = licence.licenceFields[savedFieldIndex];
-        if (!savedField.isDisplayed) {
-    %>
-          <p>
-            <strong><%= savedField.fieldKey %></strong><br />
-            <%= savedField.fieldValue %>
-          </p>
-    <%
-        }
-      }
-    %>
+      %>
+    </div>
   </div>
   <div class="column">
-    <h2 class="title is-4">Licence Fee Payment</h2>
+    <div class="panel">
+      <h2 class="panel-heading">Licence Fee Payment</h2>
 
-    <% if (licence.licenceFeeIsPaid) { %>
-      <p class="has-margin-bottom-10">
-        <strong>Fee Collected</strong><br />
-        $<%= licence.licenceFee.toFixed(2) %>
-      </p>
-
-      <p>
-        <strong><%= configFns.getProperty("licences.externalReceiptNumber.fieldLabel") %></strong><br />
-        <%= licence.externalReceiptNumber %>
-      </p>
-    <% } else { %>
-      <div class="message is-info">
-        <div class="message-body">
-          This licence is currently unpaid.
+      <% if (licence.licenceFeeIsPaid) { %>
+        <div class="panel-block">
+          <p>
+            <strong>Fee Collected</strong><br />
+            $ <%= licence.licenceFee.toFixed(2) %>
+          </p>
         </div>
-      </div>
-    <% } %>
+        <div class="panel-block">
+          <p>
+            <strong><%= configFns.getProperty("licences.externalReceiptNumber.fieldLabel") %></strong><br />
+            <%= licence.externalReceiptNumber %>
+          </p>
+        </div>
+      <% } else { %>
+        <div class="panel-block">
+          <div class="message is-info">
+            <div class="message-body">
+              This licence is currently unpaid.
+            </div>
+          </div>
+        </div>
+      <% } %>
+    </div>
   </div>
 </div>
 

@@ -106,7 +106,7 @@ const sessionChecker = function(req, res, next) {
   if (req.session.user && req.cookies[sessionCookieName]) {
     next();
   } else {
-    res.redirect("/login");
+    res.redirect("/login?redirect=" + req.originalUrl);
   }
 };
 

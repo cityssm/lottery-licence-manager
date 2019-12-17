@@ -8,22 +8,43 @@
   </ul>
 </nav>
 
+<% if (organization.recordDelete_timeMillis) { %>
+  <div class="message is-danger">
+    <div class="message-body">
+      <p class="is-size-5 has-text-weight-bold">This organization has been deleted.</p>
+      <% if (user.userProperties.canUpdate === "true") { %>
+        <div class="columns">
+          <div class="column">
+            You have the option to restore this organization, and make it available for licences again.
+          </div>
+          <div class="column is-narrow">
+            <button class="button is-danger is-restore-organization-button" data-organization-id="<%= organization.organizationID %>" data-organization-name="<%= organization.organizationName %>" type="button">
+              <span class="icon"><i class="fas fa-trash-restore" aria-hidden="true"></i></span>
+              <span>Restore Organization</span>
+            </button>
+          </div>
+        </div>
+      <% } %>
+    </div>
+  </div>
+<% } %>
+
 <div class="columns">
   <div class="column">
     <h1 class="title is-1">
       <%= organization.organizationName %>
     </h1>
   </div>
-  <% if (organization.canUpdate) { %>
-    <div class="column is-narrow has-text-right">
+  <div class="column is-narrow has-text-right">
+    <% if (organization.canUpdate) { %>
       <a class="button is-link" href="/organizations/<%= organization.organizationID %>/edit">
         <span class="icon is-small">
           <i class="fas fa-pencil-alt" aria-hidden="true"></i>
         </span>
         <span>Edit this Organization</span>
       </a>
-    </div>
-  <% } %>
+    <% } %>
+  </div>
 </div>
 
 <div class="columns">
@@ -37,15 +58,19 @@
   </div>
   <div class="column is-4">
     <% if (organization.isEligibleForLicences) { %>
-      <p>
-        <i class="fas fa-check has-text-success has-margin-right-10" aria-hidden="true"></i>
-        Eligible for New Licences
-      </p>
+      <div class="message is-success">
+        <p class="message-body">
+          <i class="fas fa-check has-margin-right-10" aria-hidden="true"></i>
+          Eligible for New Licences
+        </p>
+      </div>
     <% } else { %>
-      <p>
-        <i class="fas fa-times has-text-danger has-margin-right-10" aria-hidden="true"></i>
-        <strong>Not Eligible for New Licences</strong>
-      </p>
+      <div class="message is-danger">
+        <p class="message-body">
+          <i class="fas fa-times has-margin-right-10" aria-hidden="true"></i>
+          <strong>Not Eligible for New Licences</strong>
+        </p>
+      </div>
     <% } %>
     <% if (organization.organizationNote && organization.organizationNote !== "") { %>
       <p class="has-margin-top-10">
@@ -56,7 +81,19 @@
   </div>
 </div>
 
-<h2 class="title is-3 has-margin-top-20">Organization Representatives</h2>
+<div class="columns has-margin-top-20">
+  <div class="column">
+    <h2 class="title is-3">Organization Representatives</h2>
+  </div>
+  <div class="column is-narrow has-text-right">
+    <a class="button is-small" href="/reports/organizationRepresentatives-byOrganization?organizationID=<%= organization.organizationID %>">
+      <span class="icon is-small">
+        <i class="fas fa-file-download" aria-hidden="true"></i>
+      </span>
+      <span>Export Representatives</span>
+    </a>
+  </div>
+</div>
 
 <% if (organization.organizationRepresentatives.length === 0) { %>
 
@@ -114,8 +151,6 @@
 
 <%- include('_footerA'); -%>
 
-<script>
-  window.llm.initializeTabs(document.getElementById("tabs--licences"));
-</script>
+<script src="/javascripts/organization-view.min.js"></script>
 
 <%- include('_footerB'); -%>

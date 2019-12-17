@@ -35,6 +35,9 @@ function canUpdateObject(objType, obj, reqSession) {
   if (!reqSession) {
     canUpdate = false;
 
+  } else if (obj.recordDelete_timeMillis) {
+    canUpdate = false;
+
   } else if (reqSession.user.userProperties.canUpdate === "true") {
     canUpdate = true;
 
@@ -117,13 +120,23 @@ let licencesDB = {
       " where o.recordDelete_TimeMillis is null";
 
     if (reqBody.organizationName && reqBody.organizationName !== "") {
-      sql += " and instr(lower(o.organizationName), ?)";
-      params.push(reqBody.organizationName.toLowerCase());
+
+      const organizationNamePieces = reqBody.organizationName.toLowerCase().split(" ");
+
+      for (let pieceIndex = 0; pieceIndex < organizationNamePieces.length; pieceIndex += 1) {
+        sql += " and instr(lower(o.organizationName), ?)";
+        params.push(organizationNamePieces[pieceIndex]);
+      }
     }
 
     if (reqBody.representativeName && reqBody.representativeName !== "") {
       sql += " and o.organizationID in (select organizationID from OrganizationRepresentatives where instr(lower(representativeName), ?))";
       params.push(reqBody.representativeName.toLowerCase());
+    }
+
+    if (reqBody.isEligibleForLicences && reqBody.isEligibleForLicences !== "") {
+      sql += " and o.isEligibleForLicences = ?";
+      params.push(reqBody.isEligibleForLicences);
     }
 
     sql += " group by o.organizationID, o.organizationName," +
@@ -154,8 +167,7 @@ let licencesDB = {
     });
 
     const organizationObj = db.prepare("select * from Organizations" +
-        " where recordDelete_TimeMillis is null" +
-        " and organizationID = ?")
+        " where organizationID = ?")
       .get(organizationID);
 
     if (organizationObj) {
@@ -239,6 +251,54 @@ let licencesDB = {
         reqSession.user.userName,
         nowMillis,
         reqBody.organizationID
+      );
+
+    db.close();
+
+    return info.changes;
+  },
+
+  deleteOrganization: function(organizationID, reqSession) {
+    "use strict";
+
+    const db = sqlite(dbPath);
+
+    const nowMillis = Date.now();
+
+    const info = db.prepare("update Organizations" +
+        " set recordDelete_userName = ?," +
+        " recordDelete_timeMillis = ?" +
+        " where organizationID = ?" +
+        " and recordDelete_timeMillis is null")
+      .run(
+        reqSession.user.userName,
+        nowMillis,
+        organizationID
+      );
+
+    db.close();
+
+    return info.changes;
+  },
+
+  restoreOrganization: function(organizationID, reqSession) {
+    "use strict";
+
+    const db = sqlite(dbPath);
+
+    const nowMillis = Date.now();
+
+    const info = db.prepare("update Organizations" +
+        " set recordDelete_userName = null," +
+        " recordDelete_timeMillis = null," +
+        " recordUpdate_userName = ?," +
+        " recordUpdate_timeMillis = ?" +
+        " where organizationID = ?" +
+        " and recordDelete_timeMillis is not null")
+      .run(
+        reqSession.user.userName,
+        nowMillis,
+        organizationID
       );
 
     db.close();
@@ -410,8 +470,13 @@ let licencesDB = {
     }
 
     if (reqBody_or_paramsObj.organizationName && reqBody_or_paramsObj.organizationName !== "") {
-      sql += " and instr(lower(o.organizationName), ?)";
-      params.push(reqBody_or_paramsObj.organizationName.toLowerCase());
+
+      const organizationNamePieces = reqBody_or_paramsObj.organizationName.toLowerCase().split(" ");
+
+      for (let pieceIndex = 0; pieceIndex < organizationNamePieces.length; pieceIndex += 1) {
+        sql += " and instr(lower(o.organizationName), ?)";
+        params.push(organizationNamePieces[pieceIndex]);
+      }
     }
 
     if (reqBody_or_paramsObj.licenceTypeKey && reqBody_or_paramsObj.licenceTypeKey !== "") {

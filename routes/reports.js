@@ -5,6 +5,7 @@ const router = express.Router();
 
 const licencesDB = require("../helpers/licencesDB");
 const stringFns = require("../helpers/stringFns");
+const dateTimeFns = require("../helpers/dateTimeFns");
 
 
 router.get("/", function(req, res) {
@@ -61,6 +62,40 @@ router.all("/:reportName", function(req, res) {
 
       break;
 
+    case "organizationRepresentatives-byOrganization":
+
+      sql = "select organizationID, representativeIndex," +
+        " representativeName, representativeTitle," +
+        " representativeAddress1, representativeAddress2, representativeCity, representativeProvince," +
+        " representativePostalCode, representativePhoneNumber," +
+        " isDefault" +
+        " from OrganizationRepresentatives" +
+        " where organizationID = ?";
+
+      params = [
+        req.query.organizationID
+      ];
+
+      break;
+
+    case "licences-byOrganization":
+
+      sql = "select organizationID, licenceID, externalLicenceNumber," +
+        " applicationDate, licenceTypeKey," +
+        " startDate, endDate, startTime, endTime," +
+        " location, municipality, licenceDetails, termsConditions," +
+        " totalPrizeValue, licenceFee, externalReceiptNumber, licenceFeeIsPaid," +
+        " recordCreate_userName, recordCreate_timeMillis, recordUpdate_userName, recordUpdate_timeMillis" +
+        " from LotteryLicences" +
+        " where recordDelete_timeMillis is null" +
+        " and organizationID = ?";
+
+      params = [
+        req.query.organizationID
+      ];
+
+      break;
+
     case "licences-unpaid":
 
       sql = "select l.licenceID, l.externalLicenceNumber, l.applicationDate," +
@@ -73,6 +108,27 @@ router.all("/:reportName", function(req, res) {
         " left join Organizations o on l.organizationID = o.organizationID" +
         " where l.recordDelete_timeMillis is null" +
         " and l.licenceFeeIsPaid = 0";
+
+      break;
+
+    case "events-upcoming":
+
+      sql = "select e.licenceID," +
+        " e.eventDate, l.startTime, l.endTime," +
+        " l.externalLicenceNumber, o.organizationName," +
+        " l.licenceTypeKey, l.licenceDetails" +
+        " from LotteryEvents e" +
+        " left join LotteryLicences l on e.licenceID = l.licenceID" +
+        " left join Organizations o on l.organizationID = o.organizationID" +
+        " where e.recordDelete_timeMillis is NULL" +
+        " and l.recordDelete_timeMillis is NULL" +
+        " and e.eventDate >= ?";
+
+      params = [
+        dateTimeFns.dateToInteger(new Date())
+      ];
+
+      break;
   }
 
   if (sql === "") {

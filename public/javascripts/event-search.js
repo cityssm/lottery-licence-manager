@@ -12,7 +12,7 @@
 
   const resultsEle = document.getElementById("container--events");
 
-  const canUpdate = resultsEle.getAttribute("data-can-update") === "true";
+  const canUpdate = document.getElementsByTagName("main")[0].getAttribute("data-can-update") === "true";
 
   function getEvents() {
 

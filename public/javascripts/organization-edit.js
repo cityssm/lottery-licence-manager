@@ -46,6 +46,38 @@
 
   if (!isCreate) {
 
+    const deleteOrganizationFn = function() {
+
+      window.fetch("/organizations/doDelete", {
+          method: "post",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            organizationID: organizationID
+          })
+        })
+        .then(function(response) {
+          return response.json();
+        })
+        .then(function(responseJSON) {
+          if (responseJSON.success) {
+            window.location.href = "/organizations";
+          }
+        });
+    };
+
+    formEle.getElementsByClassName("is-delete-button")[0].addEventListener("click", function() {
+
+      window.llm.confirmModal("Delete Organization?",
+        ("Are you sure you want to delete this organization?<br />" +
+          "Note that any active licences issued to this organization will remain active."),
+        "Yes, Delete Organization",
+        "warning",
+        deleteOrganizationFn);
+    });
+
     /*
      * Representatives
      */

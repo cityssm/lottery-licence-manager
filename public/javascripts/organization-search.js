@@ -8,7 +8,7 @@
   const formEle = document.getElementById("form--filters");
   const searchResultsEle = document.getElementById("container--searchResults");
 
-  const canCreate = searchResultsEle.getAttribute("data-can-create") === "true";
+  const canCreate = document.getElementsByTagName("main")[0].getAttribute("data-can-create") === "true";
 
 
   function doOrganizationSearch() {
@@ -84,13 +84,13 @@
 
             if (organizationObj.licences_activeCount > 0) {
 
-              licenceHTML = "<span class=\"tag is-info\" data-tooltip=\"Number of Active Licences\">" +
+              licenceHTML = "<span class=\"tag has-cursor-default is-info\" data-tooltip=\"Number of Active Licences\">" +
                 "<i class=\"fas fa-certificate has-margin-right-5\" aria-hidden=\"true\"></i> " + organizationObj.licences_activeCount +
                 "</span>";
 
             } else if (organizationObj.licences_endDateMax) {
 
-              licenceHTML = "<span class=\"tag is-info is-light\" data-tooltip=\"Last Licence End Date\">" +
+              licenceHTML = "<span class=\"tag has-cursor-default is-info is-light\" data-tooltip=\"Last Licence End Date\">" +
                 "<i class=\"fas fa-stop has-margin-right-5\" aria-hidden=\"true\"></i> " + organizationObj.licences_endDateMaxString +
                 "</span>";
             }
@@ -121,7 +121,7 @@
     formEvent.preventDefault();
   });
 
-  const inputEles = formEle.getElementsByTagName("input");
+  const inputEles = formEle.querySelectorAll(".input, .select");
 
   for (let inputIndex = 0; inputIndex < inputEles.length; inputIndex += 1) {
     inputEles[inputIndex].addEventListener("change", doOrganizationSearch);

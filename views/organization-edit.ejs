@@ -117,6 +117,26 @@
       </span>
       <span><%= (isCreate ? "Create New Organization and Continue" : "Update Organization") %></span>
     </button>
+    <% if (!isCreate) { %>
+      <div class="dropdown is-hoverable is-right is-up">
+        <div class="dropdown-trigger">
+          <button class="button" type="button" aria-haspopup="true">
+            <span>Options</span>
+            <span class="icon">
+              <i class="fas fa-angle-up" aria-hidden="true"></i>
+            </span>
+          </button>
+        </div>
+        <div class="dropdown-menu" role="menu">
+          <div class="dropdown-content">
+            <a class="dropdown-item is-delete-button" href="#">
+              <span class="icon"><i class="fas fa-trash has-text-danger" aria-hidden="true"></i></span>
+              <span>Delete Organization</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    <% } %>
   </div>
 
 </form>
@@ -128,6 +148,12 @@
       <h2 class="title is-3">Organization Representatives</h2>
     </div>
     <div class="column is-narrow has-text-right">
+      <a class="button is-small" href="/reports/organizationRepresentatives-byOrganization?organizationID=<%= organization.organizationID %>">
+        <span class="icon is-small">
+          <i class="fas fa-file-download" aria-hidden="true"></i>
+        </span>
+        <span>Export Representatives</span>
+      </a>
       <button class="button is-primary is-small is-add-representative-button">
         <span class="icon is-small">
           <i class="fas fa-user-plus" aria-hidden="true"></i>

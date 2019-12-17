@@ -92,6 +92,54 @@ router.post("/doSave", function(req, res) {
 });
 
 
+router.post("/doDelete", function(req, res) {
+  "use strict";
+
+  if (req.session.user.userProperties.canCreate !== "true") {
+    res.json("not allowed");
+    return;
+  }
+
+  const changeCount = licencesDB.deleteOrganization(req.body.organizationID, req.session);
+
+  if (changeCount) {
+    res.json({
+      success: true,
+      message: "Organization deleted successfully."
+    });
+  } else {
+    res.json({
+      success: false,
+      message: "Organization could not be deleted."
+    });
+  }
+});
+
+
+router.post("/doRestore", function(req, res) {
+  "use strict";
+
+  if (req.session.user.userProperties.canUpdate !== "true") {
+    res.json("not allowed");
+    return;
+  }
+
+  const changeCount = licencesDB.restoreOrganization(req.body.organizationID, req.session);
+
+  if (changeCount) {
+    res.json({
+      success: true,
+      message: "Organization restored successfully."
+    });
+  } else {
+    res.json({
+      success: false,
+      message: "Organization could not be restored."
+    });
+  }
+});
+
+
 /*
  * VIEW
  */

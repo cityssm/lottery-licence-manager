@@ -29,6 +29,7 @@
   });
 
   document.getElementsByClassName("is-change-password-button")[0].addEventListener("click", function() {
+    changePasswordModalEle.getElementsByTagName("form")[0].reset();
     window.llm.showModal(changePasswordModalEle);
   });
 

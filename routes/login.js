@@ -14,11 +14,18 @@ router.route("/")
     const sessionCookieName = configFns.getProperty("session.cookieName");
 
     if (req.session.user && req.cookies[sessionCookieName]) {
-      res.redirect("/dashboard");
+
+      if (req.query.redirect && req.query.redirect !== "") {
+        res.redirect(req.query.redirect);
+      } else {
+
+        res.redirect("/dashboard");
+      }
     } else {
       res.render("login", {
         userName: "",
-        message: ""
+        message: "",
+        redirect: req.query.redirect
       });
     }
   })
@@ -33,7 +40,12 @@ router.route("/")
 
     if (userObj) {
       req.session.user = userObj;
-      res.redirect("/dashboard");
+
+      if (req.body.redirect && req.body.redirect !== "") {
+        res.redirect(req.body.redirect);
+      } else {
+        res.redirect("/dashboard");
+      }
 
     } else {
       res.render("login", {

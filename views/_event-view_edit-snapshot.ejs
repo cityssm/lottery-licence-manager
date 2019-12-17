@@ -23,7 +23,7 @@
       <div class="column is-6">
         <p>
           <strong>Organization</strong><br />
-          <a class="has-tooltip-right" data-tooltip="View Organization (In a New Window)" href="/organizations/<%= organization.organizationID %>" target="_blank">
+          <a class="has-tooltip-right <%= (organization.isEligibleForLicences ? "" : " has-text-danger") %>" data-tooltip="View Organization (In a New Window)" href="/organizations/<%= organization.organizationID %>" target="_blank">
             <%= organization.organizationName %>
           </a>
         </p>
