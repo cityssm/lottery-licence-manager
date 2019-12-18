@@ -138,7 +138,9 @@
 
   window.llm.initializeTabs = function(tabsListEle) {
 
-    const listItemEles = tabsListEle.getElementsByTagName("li");
+    const isPanelTabs = tabsListEle.classList.contains("panel-tabs");
+
+    const listItemEles = tabsListEle.getElementsByTagName(isPanelTabs ? "a" : "li");
 
     function tabClickFn(clickEvent) {
       clickEvent.preventDefault();
@@ -152,7 +154,7 @@
       }
 
       // add is-active to the selected tab
-      tabLinkEle.parentNode.classList.add("is-active");
+      (isPanelTabs ? tabLinkEle : tabLinkEle.parentNode).classList.add("is-active");
 
       const tabContentEles = tabContentEle.parentNode.getElementsByClassName("tab-content");
 
@@ -164,7 +166,7 @@
     }
 
     for (let index = 0; index < listItemEles.length; index += 1) {
-      listItemEles[index].getElementsByTagName("a")[0].addEventListener("click", tabClickFn);
+      (isPanelTabs ? listItemEles[index] : listItemEles[index].getElementsByTagName("a")[0]).addEventListener("click", tabClickFn);
     }
   };
 

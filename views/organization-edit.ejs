@@ -143,92 +143,107 @@
 
 <% if (!isCreate) { %>
 
-  <div class="columns">
-    <div class="column">
-      <h2 class="title is-3">Organization Representatives</h2>
-    </div>
-    <div class="column is-narrow has-text-right">
-      <a class="button is-small" href="/reports/organizationRepresentatives-byOrganization?organizationID=<%= organization.organizationID %>">
-        <span class="icon is-small">
-          <i class="fas fa-file-download" aria-hidden="true"></i>
-        </span>
-        <span>Export Representatives</span>
-      </a>
-      <button class="button is-primary is-small is-add-representative-button">
-        <span class="icon is-small">
-          <i class="fas fa-user-plus" aria-hidden="true"></i>
-        </span>
-        <span>Add a Representative</span>
-      </button>
-    </div>
-  </div>
-
-  <table class="table is-fullwidth is-striped is-hoverable is-representative-table">
-    <thead>
-      <tr>
-        <th class="has-width-50">Default</th>
-        <th>Name</th>
-        <th>Address</th>
-        <th>City</th>
-        <th>Phone Number</th>
-        <th>
-          <span class="sr-only">Options</span>
-        </th>
-      </tr>
-    </thead>
-    <tbody>
-      <%
-        for (let index = 0; index < organization.organizationRepresentatives.length; index += 1) {
-          const representativeObj = organization.organizationRepresentatives[index];
-      %>
-        <tr data-representative-index="<%= representativeObj.representativeIndex %>"
-          data-representative-name="<%= representativeObj.representativeName %>"
-          data-representative-title="<%= representativeObj.representativeTitle %>"
-          data-representative-address-1="<%= representativeObj.representativeAddress1 %>"
-          data-representative-address-2="<%= representativeObj.representativeAddress2 %>"
-          data-representative-city="<%= representativeObj.representativeCity %>"
-          data-representative-province="<%= representativeObj.representativeProvince %>"
-          data-representative-postal-code="<%= representativeObj.representativePostalCode %>"
-          data-representative-phone-number="<%= representativeObj.representativePhoneNumber %>">
-          <td>
-            <div class="field">
-              <input class="is-checkradio is-info" id="representative-isDefault--<%= representativeObj.representativeIndex %>" name="representative-isDefault" type="radio" value="<%= representativeObj.representativeIndex %>" <%= (representativeObj.isDefault === 1 ? " checked" : "") %> />
-              <label for="representative-isDefault--<%= representativeObj.representativeIndex %>"></label>
-            </div>
-          </td>
-          <td>
-            <%= representativeObj.representativeName %><br />
-            <small><%= representativeObj.representativeTitle %></small>
-          </td>
-          <td>
-            <%= representativeObj.representativeAddress1 %><br />
-            <small><%= representativeObj.representativeAddress2 %></small>
-          </td>
-          <td>
-            <%= representativeObj.representativeCity %>, <%= representativeObj.representativeProvince %><br />
-            <small><%= representativeObj.representativePostalCode %></small>
-          </td>
-          <td>
-            <%= representativeObj.representativePhoneNumber %>
-          </td>
-          <td>
-            <div class="buttons is-right has-addons">
-              <button class="button is-small is-edit-representative-button" type="button" data-tooltip="Edit Representative">
-                <span class="icon">
-                  <i class="fas fa-pencil-alt" aria-hidden="true"></i>
+  <div class="panel">
+    <div class="panel-heading">
+      <div class="level">
+        <div class="level-left">
+          <h2 class="has-text-weight-bold">Organization Representatives</h2>
+        </div>
+        <div class="level-right has-text-weight-normal">
+          <div class="field is-grouped justify-flex-end">
+            <div class="control">
+              <a class="button is-small" href="/reports/organizationRepresentatives-byOrganization?organizationID=<%= organization.organizationID %>">
+                <span class="icon is-small">
+                  <i class="fas fa-file-download" aria-hidden="true"></i>
                 </span>
-                <span>Edit</span>
-              </button>
-              <button class="button is-small has-text-danger is-delete-representative-button" type="button" data-tooltip="Delete Representative">
-                <i class="fas fa-trash" aria-hidden="true"></i>
-                <span class="sr-only">Delete</span>
+                <span>Export Representatives</span>
+              </a>
+            </div>
+            <div class="control">
+              <button class="button is-primary is-small is-add-representative-button">
+                <span class="icon is-small">
+                  <i class="fas fa-user-plus" aria-hidden="true"></i>
+                </span>
+                <span>Add a Representative</span>
               </button>
             </div>
-          </td>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <table class="table is-fullwidth is-striped is-hoverable is-representative-table">
+      <thead>
+        <tr>
+          <th class="has-width-50">Default</th>
+          <th>Name</th>
+          <th>Address</th>
+          <th>Phone Number</th>
+          <th>Email Address</th>
+          <th>
+            <span class="sr-only">Options</span>
+          </th>
         </tr>
-      <% } %>
-    </tbody>
-  </table>
+      </thead>
+      <tbody>
+        <%
+          for (let index = 0; index < organization.organizationRepresentatives.length; index += 1) {
+            const representativeObj = organization.organizationRepresentatives[index];
+        %>
+          <tr data-representative-index="<%= representativeObj.representativeIndex %>"
+            data-representative-name="<%= representativeObj.representativeName %>"
+            data-representative-title="<%= representativeObj.representativeTitle %>"
+            data-representative-address-1="<%= representativeObj.representativeAddress1 %>"
+            data-representative-address-2="<%= representativeObj.representativeAddress2 %>"
+            data-representative-city="<%= representativeObj.representativeCity %>"
+            data-representative-province="<%= representativeObj.representativeProvince %>"
+            data-representative-postal-code="<%= representativeObj.representativePostalCode %>"
+            data-representative-phone-number="<%= representativeObj.representativePhoneNumber %>"
+            data-representative-email-address="<%= representativeObj.representativeEmailAddress %>">
+            <td>
+              <div class="field">
+                <input class="is-checkradio is-info" id="representative-isDefault--<%= representativeObj.representativeIndex %>" name="representative-isDefault" type="radio" value="<%= representativeObj.representativeIndex %>" <%= (representativeObj.isDefault === 1 ? " checked" : "") %> />
+                <label for="representative-isDefault--<%= representativeObj.representativeIndex %>"></label>
+              </div>
+            </td>
+            <td>
+              <%= representativeObj.representativeName %><br />
+              <small><%= representativeObj.representativeTitle %></small>
+            </td>
+            <td>
+              <%= representativeObj.representativeAddress1 %><br />
+              <small>
+                <%= representativeObj.representativeAddress2 %>
+                <%- (representativeObj.representativeAddress2 === "" ? "" : "<br />") %>
+                <%= representativeObj.representativeCity %>, <%= representativeObj.representativeProvince %><br />
+                <%= representativeObj.representativePostalCode %>
+              </small>
+            </td>
+            <td>
+              <%= representativeObj.representativePhoneNumber %>
+            </td>
+            <td>
+              <%= representativeObj.representativeEmailAddress %>
+            </td>
+            <td>
+              <div class="buttons is-right has-addons">
+                <button class="button is-small is-edit-representative-button" type="button" data-tooltip="Edit Representative">
+                  <span class="icon">
+                    <i class="fas fa-pencil-alt" aria-hidden="true"></i>
+                  </span>
+                  <span>Edit</span>
+                </button>
+                <button class="button is-small has-text-danger is-delete-representative-button" type="button" data-tooltip="Delete Representative">
+                  <i class="fas fa-trash" aria-hidden="true"></i>
+                  <span class="sr-only">Delete</span>
+                </button>
+              </div>
+            </td>
+          </tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
 
   <div class="modal is-add-representative-modal">
     <div class="modal-background"></div>
@@ -302,6 +317,12 @@
                   <input class="input" id="addOrganizationRepresentative--representativePhoneNumber" name="representativePhoneNumber" type="tel" value="" minlength="10" maxlength="30" pattern="^\+?[(]?\d{3}[)]?[ -]?\d{3}[ -]?\d{4}" autocomplete="off" required />
                 </div>
               </div>
+            </div>
+          </div>
+          <div class="field has-margin-bottom-20">
+            <label class="label" for="addOrganizationRepresentative--representativeEmailAddress">Email Address</label>
+            <div class="control">
+              <input class="input" id="addOrganizationRepresentative--representativeEmailAddress" name="representativeEmailAddress" type="email" value="" maxlength="200" autocomplete="off" />
             </div>
           </div>
         </section>
@@ -381,6 +402,12 @@
                   <input class="input" id="editOrganizationRepresentative--representativePhoneNumber" name="representativePhoneNumber" type="tel" value="" minlength="10" maxlength="30" pattern="^\+?[(]?\d{3}[)]?[ -]?\d{3}[ -]?\d{4}" autocomplete="off" required />
                 </div>
               </div>
+            </div>
+          </div>
+          <div class="field has-margin-bottom-20">
+            <label class="label" for="editOrganizationRepresentative--representativeEmailAddress">Email Address</label>
+            <div class="control">
+              <input class="input" id="editOrganizationRepresentative--representativeEmailAddress" name="representativeEmailAddress" type="email" value="" maxlength="200" autocomplete="off" />
             </div>
           </div>
         </section>

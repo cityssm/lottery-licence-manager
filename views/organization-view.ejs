@@ -51,7 +51,8 @@
   <div class="column">
     <p>
       <%= organization.organizationAddress1 %><br />
-      <%= (organization.organizationAddress2 === "" ? "" : organization.organizationAddress2) %><br />
+      <%= organization.organizationAddress2 %>
+      <%- (organization.organizationAddress2 === "" ? "" : "<br />") %>
       <%= organization.organizationCity + ", " + organization.organizationProvince %><br />
       <%= organization.organizationPostalCode %>
     </p>
@@ -81,69 +82,81 @@
   </div>
 </div>
 
-<div class="columns has-margin-top-20">
-  <div class="column">
-    <h2 class="title is-3">Organization Representatives</h2>
-  </div>
-  <div class="column is-narrow has-text-right">
-    <a class="button is-small" href="/reports/organizationRepresentatives-byOrganization?organizationID=<%= organization.organizationID %>">
-      <span class="icon is-small">
-        <i class="fas fa-file-download" aria-hidden="true"></i>
-      </span>
-      <span>Export Representatives</span>
-    </a>
-  </div>
-</div>
-
-<% if (organization.organizationRepresentatives.length === 0) { %>
-
-    <div class="message is-warning">
-      <div class="message-body">
-        There are no representatives associated with this organization.
+<div class="panel">
+  <div class="panel-heading">
+    <div class="level">
+      <div class="level-left">
+        <h2 class="has-text-weight-bold">Organization Representatives</h2>
+      </div>
+      <div class="level-right has-text-weight-normal has-text-right">
+        <a class="button is-small" href="/reports/organizationRepresentatives-byOrganization?organizationID=<%= organization.organizationID %>">
+          <span class="icon is-small">
+            <i class="fas fa-file-download" aria-hidden="true"></i>
+          </span>
+          <span>Export Representatives</span>
+        </a>
       </div>
     </div>
+  </div>
 
-<% } else { %>
+  <% if (organization.organizationRepresentatives.length === 0) { %>
+    <div class="panel-block">
+      <div class="message is-warning">
+        <div class="message-body">
+          There are no representatives associated with this organization.
+        </div>
+      </div>
+    </div>
+  <% } else { %>
 
-  <table class="table is-fullwidth is-striped is-hoverable is-representative-table">
-    <thead>
-      <tr>
-        <th class="has-width-50">Default</th>
-        <th>Name</th>
-        <th>Address</th>
-        <th>City</th>
-      </tr>
-    </thead>
-    <tbody>
-      <%
-        for (let index = 0; index < organization.organizationRepresentatives.length; index += 1) {
-          const representativeObj = organization.organizationRepresentatives[index];
-      %>
-        <tr data-representative-index="<%= representativeObj.representativeIndex %>">
-          <td>
-            <% if (representativeObj.isDefault === 1) { %>
-              <span data-tooltip="Default Representative"><i class="far fa-lg fa-fw fa-dot-circle has-text-info" aria-hidden="true"></i></span>
-              <span class="sr-only">Default Representative</span>
-            <% } else { %>
-              <i class="far fa-lg fa-fw fa-circle has-text-grey-lighter" aria-hidden="true"></i>
-            <% } %>
-          </td>
-          <td>
-            <%= representativeObj.representativeName %><br />
-            <small><%= representativeObj.representativeTitle %></small>
-          </td>
-          <td>
-            <%= representativeObj.representativeAddress1 %><br />
-            <small><%= representativeObj.representativeAddress2 %></small>
-          </td>
-          <td>
-            <%= representativeObj.representativeCity %>, <%= representativeObj.representativeProvince %><br />
-            <small><%= representativeObj.representativePostalCode %></small>
-          </td>
+    <table class="table is-fullwidth is-striped is-hoverable is-representative-table">
+      <thead>
+        <tr>
+          <th class="has-width-50">Default</th>
+          <th>Name</th>
+          <th>Address</th>
+          <th>Phone Number</th>
+          <th>Email Address</th>
         </tr>
-      <% } %>
-    </tbody>
-  </table>
+      </thead>
+      <tbody>
+        <%
+          for (let index = 0; index < organization.organizationRepresentatives.length; index += 1) {
+            const representativeObj = organization.organizationRepresentatives[index];
+        %>
+          <tr data-representative-index="<%= representativeObj.representativeIndex %>">
+            <td>
+              <% if (representativeObj.isDefault === 1) { %>
+                <span class="has-cursor-default" data-tooltip="Default Representative"><i class="far fa-lg fa-fw fa-dot-circle has-text-info" aria-hidden="true"></i></span>
+                <span class="sr-only">Default Representative</span>
+              <% } else { %>
+                <i class="far fa-lg fa-fw fa-circle has-text-grey-lighter" aria-hidden="true"></i>
+              <% } %>
+            </td>
+            <td>
+              <%= representativeObj.representativeName %><br />
+              <small><%= representativeObj.representativeTitle %></small>
+            </td>
+            <td>
+              <%= representativeObj.representativeAddress1 %><br />
+              <small>
+                <%= representativeObj.representativeAddress2 %>
+                <%- (representativeObj.representativeAddress2 === "" ? "" : "<br />") %>
+                <%= representativeObj.representativeCity %>, <%= representativeObj.representativeProvince %><br />
+                <%= representativeObj.representativePostalCode %>
+              </small>
+            </td>
+            <td>
+              <%= representativeObj.representativePhoneNumber %>
+            </td>
+            <td>
+              <%= representativeObj.representativeEmailAddress %>
+            </td>
+          </tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
 
 <% } %>
 

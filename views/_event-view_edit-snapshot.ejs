@@ -1,4 +1,4 @@
-<div class="panel">
+<div class="panel is-info">
   <h2 class="panel-heading">
     Licence Details
   </h2>
@@ -20,7 +20,7 @@
       </div>
     </div>
     <div class="columns">
-      <div class="column is-6">
+      <div class="column">
         <p>
           <strong>Organization</strong><br />
           <a class="has-tooltip-right <%= (organization.isEligibleForLicences ? "" : " has-text-danger") %>" data-tooltip="View Organization (In a New Window)" href="/organizations/<%= organization.organizationID %>" target="_blank">
@@ -38,33 +38,29 @@
       </div>
     </div>
     <div class="columns">
-      <div class="column is-3">
+      <div class="column">
         <p>
           <strong>Start Date</strong><br />
           <%= licence.startDateString %>
         </p>
       </div>
-      <div class="column is-3">
+      <div class="column">
         <p>
           <strong>End Date</strong><br />
           <%= licence.endDateString %>
         </p>
       </div>
-      <div class="column is-3">
+      <div class="column">
         <p>
-          <strong>Start Time</strong><br />
+          <strong>Time</strong><br />
+          <%= (licence.startTimeString === licence.endTimeString ? "At " : "From ") %>
           <%= licence.startTimeString %>
-        </p>
-      </div>
-      <div class="column is-3">
-        <p>
-          <strong>End Time</strong><br />
-          <%= licence.endTimeString %>
+          <%= (licence.startTimeString === licence.endTimeString ? "" : " to " + licence.endTimeString) %>
         </p>
       </div>
     </div>
     <div class="columns">
-      <div class="column is-6">
+      <div class="column">
         <p>
           <strong>Licence Details</strong><br />
           <span class="has-newline-chars"><%= licence.licenceDetails %></span>
@@ -73,7 +69,7 @@
 
     </div>
     <div class="columns">
-      <div class="column is-3">
+      <div class="column">
         <%
           const licenceType = configFns.getLicenceType(licence.licenceTypeKey);
         %>
@@ -82,13 +78,15 @@
           <%= (licenceType ? licenceType.licenceType : licence.licenceTypeKey) %>
         </p>
       </div>
-      <div class="column is-3">
+      <div class="column">
         <p>
           <strong>Total Prize Value</strong><br />
           $ <%= licence.totalPrizeValue.toFixed(2) %>
         </p>
       </div>
-      <div class="column is-3">
+    </div>
+    <div class="columns">
+      <div class="column">
         <p>
           <strong>Licence Fee</strong><br />
           <% if (licence.licenceFeeIsPaid) { %>
@@ -98,7 +96,7 @@
           <% } %>
         </p>
       </div>
-      <div class="column is-3">
+      <div class="column">
         <p>
           <strong>Number of Events</strong><br />
           <%= licence.events.length %>

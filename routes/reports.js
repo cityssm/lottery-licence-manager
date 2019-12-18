@@ -32,7 +32,7 @@ router.all("/:reportName", function(req, res) {
         " o.organizationCity, o.organizationProvince, o.organizationPostalCode," +
         " r.representativeName, r.representativeTitle, r.representativeAddress1, r.representativeAddress2," +
         " r.representativeCity, r.representativeProvince, r.representativePostalCode," +
-        " r.representativePhoneNumber," +
+        " r.representativePhoneNumber, r.representativeEmailAddress," +
         " o.recordUpdate_userName, o.recordUpdate_timeMillis" +
         " from Organizations o" +
         " left join OrganizationRepresentatives r on o.organizationID = r.organizationID and r.isDefault = 1" +
@@ -67,7 +67,7 @@ router.all("/:reportName", function(req, res) {
       sql = "select organizationID, representativeIndex," +
         " representativeName, representativeTitle," +
         " representativeAddress1, representativeAddress2, representativeCity, representativeProvince," +
-        " representativePostalCode, representativePhoneNumber," +
+        " representativePostalCode, representativePhoneNumber, representativeEmailAddress," +
         " isDefault" +
         " from OrganizationRepresentatives" +
         " where organizationID = ?";
@@ -123,6 +123,30 @@ router.all("/:reportName", function(req, res) {
         " where e.recordDelete_timeMillis is NULL" +
         " and l.recordDelete_timeMillis is NULL" +
         " and e.eventDate >= ?";
+
+      params = [
+        dateTimeFns.dateToInteger(new Date())
+      ];
+
+      break;
+
+    case "events-pastUnreported":
+
+      sql = "select e.licenceID, e.eventDate," +
+        " e.bank_name, e.bank_address, e.bank_accountNumber, e.bank_accountBalance," +
+        " e.costs_receipts," +
+        " l.externalLicenceNumber, l.licenceTypeKey, l.licenceDetails," +
+        " o.organizationID, o.organizationName, o.organizationAddress1, o.organizationAddress2, o.organizationCity, o.organizationProvince, o.organizationPostalCode," +
+        " r.representativeName, r.representativeTitle, r.representativeAddress1, r.representativeAddress2, r.representativeCity, r.representativeProvince, r.representativePostalCode," +
+        " r.representativePhoneNumber, r.representativeEmailAddress" +
+        " from LotteryEvents e" +
+        " left join LotteryLicences l on e.licenceID = l.licenceID" +
+        " left join Organizations o on l.organizationID = o.organizationID" +
+        " left join OrganizationRepresentatives r on o.organizationID = r.organizationID and r.isDefault = 1" +
+        " where e.recordDelete_timeMillis is null" +
+        " and l.recordDelete_timeMillis is null" +
+        " and e.eventDate < ?" +
+        " and (e.bank_name is null or e.bank_name = '' or e.costs_receipts is null or e.costs_receipts = 0)";
 
       params = [
         dateTimeFns.dateToInteger(new Date())

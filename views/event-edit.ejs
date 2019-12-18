@@ -1,151 +1,184 @@
 <%- include('_header'); -%>
 
-<div class="columns">
-  <div class="column">
-    <nav class="breadcrumb">
-      <ul>
-        <li><a href="/dashboard">Home</a></li>
-        <li><a href="/events">Events</a></li>
-        <li class="is-active"><a href="#" aria-current="page">
-          Events for Licence #<%= event.licenceID %>
-        </a></li>
-      </ul>
-    </nav>
+<nav class="breadcrumb">
+  <ul>
+    <li><a href="/dashboard">Home</a></li>
+    <li><a href="/events">Events</a></li>
+    <li class="is-active"><a href="#" aria-current="page">
+      Events for Licence #<%= event.licenceID %>
+    </a></li>
+  </ul>
+</nav>
+
+<div class="level">
+  <div class="level-left">
+    <h1 class="title is-1">
+      Licence #<%=event.licenceID %><br />
+      <small>Event <%= event.eventDateString %></small>
+    </h1>
   </div>
-  <div class="column is-narrow">
-    <div class="field is-horizontal">
-      <div class="field-label is-small">
-        <label class="label is-nowrap" for="eventNav--eventDate">Switch Dates</label>
+  <div class="level-right">
+    <div class="field has-addons justify-flex-end has-margin-left-10">
+      <div class="control">
+        <label class="button is-small is-static" for="eventNav--eventDate">Switch Dates</label>
       </div>
-      <div class="field-body">
-        <div class="control has-icons-left">
-          <div class="select is-small">
-            <select id="eventNav--eventDate" data-licence-id="<%= licence.licenceID %>" data-is-edit="true">
-              <% for (let index = 0; index < licence.events.length; index += 1) { %>
-                <option value="<%= licence.events[index].eventDate %>" <%= (event.eventDate === licence.events[index].eventDate ? " selected" : "") %>>
-                  <%= licence.events[index].eventDateString %>
-                </option>
-              <% } %>
-            </select>
-          </div>
-          <div class="icon is-left">
-            <i class="fas fa-calendar" aria-hidden="true"></i>
-          </div>
+      <div class="control has-icons-left">
+        <div class="select is-small">
+          <select id="eventNav--eventDate" data-licence-id="<%= licence.licenceID %>" data-is-edit="true">
+            <% for (let index = 0; index < licence.events.length; index += 1) { %>
+              <option value="<%= licence.events[index].eventDate %>" <%= (event.eventDate === licence.events[index].eventDate ? " selected" : "") %>>
+                <%= licence.events[index].eventDateString %>
+              </option>
+            <% } %>
+          </select>
+        </div>
+        <div class="icon is-left">
+          <i class="fas fa-calendar" aria-hidden="true"></i>
         </div>
       </div>
     </div>
   </div>
 </div>
 
-<%- include('_event-view_edit-snapshot'); -%>
+<div class="columns">
+  <div class="column is-6">
+    <%- include('_event-view_edit-snapshot'); -%>
+  </div>
+  <div class="column">
+    <form id="form--event">
+      <input id="event--licenceID" name="licenceID" type="hidden" value="<%= event.licenceID %>" />
+      <input id="event--eventDate" name="eventDate" type="hidden" value="<%= event.eventDate %>" />
 
-<h1 class="title">Licence #<%=event.licenceID %>, Event <%= event.eventDateString %></h1>
-
-<form id="form--event">
-  <input id="event--licenceID" name="licenceID" type="hidden" value="<%= event.licenceID %>" />
-  <input id="event--eventDate" name="eventDate" type="hidden" value="<%= event.eventDate %>" />
-
-  <div class="columns">
-    <div class="column is-3">
-      <%
-        const licenceType = configFns.getLicenceType(licence.licenceTypeKey);
-      %>
-      <h2 class="title is-4">
-        <%= (licenceType ? licenceType.licenceType : licence.licenceTypeKey) %> Fields
-      </h2>
-      <%
-        const eventFields = licenceType.eventFields || [];
-        let fieldKeys = "";
-
-        for (let fieldIndex = 0; fieldIndex < eventFields.length; fieldIndex += 1) {
-          const eventField = eventFields[fieldIndex];
-
-          const inputName = licenceType.licenceTypeKey + "-" + eventField.fieldKey;
-
-          let fieldValue = "";
-
-          for (let savedFieldIndex = 0; savedFieldIndex < event.eventFields.length; savedFieldIndex += 1) {
-            if (event.eventFields[savedFieldIndex].fieldKey === inputName) {
-              event.eventFields[savedFieldIndex].isDisplayed = true;
-              fieldValue = event.eventFields[savedFieldIndex].fieldValue;
-              break;
-            }
-          }
-
-          if (!eventField.isActive && fieldValue === "") {
-            continue;
-          }
-
-          fieldKeys += "," + inputName;
-
-          const inputAttributes = eventField.inputAttributes || {};
-
-          if (!inputAttributes.type) {
-            inputAttributes.type = "text";
-          }
-
-          let inputAttributesString = "";
-
-          for (let attributeName in inputAttributes) {
-            inputAttributesString += " " + attributeName + "=\"" + inputAttributes[attributeName] + "\"";
-          }
-      %>
-        <div class="field">
-          <label class="label" for="event--<%= inputName %>"><%= eventField.fieldLabel || eventField.fieldKey %></label>
-          <div class="control">
-            <input class="input" id="event--<%= inputName %>" name="<%= inputName %>" value="<%= fieldValue %>" <%- inputAttributesString %> />
-          </div>
-        </div>
-      <%
-        }
-
-        for (let savedFieldIndex = 0; savedFieldIndex < event.eventFields.length; savedFieldIndex += 1) {
-          const savedField = event.eventFields[savedFieldIndex];
-          if (!savedField.isDisplayed) {
-            fieldKeys += "," + savedField.fieldKey;
-      %>
-        <div class="field">
-          <label class="label" for="event--<%= savedField.fieldKey %>"><%= savedField.fieldKey %></label>
-          <div class="control">
-            <input class="input" id="licence--<%= savedField.fieldKey %>" name="<%= savedField.fieldKey %>" type="text" value="<%= savedField.fieldValue %>" />
-          </div>
-        </div>
-      <%
-          }
-        }
-      %>
-      <input name="fieldKeys" type="hidden" value="<%= fieldKeys %>" />
-    </div>
-    <div class="column is-6">
-
-      <h2 class="title is-4">Bank Information</h2>
-
-      <div class="field">
-        <label class="label" for="event--bank_name">Name</label>
-        <div class="control">
-          <input class="input" id="event--bank_name" name="bank_name" type="text" maxlength="50" value="<%= event.bank_name %>" />
-        </div>
-      </div>
-      <div class="field">
-        <label class="label" for="event--bank_address">Address</label>
-        <div class="control">
-          <input class="input" id="event--bank_address" name="bank_address" type="text" maxlength="50" value="<%= event.bank_address %>" />
-        </div>
-      </div>
-      <div class="columns">
-        <div class="column">
+      <div class="panel">
+        <h2 class="panel-heading">Bank Information</h2>
+        <div class="panel-block is-block">
           <div class="field">
-            <label class="label" for="event--bank_accountNumber">Account Number</label>
+            <label class="label" for="event--bank_name">Name</label>
             <div class="control">
-              <input class="input" id="event--bank_accountNumber" name="bank_accountNumber" type="text" maxlength="20" value="<%= event.bank_accountNumber %>" />
+              <input class="input" id="event--bank_name" name="bank_name" type="text" maxlength="50" value="<%= event.bank_name %>" />
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="label" for="event--bank_address">Address</label>
+            <div class="control">
+              <input class="input" id="event--bank_address" name="bank_address" type="text" maxlength="50" value="<%= event.bank_address %>" />
+            </div>
+          </div>
+
+          <div class="columns">
+            <div class="column">
+              <div class="field">
+                <label class="label" for="event--bank_accountNumber">Account Number</label>
+                <div class="control">
+                  <input class="input" id="event--bank_accountNumber" name="bank_accountNumber" type="text" maxlength="20" value="<%= event.bank_accountNumber %>" />
+                </div>
+              </div>
+            </div>
+            <div class="column">
+              <div class="field">
+                <label class="label" for="event--bank_accountBalance">Account Balance</label>
+                <div class="control has-icons-left">
+                  <input class="input" id="event--bank_accountBalance" name="bank_accountBalance" type="number" max="1000000000" step="0.01" value="<%= event.bank_accountBalance %>" onwheel="return false;" />
+                  <span class="icon is-left">
+                    <i class="fas fa-dollar-sign" aria-hidden="true"></i>
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-        <div class="column">
-          <div class="field">
-            <label class="label" for="event--bank_accountBalance">Account Balance</label>
-            <div class="control has-icons-left">
-              <input class="input" id="event--bank_accountBalance" name="bank_accountBalance" type="number" max="1000000000" step="0.01" value="<%= event.bank_accountBalance %>" onwheel="return false;" />
+      </div>
+
+      <div class="panel">
+        <h2 class="panel-heading">Costs</h2>
+        <div class="panel-block is-block">
+          <label class="label" for="event--costs_receipts">Receipts</label>
+          <div class="field has-addons">
+            <div class="control">
+              <span class="button is-static">
+                <i class="fas fa-fw fa-plus" aria-hidden="true"></i>
+              </span>
+            </div>
+            <div class="control is-expanded has-icons-left">
+              <input class="input has-text-right" id="event--costs_receipts" name="costs_receipts" type="number" min="0" max="10000000" step="0.01" value="<%= event.costs_receipts %>" onwheel="return false;" />
+              <span class="icon is-left">
+                <i class="fas fa-dollar-sign" aria-hidden="true"></i>
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="panel-block is-block">
+          <label class="label" for="event--costs_admin">Administration</label>
+          <div class="field has-addons">
+            <div class="control">
+              <span class="button is-static">
+                <i class="fas fa-fw fa-minus" aria-hidden="true"></i>
+              </span>
+            </div>
+            <div class="control is-expanded has-icons-left">
+              <input class="input has-text-right" id="event--costs_admin" name="costs_admin" type="number" min="0" max="10000000" step="0.01" value="<%= event.costs_admin %>" onwheel="return false;"/>
+              <span class="icon is-left">
+                <i class="fas fa-dollar-sign" aria-hidden="true"></i>
+              </span>
+            </div>
+          </div>
+
+          <label class="label" for="event--costs_prizesAwarded">Prizes Awarded</label>
+          <div class="field has-addons">
+            <div class="control">
+              <span class="button is-static">
+                <i class="fas fa-fw fa-minus" aria-hidden="true"></i>
+              </span>
+            </div>
+            <div class="control is-expanded has-icons-left">
+              <input class="input has-text-right" id="event--costs_prizesAwarded" name="costs_prizesAwarded" type="number" min="0" max="10000000" step="0.01" value="<%= event.costs_prizesAwarded %>" onwheel="return false;" />
+              <span class="icon is-left">
+                <i class="fas fa-dollar-sign" aria-hidden="true"></i>
+              </span>
+            </div>
+          </div>
+
+          <label class="label" for="event--costs_charitableDonations">Charitable Donations</label>
+          <div class="field has-addons">
+            <div class="control">
+              <span class="button is-static">
+                <i class="fas fa-fw fa-minus" aria-hidden="true"></i>
+              </span>
+            </div>
+            <div class="control is-expanded has-icons-left">
+              <input class="input has-text-right" id="event--costs_charitableDonations" name="costs_charitableDonations" type="number" min="0" max="10000000" step="0.01" value="<%= event.costs_charitableDonations %>" onwheel="return false;" />
+              <span class="icon is-left">
+                <i class="fas fa-dollar-sign" aria-hidden="true"></i>
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="panel-block is-block">
+          <label class="label" for="event--costs_netProceeds">Net Proceeds</label>
+          <div class="field has-addons">
+            <div class="control">
+              <span class="button is-static">
+                <i class="fas fa-fw fa-equals" aria-hidden="true"></i>
+              </span>
+            </div>
+            <div class="control is-expanded has-icons-left">
+              <input class="input has-text-right" id="event--costs_netProceeds" name="costs_netProceeds" type="number" min="0" max="10000000" step="0.01" value="<%= event.costs_netProceeds %>" onwheel="return false;" />
+              <span class="icon is-left">
+                <i class="fas fa-dollar-sign" aria-hidden="true"></i>
+              </span>
+            </div>
+          </div>
+
+          <label class="label" for="event--costs_amountDonated">Prize Amount Donated</label>
+          <div class="field has-addons">
+            <div class="control">
+              <span class="button is-static">
+                <i class="fas fa-fw fa-hand-holding-usd" aria-hidden="true"></i>
+              </span>
+            </div>
+            <div class="control is-expanded has-icons-left">
+              <input class="input has-text-right" id="event--costs_amountDonated" name="costs_amountDonated" type="number" min="0" max="10000000" step="0.01" value="<%= event.costs_amountDonated %>" onwheel="return false;" />
               <span class="icon is-left">
                 <i class="fas fa-dollar-sign" aria-hidden="true"></i>
               </span>
@@ -153,133 +186,114 @@
           </div>
         </div>
       </div>
-    </div>
-    <div class="column is-3">
-      <h2 class="title is-4">Costs</h2>
 
-      <label class="label" for="event--costs_receipts">Receipts</label>
-      <div class="field has-addons">
-        <div class="control">
-          <span class="button is-static">
-            <i class="fas fa-fw fa-plus" aria-hidden="true"></i>
-          </span>
-        </div>
-        <div class="control has-icons-left">
-          <input class="input has-text-right" id="event--costs_receipts" name="costs_receipts" type="number" min="0" max="10000000" step="0.01" value="<%= event.costs_receipts %>" onwheel="return false;" />
-          <span class="icon is-left">
-            <i class="fas fa-dollar-sign" aria-hidden="true"></i>
-          </span>
-        </div>
+      <%
+        const licenceType = configFns.getLicenceType(licence.licenceTypeKey);
+      %>
+      <div class="panel">
+        <h2 class="panel-heading">
+          <%= (licenceType ? licenceType.licenceType : licence.licenceTypeKey) %> Fields
+        </h2>
+        <%
+          const eventFields = licenceType.eventFields || [];
+          let fieldKeys = "";
+
+          for (let fieldIndex = 0; fieldIndex < eventFields.length; fieldIndex += 1) {
+            const eventField = eventFields[fieldIndex];
+
+            const inputName = licenceType.licenceTypeKey + "-" + eventField.fieldKey;
+
+            let fieldValue = "";
+
+            for (let savedFieldIndex = 0; savedFieldIndex < event.eventFields.length; savedFieldIndex += 1) {
+              if (event.eventFields[savedFieldIndex].fieldKey === inputName) {
+                event.eventFields[savedFieldIndex].isDisplayed = true;
+                fieldValue = event.eventFields[savedFieldIndex].fieldValue;
+                break;
+              }
+            }
+
+            if (!eventField.isActive && fieldValue === "") {
+              continue;
+            }
+
+            fieldKeys += "," + inputName;
+
+            const inputAttributes = eventField.inputAttributes || {};
+
+            if (!inputAttributes.type) {
+              inputAttributes.type = "text";
+            }
+
+            let inputAttributesString = "";
+
+            for (let attributeName in inputAttributes) {
+              inputAttributesString += " " + attributeName + "=\"" + inputAttributes[attributeName] + "\"";
+            }
+        %>
+          <div class="panel-block is-block">
+            <div class="field">
+              <label class="label" for="event--<%= inputName %>"><%= eventField.fieldLabel || eventField.fieldKey %></label>
+              <div class="control">
+                <input class="input" id="event--<%= inputName %>" name="<%= inputName %>" value="<%= fieldValue %>" <%- inputAttributesString %> />
+              </div>
+            </div>
+          </div>
+        <%
+          }
+
+          for (let savedFieldIndex = 0; savedFieldIndex < event.eventFields.length; savedFieldIndex += 1) {
+            const savedField = event.eventFields[savedFieldIndex];
+            if (!savedField.isDisplayed) {
+              fieldKeys += "," + savedField.fieldKey;
+        %>
+          <div class="panel is-block">
+            <div class="field">
+              <label class="label" for="event--<%= savedField.fieldKey %>"><%= savedField.fieldKey %></label>
+              <div class="control">
+                <input class="input" id="licence--<%= savedField.fieldKey %>" name="<%= savedField.fieldKey %>" type="text" value="<%= savedField.fieldValue %>" />
+              </div>
+            </div>
+          </div>
+        <%
+            }
+          }
+        %>
       </div>
+      <input name="fieldKeys" type="hidden" value="<%= fieldKeys %>" />
 
-      <label class="label" for="event--costs_admin">Administration</label>
-      <div class="field has-addons">
-        <div class="control">
-          <span class="button is-static">
-            <i class="fas fa-fw fa-minus" aria-hidden="true"></i>
-          </span>
-        </div>
-        <div class="control has-icons-left">
-          <input class="input has-text-right" id="event--costs_admin" name="costs_admin" type="number" min="0" max="10000000" step="0.01" value="<%= event.costs_admin %>" onwheel="return false;"/>
-          <span class="icon is-left">
-            <i class="fas fa-dollar-sign" aria-hidden="true"></i>
-          </span>
-        </div>
-      </div>
 
-      <label class="label" for="event--costs_prizesAwarded">Prizes Awarded</label>
-      <div class="field has-addons">
-        <div class="control">
-          <span class="button is-static">
-            <i class="fas fa-fw fa-minus" aria-hidden="true"></i>
-          </span>
-        </div>
-        <div class="control has-icons-left">
-          <input class="input has-text-right" id="event--costs_prizesAwarded" name="costs_prizesAwarded" type="number" min="0" max="10000000" step="0.01" value="<%= event.costs_prizesAwarded %>" onwheel="return false;" />
-          <span class="icon is-left">
-            <i class="fas fa-dollar-sign" aria-hidden="true"></i>
-          </span>
-        </div>
-      </div>
+      <div class="has-text-right is-fixed-bottom has-padding-10 has-background-grey-light">
+        <span class="is-inline-block has-margin-top-10 has-margin-right-10" id="container--form-message"></span>
 
-      <label class="label" for="event--costs_charitableDonations">Charitable Donations</label>
-      <div class="field has-addons">
-        <div class="control">
-          <span class="button is-static">
-            <i class="fas fa-fw fa-minus" aria-hidden="true"></i>
-          </span>
-        </div>
-        <div class="control has-icons-left">
-          <input class="input has-text-right" id="event--costs_charitableDonations" name="costs_charitableDonations" type="number" min="0" max="10000000" step="0.01" value="<%= event.costs_charitableDonations %>" onwheel="return false;" />
-          <span class="icon is-left">
-            <i class="fas fa-dollar-sign" aria-hidden="true"></i>
-          </span>
-        </div>
-      </div>
-
-      <div class="is-divider"></div>
-
-      <label class="label" for="event--costs_netProceeds">Net Proceeds</label>
-      <div class="field has-addons">
-        <div class="control">
-          <span class="button is-static">
-            <i class="fas fa-fw fa-equals" aria-hidden="true"></i>
-          </span>
-        </div>
-        <div class="control has-icons-left">
-          <input class="input has-text-right" id="event--costs_netProceeds" name="costs_netProceeds" type="number" min="0" max="10000000" step="0.01" value="<%= event.costs_netProceeds %>" onwheel="return false;" />
-          <span class="icon is-left">
-            <i class="fas fa-dollar-sign" aria-hidden="true"></i>
-          </span>
-        </div>
-      </div>
-
-      <label class="label" for="event--costs_amountDonated">Prize Amount Donated</label>
-      <div class="field has-addons">
-        <div class="control">
-          <span class="button is-static">
-            <i class="fas fa-fw fa-hand-holding-usd" aria-hidden="true"></i>
-          </span>
-        </div>
-        <div class="control has-icons-left">
-          <input class="input has-text-right" id="event--costs_amountDonated" name="costs_amountDonated" type="number" min="0" max="10000000" step="0.01" value="<%= event.costs_amountDonated %>" onwheel="return false;" />
-          <span class="icon is-left">
-            <i class="fas fa-dollar-sign" aria-hidden="true"></i>
-          </span>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="has-text-right is-fixed-bottom has-padding-10 has-background-grey-light">
-    <span class="is-inline-block has-margin-top-10 has-margin-right-10" id="container--form-message"></span>
-
-    <button class="button is-success" type="submit">
-      <span class="icon">
-        <i class="fas fa-save" aria-hidden="true"></i>
-      </span>
-      <span>Update Event</span>
-    </button>
-    <div class="dropdown is-hoverable is-right is-up">
-      <div class="dropdown-trigger">
-        <button class="button" type="button" aria-haspopup="true">
-          <span>Options</span>
+        <button class="button is-success" type="submit">
           <span class="icon">
-            <i class="fas fa-angle-up" aria-hidden="true"></i>
+            <i class="fas fa-save" aria-hidden="true"></i>
           </span>
+          <span>Update Event</span>
         </button>
-      </div>
-      <div class="dropdown-menu" role="menu">
-        <div class="dropdown-content">
-          <a class="dropdown-item is-delete-button" href="#">
-            <span class="icon"><i class="fas fa-trash has-text-danger"></i></span>
-            <span>Delete Event</span>
-          </a>
+        <div class="dropdown is-hoverable is-right is-up">
+          <div class="dropdown-trigger">
+            <button class="button" type="button" aria-haspopup="true">
+              <span>Options</span>
+              <span class="icon">
+                <i class="fas fa-angle-up" aria-hidden="true"></i>
+              </span>
+            </button>
+          </div>
+          <div class="dropdown-menu" role="menu">
+            <div class="dropdown-content">
+              <a class="dropdown-item is-delete-button" href="#">
+                <span class="icon"><i class="fas fa-trash has-text-danger"></i></span>
+                <span>Delete Event</span>
+              </a>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+    </form>
   </div>
-</form>
+</div>
 
 <%- include('_footerA'); -%>
 

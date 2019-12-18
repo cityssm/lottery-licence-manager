@@ -343,4 +343,19 @@ router.get("/:licenceID/print", function(req, res, next) {
 });
 
 
+router.get("/:licenceID/poke", function(req, res) {
+  "use strict";
+
+  const licenceID = req.params.licenceID;
+
+  if (req.session.user.userProperties.isAdmin === "true") {
+    licencesDB.pokeLicence(licenceID, req.session);
+  }
+
+  res.redirect("/licences/" + licenceID);
+});
+
+
+
+
 module.exports = router;

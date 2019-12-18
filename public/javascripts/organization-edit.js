@@ -190,6 +190,7 @@
       document.getElementById("editOrganizationRepresentative--representativeProvince").value = editRepresentativeTrEle.getAttribute("data-representative-province");
       document.getElementById("editOrganizationRepresentative--representativePostalCode").value = editRepresentativeTrEle.getAttribute("data-representative-postal-code");
       document.getElementById("editOrganizationRepresentative--representativePhoneNumber").value = editRepresentativeTrEle.getAttribute("data-representative-phone-number");
+      document.getElementById("editOrganizationRepresentative--representativeEmailAddress").value = editRepresentativeTrEle.getAttribute("data-representative-email-address");
 
       document.getElementById("editOrganizationRepresentative--isDefault").value = document.getElementById("representative-isDefault--" + representativeIndex).checked ? "1" : "0";
 
@@ -209,8 +210,9 @@
       trEle.setAttribute("data-representative-province", representativeObj.representativeProvince);
       trEle.setAttribute("data-representative-postal-code", representativeObj.representativePostalCode);
       trEle.setAttribute("data-representative-phone-number", representativeObj.representativePhoneNumber);
+      trEle.setAttribute("data-representative-email-address", representativeObj.representativeEmailAddress);
 
-      trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-centered\">" +
+      trEle.insertAdjacentHTML("beforeend", "<td>" +
         "<div class=\"field\">" +
         "<input class=\"is-checkradio is-info\" id=\"representative-isDefault--" + representativeObj.representativeIndex + "\" name=\"representative-isDefault\" type=\"radio\"" + (representativeObj.isDefault ? " checked" : "") + " />&nbsp;" +
         "<label for=\"representative-isDefault--" + representativeObj.representativeIndex + "\"></label>" +
@@ -226,16 +228,19 @@
 
       tdEle = document.createElement("td");
       tdEle.innerHTML = representativeObj.representativeAddress1 + "<br />" +
-        "<small>" + representativeObj.representativeAddress2 + "</small>";
-      trEle.insertAdjacentElement("beforeend", tdEle);
-
-      tdEle = document.createElement("td");
-      tdEle.innerHTML = representativeObj.representativeCity + ", " + representativeObj.representativeProvince + "<br />" +
-        "<small>" + representativeObj.representativePostalCode + "</small>";
+        "<small>" +
+        (representativeObj.representativeAddress2 === "" ? "" : representativeObj.representativeAddress2 + "<br />") +
+        representativeObj.representativeCity + ", " + representativeObj.representativeProvince + "<br />" +
+        representativeObj.representativePostalCode +
+        "</small>";
       trEle.insertAdjacentElement("beforeend", tdEle);
 
       tdEle = document.createElement("td");
       tdEle.innerHTML = representativeObj.representativePhoneNumber;
+      trEle.insertAdjacentElement("beforeend", tdEle);
+
+      tdEle = document.createElement("td");
+      tdEle.innerHTML = representativeObj.representativeEmailAddress;
       trEle.insertAdjacentElement("beforeend", tdEle);
 
       trEle.insertAdjacentHTML("beforeend", "<td>" +

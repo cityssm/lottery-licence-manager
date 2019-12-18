@@ -12,8 +12,6 @@
 
   const resultsEle = document.getElementById("container--events");
 
-  const canUpdate = document.getElementsByTagName("main")[0].getAttribute("data-can-update") === "true";
-
   function getEvents() {
 
     resultsEle.innerHTML = "<p class=\"has-text-centered has-text-grey-lighter\">" +
@@ -92,7 +90,7 @@
                   window.llm.escapeHTML(eventObj.location) + "<br />" +
                   "<small>" + eventObj.startTimeString + " to " + eventObj.endTimeString + "</small>" +
                   "</div>") +
-              (canUpdate ?
+              (eventObj.canUpdate ?
                 "<div class=\"column is-narrow is-hidden-print\">" +
                 "<a class=\"button is-small\" href=\"/events/" + eventObj.licenceID + "/" + eventObj.eventDate + "/edit\">" +
                 "<span class=\"icon\"><i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i></span>" +

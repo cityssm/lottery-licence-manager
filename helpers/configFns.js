@@ -40,7 +40,7 @@ const configFallbackValues = {
     return {
       fee: 10,
       message: "Using base licence fee.",
-      licenceHsErrors: false
+      licenceHasErrors: false
     };
   },
 

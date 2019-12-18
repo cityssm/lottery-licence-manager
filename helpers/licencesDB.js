@@ -36,17 +36,25 @@ function canUpdateObject(objType, obj, reqSession) {
     canUpdate = false;
 
   } else if (obj.recordDelete_timeMillis) {
+    // deleted records cannot be updated
     canUpdate = false;
 
   } else if (reqSession.user.userProperties.canUpdate === "true") {
     canUpdate = true;
 
   } else if (reqSession.user.userProperties.canCreate === "true" &&
-    obj.recordCreate_userName === reqSession.user.userName &&
-    obj.recordUpdate_userName === reqSession.user.userName ||
+    (obj.recordCreate_userName === reqSession.user.userName || obj.recordUpdate_userName === reqSession.user.userName) &&
     obj.recordUpdate_timeMillis + configFns.getProperty("user.createUpdateWindowMillis") > Date.now()) {
 
+    // users with only create permission can update their own records within the time window
+
     canUpdate = true;
+  }
+
+  // if recently updated, send back permission
+
+  if (obj.recordUpdate_timeMillis + configFns.getProperty("user.createUpdateWindowMillis") > Date.now()) {
+    return canUpdate;
   }
 
   // check if object should be locked
@@ -60,6 +68,13 @@ function canUpdateObject(objType, obj, reqSession) {
       case "licence":
 
         if (obj.endDate < currentDateInteger) {
+          canUpdate = false;
+        }
+        break;
+
+      case "event":
+
+        if (obj.bank_name !== "" && obj.costs_receipts) {
           canUpdate = false;
         }
         break;
@@ -111,7 +126,7 @@ let licencesDB = {
       dateTimeFns.dateToInteger(new Date())
     ];
 
-    let sql = "select o.organizationID, o.organizationName, o.isEligibleForLicences," +
+    let sql = "select o.organizationID, o.organizationName, o.isEligibleForLicences, o.organizationNote," +
       " sum(case when l.endDate >= ? then 1 else 0 end) as licences_activeCount," +
       " max(l.endDate) as licences_endDateMax," +
       " o.recordCreate_userName, o.recordCreate_timeMillis, o.recordUpdate_userName, o.recordUpdate_timeMillis" +
@@ -139,7 +154,7 @@ let licencesDB = {
       params.push(reqBody.isEligibleForLicences);
     }
 
-    sql += " group by o.organizationID, o.organizationName," +
+    sql += " group by o.organizationID, o.organizationName, o.isEligibleForLicences, o.organizationNote," +
       " o.recordCreate_userName, o.recordCreate_timeMillis, o.recordUpdate_userName, o.recordUpdate_timeMillis" +
       " order by o.organizationName, o.organizationID";
 
@@ -152,8 +167,17 @@ let licencesDB = {
     db.close();
 
     for (let rowIndex = 0; rowIndex < rows.length; rowIndex += 1) {
-      rows[rowIndex].canUpdate = canUpdateObject("organization", rows[rowIndex], reqSession);
-      rows[rowIndex].licences_endDateMaxString = dateTimeFns.dateIntegerToString(rows[rowIndex].licences_endDateMax || 0);
+
+      const organization = rows[rowIndex];
+
+      organization.licences_endDateMaxString = dateTimeFns.dateIntegerToString(organization.licences_endDateMax || 0);
+
+      organization.canUpdate = canUpdateObject("organization", rows[rowIndex], reqSession);
+
+      delete organization.recordCreate_userName;
+      delete organization.recordCreate_timeMillis;
+      delete organization.recordUpdate_userName;
+      delete organization.recordUpdate_timeMillis;
     }
 
     return rows;
@@ -325,14 +349,14 @@ let licencesDB = {
         " representativeName, representativeTitle," +
         " representativeAddress1, representativeAddress2," +
         " representativeCity, representativeProvince, representativePostalCode," +
-        " representativePhoneNumber," +
+        " representativePhoneNumber, representativeEmailAddress," +
         " isDefault)" +
-        " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
+        " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
       .run(organizationID, newRepresentativeIndex,
         reqBody.representativeName, reqBody.representativeTitle,
         reqBody.representativeAddress1, reqBody.representativeAddress2,
         reqBody.representativeCity, reqBody.representativeProvince, reqBody.representativePostalCode,
-        reqBody.representativePhoneNumber,
+        reqBody.representativePhoneNumber, reqBody.representativeEmailAddress,
         newIsDefault);
 
     db.close();
@@ -348,6 +372,7 @@ let licencesDB = {
       representativeProvince: reqBody.representativeProvince,
       representativePostalCode: reqBody.representativePostalCode,
       representativePhoneNumber: reqBody.representativePhoneNumber,
+      representativeEmailAddress: reqBody.representativeEmailAddress,
       isDefault: newIsDefault
     };
   },
@@ -365,13 +390,14 @@ let licencesDB = {
         " representativeCity = ?," +
         " representativeProvince = ?," +
         " representativePostalCode = ?," +
-        " representativePhoneNumber = ?" +
+        " representativePhoneNumber = ?," +
+        " representativeEmailAddress = ?" +
         " where organizationID = ?" +
         " and representativeIndex = ?")
       .run(reqBody.representativeName, reqBody.representativeTitle,
         reqBody.representativeAddress1, reqBody.representativeAddress2,
         reqBody.representativeCity, reqBody.representativeProvince, reqBody.representativePostalCode,
-        reqBody.representativePhoneNumber,
+        reqBody.representativePhoneNumber, reqBody.representativeEmailAddress,
         organizationID, reqBody.representativeIndex
       );
 
@@ -388,7 +414,8 @@ let licencesDB = {
       representativeProvince: reqBody.representativeProvince,
       representativePostalCode: reqBody.representativePostalCode,
       representativePhoneNumber: reqBody.representativePhoneNumber,
-      isDefault: reqBody.isDefault
+      representativeEmailAddress: reqBody.representativeEmailAddress,
+      isDefault: parseInt(reqBody.isDefault)
     };
   },
 
@@ -918,6 +945,31 @@ let licencesDB = {
     return changeCount;
   },
 
+  pokeLicence: function(licenceID, reqSession) {
+    "use strict";
+
+    const db = sqlite(dbPath);
+
+    const nowMillis = Date.now();
+
+    const info = db.prepare("update LotteryLicences" +
+        " set recordUpdate_userName = ?," +
+        " recordUpdate_timeMillis = ?" +
+        " where licenceID = ?" +
+        " and recordDelete_timeMillis is null")
+      .run(
+        reqSession.user.userName,
+        nowMillis,
+        licenceID
+      );
+
+    let changeCount = info.changes;
+
+    db.close();
+
+    return changeCount;
+  },
+
   markLicenceFeePaid: function(reqBody, reqSession) {
     "use strict";
 
@@ -989,7 +1041,7 @@ let licencesDB = {
       readonly: true
     });
 
-    let rows = db.prepare("select e.eventDate," +
+    let rows = db.prepare("select e.eventDate, e.bank_name, e.costs_receipts," +
         " l.licenceID, l.externalLicenceNumber, l.licenceTypeKey, l.licenceDetails, l.location," +
         " l.startTime, l.endTime," +
         " o.organizationName," +
@@ -1016,6 +1068,9 @@ let licencesDB = {
       eventObj.endTimeString = dateTimeFns.timeIntegerToString(eventObj.endTime || 0);
 
       eventObj.canUpdate = canUpdateObject("event", eventObj, reqSession);
+
+      delete eventObj.bank_name;
+      delete eventObj.costs_receipts;
     }
 
     return rows;
@@ -1157,6 +1212,33 @@ let licencesDB = {
     return changeCount;
   },
 
+  pokeEvent: function(licenceID, eventDate, reqSession) {
+    "use strict";
+
+    const db = sqlite(dbPath);
+
+    const nowMillis = Date.now();
+
+    const info = db.prepare("update LotteryEvents" +
+        " set recordUpdate_userName = ?," +
+        " recordUpdate_timeMillis = ?" +
+        " where licenceID = ?" +
+        " and eventDate = ?" +
+        " and recordDelete_timeMillis is null")
+      .run(
+        reqSession.user.userName,
+        nowMillis,
+        licenceID,
+        eventDate
+      );
+
+    let changeCount = info.changes;
+
+    db.close();
+
+    return changeCount;
+  },
+
   /*
    * APPLICATION SETTINGS
    */
@@ -1168,7 +1250,7 @@ let licencesDB = {
       readonly: true
     });
 
-    const rows = db.prepare("select * from ApplicationSettings").all();
+    const rows = db.prepare("select * from ApplicationSettings order by orderNumber, settingKey").all();
 
     db.close();
 

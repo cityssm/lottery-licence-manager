@@ -43,7 +43,7 @@
 
           searchResultsEle.innerHTML = "<table class=\"table is-fullwidth is-striped is-hoverable\">" +
             "<thead><tr>" +
-            "<th" + (canCreate ? " colspan=\"2\"" : "") + ">Organization</th>" +
+            "<th colspan=\"" + (canCreate ? "3" : "2") + "\">Organization</th>" +
             "<th" + (canCreate ? " colspan=\"2\"" : "") + ">Licences</th>" +
             "</tr></thead>" +
             "<tbody></tbody>" +
@@ -68,6 +68,16 @@
             organizationNameLinkEle.innerText = organizationObj.organizationName;
             organizationNameLinkEle.href = "/organizations/" + organizationObj.organizationID;
             trEle.getElementsByTagName("td")[0].insertAdjacentElement("beforeend", organizationNameLinkEle);
+
+            trEle.insertAdjacentHTML("beforeend",
+              "<td class=\"has-text-right\">" +
+              (organizationObj.organizationNote === "" ?
+                "" :
+                "<span class=\"tag has-cursor-default is-info is-light\" data-tooltip=\"Organization Has Note\">" +
+                "<i class=\"fas fa-sticky-note has-margin-right-5\" aria-hidden=\"true\"></i> Note" +
+                "</span>"
+              ) +
+              "</td>");
 
             if (canCreate) {
               trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right\">" +

@@ -87,6 +87,7 @@ let dbInit = {
         " representativeProvince varchar(2)," +
         " representativePostalCode varchar(7)," +
         " representativePhoneNumber varchar(30)," +
+        " representativeEmailAddress varchar(200)," +
         " isDefault bit not null default 0," +
         " primary key (organizationID, representativeIndex)," +
         " foreign key (organizationID) references Organizations (organizationID)" +
@@ -187,6 +188,7 @@ let dbInit = {
         " settingName varchar(100) not null," +
         " settingDescription text," +
         " settingValue text," +
+        " orderNumber smallint not null default 0," +
         " recordUpdate_userName varchar(30) not null," +
         " recordUpdate_timeMillis integer not null" +
         ") without rowid").run();
@@ -194,14 +196,15 @@ let dbInit = {
       // default settings
 
       let settingInsertSQL = "insert or ignore into ApplicationSettings" +
-        " (settingKey, settingName, settingDescription, settingValue, recordUpdate_userName, recordUpdate_timeMillis)" +
-        " values (?, ?, ?, ?, ?, ?)";
+        " (settingKey, settingName, settingDescription, settingValue, orderNumber, recordUpdate_userName, recordUpdate_timeMillis)" +
+        " values (?, ?, ?, ?, ?, ?, ?)";
 
       licencesDB.prepare(settingInsertSQL)
         .run("licences.externalLicenceNumber.range.start",
           "External Licence Number: Range Start",
           "When External Licence Numbers are generated using a range, this value will be used as the minimum for the range.",
           "-1",
+          1,
           "init",
           Date.now());
 
@@ -210,6 +213,7 @@ let dbInit = {
           "External Licence Number: Range End",
           "When External Licence Numbers are generated using a range, this value will be used as the maximum for the range.",
           "0",
+          2,
           "init",
           Date.now());
     }

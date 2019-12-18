@@ -1,129 +1,141 @@
-<div class="columns has-margin-top-20">
-  <div class="column">
-    <h2 class="title is-3">Lottery Licences</h2>
+<div class="panel">
+  <div class="panel-heading">
+    <div class="level">
+      <div class="level-left">
+        <h2 class="has-text-weight-bold">Lottery Licences</h2>
+      </div>
+      <div class="level-right has-text-weight-normal">
+        <div class="field is-grouped justify-flex-end">
+          <div class="control">
+            <a class="button is-small" href="/reports/licences-byOrganization?organizationID=<%= organization.organizationID %>">
+              <span class="icon is-small">
+                <i class="fas fa-file-download" aria-hidden="true"></i>
+              </span>
+              <span>Export Licences</span>
+            </a>
+          </div>
+          <% if (user.userProperties.canCreate === "true" && organization.isEligibleForLicences) { %>
+            <div class="control">
+              <a class="button is-primary is-small" href="/licences/new/<%= organization.organizationID %>">
+                <span class="icon is-small">
+                  <i class="fas fa-certificate" aria-hidden="true"></i>
+                </span>
+                <span>Create a New Licence</span>
+              </a>
+            </div>
+          <% } %>
+        </div>
+      </div>
+    </div>
   </div>
-  <div class="column is-narrow has-text-right">
-    <a class="button is-small" href="/reports/licences-byOrganization?organizationID=<%= organization.organizationID %>">
-      <span class="icon is-small">
-        <i class="fas fa-file-download" aria-hidden="true"></i>
-      </span>
-      <span>Export Licences</span>
-    </a>
-    <% if (user.userProperties.canCreate === "true" && organization.isEligibleForLicences) { %>
-      <a class="button is-primary is-small" href="/licences/new/<%= organization.organizationID %>">
-        <span class="icon is-small">
-          <i class="fas fa-certificate" aria-hidden="true"></i>
-        </span>
-        <span>Create a New Licence</span>
-      </a>
-    <% } %>
-  </div>
-</div>
 
-<%
-  let licenceTheadHTML = "<tr>" +
-    "<th>" + configFns.getProperty("licences.externalLicenceNumber.fieldLabel") + "</th>" +
-    "<th>Licence Type</th>" +
-    "<th>Event Details</th>" +
-    "<th>From</th>" +
-    "<th>To</th>" +
-    "<th><span class=\"sr-only\">Options</span></th>" +
-    "</tr>";
-
-  let rows_active = "";
-  let count_active = 0;
-  let rows_past = "";
-  let count_past = 0;
-
-  const licenceTypes = configFns.getProperty("licenceTypes");
-
-  for (let licenceIndex = 0; licenceIndex < licences.length; licenceIndex += 1) {
-
-    const licence = licences[licenceIndex];
-
-    let licenceType = {};
-    for (let typeIndex = 0; typeIndex < licenceTypes.length; typeIndex += 1) {
-      if (licenceTypes[typeIndex].licenceTypeKey === licence.licenceTypeKey) {
-        licenceType = licenceTypes[typeIndex];
-        break;
-      }
-    }
-
-    let canEdit = licence.canUpdate;
-
-    let rowHTML = "<tr>" +
-      "<td>" +
-        "<a href=\"/licences/" + licence.licenceID + "\">" +
-        stringFns.escapeHTML(licence.externalLicenceNumber) + "<br />" +
-        "<small>Licence #" + licence.licenceID + "</small>" +
-        "</a>" +
-        "</td>" +
-      "<td>" + (licenceType.licenceType || licence.licenceTypeKey) + "</td>" +
-      "<td class=\"has-newline-chars\">" + stringFns.escapeHTML(licence.licenceDetails) + "</td>" +
-      "<td>" + licence.startDateString + "</td>" +
-      "<td>" + licence.endDateString + "</td>" +
-      "<td class=\"has-text-right\">" +
-        (canEdit ?
-          "<a class=\"button is-small\" href=\"/licences/" + licence.licenceID + "/edit\" data-tooltip=\"Edit Licence\"><span class=\"icon\"><i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i></span><span>Edit</span></a> " :
-          "") +
-        (licence.licenceFeeIsPaid ?
-          "<a class=\"button is-small\" href=\"/licences/" + licence.licenceID + "/print\" data-tooltip=\"Print Licence\" target=\"_blank\">" +
-          "<i class=\"fas fa-print\" aria-hidden=\"true\"></i>" +
-          "<span class=\"sr-only\">Print Licence</span>" +
-          "</a>" :
-          "<span class=\"tag is-warning\">Unpaid</span>") +
-
-        "</td>" +
+  <%
+    let licenceTheadHTML = "<tr>" +
+      "<th class=\"has-width-150\">" + configFns.getProperty("licences.externalLicenceNumber.fieldLabel") + "</th>" +
+      "<th class=\"has-width-50 is-nowrap\">Licence Type</th>" +
+      "<th>Event Details</th>" +
+      "<th class=\"has-width-50\">From</th>" +
+      "<th class=\"has-width-50\">To</th>" +
+      "<th class=\"has-width-50\"><span class=\"sr-only\">Options</span></th>" +
       "</tr>";
 
-    if (licence.endDate < currentDateInteger) {
-      rows_past += rowHTML;
-      count_past += 1;
-    } else {
-      rows_active += rowHTML;
-      count_active += 1;
+    let rows_active = "";
+    let count_active = 0;
+    let rows_past = "";
+    let count_past = 0;
+
+    const licenceTypes = configFns.getProperty("licenceTypes");
+
+    for (let licenceIndex = 0; licenceIndex < licences.length; licenceIndex += 1) {
+
+      const licence = licences[licenceIndex];
+
+      let licenceType = {};
+      for (let typeIndex = 0; typeIndex < licenceTypes.length; typeIndex += 1) {
+        if (licenceTypes[typeIndex].licenceTypeKey === licence.licenceTypeKey) {
+          licenceType = licenceTypes[typeIndex];
+          break;
+        }
+      }
+
+      let canEdit = licence.canUpdate;
+
+      let rowHTML = "<tr>" +
+        "<td>" +
+          "<a href=\"/licences/" + licence.licenceID + "\">" +
+          stringFns.escapeHTML(licence.externalLicenceNumber) + "<br />" +
+          "<small>Licence #" + licence.licenceID + "</small>" +
+          "</a>" +
+          "</td>" +
+        "<td>" + (licenceType.licenceType || licence.licenceTypeKey) + "</td>" +
+        "<td class=\"has-newline-chars\">" + stringFns.escapeHTML(licence.licenceDetails) + "</td>" +
+        "<td>" + licence.startDateString + "</td>" +
+        "<td>" + licence.endDateString + "</td>" +
+        "<td class=\"is-nowrap has-text-right\">" +
+          (canEdit ?
+            "<a class=\"button is-small\" href=\"/licences/" + licence.licenceID + "/edit\" data-tooltip=\"Edit Licence\"><span class=\"icon\"><i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i></span><span>Edit</span></a> " :
+            "") +
+          (licence.licenceFeeIsPaid ?
+            "<a class=\"button is-small\" href=\"/licences/" + licence.licenceID + "/print\" data-tooltip=\"Print Licence\" target=\"_blank\">" +
+            "<i class=\"fas fa-print\" aria-hidden=\"true\"></i>" +
+            "<span class=\"sr-only\">Print Licence</span>" +
+            "</a>" :
+            "<span class=\"tag is-warning\">Unpaid</span>") +
+
+          "</td>" +
+        "</tr>";
+
+      if (licence.endDate < currentDateInteger) {
+        rows_past += rowHTML;
+        count_past += 1;
+      } else {
+        rows_active += rowHTML;
+        count_active += 1;
+      }
     }
-  }
-%>
+  %>
 
-<div class="tabs" id="tabs--licences">
-  <ul>
-    <li class="is-active"><a href="#tab--licences-active">Active Licences <%- (count_active > 0 ? " <span class=\"tag is-info has-margin-left-10\">" + count_active + "</span>" : "") %></a></li>
-    <li><a href="#tab--licences-past">Past Licences <%- (count_past > 0 ? " <span class=\"tag is-info has-margin-left-10\">" + count_past + "</span>" : "") %></a></li>
-  </ul>
-</div>
-
-<div class="tab-container">
-  <div class="tab-content is-active" id="tab--licences-active">
-    <% if (rows_active === "") { %>
-      <div class="message is-info">
-        <div class="message-body">
-          <%= organization.organizationName %> has no active licences.
-        </div>
-      </div>
-    <% } else { %>
-      <table class="table is-fullwidth is-striped is-hoverable">
-        <thead>
-          <%- licenceTheadHTML %>
-        </thead>
-        <tbody><%- rows_active %></tbody>
-      </table>
-    <% } %>
+  <div class="panel-tabs" id="tabs--licences">
+    <a class="is-active" href="#tab--licences-active">Active Licences <%- (count_active > 0 ? " <span class=\"tag is-info has-margin-left-5\">" + count_active + "</span>" : "") %></a>
+    <a href="#tab--licences-past">Past Licences <%- (count_past > 0 ? " <span class=\"tag has-margin-left-5\">" + count_past + "</span>" : "") %></a>
   </div>
-  <div class="tab-content" id="tab--licences-past">
-    <% if (rows_past === "") { %>
-      <div class="message is-info">
-        <div class="message-body">
-          <%= organization.organizationName %> has no past licences.
+
+  <div class="tab-container">
+    <div class="tab-content is-active" id="tab--licences-active">
+      <% if (rows_active === "") { %>
+        <div class="panel-block is-block">
+          <div class="message is-info">
+            <div class="message-body">
+              <%= organization.organizationName %> has no active licences.
+            </div>
+          </div>
         </div>
-      </div>
-    <% } else { %>
-      <table class="table is-fullwidth is-striped is-hoverable">
-        <thead>
-          <%- licenceTheadHTML %>
-        </thead>
-        <tbody><%- rows_past %></tbody>
-      </table>
-    <% } %>
+      <% } else { %>
+        <table class="table is-fullwidth is-striped is-hoverable">
+          <thead>
+            <%- licenceTheadHTML %>
+          </thead>
+          <tbody><%- rows_active %></tbody>
+        </table>
+      <% } %>
+    </div>
+    <div class="tab-content" id="tab--licences-past">
+      <% if (rows_past === "") { %>
+        <div class="panel-block is-block">
+          <div class="message is-info">
+            <div class="message-body">
+              <%= organization.organizationName %> has no past licences.
+            </div>
+          </div>
+        </div>
+      <% } else { %>
+        <table class="table is-fullwidth is-striped is-hoverable">
+          <thead>
+            <%- licenceTheadHTML %>
+          </thead>
+          <tbody><%- rows_past %></tbody>
+        </table>
+      <% } %>
+    </div>
   </div>
 </div>
