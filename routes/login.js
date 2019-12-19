@@ -35,13 +35,15 @@ router.route("/")
     let userName = req.body.userName;
     const passwordPlain = req.body.password;
 
+    const redirectURL = req.body.redirect;
+
     const usersDB = require("../helpers/usersDB");
     const userObj = usersDB.getUser(userName, passwordPlain);
 
     if (userObj) {
       req.session.user = userObj;
 
-      if (req.body.redirect && req.body.redirect !== "") {
+      if (redirectURL && redirectURL !== "") {
         res.redirect(req.body.redirect);
       } else {
         res.redirect("/dashboard");
@@ -50,7 +52,8 @@ router.route("/")
     } else {
       res.render("login", {
         userName: userName,
-        message: "Login Failed"
+        message: "Login Failed",
+        redirect: redirectURL
       });
     }
   });

@@ -5,37 +5,40 @@
 (function() {
   "use strict";
 
-  const changePasswordModalEle = document.getElementsByClassName("is-change-password-modal")[0];
+  const changePasswordModalEles = document.getElementsByClassName("is-change-password-modal");
 
-  changePasswordModalEle.getElementsByTagName("form")[0].addEventListener("submit", function(formEvent) {
-    formEvent.preventDefault();
+  if (changePasswordModalEles.length > 0) {
 
-    const formEle = formEvent.currentTarget;
+    changePasswordModalEles[0].getElementsByTagName("form")[0].addEventListener("submit", function(formEvent) {
+      formEvent.preventDefault();
 
-    window.fetch("/dashboard/doChangePassword", {
-        method: "POST",
-        credentials: "include",
-        body: new URLSearchParams(new FormData(formEle))
-      })
-      .then(function(response) {
-        return response.json();
-      })
-      .then(function(responseJSON) {
-        if (responseJSON.success) {
-          window.llm.hideModal(changePasswordModalEle);
-          window.llm.alertModal("Password Updated Successfully", "", "OK", "success");
-        }
-      });
-  });
+      const formEle = formEvent.currentTarget;
 
-  document.getElementsByClassName("is-change-password-button")[0].addEventListener("click", function() {
-    changePasswordModalEle.getElementsByTagName("form")[0].reset();
-    window.llm.showModal(changePasswordModalEle);
-  });
+      window.fetch("/dashboard/doChangePassword", {
+          method: "POST",
+          credentials: "include",
+          body: new URLSearchParams(new FormData(formEle))
+        })
+        .then(function(response) {
+          return response.json();
+        })
+        .then(function(responseJSON) {
+          if (responseJSON.success) {
+            window.llm.hideModal(changePasswordModalEles[0]);
+            window.llm.alertModal("Password Updated Successfully", "", "OK", "success");
+          }
+        });
+    });
 
-  let cancelButtonEles = changePasswordModalEle.getElementsByClassName("is-cancel-button");
+    document.getElementsByClassName("is-change-password-button")[0].addEventListener("click", function() {
+      changePasswordModalEles[0].getElementsByTagName("form")[0].reset();
+      window.llm.showModal(changePasswordModalEles[0]);
+    });
 
-  for (let buttonIndex = 0; buttonIndex < cancelButtonEles.length; buttonIndex += 1) {
-    cancelButtonEles[buttonIndex].addEventListener("click", window.llm.hideModal);
+    let cancelButtonEles = changePasswordModalEles[0].getElementsByClassName("is-cancel-button");
+
+    for (let buttonIndex = 0; buttonIndex < cancelButtonEles.length; buttonIndex += 1) {
+      cancelButtonEles[buttonIndex].addEventListener("click", window.llm.hideModal);
+    }
   }
 }());

@@ -17,6 +17,7 @@ const SQLiteStore = require("connect-sqlite3")(session);
 
 const router_login = require("./routes/login");
 const router_dashboard = require("./routes/dashboard");
+const router_docs = require("./routes/docs");
 const router_organizations = require("./routes/organizations");
 const router_licences = require("./routes/licences");
 const router_events = require("./routes/events");
@@ -64,6 +65,7 @@ app.use(cookieParser());
 
 
 app.use(express.static(path.join(__dirname, "public")));
+app.use("/docs/images", express.static(path.join(__dirname, "docs/images")));
 app.use("/fa", express.static(__dirname + "/node_modules/@fortawesome/fontawesome-free"));
 
 
@@ -130,6 +132,8 @@ app.get("/", sessionChecker, function(req, res) {
   "use strict";
   res.redirect("/dashboard");
 });
+
+app.use("/docs", router_docs);
 
 app.use("/dashboard", sessionChecker, router_dashboard);
 app.use("/organizations", sessionChecker, router_organizations);

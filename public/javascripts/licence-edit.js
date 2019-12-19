@@ -360,7 +360,7 @@
 
 
   function events_remove(clickEvent) {
-    clickEvent.currentTarget.closest(".field").remove();
+    clickEvent.currentTarget.closest(".panel-block").remove();
 
     doRefreshAfterSave = true;
     setUnsavedChanges();
@@ -376,22 +376,25 @@
         ("00" + eventDate.getDate()).slice(-2);
     }
 
-    events_containerEle.insertAdjacentHTML("beforeend", "<div class=\"field has-addons\">" +
-      "<div class=\"control is-expanded has-icons-left\">" +
-      "<input class=\"input is-small\" name=\"eventDate\" type=\"date\"" +
-      " value=\"" + eventDateString + "\"" +
-      " min=\"" + startDateEle.value + "\"" +
-      " max=\"" + endDateEle.value + "\"" +
-      " required />" +
-      "<span class=\"icon is-left\">" +
-      "<i class=\"fas fa-calendar\" aria-hidden=\"true\"></i>" +
-      "</span>" +
-      "</div>" +
-      "<div class=\"control\">" +
-      "<a class=\"button is-small is-danger has-tooltip-right\" role=\"button\" data-tooltip=\"Remove Event\">" +
-      "<i class=\"fas fa-trash\" aria-hidden=\"true\"></i>" +
-      "<span class=\"sr-only\">Remove Event</span>" +
-      "</a>" +
+    events_containerEle.insertAdjacentHTML("beforeend",
+      "<div class=\"panel-block is-block\">" +
+      "<div class=\"field has-addons\">" +
+      ("<div class=\"control is-expanded has-icons-left\">" +
+        "<input class=\"input is-small\" name=\"eventDate\" type=\"date\"" +
+        " value=\"" + eventDateString + "\"" +
+        " min=\"" + startDateEle.value + "\"" +
+        " max=\"" + endDateEle.value + "\"" +
+        " required />" +
+        "<span class=\"icon is-left\">" +
+        "<i class=\"fas fa-calendar\" aria-hidden=\"true\"></i>" +
+        "</span>" +
+        "</div>") +
+      ("<div class=\"control\">" +
+        "<a class=\"button is-small is-danger has-tooltip-right\" role=\"button\" data-tooltip=\"Remove Event\">" +
+        "<i class=\"fas fa-trash\" aria-hidden=\"true\"></i>" +
+        "<span class=\"sr-only\">Remove Event</span>" +
+        "</a>" +
+        "</div>") +
       "</div>" +
       "</div>");
 

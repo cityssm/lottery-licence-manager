@@ -22,6 +22,8 @@ const configFallbackValues = {
   "session.secret": "cityssm/lottery-licence-manager",
   "session.maxAgeMillis": 60 * 60 * 1000,
 
+  "admin.defaultPassword": "",
+
   "user.createUpdateWindowMillis": 60 * 60 * 1000,
   "user.defaultProperties": {
     canCreate: "false",

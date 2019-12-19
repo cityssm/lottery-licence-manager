@@ -20,13 +20,40 @@ let usersDB = {
 
     // Check if an active user exists
 
-    const row = db.prepare("select userName, tempPassword, passwordHash" +
+    const row = db.prepare("select userName, passwordHash, isActive" +
         " from Users" +
-        " where isActive = 1" +
-        " and userName = ?")
+        " where userName = ?")
       .get(userName);
 
     if (!row) {
+
+      db.close();
+
+      if (userName === "admin") {
+
+        const adminPasswordPlain = configFns.getProperty("admin.defaultPassword");
+
+        if (adminPasswordPlain === "") {
+          return null;
+        }
+
+        if (adminPasswordPlain === passwordPlain) {
+
+          let userProperties = Object.assign({}, configFns.getProperty("user.defaultProperties"));
+          userProperties.isAdmin = "true";
+          userProperties.isDefaultAdmin = "true";
+
+          return {
+            userName: userName,
+            userProperties: userProperties
+          };
+        }
+      }
+
+      return null;
+
+    } else if (row.isActive === 0) {
+
       db.close();
       return null;
     }
@@ -37,20 +64,7 @@ let usersDB = {
 
     let passwordIsValid = false;
 
-    if (row.tempPassword && row.tempPassword !== "" && row.tempPassword === passwordPlain) {
-
-      passwordIsValid = true;
-
-      const hash = bcrypt.hashSync(userName + "::" + passwordPlain, 10);
-
-      db.prepare("update Users" +
-          " set tempPassword = null," +
-          " passwordHash = ?" +
-          " where userName = ?")
-        .run(hash, userName);
-
-
-    } else if (row.passwordHash && row.passwordHash !== "" && bcrypt.compareSync(userName + "::" + passwordPlain, row.passwordHash)) {
+    if (bcrypt.compareSync(userName + "::" + passwordPlain, row.passwordHash)) {
       passwordIsValid = true;
     }
 
@@ -62,6 +76,7 @@ let usersDB = {
     // Get user properties
 
     let userProperties = Object.assign({}, configFns.getProperty("user.defaultProperties"));
+    userProperties.isDefaultAdmin = "false";
 
     const userPropertyRows = db.prepare("select propertyName, propertyValue" +
         " from UserProperties" +
@@ -169,7 +184,7 @@ let usersDB = {
 
     const freshPassword = require("fresh-password");
     const newPasswordPlain = freshPassword.generate();
-    const hash = bcrypt.hashSync(newPasswordPlain, 10);
+    const hash = bcrypt.hashSync(reqBody.userName + "::" + newPasswordPlain, 10);
 
     const db = sqlite(dbPath);
 
@@ -187,7 +202,6 @@ let usersDB = {
         db.prepare("update Users" +
             " set firstName = ?," +
             " lastName = ?," +
-            " tempPassword = null," +
             " passwordHash = ?," +
             " isActive = 1" +
             " where userName = ?")
@@ -257,13 +271,12 @@ let usersDB = {
 
     const freshPassword = require("fresh-password");
     const newPasswordPlain = freshPassword.generate();
-    const hash = bcrypt.hashSync(userName + ":: " + newPasswordPlain, 10);
+    const hash = bcrypt.hashSync(userName + "::" + newPasswordPlain, 10);
 
     const db = sqlite(dbPath);
 
     db.prepare("update Users" +
-        " set tempPassword = null," +
-        " passwordHash = ?" +
+        " set passwordHash = ?" +
         " where userName = ?")
       .run(hash, userName);
 

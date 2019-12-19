@@ -17,13 +17,13 @@ let dbInit = {
 
     if (!row) {
 
-      console.warn("Creating users.db");
+      console.warn("Creating users.db.  To get started creating users, set the 'admin.defaultPassword' property in your config.js file.");
 
       usersDB.prepare("create table if not exists Users (" +
         "userName varchar(30) primary key not null," +
         " firstName varchar(50), lastName varchar(50)," +
         " isActive boolean not null default 1," +
-        " tempPassword varchar(50), passwordHash char(60))" +
+        " passwordHash char(60) not null)" +
         " without rowid").run();
 
       usersDB.prepare("create table if not exists UserProperties (" +

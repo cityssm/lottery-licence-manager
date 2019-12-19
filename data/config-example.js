@@ -21,6 +21,26 @@ config.application.https = {
 */
 
 
+config.admin = {
+  defaultPassword: ""
+};
+
+
+/*
+ * USER SETTINGS
+ */
+
+config.user = {
+  createUpdateWindowMillis: 60 * 60 * 1000,
+
+  defaultProperties: {
+    canCreate: "false",
+    canUpdate: "false",
+    isAdmin: "false"
+  }
+};
+
+
 config.defaults = {};
 
 config.defaults.city = "Sault Ste. Marie";
