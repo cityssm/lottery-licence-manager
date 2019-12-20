@@ -87,7 +87,7 @@
                 "<small>" + window.llm.escapeHTML(eventObj.licenceDetails) + "</small>" +
                 "</div>") +
                 ("<div class=\"column\">" +
-                  window.llm.escapeHTML(eventObj.location) + "<br />" +
+                  window.llm.escapeHTML(eventObj.locationDisplayName) + "<br />" +
                   "<small>" + eventObj.startTimeString + " to " + eventObj.endTimeString + "</small>" +
                   "</div>") +
               (eventObj.canUpdate ?

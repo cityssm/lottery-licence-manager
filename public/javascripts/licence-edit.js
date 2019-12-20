@@ -246,39 +246,105 @@
 
 
   /*
-   * LOCATION DATALIST
+   * LOCATION LOOKUP
    */
 
-  document.getElementById("licence--municipality").addEventListener("change", function(changeEvent) {
+  let locationList = [];
 
-    const municipality = changeEvent.currentTarget.value;
+  const locationLookup_modalEle = document.getElementsByClassName("is-location-lookup-modal")[0];
+  const locationLookup_searchStrEle = document.getElementById("locationLookup--searchStr");
+  const locationLookup_resultsEle = document.getElementById("container--locationLookup");
 
-    window.fetch("/licences/doGetDistinctLocations", {
-        method: "POST",
-        credentials: "include",
-        body: JSON.stringify({
-          municipality: municipality
-        }),
-        headers: {
-          "Content-Type": "application/json"
+
+  function locationLookup_setLocation(clickEvent) {
+
+    clickEvent.preventDefault();
+
+    const locationEle = clickEvent.currentTarget;
+
+    document.getElementById("licence--locationID").value = locationEle.getAttribute("data-location-id");
+    document.getElementById("licence--locationDisplayName").value = locationEle.getAttribute("data-location-display-name");
+
+    window.llm.hideModal(locationEle);
+
+    setUnsavedChanges();
+  }
+
+  function locationLookup_refreshResults() {
+
+    const listEle = document.createElement("div");
+    listEle.className = "list is-hoverable";
+
+    const searchStringSplit = locationLookup_searchStrEle.value.trim().toLowerCase().split(" ");
+
+    let displayLimit = 10;
+
+    for (let locationIndex = 0; locationIndex < locationList.length && displayLimit > 0; locationIndex += 1) {
+
+      let doDisplayRecord = true;
+
+      const locationObj = locationList[locationIndex];
+
+      const locationName = locationObj.locationName.toLowerCase();
+
+      for (let searchStringIndex = 0; searchStringIndex < searchStringSplit.length; searchStringIndex += 1) {
+        if (locationName.indexOf(searchStringSplit[searchStringIndex]) === -1) {
+          doDisplayRecord = false;
+          break;
         }
-      })
-      .then(function(response) {
-        return response.json();
-      })
-      .then(function(locationListRes) {
+      }
 
-        const datalistEle = document.getElementById("datalist--licence--location");
-        datalistEle.innerHTML = "";
+      if (doDisplayRecord) {
+        displayLimit -= 1;
 
-        for (let index = 0; index < locationListRes.length; index += 1) {
+        const locationDisplayName = locationObj.locationName === "" ? locationObj.locationAddress1 : locationObj.locationName;
 
-          const optionEle = document.createElement("option");
-          optionEle.value = locationListRes[index];
-          datalistEle.insertAdjacentElement("beforeend", optionEle);
-        }
-      });
+        const listItemEle = document.createElement("a");
+        listItemEle.className = "list-item";
+        listItemEle.setAttribute("data-location-id", locationObj.locationID);
+        listItemEle.setAttribute("data-location-display-name", locationDisplayName);
+        listItemEle.innerHTML = locationDisplayName +
+          (locationObj.locationName === "" ? "" : "<br /><small>" + locationObj.locationAddress1 + "</small>");
+        listItemEle.addEventListener("click", locationLookup_setLocation);
+        listEle.insertAdjacentElement("beforeend", listItemEle);
+      }
+    }
+
+    window.llm.clearElement(locationLookup_resultsEle);
+
+    locationLookup_resultsEle.insertAdjacentElement("beforeend", listEle);
+  }
+
+  locationLookup_searchStrEle.addEventListener("keyup", locationLookup_refreshResults);
+
+  document.getElementsByClassName("is-location-lookup-button")[0].addEventListener("click", function() {
+
+    if (locationList.length === 0) {
+
+      window.fetch("/licences/doGetLocations", {
+          method: "get",
+          credentials: "include"
+        })
+        .then(function(response) {
+          return response.json();
+        })
+        .then(function(locationListRes) {
+          locationList = locationListRes;
+          locationLookup_searchStrEle.removeAttribute("disabled");
+          locationLookup_refreshResults();
+        });
+    }
+
+    window.llm.showModal(locationLookup_modalEle);
   });
+
+  cancelButtonEles = locationLookup_modalEle.getElementsByClassName("is-cancel-button");
+
+  for (let buttonIndex = 0; buttonIndex < cancelButtonEles.length; buttonIndex += 1) {
+    cancelButtonEles[buttonIndex].addEventListener("click", window.llm.hideModal);
+  }
+
+  window.llm.initializeTabs(locationLookup_modalEle.querySelector(".tabs ul"));
 
 
   /*

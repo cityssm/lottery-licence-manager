@@ -481,10 +481,12 @@ let licencesDB = {
         "") +
       " l.applicationDate, l.licenceTypeKey," +
       " l.startDate, l.startTime, l.endDate, l.endTime," +
-      " l.location, l.municipality, l.licenceDetails, l.termsConditions," +
+      " lo.locationName, lo.locationAddress1," +
+      " l.municipality, l.licenceDetails, l.termsConditions," +
       " l.externalLicenceNumber, l.licenceFeeIsPaid," +
       " l.recordCreate_userName, l.recordCreate_timeMillis, l.recordUpdate_userName, l.recordUpdate_timeMillis" +
       " from LotteryLicences l" +
+      " left join Locations lo on l.locationID = lo.locationID" +
       (includeOrganization ?
         " left join Organizations o on l.organizationID = o.organizationID" :
         ""
@@ -555,9 +557,12 @@ let licencesDB = {
       readonly: true
     });
 
-    const licenceObj = db.prepare("select * from LotteryLicences" +
-        " where recordDelete_timeMillis is null" +
-        " and licenceID = ?")
+    const licenceObj = db.prepare("select l.*," +
+        " lo.locationName, lo.locationAddress1" +
+        " from LotteryLicences l" +
+        " left join Locations lo on l.locationID = lo.locationID" +
+        " where l.recordDelete_timeMillis is null" +
+        " and l.licenceID = ?")
       .get(licenceID);
 
     if (licenceObj) {
@@ -569,6 +574,8 @@ let licencesDB = {
 
       licenceObj.startTimeString = dateTimeFns.timeIntegerToString(licenceObj.startTime || 0);
       licenceObj.endTimeString = dateTimeFns.timeIntegerToString(licenceObj.endTime || 0);
+
+      licenceObj.locationDisplayName = (licenceObj.locationName === "" ? licenceObj.locationAddress1 : licenceObj.locationName);
 
       licenceObj.canUpdate = canUpdateObject("licence", licenceObj, reqSession);
 
@@ -637,30 +644,53 @@ let licencesDB = {
     return newExternalLicenceNumber;
   },
 
-  getDistinctLicenceLocations: function(municipality) {
+
+  getLocations: function() {
     "use strict";
 
     const db = sqlite(dbPath, {
       readonly: true
     });
 
-    const rows = db.prepare("select distinct location" +
-        " from LotteryLicences" +
+    const rows = db.prepare("select *" +
+        " from Locations" +
         " where recordDelete_timeMillis is null" +
-        " and municipality = ?" +
-        " order by location")
-      .all(municipality);
+        " order by case when locationName = '' then locationAddress1 else locationName end")
+      .all();
 
     db.close();
 
-    let list = new Array(rows.length);
-
-    for (let index = 0; index < rows.length; index += 1) {
-      list[index] = rows[index].location;
-    }
-
-    return list;
+    return rows;
   },
+
+  createLocation: function(reqBody, reqSession) {
+    "use strict";
+
+    const db = sqlite(dbPath);
+
+    const nowMillis = Date.now();
+
+    const info = db.prepare("insert into Locations" +
+        " (locationName, locationAddress1, locationAddress2, locationCity, locationProvince, locationPostalCode," +
+        " recordCreate_userName, recordCreate_timeMillis, recordUpdate_userName, recordUpdate_timeMillis)" +
+        " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
+      .run(reqBody.locationName,
+        reqBody.locationAddress1,
+        reqBody.locationAddress2,
+        reqBody.locationCity,
+        reqBody.locationProvince,
+        reqBody.locationPostalCode,
+        reqSession.user.userName,
+        nowMillis,
+        reqSession.user.userName,
+        nowMillis
+      );
+
+    db.close();
+
+    return info.lastInsertRowid;
+  },
+
 
 
   createLicence: function(reqBody, reqSession) {
@@ -681,7 +711,7 @@ let licencesDB = {
     const info = db.prepare("insert into LotteryLicences (" +
         "organizationID, applicationDate, licenceTypeKey," +
         " startDate, endDate, startTime, endTime," +
-        " location, municipality, licenceDetails, termsConditions, totalPrizeValue," +
+        " locationID, municipality, licenceDetails, termsConditions, totalPrizeValue," +
         " externalLicenceNumber, externalLicenceNumberInteger," +
         " recordCreate_userName, recordCreate_timeMillis," +
         " recordUpdate_userName, recordUpdate_timeMillis)" +
@@ -694,7 +724,7 @@ let licencesDB = {
         dateTimeFns.dateStringToInteger(reqBody.endDateString),
         dateTimeFns.timeStringToInteger(reqBody.startTimeString),
         dateTimeFns.timeStringToInteger(reqBody.endTimeString),
-        reqBody.location,
+        (reqBody.locationID === "" ? null : reqBody.locationID),
         reqBody.municipality,
         reqBody.licenceDetails,
         reqBody.termsConditions,
@@ -791,7 +821,7 @@ let licencesDB = {
         " endDate = ?," +
         " startTime = ?," +
         " endTime = ?," +
-        " location = ?," +
+        " locationID = ?," +
         " municipality = ?," +
         " licenceDetails = ?," +
         " termsConditions = ?," +
@@ -810,7 +840,7 @@ let licencesDB = {
         dateTimeFns.dateStringToInteger(reqBody.endDateString),
         dateTimeFns.timeStringToInteger(reqBody.startTimeString),
         dateTimeFns.timeStringToInteger(reqBody.endTimeString),
-        reqBody.location,
+        (reqBody.locationID === "" ? null : reqBody.locationID),
         reqBody.municipality,
         reqBody.licenceDetails,
         reqBody.termsConditions,
@@ -1042,12 +1072,14 @@ let licencesDB = {
     });
 
     let rows = db.prepare("select e.eventDate, e.bank_name, e.costs_receipts," +
-        " l.licenceID, l.externalLicenceNumber, l.licenceTypeKey, l.licenceDetails, l.location," +
+        " l.licenceID, l.externalLicenceNumber, l.licenceTypeKey, l.licenceDetails," +
+        " lo.locationName, lo.locationAddress1," +
         " l.startTime, l.endTime," +
         " o.organizationName," +
         " e.recordCreate_userName, e.recordCreate_timeMillis, e.recordUpdate_userName, e.recordUpdate_timeMillis" +
         " from LotteryEvents e" +
         " left join LotteryLicences l on e.licenceID = l.licenceID" +
+        " left join Locations lo on l.locationID = lo.locationID" +
         " left join Organizations o on l.organizationID = o.organizationID" +
         " where e.recordDelete_timeMillis is null" +
         " and l.recordDelete_timeMillis is null" +
@@ -1067,8 +1099,12 @@ let licencesDB = {
       eventObj.startTimeString = dateTimeFns.timeIntegerToString(eventObj.startTime || 0);
       eventObj.endTimeString = dateTimeFns.timeIntegerToString(eventObj.endTime || 0);
 
+      eventObj.locationDisplayName = (eventObj.locationName === "" ? eventObj.locationAddress1 : eventObj.locationName);
+
       eventObj.canUpdate = canUpdateObject("event", eventObj, reqSession);
 
+      delete eventObj.locationName;
+      delete eventObj.locationAddress1;
       delete eventObj.bank_name;
       delete eventObj.costs_receipts;
     }

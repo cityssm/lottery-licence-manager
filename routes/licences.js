@@ -25,12 +25,10 @@ router.post("/doSearch", function(req, res) {
 });
 
 
-router.post("/doGetDistinctLocations", function(req, res) {
+router.get("/doGetLocations", function(req, res) {
   "use strict";
 
-  const municipality = req.body.municipality;
-
-  const locations = licencesDB.getDistinctLicenceLocations(municipality);
+  const locations = licencesDB.getLocations();
 
   res.json(locations);
 });
@@ -74,10 +72,6 @@ router.get(["/new", "/new/:organizationID"], function(req, res) {
     externalLicenceNumber = licencesDB.getNextExternalLicenceNumberFromRange();
   }
 
-  // get distinct locations for datalist
-
-  let distinctLocations = licencesDB.getDistinctLicenceLocations(configFns.getProperty("defaults.city"));
-
   res.render("licence-edit", {
     headTitle: "Licence Create",
     isCreate: true,
@@ -89,10 +83,11 @@ router.get(["/new", "/new/:organizationID"], function(req, res) {
       endDateString: currentDateAsString,
       startTimeString: "00:00",
       endTimeString: "00:00",
+      licenceDetails: "",
+      termsConditions: "",
       events: []
     },
     organization: organization,
-    distinctLocations: distinctLocations,
     dateTimeFns: dateTimeFns
   });
 });
@@ -274,8 +269,6 @@ router.get("/:licenceID/edit", function(req, res) {
 
   const organization = licencesDB.getOrganization(licence.organizationID, req.session);
 
-  let distinctLocations = licencesDB.getDistinctLicenceLocations(licence.municipality);
-
   let feeCalculation = configFns.getProperty("licences.feeCalculationFn")(licence);
 
   res.render("licence-edit", {
@@ -283,7 +276,6 @@ router.get("/:licenceID/edit", function(req, res) {
     isCreate: false,
     licence: licence,
     organization: organization,
-    distinctLocations: distinctLocations,
     feeCalculation: feeCalculation,
     dateTimeFns: dateTimeFns
   });
@@ -325,7 +317,7 @@ router.get("/:licenceID/print", function(req, res, next) {
 
         let options = {
           format: "Letter",
-          base: "http://localhost:" + configFns.getProperty("application.port"),
+          base: "http://localhost:" + configFns.getProperty("application.httpPort"),
           phantomArgs: ["--local-url-access=false"]
         };
 

@@ -54,6 +54,25 @@ let dbInit = {
 
       console.warn("Creating licences.db");
 
+      // locations
+
+      licencesDB.prepare("create table if not exists Locations (" +
+        "locationID integer primary key autoincrement," +
+        " locationName varchar(100)," +
+        " locationAddress1 varchar(50)," +
+        " locationAddress2 varchar(50)," +
+        " locationCity varchar(20)," +
+        " locationProvince varchar(2)," +
+        " locationPostalCode varchar(7)," +
+
+        " recordCreate_userName varchar(30) not null," +
+        " recordCreate_timeMillis integer not null," +
+        " recordUpdate_userName varchar(30) not null," +
+        " recordUpdate_timeMillis integer not null," +
+        " recordDelete_userName varchar(30)," +
+        " recordDelete_timeMillis integer" +
+        ")").run();
+
       // organizations
 
       licencesDB.prepare("create table if not exists Organizations (" +
@@ -89,9 +108,28 @@ let dbInit = {
         " representativePhoneNumber varchar(30)," +
         " representativeEmailAddress varchar(200)," +
         " isDefault bit not null default 0," +
+
         " primary key (organizationID, representativeIndex)," +
         " foreign key (organizationID) references Organizations (organizationID)" +
-        ")").run();
+        ") without rowid").run();
+
+      licencesDB.prepare("create table if not exists OrganizationRemarks (" +
+        "organizationID integer not null," +
+        " remarkIndex integer not null," +
+        " remarkDate integer, remarkTime integer," +        
+        " remark text," +
+        " isImportant bit not null default 0," +
+
+        " recordCreate_userName varchar(30) not null," +
+        " recordCreate_timeMillis integer not null," +
+        " recordUpdate_userName varchar(30) not null," +
+        " recordUpdate_timeMillis integer not null," +
+        " recordDelete_userName varchar(30)," +
+        " recordDelete_timeMillis integer," +
+
+        " primary key (organizationID, remarkIndex)," +
+        " foreign key (organizationID) references Organizations (organizationID)" +
+        ") without rowid").run();
 
       // licences
 
@@ -108,7 +146,7 @@ let dbInit = {
         " startDate integer, endDate integer," +
         " startTime integer, endTime integer," +
 
-        " location varchar(100)," +
+        " locationID integer," +
         " municipality varchar(100)," +
         " licenceDetails text," +
         " termsConditions text," +
@@ -126,7 +164,8 @@ let dbInit = {
         " recordDelete_userName varchar(30)," +
         " recordDelete_timeMillis integer," +
 
-        " foreign key (organizationID) references Organizations (organizationID)" +
+        " foreign key (organizationID) references Organizations (organizationID)," +
+        " foreign key (locationID) references Locations (locationID)" +
         ")").run();
 
       licencesDB.prepare("create index if not exists LotteryLicences_ExternalLicenceNumberInteger_Index" +
