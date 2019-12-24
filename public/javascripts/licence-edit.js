@@ -222,7 +222,7 @@
     if (organizationList.length === 0) {
 
       window.fetch("/organizations/doGetAll", {
-          method: "get",
+          method: "GET",
           credentials: "include"
         })
         .then(function(response) {
@@ -254,16 +254,23 @@
   const locationLookup_modalEle = document.getElementsByClassName("is-location-lookup-modal")[0];
   const locationLookup_searchStrEle = document.getElementById("locationLookup--searchStr");
   const locationLookup_resultsEle = document.getElementById("container--locationLookup");
+  const locationLookup_createFormEle = document.getElementById("form--newLocation");
 
 
-  function locationLookup_setLocation(clickEvent) {
+  function locationLookup_setLocation(locationID, locationDisplayName) {
+
+    document.getElementById("licence--locationID").value = locationID;
+    document.getElementById("licence--locationDisplayName").value = locationDisplayName;
+  }
+
+
+  function locationLookup_setLocationFromExisting(clickEvent) {
 
     clickEvent.preventDefault();
 
     const locationEle = clickEvent.currentTarget;
 
-    document.getElementById("licence--locationID").value = locationEle.getAttribute("data-location-id");
-    document.getElementById("licence--locationDisplayName").value = locationEle.getAttribute("data-location-display-name");
+    locationLookup_setLocation(locationEle.getAttribute("data-location-id"), locationEle.getAttribute("data-location-display-name"));
 
     window.llm.hideModal(locationEle);
 
@@ -305,7 +312,7 @@
         listItemEle.setAttribute("data-location-display-name", locationDisplayName);
         listItemEle.innerHTML = locationDisplayName +
           (locationObj.locationName === "" ? "" : "<br /><small>" + locationObj.locationAddress1 + "</small>");
-        listItemEle.addEventListener("click", locationLookup_setLocation);
+        listItemEle.addEventListener("click", locationLookup_setLocationFromExisting);
         listEle.insertAdjacentElement("beforeend", listItemEle);
       }
     }
@@ -317,12 +324,33 @@
 
   locationLookup_searchStrEle.addEventListener("keyup", locationLookup_refreshResults);
 
+  locationLookup_createFormEle.addEventListener("submit", function(formEvent) {
+    formEvent.preventDefault();
+
+    window.fetch("/locations/doCreate", {
+        method: "POST",
+        credentials: "include",
+        body: new URLSearchParams(new FormData(locationLookup_createFormEle))
+      })
+      .then(function(response) {
+        return response.json();
+      })
+      .then(function(responseJSON) {
+
+        if (responseJSON.success) {
+          locationList = [];
+          locationLookup_setLocation(responseJSON.locationID, responseJSON.locationDisplayName);
+          window.llm.hideModal(locationLookup_modalEle);
+        }
+      });
+  });
+
   document.getElementsByClassName("is-location-lookup-button")[0].addEventListener("click", function() {
 
     if (locationList.length === 0) {
 
-      window.fetch("/licences/doGetLocations", {
-          method: "get",
+      window.fetch("/locations/doGetLocations", {
+          method: "GET",
           credentials: "include"
         })
         .then(function(response) {
@@ -345,6 +373,8 @@
   }
 
   window.llm.initializeTabs(locationLookup_modalEle.querySelector(".tabs ul"));
+
+
 
 
   /*

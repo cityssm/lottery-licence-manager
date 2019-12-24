@@ -15,7 +15,7 @@
 
     searchResultsEle.innerHTML = "<p class=\"has-text-centered has-text-grey-lighter\">" +
       "<i class=\"fas fa-3x fa-circle-notch fa-spin\" aria-hidden=\"true\"></i><br />" +
-      "<em>Loading organizations..." +
+      "<em>Loading organizations...</em>" +
       "</p>";
 
     window.fetch("/organizations/doSearch", {

@@ -634,7 +634,54 @@
           </div>
         </div>
         <div class="tab-content" id="locationTab--create">
-          New Location
+          <form id="form--newLocation">
+            <div class="field">
+              <label class="label" for="newLocation--locationName">New Location Name</label>
+              <div class="control">
+                <input class="input" id="newLocation--locationName" name="locationName" type="text" maxlength="100" />
+              </div>
+            </div>
+            <div class="field">
+              <label class="label" for="newLocation--locationAddress1">Address</label>
+              <div class="control">
+                <input class="input" id="newLocation--locationAddress1" name="locationAddress1" type="text" maxlength="50" placeholder="Line 1" required />
+              </div>
+            </div>
+            <div class="field">
+              <label class="sr-only" for="newLocation--locationAddress2">Address Line 2</label>
+              <div class="control">
+                <input class="input" id="newLocation--locationAddress2" name="locationAddress2" type="text" maxlength="50" placeholder="Line 2" />
+              </div>
+            </div>
+            <div class="columns">
+              <div class="column is-8">
+                <div class="field">
+                  <label class="label" for="newLocation--locationCity">City</label>
+                  <div class="control">
+                    <input class="input" id="newLocation--locationCity" name="locationCity" type="text" maxlength="20" value="<%= configFns.getProperty("defaults.city") %>" required />
+                  </div>
+                </div>
+              </div>
+              <div class="column">
+                <div class="field">
+                  <label class="label" for="newLocation--locationProvince">Province</label>
+                  <div class="control">
+                    <input class="input" id="newLocation--locationProvince" name="locationProvince" type="text" maxlength="2" value="<%= configFns.getProperty("defaults.province") %>" required />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="field">
+              <label class="label" for="newLocation--locationPostalCode">Postal Code</label>
+              <div class="control">
+                <input class="input" id="newLocation--locationPostalCode" name="locationPostalCode" type="text" minlength="5" maxlength="7" required />
+              </div>
+            </div>
+            <div class="has-text-right">
+              <button class="button is-success" type="submit">
+                Create Location
+            </div>
+          </form>
         </div>
       </div>
     </section>

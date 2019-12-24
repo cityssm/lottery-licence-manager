@@ -15,11 +15,12 @@ const session = require("express-session");
 const SQLiteStore = require("connect-sqlite3")(session);
 
 
+const router_docs = require("./routes/docs");
 const router_login = require("./routes/login");
 const router_dashboard = require("./routes/dashboard");
-const router_docs = require("./routes/docs");
 const router_organizations = require("./routes/organizations");
 const router_licences = require("./routes/licences");
+const router_locations = require("./routes/locations");
 const router_events = require("./routes/events");
 const router_reports = require("./routes/reports");
 const router_admin = require("./routes/admin");
@@ -138,6 +139,7 @@ app.use("/docs", router_docs);
 app.use("/dashboard", sessionChecker, router_dashboard);
 app.use("/organizations", sessionChecker, router_organizations);
 app.use("/licences", sessionChecker, router_licences);
+app.use("/locations", sessionChecker, router_locations);
 app.use("/events", sessionChecker, router_events);
 app.use("/reports", sessionChecker, router_reports);
 app.use("/admin", sessionChecker, router_admin);

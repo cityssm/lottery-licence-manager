@@ -25,15 +25,6 @@ router.post("/doSearch", function(req, res) {
 });
 
 
-router.get("/doGetLocations", function(req, res) {
-  "use strict";
-
-  const locations = licencesDB.getLocations();
-
-  res.json(locations);
-});
-
-
 router.get(["/new", "/new/:organizationID"], function(req, res) {
   "use strict";
 
