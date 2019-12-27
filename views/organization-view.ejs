@@ -161,9 +161,15 @@
 <% } %>
 
 <%- include('_organization-view_edit-licences'); -%>
+<%- include('_organization-view_edit-remarks'); -%>
 
 <%- include('_footerA'); -%>
 
-<script src="/javascripts/organization-view.min.js"></script>
+<% if (organization.recordDelete_timeMillis && user.userProperties.canUpdate === "true") { %>
+  <script src="/javascripts/organization-view.min.js"></script>
+<% } %>
+
+<script src="/javascripts/main-organizationRemarks.min.js"></script>
+<script src="/javascripts/organization-viewEdit.min.js"></script>
 
 <%- include('_footerB'); -%>

@@ -4,8 +4,6 @@
 (function() {
   "use strict";
 
-  window.llm.initializeTabs(document.getElementById("tabs--licences"));
-
   if (document.getElementsByTagName("main")[0].getAttribute("data-can-update") === "true") {
 
     const restoreButtonEles = document.getElementsByClassName("is-restore-organization-button");
@@ -19,7 +17,7 @@
       const restoreFn = function() {
 
         window.fetch("/organizations/doRestore", {
-            method: "post",
+            method: "POST",
             credentials: "include",
             headers: {
               "Content-Type": "application/json"

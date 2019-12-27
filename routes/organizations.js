@@ -36,6 +36,69 @@ router.get("/doGetAll", function(req, res) {
 });
 
 
+router.post("/doGetRemarks", function(req, res) {
+  "use strict";
+
+  const organizationID = req.body.organizationID;
+
+  res.json(licencesDB.getOrganizationRemarks(organizationID, req.session));
+});
+
+
+router.post("/doGetRemark", function(req, res) {
+  "use strict";
+
+  const organizationID = req.body.organizationID;
+  const remarkIndex = req.body.remarkIndex;
+
+  res.json(licencesDB.getOrganizationRemark(organizationID, remarkIndex, req.session));
+});
+
+
+router.post("/doAddRemark", function(req, res) {
+  "use strict";
+
+  if (req.session.user.userProperties.canCreate !== "true") {
+    res.json("not allowed");
+    return;
+  }
+
+  const remarkIndex = licencesDB.addOrganizationRemark(req.body, req.session);
+
+  res.json({
+    success: true,
+    message: "Remark added successfully.",
+    remarkIndex: remarkIndex
+  });
+});
+
+
+router.post("/doEditRemark", function(req, res) {
+  "use strict";
+
+  if (req.session.user.userProperties.canCreate !== "true") {
+    res.json("not allowed");
+    return;
+  }
+
+  const changeCount = licencesDB.updateOrganizationRemark(req.body, req.session);
+
+  if (changeCount) {
+    res.json({
+      success: true,
+      message: "Remark updated successfully."
+    });
+  } else {
+    res.json({
+      success: false,
+      message: "Remark could not be updated."
+    });
+  }
+});
+
+
+
+
 router.get("/new", function(req, res) {
   "use strict";
 
@@ -162,13 +225,15 @@ router.get("/:organizationID", function(req, res) {
 
   const licences = licencesDB.getLicences({
     organizationID: organizationID
-  }, false, false, req.session);
+  }, false, false, req.session) || [];
 
+  const remarks = licencesDB.getOrganizationRemarks(organizationID, req.session) || [];
 
   res.render("organization-view", {
     headTitle: organization.organizationName,
     organization: organization,
     licences: licences,
+    remarks: remarks,
     currentDateInteger: dateTimeFns.dateToInteger(new Date()),
     stringFns: stringFns
   });
@@ -209,11 +274,14 @@ router.get("/:organizationID/edit", function(req, res) {
     organizationID: organizationID
   }, false, false, req.session) || [];
 
+  const remarks = licencesDB.getOrganizationRemarks(organizationID, req.session) || [];
+
   res.render("organization-edit", {
     headTitle: "Organization Update",
     isCreate: false,
     organization: organization,
     licences: licences,
+    remarks: remarks,
     currentDateInteger: dateTimeFns.dateToInteger(new Date()),
     stringFns: stringFns
   });

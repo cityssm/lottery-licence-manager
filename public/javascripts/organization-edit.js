@@ -18,7 +18,7 @@
     formMessageEle.innerHTML = "Saving... <i class=\"fas fa-circle-notch fa-spin\" aria-hidden=\"true\"></i>";
 
     window.fetch("/organizations/doSave", {
-        method: "post",
+        method: "POST",
         credentials: "include",
         body: new URLSearchParams(new FormData(formEle))
       })
@@ -49,7 +49,7 @@
     const deleteOrganizationFn = function() {
 
       window.fetch("/organizations/doDelete", {
-          method: "post",
+          method: "POST",
           credentials: "include",
           headers: {
             "Content-Type": "application/json"
@@ -375,9 +375,4 @@
   for (let inputIndex = 0; inputIndex < inputEles.length; inputIndex += 1) {
     inputEles[inputIndex].addEventListener("change", setUnsavedChanges);
   }
-
-
-  // licence tabs
-
-  window.llm.initializeTabs(document.getElementById("tabs--licences"));
 }());

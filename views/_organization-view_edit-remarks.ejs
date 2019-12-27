@@ -1,0 +1,75 @@
+<div class="panel">
+  <div class="panel-heading">
+    <div class="level">
+      <div class="level-left">
+        <h2 class="has-text-weight-bold">Remarks</h2>
+      </div>
+      <div class="level-right has-text-weight-normal">
+        <div class="field is-grouped justify-flex-end">
+          <div class="control">
+            <a class="button is-small" href="/reports/remarks-byOrganization?organizationID=<%= organization.organizationID %>">
+              <span class="icon is-small">
+                <i class="fas fa-file-download" aria-hidden="true"></i>
+              </span>
+              <span>Export Remarks</span>
+            </a>
+          </div>
+          <% if (user.userProperties.canCreate === "true") { %>
+            <div class="control">
+              <button class="button is-primary is-small is-add-remark-button" type="button">
+                <span class="icon is-small">
+                  <i class="fas fa-comment" aria-hidden="true"></i>
+                </span>
+                <span>Add a Remark</span>
+              </button>
+            </div>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="container--remarks" data-organization-id="<%= organization.organizationID %>">
+    <%
+      if (remarks.length === 0) {
+    %>
+      <div class="panel-block">
+        <div class="message is-info">
+          <p class="message-body">
+            There are no remarks associated with this organization.
+          </p>
+        </div>
+      </div>
+    <%
+      } else {
+        for (let remarkIndex = 0; remarkIndex < remarks.length; remarkIndex += 1) {
+          const remark = remarks[remarkIndex];
+    %>
+          <div class="panel-block is-block">
+            <div class="columns is-mobile">
+              <div class="column is-narrow">
+                <i class="fas fa-fw fa-comment" aria-hidden="true"></i>
+              </div>
+              <div class="column">
+                <p class="has-newline-chars"><%= remark.remark %></p>
+                <p class="is-size-7">
+                  <%= remark.recordUpdate_userName %> - <%= remark.remarkDateString %> <%= remark.remarkTimeString %>
+                </p>
+              </div>
+              <% if (remark.canUpdate) { %>
+                <div class="column is-narrow">
+                  <button class="button is-small is-edit-remark-button" data-remark-index="<%= remark.remarkIndex %>" type="button">
+                    <span class="icon is-small">
+                      <i class="fas fa-pencil-alt" aria-hidden="true"></i>
+                    </span>
+                    <span>Edit</span>
+                  </button>
+                </div>
+              <% } %>
+            </div>
+          </div>
+    <%
+        }
+      }
+    %>
+  </div>
+</div>

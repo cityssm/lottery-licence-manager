@@ -55,6 +55,71 @@
   };
 
 
+  window.llm.openHtmlModal = function(htmlFileName, callbackFns) {
+
+    window.fetch("/html/" + htmlFileName + ".html")
+      .then(function(response) {
+        return response.text();
+      })
+      .then(function(modalHTML) {
+
+        // append the modal to the end of the body
+
+        const modalContainerEle = document.createElement("div");
+        modalContainerEle.innerHTML = modalHTML;
+
+        const modalEle = modalContainerEle.getElementsByClassName("modal")[0];
+
+        document.body.insertAdjacentElement("beforeend", modalContainerEle);
+
+        // call the onshow
+
+        if (callbackFns && callbackFns.onshow) {
+          callbackFns.onshow(modalEle);
+        }
+
+        // show the modal
+
+        modalEle.classList.add("is-active");
+
+        const closeModalFn = function() {
+
+          const modalWasShown = modalEle.classList.contains("is-active");
+
+          if (callbackFns && callbackFns.onhide && modalWasShown) {
+            callbackFns.onhide(modalEle);
+          }
+
+          modalEle.classList.remove("is-active");
+
+          if (callbackFns && callbackFns.onhidden && modalWasShown) {
+            callbackFns.onhidden(modalEle);
+          }
+
+          modalContainerEle.remove();
+
+          if (callbackFns && callbackFns.onremoved) {
+            callbackFns.onremoved();
+          }
+        };
+
+        // call the onshown
+
+        if (callbackFns && callbackFns.onshown) {
+          callbackFns.onshown(modalEle, closeModalFn);
+        }
+
+        // set up close buttons
+
+        const closeModalBtnEles = modalEle.getElementsByClassName("is-close-modal-button");
+
+        for (let btnIndex = 0; btnIndex < closeModalBtnEles.length; btnIndex += 1) {
+          closeModalBtnEles[btnIndex].addEventListener("click", closeModalFn);
+        }
+      });
+  };
+
+
   /*
    * CONFIRM MODAL
    */

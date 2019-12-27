@@ -19,7 +19,7 @@
       "</p>";
 
     window.fetch("/organizations/doSearch", {
-        method: "post",
+        method: "POST",
         credentials: "include",
         body: new URLSearchParams(new FormData(formEle))
       })

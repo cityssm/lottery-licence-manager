@@ -49,6 +49,11 @@ let dateTimeFns = {
   timeStringToInteger: function(timeString) {
     "use strict";
     return parseInt(("0" + timeString).replace(/:/g, ""));
+  },
+
+  dateToTimeInteger: function(dateObj) {
+    "use strict";
+    return (dateObj.getHours() * 100) + dateObj.getMinutes();
   }
 };
 
