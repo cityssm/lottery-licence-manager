@@ -78,6 +78,24 @@ router.all("/:reportName", function(req, res) {
 
       break;
 
+
+    case "remarks-byOrganization":
+
+      sql = "select organizationID, remarkIndex," +
+        " remarkDate, remarkTime," +
+        " remark, isImportant," +
+        " recordCreate_userName, recordCreate_timeMillis, recordUpdate_userName, recordUpdate_timeMillis" +
+        " from OrganizationRemarks" +
+        " where recordDelete_timeMillis is null" +
+        " and organizationID = ?";
+
+      params = [
+        req.query.organizationID
+      ];
+
+      break;
+
+
     case "licences-byOrganization":
 
       sql = "select organizationID, licenceID, externalLicenceNumber," +

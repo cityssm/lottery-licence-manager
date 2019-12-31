@@ -97,6 +97,33 @@ router.post("/doEditRemark", function(req, res) {
 });
 
 
+router.post("/doDeleteRemark", function(req, res) {
+  "use strict";
+
+  if (req.session.user.userProperties.canCreate !== "true") {
+    res.json("not allowed");
+    return;
+  }
+
+  const organizationID = req.body.organizationID;
+  const remarkIndex = req.body.remarkIndex;
+
+  const changeCount = licencesDB.deleteOrganizationRemark(organizationID, remarkIndex, req.session);
+
+  if (changeCount) {
+    res.json({
+      success: true,
+      message: "Remark deleted successfully."
+    });
+  } else {
+    res.json({
+      success: false,
+      message: "Remark could not be deleted."
+    });
+  }
+});
+
+
 
 
 router.get("/new", function(req, res) {

@@ -22,6 +22,11 @@
       window.llm.organizationRemarks.openEditRemarkModal(organizationID, remarkIndex, refreshRemarksFn);
     };
 
+    const deleteRemarkFn = function(buttonEvent) {
+      const remarkIndex = buttonEvent.currentTarget.getAttribute("data-remark-index");
+      window.llm.organizationRemarks.deleteRemark(organizationID, remarkIndex, true, refreshRemarksFn);
+    };
+
     refreshRemarksFn = function() {
       window.llm.organizationRemarks.getRemarksByOrganizationID(organizationID, function(remarkList) {
 
@@ -49,10 +54,16 @@
               "</div>" +
               (remark.canUpdate ?
                 "<div class=\"column is-narrow\">" +
+                "<div class=\"buttons is-right has-addons\">" +
                 "<button class=\"button is-small is-edit-remark-button\" data-remark-index=\"" + remark.remarkIndex + "\" type=\"button\">" +
                 "<span class=\"icon is-small\"><i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i></span>" +
                 "<span>Edit</span>" +
                 "</button>" +
+                "<button class=\"button is-small has-text-danger is-delete-remark-button\" data-remark-index=\"" + remark.remarkIndex + "\" type=\"button\">" +
+                "<i class=\"fas fa-trash\" aria-hidden=\"true\"></i>" +
+                "<span class=\"sr-only\">Delete</span>" +
+                "</button>" +
+                "</div>" +
                 "</div>" :
                 "") +
               "</div>" +
@@ -63,6 +74,12 @@
 
           for (let btnIndex = 0; btnIndex < editBtnEles.length; btnIndex += 1) {
             editBtnEles[btnIndex].addEventListener("click", editRemarkFn);
+          }
+
+          const deleteBtnEles = remarksContainerEle.getElementsByClassName("is-delete-remark-button");
+
+          for (let btnIndex = 0; btnIndex < deleteBtnEles.length; btnIndex += 1) {
+            deleteBtnEles[btnIndex].addEventListener("click", deleteRemarkFn);
           }
         }
       });
@@ -77,6 +94,12 @@
 
     for (let btnIndex = 0; btnIndex < editBtnEles.length; btnIndex += 1) {
       editBtnEles[btnIndex].addEventListener("click", editRemarkFn);
+    }
+
+    const deleteBtnEles = remarksContainerEle.getElementsByClassName("is-delete-remark-button");
+
+    for (let btnIndex = 0; btnIndex < deleteBtnEles.length; btnIndex += 1) {
+      deleteBtnEles[btnIndex].addEventListener("click", deleteRemarkFn);
     }
   }
 }());

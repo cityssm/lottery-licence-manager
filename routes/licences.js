@@ -84,6 +84,15 @@ router.get(["/new", "/new/:organizationID"], function(req, res) {
 });
 
 
+router.post("/doGetDistinctTermsConditions", function(req, res) {
+  "use strict";
+
+  const organizationID = req.body.organizationID;
+
+  res.json(licencesDB.getDistinctTermsConditions(organizationID));
+});
+
+
 router.post("/doSave", function(req, res) {
   "use strict";
 

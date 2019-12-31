@@ -122,13 +122,22 @@ const licencesDB = (function() {
         readonly: true
       });
 
-      const rows = db.prepare("select *" +
-          " from Locations" +
-          " where recordDelete_timeMillis is null" +
-          " order by case when locationName = '' then locationAddress1 else locationName end")
+      const rows = db.prepare("select lo.locationID, lo.locationName," +
+          " lo.locationAddress1, lo.locationAddress2," +
+          " max(l.endDate) as licences_endDateMax" +
+          " from Locations lo" +
+          " left join LotteryLicences l on lo.locationID = l.locationID and l.recordDelete_timeMillis is null" +
+          " where lo.recordDelete_timeMillis is null" +
+          " group by lo.locationID, lo.locationName, lo.locationAddress1, lo.locationAddress2" +
+          " order by case when lo.locationName = '' then lo.locationAddress1 else lo.locationName end")
         .all();
 
       db.close();
+
+      for (let rowIndex = 0; rowIndex < rows.length; rowIndex += 1) {
+        const locationObj = rows[rowIndex];
+        locationObj.licences_endDateMaxString = dateTimeFns.dateIntegerToString(locationObj.licences_endDateMax);
+      }
 
       return rows;
     },
@@ -609,7 +618,8 @@ const licencesDB = (function() {
           " recordUpdate_userName = ?," +
           " recordUpdate_timeMillis = ?" +
           " where organizationID = ?" +
-          " and remarkIndex = ?")
+          " and remarkIndex = ?" +
+          " and recordDelete_timeMillis is null")
         .run(
           dateTimeFns.dateStringToInteger(reqBody.remarkDateString),
           dateTimeFns.timeStringToInteger(reqBody.remarkTimeString),
@@ -619,6 +629,31 @@ const licencesDB = (function() {
           nowMillis,
           reqBody.organizationID,
           reqBody.remarkIndex);
+
+      let changeCount = info.changes;
+
+      db.close();
+
+      return changeCount;
+    },
+
+    deleteOrganizationRemark: function(organizationID, remarkIndex, reqSession) {
+
+      const db = sqlite(dbPath);
+
+      const nowMillis = Date.now();
+
+      const info = db.prepare("update OrganizationRemarks" +
+          " set recordDelete_userName = ?," +
+          " recordDelete_timeMillis = ?" +
+          " where organizationID = ?" +
+          " and remarkIndex = ?" +
+          " and recordDelete_timeMillis is null")
+        .run(
+          reqSession.user.userName,
+          nowMillis,
+          organizationID,
+          remarkIndex);
 
       let changeCount = info.changes;
 
@@ -1087,6 +1122,33 @@ const licencesDB = (function() {
       db.close();
 
       return changeCount;
+    },
+
+    getDistinctTermsConditions: function(organizationID) {
+
+      const db = sqlite(dbPath, {
+        readonly: true
+      });
+
+      const rows = db.prepare("select termsConditions," +
+          " count(licenceID) as termsConditionsCount," +
+          " max(startDate) as startDateMax" +
+          " from LotteryLicences l" +
+          " where l.organizationID = ?" +
+          " and l.termsConditions is not null and trim(l.termsConditions) <> ''" +
+          " and l.recordDelete_timeMillis is null" +
+          " group by l.termsConditions" +
+          " order by startDateMax desc")
+        .all(organizationID);
+
+      db.close();
+
+      for (let rowIndex = 0; rowIndex < rows.length; rowIndex += 1) {
+        const termsConditionsObj = rows[rowIndex];
+        termsConditionsObj.startDateMaxString = dateTimeFns.dateIntegerToString(termsConditionsObj.startDateMax);
+      }
+
+      return rows;
     },
 
     pokeLicence: function(licenceID, reqSession) {

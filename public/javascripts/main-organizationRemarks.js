@@ -144,6 +144,43 @@ window.llm.organizationRemarks = (function() {
   }
 
 
+  function doDeleteRemark(organiztionID, remarkIndex, callbackFn) {
+
+    window.fetch("/organizations/doDeleteRemark", {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          organizationID: organiztionID,
+          remarkIndex: remarkIndex
+        })
+      })
+      .then(function(response) {
+        return response.json();
+      })
+      .then(callbackFn);
+  }
+
+  function deleteRemark(organizationID, remarkIndex, doConfirm, deleteCallbackFn) {
+
+    if (doConfirm) {
+
+      window.llm.confirmModal("Delete Remark?",
+        "Are you sure you want to delete this remark?",
+        "Yes, Delete",
+        "danger",
+        function() {
+          doDeleteRemark(organizationID, remarkIndex, deleteCallbackFn);
+        }
+      );
+    } else {
+      doDeleteRemark(organizationID, remarkIndex, deleteCallbackFn);
+    }
+  }
+
+
   return {
 
     getRemarksByOrganizationID: getRemarksByOrganizationID,
@@ -152,6 +189,8 @@ window.llm.organizationRemarks = (function() {
 
     openAddRemarkModal: openAddRemarkModal,
 
-    openEditRemarkModal: openEditRemarkModal
+    openEditRemarkModal: openEditRemarkModal,
+
+    deleteRemark: deleteRemark
   };
 }());

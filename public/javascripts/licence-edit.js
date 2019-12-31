@@ -238,7 +238,7 @@
     window.llm.showModal(organizationLookup_modalEle);
   });
 
-  let cancelButtonEles = organizationLookup_modalEle.getElementsByClassName("is-cancel-button");
+  let cancelButtonEles = organizationLookup_modalEle.getElementsByClassName("is-close-modal-button");
 
   for (let buttonIndex = 0; buttonIndex < cancelButtonEles.length; buttonIndex += 1) {
     cancelButtonEles[buttonIndex].addEventListener("click", window.llm.hideModal);
@@ -251,7 +251,7 @@
 
   let locationList = [];
 
-  const locationLookup_modalEle = document.getElementsByClassName("is-location-lookup-modal")[0];
+  const locationLookup_modalEle = document.getElementById("is-location-lookup-modal");
   const locationLookup_searchStrEle = document.getElementById("locationLookup--searchStr");
   const locationLookup_resultsEle = document.getElementById("container--locationLookup");
   const locationLookup_createFormEle = document.getElementById("form--newLocation");
@@ -366,7 +366,7 @@
     window.llm.showModal(locationLookup_modalEle);
   });
 
-  cancelButtonEles = locationLookup_modalEle.getElementsByClassName("is-cancel-button");
+  cancelButtonEles = locationLookup_modalEle.getElementsByClassName("is-close-modal-button");
 
   for (let buttonIndex = 0; buttonIndex < cancelButtonEles.length; buttonIndex += 1) {
     cancelButtonEles[buttonIndex].addEventListener("click", window.llm.hideModal);
@@ -375,6 +375,109 @@
   window.llm.initializeTabs(locationLookup_modalEle.querySelector(".tabs ul"));
 
 
+
+  /*
+   * TERMS AND CONDITIONS
+   */
+
+  let termsConditionsList = [];
+
+  const termsConditionsLookup_modalEle = document.getElementById("is-termsConditions-lookup-modal");
+  const termsConditionsLookup_resultsEle = document.getElementById("container--termsConditionsPrevious");
+
+  function termsConditionsLookup_setTermsConditions(clickEvent) {
+
+    clickEvent.preventDefault();
+
+    const termsConditionsIndex = parseInt(clickEvent.currentTarget.getAttribute("data-terms-conditions-index"));
+
+    document.getElementById("licence--termsConditions").value = termsConditionsList[termsConditionsIndex].termsConditions;
+
+    window.llm.hideModal(termsConditionsLookup_modalEle);
+
+    setUnsavedChanges();
+  }
+
+  document.getElementsByClassName("is-termsConditions-lookup-button")[0].addEventListener("click", function() {
+
+    termsConditionsList = [];
+    window.llm.clearElement(termsConditionsLookup_resultsEle);
+
+    const organizationID = document.getElementById("licence--organizationID").value;
+
+    if (organizationID === "") {
+      window.llm.alertModal("No Organization Selected", "An organization must be selected before the previously used terms and conditions can be retrieved.", "OK", "warning");
+      return;
+    }
+
+    termsConditionsLookup_resultsEle.innerHTML = "<p class=\"has-text-centered has-text-grey-lighter\">" +
+      "<i class=\"fas fa-3x fa-circle-notch fa-spin\" aria-hidden=\"true\"></i><br />" +
+      "Loading previously used terms and conditions..." +
+      "</p>";
+
+    window.fetch("/licences/doGetDistinctTermsConditions", {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          organizationID: organizationID
+        })
+      })
+      .then(function(response) {
+        return response.json();
+      })
+      .then(function(termsConditionsListRes) {
+
+        termsConditionsList = termsConditionsListRes;
+
+        if (termsConditionsList.length === 0) {
+
+          termsConditionsLookup_resultsEle.innerHTML = "<p class=\"has-text-centered\">" +
+            "No previously used terms and conditions found for this organization." +
+            "</p>";
+
+        } else {
+
+          const listEle = document.createElement("div");
+          listEle.className = "list is-hoverable has-margin-bottom-10";
+
+          for (let termsConditionsIndex = 0; termsConditionsIndex < termsConditionsList.length; termsConditionsIndex += 1) {
+
+            const termsConditionsObj = termsConditionsList[termsConditionsIndex];
+
+            const listItemEle = document.createElement("a");
+            listItemEle.className = "list-item";
+            listItemEle.setAttribute("data-terms-conditions-index", termsConditionsIndex);
+
+            listItemEle.innerHTML = "<p>" +
+              window.llm.escapeHTML(termsConditionsObj.termsConditions) +
+              "</p>" +
+              "<p class=\"has-text-right\">" +
+              (termsConditionsObj.termsConditionsCount > 1 ?
+                "<span class=\"tag is-light\">Used " + termsConditionsObj.termsConditionsCount + " times</span>" :
+                "") +
+              "<span class=\"tag is-info\">" + termsConditionsObj.startDateMaxString + "</span>" +
+              "</p>";
+            listItemEle.addEventListener("click", termsConditionsLookup_setTermsConditions);
+            listEle.insertAdjacentElement("beforeend", listItemEle);
+          }
+
+          window.llm.clearElement(termsConditionsLookup_resultsEle);
+
+          termsConditionsLookup_resultsEle.insertAdjacentElement("beforeend", listEle);
+        }
+      });
+
+    window.llm.showModal(termsConditionsLookup_modalEle);
+  });
+
+  cancelButtonEles = termsConditionsLookup_modalEle.getElementsByClassName("is-close-modal-button");
+
+  for (let buttonIndex = 0; buttonIndex < cancelButtonEles.length; buttonIndex += 1) {
+    cancelButtonEles[buttonIndex].addEventListener("click", window.llm.hideModal);
+  }
 
 
   /*
@@ -466,10 +569,29 @@
 
     let eventDateString = "";
 
-    if (eventDate && eventDate instanceof Date) {
-      eventDateString = eventDate.getFullYear() + "-" +
-        ("00" + (eventDate.getMonth() + 1)).slice(-2) + "-" +
-        ("00" + eventDate.getDate()).slice(-2);
+    if (eventDate) {
+
+      if (eventDate instanceof Date) {
+        eventDateString = eventDate.getFullYear() + "-" +
+          ("00" + (eventDate.getMonth() + 1)).slice(-2) + "-" +
+          ("00" + eventDate.getDate()).slice(-2);
+
+      } else if (eventDate.constructor === String) {
+        eventDateString = eventDate;
+
+      } else if (eventDate instanceof Object) {
+
+        try {
+          eventDate.preventDefault();
+
+          const sourceEleID = eventDate.currentTarget.getAttribute("data-source");
+
+          eventDateString = document.getElementById(sourceEleID).value;
+
+        } catch (e) {
+          // ignore
+        }
+      }
     }
 
     events_containerEle.insertAdjacentHTML("beforeend",
@@ -531,13 +653,17 @@
     window.llm.showModal(eventCalculator_modalEle);
   });
 
-  cancelButtonEles = eventCalculator_modalEle.getElementsByClassName("is-cancel-button");
+  cancelButtonEles = eventCalculator_modalEle.getElementsByClassName("is-close-modal-button");
 
   for (let buttonIndex = 0; buttonIndex < cancelButtonEles.length; buttonIndex += 1) {
     cancelButtonEles[buttonIndex].addEventListener("click", window.llm.hideModal);
   }
 
-  document.getElementsByClassName("is-add-event-button")[0].addEventListener("click", events_add);
+  const addEventBtnEles = document.getElementsByClassName("is-add-event-button");
+
+  for (let btnIndex = 0; btnIndex < addEventBtnEles.length; btnIndex += 1) {
+    addEventBtnEles[btnIndex].addEventListener("click", events_add);
+  }
 
 
   /*

@@ -8,7 +8,7 @@ let dateTimeFns = {
   dateIntegerToString: function(dateInteger) {
     "use strict";
 
-    if (dateInteger === 0) {
+    if (dateInteger === null || dateInteger === 0) {
       return "";
     }
 

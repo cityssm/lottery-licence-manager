@@ -29,6 +29,7 @@
         "<thead><tr>" +
         "<th>Location</th>" +
         "<th>Address</th>" +
+        "<th>Last Used</th>" +
         "</tr></thead>" +
         "<tbody></tbody>" +
         "</table>";
@@ -78,6 +79,13 @@
           "<small>" + window.llm.escapeHTML(locationObj.locationAddress2) + "</small>";
 
         trEle.insertAdjacentElement("beforeend", addressTdEle);
+
+        trEle.insertAdjacentHTML("beforeend",
+          "<td>" +
+          (locationObj.licences_endDateMaxString === "" ?
+            "<span class=\"has-text-grey\">Not Used</span>" :
+            locationObj.licences_endDateMaxString) +
+          "</td>");
 
         if (displayLimit === 0) {
           break;
