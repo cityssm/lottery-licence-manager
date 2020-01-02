@@ -1,0 +1,51 @@
+<%- include('_header'); -%>
+
+<nav class="breadcrumb">
+  <ul>
+    <li><a href="/dashboard">Home</a></li>
+    <li><a href="/locations">Locations</a></li>
+    <li class="is-active"><a href="#" aria-current="page"><%= location.locationDisplayName %></a></li>
+  </ul>
+</nav>
+
+<% if (location.recordDelete_timeMillis) { %>
+  <div class="message is-danger">
+    <div class="message-body">
+      <p class="is-size-5 has-text-weight-bold">This location has been deleted.</p>
+    </div>
+  </div>
+<% } %>
+
+<div class="columns">
+  <div class="column">
+    <h1 class="title is-1">
+      <%= location.locationDisplayName %>
+    </h1>
+  </div>
+  <div class="column is-narrow has-text-right">
+    <% if (location.canUpdate) { %>
+      <a class="button is-link" href="/locations/<%= location.locationID %>/edit">
+        <span class="icon is-small">
+          <i class="fas fa-pencil-alt" aria-hidden="true"></i>
+        </span>
+        <span>Edit this Location</span>
+      </a>
+    <% } %>
+  </div>
+</div>
+
+<p class="has-margin-bottom-20">
+  <%= location.locationAddress1 %><br />
+  <%= location.locationAddress2 %>
+  <%- (location.locationAddress2 === "" ? "" : "<br />") %>
+  <%= location.locationCity + ", " + location.locationProvince %><br />
+  <%= location.locationPostalCode %>
+</p>
+
+<%- include('_location-view_edit-licences'); -%>
+
+<%- include('_footerA'); -%>
+
+<script src="/javascripts/location-viewEdit.min.js"></script>
+
+<%- include('_footerB'); -%>

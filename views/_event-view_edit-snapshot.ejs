@@ -33,7 +33,9 @@
       <div class="column">
         <p>
           <strong>Location</strong><br />
-          <%= licence.locationDisplayName %>
+          <a class="has-tooltip-right" data-tooltip="View Location (In a New Window)" href="/locations/<%= licence.locationID %>" target="_blank">
+            <%= licence.locationDisplayName %>
+          </a>
         </p>
       </div>
     </div>

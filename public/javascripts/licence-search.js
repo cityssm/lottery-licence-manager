@@ -45,8 +45,9 @@
           searchResultsEle.innerHTML = "<table class=\"table is-fullwidth is-striped is-hoverable\">" +
             "<thead><tr>" +
             "<th>" + externalLicenceNumberLabel + "</th>" +
-            "<th>Organization Name</th>" +
             "<th>Licence</th>" +
+            "<th>Organization Name</th>" +
+            "<th>Location</th>" +
             "<th>Dates</th>" +
             "<th><span class=\"sr-only\">Options</span></th>" +
             "</tr></thead>" +
@@ -69,10 +70,11 @@
               "<small>Licence #" + licenceObj.licenceID + "</small>" +
               "</a>" +
               "</td>" +
-              "<td>" + window.llm.escapeHTML(licenceObj.organizationName) + "</td>" +
               "<td>" + (licenceType || licenceObj.licenceTypeKey) + "<br />" +
               "<small>" + window.llm.escapeHTML(licenceObj.licenceDetails) + "</small>" +
               "</td>" +
+              "<td>" + window.llm.escapeHTML(licenceObj.organizationName) + "</td>" +
+              "<td>" + window.llm.escapeHTML(licenceObj.locationDisplayName) + "</td>" +
 
               ("<td class=\"is-nowrap\">" +
                 "<span class=\"has-cursor-default has-tooltip-right\" data-tooltip=\"Start Date\"><i class=\"fas fa-fw fa-play\" aria-hidden=\"true\"></i> " + licenceObj.startDateString + "</span><br />" +

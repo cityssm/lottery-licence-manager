@@ -86,17 +86,19 @@
                 licenceType + "<br />" +
                 "<small>" + window.llm.escapeHTML(eventObj.licenceDetails) + "</small>" +
                 "</div>") +
-                ("<div class=\"column\">" +
-                  window.llm.escapeHTML(eventObj.locationDisplayName) + "<br />" +
-                  "<small>" + eventObj.startTimeString + " to " + eventObj.endTimeString + "</small>" +
-                  "</div>") +
+              ("<div class=\"column\">" +
+                window.llm.escapeHTML(eventObj.locationDisplayName) + "<br />" +
+                "<small>" + eventObj.startTimeString +
+                (eventObj.startTimeString === eventObj.endTimeString ? "" : " to " + eventObj.endTimeString) +
+                "</small>" +
+                "</div>") +
+              "<div class=\"column is-1-desktop is-hidden-print has-text-right\">" +
               (eventObj.canUpdate ?
-                "<div class=\"column is-narrow is-hidden-print\">" +
                 "<a class=\"button is-small\" href=\"/events/" + eventObj.licenceID + "/" + eventObj.eventDate + "/edit\">" +
                 "<span class=\"icon\"><i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i></span>" +
                 "<span>Edit</span>" +
-                "</a>" +
-                "</div>" : "") +
+                "</a>" : "") +
+              "</div>" +
               "</div>" +
               "</li>");
           }

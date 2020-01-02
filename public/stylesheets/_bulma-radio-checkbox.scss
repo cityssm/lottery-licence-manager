@@ -43,7 +43,9 @@
       left: 3px;
       width: 16px;
       height: 16px;
+      font-family: 'Font Awesome 5 Free';
       font-size: 12px;
+      font-weight: 900;
       color: $white;
     }
   }
@@ -60,8 +62,6 @@
     }
 
     &:checked + label::after {
-      font-family: 'Font Awesome 5 Free';
-      font-weight: 900;
       content: '\f00c';
     }
 

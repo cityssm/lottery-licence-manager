@@ -1,15 +1,17 @@
 /* global module */
 
-
 const config = {};
 
+/*
+ * APPLICATION SETTINGS
+ */
 
-config.application = {};
+config.application = {
+  applicationName: "Lottery Licence Manager",
+  logoURL: "/images/bingoBalls.png",
+  httpPort: 3000
+};
 
-config.application.applicationName = "Lottery Licence Manager";
-config.application.logoURL = "/images/bingoBalls.png";
-
-config.application.httpPort = 3000;
 
 /*
 config.application.https = {
@@ -41,10 +43,11 @@ config.user = {
 };
 
 
-config.defaults = {};
+config.defaults = {
+  city: "",
+  province: "ON"
+};
 
-config.defaults.city = "Sault Ste. Marie";
-config.defaults.province = "ON";
 
 
 config.licences = {
@@ -194,7 +197,22 @@ config.licenceTypes = [{
   licenceTypeKey: "NV",
   licenceType: "Nevada",
   isActive: true,
-  includeDatalist: true,
+  ticketTypes: [{
+    ticketType: "BN1",
+    ticketPrice: 0.5,
+    ticketCount: 3360,
+    prizesPerDeal: 1115
+  }, {
+    ticketType: "BN14",
+    ticketPrice: 1,
+    ticketCount: 7420,
+    prizesPerDeal: 4930
+  }, {
+    ticketType: "BN26",
+    ticketPrice: 1,
+    ticketCount: 16800,
+    prizesPerDeal: 11440
+  }],
   licenceFields: [{
     fieldKey: "distributor",
     fieldLabel: "Distributor",

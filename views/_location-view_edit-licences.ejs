@@ -7,23 +7,13 @@
       <div class="level-right has-text-weight-normal">
         <div class="field is-grouped justify-flex-end">
           <div class="control">
-            <a class="button is-small" href="/reports/licences-byOrganization?organizationID=<%= organization.organizationID %>">
+            <a class="button is-small" href="/reports/licences-byLocation?locationID=<%= location.locationID %>">
               <span class="icon is-small">
                 <i class="fas fa-file-download" aria-hidden="true"></i>
               </span>
               <span>Export Licences</span>
             </a>
           </div>
-          <% if (user.userProperties.canCreate === "true" && organization.isEligibleForLicences) { %>
-            <div class="control">
-              <a class="button is-primary is-small" href="/licences/new/<%= organization.organizationID %>">
-                <span class="icon is-small">
-                  <i class="fas fa-certificate" aria-hidden="true"></i>
-                </span>
-                <span>Create a New Licence</span>
-              </a>
-            </div>
-          <% } %>
         </div>
       </div>
     </div>
@@ -34,7 +24,7 @@
       "<th class=\"has-width-150\">" + configFns.getProperty("licences.externalLicenceNumber.fieldLabel") + "</th>" +
       "<th class=\"has-width-50 is-nowrap\">Licence Type</th>" +
       "<th>Event Details</th>" +
-      "<th>Location</th>" +
+      "<th>Organization</th>" +
       "<th class=\"has-width-50\">From</th>" +
       "<th class=\"has-width-50\">To</th>" +
       "<th class=\"has-width-50\"><span class=\"sr-only\">Options</span></th>" +
@@ -71,8 +61,8 @@
         "<td>" + (licenceType.licenceType || licence.licenceTypeKey) + "</td>" +
         "<td class=\"has-newline-chars\">" + stringFns.escapeHTML(licence.licenceDetails) + "</td>" +
         "<td>" +
-          "<a href=\"/locations/" + licence.locationID + "\">" +
-          stringFns.escapeHTML(licence.locationDisplayName) +
+          "<a href=\"/organizations/" + licence.organizationID + "\">" +
+          stringFns.escapeHTML(licence.organizationName) +
           "</a>" +
           "</td>" +
         "<td>" + licence.startDateString + "</td>" +
@@ -102,45 +92,53 @@
   %>
 
   <div class="panel-tabs" id="tabs--licences">
-    <a class="is-active" href="#tab--licences-active">Active Licences <%- (count_active > 0 ? " <span class=\"tag is-info has-margin-left-5\">" + count_active + "</span>" : "") %></a>
-    <a href="#tab--licences-past">Past Licences <%- (count_past > 0 ? " <span class=\"tag has-margin-left-5\">" + count_past + "</span>" : "") %></a>
+    <a class="is-active" href="#tab--licences-active">Active Licences
+      <%- (count_active > 0 ? " <span class=\"tag is-info has-margin-left-5\">" + count_active + "</span>" : "") %></a>
+    <a href="#tab--licences-past">Past Licences
+      <%- (count_past > 0 ? " <span class=\"tag has-margin-left-5\">" + count_past + "</span>" : "") %></a>
   </div>
 
   <div class="tab-container">
     <div class="tab-content is-active" id="tab--licences-active">
       <% if (rows_active === "") { %>
-        <div class="panel-block is-block">
-          <div class="message is-info">
-            <div class="message-body">
-              <%= organization.organizationName %> has no active licences.
-            </div>
+      <div class="panel-block is-block">
+        <div class="message is-info">
+          <div class="message-body">
+            There are no active licences at
+            <%= location.locationDisplayName %>.
           </div>
         </div>
+      </div>
       <% } else { %>
-        <table class="table is-fullwidth is-striped is-hoverable">
-          <thead>
-            <%- licenceTheadHTML %>
-          </thead>
-          <tbody><%- rows_active %></tbody>
-        </table>
+      <table class="table is-fullwidth is-striped is-hoverable">
+        <thead>
+          <%- licenceTheadHTML %>
+        </thead>
+        <tbody>
+          <%- rows_active %>
+        </tbody>
+      </table>
       <% } %>
     </div>
     <div class="tab-content" id="tab--licences-past">
       <% if (rows_past === "") { %>
-        <div class="panel-block is-block">
-          <div class="message is-info">
-            <div class="message-body">
-              <%= organization.organizationName %> has no past licences.
-            </div>
+      <div class="panel-block is-block">
+        <div class="message is-info">
+          <div class="message-body">
+            There are no past licences at
+            <%= location.locationDisplayName %>.
           </div>
         </div>
+      </div>
       <% } else { %>
-        <table class="table is-fullwidth is-striped is-hoverable">
-          <thead>
-            <%- licenceTheadHTML %>
-          </thead>
-          <tbody><%- rows_past %></tbody>
-        </table>
+      <table class="table is-fullwidth is-striped is-hoverable">
+        <thead>
+          <%- licenceTheadHTML %>
+        </thead>
+        <tbody>
+          <%- rows_past %>
+        </tbody>
+      </table>
       <% } %>
     </div>
   </div>

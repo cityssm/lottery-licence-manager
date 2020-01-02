@@ -1,0 +1,105 @@
+<%- include('_header'); -%>
+
+<nav class="breadcrumb">
+  <ul>
+    <li><a href="/dashboard">Home</a></li>
+    <li><a href="/locations">Locations</a></li>
+    <li><a href="/locations/<%= location.locationID %>"><%= headTitle %></a></li>
+    <li class="is-active"><a href="#" aria-current="page">Update</a></li>
+  </ul>
+</nav>
+
+<h1 class="title is-1">
+  <%= (isCreate ? "Create a New Location" : "Update a Location") %>
+</h1>
+
+<form class="has-margin-bottom-20" id="form--location">
+  <input id="location--locationID" name="locationID" type="hidden" value="<%= location.locationID %>" />
+  <div class="field">
+    <label class="label" for="location--locationName">Location Name</label>
+    <div class="control">
+      <input class="input" id="location--locationName" name="locationName" type="text" value="<%= location.locationName %>" maxlength="100" />
+    </div>
+    <p class="help">If the location does not have a common name, leave it blank.
+  </div>
+  <div class="field">
+    <label class="label" for="location--locationAddress1">Address</label>
+    <div class="control">
+      <input class="input" id="location--locationAddress1" name="locationAddress1" type="text" value="<%= location.locationAddress1 %>" maxlength="50" placeholder="Line 1" required />
+    </div>
+  </div>
+  <div class="field">
+    <label class="sr-only" for="location--locationAddress2">Address Line 2</label>
+    <div class="control">
+      <input class="input" id="location--locationAddress2" name="locationAddress2" type="text" value="<%= location.locationAddress2 %>" maxlength="50" placeholder="Line 2" />
+    </div>
+  </div>
+  <div class="columns">
+    <div class="column is-8">
+      <div class="field">
+        <label class="label" for="location--locationCity">City</label>
+        <div class="control">
+          <input class="input" id="location--locationCity" name="locationCity" type="text" value="<%= location.locationCity %>" maxlength="20" required />
+        </div>
+      </div>
+    </div>
+    <div class="column">
+      <div class="field">
+        <label class="label" for="location--locationProvince">Province</label>
+        <div class="control">
+          <input class="input" id="location--locationProvince" name="locationProvince" type="text" value="<%= location.locationProvince %>" maxlength="2" required />
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="field">
+    <label class="label" for="location--locationPostalCode">Postal Code</label>
+    <div class="control">
+      <input class="input" id="location--locationPostalCode" name="locationPostalCode" type="text" value="<%= location.locationPostalCode %>" minlength="5" maxlength="7" required />
+    </div>
+  </div>
+
+  <div class="has-text-right is-fixed-bottom has-padding-10 has-background-grey-light">
+    <span class="is-inline-block has-margin-top-10 has-margin-right-10" id="container--form-message"></span>
+
+    <% if (isCreate) { %>
+      <a class="button" href="/locations">
+        Cancel
+      </a>
+    <% } %>
+    <button class="button is-success" type="submit">
+      <%= (isCreate ? "Create New Location and Continue" : "Update Location") %>
+    </button>
+    <% if (!isCreate) { %>
+      <div class="dropdown is-hoverable is-right is-up">
+        <div class="dropdown-trigger">
+          <button class="button" type="button" aria-haspopup="true">
+            <span>Options</span>
+            <span class="icon">
+              <i class="fas fa-angle-up" aria-hidden="true"></i>
+            </span>
+          </button>
+        </div>
+        <div class="dropdown-menu" role="menu">
+          <div class="dropdown-content">
+            <a class="dropdown-item is-delete-button" href="#">
+              <span class="icon"><i class="fas fa-trash has-text-danger" aria-hidden="true"></i></span>
+              <span>Delete Location</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    <% } %>
+  </div>
+</form>
+
+<% if (!isCreate) { %>
+  <%- include('_location-view_edit-licences'); -%>
+<% } %>
+
+<%- include('_footerA'); -%>
+
+<script src="/javascripts/location-edit.min.js"></script>
+<script src="/javascripts/location-viewEdit.min.js"></script>
+
+<%- include('_footerB'); -%>

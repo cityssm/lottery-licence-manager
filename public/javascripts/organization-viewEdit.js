@@ -44,7 +44,9 @@
             remarksContainerEle.insertAdjacentHTML("beforeend", "<div class=\"panel-block is-block\">" +
               "<div class=\"columns is-mobile\">" +
               "<div class=\"column is-narrow\">" +
-              "<i class=\"fas fa-fw fa-comment\" aria-hidden=\"true\"></i>" +
+              (remark.isImportant ?
+                "<i class=\"fas fa-fw fa-star\" aria-hidden=\"true\"></i>" :
+                "<i class=\"far fa-fw fa-comment\" aria-hidden=\"true\"></i>") +
               "</div>" +
               "<div class=\"column\">" +
               "<p class=\"has-newline-chars\">" + window.llm.escapeHTML(remark.remark) + "</p>" +

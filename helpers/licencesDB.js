@@ -136,10 +136,32 @@ const licencesDB = (function() {
 
       for (let rowIndex = 0; rowIndex < rows.length; rowIndex += 1) {
         const locationObj = rows[rowIndex];
+        locationObj.locationDisplayName = locationObj.locationName === "" ? locationObj.locationAddress1 : locationObj.locationName;
         locationObj.licences_endDateMaxString = dateTimeFns.dateIntegerToString(locationObj.licences_endDateMax);
       }
 
       return rows;
+    },
+
+    getLocation: function(locationID, reqSession) {
+
+      const db = sqlite(dbPath, {
+        readonly: true
+      });
+
+      const locationObj = db.prepare("select * from Locations" +
+          " where locationID = ?")
+        .get(locationID);
+
+      if (locationObj) {
+        locationObj.canUpdate = canUpdateObject("location", locationObj, reqSession);
+      }
+
+      db.close();
+
+      locationObj.locationDisplayName = locationObj.locationName === "" ? locationObj.locationAddress1 : locationObj.locationName;
+
+      return locationObj;
     },
 
     createLocation: function(reqBody, reqSession) {
@@ -167,6 +189,60 @@ const licencesDB = (function() {
       db.close();
 
       return info.lastInsertRowid;
+    },
+
+    updateLocation: function(reqBody, reqSession) {
+
+      const db = sqlite(dbPath);
+
+      const nowMillis = Date.now();
+
+      const info = db.prepare("update Locations" +
+          " set locationName = ?," +
+          " locationAddress1 = ?," +
+          " locationAddress2 = ?," +
+          " locationCity = ?," +
+          " locationProvince = ?," +
+          " locationPostalCode = ?," +
+          " recordUpdate_userName = ?," +
+          " recordUpdate_timeMillis = ?" +
+          " where recordDelete_timeMillis is null" +
+          " and locationID = ?")
+        .run(reqBody.locationName,
+          reqBody.locationAddress1,
+          reqBody.locationAddress2,
+          reqBody.locationCity,
+          reqBody.locationProvince,
+          reqBody.locationPostalCode,
+          reqSession.user.userName,
+          nowMillis,
+          reqBody.locationID
+        );
+
+      db.close();
+
+      return info.changes;
+    },
+
+    deleteLocation: function(locationID, reqSession) {
+
+      const db = sqlite(dbPath);
+
+      const nowMillis = Date.now();
+
+      const info = db.prepare("update Locations" +
+          " set recordDelete_userName = ?," +
+          " recordDelete_timeMillis = ?" +
+          " where recordDelete_timeMillis is null" +
+          " and locationID = ?")
+        .run(reqSession.user.userName,
+          nowMillis,
+          locationID
+        );
+
+      db.close();
+
+      return info.changes;
     },
 
     /*
@@ -684,7 +760,7 @@ const licencesDB = (function() {
           "") +
         " l.applicationDate, l.licenceTypeKey," +
         " l.startDate, l.startTime, l.endDate, l.endTime," +
-        " lo.locationName, lo.locationAddress1," +
+        " l.locationID, lo.locationName, lo.locationAddress1," +
         " l.municipality, l.licenceDetails, l.termsConditions," +
         " l.externalLicenceNumber, l.licenceFeeIsPaid," +
         " l.recordCreate_userName, l.recordCreate_timeMillis, l.recordUpdate_userName, l.recordUpdate_timeMillis" +
@@ -726,6 +802,11 @@ const licencesDB = (function() {
         }
       }
 
+      if (reqBody_or_paramsObj.locationID) {
+        sql += " and l.locationID = ?";
+        params.push(reqBody_or_paramsObj.locationID);
+      }
+
       sql += " order by l.endDate desc, l.startDate desc, l.licenceID";
 
       if (useLimit) {
@@ -744,6 +825,8 @@ const licencesDB = (function() {
 
         licenceObj.startTimeString = dateTimeFns.timeIntegerToString(licenceObj.startTime || 0);
         licenceObj.endTimeString = dateTimeFns.timeIntegerToString(licenceObj.endTime || 0);
+
+        licenceObj.locationDisplayName = (licenceObj.locationName === "" ? licenceObj.locationAddress1 : licenceObj.locationName);
 
         licenceObj.canUpdate = canUpdateObject("licence", licenceObj, reqSession);
       }
@@ -780,7 +863,6 @@ const licencesDB = (function() {
         licenceObj.locationDisplayName = (licenceObj.locationName === "" ? licenceObj.locationAddress1 : licenceObj.locationName);
 
         licenceObj.canUpdate = canUpdateObject("licence", licenceObj, reqSession);
-
 
         const fieldList = db.prepare("select * from LotteryLicenceFields" +
             " where licenceID = ?")

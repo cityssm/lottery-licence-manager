@@ -46,7 +46,7 @@ const configFallbackValues = {
     };
   },
 
-  "licences.printTemplate": "licence-print",
+  "licences.printTemplate": "licence-print-agco",
 
   "licenceTypes": []
 };
