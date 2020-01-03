@@ -13,7 +13,7 @@ const marked = require("marked");
 
 router.all("/", function(req, res) {
   "use strict";
-  res.redirect("/docs/index");
+  res.redirect("/docs/index.md");
 });
 
 

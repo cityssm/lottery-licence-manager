@@ -6,14 +6,14 @@
 
 ## Administrator Documentation
 
-[config.js file](admin-configJS)<br />
+[config.js file](admin-configJS.md)<br />
 How to use the configuration file to customize the application.
 
-[Logging into a New Install](admin-login)<br />
+[Logging into a New Install](admin-login.md)<br />
 How to activate the default admin user to access the application for the first time.
 
-[Administrator Tools - Application Settings](admin-applicationSettings)<br />
+[Administrator Tools - Application Settings](admin-applicationSettings.md)<br />
 Tweak some additional settings.
 
-[Administrator Tools - User Management](admin-userManagement)<br />
+[Administrator Tools - User Management](admin-userManagement.md)<br />
 How to add, update, and remove user accounts.
