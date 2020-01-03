@@ -26,27 +26,58 @@
 </div>
 
 <div class="columns">
-  <div class="column is-one-third">
-    <form id="form--filters">
-      <div class="field">
-        <label class="label" for="filter--locationNameAddress">Location Name or Address</label>
-        <div class="control has-icons-left">
-          <input class="input" id="filter--locationNameAddress" name="locationNameAddress" type="text" />
-          <span class="icon is-small is-left">
-            <i class="fas fa-filter" aria-hidden="true"></i>
-          </span>
-        </div>
+  <div class="column is-half">
+    <div class="field">
+      <label class="label" for="filter--locationNameAddress">Location Name or Address</label>
+      <div class="control has-icons-left">
+        <input class="input" id="filter--locationNameAddress" type="text" />
+        <span class="icon is-small is-left">
+          <i class="fas fa-filter" aria-hidden="true"></i>
+        </span>
       </div>
-    </form>
-  </div>
-  <div class="column">
-    <div id="container--searchResults">
-      <p class="has-text-centered has-text-grey-lighter">
-        <i class="fas fa-3x fa-circle-notch fa-spin" aria-hidden="true"></i><br />
-        <em>Loading locations...</em>
-      </p>
     </div>
   </div>
+  <div class="column">
+    <div class="field">
+      <label class="label" for="filter--locationIsDistributor">Distributor Status</label>
+      <div class="control has-icons-left">
+        <div class="select is-fullwidth">
+          <select id="filter--locationIsDistributor">
+            <option value="">(Unfiltered)</option>
+            <option value="1">Show Only Distributors</option>
+            <option value="0">Hide Distributors</option>
+          </select>
+        </div>
+        <span class="icon is-small is-left">
+          <i class="fas fa-filter" aria-hidden="true"></i>
+        </span>
+      </div>
+    </div>
+  </div>
+  <div class="column">
+    <div class="field">
+      <label class="label" for="filter--locationIsManufacturer">Manufacturers</label>
+      <div class="control has-icons-left">
+        <div class="select is-fullwidth">
+          <select id="filter--locationIsManufacturer">
+            <option value="">(Unfiltered)</option>
+            <option value="1">Show Only Manufacturers</option>
+            <option value="0">Hide Manufacturers</option>
+          </select>
+        </div>
+        <span class="icon is-small is-left">
+          <i class="fas fa-filter" aria-hidden="true"></i>
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="has-margin-top-20" id="container--searchResults">
+  <p class="has-text-centered has-text-grey-lighter">
+    <i class="fas fa-3x fa-circle-notch fa-spin" aria-hidden="true"></i><br />
+    <em>Loading locations...</em>
+  </p>
 </div>
 
 <%- include('_footerA'); -%>

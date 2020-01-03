@@ -116,21 +116,63 @@ const licencesDB = (function() {
      * LOCATIONS
      */
 
-    getLocations: function() {
+    getLocations: function(reqBody_or_paramsObj) {
 
       const db = sqlite(dbPath, {
         readonly: true
       });
 
-      const rows = db.prepare("select lo.locationID, lo.locationName," +
-          " lo.locationAddress1, lo.locationAddress2," +
-          " max(l.endDate) as licences_endDateMax" +
-          " from Locations lo" +
-          " left join LotteryLicences l on lo.locationID = l.locationID and l.recordDelete_timeMillis is null" +
-          " where lo.recordDelete_timeMillis is null" +
-          " group by lo.locationID, lo.locationName, lo.locationAddress1, lo.locationAddress2" +
-          " order by case when lo.locationName = '' then lo.locationAddress1 else lo.locationName end")
-        .all();
+      if (!reqBody_or_paramsObj) {
+        reqBody_or_paramsObj = {};
+      }
+
+      let params = [];
+
+      let sql = "select lo.locationID, lo.locationName," +
+        " lo.locationAddress1, lo.locationAddress2, lo.locationCity, lo.locationProvince," +
+        " lo.locationIsDistributor, lo.locationIsManufacturer," +
+        " l.licences_endDateMax, d.distributor_endDateMax, m.manufacturer_endDateMax" +
+        " from Locations lo" +
+
+        (" left join (" +
+          "select locationID, max(endDate) as licences_endDateMax" +
+          " from LotteryLicences" +
+          " where recordDelete_timeMillis is null" +
+          " group by locationID" +
+          ") l on lo.locationID = l.locationID") +
+
+        (" left join (" +
+          "select t.distributorLocationID, max(l.endDate) as distributor_endDateMax" +
+          " from LotteryLicenceTicketTypes t" +
+          " left join LotteryLicences l on t.licenceID = l.licenceID" +
+          " where t.recordDelete_timeMillis is null" +
+          " group by t.distributorLocationID" +
+          ") d on lo.locationID = d.distributorLocationID") +
+
+        (" left join (" +
+          "select t.manufacturerLocationID, max(l.endDate) as manufacturer_endDateMax" +
+          " from LotteryLicenceTicketTypes t" +
+          " left join LotteryLicences l on t.licenceID = l.licenceID" +
+          " where t.recordDelete_timeMillis is null" +
+          " group by t.manufacturerLocationID" +
+          ") m on lo.locationID = m.manufacturerLocationID") +
+
+        " where lo.recordDelete_timeMillis is null";
+
+      if (reqBody_or_paramsObj.locationIsDistributor && reqBody_or_paramsObj.locationIsDistributor !== "") {
+        sql += " and lo.locationIsDistributor = ?";
+        params.push(reqBody_or_paramsObj.locationIsDistributor);
+      }
+
+      if (reqBody_or_paramsObj.locationIsManufacturer && reqBody_or_paramsObj.locationIsManufacturer !== "") {
+        sql += " and lo.locationIsManufacturer = ?";
+        params.push(reqBody_or_paramsObj.locationIsManufacturer);
+      }
+
+      sql += " group by lo.locationID, lo.locationName, lo.locationAddress1, lo.locationAddress2, lo.locationCity, lo.locationProvince, lo.locationIsDistributor, lo.locationIsManufacturer" +
+        " order by case when lo.locationName = '' then lo.locationAddress1 else lo.locationName end";
+
+      const rows = db.prepare(sql).all(params);
 
       db.close();
 
@@ -138,6 +180,8 @@ const licencesDB = (function() {
         const locationObj = rows[rowIndex];
         locationObj.locationDisplayName = locationObj.locationName === "" ? locationObj.locationAddress1 : locationObj.locationName;
         locationObj.licences_endDateMaxString = dateTimeFns.dateIntegerToString(locationObj.licences_endDateMax);
+        locationObj.distributor_endDateMaxString = dateTimeFns.dateIntegerToString(locationObj.distributor_endDateMax);
+        locationObj.manufacturer_endDateMaxString = dateTimeFns.dateIntegerToString(locationObj.manufacturer_endDateMax);
       }
 
       return rows;
@@ -172,14 +216,17 @@ const licencesDB = (function() {
 
       const info = db.prepare("insert into Locations" +
           " (locationName, locationAddress1, locationAddress2, locationCity, locationProvince, locationPostalCode," +
+          " locationIsDistributor, locationIsManufacturer," +
           " recordCreate_userName, recordCreate_timeMillis, recordUpdate_userName, recordUpdate_timeMillis)" +
-          " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
+          " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
         .run(reqBody.locationName,
           reqBody.locationAddress1,
           reqBody.locationAddress2,
           reqBody.locationCity,
           reqBody.locationProvince,
           reqBody.locationPostalCode,
+          reqBody.locationIsDistributor ? 1 : 0,
+          reqBody.locationIsManufacturer ? 1 : 0,
           reqSession.user.userName,
           nowMillis,
           reqSession.user.userName,
@@ -204,6 +251,8 @@ const licencesDB = (function() {
           " locationCity = ?," +
           " locationProvince = ?," +
           " locationPostalCode = ?," +
+          " locationIsDistributor = ?," +
+          " locationIsManufacturer = ?," +
           " recordUpdate_userName = ?," +
           " recordUpdate_timeMillis = ?" +
           " where recordDelete_timeMillis is null" +
@@ -214,6 +263,8 @@ const licencesDB = (function() {
           reqBody.locationCity,
           reqBody.locationProvince,
           reqBody.locationPostalCode,
+          reqBody.locationIsDistributor ? 1 : 0,
+          reqBody.locationIsManufacturer ? 1 : 0,
           reqSession.user.userName,
           nowMillis,
           reqBody.locationID
@@ -243,6 +294,77 @@ const licencesDB = (function() {
       db.close();
 
       return info.changes;
+    },
+
+    mergeLocations: function(locationID_target, locationID_source, reqSession) {
+
+      const db = sqlite(dbPath);
+
+      const nowMillis = Date.now();
+
+      // get locationAttributes
+
+      let locationAttributes = db.prepare("select max(locationIsDistributor) as locationIsDistributorMax," +
+          " max(locationIsManufacturer) as locationIsManufacturerMax," +
+          " count(locationID) as locationCount" +
+          " from Locations" +
+          " where recordDelete_timeMillis is null" +
+          " and (locationID = ? or locationID = ?)")
+        .get(locationID_target, locationID_source);
+
+      if (!locationAttributes) {
+        db.close();
+        return false;
+      }
+
+      if (locationAttributes.locationCount !== 2) {
+        db.close();
+        return false;
+      }
+
+      // update the target location
+
+      db.prepare("update Locations" +
+          " set locationIsDistributor = ?," +
+          " locationIsManufacturer = ?" +
+          " where locationID = ?")
+        .run(locationAttributes.locationIsDistributorMax,
+          locationAttributes.locationIsManufacturerMax,
+          locationID_target);
+
+      // update records assigned to the source location
+
+      db.prepare("update LotteryLicences" +
+          " set locationID = ?" +
+          " where locationID = ?" +
+          " and recordDelete_timeMillis is null")
+        .run(locationID_target, locationID_source);
+
+      db.prepare("update LotteryLicenceTicketTypes" +
+          " set distributorLocationID = ?" +
+          " where distributorLocationID = ?" +
+          " and recordDelete_timeMillis is null")
+        .run(locationID_target, locationID_source);
+
+      db.prepare("update LotteryLicenceTicketTypes" +
+          " set manufacturerLocationID = ?" +
+          " where manufacturerLocationID = ?" +
+          " and recordDelete_timeMillis is null")
+        .run(locationID_target, locationID_source);
+
+      // set the source record to inactive
+
+      db.prepare("update Locations" +
+          " set recordDelete_userName = ?," +
+          " recordDelete_timeMillis = ?" +
+          " where locationID = ?")
+        .run(reqSession.user.userName,
+          nowMillis,
+          locationID_source);
+
+      db.close();
+
+      return true;
     },
 
     /*
@@ -352,9 +474,10 @@ const licencesDB = (function() {
       const info = db.prepare("insert into Organizations (" +
           "organizationName, organizationAddress1, organizationAddress2," +
           " organizationCity, organizationProvince, organizationPostalCode," +
+          " organizationNote," +
           " recordCreate_userName, recordCreate_timeMillis," +
           " recordUpdate_UserName, recordUpdate_timeMillis)" +
-          " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
+          " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
         .run(
           reqBody.organizationName,
           reqBody.organizationAddress1,
@@ -362,6 +485,7 @@ const licencesDB = (function() {
           reqBody.organizationCity,
           reqBody.organizationProvince,
           reqBody.organizationPostalCode,
+          "",
           reqSession.user.userName,
           nowMillis,
           reqSession.user.userName,

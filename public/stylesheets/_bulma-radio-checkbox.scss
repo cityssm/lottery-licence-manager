@@ -1,17 +1,32 @@
 /*
   --- BASED ON ---
+
   cool-checkboxes-for-bulma.io v1.1.0: Cool Checkboxes for Bulma.io
   (c) 2017
   MIT License
   https://github.com/hunzaboy/Cool-Checkboxes-for-Bulma.io
 
   --- CHANGES ---
+
   - converted to SASS
   - using Bulma color variables
   - made to work with Font Awesome 5 Free
   - always use "styled" class look and feel
   - removed "radio" styles
   - removed "is-circular" styles
+
+  --- USAGE ---
+
+  <div class="field">
+    <div class="control">
+      <div class="b-checkbox is-primary">
+        <input id="checkbox" type="checkbox" checked />
+        <label for="checkbox">
+          Is Warning
+        </label>
+      </div>
+    </div>
+  </div>
 */
 
 .b-checkbox {

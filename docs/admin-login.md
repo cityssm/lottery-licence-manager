@@ -1,4 +1,4 @@
-[Help Home](index.md)
+[Help Home](readme.md)
 
 # Admin - Logging Into a New Install
 

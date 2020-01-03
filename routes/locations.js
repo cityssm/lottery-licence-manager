@@ -20,7 +20,7 @@ router.get("/", function(req, res) {
 router.all("/doGetLocations", function(req, res) {
   "use strict";
 
-  const locations = licencesDB.getLocations();
+  const locations = licencesDB.getLocations(req.body);
 
   res.json(locations);
 });
@@ -95,6 +95,25 @@ router.post("/doDelete", function(req, res) {
       message: "Location could not be deleted."
     });
   }
+});
+
+
+router.post("/doMerge", function(req, res) {
+  "use strict";
+
+  if (req.session.user.userProperties.isAdmin !== "true") {
+    res.json("not allowed");
+    return;
+  }
+
+  const targetLocationID = req.body("targetLocationID");
+  const sourceLocationID = req.body("sourceLocationID");
+
+  const success = licencesDB.mergeLocations(targetLocationID, sourceLocationID, req.session);
+
+  res.json({
+    success: success
+  });
 });
 
 

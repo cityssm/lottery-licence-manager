@@ -65,6 +65,9 @@ let dbInit = {
         " locationProvince varchar(2)," +
         " locationPostalCode varchar(7)," +
 
+        " locationIsDistributor bit not null default 0," +
+        " locationIsManufacturer bit not null default 0," +
+
         " recordCreate_userName varchar(30) not null," +
         " recordCreate_timeMillis integer not null," +
         " recordUpdate_userName varchar(30) not null," +
@@ -85,7 +88,7 @@ let dbInit = {
         " organizationPostalCode varchar(7)," +
 
         " isEligibleForLicences bit not null default 1," +
-        " organizationNote text," +
+        " organizationNote text not null default ''," +
 
         " recordCreate_userName varchar(30) not null," +
         " recordCreate_timeMillis integer not null," +
@@ -116,7 +119,7 @@ let dbInit = {
       licencesDB.prepare("create table if not exists OrganizationRemarks (" +
         "organizationID integer not null," +
         " remarkIndex integer not null," +
-        " remarkDate integer, remarkTime integer," +        
+        " remarkDate integer, remarkTime integer," +
         " remark text," +
         " isImportant bit not null default 0," +
 
@@ -166,11 +169,44 @@ let dbInit = {
 
         " foreign key (organizationID) references Organizations (organizationID)," +
         " foreign key (locationID) references Locations (locationID)" +
+
         ")").run();
 
       licencesDB.prepare("create index if not exists LotteryLicences_ExternalLicenceNumberInteger_Index" +
         " on LotteryLicences (externalLicenceNumberInteger desc)" +
         " where externalLicenceNumberInteger <> -1").run();
+
+
+      licencesDB.prepare("create table if not exists LotteryLicenceTicketTypes (" +
+        "licenceID integer not null," +
+        " ticketType varchar(5) not null," +
+        " reportYear integer not null," +
+
+        " distributorLocationID integer," +
+        " manufacturerLocationID integer," +
+
+        " unitCount integer not null," +
+        " licenceFee decimal(10, 2)," +
+
+        " costs_receipts decimal(10, 2)," +
+        " costs_admin decimal(10, 2)," +
+        " costs_prizesAwarded decimal(10, 2)," +
+
+        " recordCreate_userName varchar(30) not null," +
+        " recordCreate_timeMillis integer not null," +
+        " recordUpdate_userName varchar(30) not null," +
+        " recordUpdate_timeMillis integer not null," +
+        " recordDelete_userName varchar(30)," +
+        " recordDelete_timeMillis integer," +
+
+        " primary key (licenceID, ticketType, reportYear)," +
+
+        " foreign key (licenceID) references LotteryLicences (licenceID)," +
+        " foreign key (distributorLocationID) references Locations (locationID)," +
+        " foreign key (manufacturerLocationID) references Locations (locationID)" +
+
+        ") without rowid").run();
+
 
       licencesDB.prepare("create table if not exists LotteryLicenceFields (" +
         "licenceID integer not null," +
@@ -180,6 +216,7 @@ let dbInit = {
         " primary key (licenceID, fieldKey)," +
         " foreign key (licenceID) references LotteryLicences (licenceID)" +
         ") without rowid").run();
+
 
       // events
 

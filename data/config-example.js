@@ -198,20 +198,55 @@ config.licenceTypes = [{
   licenceType: "Nevada",
   isActive: true,
   ticketTypes: [{
+    ticketType: "AG11",
+    ticketPrice: 0.5,
+    ticketCount: 8400,
+    prizesPerDeal: 2860
+  }, {
     ticketType: "BN1",
     ticketPrice: 0.5,
     ticketCount: 3360,
     prizesPerDeal: 1115
+  }, {
+    ticketType: "BN3",
+    ticketPrice: 0.5,
+    ticketCount: 2380,
+    prizesPerDeal: 744
   }, {
     ticketType: "BN14",
     ticketPrice: 1,
     ticketCount: 7420,
     prizesPerDeal: 4930
   }, {
+    ticketType: "BN21",
+    ticketPrice: 0.5,
+    ticketCount: 2730,
+    prizesPerDeal: 930
+  }, {
+    ticketType: "BN22",
+    ticketPrice: 0.5,
+    ticketCount: 4200,
+    prizesPerDeal: 1430
+  }, {
     ticketType: "BN26",
     ticketPrice: 1,
     ticketCount: 16800,
     prizesPerDeal: 11440
+  }, {
+    ticketType: "BN55",
+    ticketPrice: 1,
+    ticketCount: 210,
+    prizesPerDeal: 137
+  }, {
+    ticketType: "SP1",
+    ticketPrice: 0.5,
+    ticketCount: 2730,
+    prizesPerDeal: 930
+  }, {
+    ticketType: "SP21",
+    ticketPrice: 0.5,
+    ticketCount: 3360,
+    prizesPerDeal: 1115
   }],
   licenceFields: [{
     fieldKey: "distributor",

@@ -15,47 +15,77 @@
 
 <form class="has-margin-bottom-20" id="form--location">
   <input id="location--locationID" name="locationID" type="hidden" value="<%= location.locationID %>" />
-  <div class="field">
-    <label class="label" for="location--locationName">Location Name</label>
-    <div class="control">
-      <input class="input" id="location--locationName" name="locationName" type="text" value="<%= location.locationName %>" maxlength="100" />
-    </div>
-    <p class="help">If the location does not have a common name, leave it blank.
-  </div>
-  <div class="field">
-    <label class="label" for="location--locationAddress1">Address</label>
-    <div class="control">
-      <input class="input" id="location--locationAddress1" name="locationAddress1" type="text" value="<%= location.locationAddress1 %>" maxlength="50" placeholder="Line 1" required />
-    </div>
-  </div>
-  <div class="field">
-    <label class="sr-only" for="location--locationAddress2">Address Line 2</label>
-    <div class="control">
-      <input class="input" id="location--locationAddress2" name="locationAddress2" type="text" value="<%= location.locationAddress2 %>" maxlength="50" placeholder="Line 2" />
-    </div>
-  </div>
+
   <div class="columns">
     <div class="column is-8">
       <div class="field">
-        <label class="label" for="location--locationCity">City</label>
+        <label class="label" for="location--locationName">Location Name</label>
         <div class="control">
-          <input class="input" id="location--locationCity" name="locationCity" type="text" value="<%= location.locationCity %>" maxlength="20" required />
+          <input class="input" id="location--locationName" name="locationName" type="text" value="<%= location.locationName %>" maxlength="100" />
+        </div>
+        <p class="help">If the location does not have a common name, leave it blank.
+      </div>
+      <div class="field">
+        <label class="label" for="location--locationAddress1">Address</label>
+        <div class="control">
+          <input class="input" id="location--locationAddress1" name="locationAddress1" type="text" value="<%= location.locationAddress1 %>" maxlength="50" placeholder="Line 1" required />
+        </div>
+      </div>
+      <div class="field">
+        <label class="sr-only" for="location--locationAddress2">Address Line 2</label>
+        <div class="control">
+          <input class="input" id="location--locationAddress2" name="locationAddress2" type="text" value="<%= location.locationAddress2 %>" maxlength="50" placeholder="Line 2" />
+        </div>
+      </div>
+      <div class="columns">
+        <div class="column is-8">
+          <div class="field">
+            <label class="label" for="location--locationCity">City</label>
+            <div class="control">
+              <input class="input" id="location--locationCity" name="locationCity" type="text" value="<%= location.locationCity %>" maxlength="20" required />
+            </div>
+          </div>
+        </div>
+        <div class="column">
+          <div class="field">
+            <label class="label" for="location--locationProvince">Province</label>
+            <div class="control">
+              <input class="input" id="location--locationProvince" name="locationProvince" type="text" value="<%= location.locationProvince %>" maxlength="2" required />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="field">
+        <label class="label" for="location--locationPostalCode">Postal Code</label>
+        <div class="control">
+          <input class="input" id="location--locationPostalCode" name="locationPostalCode" type="text" value="<%= location.locationPostalCode %>" minlength="5" maxlength="7" required />
         </div>
       </div>
     </div>
     <div class="column">
-      <div class="field">
-        <label class="label" for="location--locationProvince">Province</label>
-        <div class="control">
-          <input class="input" id="location--locationProvince" name="locationProvince" type="text" value="<%= location.locationProvince %>" maxlength="2" required />
+      <fieldset>
+        <legend class="is-size-5 has-margin-bottom-10">Location Attributes</legend>
+        <div class="field">
+          <div class="control">
+            <div class="b-checkbox is-primary">
+              <input id="location--locationIsDistributor" name="locationIsDistributor" type="checkbox" <%= (location.locationIsDistributor ? " checked" : "") %> />
+              <label for="location--locationIsDistributor">
+                Location is a Ticket Distributor
+              </label>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
-  </div>
-  <div class="field">
-    <label class="label" for="location--locationPostalCode">Postal Code</label>
-    <div class="control">
-      <input class="input" id="location--locationPostalCode" name="locationPostalCode" type="text" value="<%= location.locationPostalCode %>" minlength="5" maxlength="7" required />
+        <div class="field">
+          <div class="control">
+            <div class="b-checkbox is-primary">
+              <input id="location--locationIsManufacturer" name="locationIsManufacturer" type="checkbox" <%= (location.locationIsManufacturer ? " checked" : "") %> />
+              <label for="location--locationIsManufacturer">
+                Location is a Ticket Manufacturer
+              </label>
+            </div>
+          </div>
+        </div>
+      </fieldset>
     </div>
   </div>
 
@@ -82,8 +112,14 @@
         </div>
         <div class="dropdown-menu" role="menu">
           <div class="dropdown-content">
+            <% if (user.userProperties.isAdmin) { %>
+              <a class="dropdown-item is-merge-button" href="#">
+                <span class="icon"><i class="fas fa-fw fa-compress-alt has-text-danger" aria-hidden="true"></i></span>
+                <span>Merge with Another Location</span>
+              </a>
+            <% } %>
             <a class="dropdown-item is-delete-button" href="#">
-              <span class="icon"><i class="fas fa-trash has-text-danger" aria-hidden="true"></i></span>
+              <span class="icon"><i class="fas fa-fw fa-trash has-text-danger" aria-hidden="true"></i></span>
               <span>Delete Location</span>
             </a>
           </div>
@@ -100,6 +136,9 @@
 <%- include('_footerA'); -%>
 
 <script src="/javascripts/location-edit.min.js"></script>
-<script src="/javascripts/location-viewEdit.min.js"></script>
+
+<% if (!isCreate) { %>
+  <script src="/javascripts/location-viewEdit.min.js"></script>
+<% } %>
 
 <%- include('_footerB'); -%>
