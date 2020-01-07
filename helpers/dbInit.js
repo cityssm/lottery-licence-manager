@@ -179,8 +179,8 @@ let dbInit = {
 
       licencesDB.prepare("create table if not exists LotteryLicenceTicketTypes (" +
         "licenceID integer not null," +
-        " ticketType varchar(5) not null," +
         " reportYear integer not null," +
+        " ticketType varchar(5) not null," +
 
         " distributorLocationID integer," +
         " manufacturerLocationID integer," +
@@ -199,7 +199,7 @@ let dbInit = {
         " recordDelete_userName varchar(30)," +
         " recordDelete_timeMillis integer," +
 
-        " primary key (licenceID, ticketType, reportYear)," +
+        " primary key (licenceID, reportYear, ticketType)," +
 
         " foreign key (licenceID) references LotteryLicences (licenceID)," +
         " foreign key (distributorLocationID) references Locations (locationID)," +

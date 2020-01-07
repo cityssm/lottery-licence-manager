@@ -1,0 +1,43 @@
+<div class="modal">
+  <div class="modal-background"></div>
+  <div class="modal-card">
+    <header class="modal-card-head">
+      <p class="modal-card-title">Merge Location</p>
+      <button class="delete is-close-modal-button" aria-label="close"></button>
+    </header>
+    <section class="modal-card-body">
+      <div class="message is-warning">
+        <div class="message-body">
+          <p class="has-text-weight-bold">
+            You are about to merge records associated with another location with this location.
+          </p>
+          <p>
+            All licences associated with the location you select below
+            will become associated with this location (<span class="mergeLocation--locationDisplayNameAndID_target"></span>).
+            The selected location below will then be removed.
+          </p>
+        </div>
+      </div>
+
+      <div class="control has-icons-left">
+        <input class="input" id="mergeLocation--locationFilter" type="text" disabled />
+        <span class="icon is-small is-left">
+          <i class="fas fa-filter" aria-hidden="true"></i>
+        </span>
+      </div>
+
+      <fieldset>
+        <legend class="sr-only">Available Locations</legend>
+        <div class="has-margin-top-10 has-margin-bottom-10" id="container--sourceLocations">
+          <p class="has-text-grey-lighter has-text-centered">
+            <i class="fas fa-3x fa-circle-notch fa-spin" aria-hidden="true"></i><br />
+            <em>Loading locations...</em>
+          </p>
+        </div>
+      </fieldset>
+    </section>
+    <footer class="modal-card-foot justify-flex-end">
+      <button class="button is-close-modal-button" type="button">Cancel</button>
+    </footer>
+  </div>
+</div>

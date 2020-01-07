@@ -57,6 +57,21 @@
 
   window.llm.openHtmlModal = function(htmlFileName, callbackFns) {
 
+    /*
+     * callbackFns
+     *
+     * - onshow(modalEle)
+     *     loaded, part of DOM, not yet visible
+     * - onshown(modalEle, closeModalFn)
+     *     use closeModalFn() to close the modal properly when not using the close buttons
+     * - onhide(modalEle)
+     *     return false to cancel hide
+     * - onhidden(modalEle)
+     *     hidden, but still part of the DOM
+     * - onremoved()
+     *     no longer part of the DOM
+     */
+
     window.fetch("/html/" + htmlFileName + ".html")
       .then(function(response) {
         return response.text();
@@ -87,7 +102,11 @@
           const modalWasShown = modalEle.classList.contains("is-active");
 
           if (callbackFns && callbackFns.onhide && modalWasShown) {
-            callbackFns.onhide(modalEle);
+            let doHide = callbackFns.onhide(modalEle);
+
+            if (doHide) {
+              return;
+            }
           }
 
           modalEle.classList.remove("is-active");
@@ -202,6 +221,10 @@
    */
 
   window.llm.initializeTabs = function(tabsListEle) {
+
+    if (!tabsListEle) {
+      return;
+    }
 
     const isPanelTabs = tabsListEle.classList.contains("panel-tabs");
 

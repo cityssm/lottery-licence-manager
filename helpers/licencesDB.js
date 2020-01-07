@@ -131,18 +131,22 @@ const licencesDB = (function() {
       let sql = "select lo.locationID, lo.locationName," +
         " lo.locationAddress1, lo.locationAddress2, lo.locationCity, lo.locationProvince," +
         " lo.locationIsDistributor, lo.locationIsManufacturer," +
-        " l.licences_endDateMax, d.distributor_endDateMax, m.manufacturer_endDateMax" +
+        " l.licences_endDateMax, coalesce(l.licences_count, 0) as licences_count," +
+        " d.distributor_endDateMax, coalesce(d.distributor_count, 0) as distributor_count," +
+        " m.manufacturer_endDateMax, coalesce(m.manufacturer_count, 0) as manufacturer_count" +
         " from Locations lo" +
 
         (" left join (" +
-          "select locationID, max(endDate) as licences_endDateMax" +
+          "select locationID," +
+          " count(licenceID) as licences_count, max(endDate) as licences_endDateMax" +
           " from LotteryLicences" +
           " where recordDelete_timeMillis is null" +
           " group by locationID" +
           ") l on lo.locationID = l.locationID") +
 
         (" left join (" +
-          "select t.distributorLocationID, max(l.endDate) as distributor_endDateMax" +
+          "select t.distributorLocationID," +
+          " count(*) as distributor_count, max(l.endDate) as distributor_endDateMax" +
           " from LotteryLicenceTicketTypes t" +
           " left join LotteryLicences l on t.licenceID = l.licenceID" +
           " where t.recordDelete_timeMillis is null" +
@@ -150,7 +154,8 @@ const licencesDB = (function() {
           ") d on lo.locationID = d.distributorLocationID") +
 
         (" left join (" +
-          "select t.manufacturerLocationID, max(l.endDate) as manufacturer_endDateMax" +
+          "select t.manufacturerLocationID," +
+          " count(*) as manufacturer_count, max(l.endDate) as manufacturer_endDateMax" +
           " from LotteryLicenceTicketTypes t" +
           " left join LotteryLicences l on t.licenceID = l.licenceID" +
           " where t.recordDelete_timeMillis is null" +
@@ -927,7 +932,12 @@ const licencesDB = (function() {
       }
 
       if (reqBody_or_paramsObj.locationID) {
-        sql += " and l.locationID = ?";
+        sql += " and (l.locationID = ?" +
+          " or licenceID in (select licenceID from LotteryLicenceTicketTypes where recordDelete_timeMillis is null and (distributorLocationID = ? or manufacturerLocationID = ?))" +
+          ")";
+
+        params.push(reqBody_or_paramsObj.locationID);
+        params.push(reqBody_or_paramsObj.locationID);
         params.push(reqBody_or_paramsObj.locationID);
       }
 
@@ -988,12 +998,44 @@ const licencesDB = (function() {
 
         licenceObj.canUpdate = canUpdateObject("licence", licenceObj, reqSession);
 
+        // ticket types
+
+        const ticketTypesList = db.prepare("select t.reportYear, t.ticketType," +
+            " t.distributorLocationID, d.locationName as distributorLocationName, d.locationAddress1 as distributorLocationAddress1," +
+            " t.manufacturerLocationID, m.locationName as manufacturerLocationName, m.locationAddress1 as manufacturerLocationAddress1," +
+            " t.unitCount, t.licenceFee" +
+            " from LotteryLicenceTicketTypes t" +
+            " left join Locations d on t.distributorLocationID = d.locationID" +
+            " left join Locations m on t.manufacturerLocationID = m.locationID" +
+            " where t.recordDelete_timeMillis is null" +
+            " and t.licenceID = ?" +
+            " order by t.reportYear, t.ticketType")
+          .all(licenceID);
+
+        for (let ticketTypeIndex = 0; ticketTypeIndex < ticketTypesList.length; ticketTypeIndex += 1) {
+
+          const ticketTypeObj = ticketTypesList[ticketTypeIndex];
+
+          ticketTypeObj.distributorLocationDisplayName = ticketTypeObj.distributorLocationName === "" ?
+            ticketTypeObj.distributorLocationAddress1 :
+            ticketTypeObj.distributorLocationName;
+
+          ticketTypeObj.manufacturerLocationDisplayName = ticketTypeObj.manufacturerLocationName === "" ?
+            ticketTypeObj.manufacturerLocationAddress1 :
+            ticketTypeObj.manufacturerLocationName;
+        }
+
+        licenceObj.licenceTicketTypes = ticketTypesList;
+
+        // fields
+
         const fieldList = db.prepare("select * from LotteryLicenceFields" +
             " where licenceID = ?")
           .all(licenceID);
 
         licenceObj.licenceFields = fieldList;
 
+        // events
 
         const eventList = db.prepare("select eventDate from LotteryEvents" +
             " where licenceID = ?" +

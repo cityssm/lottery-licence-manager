@@ -147,6 +147,59 @@
   </div>
 </div>
 
+<% if (licence.licenceTicketTypes.length) { %>
+  <div class="panel">
+    <h2 class="panel-heading">
+      Ticket Types
+    </h2>
+    <table class="table is-fullwidth">
+      <thead>
+        <tr>
+          <th>Year</th>
+          <th>Type</th>
+          <th class="has-text-right">Value</th>
+          <th class="has-text-right">Prizes</th>
+          <th class="has-text-right">Units</th>
+          <th class="has-text-right">Licence Fee</th>
+          <th>Distributor</th>
+          <th>Manufacturer</th>
+        </tr>
+      </thead>
+      <tbody>
+        <%
+          for (let ticketTypeIndex = 0; ticketTypeIndex < licence.licenceTicketTypes.length; ticketTypeIndex += 1) {
+            const licenceTicketTypeObj = licence.licenceTicketTypes[ticketTypeIndex];
+            const ticketType = (licenceType && licenceType.ticketTypes ? licenceType.ticketTypes.find(ele => ele.ticketType === licenceTicketTypeObj.ticketType) : null);
+        %>
+            <tr>
+              <td><%= licenceTicketTypeObj.reportYear %></td>
+              <td><%= licenceTicketTypeObj.ticketType %></td>
+              <td class="has-text-right">
+                <%
+                  let ticketValue = (ticketType ?
+                    "$ " + (ticketType.ticketPrice * ticketType.ticketCount).toFixed(2) :
+                    "");
+                %>
+                <%= ticketValue %>
+              </td>
+              <td class="has-text-right">
+                <%= (ticketType ? "$ " + ticketType.prizesPerDeal.toFixed(2) : "") %>
+              </td>
+              <td class="has-text-right">
+                <%= licenceTicketTypeObj.unitCount %>
+              </td>
+              <td class="has-text-right">
+                <%= "$ " + licenceTicketTypeObj.licenceFee.toFixed(2) %>
+              </td>
+              <td><%= licenceTicketTypeObj.distributorLocationDisplayName %></td>
+              <td><%= licenceTicketTypeObj.manufacturerLocationDisplayName %></td>
+            </tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+<% } %>
+
 <div class="columns">
   <div class="column">
     <div class="panel">

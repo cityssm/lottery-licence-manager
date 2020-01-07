@@ -212,6 +212,9 @@
             <select id="licence--licenceTypeKey" name="licenceTypeKey" required>
               <option value="">(Select a Licence Type)</option>
               <%
+                let currentLicenceType = {};
+                let licenceTypeHasTicketTypes = true;
+
                 const licenceTypes = configFns.getProperty("licenceTypes");
                 for (let licenceTypeIndex = 0; licenceTypeIndex < licenceTypes.length; licenceTypeIndex += 1) {
                   const licenceType = licenceTypes[licenceTypeIndex];
@@ -219,10 +222,23 @@
                   if (!licenceType.isActive && licence.licenceTypeKey !== licenceType.licenceTypeKey) {
                     continue;
                   }
+
+                  let selected = "";
+                  if (licence.licenceTypeKey === licenceType.licenceTypeKey) {
+                    selected = " selected";
+                    currentLicenceType = licenceType;
+                    licenceTypeHasTicketTypes = (licenceType.ticketTypes && licenceType.ticketTypes.length > 0);
+                  }
               %>
-                  <option value="<%= licenceType.licenceTypeKey %>" <%= (licence.licenceTypeKey === licenceType.licenceTypeKey ? " selected" : "") %>>
+                  <option value="<%= licenceType.licenceTypeKey %>" data-has-ticket-types="<%= (licenceType.ticketTypes && licenceType.ticketTypes.length > 0 ? "true": "false") %>" <%= selected %>>
                     <%= licenceType.licenceType %>
                   </option>
+              <%
+                }
+
+                if (!isCreate && !currentLicenceType) {
+              %>
+                <option value="<%= licence.licenceTypeKey %>" data-has-ticket-types="true" selected><%= licence.licenceTypeKey %></option>
               <%
                 }
               %>
@@ -242,6 +258,77 @@
         </div>
       </div>
     </div>
+  </div>
+
+  <%
+    let ticketTypesIsHidden = true;
+
+    if (licenceTypeHasTicketTypes || licence.licenceTicketTypes.length > 0) {
+      ticketTypesIsHidden = false;
+    }
+  %>
+
+  <div class="panel <%= (ticketTypesIsHidden ? " is-hidden" : "") %>">
+    <div class="panel-heading">
+      <div class="level">
+        <div class="level-left">
+          <h2 class="has-text-weight-bold">Ticket Types</h2>
+        </div>
+        <div class="level-right">
+          <button class="button is-small" type="button" aria-haspopup="true">
+            <span class="icon">
+              <i class="fas fa-plus" aria-hidden="true"></i>
+            </span>
+            <span>Add</span>
+          </button>
+        </div>
+      </div>
+    </div>
+    <table class="table is-fullwidth">
+      <thead>
+        <tr>
+          <th>Year</th>
+          <th>Type</th>
+          <th class="has-text-right">Value</th>
+          <th class="has-text-right">Prizes</th>
+          <th class="has-text-right">Units</th>
+          <th class="has-text-right">Licence Fee</th>
+          <th>Distributor</th>
+          <th>Manufacturer</th>
+        </tr>
+      </thead>
+      <tbody>
+        <%
+          for (let ticketTypeIndex = 0; ticketTypeIndex < licence.licenceTicketTypes.length; ticketTypeIndex += 1) {
+            const licenceTicketTypeObj = licence.licenceTicketTypes[ticketTypeIndex];
+            const ticketType = (currentLicenceType && currentLicenceType.ticketTypes ? currentLicenceType.ticketTypes.find(ele => ele.ticketType === licenceTicketTypeObj.ticketType) : null);
+        %>
+            <tr>
+              <td><%= licenceTicketTypeObj.reportYear %></td>
+              <td><%= licenceTicketTypeObj.ticketType %></td>
+              <td class="has-text-right">
+                <%
+                  let ticketValue = (ticketType ?
+                    "$ " + (ticketType.ticketPrice * ticketType.ticketCount).toFixed(2) :
+                    "");
+                %>
+                <%= ticketValue %>
+              </td>
+              <td class="has-text-right">
+                <%= (ticketType ? "$ " + ticketType.prizesPerDeal.toFixed(2) : "") %>
+              </td>
+              <td class="has-text-right">
+                <%= licenceTicketTypeObj.unitCount %>
+              </td>
+              <td class="has-text-right">
+                <%= "$ " + licenceTicketTypeObj.licenceFee.toFixed(2) %>
+              </td>
+              <td><%= licenceTicketTypeObj.distributorLocationDisplayName %></td>
+              <td><%= licenceTicketTypeObj.manufacturerLocationDisplayName %></td>
+            </tr>
+        <% } %>
+      </tbody>
+    </table>
   </div>
 
   <div class="columns">

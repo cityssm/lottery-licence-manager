@@ -106,8 +106,8 @@ router.post("/doMerge", function(req, res) {
     return;
   }
 
-  const targetLocationID = req.body("targetLocationID");
-  const sourceLocationID = req.body("sourceLocationID");
+  const targetLocationID = req.body.targetLocationID;
+  const sourceLocationID = req.body.sourceLocationID;
 
   const success = licencesDB.mergeLocations(targetLocationID, sourceLocationID, req.session);
 

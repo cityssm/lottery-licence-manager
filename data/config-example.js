@@ -251,7 +251,7 @@ config.licenceTypes = [{
   licenceFields: [{
     fieldKey: "distributor",
     fieldLabel: "Distributor",
-    isActive: true,
+    isActive: false,
     inputAttributes: {
       type: "text",
       maxlength: 100
@@ -259,8 +259,7 @@ config.licenceTypes = [{
   }, {
     fieldKey: "manufacturer",
     fieldLabel: "Manufacturer",
-    isActive: true,
-    includeDatalist: true,
+    isActive: false,
     inputAttributes: {
       type: "text",
       maxlength: 100
