@@ -13,14 +13,14 @@
   </ul>
 </nav>
 
-<div class="columns">
-  <div class="column">
+<div class="level">
+  <div class="level-left">
     <h1 class="title is-1">
       <%= (isCreate ? "Create a New Licence" : "Update an Existing Licence") %>
     </h1>
   </div>
   <% if (licence.licenceFeeIsPaid) { %>
-    <div class="column is-narrow has-text-right">
+    <div class="level-right has-text-right">
       <a class="button is-link" href="/licences/<%= licence.licenceID %>/print" target="_blank">
         <span class="icon is-small">
           <i class="fas fa-print" aria-hidden="true"></i>
@@ -263,7 +263,7 @@
   <%
     let ticketTypesIsHidden = true;
 
-    if (licenceTypeHasTicketTypes || licence.licenceTicketTypes.length > 0) {
+    if (!isCreate && (licenceTypeHasTicketTypes || licence.licenceTicketTypes.length > 0)) {
       ticketTypesIsHidden = false;
     }
   %>

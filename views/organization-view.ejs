@@ -29,13 +29,13 @@
   </div>
 <% } %>
 
-<div class="columns">
-  <div class="column">
+<div class="level">
+  <div class="level-left">
     <h1 class="title is-1">
       <%= organization.organizationName %>
     </h1>
   </div>
-  <div class="column is-narrow has-text-right">
+  <div class="level-right has-text-right">
     <% if (organization.canUpdate) { %>
       <a class="button is-link" href="/organizations/<%= organization.organizationID %>/edit">
         <span class="icon is-small">

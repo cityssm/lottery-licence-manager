@@ -76,6 +76,7 @@ router.get(["/new", "/new/:organizationID"], function(req, res) {
       endTimeString: "00:00",
       licenceDetails: "",
       termsConditions: "",
+      licenceTicketTypes: [],
       events: []
     },
     organization: organization,
