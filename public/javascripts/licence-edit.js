@@ -263,7 +263,6 @@
     document.getElementById("licence--locationDisplayName").value = locationDisplayName;
   }
 
-
   function locationLookup_setLocationFromExisting(clickEvent) {
 
     clickEvent.preventDefault();
@@ -485,28 +484,45 @@
    */
 
 
-  const licenceType_selectEle = document.getElementById("licence--licenceTypeKey");
-  const licenceType_fieldContainerEles = document.getElementsByClassName("container-licenceTypeFields");
+  if (isCreate) {
 
-  function licenceType_refreshFields(changeEvent) {
+    const licenceType_selectEle = document.getElementById("licence--licenceTypeKey");
+    const licenceType_fieldContainerEles = document.getElementsByClassName("container-licenceTypeFields");
 
-    const idToShow = "container-licenceTypeFields--" + changeEvent.currentTarget.value;
+    const changeFn_licenceType = function(changeEvent) {
 
-    for (let containerIndex = 0; containerIndex < licenceType_fieldContainerEles.length; containerIndex += 1) {
+      // ticket types
 
-      const fieldContainerEle = licenceType_fieldContainerEles[containerIndex];
+      const hasTicketTypes = changeEvent.currentTarget.selectedOptions[0].getAttribute("data-has-ticket-types") === "true";
 
-      if (fieldContainerEle.id === idToShow) {
-        licenceType_fieldContainerEles[containerIndex].removeAttribute("disabled");
-        licenceType_fieldContainerEles[containerIndex].classList.remove("is-hidden");
+      if (hasTicketTypes) {
+        document.getElementById("is-ticket-types-panel").classList.remove("is-hidden");
       } else {
-        licenceType_fieldContainerEles[containerIndex].classList.add("is-hidden");
-        licenceType_fieldContainerEles[containerIndex].setAttribute("disabled", "disabled");
+        document.getElementById("is-ticket-types-panel").classList.add("is-hidden");
       }
-    }
-  }
 
-  licenceType_selectEle.addEventListener("change", licenceType_refreshFields);
+      // fields
+
+      const licenceTypeKey = changeEvent.currentTarget.value;
+
+      const idToShow = "container-licenceTypeFields--" + licenceTypeKey;
+
+      for (let containerIndex = 0; containerIndex < licenceType_fieldContainerEles.length; containerIndex += 1) {
+
+        const fieldContainerEle = licenceType_fieldContainerEles[containerIndex];
+
+        if (fieldContainerEle.id === idToShow) {
+          licenceType_fieldContainerEles[containerIndex].removeAttribute("disabled");
+          licenceType_fieldContainerEles[containerIndex].classList.remove("is-hidden");
+        } else {
+          licenceType_fieldContainerEles[containerIndex].classList.add("is-hidden");
+          licenceType_fieldContainerEles[containerIndex].setAttribute("disabled", "disabled");
+        }
+      }
+    };
+
+    licenceType_selectEle.addEventListener("change", changeFn_licenceType);
+}
 
 
   /*

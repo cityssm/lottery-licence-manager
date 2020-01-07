@@ -203,6 +203,11 @@
       </div>
     </div>
   </div>
+
+  <%
+    const licenceType = (isCreate ? {} : configFns.getLicenceType(licence.licenceTypeKey));
+  %>
+
   <div class="columns">
     <div class="column is-half">
       <div class="field">
@@ -210,35 +215,28 @@
         <div class="control">
           <div class="select is-fullwidth">
             <select id="licence--licenceTypeKey" name="licenceTypeKey" required>
-              <option value="">(Select a Licence Type)</option>
-              <%
-                let currentLicenceType = {};
-                let licenceTypeHasTicketTypes = true;
+              <% if (isCreate) { %>
+                <option value="">(Select a Licence Type)</option>
+                <%
+                  const licenceTypes = configFns.getProperty("licenceTypes");
 
-                const licenceTypes = configFns.getProperty("licenceTypes");
-                for (let licenceTypeIndex = 0; licenceTypeIndex < licenceTypes.length; licenceTypeIndex += 1) {
-                  const licenceType = licenceTypes[licenceTypeIndex];
+                  for (let licenceTypeIndex = 0; licenceTypeIndex < licenceTypes.length; licenceTypeIndex += 1) {
+                    const licenceTypeOption = licenceTypes[licenceTypeIndex];
 
-                  if (!licenceType.isActive && licence.licenceTypeKey !== licenceType.licenceTypeKey) {
-                    continue;
-                  }
-
-                  let selected = "";
-                  if (licence.licenceTypeKey === licenceType.licenceTypeKey) {
-                    selected = " selected";
-                    currentLicenceType = licenceType;
-                    licenceTypeHasTicketTypes = (licenceType.ticketTypes && licenceType.ticketTypes.length > 0);
-                  }
-              %>
-                  <option value="<%= licenceType.licenceTypeKey %>" data-has-ticket-types="<%= (licenceType.ticketTypes && licenceType.ticketTypes.length > 0 ? "true": "false") %>" <%= selected %>>
-                    <%= licenceType.licenceType %>
+                    if (!licenceTypeOption.isActive) {
+                      continue;
+                    }
+                %>
+                  <option value="<%= licenceTypeOption.licenceTypeKey %>" data-has-ticket-types="<%= (licenceTypeOption.ticketTypes && licenceTypeOption.ticketTypes.length > 0 ? "true": "false") %>">
+                    <%= licenceTypeOption.licenceType %>
                   </option>
               <%
-                }
-
-                if (!isCreate && !currentLicenceType) {
+                  }
+                } else {
               %>
-                <option value="<%= licence.licenceTypeKey %>" data-has-ticket-types="true" selected><%= licence.licenceTypeKey %></option>
+                <option value="<%= licence.licenceTypeKey %>" data-has-ticket-types="<%= ((!licenceType || licenceType.ticketTypes) ? "true" : "false") %>" selected>
+                  <%= (licenceType ? licenceType.licenceType : licence.licenceTypeKey) %>
+                </option>
               <%
                 }
               %>
@@ -263,12 +261,14 @@
   <%
     let ticketTypesIsHidden = true;
 
-    if (!isCreate && (licenceTypeHasTicketTypes || licence.licenceTicketTypes.length > 0)) {
+    if (!isCreate && ((licenceType && licenceType.ticketTypes && licenceType.ticketTypes.length) || licence.licenceTicketTypes.length > 0)) {
       ticketTypesIsHidden = false;
     }
+
+    if (isCreate || !ticketTypesIsHidden) {
   %>
 
-  <div class="panel <%= (ticketTypesIsHidden ? " is-hidden" : "") %>">
+  <div class="panel <%= (ticketTypesIsHidden ? " is-hidden" : "") %>" id="is-ticket-types-panel">
     <div class="panel-heading">
       <div class="level">
         <div class="level-left">
@@ -301,7 +301,7 @@
         <%
           for (let ticketTypeIndex = 0; ticketTypeIndex < licence.licenceTicketTypes.length; ticketTypeIndex += 1) {
             const licenceTicketTypeObj = licence.licenceTicketTypes[ticketTypeIndex];
-            const ticketType = (currentLicenceType && currentLicenceType.ticketTypes ? currentLicenceType.ticketTypes.find(ele => ele.ticketType === licenceTicketTypeObj.ticketType) : null);
+            const ticketType = (licenceType && licenceType.ticketTypes ? licenceType.ticketTypes.find(ele => ele.ticketType === licenceTicketTypeObj.ticketType) : null);
         %>
             <tr>
               <td><%= licenceTicketTypeObj.reportYear %></td>
@@ -330,6 +330,10 @@
       </tbody>
     </table>
   </div>
+
+  <%
+    }
+  %>
 
   <div class="columns">
     <div class="column is-half">
@@ -419,22 +423,27 @@
     </div>
     <div class="column is-half">
       <%
+        const licenceTypes = configFns.getProperty("licenceTypes");
         for (let licenceTypeIndex = 0; licenceTypeIndex < licenceTypes.length; licenceTypeIndex += 1) {
-          const licenceType = licenceTypes[licenceTypeIndex];
+          const licenceTypeOption = licenceTypes[licenceTypeIndex];
+
+          if (!isCreate && licence.licenceTypeKey !== licenceTypeOption.licenceTypeKey) {
+            continue;
+          }
       %>
-        <fieldset class="container-licenceTypeFields <%= (licence.licenceTypeKey === licenceType.licenceTypeKey ? "" : " is-hidden") %>" id="container-licenceTypeFields--<%= licenceType.licenceTypeKey %>" <%= (licence.licenceTypeKey === licenceType.licenceTypeKey ? "" : " disabled") %>>
+        <fieldset class="container-licenceTypeFields <%= (licence.licenceTypeKey === licenceTypeOption.licenceTypeKey ? "" : " is-hidden") %>" id="container-licenceTypeFields--<%= licenceTypeOption.licenceTypeKey %>" <%= (licence.licenceTypeKey === licenceTypeOption.licenceTypeKey ? "" : " disabled") %>>
           <div class="panel">
             <legend class="panel-heading">
-              <h2 class="has-text-weight-bold">Additional <%= licenceType.licenceType %> Fields</h2>
+              <h2 class="has-text-weight-bold">Additional <%= licenceTypeOption.licenceType %> Fields</h2>
             </legend>
             <%
-              const licenceFields = licenceType.licenceFields || [];
+              const licenceFields = licenceTypeOption.licenceFields || [];
               let fieldKeys = "";
 
               for (let fieldIndex = 0; fieldIndex < licenceFields.length; fieldIndex += 1) {
                 const licenceField = licenceFields[fieldIndex];
 
-                const inputName = licenceType.licenceTypeKey + "-" + licenceField.fieldKey;
+                const inputName = licenceTypeOption.licenceTypeKey + "-" + licenceField.fieldKey;
 
                 let fieldValue = "";
 
@@ -485,9 +494,9 @@
             %>
                   <div class="panel-block is-block">
                     <div class="field">
-                      <label class="label" for="licence--<%= savedField.fieldKey %>-<%= licenceType.licenceTypeKey %>"><%= savedField.fieldKey %></label>
+                      <label class="label" for="licence--<%= savedField.fieldKey %>-<%= licenceTypeOption.licenceTypeKey %>"><%= savedField.fieldKey %></label>
                       <div class="control">
-                        <input class="input" id="licence--<%= savedField.fieldKey %>-<%= licenceType.licenceTypeKey %>" name="<%= savedField.fieldKey %>" type="text" value="<%= savedField.fieldValue %>" />
+                        <input class="input" id="licence--<%= savedField.fieldKey %>-<%= licenceTypeOption.licenceTypeKey %>" name="<%= savedField.fieldKey %>" type="text" value="<%= savedField.fieldValue %>" />
                       </div>
                     </div>
                   </div>
