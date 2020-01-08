@@ -1,0 +1,27 @@
+<div class="modal">
+  <div class="modal-background"></div>
+  <div class="modal-card">
+    <header class="modal-card-head">
+      <h3 class="modal-card-title">Select an Organization</h3>
+      <button class="delete is-close-modal-button" aria-label="close" type="button"></button>
+    </header>
+    <section class="modal-card-body">
+      <label class="sr-only" for="organizationLookup--searchStr">Filter Organizations</label>
+      <div class="control has-icons-left">
+        <input class="input" id="organizationLookup--searchStr" type="text" placeholder="Filter Organizations" disabled />
+        <span class="icon is-left">
+          <i class="fas fa-filter" aria-hidden="true"></i>
+        </span>
+      </div>
+      <div class="has-margin-top-20 has-margin-bottom-20" id="container--organizationLookup">
+        <p class="has-text-centered has-text-grey-lighter">
+          <i class="fas fa-3x fa-circle-notch fa-spin" aria-hidden="true"></i><br />
+          Loading organizations...
+        </p>
+      </div>
+    </section>
+    <footer class="modal-card-foot justify-right">
+      <button class="button is-close-modal-button" type="button">Cancel</button>
+    </footer>
+  </div>
+</div>

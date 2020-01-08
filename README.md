@@ -19,3 +19,9 @@ It is being shared in it's current state to start the dialog among other Ontario
 and present an option to those who may be looking to refresh their own lottery licensing systems in the near future.
 
 [Documentation So Far](/docs)
+
+## Helpful Links
+
+[AGCO - Charitable Lottery Licensing Overview](https://www.agco.ca/lottery-and-gaming/charitable-lottery-licensing-overview)
+
+[AGCO - Schedule of Approved Break Open Ticket Types and Associated Maximum Expenses](https://www.agco.ca/sites/default/files/schedule_of_approved_bot_types_and_associated_expense_maximumsen.pdf)

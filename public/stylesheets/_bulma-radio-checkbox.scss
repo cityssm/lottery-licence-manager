@@ -42,26 +42,29 @@
       position: absolute;
       top: 5px;
       left: 0;
+      display: inline-block;
       width: 17px;
       height: 17px;
-      color: $white;
-      background-color: $white;
-      border: 1px solid $border;
-      border-radius: 3px;
+      color: $input-background-color;
+      background-color: $input-background-color;
+      border: 1px solid $input-border-color;
+      border-radius: $input-radius;
       content: '';
       transition: background 0.1s ease-in-out;
+    }
+
+    &:hover::before {
+      border-color: $input-hover-border-color;
     }
 
     &::after {
       position: absolute;
       top: 7px;
       left: 3px;
-      width: 16px;
-      height: 16px;
       font-family: 'Font Awesome 5 Free';
       font-size: 12px;
       font-weight: 900;
-      color: $white;
+      color: $input-background-color;
     }
   }
 

@@ -7,14 +7,14 @@
   </ul>
 </nav>
 
-<div class="columns">
-  <div class="column">
+<div class="level">
+  <div class="level-left">
     <h1 class="title is-1">
       Find a Location
     </h1>
   </div>
   <% if (user.userProperties.canCreate === "true") { %>
-    <div class="column is-narrow has-text-right">
+    <div class="level-right has-text-right">
       <a class="button is-primary" href="/locations/new">
         <span class="icon is-small">
           <i class="fas fa-plus" aria-hidden="true"></i>
@@ -56,7 +56,7 @@
   </div>
   <div class="column">
     <div class="field">
-      <label class="label" for="filter--locationIsManufacturer">Manufacturers</label>
+      <label class="label" for="filter--locationIsManufacturer">Manufacturer Status</label>
       <div class="control has-icons-left">
         <div class="select is-fullwidth">
           <select id="filter--locationIsManufacturer">

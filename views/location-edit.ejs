@@ -98,7 +98,12 @@
       </a>
     <% } %>
     <button class="button is-success" type="submit">
-      <%= (isCreate ? "Create New Location and Continue" : "Update Location") %>
+      <span class="icon">
+        <i class="fas fa-save" aria-hidden="true"></i>
+      </span>
+      <span>
+        <%= (isCreate ? "Create New Location and Continue" : "Update Location") %>
+      </span>
     </button>
     <% if (!isCreate) { %>
       <div class="dropdown is-hoverable is-right is-up">

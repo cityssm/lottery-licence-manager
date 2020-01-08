@@ -148,100 +148,109 @@
    * ORGANIZATION LOOKUP
    */
 
+  {
+    let organizationList = [];
 
-  let organizationList = [];
+    let organizationLookup_closeModalFn;
+    let organizationLookup_searchStrEle;
+    let organizationLookup_resultsEle;
 
-  const organizationLookup_modalEle = document.getElementsByClassName("is-organization-lookup-modal")[0];
-  const organizationLookup_searchStrEle = document.getElementById("organizationLookup--searchStr");
-  const organizationLookup_resultsEle = document.getElementById("container--organizationLookup");
+    const organizationLookupFn_setOrganization = function(clickEvent) {
 
-  function organizationLookup_setOrganization(clickEvent) {
+      clickEvent.preventDefault();
 
-    clickEvent.preventDefault();
+      const organizationEle = clickEvent.currentTarget;
 
-    const organizationEle = clickEvent.currentTarget;
+      document.getElementById("licence--organizationID").value = organizationEle.getAttribute("data-organization-id");
+      document.getElementById("licence--organizationName").value = organizationEle.getAttribute("data-organization-name");
 
-    document.getElementById("licence--organizationID").value = organizationEle.getAttribute("data-organization-id");
-    document.getElementById("licence--organizationName").value = organizationEle.getAttribute("data-organization-name");
+      organizationLookup_closeModalFn();
 
-    window.llm.hideModal(organizationEle);
+      setUnsavedChanges();
+    };
 
-    setUnsavedChanges();
-  }
+    const organizationLookupFn_refreshResults = function() {
 
-  function organizationLookup_refreshResults() {
+      const listEle = document.createElement("div");
+      listEle.className = "list is-hoverable";
 
-    const listEle = document.createElement("div");
-    listEle.className = "list is-hoverable";
+      const searchStringSplit = organizationLookup_searchStrEle.value.trim().toLowerCase().split(" ");
 
-    const searchStringSplit = organizationLookup_searchStrEle.value.trim().toLowerCase().split(" ");
+      let displayLimit = 10;
 
-    let displayLimit = 10;
+      for (let organizationIndex = 0; organizationIndex < organizationList.length && displayLimit > 0; organizationIndex += 1) {
 
-    for (let organizationIndex = 0; organizationIndex < organizationList.length && displayLimit > 0; organizationIndex += 1) {
+        let doDisplayRecord = true;
 
-      let doDisplayRecord = true;
+        const organizationObj = organizationList[organizationIndex];
 
-      const organizationObj = organizationList[organizationIndex];
+        if (!organizationObj.isEligibleForLicences) {
+          continue;
+        }
 
-      if (!organizationObj.isEligibleForLicences) {
-        continue;
-      }
+        const organizationName = organizationObj.organizationName.toLowerCase();
 
-      const organizationName = organizationObj.organizationName.toLowerCase();
+        for (let searchStringIndex = 0; searchStringIndex < searchStringSplit.length; searchStringIndex += 1) {
+          if (organizationName.indexOf(searchStringSplit[searchStringIndex]) === -1) {
+            doDisplayRecord = false;
+            break;
+          }
+        }
 
-      for (let searchStringIndex = 0; searchStringIndex < searchStringSplit.length; searchStringIndex += 1) {
-        if (organizationName.indexOf(searchStringSplit[searchStringIndex]) === -1) {
-          doDisplayRecord = false;
-          break;
+        if (doDisplayRecord) {
+          displayLimit -= 1;
+
+          const listItemEle = document.createElement("a");
+          listItemEle.className = "list-item";
+          listItemEle.setAttribute("data-organization-id", organizationObj.organizationID);
+          listItemEle.setAttribute("data-organization-name", organizationObj.organizationName);
+          listItemEle.innerText = organizationObj.organizationName;
+          listItemEle.addEventListener("click", organizationLookupFn_setOrganization);
+          listEle.insertAdjacentElement("beforeend", listItemEle);
         }
       }
 
-      if (doDisplayRecord) {
-        displayLimit -= 1;
+      window.llm.clearElement(organizationLookup_resultsEle);
 
-        const listItemEle = document.createElement("a");
-        listItemEle.className = "list-item";
-        listItemEle.setAttribute("data-organization-id", organizationObj.organizationID);
-        listItemEle.setAttribute("data-organization-name", organizationObj.organizationName);
-        listItemEle.innerText = organizationObj.organizationName;
-        listItemEle.addEventListener("click", organizationLookup_setOrganization);
-        listEle.insertAdjacentElement("beforeend", listItemEle);
-      }
-    }
+      organizationLookup_resultsEle.insertAdjacentElement("beforeend", listEle);
+    };
 
-    window.llm.clearElement(organizationLookup_resultsEle);
+    document.getElementById("is-organization-lookup-button").addEventListener("click", function() {
 
-    organizationLookup_resultsEle.insertAdjacentElement("beforeend", listEle);
-  }
+      window.llm.openHtmlModal("licenceOrganizationLookup", {
 
-  organizationLookup_searchStrEle.addEventListener("keyup", organizationLookup_refreshResults);
+        onshow: function() {
+          organizationLookup_searchStrEle = document.getElementById("organizationLookup--searchStr");
+          organizationLookup_searchStrEle.addEventListener("keyup", organizationLookupFn_refreshResults);
 
-  document.getElementsByClassName("is-organization-lookup-button")[0].addEventListener("click", function() {
+          organizationLookup_resultsEle = document.getElementById("container--organizationLookup");
 
-    if (organizationList.length === 0) {
+          if (organizationList.length === 0) {
 
-      window.fetch("/organizations/doGetAll", {
-          method: "GET",
-          credentials: "include"
-        })
-        .then(function(response) {
-          return response.json();
-        })
-        .then(function(organizationListRes) {
-          organizationList = organizationListRes;
-          organizationLookup_searchStrEle.removeAttribute("disabled");
-          organizationLookup_refreshResults();
-        });
-    }
+            window.fetch("/organizations/doGetAll", {
+                method: "GET",
+                credentials: "include"
+              })
+              .then(function(response) {
+                return response.json();
+              })
+              .then(function(organizationListRes) {
+                organizationList = organizationListRes;
+                organizationLookup_searchStrEle.removeAttribute("disabled");
+                organizationLookupFn_refreshResults();
+              });
+          } else {
+            organizationLookup_searchStrEle.removeAttribute("disabled");
+            organizationLookupFn_refreshResults();
+          }
+        },
 
-    window.llm.showModal(organizationLookup_modalEle);
-  });
+        onshown: function(modalEle, closeModalFn) {
+          organizationLookup_closeModalFn = closeModalFn;
+        }
+      });
 
-  let cancelButtonEles = organizationLookup_modalEle.getElementsByClassName("is-close-modal-button");
-
-  for (let buttonIndex = 0; buttonIndex < cancelButtonEles.length; buttonIndex += 1) {
-    cancelButtonEles[buttonIndex].addEventListener("click", window.llm.hideModal);
+    });
   }
 
 
@@ -249,235 +258,247 @@
    * LOCATION LOOKUP
    */
 
-  let locationList = [];
+  {
+    let locationList = [];
 
-  const locationLookup_modalEle = document.getElementById("is-location-lookup-modal");
-  const locationLookup_searchStrEle = document.getElementById("locationLookup--searchStr");
-  const locationLookup_resultsEle = document.getElementById("container--locationLookup");
-  const locationLookup_createFormEle = document.getElementById("form--newLocation");
+    let locationLookup_closeModalFn;
+    let locationLookup_searchStrEle;
+    let locationLookup_resultsEle;
 
 
-  function locationLookup_setLocation(locationID, locationDisplayName) {
+    const locationLookupFn_setLocation = function(locationID, locationDisplayName) {
+      document.getElementById("licence--locationID").value = locationID;
+      document.getElementById("licence--locationDisplayName").value = locationDisplayName;
+    };
 
-    document.getElementById("licence--locationID").value = locationID;
-    document.getElementById("licence--locationDisplayName").value = locationDisplayName;
-  }
+    const locationLookupFn_setLocationFromExisting = function(clickEvent) {
 
-  function locationLookup_setLocationFromExisting(clickEvent) {
+      clickEvent.preventDefault();
 
-    clickEvent.preventDefault();
+      const locationEle = clickEvent.currentTarget;
 
-    const locationEle = clickEvent.currentTarget;
+      locationLookupFn_setLocation(
+        locationEle.getAttribute("data-location-id"),
+        locationEle.getAttribute("data-location-display-name"));
 
-    locationLookup_setLocation(locationEle.getAttribute("data-location-id"), locationEle.getAttribute("data-location-display-name"));
+      locationLookup_closeModalFn();
 
-    window.llm.hideModal(locationEle);
+      setUnsavedChanges();
+    };
 
-    setUnsavedChanges();
-  }
+    const locationLookupFn_refreshResults = function() {
 
-  function locationLookup_refreshResults() {
+      const listEle = document.createElement("div");
+      listEle.className = "list is-hoverable";
 
-    const listEle = document.createElement("div");
-    listEle.className = "list is-hoverable";
+      const searchStringSplit = locationLookup_searchStrEle.value.trim().toLowerCase().split(" ");
 
-    const searchStringSplit = locationLookup_searchStrEle.value.trim().toLowerCase().split(" ");
+      let displayLimit = 10;
 
-    let displayLimit = 10;
+      for (let locationIndex = 0; locationIndex < locationList.length && displayLimit > 0; locationIndex += 1) {
 
-    for (let locationIndex = 0; locationIndex < locationList.length && displayLimit > 0; locationIndex += 1) {
+        let doDisplayRecord = true;
 
-      let doDisplayRecord = true;
+        const locationObj = locationList[locationIndex];
 
-      const locationObj = locationList[locationIndex];
+        const locationName = locationObj.locationName.toLowerCase();
 
-      const locationName = locationObj.locationName.toLowerCase();
+        for (let searchStringIndex = 0; searchStringIndex < searchStringSplit.length; searchStringIndex += 1) {
+          if (locationName.indexOf(searchStringSplit[searchStringIndex]) === -1) {
+            doDisplayRecord = false;
+            break;
+          }
+        }
 
-      for (let searchStringIndex = 0; searchStringIndex < searchStringSplit.length; searchStringIndex += 1) {
-        if (locationName.indexOf(searchStringSplit[searchStringIndex]) === -1) {
-          doDisplayRecord = false;
-          break;
+        if (doDisplayRecord) {
+          displayLimit -= 1;
+
+          const locationDisplayName = locationObj.locationName === "" ? locationObj.locationAddress1 : locationObj.locationName;
+
+          const listItemEle = document.createElement("a");
+          listItemEle.className = "list-item";
+          listItemEle.setAttribute("data-location-id", locationObj.locationID);
+          listItemEle.setAttribute("data-location-display-name", locationDisplayName);
+          listItemEle.innerHTML = locationDisplayName +
+            (locationObj.locationName === "" ? "" : "<br /><small>" + locationObj.locationAddress1 + "</small>");
+          listItemEle.addEventListener("click", locationLookupFn_setLocationFromExisting);
+          listEle.insertAdjacentElement("beforeend", listItemEle);
         }
       }
 
-      if (doDisplayRecord) {
-        displayLimit -= 1;
+      window.llm.clearElement(locationLookup_resultsEle);
 
-        const locationDisplayName = locationObj.locationName === "" ? locationObj.locationAddress1 : locationObj.locationName;
+      locationLookup_resultsEle.insertAdjacentElement("beforeend", listEle);
+    };
 
-        const listItemEle = document.createElement("a");
-        listItemEle.className = "list-item";
-        listItemEle.setAttribute("data-location-id", locationObj.locationID);
-        listItemEle.setAttribute("data-location-display-name", locationDisplayName);
-        listItemEle.innerHTML = locationDisplayName +
-          (locationObj.locationName === "" ? "" : "<br /><small>" + locationObj.locationAddress1 + "</small>");
-        listItemEle.addEventListener("click", locationLookup_setLocationFromExisting);
-        listEle.insertAdjacentElement("beforeend", listItemEle);
-      }
-    }
 
-    window.llm.clearElement(locationLookup_resultsEle);
+    document.getElementById("is-location-lookup-button").addEventListener("click", function() {
 
-    locationLookup_resultsEle.insertAdjacentElement("beforeend", listEle);
-  }
+      window.llm.openHtmlModal("licenceLocationLookup", {
 
-  locationLookup_searchStrEle.addEventListener("keyup", locationLookup_refreshResults);
+        onshow: function(modalEle) {
 
-  locationLookup_createFormEle.addEventListener("submit", function(formEvent) {
-    formEvent.preventDefault();
+          locationLookup_searchStrEle = document.getElementById("locationLookup--searchStr");
+          locationLookup_searchStrEle.addEventListener("keyup", locationLookupFn_refreshResults);
 
-    window.fetch("/locations/doCreate", {
-        method: "POST",
-        credentials: "include",
-        body: new URLSearchParams(new FormData(locationLookup_createFormEle))
-      })
-      .then(function(response) {
-        return response.json();
-      })
-      .then(function(responseJSON) {
+          locationLookup_resultsEle = document.getElementById("container--locationLookup");
 
-        if (responseJSON.success) {
-          locationList = [];
-          locationLookup_setLocation(responseJSON.locationID, responseJSON.locationDisplayName);
-          window.llm.hideModal(locationLookup_modalEle);
+          if (locationList.length === 0) {
+
+            window.fetch("/locations/doGetLocations", {
+                method: "GET",
+                credentials: "include"
+              })
+              .then(function(response) {
+                return response.json();
+              })
+              .then(function(locationListRes) {
+                locationList = locationListRes;
+                locationLookup_searchStrEle.removeAttribute("disabled");
+                locationLookupFn_refreshResults();
+              });
+          } else {
+            locationLookup_searchStrEle.removeAttribute("disabled");
+            locationLookupFn_refreshResults();
+          }
+
+          window.llm.initializeTabs(modalEle.querySelector(".tabs ul"));
+
+          document.getElementById("form--newLocation").addEventListener("submit", function(formEvent) {
+            formEvent.preventDefault();
+
+            window.fetch("/locations/doCreate", {
+                method: "POST",
+                credentials: "include",
+                body: new URLSearchParams(new FormData(formEvent.currentTarget))
+              })
+              .then(function(response) {
+                return response.json();
+              })
+              .then(function(responseJSON) {
+
+                if (responseJSON.success) {
+                  locationList = [];
+                  locationLookupFn_setLocation(responseJSON.locationID, responseJSON.locationDisplayName);
+                  locationLookup_closeModalFn();
+                }
+              });
+          });
+
+        },
+        onshown: function(modalEle, closeModalFn) {
+          locationLookup_closeModalFn = closeModalFn;
         }
       });
-  });
 
-  document.getElementsByClassName("is-location-lookup-button")[0].addEventListener("click", function() {
-
-    if (locationList.length === 0) {
-
-      window.fetch("/locations/doGetLocations", {
-          method: "GET",
-          credentials: "include"
-        })
-        .then(function(response) {
-          return response.json();
-        })
-        .then(function(locationListRes) {
-          locationList = locationListRes;
-          locationLookup_searchStrEle.removeAttribute("disabled");
-          locationLookup_refreshResults();
-        });
-    }
-
-    window.llm.showModal(locationLookup_modalEle);
-  });
-
-  cancelButtonEles = locationLookup_modalEle.getElementsByClassName("is-close-modal-button");
-
-  for (let buttonIndex = 0; buttonIndex < cancelButtonEles.length; buttonIndex += 1) {
-    cancelButtonEles[buttonIndex].addEventListener("click", window.llm.hideModal);
+    });
   }
-
-  window.llm.initializeTabs(locationLookup_modalEle.querySelector(".tabs ul"));
-
 
 
   /*
    * TERMS AND CONDITIONS
    */
 
-  let termsConditionsList = [];
+  {
+    let termsConditionsList = [];
 
-  const termsConditionsLookup_modalEle = document.getElementById("is-termsConditions-lookup-modal");
-  const termsConditionsLookup_resultsEle = document.getElementById("container--termsConditionsPrevious");
+    const termsConditionsLookup_modalEle = document.getElementById("is-termsConditions-lookup-modal");
+    const termsConditionsLookup_resultsEle = document.getElementById("container--termsConditionsPrevious");
 
-  function termsConditionsLookup_setTermsConditions(clickEvent) {
+    const termsConditionsLookupFn_setTermsConditions = function(clickEvent) {
 
-    clickEvent.preventDefault();
+      clickEvent.preventDefault();
 
-    const termsConditionsIndex = parseInt(clickEvent.currentTarget.getAttribute("data-terms-conditions-index"));
+      const termsConditionsIndex = parseInt(clickEvent.currentTarget.getAttribute("data-terms-conditions-index"));
 
-    document.getElementById("licence--termsConditions").value = termsConditionsList[termsConditionsIndex].termsConditions;
+      document.getElementById("licence--termsConditions").value = termsConditionsList[termsConditionsIndex].termsConditions;
 
-    window.llm.hideModal(termsConditionsLookup_modalEle);
+      window.llm.hideModal(termsConditionsLookup_modalEle);
 
-    setUnsavedChanges();
-  }
+      setUnsavedChanges();
+    };
 
-  document.getElementsByClassName("is-termsConditions-lookup-button")[0].addEventListener("click", function() {
+    document.getElementById("is-termsConditions-lookup-button").addEventListener("click", function() {
 
-    termsConditionsList = [];
-    window.llm.clearElement(termsConditionsLookup_resultsEle);
+      termsConditionsList = [];
+      window.llm.clearElement(termsConditionsLookup_resultsEle);
 
-    const organizationID = document.getElementById("licence--organizationID").value;
+      const organizationID = document.getElementById("licence--organizationID").value;
 
-    if (organizationID === "") {
-      window.llm.alertModal("No Organization Selected", "An organization must be selected before the previously used terms and conditions can be retrieved.", "OK", "warning");
-      return;
-    }
+      if (organizationID === "") {
+        window.llm.alertModal("No Organization Selected", "An organization must be selected before the previously used terms and conditions can be retrieved.", "OK", "warning");
+        return;
+      }
 
-    termsConditionsLookup_resultsEle.innerHTML = "<p class=\"has-text-centered has-text-grey-lighter\">" +
-      "<i class=\"fas fa-3x fa-circle-notch fa-spin\" aria-hidden=\"true\"></i><br />" +
-      "Loading previously used terms and conditions..." +
-      "</p>";
+      termsConditionsLookup_resultsEle.innerHTML = "<p class=\"has-text-centered has-text-grey-lighter\">" +
+        "<i class=\"fas fa-3x fa-circle-notch fa-spin\" aria-hidden=\"true\"></i><br />" +
+        "Loading previously used terms and conditions..." +
+        "</p>";
 
-    window.fetch("/licences/doGetDistinctTermsConditions", {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          organizationID: organizationID
+      window.fetch("/licences/doGetDistinctTermsConditions", {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            organizationID: organizationID
+          })
         })
-      })
-      .then(function(response) {
-        return response.json();
-      })
-      .then(function(termsConditionsListRes) {
+        .then(function(response) {
+          return response.json();
+        })
+        .then(function(termsConditionsListRes) {
 
-        termsConditionsList = termsConditionsListRes;
+          termsConditionsList = termsConditionsListRes;
 
-        if (termsConditionsList.length === 0) {
+          if (termsConditionsList.length === 0) {
 
-          termsConditionsLookup_resultsEle.innerHTML = "<p class=\"has-text-centered\">" +
-            "No previously used terms and conditions found for this organization." +
-            "</p>";
-
-        } else {
-
-          const listEle = document.createElement("div");
-          listEle.className = "list is-hoverable has-margin-bottom-10";
-
-          for (let termsConditionsIndex = 0; termsConditionsIndex < termsConditionsList.length; termsConditionsIndex += 1) {
-
-            const termsConditionsObj = termsConditionsList[termsConditionsIndex];
-
-            const listItemEle = document.createElement("a");
-            listItemEle.className = "list-item";
-            listItemEle.setAttribute("data-terms-conditions-index", termsConditionsIndex);
-
-            listItemEle.innerHTML = "<p>" +
-              window.llm.escapeHTML(termsConditionsObj.termsConditions) +
-              "</p>" +
-              "<p class=\"has-text-right\">" +
-              (termsConditionsObj.termsConditionsCount > 1 ?
-                "<span class=\"tag is-light\">Used " + termsConditionsObj.termsConditionsCount + " times</span>" :
-                "") +
-              "<span class=\"tag is-info\">" + termsConditionsObj.startDateMaxString + "</span>" +
+            termsConditionsLookup_resultsEle.innerHTML = "<p class=\"has-text-centered\">" +
+              "No previously used terms and conditions found for this organization." +
               "</p>";
-            listItemEle.addEventListener("click", termsConditionsLookup_setTermsConditions);
-            listEle.insertAdjacentElement("beforeend", listItemEle);
+
+          } else {
+
+            const listEle = document.createElement("div");
+            listEle.className = "list is-hoverable has-margin-bottom-10";
+
+            for (let termsConditionsIndex = 0; termsConditionsIndex < termsConditionsList.length; termsConditionsIndex += 1) {
+
+              const termsConditionsObj = termsConditionsList[termsConditionsIndex];
+
+              const listItemEle = document.createElement("a");
+              listItemEle.className = "list-item";
+              listItemEle.setAttribute("data-terms-conditions-index", termsConditionsIndex);
+
+              listItemEle.innerHTML = "<p>" +
+                window.llm.escapeHTML(termsConditionsObj.termsConditions) +
+                "</p>" +
+                "<p class=\"has-text-right\">" +
+                (termsConditionsObj.termsConditionsCount > 1 ?
+                  "<span class=\"tag is-light\">Used " + termsConditionsObj.termsConditionsCount + " times</span>" :
+                  "") +
+                "<span class=\"tag is-info\">" + termsConditionsObj.startDateMaxString + "</span>" +
+                "</p>";
+              listItemEle.addEventListener("click", termsConditionsLookupFn_setTermsConditions);
+              listEle.insertAdjacentElement("beforeend", listItemEle);
+            }
+
+            window.llm.clearElement(termsConditionsLookup_resultsEle);
+
+            termsConditionsLookup_resultsEle.insertAdjacentElement("beforeend", listEle);
           }
+        });
 
-          window.llm.clearElement(termsConditionsLookup_resultsEle);
+      window.llm.showModal(termsConditionsLookup_modalEle);
+    });
 
-          termsConditionsLookup_resultsEle.insertAdjacentElement("beforeend", listEle);
-        }
-      });
+    const cancelButtonEles = termsConditionsLookup_modalEle.getElementsByClassName("is-close-modal-button");
 
-    window.llm.showModal(termsConditionsLookup_modalEle);
-  });
-
-  cancelButtonEles = termsConditionsLookup_modalEle.getElementsByClassName("is-close-modal-button");
-
-  for (let buttonIndex = 0; buttonIndex < cancelButtonEles.length; buttonIndex += 1) {
-    cancelButtonEles[buttonIndex].addEventListener("click", window.llm.hideModal);
+    for (let buttonIndex = 0; buttonIndex < cancelButtonEles.length; buttonIndex += 1) {
+      cancelButtonEles[buttonIndex].addEventListener("click", window.llm.hideModal);
+    }
   }
-
 
   /*
    * LICENCE TYPE
@@ -522,7 +543,7 @@
     };
 
     licenceType_selectEle.addEventListener("change", changeFn_licenceType);
-}
+  }
 
 
   /*
@@ -639,7 +660,7 @@
     setUnsavedChanges();
   }
 
-  const eventCalculator_modalEle = document.getElementsByClassName("is-event-calculator-modal")[0];
+  const eventCalculator_modalEle = document.getElementById("is-event-calculator-modal");
 
   document.getElementsByClassName("is-calculate-events-button")[0].addEventListener("click", function() {
 
@@ -665,11 +686,11 @@
   });
 
 
-  document.getElementsByClassName("is-event-calculator-button")[0].addEventListener("click", function() {
+  document.getElementById("is-event-calculator-button").addEventListener("click", function() {
     window.llm.showModal(eventCalculator_modalEle);
   });
 
-  cancelButtonEles = eventCalculator_modalEle.getElementsByClassName("is-close-modal-button");
+  const cancelButtonEles = eventCalculator_modalEle.getElementsByClassName("is-close-modal-button");
 
   for (let buttonIndex = 0; buttonIndex < cancelButtonEles.length; buttonIndex += 1) {
     cancelButtonEles[buttonIndex].addEventListener("click", window.llm.hideModal);
@@ -749,7 +770,7 @@
 
       // button to remove payment
 
-      document.getElementsByClassName("is-remove-licence-fee-button")[0].addEventListener("click", function() {
+      document.getElementById("is-remove-licence-fee-button").addEventListener("click", function() {
 
         window.llm.confirmModal("Remove Fee Payment?",
           "Are you sure you want to remove the fee payment and change the licence to unpaid?",

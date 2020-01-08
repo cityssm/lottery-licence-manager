@@ -16,13 +16,13 @@
   </div>
 <% } %>
 
-<div class="columns">
-  <div class="column">
+<div class="level">
+  <div class="level-left">
     <h1 class="title is-1">
       <%= location.locationDisplayName %>
     </h1>
   </div>
-  <div class="column is-narrow has-text-right">
+  <div class="level-right has-text-right">
     <% if (location.canUpdate) { %>
       <a class="button is-link" href="/locations/<%= location.locationID %>/edit">
         <span class="icon is-small">

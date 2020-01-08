@@ -248,33 +248,6 @@ config.licenceTypes = [{
     ticketCount: 3360,
     prizesPerDeal: 1115
   }],
-  licenceFields: [{
-    fieldKey: "distributor",
-    fieldLabel: "Distributor",
-    isActive: false,
-    inputAttributes: {
-      type: "text",
-      maxlength: 100
-    }
-  }, {
-    fieldKey: "manufacturer",
-    fieldLabel: "Manufacturer",
-    isActive: false,
-    inputAttributes: {
-      type: "text",
-      maxlength: 100
-    }
-  }, {
-    fieldKey: "units",
-    fieldLabel: "Units",
-    isActive: true,
-    inputAttributes: {
-      type: "number",
-      min: 0,
-      max: 1000000,
-      step: 1
-    }
-  }],
   eventFields: [{
     fieldKey: "retailerCommission",
     fieldLabel: "Retailer Commission",

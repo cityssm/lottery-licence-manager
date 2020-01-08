@@ -91,7 +91,7 @@
           </span>
         </div>
         <div class="control">
-          <button class="button is-organization-lookup-button" data-tooltip="Lookup Organization" type="button">
+          <button class="button" id="is-organization-lookup-button" data-tooltip="Lookup Organization" type="button">
             <span class="icon"><i class="fas fa-search" aria-hidden="true"></i></span>
             <span>Lookup</span>
           </button>
@@ -122,7 +122,7 @@
           </span>
         </div>
         <div class="control">
-          <button class="button is-location-lookup-button" data-tooltip="Lookup Location" type="button">
+          <button class="button" id="is-location-lookup-button" data-tooltip="Lookup Location" type="button">
             <span class="icon"><i class="fas fa-search" aria-hidden="true"></i></span>
             <span>Lookup</span>
           </button>
@@ -181,7 +181,7 @@
       <div class="field">
         <label class="label" for="licence--licenceDetails">Licence Details</label>
         <div class="control">
-          <textarea class="textarea" id="licence--licenceDetails" name="licenceDetails" rows="2"><%= licence.licenceDetails.trim() %></textarea>
+          <textarea class="textarea" id="licence--licenceDetails" name="licenceDetails" rows="5"><%= licence.licenceDetails.trim() %></textarea>
         </div>
       </div>
     </div>
@@ -190,10 +190,10 @@
       <label class="label" for="licence--termsConditions">Terms and Conditions</label>
       <div class="field has-addons">
         <div class="control is-expanded">
-          <textarea class="textarea" id="licence--termsConditions" name="termsConditions" rows="2"><%= licence.termsConditions.trim() %></textarea>
+          <textarea class="textarea" id="licence--termsConditions" name="termsConditions" rows="5"><%= licence.termsConditions.trim() %></textarea>
         </div>
         <div class="control">
-          <button class="button is-termsConditions-lookup-button" type="button">
+          <button class="button" id="is-termsConditions-lookup-button" type="button">
             <span class="icon">
               <i class="fas fa-search" aria-hidden="true"></i>
             </span>
@@ -275,7 +275,7 @@
           <h2 class="has-text-weight-bold">Ticket Types</h2>
         </div>
         <div class="level-right">
-          <button class="button is-small" type="button" aria-haspopup="true">
+          <button class="button is-small" id="is-add-ticket-type-button" type="button" aria-haspopup="true">
             <span class="icon">
               <i class="fas fa-plus" aria-hidden="true"></i>
             </span>
@@ -372,7 +372,7 @@
                     </div>
                   </div>
                 </div>
-                <button class="button is-small is-event-calculator-button" type="button">
+                <button class="button is-small" id="is-event-calculator-button" type="button">
                   <span class="icon"><i class="fas fa-calculator" aria-hidden="true"></i></span>
                   <span>Event Calculator</span>
                 </button>
@@ -571,7 +571,7 @@
           <h2 class="has-text-weight-bold">Licence Fee Payment</h2>
         </div>
         <div class="level-right">
-          <button class="button is-danger is-small is-remove-licence-fee-button" type="button">
+          <button class="button is-danger is-small" id="is-remove-licence-fee-button" type="button">
             <span class="icon"><i class="fas fa-ban" aria-hidden="true"></i></span>
             <span>Remove Fee Payment</span>
           </button>
@@ -671,127 +671,6 @@
 %>
 
 
-<div class="modal is-organization-lookup-modal">
-  <div class="modal-background"></div>
-  <div class="modal-card">
-    <header class="modal-card-head">
-      <h3 class="modal-card-title">Select an Organization</h3>
-      <button class="delete is-close-modal-button" aria-label="close" type="button"></button>
-    </header>
-    <section class="modal-card-body">
-      <label class="sr-only" for="organizationLookup--searchStr">Filter Organizations</label>
-      <div class="control has-icons-left">
-        <input class="input" id="organizationLookup--searchStr" type="text" placeholder="Filter Organizations" disabled />
-        <span class="icon is-left">
-          <i class="fas fa-filter" aria-hidden="true"></i>
-        </span>
-      </div>
-      <div class="has-margin-top-20 has-margin-bottom-20" id="container--organizationLookup">
-        <p class="has-text-centered has-text-grey-lighter">
-          <i class="fas fa-3x fa-circle-notch fa-spin" aria-hidden="true"></i><br />
-          Loading organizations...
-        </p>
-      </div>
-    </section>
-    <footer class="modal-card-foot justify-right">
-      <button class="button is-close-modal-button" type="button">Cancel</button>
-    </footer>
-  </div>
-</div>
-
-
-<div class="modal" id="is-location-lookup-modal">
-  <div class="modal-background"></div>
-  <div class="modal-card">
-    <header class="modal-card-head">
-      <h3 class="modal-card-title">Select a Location</h3>
-      <button class="delete is-close-modal-button" aria-label="close" type="button"></button>
-    </header>
-    <section class="modal-card-body">
-      <div class="tabs">
-        <ul>
-          <li class="is-active"><a href="#locationTab--lookup">Existing Locations</a></li>
-          <li><a href="#locationTab--create">Create a Location</a></li>
-        </ul>
-      </div>
-      <div class="tab-container">
-        <div class="tab-content is-active" id="locationTab--lookup">
-          <label class="sr-only" for="locationLookup--searchStr">Filter Locations</label>
-          <div class="control has-icons-left">
-            <input class="input" id="locationLookup--searchStr" type="text" placeholder="Filter Locations" disabled />
-            <span class="icon is-left">
-              <i class="fas fa-filter" aria-hidden="true"></i>
-            </span>
-          </div>
-          <div class="has-margin-top-20 has-margin-bottom-20" id="container--locationLookup">
-            <p class="has-text-centered has-text-grey-lighter">
-              <i class="fas fa-3x fa-circle-notch fa-spin" aria-hidden="true"></i><br />
-              Loading locations...
-            </p>
-          </div>
-        </div>
-        <div class="tab-content" id="locationTab--create">
-          <form id="form--newLocation">
-            <input name="locationIsDistributor" type="hidden" value="0" />
-            <input name="locationIsManufacturer" type="hidden" value="0" />
-            <div class="field">
-              <label class="label" for="newLocation--locationName">New Location Name</label>
-              <div class="control">
-                <input class="input" id="newLocation--locationName" name="locationName" type="text" maxlength="100" />
-              </div>
-            </div>
-            <div class="field">
-              <label class="label" for="newLocation--locationAddress1">Address</label>
-              <div class="control">
-                <input class="input" id="newLocation--locationAddress1" name="locationAddress1" type="text" maxlength="50" placeholder="Line 1" required />
-              </div>
-            </div>
-            <div class="field">
-              <label class="sr-only" for="newLocation--locationAddress2">Address Line 2</label>
-              <div class="control">
-                <input class="input" id="newLocation--locationAddress2" name="locationAddress2" type="text" maxlength="50" placeholder="Line 2" />
-              </div>
-            </div>
-            <div class="columns">
-              <div class="column is-8">
-                <div class="field">
-                  <label class="label" for="newLocation--locationCity">City</label>
-                  <div class="control">
-                    <input class="input" id="newLocation--locationCity" name="locationCity" type="text" maxlength="20" value="<%= configFns.getProperty("defaults.city") %>" required />
-                  </div>
-                </div>
-              </div>
-              <div class="column">
-                <div class="field">
-                  <label class="label" for="newLocation--locationProvince">Province</label>
-                  <div class="control">
-                    <input class="input" id="newLocation--locationProvince" name="locationProvince" type="text" maxlength="2" value="<%= configFns.getProperty("defaults.province") %>" required />
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="field">
-              <label class="label" for="newLocation--locationPostalCode">Postal Code</label>
-              <div class="control">
-                <input class="input" id="newLocation--locationPostalCode" name="locationPostalCode" type="text" minlength="5" maxlength="7" required />
-              </div>
-            </div>
-            <div class="has-text-right has-margin-bottom-10">
-              <button class="button is-success" type="submit">
-                Create Location
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </section>
-    <footer class="modal-card-foot justify-right">
-      <button class="button is-close-modal-button" type="button">Cancel</button>
-    </footer>
-  </div>
-</div>
-
-
 <div class="modal" id="is-termsConditions-lookup-modal">
   <div class="modal-background"></div>
   <div class="modal-card">
@@ -809,7 +688,7 @@
 </div>
 
 
-<div class="modal is-event-calculator-modal">
+<div class="modal" id="is-event-calculator-modal">
   <div class="modal-background"></div>
   <div class="modal-card">
     <header class="modal-card-head">
