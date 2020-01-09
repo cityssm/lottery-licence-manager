@@ -10,9 +10,54 @@
 
   const searchResultsEle = document.getElementById("container--searchResults");
 
+  const canCreate = document.getElementsByTagName("main")[0].getAttribute("data-can-create") === "true";
+
   let locationsList = [];
 
-  function filterLocations() {
+  let filterLocations;
+
+
+  function clickFn_deleteLocation(clickEvent) {
+
+    clickEvent.preventDefault();
+
+    const locationIndex = parseInt(clickEvent.currentTarget.getAttribute("data-location-index"));
+    const locationObj = locationsList[locationIndex];
+
+    const deleteFn = function() {
+
+      window.fetch("/locations/doDelete", {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            locationID: locationObj.locationID
+          })
+        })
+        .then(function(response) {
+          return response.json();
+        })
+        .then(function(responseJSON) {
+          if (responseJSON.success) {
+            locationsList.splice(locationIndex, 1);
+            filterLocations();
+          }
+        });
+    };
+
+
+    window.llm.confirmModal("Delete Location",
+      `Are you sure you want to delete ${window.llm.escapeHTML(locationObj.locationDisplayName)}?`,
+      "Yes, Delete",
+      "warning",
+      deleteFn
+    );
+  }
+
+
+  filterLocations = function() {
 
     if (locationsList.length === 0) {
 
@@ -38,6 +83,7 @@
         "<th class=\"has-text-centered\">Licences</th>" +
         "<th class=\"has-text-centered\">Distributor</th>" +
         "<th class=\"has-text-centered\">Manufacturer</th>" +
+        (canCreate ? "<th><span class=\"sr-only\">Options</span></th>" : "") +
         "</tr></thead>" +
         "<tbody></tbody>" +
         "</table>";
@@ -93,14 +139,12 @@
         locationDisplayNameLinkEle.href = "/locations/" + locationObj.locationID;
         trEle.getElementsByTagName("td")[0].insertAdjacentElement("beforeend", locationDisplayNameLinkEle);
 
-        tbodyEle.insertAdjacentElement("beforeend", trEle);
-
         // address
 
         const addressTdEle = document.createElement("td");
         addressTdEle.innerHTML = window.llm.escapeHTML(locationObj.locationAddress1) +
-        (locationObj.locationAddress2 === "" ? "" : "<br /><small>" + window.llm.escapeHTML(locationObj.locationAddress2) + "</small>") +
-        (locationObj.locationCity === "" ? "" : "<br /><small>" + window.llm.escapeHTML(locationObj.locationCity) + ", " + locationObj.locationProvince + "</small>");
+          (locationObj.locationAddress2 === "" ? "" : "<br /><small>" + window.llm.escapeHTML(locationObj.locationAddress2) + "</small>") +
+          (locationObj.locationCity === "" ? "" : "<br /><small>" + window.llm.escapeHTML(locationObj.locationCity) + ", " + locationObj.locationProvince + "</small>");
 
         trEle.insertAdjacentElement("beforeend", addressTdEle);
 
@@ -137,18 +181,48 @@
           "</td>");
 
 
+        if (canCreate) {
+
+          const canDeleteLocation = locationObj.canUpdate && locationObj.licences_count === 0 && locationObj.distributor_count === 0 && locationObj.manufacturer_count === 0;
+
+          trEle.insertAdjacentHTML("beforeend",
+            "<td>" +
+            "<div class=\"buttons justify-flex-end\">" +
+
+            (locationObj.canUpdate ?
+              `<a class="button is-small" href="/locations/${locationObj.locationID}/edit"><span class="icon"><i class="fas fa-pencil-alt" aria-hidden="true"></i></span> <span>Edit</span></a>` :
+              "") +
+
+            (canDeleteLocation ?
+              `<button class="button is-small is-danger is-delete-location-button" data-location-index="${locationIndex}"><span class="icon"><i class="fas fa-trash" aria-hidden="true"></i></span></button>` :
+              "") +
+
+            "</div>" +
+
+            "</td>");
+
+          if (canDeleteLocation) {
+            trEle.getElementsByClassName("is-delete-location-button")[0].addEventListener("click", clickFn_deleteLocation);
+          }
+        }
+
+
+        tbodyEle.insertAdjacentElement("beforeend", trEle);
+
+
         if (displayLimit === 0) {
           break;
         }
       }
 
       if (displayLimit === 0) {
-        searchResultsEle.insertAdjacentHTML("beforeend", "<div class=\"message is-warning\">" +
+        searchResultsEle.insertAdjacentHTML("beforeend",
+          "<div class=\"message is-warning\">" +
           "<p class=\"message-body\">Display Limit Reached</p>" +
           "</div>");
       }
     }
-  }
+  };
 
 
   window.fetch("/locations/doGetLocations", {

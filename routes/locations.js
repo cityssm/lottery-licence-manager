@@ -20,7 +20,7 @@ router.get("/", function(req, res) {
 router.all("/doGetLocations", function(req, res) {
   "use strict";
 
-  const locations = licencesDB.getLocations(req.body);
+  const locations = licencesDB.getLocations(req.body, req.session);
 
   res.json(locations);
 });

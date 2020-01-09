@@ -71,7 +71,7 @@
 
   if (!isCreate) {
 
-    document.getElementsByClassName("is-delete-button")[0].addEventListener("click", function(clickEvent) {
+    document.getElementById("is-delete-licence-button").addEventListener("click", function(clickEvent) {
       clickEvent.preventDefault();
 
       window.llm.confirmModal("Delete Licence?", "Are you sure you want to delete this licence and all events associated with it?", "Yes, Delete", "danger", function() {
@@ -338,6 +338,8 @@
 
         onshow: function(modalEle) {
 
+          // existing locations
+
           locationLookup_searchStrEle = document.getElementById("locationLookup--searchStr");
           locationLookup_searchStrEle.addEventListener("keyup", locationLookupFn_refreshResults);
 
@@ -362,7 +364,19 @@
             locationLookupFn_refreshResults();
           }
 
-          window.llm.initializeTabs(modalEle.querySelector(".tabs ul"));
+          // new location
+
+          window.llm.getDefaultConfigProperty("city", function(defaultCity) {
+            if (defaultCity) {
+              document.getElementById("newLocation--locationCity").value = defaultCity;
+            }
+          });
+
+          window.llm.getDefaultConfigProperty("province", function(defaultProvince) {
+            if (defaultProvince) {
+              document.getElementById("newLocation--locationProvince").value = defaultProvince;
+            }
+          });
 
           document.getElementById("form--newLocation").addEventListener("submit", function(formEvent) {
             formEvent.preventDefault();
@@ -385,7 +399,9 @@
               });
           });
 
+          window.llm.initializeTabs(modalEle.querySelector(".tabs ul"));
         },
+
         onshown: function(modalEle, closeModalFn) {
           locationLookup_closeModalFn = closeModalFn;
         }

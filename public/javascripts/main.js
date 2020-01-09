@@ -36,6 +36,48 @@
   };
 
 
+  /*
+   * CONFIG DEFAULTS
+   */
+
+  window.llm.getDefaultConfigProperty = function(propertyName, propertyValueCallbackFn) {
+
+    // check local storage
+
+    try {
+      let defaultConfigPropertiesString = window.localStorage.getItem("defaultConfigProperties");
+
+      if (defaultConfigPropertiesString) {
+
+        let defaultConfigProperties = JSON.parse(defaultConfigPropertiesString);
+
+        propertyValueCallbackFn(defaultConfigProperties[propertyName]);
+
+        return;
+      }
+    } catch (e) {
+      // ignore
+    }
+
+    // populate local storage
+
+    window.fetch("/dashboard/doGetDefaultConfigProperties")
+      .then(function(response) {
+        return response.json();
+      })
+      .then(function(defaultConfigProperties) {
+
+        try {
+          window.localStorage.setItem("defaultConfigProperties", JSON.stringify(defaultConfigProperties));
+        } catch (e) {
+          // ignore
+        }
+
+        propertyValueCallbackFn(defaultConfigProperties[propertyName]);
+      });
+  };
+
+
 
   /*
    * MODAL TOGGLES
@@ -53,7 +95,6 @@
 
     modalEle.classList.remove("is-active");
   };
-
 
   window.llm.openHtmlModal = function(htmlFileName, callbackFns) {
 
@@ -308,6 +349,7 @@
       "<span class=\"icon\"><i class=\"fas fa-sign-out-alt\" aria-hidden=\"true\"></i></span><span>Log Out</span>",
       "warning",
       function() {
+        window.localStorage.clear();
         window.location.href = "/logout";
       });
   }

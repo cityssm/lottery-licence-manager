@@ -31,7 +31,7 @@
               <div class="field">
                 <label class="sr-only" for="login--userName">User Name</label>
                 <div class="control has-icons-left has-tooltip-right" data-tooltip="User Name">
-                  <input class="input" id="login--userName" name="userName" type="text" placeholder="User Name" value="<%=userName %>" autofocus required />
+                  <input class="input" id="login--userName" name="userName" type="text" placeholder="User Name" value="<%= userName %>" autofocus required />
                   <span class="icon is-small is-left">
                     <i class="fas fa-user" aria-hidden="true"></i>
                   </span>
@@ -75,6 +75,12 @@
       </div>
     </div>
   </div>
+
+  <script>
+    try {
+      window.localStorage.clear();
+    } catch (e) {}
+  </script>
 </body>
 
 </html>

@@ -3,6 +3,8 @@
 const express = require("express");
 const router = express.Router();
 
+const configFns = require("../helpers/configFns");
+
 
 router.get("/", function(req, res) {
   "use strict";
@@ -25,6 +27,16 @@ router.post("/doChangePassword", function(req, res) {
   const result = usersDB.tryResetPassword(userName, oldPassword, newPassword);
 
   res.json(result);
+});
+
+
+router.get("/doGetDefaultConfigProperties", function(req, res) {
+  "use strict";
+
+  res.json({
+    city: configFns.getProperty("defaults.city"),
+    province: configFns.getProperty("defaults.province")
+  });
 });
 
 

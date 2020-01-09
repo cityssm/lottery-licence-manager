@@ -116,7 +116,7 @@ const licencesDB = (function() {
      * LOCATIONS
      */
 
-    getLocations: function(reqBody_or_paramsObj) {
+    getLocations: function(reqBody_or_paramsObj, reqSession) {
 
       const db = sqlite(dbPath, {
         readonly: true
@@ -184,9 +184,12 @@ const licencesDB = (function() {
       for (let rowIndex = 0; rowIndex < rows.length; rowIndex += 1) {
         const locationObj = rows[rowIndex];
         locationObj.locationDisplayName = locationObj.locationName === "" ? locationObj.locationAddress1 : locationObj.locationName;
+
         locationObj.licences_endDateMaxString = dateTimeFns.dateIntegerToString(locationObj.licences_endDateMax);
         locationObj.distributor_endDateMaxString = dateTimeFns.dateIntegerToString(locationObj.distributor_endDateMax);
         locationObj.manufacturer_endDateMaxString = dateTimeFns.dateIntegerToString(locationObj.manufacturer_endDateMax);
+
+        locationObj.canUpdate = canUpdateObject("location", locationObj, reqSession);
       }
 
       return rows;
