@@ -9,7 +9,7 @@ try {
   config = {};
 
   // eslint-disable-next-line no-console
-  console.log("No \"config.js\" found.  To customize, create your own \"config.js\" in the \"data\" folder.  See \"config-example.js\" to get started.");
+  console.log("No \"config.js\" found.  To customize, create your own \"config.js\" in the \"data\" folder.  See \"config-example-ontario.js\" to get started.");
 }
 
 
@@ -32,7 +32,7 @@ const configFallbackValues = {
   },
 
   "defaults.city": "",
-  "defaults.province": "ON",
+  "defaults.province": "",
 
   "licences.externalLicenceNumber.fieldLabel": "External Licence Number",
   "licences.externalLicenceNumber.newCalculation": "",
@@ -46,7 +46,7 @@ const configFallbackValues = {
     };
   },
 
-  "licences.printTemplate": "licence-print-agco",
+  "licences.printTemplate": "licence-print",
 
   "licenceTypes": []
 };

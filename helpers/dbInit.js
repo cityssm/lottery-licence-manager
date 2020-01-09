@@ -176,10 +176,28 @@ let dbInit = {
         " on LotteryLicences (externalLicenceNumberInteger desc)" +
         " where externalLicenceNumberInteger <> -1").run();
 
+      licencesDB.prepare("create table if not exists LotteryLicenceAmendments (" +
+        "licenceID integer not null," +
+        " amendmentIndex integer not null," +
+        " amendmentDate integer, amendmentTime integer," +
+        " amendment text," +
+        " isHidden bit not null default 0," +
+
+        " recordCreate_userName varchar(30) not null," +
+        " recordCreate_timeMillis integer not null," +
+        " recordUpdate_userName varchar(30) not null," +
+        " recordUpdate_timeMillis integer not null," +
+        " recordDelete_userName varchar(30)," +
+        " recordDelete_timeMillis integer," +
+
+        " primary key (licenceID, amendmentIndex)," +
+
+        " foreign key (licenceID) references LotteryLicences (licenceID)" +
+        ") without rowid").run();
+
 
       licencesDB.prepare("create table if not exists LotteryLicenceTicketTypes (" +
         "licenceID integer not null," +
-        " reportYear integer not null," +
         " ticketType varchar(5) not null," +
 
         " distributorLocationID integer," +
@@ -199,7 +217,7 @@ let dbInit = {
         " recordDelete_userName varchar(30)," +
         " recordDelete_timeMillis integer," +
 
-        " primary key (licenceID, reportYear, ticketType)," +
+        " primary key (licenceID, ticketType)," +
 
         " foreign key (licenceID) references LotteryLicences (licenceID)," +
         " foreign key (distributorLocationID) references Locations (locationID)," +

@@ -94,6 +94,21 @@ router.post("/doGetDistinctTermsConditions", function(req, res) {
 });
 
 
+router.post("/doGetTicketTypes", function(req, res) {
+  "use strict";
+
+  const licenceTypeKey = req.body.licenceTypeKey;
+
+  const licenceType = configFns.getLicenceType(licenceTypeKey);
+
+  if (licenceType) {
+    res.json(licenceType.ticketTypes || []);
+  } else {
+    res.json([]);
+  }
+});
+
+
 router.post("/doSave", function(req, res) {
   "use strict";
 

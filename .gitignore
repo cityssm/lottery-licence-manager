@@ -1,6 +1,6 @@
 
 app.min.js
-data/config-example.min.js
+data/config-example-*.min.js
 data/config.js
 data/config.min.js
 data/licences.db

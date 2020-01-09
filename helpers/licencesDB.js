@@ -395,7 +395,7 @@ const licencesDB = (function() {
         " o.recordCreate_userName, o.recordCreate_timeMillis, o.recordUpdate_userName, o.recordUpdate_timeMillis" +
         " from Organizations o" +
         " left join LotteryLicences l on o.organizationID = l.organizationID and l.recordDelete_timeMillis is null" +
-        " where o.recordDelete_TimeMillis is null";
+        " where o.recordDelete_timeMillis is null";
 
       if (reqBody.organizationName && reqBody.organizationName !== "") {
 
@@ -1003,7 +1003,7 @@ const licencesDB = (function() {
 
         // ticket types
 
-        const ticketTypesList = db.prepare("select t.reportYear, t.ticketType," +
+        const ticketTypesList = db.prepare("select t.ticketType," +
             " t.distributorLocationID, d.locationName as distributorLocationName, d.locationAddress1 as distributorLocationAddress1," +
             " t.manufacturerLocationID, m.locationName as manufacturerLocationName, m.locationAddress1 as manufacturerLocationAddress1," +
             " t.unitCount, t.licenceFee" +
@@ -1012,7 +1012,7 @@ const licencesDB = (function() {
             " left join Locations m on t.manufacturerLocationID = m.locationID" +
             " where t.recordDelete_timeMillis is null" +
             " and t.licenceID = ?" +
-            " order by t.reportYear, t.ticketType")
+            " order by t.ticketType")
           .all(licenceID);
 
         for (let ticketTypeIndex = 0; ticketTypeIndex < ticketTypesList.length; ticketTypeIndex += 1) {
@@ -1052,6 +1052,22 @@ const licencesDB = (function() {
         }
 
         licenceObj.events = eventList;
+
+        // amendments
+
+        const amendments = db.prepare("select * from LotteryLicenceAmendments" +
+            " where licenceID = ?" +
+            " and recordDelete_timeMillis is null" +
+            " order by amendmentDate, amendmentTime")
+          .all(licenceID);
+
+        for (let amendmentIndex = 0; amendmentIndex < amendments.length; amendmentIndex += 1) {
+          const amendmentObj = amendments[amendmentIndex];
+          amendmentObj.amendmentDateString = dateTimeFns.dateIntegerToString(amendmentObj.amendmentDate);
+          amendmentObj.amendmentTimeString = dateTimeFns.timeIntegerToString(amendmentObj.amendmentTime);
+        }
+
+        licenceObj.licenceAmendments = amendments;
       }
 
       db.close();

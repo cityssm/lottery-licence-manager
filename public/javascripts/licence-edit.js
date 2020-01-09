@@ -74,29 +74,33 @@
     document.getElementById("is-delete-licence-button").addEventListener("click", function(clickEvent) {
       clickEvent.preventDefault();
 
-      window.llm.confirmModal("Delete Licence?", "Are you sure you want to delete this licence and all events associated with it?", "Yes, Delete", "danger", function() {
+      window.llm.confirmModal("Delete Licence?",
+        "Are you sure you want to delete this licence and all events associated with it?",
+        "Yes, Delete",
+        "danger",
+        function() {
 
-        window.fetch("/licences/doDelete", {
-            method: "POST",
-            credentials: "include",
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-              licenceID: licenceID
+          window.fetch("/licences/doDelete", {
+              method: "POST",
+              credentials: "include",
+              headers: {
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({
+                licenceID: licenceID
+              })
             })
-          })
-          .then(function(response) {
-            return response.json();
-          })
-          .then(function(responseJSON) {
+            .then(function(response) {
+              return response.json();
+            })
+            .then(function(responseJSON) {
 
-            if (responseJSON.success) {
-              window.llm.disableNavBlocker();
-              window.location.href = "/licences";
-            }
-          });
-      });
+              if (responseJSON.success) {
+                window.llm.disableNavBlocker();
+                window.location.href = "/licences";
+              }
+            });
+        });
     });
   }
 
@@ -131,10 +135,10 @@
    */
 
 
-  const externalLicenceNumberUnlockBtnEles = document.getElementsByClassName("is-external-licence-number-unlock-button");
+  const externalLicenceNumberUnlockBtnEle = document.getElementById("is-external-licence-number-unlock-button");
 
-  if (externalLicenceNumberUnlockBtnEles.length) {
-    externalLicenceNumberUnlockBtnEles[0].addEventListener("click", function() {
+  if (externalLicenceNumberUnlockBtnEle) {
+    externalLicenceNumberUnlockBtnEle.addEventListener("click", function() {
       const externalLicenceNumberEle = document.getElementById("licence--externalLicenceNumber");
       externalLicenceNumberEle.classList.remove("has-background-light");
       externalLicenceNumberEle.classList.remove("has-cursor-not-allowed");
@@ -217,7 +221,7 @@
 
     document.getElementById("is-organization-lookup-button").addEventListener("click", function() {
 
-      window.llm.openHtmlModal("licenceOrganizationLookup", {
+      window.llm.openHtmlModal("licence-organizationLookup", {
 
         onshow: function() {
           organizationLookup_searchStrEle = document.getElementById("organizationLookup--searchStr");
@@ -334,7 +338,7 @@
 
     document.getElementById("is-location-lookup-button").addEventListener("click", function() {
 
-      window.llm.openHtmlModal("licenceLocationLookup", {
+      window.llm.openHtmlModal("licence-locationLookup", {
 
         onshow: function(modalEle) {
 
@@ -516,14 +520,15 @@
     }
   }
 
+
   /*
    * LICENCE TYPE
    */
 
+   const licenceType_selectEle = document.getElementById("licence--licenceTypeKey");
 
   if (isCreate) {
 
-    const licenceType_selectEle = document.getElementById("licence--licenceTypeKey");
     const licenceType_fieldContainerEles = document.getElementsByClassName("container-licenceTypeFields");
 
     const changeFn_licenceType = function(changeEvent) {
@@ -563,159 +568,199 @@
 
 
   /*
-   * DATES
+   * DATES AND EVENTS
    */
 
+  {
+    const startDateEle = document.getElementById("licence--startDateString");
+    const endDateEle = document.getElementById("licence--endDateString");
 
-  const startDateEle = document.getElementById("licence--startDateString");
-  const endDateEle = document.getElementById("licence--endDateString");
+    const dateFn_setMin = function() {
 
-  function dates_setMin() {
+      const startDateString = startDateEle.value;
 
-    const startDateString = startDateEle.value;
+      endDateEle.setAttribute("min", startDateString);
 
-    endDateEle.setAttribute("min", startDateString);
+      if (endDateEle.value < startDateString) {
+        endDateEle.value = startDateString;
+      }
 
-    if (endDateEle.value < startDateString) {
-      endDateEle.value = startDateString;
+      const eventDateEles = events_containerEle.getElementsByTagName("input");
+
+      for (let eleIndex = 0; eleIndex < eventDateEles.length; eleIndex += 1) {
+        eventDateEles[eleIndex].setAttribute("min", startDateString);
+      }
+    };
+
+    const dateFn_setMax = function() {
+
+      const endDateString = endDateEle.value;
+
+      const eventDateEles = events_containerEle.getElementsByTagName("input");
+
+      for (let eleIndex = 0; eleIndex < eventDateEles.length; eleIndex += 1) {
+        eventDateEles[eleIndex].setAttribute("max", endDateString);
+      }
+    };
+
+    document.getElementById("licence--applicationDateString").addEventListener("change", function(changeEvent) {
+      startDateEle.setAttribute("min", changeEvent.currentTarget.value);
+    });
+
+    startDateEle.addEventListener("change", dateFn_setMin);
+    endDateEle.addEventListener("change", dateFn_setMax);
+
+
+    /*
+     * EVENTS
+     */
+
+
+    const eventFn_remove = function(clickEvent) {
+      clickEvent.currentTarget.closest(".panel-block").remove();
+
+      doRefreshAfterSave = true;
+      setUnsavedChanges();
+    };
+
+    const eventFn_add = function(eventDate) {
+
+      let eventDateString = "";
+
+      if (eventDate) {
+
+        if (eventDate instanceof Date) {
+          eventDateString = eventDate.getFullYear() + "-" +
+            ("00" + (eventDate.getMonth() + 1)).slice(-2) + "-" +
+            ("00" + eventDate.getDate()).slice(-2);
+
+        } else if (eventDate.constructor === String) {
+          eventDateString = eventDate;
+
+        } else if (eventDate instanceof Object) {
+
+          try {
+            eventDate.preventDefault();
+
+            const sourceEleID = eventDate.currentTarget.getAttribute("data-source");
+
+            eventDateString = document.getElementById(sourceEleID).value;
+
+          } catch (e) {
+            // ignore
+          }
+        }
+      }
+
+      events_containerEle.insertAdjacentHTML("beforeend",
+        "<div class=\"panel-block is-block\">" +
+        "<div class=\"field has-addons\">" +
+        ("<div class=\"control is-expanded has-icons-left\">" +
+          "<input class=\"input is-small\" name=\"eventDate\" type=\"date\"" +
+          " value=\"" + eventDateString + "\"" +
+          " min=\"" + startDateEle.value + "\"" +
+          " max=\"" + endDateEle.value + "\"" +
+          " required />" +
+          "<span class=\"icon is-left\">" +
+          "<i class=\"fas fa-calendar\" aria-hidden=\"true\"></i>" +
+          "</span>" +
+          "</div>") +
+        ("<div class=\"control\">" +
+          "<a class=\"button is-small is-danger has-tooltip-right\" role=\"button\" data-tooltip=\"Remove Event\">" +
+          "<i class=\"fas fa-trash\" aria-hidden=\"true\"></i>" +
+          "<span class=\"sr-only\">Remove Event</span>" +
+          "</a>" +
+          "</div>") +
+        "</div>" +
+        "</div>");
+
+      const buttonEles = events_containerEle.getElementsByTagName("a");
+      buttonEles[buttonEles.length - 1].addEventListener("click", eventFn_remove);
+
+      doRefreshAfterSave = true;
+      setUnsavedChanges();
+    };
+
+    const eventCalculator_modalEle = document.getElementById("is-event-calculator-modal");
+
+    document.getElementsByClassName("is-calculate-events-button")[0].addEventListener("click", function() {
+
+      const eventCount = parseInt(document.getElementById("eventCalc--eventCount").value);
+      const dayInterval = parseInt(document.getElementById("eventCalc--dayInterval").value);
+
+      let dateSplit = endDateEle.value.split("-");
+
+      const endDate = new Date(dateSplit[0], parseInt(dateSplit[1]) - 1, dateSplit[2]);
+
+      dateSplit = startDateEle.value.split("-");
+
+      let eventDate = new Date(dateSplit[0], parseInt(dateSplit[1]) - 1, dateSplit[2]);
+
+      for (let eventNum = 0; eventNum < eventCount && eventDate.getTime() <= endDate.getTime(); eventNum += 1) {
+
+        eventFn_add(eventDate);
+
+        eventDate.setDate(eventDate.getDate() + dayInterval);
+      }
+
+      window.llm.hideModal(eventCalculator_modalEle);
+    });
+
+
+    document.getElementById("is-event-calculator-button").addEventListener("click", function() {
+      window.llm.showModal(eventCalculator_modalEle);
+    });
+
+    const cancelButtonEles = eventCalculator_modalEle.getElementsByClassName("is-close-modal-button");
+
+    for (let buttonIndex = 0; buttonIndex < cancelButtonEles.length; buttonIndex += 1) {
+      cancelButtonEles[buttonIndex].addEventListener("click", window.llm.hideModal);
     }
 
-    const eventDateEles = events_containerEle.getElementsByTagName("input");
+    const addEventBtnEles = document.getElementsByClassName("is-add-event-button");
 
-    for (let eleIndex = 0; eleIndex < eventDateEles.length; eleIndex += 1) {
-      eventDateEles[eleIndex].setAttribute("min", startDateString);
+    for (let btnIndex = 0; btnIndex < addEventBtnEles.length; btnIndex += 1) {
+      addEventBtnEles[btnIndex].addEventListener("click", eventFn_add);
     }
   }
-
-  function dates_setMax() {
-
-    const endDateString = endDateEle.value;
-
-    const eventDateEles = events_containerEle.getElementsByTagName("input");
-
-    for (let eleIndex = 0; eleIndex < eventDateEles.length; eleIndex += 1) {
-      eventDateEles[eleIndex].setAttribute("max", endDateString);
-    }
-  }
-
-  document.getElementById("licence--applicationDateString").addEventListener("change", function(changeEvent) {
-    startDateEle.setAttribute("min", changeEvent.currentTarget.value);
-  });
-
-  startDateEle.addEventListener("change", dates_setMin);
-  endDateEle.addEventListener("change", dates_setMax);
 
 
   /*
-   * EVENTS
+   * TICKET TYPES
    */
 
+  const ticketTypesPanelEle = document.getElementById("is-ticket-types-panel");
 
-  function events_remove(clickEvent) {
-    clickEvent.currentTarget.closest(".panel-block").remove();
+  if (ticketTypesPanelEle) {
 
-    doRefreshAfterSave = true;
-    setUnsavedChanges();
-  }
+    const addTicketType_openModal = function() {
 
-  function events_add(eventDate) {
+      window.llm.openHtmlModal("licence-ticketTypeAdd", {
 
-    let eventDateString = "";
+        onshow: function(modalEle) {
 
-    if (eventDate) {
+          window.fetch("/licences/doGetTicketTypes", {
+              method: "POST",
+              credentials: "include",
+              headers: {
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({
+                licenceTypeKey: licenceType_selectEle.value
+              })
+            })
+            .then(function(response) {
+              return response.json();
+            })
+            .then(function(ticketTypes) {
 
-      if (eventDate instanceof Date) {
-        eventDateString = eventDate.getFullYear() + "-" +
-          ("00" + (eventDate.getMonth() + 1)).slice(-2) + "-" +
-          ("00" + eventDate.getDate()).slice(-2);
-
-      } else if (eventDate.constructor === String) {
-        eventDateString = eventDate;
-
-      } else if (eventDate instanceof Object) {
-
-        try {
-          eventDate.preventDefault();
-
-          const sourceEleID = eventDate.currentTarget.getAttribute("data-source");
-
-          eventDateString = document.getElementById(sourceEleID).value;
-
-        } catch (e) {
-          // ignore
+              
+            });
         }
-      }
-    }
+      });
+    };
 
-    events_containerEle.insertAdjacentHTML("beforeend",
-      "<div class=\"panel-block is-block\">" +
-      "<div class=\"field has-addons\">" +
-      ("<div class=\"control is-expanded has-icons-left\">" +
-        "<input class=\"input is-small\" name=\"eventDate\" type=\"date\"" +
-        " value=\"" + eventDateString + "\"" +
-        " min=\"" + startDateEle.value + "\"" +
-        " max=\"" + endDateEle.value + "\"" +
-        " required />" +
-        "<span class=\"icon is-left\">" +
-        "<i class=\"fas fa-calendar\" aria-hidden=\"true\"></i>" +
-        "</span>" +
-        "</div>") +
-      ("<div class=\"control\">" +
-        "<a class=\"button is-small is-danger has-tooltip-right\" role=\"button\" data-tooltip=\"Remove Event\">" +
-        "<i class=\"fas fa-trash\" aria-hidden=\"true\"></i>" +
-        "<span class=\"sr-only\">Remove Event</span>" +
-        "</a>" +
-        "</div>") +
-      "</div>" +
-      "</div>");
-
-    const buttonEles = events_containerEle.getElementsByTagName("a");
-    buttonEles[buttonEles.length - 1].addEventListener("click", events_remove);
-
-    doRefreshAfterSave = true;
-    setUnsavedChanges();
-  }
-
-  const eventCalculator_modalEle = document.getElementById("is-event-calculator-modal");
-
-  document.getElementsByClassName("is-calculate-events-button")[0].addEventListener("click", function() {
-
-    const eventCount = parseInt(document.getElementById("eventCalc--eventCount").value);
-    const dayInterval = parseInt(document.getElementById("eventCalc--dayInterval").value);
-
-    let dateSplit = endDateEle.value.split("-");
-
-    const endDate = new Date(dateSplit[0], parseInt(dateSplit[1]) - 1, dateSplit[2]);
-
-    dateSplit = startDateEle.value.split("-");
-
-    let eventDate = new Date(dateSplit[0], parseInt(dateSplit[1]) - 1, dateSplit[2]);
-
-    for (let eventNum = 0; eventNum < eventCount && eventDate.getTime() <= endDate.getTime(); eventNum += 1) {
-
-      events_add(eventDate);
-
-      eventDate.setDate(eventDate.getDate() + dayInterval);
-    }
-
-    window.llm.hideModal(eventCalculator_modalEle);
-  });
-
-
-  document.getElementById("is-event-calculator-button").addEventListener("click", function() {
-    window.llm.showModal(eventCalculator_modalEle);
-  });
-
-  const cancelButtonEles = eventCalculator_modalEle.getElementsByClassName("is-close-modal-button");
-
-  for (let buttonIndex = 0; buttonIndex < cancelButtonEles.length; buttonIndex += 1) {
-    cancelButtonEles[buttonIndex].addEventListener("click", window.llm.hideModal);
-  }
-
-  const addEventBtnEles = document.getElementsByClassName("is-add-event-button");
-
-  for (let btnIndex = 0; btnIndex < addEventBtnEles.length; btnIndex += 1) {
-    addEventBtnEles[btnIndex].addEventListener("click", events_add);
+    document.getElementById("is-add-ticket-type-button").addEventListener("click", addTicketType_openModal);
   }
 
 

@@ -2,46 +2,6 @@
 
 const config = {};
 
-/*
- * APPLICATION SETTINGS
- */
-
-config.application = {
-  applicationName: "Lottery Licence Manager",
-  logoURL: "/images/bingoBalls.png",
-  httpPort: 3000
-};
-
-
-/*
-config.application.https = {
-  port: 3030,
-  keyPath: "./ssl/key.pem",
-  certPath: "./ssl/cert.pem",
-  passphrase: "lottery-licence-manager"
-};
-*/
-
-
-config.admin = {
-  defaultPassword: ""
-};
-
-
-/*
- * USER SETTINGS
- */
-
-config.user = {
-  createUpdateWindowMillis: 60 * 60 * 1000,
-
-  defaultProperties: {
-    canCreate: "false",
-    canUpdate: "false",
-    isAdmin: "false"
-  }
-};
-
 
 config.defaults = {
   city: "",
@@ -108,7 +68,9 @@ config.licences = {
       message: message,
       licenceHasErrors: licenceHasErrors
     };
-  }
+  },
+
+  printTemplate: "licence-print-agco"
 };
 
 
