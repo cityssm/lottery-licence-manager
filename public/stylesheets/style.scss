@@ -68,6 +68,12 @@ fieldset:enabled .is-hidden-enabled {
 }
 
 
+.is-readonly {
+  cursor: not-allowed;
+  background-color: $light;
+}
+
+
 /*
  * Tabs
  */

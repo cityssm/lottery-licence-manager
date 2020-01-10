@@ -155,7 +155,6 @@
     <table class="table is-fullwidth">
       <thead>
         <tr>
-          <th>Year</th>
           <th>Type</th>
           <th class="has-text-right">Value</th>
           <th class="has-text-right">Prizes</th>
@@ -172,7 +171,6 @@
             const ticketType = (licenceType && licenceType.ticketTypes ? licenceType.ticketTypes.find(ele => ele.ticketType === licenceTicketTypeObj.ticketType) : null);
         %>
             <tr>
-              <td><%= licenceTicketTypeObj.reportYear %></td>
               <td><%= licenceTicketTypeObj.ticketType %></td>
               <td class="has-text-right">
                 <%

@@ -35,236 +35,251 @@
 
   <div class="columns">
     <div class="column">
-      <div class="field">
-        <label class="label" for="licence--licenceID">Licence ID</label>
-        <div class="control has-icons-left">
-          <input class="input has-background-light has-cursor-not-allowed" id="licence--licenceID" name="licenceID" type="text" value="<%= licence.licenceID %>" placeholder="(New Licence Number)" readonly required />
-          <span class="icon is-left">
-            <i class="fas fa-key" aria-hidden="true"></i>
-          </span>
-        </div>
-      </div>
-    </div>
-    <%
-      let licenceNumberIsReadOnly = true;
-      if (isCreate && configFns.getProperty("licences.externalLicenceNumber.newCalculation") === "") {
-        licenceNumberIsReadOnly = false;
-      }
-    %>
-    <div class="column">
-      <label class="label" for="licence--externalLicenceNumber"><%= configFns.getProperty("licences.externalLicenceNumber.fieldLabel") %></label>
-      <div class="field has-addons">
-        <div class="control is-expanded">
-          <input class="input <%= (licenceNumberIsReadOnly ? " has-background-light has-cursor-not-allowed" : "") %>" id="licence--externalLicenceNumber" name="externalLicenceNumber" type="text" value="<%= licence.externalLicenceNumber %>" maxlength="20" readonly />
-        </div>
-        <% if (licenceNumberIsReadOnly) { %>
-          <div class="control">
-            <button class="button" id="is-external-licence-number-unlock-button" data-tooltip="Unlock Field" type="button">
-              <i class="fas fa-unlock" aria-hidden="true"></i>
-              <span class="sr-only">Unlock Field</span>
-            </button>
+
+      <div class="columns">
+        <div class="column">
+          <div class="field">
+            <label class="label" for="licence--licenceID">Licence ID</label>
+            <div class="control has-icons-left">
+              <input class="input is-readonly" id="licence--licenceID" name="licenceID" type="text" value="<%= licence.licenceID %>" placeholder="(New Licence Number)" readonly required />
+              <span class="icon is-left">
+                <i class="fas fa-key" aria-hidden="true"></i>
+              </span>
+            </div>
           </div>
-        <% } %>
-      </div>
-    </div>
-    <div class="column">
-      <div class="field">
-        <label class="label" for="licence--applicationDateString">Application Date</label>
-        <div class="control has-icons-left">
-          <input class="input" id="licence--applicationDateString" name="applicationDateString" type="date" value="<%= licence.applicationDateString %>" max="<%= dateTimeFns.dateToString(new Date()) %>" required />
-          <span class="icon is-left">
-            <i class="fas fa-calendar" aria-hidden="true"></i>
-          </span>
         </div>
-      </div>
-    </div>
-  </div>
-  <div class="columns">
-    <div class="column is-full">
-      <input id="licence--organizationID" name="organizationID" type="hidden" value="<%= organization.organizationID %>" />
-      <label class="label" for="licence--organizationName">Organization</label>
-      <div class="field has-addons">
-        <div class="control has-icons-left is-expanded">
-          <input class="input has-background-light has-cursor-not-allowed" id="licence--organizationName" type="text" value="<%= organization.organizationName %>" readonly required />
-          <span class="icon is-left">
-            <i class="fas fa-users" aria-hidden="true"></i>
-          </span>
+        <%
+          let licenceNumberIsReadOnly = true;
+          if (isCreate && configFns.getProperty("licences.externalLicenceNumber.newCalculation") === "") {
+            licenceNumberIsReadOnly = false;
+          }
+        %>
+        <div class="column">
+          <label class="label" for="licence--externalLicenceNumber"><%= configFns.getProperty("licences.externalLicenceNumber.fieldLabel") %></label>
+          <div class="field has-addons">
+            <div class="control is-expanded">
+              <input class="input <%= (licenceNumberIsReadOnly ? " is-readonly" : "") %>" id="licence--externalLicenceNumber" name="externalLicenceNumber" type="text" value="<%= licence.externalLicenceNumber %>" maxlength="20" readonly />
+            </div>
+            <% if (licenceNumberIsReadOnly) { %>
+              <div class="control">
+                <button class="button" id="is-external-licence-number-unlock-button" data-tooltip="Unlock Field" type="button">
+                  <i class="fas fa-unlock" aria-hidden="true"></i>
+                  <span class="sr-only">Unlock Field</span>
+                </button>
+              </div>
+            <% } %>
+          </div>
         </div>
-        <div class="control">
-          <button class="button" id="is-organization-lookup-button" data-tooltip="Lookup Organization" type="button">
-            <span class="icon"><i class="fas fa-search" aria-hidden="true"></i></span>
-            <span>Lookup</span>
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="columns">
-    <div class="column is-one-third">
-      <div class="field">
-        <label class="label" for="licence--municipality">Municipality</label>
-        <div class="control has-icons-left">
-          <input class="input" id="licence--municipality" name="municipality" type="text" value="<%= licence.municipality %>" maxlength="100" />
-          <span class="icon is-left">
-            <i class="fas fa-city" aria-hidden="true"></i>
-          </span>
-        </div>
-      </div>
-    </div>
-    <div class="column is-two-thirds">
-      <input id="licence--locationID" name="locationID" type="hidden" value="<%= licence.locationID %>" />
-      <label class="label" for="licence--locationDisplayName">Location</label>
-      <div class="field has-addons">
-        <div class="control has-icons-left is-expanded">
-          <input class="input has-background-light has-cursor-not-allowed" id="licence--locationDisplayName" type="text" value="<%= licence.locationDisplayName %>" maxlength="100" readonly required />
-          <span class="icon is-left">
-            <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
-          </span>
-        </div>
-        <div class="control">
-          <button class="button" id="is-location-lookup-button" data-tooltip="Lookup Location" type="button">
-            <span class="icon"><i class="fas fa-search" aria-hidden="true"></i></span>
-            <span>Lookup</span>
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="columns">
-    <div class="column is-3">
-      <div class="field">
-        <label class="label" for="licence--startDateString">Start Date</label>
-        <div class="control has-icons-left">
-          <input class="input" id="licence--startDateString" name="startDateString" type="date" value="<%= licence.startDateString %>" min="<%= licence.applicationDateString %>" required />
-          <span class="icon is-left">
-            <i class="fas fa-play" aria-hidden="true"></i>
-          </span>
-        </div>
-      </div>
-    </div>
-    <div class="column is-3">
-      <div class="field">
-        <label class="label" for="licence--endDateString">End Date</label>
-        <div class="control has-icons-left">
-          <input class="input" id="licence--endDateString" name="endDateString" type="date" value="<%= licence.endDateString %>" min="<%= licence.startDateString %>" required />
-          <span class="icon is-left">
-            <i class="fas fa-stop" aria-hidden="true"></i>
-          </span>
-        </div>
-      </div>
-    </div>
-    <div class="column is-3">
-      <div class="field">
-        <label class="label" for="licence--startTimeString">Start Time</label>
-        <div class="control has-icons-left">
-          <input class="input" id="licence--startTimeString" name="startTimeString" type="time" value="<%= licence.startTimeString %>" step="300" required />
-          <span class="icon is-left">
-            <i class="fas fa-play" aria-hidden="true"></i>
-          </span>
-        </div>
-      </div>
-    </div>
-    <div class="column is-3">
-      <div class="field">
-        <label class="label" for="licence--endTimeString">End Time</label>
-        <div class="control has-icons-left">
-          <input class="input" id="licence--endTimeString" name="endTimeString" type="time" value="<%= licence.endTimeString %>" step="300" required />
-          <span class="icon is-left">
-            <i class="fas fa-stop" aria-hidden="true"></i>
-          </span>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="columns">
-    <div class="column is-half">
-      <div class="field">
-        <label class="label" for="licence--licenceDetails">Licence Details</label>
-        <div class="control">
-          <textarea class="textarea" id="licence--licenceDetails" name="licenceDetails" rows="5"><%= licence.licenceDetails.trim() %></textarea>
-        </div>
-      </div>
-    </div>
-
-    <div class="column is-half">
-      <label class="label" for="licence--termsConditions">Terms and Conditions</label>
-      <div class="field has-addons">
-        <div class="control is-expanded">
-          <textarea class="textarea" id="licence--termsConditions" name="termsConditions" rows="5"><%= licence.termsConditions.trim() %></textarea>
-        </div>
-        <div class="control">
-          <button class="button" id="is-termsConditions-lookup-button" type="button">
-            <span class="icon">
-              <i class="fas fa-search" aria-hidden="true"></i>
-            </span>
-            <span>Lookup</span>
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <%
-    const licenceType = (isCreate ? {} : configFns.getLicenceType(licence.licenceTypeKey));
-  %>
-
-  <div class="columns">
-    <div class="column is-half">
-      <div class="field">
-        <label class="label" for="licence--licenceTypeKey">Licence Type</label>
-        <div class="control">
-          <div class="select is-fullwidth">
-            <select id="licence--licenceTypeKey" name="licenceTypeKey" required>
-              <% if (isCreate) { %>
-                <option value="">(Select a Licence Type)</option>
-                <%
-                  const licenceTypes = configFns.getProperty("licenceTypes");
-
-                  for (let licenceTypeIndex = 0; licenceTypeIndex < licenceTypes.length; licenceTypeIndex += 1) {
-                    const licenceTypeOption = licenceTypes[licenceTypeIndex];
-
-                    if (!licenceTypeOption.isActive) {
-                      continue;
-                    }
-                %>
-                  <option value="<%= licenceTypeOption.licenceTypeKey %>" data-has-ticket-types="<%= (licenceTypeOption.ticketTypes && licenceTypeOption.ticketTypes.length > 0 ? "true": "false") %>">
-                    <%= licenceTypeOption.licenceType %>
-                  </option>
-              <%
-                  }
-                } else {
-              %>
-                <option value="<%= licence.licenceTypeKey %>" data-has-ticket-types="<%= ((!licenceType || licenceType.ticketTypes) ? "true" : "false") %>" selected>
-                  <%= (licenceType ? licenceType.licenceType : licence.licenceTypeKey) %>
-                </option>
-              <%
-                }
-              %>
-            </select>
+        <div class="column">
+          <div class="field">
+            <label class="label" for="licence--applicationDateString">Application Date</label>
+            <div class="control has-icons-left">
+              <input class="input" id="licence--applicationDateString" name="applicationDateString" type="date" value="<%= licence.applicationDateString %>" max="<%= dateTimeFns.dateToString(new Date()) %>" required />
+              <span class="icon is-left">
+                <i class="fas fa-calendar" aria-hidden="true"></i>
+              </span>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    <div class="column is-half">
-      <div class="field">
-        <label class="label" for="licence--totalPrizeValue">Total Prize Value</label>
-        <div class="control has-icons-left">
-          <input class="input" id="licence--totalPrizeValue" name="totalPrizeValue" type="number" value="<%= licence.totalPrizeValue %>" min="0.00" max="99999999.99" step="0.01" required onwheel="return false;" />
-          <span class="icon is-left">
-            <i class="fas fa-dollar-sign" aria-hidden="true"></i>
-          </span>
+      <div class="columns">
+        <div class="column is-full">
+          <input id="licence--organizationID" name="organizationID" type="hidden" value="<%= organization.organizationID %>" />
+          <label class="label" for="licence--organizationName">Organization</label>
+          <div class="field has-addons">
+            <div class="control has-icons-left is-expanded">
+              <input class="input is-readonly" id="licence--organizationName" type="text" value="<%= organization.organizationName %>" readonly required />
+              <span class="icon is-left">
+                <i class="fas fa-users" aria-hidden="true"></i>
+              </span>
+            </div>
+            <div class="control">
+              <button class="button" id="is-organization-lookup-button" data-tooltip="Lookup Organization" type="button">
+                <span class="icon"><i class="fas fa-search" aria-hidden="true"></i></span>
+                <span>Lookup</span>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
+      <div class="columns">
+        <div class="column is-one-third">
+          <div class="field">
+            <label class="label" for="licence--municipality">Municipality</label>
+            <div class="control has-icons-left">
+              <input class="input" id="licence--municipality" name="municipality" type="text" value="<%= licence.municipality %>" maxlength="100" />
+              <span class="icon is-left">
+                <i class="fas fa-city" aria-hidden="true"></i>
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="column is-two-thirds">
+          <input id="licence--locationID" name="locationID" type="hidden" value="<%= licence.locationID %>" />
+          <label class="label" for="licence--locationDisplayName">Location</label>
+          <div class="field has-addons">
+            <div class="control has-icons-left is-expanded">
+              <input class="input is-readonly" id="licence--locationDisplayName" type="text" value="<%= licence.locationDisplayName %>" maxlength="100" readonly required />
+              <span class="icon is-left">
+                <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
+              </span>
+            </div>
+            <div class="control">
+              <button class="button" id="is-location-lookup-button" data-tooltip="Lookup Location" type="button">
+                <span class="icon"><i class="fas fa-search" aria-hidden="true"></i></span>
+                <span>Lookup</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="columns">
+        <div class="column is-3">
+          <div class="field">
+            <label class="label" for="licence--startDateString">Start Date</label>
+            <div class="control has-icons-left">
+              <input class="input" id="licence--startDateString" name="startDateString" type="date" value="<%= licence.startDateString %>" min="<%= licence.applicationDateString %>" required />
+              <span class="icon is-left">
+                <i class="fas fa-play" aria-hidden="true"></i>
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="column is-3">
+          <div class="field">
+            <label class="label" for="licence--endDateString">End Date</label>
+            <div class="control has-icons-left">
+              <input class="input" id="licence--endDateString" name="endDateString" type="date" value="<%= licence.endDateString %>" min="<%= licence.startDateString %>" required />
+              <span class="icon is-left">
+                <i class="fas fa-stop" aria-hidden="true"></i>
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="column is-3">
+          <div class="field">
+            <label class="label" for="licence--startTimeString">Start Time</label>
+            <div class="control has-icons-left">
+              <input class="input" id="licence--startTimeString" name="startTimeString" type="time" value="<%= licence.startTimeString %>" step="300" required />
+              <span class="icon is-left">
+                <i class="fas fa-play" aria-hidden="true"></i>
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="column is-3">
+          <div class="field">
+            <label class="label" for="licence--endTimeString">End Time</label>
+            <div class="control has-icons-left">
+              <input class="input" id="licence--endTimeString" name="endTimeString" type="time" value="<%= licence.endTimeString %>" step="300" required />
+              <span class="icon is-left">
+                <i class="fas fa-stop" aria-hidden="true"></i>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="columns">
+        <div class="column is-half">
+          <div class="field">
+            <label class="label" for="licence--licenceDetails">Licence Details</label>
+            <div class="control">
+              <textarea class="textarea" id="licence--licenceDetails" name="licenceDetails" rows="5"><%= licence.licenceDetails.trim() %></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="column is-half">
+          <label class="label" for="licence--termsConditions">Terms and Conditions</label>
+          <div class="field has-addons">
+            <div class="control is-expanded">
+              <textarea class="textarea" id="licence--termsConditions" name="termsConditions" rows="5"><%= licence.termsConditions.trim() %></textarea>
+            </div>
+            <div class="control">
+              <button class="button" id="is-termsConditions-lookup-button" type="button">
+                <span class="icon">
+                  <i class="fas fa-search" aria-hidden="true"></i>
+                </span>
+                <span>Lookup</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <%
+        const licenceType = (isCreate ? {} : configFns.getLicenceType(licence.licenceTypeKey));
+
+        let ticketTypesIsHidden = true;
+
+        if (!isCreate && ((licenceType && licenceType.ticketTypes && licenceType.ticketTypes.length) || licence.licenceTicketTypes.length > 0)) {
+          ticketTypesIsHidden = false;
+        }
+      %>
+
+      <div class="columns">
+        <div class="column is-half">
+          <div class="field">
+            <% if (isCreate) { %>
+              <label class="label" for="licence--licenceTypeKey">Licence Type</label>
+              <div class="control">
+                <div class="select is-fullwidth">
+                  <select class="is-readonly" id="licence--licenceTypeKey" name="licenceTypeKey" required <%= (isCreate ? "" : " readonly") %>>
+                    <option value="">(Select a Licence Type)</option>
+                    <%
+                      const licenceTypes = configFns.getProperty("licenceTypes");
+
+                      for (let licenceTypeIndex = 0; licenceTypeIndex < licenceTypes.length; licenceTypeIndex += 1) {
+                        const licenceTypeOption = licenceTypes[licenceTypeIndex];
+
+                        if (!licenceTypeOption.isActive) {
+                          continue;
+                        }
+                    %>
+                      <option value="<%= licenceTypeOption.licenceTypeKey %>" data-has-ticket-types="<%= (licenceTypeOption.ticketTypes && licenceTypeOption.ticketTypes.length > 0 ? "true": "false") %>">
+                        <%= licenceTypeOption.licenceType %>
+                      </option>
+                    <%
+                      }
+                    %>
+                  </select>
+                </div>
+              </div>
+            <% } else { %>
+              <input name="licenceTypeKey" type="hidden" value="<%= licence.licenceTypeKey %>" />
+              <label class="label" for="licence--licenceType">Licence Type</label>
+              <div class="control">
+                <input class="input is-readonly" id="licence--licenceType" value="<%= (licenceType ? licenceType.licenceType : licence.licenceTypeKey) %>" readonly />
+              </div>
+            <% } %>
+          </div>
+        </div>
+        <div class="column is-half">
+          <div class="field">
+            <label class="label" for="licence--totalPrizeValue">Total Prize Value</label>
+            <div class="control has-icons-left">
+              <input class="input <%= (ticketTypesIsHidden ? "" : " is-readonly") %>" id="licence--totalPrizeValue" name="totalPrizeValue" type="number" value="<%= licence.totalPrizeValue %>" min="0.00" step="0.01" required <%= (ticketTypesIsHidden ? "" : " readonly ") %> onwheel="return false;" />
+              <span class="icon is-left">
+                <i class="fas fa-dollar-sign" aria-hidden="true"></i>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
+    <% if (!isCreate) { %>
+      <div class="column is-3">
+        <div class="panel">
+          <div class="panel-heading">
+            <h2 class="has-text-weight-bold">Amendments</h2>
+          </div>
+        </div>
+      </div>
+    <% } %>
   </div>
 
   <%
-    let ticketTypesIsHidden = true;
-
-    if (!isCreate && ((licenceType && licenceType.ticketTypes && licenceType.ticketTypes.length) || licence.licenceTicketTypes.length > 0)) {
-      ticketTypesIsHidden = false;
-    }
-
     if (isCreate || !ticketTypesIsHidden) {
   %>
 
@@ -291,9 +306,12 @@
           <th class="has-text-right">Value</th>
           <th class="has-text-right">Prizes</th>
           <th class="has-text-right">Units</th>
+          <th>
+            <span class="sr-only">Amend Units</span>
+          </th>
           <th class="has-text-right">Licence Fee</th>
-          <th>Distributor</th>
-          <th>Manufacturer</th>
+          <th colspan="2">Distributor</th>
+          <th colspan="2">Manufacturer</th>
         </tr>
       </thead>
       <tbody>
@@ -318,11 +336,20 @@
               <td class="has-text-right">
                 <%= licenceTicketTypeObj.unitCount %>
               </td>
+              <td>
+                <button class="button is-small is-amend-ticket-type-unit-count-button" type="button">Amend</button>
+              </td>
               <td class="has-text-right">
                 <%= "$ " + licenceTicketTypeObj.licenceFee.toFixed(2) %>
               </td>
               <td><%= licenceTicketTypeObj.distributorLocationDisplayName %></td>
+              <td class="has-text-right">
+                <button class="button is-small" type="button">Change</button>
+              </td>
               <td><%= licenceTicketTypeObj.manufacturerLocationDisplayName %></td>
+              <td class="has-text-right">
+                <button class="button is-small" type="button">Change</button>
+              </td>
             </tr>
         <% } %>
       </tbody>

@@ -87,6 +87,103 @@ const licencesDB = (function() {
   }
 
 
+  function getLicence(licenceID, reqSession, db) {
+
+    const licenceObj = db.prepare("select l.*," +
+        " lo.locationName, lo.locationAddress1" +
+        " from LotteryLicences l" +
+        " left join Locations lo on l.locationID = lo.locationID" +
+        " where l.recordDelete_timeMillis is null" +
+        " and l.licenceID = ?")
+      .get(licenceID);
+
+    if (licenceObj) {
+
+      licenceObj.applicationDateString = dateTimeFns.dateIntegerToString(licenceObj.applicationDate || 0);
+
+      licenceObj.startDateString = dateTimeFns.dateIntegerToString(licenceObj.startDate || 0);
+      licenceObj.endDateString = dateTimeFns.dateIntegerToString(licenceObj.endDate || 0);
+
+      licenceObj.startTimeString = dateTimeFns.timeIntegerToString(licenceObj.startTime || 0);
+      licenceObj.endTimeString = dateTimeFns.timeIntegerToString(licenceObj.endTime || 0);
+
+      licenceObj.locationDisplayName = (licenceObj.locationName === "" ? licenceObj.locationAddress1 : licenceObj.locationName);
+
+      licenceObj.canUpdate = canUpdateObject("licence", licenceObj, reqSession);
+
+      // ticket types
+
+      const ticketTypesList = db.prepare("select t.ticketType," +
+          " t.distributorLocationID, d.locationName as distributorLocationName, d.locationAddress1 as distributorLocationAddress1," +
+          " t.manufacturerLocationID, m.locationName as manufacturerLocationName, m.locationAddress1 as manufacturerLocationAddress1," +
+          " t.unitCount, t.licenceFee" +
+          " from LotteryLicenceTicketTypes t" +
+          " left join Locations d on t.distributorLocationID = d.locationID" +
+          " left join Locations m on t.manufacturerLocationID = m.locationID" +
+          " where t.recordDelete_timeMillis is null" +
+          " and t.licenceID = ?" +
+          " order by t.ticketType")
+        .all(licenceID);
+
+      for (let ticketTypeIndex = 0; ticketTypeIndex < ticketTypesList.length; ticketTypeIndex += 1) {
+
+        const ticketTypeObj = ticketTypesList[ticketTypeIndex];
+
+        ticketTypeObj.distributorLocationDisplayName = ticketTypeObj.distributorLocationName === "" ?
+          ticketTypeObj.distributorLocationAddress1 :
+          ticketTypeObj.distributorLocationName;
+
+        ticketTypeObj.manufacturerLocationDisplayName = ticketTypeObj.manufacturerLocationName === "" ?
+          ticketTypeObj.manufacturerLocationAddress1 :
+          ticketTypeObj.manufacturerLocationName;
+      }
+
+      licenceObj.licenceTicketTypes = ticketTypesList;
+
+      // fields
+
+      const fieldList = db.prepare("select * from LotteryLicenceFields" +
+          " where licenceID = ?")
+        .all(licenceID);
+
+      licenceObj.licenceFields = fieldList;
+
+      // events
+
+      const eventList = db.prepare("select eventDate from LotteryEvents" +
+          " where licenceID = ?" +
+          " and recordDelete_timeMillis is null" +
+          " order by eventDate")
+        .all(licenceID);
+
+      for (let eventIndex = 0; eventIndex < eventList.length; eventIndex += 1) {
+        const eventObj = eventList[eventIndex];
+        eventObj.eventDateString = dateTimeFns.dateIntegerToString(eventObj.eventDate);
+      }
+
+      licenceObj.events = eventList;
+
+      // amendments
+
+      const amendments = db.prepare("select * from LotteryLicenceAmendments" +
+          " where licenceID = ?" +
+          " and recordDelete_timeMillis is null" +
+          " order by amendmentDate, amendmentTime")
+        .all(licenceID);
+
+      for (let amendmentIndex = 0; amendmentIndex < amendments.length; amendmentIndex += 1) {
+        const amendmentObj = amendments[amendmentIndex];
+        amendmentObj.amendmentDateString = dateTimeFns.dateIntegerToString(amendmentObj.amendmentDate);
+        amendmentObj.amendmentTimeString = dateTimeFns.timeIntegerToString(amendmentObj.amendmentTime);
+      }
+
+      licenceObj.licenceAmendments = amendments;
+    }
+
+    return licenceObj;
+  }
+
+
   return {
 
     getRawRowsColumns: function(sql, params) {
@@ -979,96 +1076,7 @@ const licencesDB = (function() {
         readonly: true
       });
 
-      const licenceObj = db.prepare("select l.*," +
-          " lo.locationName, lo.locationAddress1" +
-          " from LotteryLicences l" +
-          " left join Locations lo on l.locationID = lo.locationID" +
-          " where l.recordDelete_timeMillis is null" +
-          " and l.licenceID = ?")
-        .get(licenceID);
-
-      if (licenceObj) {
-
-        licenceObj.applicationDateString = dateTimeFns.dateIntegerToString(licenceObj.applicationDate || 0);
-
-        licenceObj.startDateString = dateTimeFns.dateIntegerToString(licenceObj.startDate || 0);
-        licenceObj.endDateString = dateTimeFns.dateIntegerToString(licenceObj.endDate || 0);
-
-        licenceObj.startTimeString = dateTimeFns.timeIntegerToString(licenceObj.startTime || 0);
-        licenceObj.endTimeString = dateTimeFns.timeIntegerToString(licenceObj.endTime || 0);
-
-        licenceObj.locationDisplayName = (licenceObj.locationName === "" ? licenceObj.locationAddress1 : licenceObj.locationName);
-
-        licenceObj.canUpdate = canUpdateObject("licence", licenceObj, reqSession);
-
-        // ticket types
-
-        const ticketTypesList = db.prepare("select t.ticketType," +
-            " t.distributorLocationID, d.locationName as distributorLocationName, d.locationAddress1 as distributorLocationAddress1," +
-            " t.manufacturerLocationID, m.locationName as manufacturerLocationName, m.locationAddress1 as manufacturerLocationAddress1," +
-            " t.unitCount, t.licenceFee" +
-            " from LotteryLicenceTicketTypes t" +
-            " left join Locations d on t.distributorLocationID = d.locationID" +
-            " left join Locations m on t.manufacturerLocationID = m.locationID" +
-            " where t.recordDelete_timeMillis is null" +
-            " and t.licenceID = ?" +
-            " order by t.ticketType")
-          .all(licenceID);
-
-        for (let ticketTypeIndex = 0; ticketTypeIndex < ticketTypesList.length; ticketTypeIndex += 1) {
-
-          const ticketTypeObj = ticketTypesList[ticketTypeIndex];
-
-          ticketTypeObj.distributorLocationDisplayName = ticketTypeObj.distributorLocationName === "" ?
-            ticketTypeObj.distributorLocationAddress1 :
-            ticketTypeObj.distributorLocationName;
-
-          ticketTypeObj.manufacturerLocationDisplayName = ticketTypeObj.manufacturerLocationName === "" ?
-            ticketTypeObj.manufacturerLocationAddress1 :
-            ticketTypeObj.manufacturerLocationName;
-        }
-
-        licenceObj.licenceTicketTypes = ticketTypesList;
-
-        // fields
-
-        const fieldList = db.prepare("select * from LotteryLicenceFields" +
-            " where licenceID = ?")
-          .all(licenceID);
-
-        licenceObj.licenceFields = fieldList;
-
-        // events
-
-        const eventList = db.prepare("select eventDate from LotteryEvents" +
-            " where licenceID = ?" +
-            " and recordDelete_timeMillis is null" +
-            " order by eventDate")
-          .all(licenceID);
-
-        for (let eventIndex = 0; eventIndex < eventList.length; eventIndex += 1) {
-          const eventObj = eventList[eventIndex];
-          eventObj.eventDateString = dateTimeFns.dateIntegerToString(eventObj.eventDate);
-        }
-
-        licenceObj.events = eventList;
-
-        // amendments
-
-        const amendments = db.prepare("select * from LotteryLicenceAmendments" +
-            " where licenceID = ?" +
-            " and recordDelete_timeMillis is null" +
-            " order by amendmentDate, amendmentTime")
-          .all(licenceID);
-
-        for (let amendmentIndex = 0; amendmentIndex < amendments.length; amendmentIndex += 1) {
-          const amendmentObj = amendments[amendmentIndex];
-          amendmentObj.amendmentDateString = dateTimeFns.dateIntegerToString(amendmentObj.amendmentDate);
-          amendmentObj.amendmentTimeString = dateTimeFns.timeIntegerToString(amendmentObj.amendmentTime);
-        }
-
-        licenceObj.licenceAmendments = amendments;
-      }
+      const licenceObj = getLicence(licenceID, reqSession, db);
 
       db.close();
 
@@ -1218,7 +1226,16 @@ const licencesDB = (function() {
 
     updateLicence: function(reqBody, reqSession) {
 
+      // check if can update
+
       const db = sqlite(dbPath);
+
+      const currentLicenceObj = getLicence(reqBody.licenceID, reqSession, db);
+
+      if (!currentLicenceObj.canUpdate) {
+        db.close();
+        return 0;
+      }
 
       const nowMillis = Date.now();
 
@@ -1229,6 +1246,15 @@ const licencesDB = (function() {
       } catch (e) {
         externalLicenceNumberInteger = -1;
       }
+
+      // record amendments (if necessary)
+
+      if (currentLicenceObj.trackUpdatesAsAmendments) {
+
+
+      }
+
+      // update licence
 
       const info = db.prepare("update LotteryLicences" +
           " set organizationID = ?," +
@@ -1452,6 +1478,7 @@ const licencesDB = (function() {
           " set licenceFee = ?," +
           " externalReceiptNumber = ?," +
           " licenceFeeIsPaid = 1," +
+          " trackUpdatesAsAmendments = 1," +
           " recordUpdate_userName = ?," +
           " recordUpdate_timeMillis = ?" +
           " where licenceID = ?" +

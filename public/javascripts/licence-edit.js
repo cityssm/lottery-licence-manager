@@ -140,8 +140,7 @@
   if (externalLicenceNumberUnlockBtnEle) {
     externalLicenceNumberUnlockBtnEle.addEventListener("click", function() {
       const externalLicenceNumberEle = document.getElementById("licence--externalLicenceNumber");
-      externalLicenceNumberEle.classList.remove("has-background-light");
-      externalLicenceNumberEle.classList.remove("has-cursor-not-allowed");
+      externalLicenceNumberEle.classList.remove("is-readonly");
       externalLicenceNumberEle.removeAttribute("readonly");
       externalLicenceNumberEle.focus();
     });
@@ -262,8 +261,29 @@
    * LOCATION LOOKUP
    */
 
+  let locationList = [];
+
+  function loadLocationList(callbackFn) {
+
+    if (locationList.length === 0) {
+
+      window.fetch("/locations/doGetLocations", {
+          method: "GET",
+          credentials: "include"
+        })
+        .then(function(response) {
+          return response.json();
+        })
+        .then(function(locationListRes) {
+          locationList = locationListRes;
+          callbackFn();
+        });
+    } else {
+      callbackFn();
+    }
+  }
+
   {
-    let locationList = [];
 
     let locationLookup_closeModalFn;
     let locationLookup_searchStrEle;
@@ -349,24 +369,10 @@
 
           locationLookup_resultsEle = document.getElementById("container--locationLookup");
 
-          if (locationList.length === 0) {
-
-            window.fetch("/locations/doGetLocations", {
-                method: "GET",
-                credentials: "include"
-              })
-              .then(function(response) {
-                return response.json();
-              })
-              .then(function(locationListRes) {
-                locationList = locationListRes;
-                locationLookup_searchStrEle.removeAttribute("disabled");
-                locationLookupFn_refreshResults();
-              });
-          } else {
+          loadLocationList(function() {
             locationLookup_searchStrEle.removeAttribute("disabled");
             locationLookupFn_refreshResults();
-          }
+          });
 
           // new location
 
@@ -525,7 +531,7 @@
    * LICENCE TYPE
    */
 
-   const licenceType_selectEle = document.getElementById("licence--licenceTypeKey");
+  const licenceType_selectEle = document.getElementById("licence--licenceTypeKey");
 
   if (isCreate) {
 
@@ -537,10 +543,19 @@
 
       const hasTicketTypes = changeEvent.currentTarget.selectedOptions[0].getAttribute("data-has-ticket-types") === "true";
 
+      const totalPrizeValueEle = document.getElementById("licence--totalPrizeValue");
+
       if (hasTicketTypes) {
         document.getElementById("is-ticket-types-panel").classList.remove("is-hidden");
+
+        totalPrizeValueEle.setAttribute("readonly", "readonly");
+        totalPrizeValueEle.classList.add("is-readonly");
+
       } else {
         document.getElementById("is-ticket-types-panel").classList.add("is-hidden");
+
+        totalPrizeValueEle.removeAttribute("readonly");
+        totalPrizeValueEle.classList.remove("is-readonly");
       }
 
       // fields
@@ -733,29 +748,114 @@
 
   if (ticketTypesPanelEle) {
 
+    let licenceTypeKeyToTicketTypes = {};
+
     const addTicketType_openModal = function() {
+
+      let addTicketType_closeModalFn;
+      let addTicketType_ticketTypeEle;
+      let addTicketType_unitCountEle;
+
+      const licenceTypeKey = licenceType_selectEle.value;
+
+      const addTicketType_addTicketType = function(formEvent) {
+        formEvent.preventDefault();
+      };
+
+      const addTicketType_refreshUnitCountChange = function() {
+
+        const unitCount = addTicketType_unitCountEle.value;
+
+        document.getElementById("ticketTypeAdd--prizesTotal").value =
+          (document.getElementById("ticketTypeAdd--prizesPerDeal").value * unitCount).toFixed(2);
+
+        document.getElementById("ticketTypeAdd--licenceFee").value =
+          (document.getElementById("ticketTypeAdd--feePerUnit").value * unitCount).toFixed(2);
+      };
+
+      const addTicketType_refreshTicketTypeChange = function() {
+        const ticketTypeOptionEle = addTicketType_ticketTypeEle.selectedOptions[0];
+
+        document.getElementById("ticketTypeAdd--ticketPrice").value = ticketTypeOptionEle.getAttribute("data-ticket-price");
+        document.getElementById("ticketTypeAdd--ticketCount").value = ticketTypeOptionEle.getAttribute("data-ticket-count");
+
+        document.getElementById("ticketTypeAdd--valuePerDeal").value =
+          (ticketTypeOptionEle.getAttribute("data-ticket-price") * ticketTypeOptionEle.getAttribute("data-ticket-count")).toFixed(2);
+
+        document.getElementById("ticketTypeAdd--prizesPerDeal").value = ticketTypeOptionEle.getAttribute("data-prizes-per-deal");
+
+        document.getElementById("ticketTypeAdd--feePerUnit").value = ticketTypeOptionEle.getAttribute("data-fee-per-unit");
+
+        addTicketType_refreshUnitCountChange();
+      };
+
+      const addTicketType_populateTicketTypeSelect = function() {
+
+        const ticketTypes = licenceTypeKeyToTicketTypes[licenceTypeKey];
+
+        if (!ticketTypes || ticketTypes.length === 0) {
+          addTicketType_closeModalFn();
+          window.llm.alertModal("No ticket types available", "", "OK", "danger");
+          return;
+        }
+
+        for (let ticketTypeIndex = 0; ticketTypeIndex < ticketTypes.length; ticketTypeIndex += 1) {
+
+          const ticketTypeObj = ticketTypes[ticketTypeIndex];
+
+          const optionEle = document.createElement("option");
+
+          optionEle.setAttribute("data-ticket-price", ticketTypeObj.ticketPrice.toFixed(2));
+          optionEle.setAttribute("data-ticket-count", ticketTypeObj.ticketCount);
+          optionEle.setAttribute("data-prizes-per-deal", ticketTypeObj.prizesPerDeal.toFixed(2));
+          optionEle.setAttribute("data-fee-per-unit", (ticketTypeObj.feePerUnit || 0).toFixed(2));
+
+          optionEle.value = ticketTypeObj.ticketType;
+          optionEle.innerText = ticketTypeObj.ticketType;
+
+          addTicketType_ticketTypeEle.insertAdjacentElement("beforeend", optionEle);
+        }
+
+        addTicketType_refreshTicketTypeChange();
+      };
 
       window.llm.openHtmlModal("licence-ticketTypeAdd", {
 
         onshow: function(modalEle) {
+          addTicketType_ticketTypeEle = document.getElementById("ticketTypeAdd--ticketType");
+          addTicketType_ticketTypeEle.addEventListener("change", addTicketType_refreshTicketTypeChange);
 
-          window.fetch("/licences/doGetTicketTypes", {
-              method: "POST",
-              credentials: "include",
-              headers: {
-                "Content-Type": "application/json"
-              },
-              body: JSON.stringify({
-                licenceTypeKey: licenceType_selectEle.value
+          addTicketType_unitCountEle = document.getElementById("ticketTypeAdd--unitCount");
+          addTicketType_unitCountEle.addEventListener("change", addTicketType_refreshUnitCountChange);
+
+          modalEle.getElementsByTagName("form")[0].addEventListener("submit", addTicketType_addTicketType);
+        },
+
+        onshown: function(modalEle, closeModalFn) {
+
+          addTicketType_closeModalFn = closeModalFn;
+
+          if (licenceTypeKey in licenceTypeKeyToTicketTypes) {
+            addTicketType_populateTicketTypeSelect();
+          } else {
+            window.fetch("/licences/doGetTicketTypes", {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                  "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                  licenceTypeKey: licenceTypeKey
+                })
               })
-            })
-            .then(function(response) {
-              return response.json();
-            })
-            .then(function(ticketTypes) {
-
-              
-            });
+              .then(function(response) {
+                return response.json();
+              })
+              .then(function(ticketTypes) {
+                licenceTypeKeyToTicketTypes[licenceTypeKey] = ticketTypes;
+                addTicketType_populateTicketTypeSelect();
+              });
+          }
         }
       });
     };

@@ -22,7 +22,7 @@ let dbInit = {
       usersDB.prepare("create table if not exists Users (" +
         "userName varchar(30) primary key not null," +
         " firstName varchar(50), lastName varchar(50)," +
-        " isActive boolean not null default 1," +
+        " isActive bit not null default 1," +
         " passwordHash char(60) not null)" +
         " without rowid").run();
 
@@ -158,7 +158,9 @@ let dbInit = {
 
         " externalReceiptNumber varchar(20)," +
         " licenceFee decimal(10, 2)," +
-        " licenceFeeIsPaid boolean not null default 0," +
+        " licenceFeeIsPaid bit not null default 0," +
+
+        " trackUpdatesAsAmendments bit not null default 0," +
 
         " recordCreate_userName varchar(30) not null," +
         " recordCreate_timeMillis integer not null," +
@@ -179,8 +181,8 @@ let dbInit = {
       licencesDB.prepare("create table if not exists LotteryLicenceAmendments (" +
         "licenceID integer not null," +
         " amendmentIndex integer not null," +
-        " amendmentDate integer, amendmentTime integer," +
-        " amendment text," +
+        " amendmentDate integer not null, amendmentTime integer not null," +
+        " amendmentType text not null, amendment text," +
         " isHidden bit not null default 0," +
 
         " recordCreate_userName varchar(30) not null," +

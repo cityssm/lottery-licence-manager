@@ -5,8 +5,8 @@
       <h3 class="modal-card-title">Add a Ticket Type</h3>
       <button class="delete is-close-modal-button" aria-label="close" type="button"></button>
     </header>
-    <form>
-      <section class="modal-card-body">
+    <section class="modal-card-body">
+      <form>
         <div class="field">
           <label class="label" for="ticketTypeAdd--ticketType">Ticket Type</label>
           <div class="control">
@@ -16,10 +16,116 @@
           </div>
           <p id="ticketTypeAdd--ticketType-description"></p>
         </div>
-      </section>
-      <footer class="modal-card-foot justify-right">
-        <button class="button is-close-modal-button" type="button">Cancel</button>
-      </footer>
-    </form>
+        <div class="columns">
+          <div class="column">
+            <div class="field">
+              <label class="label" for="ticketTypeAdd--ticketPrice">Price per Ticket</label>
+              <div class="control has-icons-left">
+                <input class="input has-text-right is-readonly" id="ticketTypeAdd--ticketPrice" type="text" readonly />
+                <span class="icon is-small is-left">
+                  <i class="fas fa-dollar-sign" aria-hidden="true"></i>
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="column is-narrow align-self-flex-end has-margin-bottom-10">
+            <i class="fas fa-times" aria-hidden="true"></i>
+          </div>
+          <div class="column">
+            <div class="field">
+              <label class="label" for="ticketTypeAdd--ticketCount">Ticket Count</label>
+              <div class="control">
+                <input class="input has-text-right is-readonly" id="ticketTypeAdd--ticketCount" type="text" readonly />
+              </div>
+            </div>
+          </div>
+          <div class="column is-narrow align-self-flex-end has-margin-bottom-10">
+            <i class="fas fa-equals" aria-hidden="true"></i>
+          </div>
+          <div class="column">
+            <div class="field">
+              <label class="label" for="ticketTypeAdd--valuePerDeal">Value per Deal</label>
+              <div class="control has-icons-left">
+                <input class="input has-text-right is-readonly" id="ticketTypeAdd--valuePerDeal" type="text" readonly />
+                <span class="icon is-small is-left">
+                  <i class="fas fa-dollar-sign" aria-hidden="true"></i>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="columns">
+          <div class="column">
+            <div class="field">
+              <label class="label" for="ticketTypeAdd--prizesPerDeal">Prizes per Deal</label>
+              <div class="control has-icons-left">
+                <input class="input has-text-right is-readonly" id="ticketTypeAdd--prizesPerDeal" type="text" readonly />
+                <span class="icon is-small is-left">
+                  <i class="fas fa-dollar-sign" aria-hidden="true"></i>
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="column is-narrow align-self-flex-end has-margin-bottom-10">
+            <i class="fas fa-times" aria-hidden="true"></i>
+          </div>
+          <div class="column">
+            <div class="field">
+              <label class="label" for="ticketTypeAdd--unitCount">Units</label>
+              <div class="control">
+                <input class="input has-text-right" id="ticketTypeAdd--unitCount" name="unitCount" type="number" value="1" min="1" required onwheel="return false;" />
+              </div>
+            </div>
+          </div>
+          <div class="column is-narrow align-self-flex-end has-margin-bottom-10">
+            <i class="fas fa-equals" aria-hidden="true"></i>
+          </div>
+          <div class="column">
+            <div class="field">
+              <label class="label" for="ticketTypeAdd--prizesTotal">Total Prizes</label>
+              <div class="control has-icons-left">
+                <input class="input has-text-right is-readonly" id="ticketTypeAdd--prizesTotal" type="text" readonly />
+                <span class="icon is-small is-left">
+                  <i class="fas fa-dollar-sign" aria-hidden="true"></i>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="columns">
+          <div class="column">
+            <div class="field">
+              <label class="label" for="ticketTypeAdd--feePerUnit">Fee per Unit</label>
+              <div class="control has-icons-left">
+                <input class="input has-text-right is-readonly" id="ticketTypeAdd--feePerUnit" type="text" readonly />
+                <span class="icon is-small is-left">
+                  <i class="fas fa-dollar-sign" aria-hidden="true"></i>
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="column">
+            <div class="field">
+              <label class="label" for="ticketTypeAdd--licenceFee">Licence Fee</label>
+              <div class="control has-icons-left">
+                <input class="input has-text-right is-readonly" id="ticketTypeAdd--licenceFee" name="licenceFee" type="text" readonly />
+                <span class="icon is-small is-left">
+                  <i class="fas fa-dollar-sign" aria-hidden="true"></i>
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="column is-narrow align-self-flex-end">
+            <button class="button is-success" type="submit">
+              <span class="icon"><i class="fas fa-plus" aria-hidden="true"></i></span>
+              <span>Add</span>
+            </button>
+          </div>
+        </div>
+      </form>
+    </section>
+    <footer class="modal-card-foot justify-right">
+      <button class="button is-close-modal-button" type="button">Cancel</button>
+    </footer>
   </div>
 </div>
