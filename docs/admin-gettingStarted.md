@@ -50,10 +50,11 @@ Open a command line, and navigate to the folder where the application will resid
 
 ## Step 5: Create a `config.js` file
 
-It is recommended to copy a  `config-example-*.js` file to get started.
-At this time, the only example config file available is for the province of Ontario.
+It is recommended to copy the `config-example.js` file to get started.
+It includes the base rules for the province of Ontario,
+with the most commonly overridden settings.
 
-    > cp data/config-example-ontario.js data/config.js
+    > cp data/config-example.js data/config.js
 
 See the [config.js documentation](admin-configJS.md) for help customizing
 your configuration.
