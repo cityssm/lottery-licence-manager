@@ -190,19 +190,19 @@
         </div>
 
         <div class="column is-half">
-          <label class="label" for="licence--termsConditions">Terms and Conditions</label>
-          <div class="field has-addons">
-            <div class="control is-expanded">
+          <div class="field">
+            <label class="label" for="licence--termsConditions">Terms and Conditions</label>
+            <div class="control">
               <textarea class="textarea" id="licence--termsConditions" name="termsConditions" rows="5"><%= licence.termsConditions.trim() %></textarea>
             </div>
-            <div class="control">
-              <button class="button" id="is-termsConditions-lookup-button" type="button">
-                <span class="icon">
-                  <i class="fas fa-search" aria-hidden="true"></i>
-                </span>
-                <span>Lookup</span>
-              </button>
-            </div>
+          </div>
+          <div class="has-text-right">
+            <button class="button is-small" id="is-termsConditions-lookup-button" type="button">
+              <span class="icon">
+                <i class="fas fa-search" aria-hidden="true"></i>
+              </span>
+              <span>Lookup Past Terms</span>
+            </button>
           </div>
         </div>
       </div>
@@ -246,7 +246,7 @@
                 </div>
               </div>
             <% } else { %>
-              <input name="licenceTypeKey" type="hidden" value="<%= licence.licenceTypeKey %>" />
+              <input id="licence--licenceTypeKey" name="licenceTypeKey" type="hidden" value="<%= licence.licenceTypeKey %>" />
               <label class="label" for="licence--licenceType">Licence Type</label>
               <div class="control">
                 <input class="input is-readonly" id="licence--licenceType" value="<%= (licenceType ? licenceType.licenceType : licence.licenceTypeKey) %>" readonly />
@@ -303,9 +303,9 @@
       <thead>
         <tr>
           <th>Type</th>
+          <th class="has-text-right">Units</th>
           <th class="has-text-right">Value</th>
           <th class="has-text-right">Prizes</th>
-          <th class="has-text-right">Units</th>
           <th>
             <span class="sr-only">Amend Units</span>
           </th>
@@ -316,43 +316,86 @@
       </thead>
       <tbody>
         <%
+          let ticketTypeLicenceFeeTotal = 0;
+
           for (let ticketTypeIndex = 0; ticketTypeIndex < licence.licenceTicketTypes.length; ticketTypeIndex += 1) {
             const licenceTicketTypeObj = licence.licenceTicketTypes[ticketTypeIndex];
             const ticketType = (licenceType && licenceType.ticketTypes ? licenceType.ticketTypes.find(ele => ele.ticketType === licenceTicketTypeObj.ticketType) : null);
+
+            ticketTypeLicenceFeeTotal += licenceTicketTypeObj.licenceFee;
         %>
-            <tr>
-              <td><%= licenceTicketTypeObj.ticketType %></td>
+            <tr data-ticket-type="<%= licenceTicketTypeObj.ticketType %>">
+              <td>
+                <input name="ticketType_ticketType" type="hidden" value="<%= licenceTicketTypeObj.ticketType %>" />
+                <span><%= licenceTicketTypeObj.ticketType %></span>
+              </td>
+              <td class="has-text-right">
+                <input name="ticketType_unitCount" type="hidden" value="<%= licenceTicketTypeObj.unitCount %>" />
+                <span><%= licenceTicketTypeObj.unitCount %></span>
+              </td>
               <td class="has-text-right">
                 <%
-                  let ticketValue = (ticketType ?
-                    "$ " + (ticketType.ticketPrice * ticketType.ticketCount).toFixed(2) :
-                    "");
+                  let ticketValue = (ticketType ? (ticketType.ticketPrice * ticketType.ticketCount) : 0);
+                  let totalValue = (ticketValue * licenceTicketTypeObj.unitCount).toFixed(2);
                 %>
-                <%= ticketValue %>
+                <span data-tooltip="$<%= ticketValue %> value per deal">$ <%= totalValue %></span>
               </td>
               <td class="has-text-right">
-                <%= (ticketType ? "$ " + ticketType.prizesPerDeal.toFixed(2) : "") %>
-              </td>
-              <td class="has-text-right">
-                <%= licenceTicketTypeObj.unitCount %>
+                <%
+                  let prizesPerDeal = (ticketType ? ticketType.prizesPerDeal : 0);
+                  let totalPrizesPerDeal = (prizesPerDeal * licenceTicketTypeObj.unitCount).toFixed(2);
+                %>
+                <input class="is-prizes-per-deal" type="hidden" value="<%= totalPrizesPerDeal %>" />
+                <span data-tooltip="$<%= prizesPerDeal.toFixed(2) %> prizes per deal">$ <%= totalPrizesPerDeal %></span>
               </td>
               <td>
-                <button class="button is-small is-amend-ticket-type-unit-count-button" type="button">Amend</button>
+                <div class="field has-addons">
+                  <div class="control">
+                    <button class="button is-small is-amend-ticket-type-unit-count-button" data-tooltip="Amend Units" type="button">Amend</button>
+                  </div>
+                  <div class="control">
+                    <button class="button is-small is-danger is-delete-ticket-type-button" data-tooltip="Delete Ticket Type" type="button">
+                      <i class="fas fa-trash" aria-hidden="true"></i>
+                      <span class="sr-only">Delete</span>
+                    </button>
+                  </div>
+                </div>
               </td>
               <td class="has-text-right">
-                <%= "$ " + licenceTicketTypeObj.licenceFee.toFixed(2) %>
+                <input class="is-licence-fee" name="ticketType_licenceFee" type="hidden" value="<%= licenceTicketTypeObj.licenceFee.toFixed(2) %>" />
+                <span><%= "$ " + licenceTicketTypeObj.licenceFee.toFixed(2) %></span>
               </td>
-              <td><%= licenceTicketTypeObj.distributorLocationDisplayName %></td>
-              <td class="has-text-right">
-                <button class="button is-small" type="button">Change</button>
+              <td>
+                <input name="ticketType_distributorLocationID" type="hidden" value="<%= licenceTicketTypeObj.distributorLocationID %>" />
+                <span><%= licenceTicketTypeObj.distributorLocationDisplayName %></span>
               </td>
-              <td><%= licenceTicketTypeObj.manufacturerLocationDisplayName %></td>
               <td class="has-text-right">
-                <button class="button is-small" type="button">Change</button>
+                <button class="button is-small is-amend-ticket-type-distributor-button" type="button">Change</button>
+              </td>
+              <td>
+                <input name="ticketType_manufacturerLocationID" type="hidden" value="<%= licenceTicketTypeObj.manufacturerLocationID %>" />
+                <span><%= licenceTicketTypeObj.manufacturerLocationDisplayName %></span>
+              </td>
+              <td class="has-text-right">
+                <button class="button is-small is-amend-ticket-type-manufacturer-button" type="button">Change</button>
               </td>
             </tr>
         <% } %>
       </tbody>
+      <tfoot>
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+          <th class="has-text-right">$ <%= (licence.totalPrizeValue || 0).toFixed(2) %></th>
+          <td></td>
+          <th class="has-text-right">$ <%= ticketTypeLicenceFeeTotal.toFixed(2) %></th>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+      </tfoot>
     </table>
   </div>
 

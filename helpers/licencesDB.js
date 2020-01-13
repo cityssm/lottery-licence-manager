@@ -1251,7 +1251,6 @@ const licencesDB = (function() {
 
       if (currentLicenceObj.trackUpdatesAsAmendments) {
 
-
       }
 
       // update licence
@@ -1315,12 +1314,14 @@ const licencesDB = (function() {
         const fieldKey = fieldKeys[fieldIndex];
         const fieldValue = reqBody[fieldKey];
 
-        if (fieldValue !== "") {
-          db.prepare("insert into LotteryLicenceFields" +
-              " (licenceID, fieldKey, fieldValue)" +
-              " values (?, ?, ?)")
-            .run(reqBody.licenceID, fieldKey, fieldValue);
+        if (fieldKey === "" || fieldValue === "") {
+          continue;
         }
+
+        db.prepare("insert into LotteryLicenceFields" +
+            " (licenceID, fieldKey, fieldValue)" +
+            " values (?, ?, ?)")
+          .run(reqBody.licenceID, fieldKey, fieldValue);
       }
 
 
