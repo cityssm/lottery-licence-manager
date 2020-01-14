@@ -112,7 +112,7 @@ let licenceType_nevada = config.licenceTypes.find(function(licenceType) {
 
 for (let ticketTypeIndex = 0; ticketTypeIndex < licenceType_nevada.ticketTypes.length; ticketTypeIndex += 1) {
   licenceType_nevada.ticketTypes[ticketTypeIndex].feePerUnit =
-    parseFloat((licenceType_nevada.ticketTypes[ticketTypeIndex].prizesPerDeal * 0.03).toPrecision(2));
+    Math.round(licenceType_nevada.ticketTypes[ticketTypeIndex].prizesPerDeal * 0.03 * 100) / 100;
 }
 
 
