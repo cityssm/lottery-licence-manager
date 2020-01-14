@@ -114,7 +114,10 @@
   // Nav blocker
 
   function setDoRefreshAfterSave() {
-    feeFormEle.getElementsByTagName("fieldset")[0].setAttribute("disabled", "disabled");
+    if (feeFormEle) {
+      feeFormEle.getElementsByTagName("fieldset")[0].setAttribute("disabled", "disabled");
+    }
+
     doRefreshAfterSave = true;
   }
 
@@ -764,11 +767,37 @@
 
     let licenceTypeKeyToTicketTypes = {};
 
+    const ticketTypes_getAll = function(callbackFn) {
+      const licenceTypeKey = licenceType_selectEle.value;
+
+      if (licenceTypeKey in licenceTypeKeyToTicketTypes) {
+        callbackFn(licenceTypeKeyToTicketTypes[licenceTypeKey]);
+      } else {
+        window.fetch("/licences/doGetTicketTypes", {
+            method: "POST",
+            credentials: "include",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              licenceTypeKey: licenceTypeKey
+            })
+          })
+          .then(function(response) {
+            return response.json();
+          })
+          .then(function(ticketTypes) {
+            licenceTypeKeyToTicketTypes[licenceTypeKey] = ticketTypes;
+            callbackFn(ticketTypes);
+          });
+      }
+    };
+
     const ticketTypes_calculateTfoot = function() {
 
       let prizeValueTotal = 0;
 
-      const prizeValueEles = ticketTypesPanelEle.getElementsByClassName("is-prizes-per-deal");
+      const prizeValueEles = ticketTypesPanelEle.getElementsByClassName("is-total-prizes-per-deal");
 
       for (let eleIndex = 0; eleIndex < prizeValueEles.length; eleIndex += 1) {
         prizeValueTotal += parseFloat(prizeValueEles[eleIndex].value);
@@ -801,6 +830,8 @@
       setDoRefreshAfterSave();
     };
 
+    let ticketTypes_addTr;
+
     const deleteTicketType_openConfirm = function(buttonEvent) {
 
       const trEle = buttonEvent.currentTarget.closest("tr");
@@ -827,6 +858,73 @@
 
     const amendUnitCount_openModal = function(buttonEvent) {
 
+      const trEle = buttonEvent.currentTarget.closest("tr");
+
+      const ticketType = trEle.getAttribute("data-ticket-type");
+      let ticketTypeObj;
+
+      let amendUnitCount_closeModalFn;
+
+      const amendUnitCount_closeAndUpdate = function(formEvent) {
+        formEvent.preventDefault();
+
+        const unitCount = document.getElementById("amendUnit_unitCount").value;
+
+        const unitCountEle = trEle.querySelector("input[name='ticketType_unitCount']");
+        unitCountEle.value = unitCount;
+        unitCountEle.nextElementSibling.innerText = unitCount;
+
+        const totalValueEle = trEle.getElementsByClassName("is-total-value-per-deal")[0];
+        totalValueEle.value = (ticketTypeObj.ticketPrice * ticketTypeObj.ticketCount * unitCount).toFixed(2);
+        totalValueEle.nextElementSibling.innerText = "$ " + (ticketTypeObj.ticketPrice * ticketTypeObj.ticketCount * unitCount).toFixed(2);
+
+        const totalPrizesEle = trEle.getElementsByClassName("is-total-prizes-per-deal")[0];
+        totalPrizesEle.value = (ticketTypeObj.prizesPerDeal * unitCount).toFixed(2);
+        totalPrizesEle.nextElementSibling.innerText = "$ " + (ticketTypeObj.prizesPerDeal * unitCount).toFixed(2);
+
+        const licenceFee = document.getElementById("amendUnit_licenceFee").value;
+
+        const licenceFeeEle = trEle.querySelector("input[name='ticketType_licenceFee']");
+        licenceFeeEle.value = licenceFee;
+        licenceFeeEle.nextElementSibling.innerText = "$ " + licenceFee;
+
+        amendUnitCount_closeModalFn();
+
+        ticketTypes_calculateTfoot();
+        setUnsavedChanges();
+        setDoRefreshAfterSave();
+      };
+
+      const amendUnitCount_calculateLicenceFee = function() {
+
+        document.getElementById("amendUnit_licenceFee").value =
+          (ticketTypeObj.feePerUnit * document.getElementById("amendUnit_unitCount").value).toFixed(2);
+      };
+
+      window.llm.openHtmlModal("licence-ticketTypeUnitAmend", {
+        onshow: function(modalEle) {
+          document.getElementById("amendUnit_ticketType").value = ticketType;
+
+          const unitCountCurrent = trEle.querySelector("input[name='ticketType_unitCount']").value;
+
+          document.getElementById("amendUnit_unitCountCurrent").value = unitCountCurrent;
+
+          const unitCountEle = document.getElementById("amendUnit_unitCount");
+          unitCountEle.value = unitCountCurrent;
+
+          ticketTypes_getAll(function(ticketTypes) {
+            ticketTypeObj = ticketTypes.find(ele => ele.ticketType === ticketType);
+
+            unitCountEle.addEventListener("change", amendUnitCount_calculateLicenceFee);
+            amendUnitCount_calculateLicenceFee();
+          });
+
+          modalEle.getElementsByTagName("form")[0].addEventListener("submit", amendUnitCount_closeAndUpdate);
+        },
+        onshown: function(modalEle, closeModalFn) {
+          amendUnitCount_closeModalFn = closeModalFn;
+        }
+      });
     };
 
     const amendDistributor_openModal = function(buttonEvent) {
@@ -943,113 +1041,20 @@
       let addTicketType_ticketTypeEle;
       let addTicketType_unitCountEle;
 
-      const licenceTypeKey = licenceType_selectEle.value;
-
       const addTicketType_addTicketType = function(formEvent) {
+
         formEvent.preventDefault();
 
-        const ticketType = document.getElementById("ticketTypeAdd--ticketType").value;
+        ticketTypes_addTr({
+          ticketType: document.getElementById("ticketTypeAdd--ticketType").value,
+          unitCount: document.getElementById("ticketTypeAdd--unitCount").value,
+          valuePerDeal: document.getElementById("ticketTypeAdd--valuePerDeal").value,
+          prizesPerDeal: document.getElementById("ticketTypeAdd--prizesPerDeal").value,
+          licenceFee: document.getElementById("ticketTypeAdd--licenceFee").value
 
-        const trEle = document.createElement("tr");
-        trEle.setAttribute("data-ticket-type", ticketType);
-
-        trEle.insertAdjacentHTML("beforeend", "<td>" +
-          "<input name=\"ticketType_ticketType\" type=\"hidden\" value=\"" + ticketType + "\" />" +
-          "<span>" + ticketType + "</span>" +
-          "</td>");
-
-        // unit count
-
-        const unitCount = document.getElementById("ticketTypeAdd--unitCount").value;
-
-        trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right\">" +
-          "<input name=\"ticketType_unitCount\" type=\"hidden\" value=\"" + unitCount + "\" />" +
-          "<span>" + unitCount + "</span>" +
-          "</td>");
-
-        // value per deal
-
-        const valuePerDeal = document.getElementById("ticketTypeAdd--valuePerDeal").value;
-        const totalValuePerDeal = (valuePerDeal * unitCount).toFixed(2);
-
-        trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right\">" +
-          "<span data-tooltip=\"$" + valuePerDeal + " value per deal\">$ " + totalValuePerDeal + "</span>" +
-          "</td>");
-
-        // prizes per deal
-
-        const prizesPerDeal = document.getElementById("ticketTypeAdd--prizesPerDeal").value;
-        const totalPrizesPerDeal = (prizesPerDeal * unitCount).toFixed(2);
-
-        trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right\">" +
-          "<input class=\"is-prizes-per-deal\" type=\"hidden\" value=\"" + totalPrizesPerDeal + "\" />" +
-          "<span data-tooltip=\"$" + prizesPerDeal + " prizes per deal\">$ " + totalPrizesPerDeal + "</span>" +
-          "</td>");
-
-        // amend/delete
-
-        trEle.insertAdjacentHTML("beforeend", "<td>" +
-          "<div class=\"field has-addons\">" +
-          "<div class=\"control\">" +
-          "<button class=\"button is-small is-amend-ticket-type-unit-count-button\" data-tooltip=\"Amend Units\" type=\"button\">Amend</button>" +
-          "</div>" +
-          "<div class=\"control\">" +
-          "<button class=\"button is-small is-danger is-delete-ticket-type-button\" data-tooltip=\"Delete Ticket Type\" type=\"button\">" +
-          "<i class=\"fas fa-trash\" aria-hidden=\"true\"></i>" +
-          "<span class=\"sr-only\">Delete</span>" +
-          "</button>" +
-          "</div>" +
-          "</div>" +
-          "</td>");
-
-        trEle.getElementsByClassName("is-amend-ticket-type-unit-count-button")[0].addEventListener("click", amendUnitCount_openModal);
-        trEle.getElementsByClassName("is-delete-ticket-type-button")[0].addEventListener("click", deleteTicketType_openConfirm);
-
-        // licence fee
-
-        const licenceFee = document.getElementById("ticketTypeAdd--licenceFee").value;
-
-        trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right\">" +
-          "<input class=\"is-licence-fee\" name=\"ticketType_licenceFee\" type=\"hidden\" value=\"" + licenceFee + "\" />" +
-          "<span>$ " + licenceFee + "</span>" +
-          "</td>");
-
-        // distributor
-
-        trEle.insertAdjacentHTML("beforeend", "<td>" +
-          "<input name=\"ticketType_distributorLocationID\" type=\"hidden\" value=\"\" />" +
-          "<span><span class=\"has-text-grey\">(Not Set)</span><span>" +
-          "</td>");
-
-        trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right\">" +
-          "<button class=\"button is-small is-amend-ticket-type-distributor-button\" type=\"button\">Change</button>" +
-          "</td>");
-
-        trEle.getElementsByClassName("is-amend-ticket-type-distributor-button")[0].addEventListener("click", amendDistributor_openModal);
-
-        // manufacturer
-
-        trEle.insertAdjacentHTML("beforeend", "<td>" +
-          "<input name=\"ticketType_manufacturerLocationID\" type=\"hidden\" value=\"\" />" +
-          "<span><span class=\"has-text-grey\">(Not Set)</span><span>" +
-          "</td>");
-
-        trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right\">" +
-          "<button class=\"button is-small is-amend-ticket-type-manufacturer-button\" type=\"button\">Change</button>" +
-          "</td>");
-
-        trEle.getElementsByClassName("is-amend-ticket-type-manufacturer-button")[0].addEventListener("click", amendManufacturer_openModal);
-
-        // insert row
-
-        ticketTypesPanelEle.getElementsByTagName("tbody")[0].insertAdjacentElement("afterbegin", trEle);
+        });
 
         addTicketType_closeModalFn();
-
-        ticketTypes_calculateTfoot();
-
-        setUnsavedChanges();
-        setDoRefreshAfterSave();
       };
 
       const addTicketType_refreshUnitCountChange = function() {
@@ -1079,9 +1084,7 @@
         addTicketType_refreshUnitCountChange();
       };
 
-      const addTicketType_populateTicketTypeSelect = function() {
-
-        const ticketTypes = licenceTypeKeyToTicketTypes[licenceTypeKey];
+      const addTicketType_populateTicketTypeSelect = function(ticketTypes) {
 
         if (!ticketTypes || ticketTypes.length === 0) {
           addTicketType_closeModalFn();
@@ -1128,30 +1131,113 @@
         onshown: function(modalEle, closeModalFn) {
 
           addTicketType_closeModalFn = closeModalFn;
-
-          if (licenceTypeKey in licenceTypeKeyToTicketTypes) {
-            addTicketType_populateTicketTypeSelect();
-          } else {
-            window.fetch("/licences/doGetTicketTypes", {
-                method: "POST",
-                credentials: "include",
-                headers: {
-                  "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                  licenceTypeKey: licenceTypeKey
-                })
-              })
-              .then(function(response) {
-                return response.json();
-              })
-              .then(function(ticketTypes) {
-                licenceTypeKeyToTicketTypes[licenceTypeKey] = ticketTypes;
-                addTicketType_populateTicketTypeSelect();
-              });
-          }
+          ticketTypes_getAll(addTicketType_populateTicketTypeSelect);
         }
       });
+    };
+
+    ticketTypes_addTr = function(obj) {
+
+      const ticketType = obj.ticketType;
+
+      const trEle = document.createElement("tr");
+      trEle.setAttribute("data-ticket-type", ticketType);
+
+      trEle.insertAdjacentHTML("beforeend", "<td>" +
+        "<input name=\"ticketType_ticketType\" type=\"hidden\" value=\"" + ticketType + "\" />" +
+        "<span>" + ticketType + "</span>" +
+        "</td>");
+
+      // unit count
+
+      const unitCount = obj.unitCount;
+
+      trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right\">" +
+        "<input name=\"ticketType_unitCount\" type=\"hidden\" value=\"" + unitCount + "\" />" +
+        "<span>" + unitCount + "</span>" +
+        "</td>");
+
+      // value per deal
+
+      const valuePerDeal = obj.valuePerDeal;
+      const totalValuePerDeal = (valuePerDeal * unitCount).toFixed(2);
+
+      trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right\">" +
+        "<span data-tooltip=\"$" + valuePerDeal + " value per deal\">$ " + totalValuePerDeal + "</span>" +
+        "</td>");
+
+      // prizes per deal
+
+      const prizesPerDeal = obj.prizesPerDeal;
+      const totalPrizesPerDeal = (prizesPerDeal * unitCount).toFixed(2);
+
+      trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right\">" +
+        "<input class=\"is-total-prizes-per-deal\" type=\"hidden\" value=\"" + totalPrizesPerDeal + "\" />" +
+        "<span data-tooltip=\"$" + prizesPerDeal + " prizes per deal\">$ " + totalPrizesPerDeal + "</span>" +
+        "</td>");
+
+      // amend/delete
+
+      trEle.insertAdjacentHTML("beforeend", "<td>" +
+        "<div class=\"field has-addons\">" +
+        "<div class=\"control\">" +
+        "<button class=\"button is-small is-amend-ticket-type-unit-count-button\" data-tooltip=\"Amend Units\" type=\"button\">Amend</button>" +
+        "</div>" +
+        "<div class=\"control\">" +
+        "<button class=\"button is-small is-danger is-delete-ticket-type-button\" data-tooltip=\"Delete Ticket Type\" type=\"button\">" +
+        "<i class=\"fas fa-trash\" aria-hidden=\"true\"></i>" +
+        "<span class=\"sr-only\">Delete</span>" +
+        "</button>" +
+        "</div>" +
+        "</div>" +
+        "</td>");
+
+      trEle.getElementsByClassName("is-amend-ticket-type-unit-count-button")[0].addEventListener("click", amendUnitCount_openModal);
+      trEle.getElementsByClassName("is-delete-ticket-type-button")[0].addEventListener("click", deleteTicketType_openConfirm);
+
+      // licence fee
+
+      const licenceFee = obj.licenceFee;
+
+      trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right\">" +
+        "<input class=\"is-licence-fee\" name=\"ticketType_licenceFee\" type=\"hidden\" value=\"" + licenceFee + "\" />" +
+        "<span>$ " + licenceFee + "</span>" +
+        "</td>");
+
+      // distributor
+
+      trEle.insertAdjacentHTML("beforeend", "<td>" +
+        "<input name=\"ticketType_distributorLocationID\" type=\"hidden\" value=\"\" />" +
+        "<span><span class=\"has-text-grey\">(Not Set)</span><span>" +
+        "</td>");
+
+      trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right\">" +
+        "<button class=\"button is-small is-amend-ticket-type-distributor-button\" type=\"button\">Change</button>" +
+        "</td>");
+
+      trEle.getElementsByClassName("is-amend-ticket-type-distributor-button")[0].addEventListener("click", amendDistributor_openModal);
+
+      // manufacturer
+
+      trEle.insertAdjacentHTML("beforeend", "<td>" +
+        "<input name=\"ticketType_manufacturerLocationID\" type=\"hidden\" value=\"\" />" +
+        "<span><span class=\"has-text-grey\">(Not Set)</span><span>" +
+        "</td>");
+
+      trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right\">" +
+        "<button class=\"button is-small is-amend-ticket-type-manufacturer-button\" type=\"button\">Change</button>" +
+        "</td>");
+
+      trEle.getElementsByClassName("is-amend-ticket-type-manufacturer-button")[0].addEventListener("click", amendManufacturer_openModal);
+
+      // insert row
+
+      ticketTypesPanelEle.getElementsByTagName("tbody")[0].insertAdjacentElement("afterbegin", trEle);
+
+      ticketTypes_calculateTfoot();
+
+      setUnsavedChanges();
+      setDoRefreshAfterSave();
     };
 
     {

@@ -338,6 +338,7 @@
                   let ticketValue = (ticketType ? (ticketType.ticketPrice * ticketType.ticketCount) : 0);
                   let totalValue = (ticketValue * licenceTicketTypeObj.unitCount).toFixed(2);
                 %>
+                <input class="is-total-value-per-deal" type="hidden" value="<%= totalValue %>" />
                 <span data-tooltip="$<%= ticketValue %> value per deal">$ <%= totalValue %></span>
               </td>
               <td class="has-text-right">
@@ -345,7 +346,7 @@
                   let prizesPerDeal = (ticketType ? ticketType.prizesPerDeal : 0);
                   let totalPrizesPerDeal = (prizesPerDeal * licenceTicketTypeObj.unitCount).toFixed(2);
                 %>
-                <input class="is-prizes-per-deal" type="hidden" value="<%= totalPrizesPerDeal %>" />
+                <input class="is-total-prizes-per-deal" type="hidden" value="<%= totalPrizesPerDeal %>" />
                 <span data-tooltip="$<%= prizesPerDeal.toFixed(2) %> prizes per deal">$ <%= totalPrizesPerDeal %></span>
               </td>
               <td>
