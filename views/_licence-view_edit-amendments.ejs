@@ -1,0 +1,27 @@
+<div class="panel">
+  <div class="panel-heading">
+    <div class="level">
+      <div class="level-left">
+        <h2 class="has-text-weight-bold">Amendment Log</h2>
+      </div>
+      <div class="level-right has-text-weight-normal has-text-right">
+      </div>
+    </div>
+  </div>
+  <%
+    for (let amendmentIndex = licence.licenceAmendments.length - 1; amendmentIndex >= 0; amendmentIndex -= 1) {
+      const amendmentObj = licence.licenceAmendments[amendmentIndex];
+  %>
+  <div class="panel-block is-block is-size-7">
+    <p>
+      <strong><%= amendmentObj.amendmentType %></strong><br />
+      <span class="has-newline-chars"><%= amendmentObj.amendment %></span>
+    </p>
+    <p class="has-text-right is-italic">
+      <%= amendmentObj.amendmentDateString %> <%= amendmentObj.amendmentTimeString %>
+    </p>
+  </div>
+  <%
+    }
+  %>
+</div>

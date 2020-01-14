@@ -268,13 +268,9 @@
       </div>
 
     </div>
-    <% if (!isCreate) { %>
+    <% if (!isCreate && licence.licenceAmendments.length > 0) { %>
       <div class="column is-3">
-        <div class="panel">
-          <div class="panel-heading">
-            <h2 class="has-text-weight-bold">Amendments</h2>
-          </div>
-        </div>
+        <%- include('_licence-view_edit-amendments'); -%>
       </div>
     <% } %>
   </div>
@@ -383,20 +379,7 @@
             </tr>
         <% } %>
       </tbody>
-      <tfoot>
-        <tr>
-          <td></td>
-          <td></td>
-          <td></td>
-          <th class="has-text-right">$ <%= (licence.totalPrizeValue || 0).toFixed(2) %></th>
-          <td></td>
-          <th class="has-text-right">$ <%= ticketTypeLicenceFeeTotal.toFixed(2) %></th>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-        </tr>
-      </tfoot>
+      <tfoot></tfoot>
     </table>
   </div>
 

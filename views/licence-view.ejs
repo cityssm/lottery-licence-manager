@@ -42,109 +42,118 @@
 
 <div class="columns">
   <div class="column">
-    <p>
-      <strong>Licence ID</strong><br />
-      <%= licence.licenceID %>
-    </p>
-  </div>
-  <div class="column">
-    <p>
-      <strong><%= configFns.getProperty("licences.externalLicenceNumber.fieldLabel") %></strong><br />
-      <%= licence.externalLicenceNumber %>
-    </p>
-  </div>
-  <div class="column">
-    <p>
-      <strong>Application Date</strong><br />
-      <%= licence.applicationDateString %>
-    </p>
-  </div>
-</div>
+    <div class="columns">
+      <div class="column">
+        <p>
+          <strong>Licence ID</strong><br />
+          <%= licence.licenceID %>
+        </p>
+      </div>
+      <div class="column">
+        <p>
+          <strong><%= configFns.getProperty("licences.externalLicenceNumber.fieldLabel") %></strong><br />
+          <%= licence.externalLicenceNumber %>
+        </p>
+      </div>
+      <div class="column">
+        <p>
+          <strong>Application Date</strong><br />
+          <%= licence.applicationDateString %>
+        </p>
+      </div>
+    </div>
 
-<div class="columns">
-  <div class="column">
-    <p>
-      <strong>Organization</strong><br />
-      <a <%- (organization.isEligibleForLicences ? "" : " class=\"has-text-danger\"") %> href="/organizations/<%= organization.organizationID %>">
-        <%= organization.organizationName %>
-      </a>
-    </p>
-  </div>
-</div>
+    <div class="columns">
+      <div class="column">
+        <p>
+          <strong>Organization</strong><br />
+          <a <%- (organization.isEligibleForLicences ? "" : " class=\"has-text-danger\"") %> href="/organizations/<%= organization.organizationID %>">
+            <%= organization.organizationName %>
+          </a>
+        </p>
+      </div>
+    </div>
 
-<div class="columns">
-  <div class="column is-6">
-    <p>
-      <strong>Municipality</strong><br />
-      <%= licence.municipality %>
-    </p>
-  </div>
-  <div class="column is-6">
-    <p>
-      <strong>Location</strong><br />
-      <a href="/locations/<%=licence.locationID %>"><%= licence.locationDisplayName %></a>
-    </p>
-  </div>
-</div>
+    <div class="columns">
+      <div class="column is-6">
+        <p>
+          <strong>Municipality</strong><br />
+          <%= licence.municipality %>
+        </p>
+      </div>
+      <div class="column is-6">
+        <p>
+          <strong>Location</strong><br />
+          <a href="/locations/<%=licence.locationID %>"><%= licence.locationDisplayName %></a>
+        </p>
+      </div>
+    </div>
 
-<div class="columns">
-  <div class="column is-3">
-    <p>
-      <strong>Start Date</strong><br />
-      <%= licence.startDateString %>
-    </p>
-  </div>
-  <div class="column is-3">
-    <p>
-      <strong>End Date</strong><br />
-      <%= licence.endDateString %>
-    </p>
-  </div>
-  <div class="column is-3">
-    <p>
-      <strong>Start Time</strong><br />
-      <%= licence.startTimeString %>
-    </p>
-  </div>
-  <div class="column is-3">
-    <p>
-      <strong>End Time</strong><br />
-      <%= licence.endTimeString %>
-    </p>
-  </div>
-</div>
+    <div class="columns">
+      <div class="column is-3">
+        <p>
+          <strong>Start Date</strong><br />
+          <%= licence.startDateString %>
+        </p>
+      </div>
+      <div class="column is-3">
+        <p>
+          <strong>End Date</strong><br />
+          <%= licence.endDateString %>
+        </p>
+      </div>
+      <div class="column is-3">
+        <p>
+          <strong>Start Time</strong><br />
+          <%= licence.startTimeString %>
+        </p>
+      </div>
+      <div class="column is-3">
+        <p>
+          <strong>End Time</strong><br />
+          <%= licence.endTimeString %>
+        </p>
+      </div>
+    </div>
 
-<div class="columns">
-  <div class="column is-6">
-    <p>
-      <strong>Licence Details</strong><br />
-      <span class="has-newline-chars"><%= licence.licenceDetails %></span>
-    </p>
-  </div>
-  <div class="column is-6">
-    <p>
-      <strong>Terms and Conditions</strong><br />
-      <span class="has-newline-chars"><%= licence.termsConditions %></span>
-    </p>
-  </div>
-</div>
+    <div class="columns">
+      <div class="column is-6">
+        <p>
+          <strong>Licence Details</strong><br />
+          <span class="has-newline-chars"><%= licence.licenceDetails %></span>
+        </p>
+      </div>
+      <div class="column is-6">
+        <p>
+          <strong>Terms and Conditions</strong><br />
+          <span class="has-newline-chars"><%= licence.termsConditions %></span>
+        </p>
+      </div>
+    </div>
 
-<div class="columns">
-  <div class="column is-6">
-    <p>
-      <strong>Licence Type</strong><br />
-      <%
-        const licenceType = configFns.getLicenceType(licence.licenceTypeKey);
-      %>
-      <%= (licenceType ? licenceType.licenceType : licence.licenceTypeKey) %>
-    </p>
+    <div class="columns">
+      <div class="column is-6">
+        <p>
+          <strong>Licence Type</strong><br />
+          <%
+            const licenceType = configFns.getLicenceType(licence.licenceTypeKey);
+          %>
+          <%= (licenceType ? licenceType.licenceType : licence.licenceTypeKey) %>
+        </p>
+      </div>
+      <div class="column is-6">
+        <p>
+          <strong>Total Prize Value</strong><br />
+          $ <%= licence.totalPrizeValue.toFixed(2) %>
+        </p>
+      </div>
+    </div>
   </div>
-  <div class="column is-6">
-    <p>
-      <strong>Total Prize Value</strong><br />
-      $ <%= licence.totalPrizeValue.toFixed(2) %>
-    </p>
-  </div>
+  <% if (licence.licenceAmendments.length > 0) { %>
+    <div class="column is-3">
+      <%- include('_licence-view_edit-amendments'); -%>
+    </div>
+  <% } %>
 </div>
 
 <% if (licence.licenceTicketTypes.length) { %>

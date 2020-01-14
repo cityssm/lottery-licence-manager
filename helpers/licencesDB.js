@@ -165,10 +165,11 @@ const licencesDB = (function() {
 
       // amendments
 
-      const amendments = db.prepare("select * from LotteryLicenceAmendments" +
+      const amendments = db.prepare("select *" +
+          " from LotteryLicenceAmendments" +
           " where licenceID = ?" +
           " and recordDelete_timeMillis is null" +
-          " order by amendmentDate, amendmentTime")
+          " order by amendmentDate, amendmentTime, amendmentIndex")
         .all(licenceID);
 
       for (let amendmentIndex = 0; amendmentIndex < amendments.length; amendmentIndex += 1) {
@@ -581,7 +582,7 @@ const licencesDB = (function() {
           " organizationCity, organizationProvince, organizationPostalCode," +
           " organizationNote," +
           " recordCreate_userName, recordCreate_timeMillis," +
-          " recordUpdate_UserName, recordUpdate_timeMillis)" +
+          " recordUpdate_userName, recordUpdate_timeMillis)" +
           " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
         .run(
           reqBody.organizationName,
@@ -780,8 +781,7 @@ const licencesDB = (function() {
 
       const db = sqlite(dbPath);
 
-      db
-        .prepare("delete from OrganizationRepresentatives" +
+      db.prepare("delete from OrganizationRepresentatives" +
           " where organizationID = ?" +
           " and representativeIndex = ?")
         .run(organizationID, representativeIndex);
@@ -1230,9 +1230,9 @@ const licencesDB = (function() {
 
       const db = sqlite(dbPath);
 
-      const currentLicenceObj = getLicence(reqBody.licenceID, reqSession, db);
+      const licenceObj_past = getLicence(reqBody.licenceID, reqSession, db);
 
-      if (!currentLicenceObj.canUpdate) {
+      if (!licenceObj_past.canUpdate) {
         db.close();
         return 0;
       }
@@ -1247,13 +1247,12 @@ const licencesDB = (function() {
         externalLicenceNumberInteger = -1;
       }
 
-      // record amendments (if necessary)
-
-      if (currentLicenceObj.trackUpdatesAsAmendments) {
-
-      }
-
       // update licence
+
+      const startDate_now = dateTimeFns.dateStringToInteger(reqBody.startDateString);
+      const endDate_now = dateTimeFns.dateStringToInteger(reqBody.endDateString);
+      const startTime_now = dateTimeFns.timeStringToInteger(reqBody.startTimeString);
+      const endTime_now = dateTimeFns.timeStringToInteger(reqBody.endTimeString);
 
       const info = db.prepare("update LotteryLicences" +
           " set organizationID = ?," +
@@ -1278,10 +1277,10 @@ const licencesDB = (function() {
           reqBody.organizationID,
           dateTimeFns.dateStringToInteger(reqBody.applicationDateString),
           reqBody.licenceTypeKey,
-          dateTimeFns.dateStringToInteger(reqBody.startDateString),
-          dateTimeFns.dateStringToInteger(reqBody.endDateString),
-          dateTimeFns.timeStringToInteger(reqBody.startTimeString),
-          dateTimeFns.timeStringToInteger(reqBody.endTimeString),
+          startDate_now,
+          endDate_now,
+          startTime_now,
+          endTime_now,
           (reqBody.locationID === "" ? null : reqBody.locationID),
           reqBody.municipality,
           reqBody.licenceDetails,
@@ -1299,6 +1298,61 @@ const licencesDB = (function() {
       if (!changeCount) {
         db.close();
         return changeCount;
+      }
+
+      // record amendments (if necessary)
+
+      let newAmendmentIndex = -1;
+
+      const nowDate = new Date(nowMillis);
+      const newAmendmentDate = dateTimeFns.dateToInteger(nowDate);
+      const newAmendmentTime = dateTimeFns.dateToTimeInteger(nowDate);
+
+      if (licenceObj_past.trackUpdatesAsAmendments) {
+
+        for (let arrayIndex = 0; arrayIndex < licenceObj_past.licenceAmendments.length; arrayIndex += 1) {
+          newAmendmentIndex = Math.max(newAmendmentIndex, licenceObj_past.licenceAmendments[arrayIndex].amendmentIndex);
+        }
+
+        newAmendmentIndex += 1;
+
+        if (licenceObj_past.startDate !== startDate_now ||
+          licenceObj_past.endDate !== endDate_now ||
+          licenceObj_past.startTime !== startTime_now ||
+          licenceObj_past.endTime !== endDate_now) {
+
+          newAmendmentIndex += 1;
+
+          const amendment = (
+            (licenceObj_past.startDate !== startDate_now ?
+              `Start Date: ${licenceObj_past.startDate} -> ${startDate_now}` + "\n " :
+              "") +
+            (licenceObj_past.endDate !== endDate_now ?
+              `End Date: ${licenceObj_past.endDate} -> ${endDate_now}` + "\n" :
+              "") +
+            (licenceObj_past.startTime !== startTime_now ?
+              `Start Time: ${licenceObj_past.startTime} -> ${startTime_now}` + "\n" :
+              "") +
+            (licenceObj_past.endTime !== endTime_now ?
+              `End Time: ${licenceObj_past.endTime} -> ${endTime_now}` + "\n" :
+              "")).trim();
+
+          db.prepare("insert into LotteryLicenceAmendments" +
+              " (licenceID, amendmentIndex, amendmentDate, amendmentTime, amendmentType, amendment, isHidden," +
+              " recordCreate_userName, recordCreate_timeMillis, recordUpdate_userName, recordUpdate_timeMillis)" +
+              " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
+            .run(reqBody.licenceID,
+              newAmendmentIndex,
+              newAmendmentDate,
+              newAmendmentTime,
+              "Licence Dates Update",
+              amendment,
+              0,
+              reqSession.user.userName,
+              nowMillis,
+              reqSession.user.userName,
+              nowMillis);
+        }
       }
 
       // fields

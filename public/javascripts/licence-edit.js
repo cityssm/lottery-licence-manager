@@ -129,7 +129,9 @@
       "<i class=\"fas fa-exclamation-triangle\" aria-hidden=\"true\"></i> Unsaved Changes" +
       "</div>";
 
-    if (feeFormEle && changeEvent && changeEvent.currentTarget.type === "number") {
+    if (changeEvent &&
+      (changeEvent.currentTarget.type === "number" || changeEvent.currentTarget.type === "date" || changeEvent.currentTarget.type === "time")) {
+
       setDoRefreshAfterSave();
     }
   }
@@ -220,6 +222,7 @@
           listItemEle.className = "list-item";
           listItemEle.setAttribute("data-organization-id", organizationObj.organizationID);
           listItemEle.setAttribute("data-organization-name", organizationObj.organizationName);
+          listItemEle.setAttribute("href", "#");
           listItemEle.innerText = organizationObj.organizationName;
           listItemEle.addEventListener("click", organizationLookupFn_setOrganization);
           listEle.insertAdjacentElement("beforeend", listItemEle);
@@ -254,15 +257,20 @@
                 organizationList = organizationListRes;
                 organizationLookup_searchStrEle.removeAttribute("disabled");
                 organizationLookupFn_refreshResults();
+
+                organizationLookup_searchStrEle.focus();
               });
           } else {
             organizationLookup_searchStrEle.removeAttribute("disabled");
             organizationLookupFn_refreshResults();
+
+            organizationLookup_searchStrEle.focus();
           }
         },
 
         onshown: function(modalEle, closeModalFn) {
           organizationLookup_closeModalFn = closeModalFn;
+          organizationLookup_searchStrEle.focus();
         }
       });
 
@@ -356,6 +364,7 @@
           listItemEle.className = "list-item";
           listItemEle.setAttribute("data-location-id", locationObj.locationID);
           listItemEle.setAttribute("data-location-display-name", locationDisplayName);
+          listItemEle.setAttribute("href", "#");
           listItemEle.innerHTML = locationDisplayName +
             (locationObj.locationName === "" ? "" : "<br /><small>" + locationObj.locationAddress1 + "</small>");
           listItemEle.addEventListener("click", locationLookupFn_setLocationFromExisting);
@@ -385,6 +394,7 @@
           loadLocationList(function() {
             locationLookup_searchStrEle.removeAttribute("disabled");
             locationLookupFn_refreshResults();
+            locationLookup_searchStrEle.focus();
           });
 
           // new location
@@ -427,6 +437,7 @@
 
         onshown: function(modalEle, closeModalFn) {
           locationLookup_closeModalFn = closeModalFn;
+          locationLookup_searchStrEle.focus();
         }
       });
 
@@ -1241,6 +1252,8 @@
     };
 
     {
+      ticketTypes_calculateTfoot();
+
       document.getElementById("is-add-ticket-type-button").addEventListener("click", addTicketType_openModal);
 
       const amendUnitButtonEles = ticketTypesPanelEle.getElementsByClassName("is-amend-ticket-type-unit-count-button");
