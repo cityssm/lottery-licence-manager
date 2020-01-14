@@ -25,73 +25,73 @@ config.defaults.city = "Sault Ste. Marie";
  * LICENCE SETTINGS
  */
 
-config.licences = {
-  externalLicenceNumber: {
-    fieldLabel: "Municipal Licence Number",
-    newCalculation: "range"
-  },
-  externalReceiptNumber: {
-    fieldLabel: "GP Receipt Number"
-  },
+config.licences.externalLicenceNumber = {
+  fieldLabel: "Municipal Licence Number",
+  newCalculation: "range"
+};
 
-  feeCalculationFn: function(licenceObj) {
-    "use strict";
 
-    const totalPrizeValue = (licenceObj.totalPrizeValue || 0.0);
+config.licences.externalReceiptNumber = {
+  fieldLabel: "GP Receipt Number"
+};
 
-    const licenceFeeMin = 10;
+config.licences.feeCalculationFn = function(licenceObj) {
+  "use strict";
 
-    const calculatedLicenceFee = totalPrizeValue * 0.03;
+  const totalPrizeValue = (licenceObj.totalPrizeValue || 0.0);
 
-    let fee = Math.max(licenceFeeMin, calculatedLicenceFee);
-    let message = (fee === licenceFeeMin ?
-      "Base minimum licence fee." :
-      "3% of $" + licenceObj.totalPrizeValue);
-    let licenceHasErrors = false;
+  const licenceFeeMin = 10;
 
-    // check the total prize value
+  const calculatedLicenceFee = totalPrizeValue * 0.03;
 
-    if (licenceObj.licenceTypeKey === "RA") {
+  let fee = Math.max(licenceFeeMin, calculatedLicenceFee);
+  let message = (fee === licenceFeeMin ?
+    "Base minimum licence fee." :
+    "3% of $" + licenceObj.totalPrizeValue);
+  let licenceHasErrors = false;
 
-      const licenceFields = licenceObj.licenceFields;
+  // check the total prize value
 
-      // get the minimum ticket cost
+  if (licenceObj.licenceTypeKey === "RA") {
 
-      let ticketCost = parseFloat(licenceFields.ticketCost || "0");
+    const licenceFields = licenceObj.licenceFields;
 
-      if (licenceFields.discount1_tickets !== "" && licenceFields.discount1_cost !== "") {
-        const discountTicketCost = parseFloat(licenceFields.discount1_cost) / parseInt(licenceFields.discount1_tickets);
-        ticketCost = Math.min(ticketCost, discountTicketCost);
-      }
+    // get the minimum ticket cost
 
-      if (licenceFields.discount2_tickets !== "" && licenceFields.discount2_cost !== "") {
-        const discountTicketCost = parseFloat(licenceFields.discount2_cost) / parseInt(licenceFields.discount2_tickets);
-        ticketCost = Math.min(ticketCost, discountTicketCost);
-      }
+    let ticketCost = parseFloat(licenceFields.ticketCost || "0");
 
-      if (licenceFields.discount3_tickets !== "" && licenceFields.discount3_cost !== "") {
-        const discountTicketCost = parseFloat(licenceFields.discount3_cost) / parseInt(licenceFields.discount3_tickets);
-        ticketCost = Math.min(ticketCost, discountTicketCost);
-      }
-
-      // calculate the minimum prize value
-
-      let minPotentialTakeIn = ticketCost * parseInt(licenceFields.ticketCount || "0");
-
-      let minPrizeValue = minPotentialTakeIn * 0.2;
-
-      if (totalPrizeValue < minPrizeValue) {
-        licenceHasErrors = true;
-        message = "Total Prize Value must be a minimum of $" + minPrizeValue + ".";
-      }
+    if (licenceFields.discount1_tickets !== "" && licenceFields.discount1_cost !== "") {
+      const discountTicketCost = parseFloat(licenceFields.discount1_cost) / parseInt(licenceFields.discount1_tickets);
+      ticketCost = Math.min(ticketCost, discountTicketCost);
     }
 
-    return {
-      fee: fee.toFixed(2),
-      message: message,
-      licenceHasErrors: licenceHasErrors
-    };
+    if (licenceFields.discount2_tickets !== "" && licenceFields.discount2_cost !== "") {
+      const discountTicketCost = parseFloat(licenceFields.discount2_cost) / parseInt(licenceFields.discount2_tickets);
+      ticketCost = Math.min(ticketCost, discountTicketCost);
+    }
+
+    if (licenceFields.discount3_tickets !== "" && licenceFields.discount3_cost !== "") {
+      const discountTicketCost = parseFloat(licenceFields.discount3_cost) / parseInt(licenceFields.discount3_tickets);
+      ticketCost = Math.min(ticketCost, discountTicketCost);
+    }
+
+    // calculate the minimum prize value
+
+    let minPotentialTakeIn = ticketCost * parseInt(licenceFields.ticketCount || "0");
+
+    let minPrizeValue = minPotentialTakeIn * 0.2;
+
+    if (totalPrizeValue < minPrizeValue) {
+      licenceHasErrors = true;
+      message = "Total Prize Value must be a minimum of $" + minPrizeValue + ".";
+    }
   }
+
+  return {
+    fee: fee.toFixed(2),
+    message: message,
+    licenceHasErrors: licenceHasErrors
+  };
 };
 
 

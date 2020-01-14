@@ -71,7 +71,7 @@ config.licences = {
     };
   },
 
-  printTemplate: "licence-print-agco"
+  printTemplate: "licence-print-agco.ejs"
 };
 
 
