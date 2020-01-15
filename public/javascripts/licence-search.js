@@ -91,7 +91,7 @@
                 "</a> " : "") +
               (licenceObj.licenceFeeIsPaid ?
 
-                "<a class=\"button is-small\" data-tooltip=\"Print Licence\" href=\"/licences/" + licenceObj.licenceID + "/print\" target=\"_blank\">" +
+                "<a class=\"button is-small\" data-tooltip=\"Print Licence\" href=\"/licences/" + licenceObj.licenceID + "/print\" target=\"_blank\" download>" +
                 "<i class=\"fas fa-print\" aria-hidden=\"true\"></i>" +
                 "<span class=\"sr-only\">Print</span>" +
                 "</a>" :

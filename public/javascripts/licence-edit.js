@@ -125,8 +125,9 @@
 
     window.llm.enableNavBlocker();
 
-    formMessageEle.innerHTML = "<div class=\"has-text-info\">" +
-      "<i class=\"fas fa-exclamation-triangle\" aria-hidden=\"true\"></i> Unsaved Changes" +
+    formMessageEle.innerHTML = "<span class=\"tag is-light is-info is-medium\">" +
+      "<span class=\"icon\"><i class=\"fas fa-exclamation-triangle\" aria-hidden=\"true\"></i></span>" +
+      " <span>Unsaved Changes</span>" +
       "</div>";
 
     if (changeEvent &&
@@ -234,7 +235,7 @@
       organizationLookup_resultsEle.insertAdjacentElement("beforeend", listEle);
     };
 
-    document.getElementById("is-organization-lookup-button").addEventListener("click", function() {
+    const organizationLookupFn_openModal = function() {
 
       window.llm.openHtmlModal("licence-organizationLookup", {
 
@@ -273,8 +274,10 @@
           organizationLookup_searchStrEle.focus();
         }
       });
+    };
 
-    });
+    document.getElementById("is-organization-lookup-button").addEventListener("click", organizationLookupFn_openModal);
+    document.getElementById("licence--organizationName").addEventListener("dblclick", organizationLookupFn_openModal);
   }
 
 
@@ -305,7 +308,6 @@
   }
 
   {
-
     let locationLookup_closeModalFn;
     let locationLookup_searchStrEle;
     let locationLookup_resultsEle;
@@ -377,8 +379,7 @@
       locationLookup_resultsEle.insertAdjacentElement("beforeend", listEle);
     };
 
-
-    document.getElementById("is-location-lookup-button").addEventListener("click", function() {
+    const locationLookupFn_openModal = function() {
 
       window.llm.openHtmlModal("licence-locationLookup", {
 
@@ -440,8 +441,10 @@
           locationLookup_searchStrEle.focus();
         }
       });
+    };
 
-    });
+    document.getElementById("is-location-lookup-button").addEventListener("click", locationLookupFn_openModal);
+    document.getElementById("licence--locationDisplayName").addEventListener("dblclick", locationLookupFn_openModal);
   }
 
 
@@ -521,7 +524,7 @@
               listItemEle.className = "list-item";
               listItemEle.setAttribute("data-terms-conditions-index", termsConditionsIndex);
 
-              listItemEle.innerHTML = "<p>" +
+              listItemEle.innerHTML = "<p class=\"has-newline-chars\">" +
                 window.llm.escapeHTML(termsConditionsObj.termsConditions) +
                 "</p>" +
                 "<p class=\"has-text-right\">" +
@@ -836,9 +839,6 @@
         "</tr>";
 
       document.getElementById("licence--totalPrizeValue").value = prizeValueTotal;
-
-      setUnsavedChanges();
-      setDoRefreshAfterSave();
     };
 
     let ticketTypes_addTr;
@@ -851,8 +851,18 @@
       const doDeleteTicketType = function() {
         trEle.remove();
 
-        formEle.insertAdjacentHTML("beforeend",
-          "<input class=\"is-removed-after-save\" name=\"ticketType_toDelete\" type=\"hidden\" value=\"" + ticketType + "\" />");
+        if (!isCreate) {
+
+          const addEle = formEle.querySelector("input[name='ticketType_toAdd'][value='" + ticketType + "']");
+
+          if (addEle) {
+            addEle.remove();
+
+          } else {
+            formEle.insertAdjacentHTML("beforeend",
+              "<input class=\"is-removed-after-save\" name=\"ticketType_toDelete\" type=\"hidden\" value=\"" + ticketType + "\" />");
+          }
+        }
 
         ticketTypes_calculateTfoot();
 
@@ -1062,8 +1072,12 @@
           valuePerDeal: document.getElementById("ticketTypeAdd--valuePerDeal").value,
           prizesPerDeal: document.getElementById("ticketTypeAdd--prizesPerDeal").value,
           licenceFee: document.getElementById("ticketTypeAdd--licenceFee").value
-
         });
+
+        if (!isCreate) {
+            formEle.insertAdjacentHTML("beforeend",
+              "<input class=\"is-removed-after-save\" name=\"ticketType_toAdd\" type=\"hidden\" value=\"" + document.getElementById("ticketTypeAdd--ticketType").value + "\" />");
+        }
 
         addTicketType_closeModalFn();
       };

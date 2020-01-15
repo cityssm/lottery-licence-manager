@@ -284,12 +284,13 @@
 
     window.llm.enableNavBlocker();
 
-    formMessageEle.innerHTML = "<div class=\"has-text-info\">" +
-      "<i class=\"fas fa-exclamation-triangle\" aria-hidden=\"true\"></i> Unsaved Changes" +
+    formMessageEle.innerHTML = "<span class=\"tag is-light is-info is-medium\">" +
+      "<span class=\"icon\"><i class=\"fas fa-exclamation-triangle\" aria-hidden=\"true\"></i></span>" +
+      " <span>Unsaved Changes</span>" +
       "</div>";
   }
 
-  const inputEles = formEle.getElementsByClassName("input");
+  const inputEles = formEle.getElementsByTagName("input");
 
   for (let inputIndex = 0; inputIndex < inputEles.length; inputIndex += 1) {
     inputEles[inputIndex].addEventListener("change", setUnsavedChanges);

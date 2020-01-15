@@ -21,7 +21,7 @@
   </div>
   <% if (licence.licenceFeeIsPaid) { %>
     <div class="level-right has-text-right">
-      <a class="button is-link" href="/licences/<%= licence.licenceID %>/print" target="_blank">
+      <a class="button is-link" href="/licences/<%= licence.licenceID %>/print" target="_blank" download>
         <span class="icon is-small">
           <i class="fas fa-print" aria-hidden="true"></i>
         </span>
@@ -312,13 +312,9 @@
       </thead>
       <tbody>
         <%
-          let ticketTypeLicenceFeeTotal = 0;
-
           for (let ticketTypeIndex = 0; ticketTypeIndex < licence.licenceTicketTypes.length; ticketTypeIndex += 1) {
             const licenceTicketTypeObj = licence.licenceTicketTypes[ticketTypeIndex];
             const ticketType = (licenceType && licenceType.ticketTypes ? licenceType.ticketTypes.find(ele => ele.ticketType === licenceTicketTypeObj.ticketType) : null);
-
-            ticketTypeLicenceFeeTotal += licenceTicketTypeObj.licenceFee;
         %>
             <tr data-ticket-type="<%= licenceTicketTypeObj.ticketType %>">
               <td>
@@ -364,14 +360,26 @@
               </td>
               <td>
                 <input name="ticketType_distributorLocationID" type="hidden" value="<%= licenceTicketTypeObj.distributorLocationID %>" />
-                <span><%= licenceTicketTypeObj.distributorLocationDisplayName %></span>
+                <span>
+                  <% if (licenceTicketTypeObj.distributorLocationID === null) { %>
+                    <span class="has-text-grey">(Not Set)</span>
+                  <% } else { %>
+                    <%= licenceTicketTypeObj.distributorLocationDisplayName %>
+                  <% } %>
+                </span>
               </td>
               <td class="has-text-right">
                 <button class="button is-small is-amend-ticket-type-distributor-button" type="button">Change</button>
               </td>
               <td>
                 <input name="ticketType_manufacturerLocationID" type="hidden" value="<%= licenceTicketTypeObj.manufacturerLocationID %>" />
-                <span><%= licenceTicketTypeObj.manufacturerLocationDisplayName %></span>
+                <span>
+                  <% if (licenceTicketTypeObj.manufacturerLocationID === null) { %>
+                    <span class="has-text-grey">(Not Set)</span>
+                  <% } else { %>
+                    <%= licenceTicketTypeObj.manufacturerLocationDisplayName %>
+                  <% } %>
+                </span>
               </td>
               <td class="has-text-right">
                 <button class="button is-small is-amend-ticket-type-manufacturer-button" type="button">Change</button>
@@ -574,40 +582,45 @@
     </div>
   <% } %>
 
-  <div class="has-text-right is-fixed-bottom has-padding-10 has-background-grey-light">
-    <span class="is-inline-block has-margin-top-10 has-margin-right-10" id="container--form-message"></span>
-
-    <% if (isCreate) { %>
-      <a class="button" href="/licences">
-        Cancel
-      </a>
-    <% } %>
-    <button class="button is-success" type="submit">
-      <span class="icon">
-        <i class="fas fa-save" aria-hidden="true"></i>
-      </span>
-      <span><%= (isCreate ? "Create New Licence and Continue" : "Update Licence") %></span>
-    </button>
-    <% if (!isCreate) { %>
-      <div class="dropdown is-hoverable is-right is-up">
-        <div class="dropdown-trigger">
-          <button class="button" type="button" aria-haspopup="true">
-            <span>Options</span>
-            <span class="icon">
-              <i class="fas fa-angle-up" aria-hidden="true"></i>
-            </span>
-          </button>
-        </div>
-        <div class="dropdown-menu" role="menu">
-          <div class="dropdown-content">
-            <a class="dropdown-item" id="is-delete-licence-button" href="#">
-              <span class="icon"><i class="fas fa-trash has-text-danger" aria-hidden="true"></i></span>
-              <span>Delete Licence</span>
+  <div class="is-fixed-bottom has-padding-10 has-background-grey-light">
+    <div class="level">
+      <div class="level-left" id="container--form-message"></div>
+      <div class="level-right">
+        <div class="buttons">
+          <% if (isCreate) { %>
+            <a class="button" href="/licences">
+              Cancel
             </a>
-          </div>
+          <% } %>
+          <button class="button is-success" type="submit">
+            <span class="icon">
+              <i class="fas fa-save" aria-hidden="true"></i>
+            </span>
+            <span><%= (isCreate ? "Create New Licence and Continue" : "Update Licence") %></span>
+          </button>
+          <% if (!isCreate) { %>
+            <div class="dropdown is-hoverable is-right is-up">
+              <div class="dropdown-trigger">
+                <button class="button" type="button" aria-haspopup="true">
+                  <span>Options</span>
+                  <span class="icon">
+                    <i class="fas fa-angle-up" aria-hidden="true"></i>
+                  </span>
+                </button>
+              </div>
+              <div class="dropdown-menu" role="menu">
+                <div class="dropdown-content">
+                  <a class="dropdown-item" id="is-delete-licence-button" href="#">
+                    <span class="icon"><i class="fas fa-trash has-text-danger" aria-hidden="true"></i></span>
+                    <span>Delete Licence</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          <% } %>
         </div>
       </div>
-    <% } %>
+    </div>
   </div>
 </form>
 

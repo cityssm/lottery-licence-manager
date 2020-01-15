@@ -26,6 +26,10 @@ router.all("/:reportName", function(req, res) {
 
   switch (reportName) {
 
+    /*
+     * Locations
+     */
+
     case "locations-unused":
 
       sql = "select lo.locationID, lo.locationName, lo.locationAddress1, lo.locationAddress2, lo.locationCity, lo.locationProvince," +
@@ -70,6 +74,10 @@ router.all("/:reportName", function(req, res) {
       params.push(dateTimeFns.dateToInteger(threeYearsAgo));
 
       break;
+
+      /*
+       * Organizations
+       */
 
     case "organizations-withDefaultRepresentatives":
 
@@ -123,6 +131,9 @@ router.all("/:reportName", function(req, res) {
 
       break;
 
+      /*
+       * Organization Remarks
+       */
 
     case "remarks-byOrganization":
 
@@ -140,6 +151,9 @@ router.all("/:reportName", function(req, res) {
 
       break;
 
+      /*
+       * Lottery Licences
+       */
 
     case "licences-byOrganization":
 
@@ -187,7 +201,6 @@ router.all("/:reportName", function(req, res) {
 
       break;
 
-
     case "licences-unpaid":
 
       sql = "select l.licenceID, l.externalLicenceNumber, l.applicationDate," +
@@ -205,6 +218,30 @@ router.all("/:reportName", function(req, res) {
         " and l.licenceFeeIsPaid = 0";
 
       break;
+
+      /*
+       * Lottery Licence Amendments
+       */
+
+    case "amendments-byLicence":
+
+      sql = "select licenceID, amendmentIndex, amendmentDate, amendmentTime," +
+        " amendmentType, amendment," +
+        " isHidden," +
+        " recordCreate_userName, recordCreate_timeMillis, recordUpdate_userName, recordUpdate_timeMillis" +
+        " from LotteryLicenceAmendments" +
+        " where recordDelete_timeMillis is null" +
+        " and licenceID = ?";
+
+      params = [
+        req.query.licenceID
+      ];
+
+      break;
+
+      /*
+       * Lottery Events
+       */
 
     case "events-upcoming":
 

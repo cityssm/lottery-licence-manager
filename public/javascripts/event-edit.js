@@ -42,7 +42,7 @@
   });
 
 
-  document.getElementsByClassName("is-delete-button")[0].addEventListener("click", function(clickEvent) {
+  document.getElementById("is-delete-event-button").addEventListener("click", function(clickEvent) {
     clickEvent.preventDefault();
 
     window.llm.confirmModal("Delete Event?", "Are you sure you want to delete this event?", "Yes, Delete", "danger", function() {
@@ -79,8 +79,9 @@
     window.llm.enableNavBlocker();
     eventDateNavEle.setAttribute("disabled", "disabled");
 
-    formMessageEle.innerHTML = "<div class=\"has-text-info\">" +
-      "<i class=\"fas fa-exclamation-triangle\" aria-hidden=\"true\"></i> Unsaved Changes" +
+    formMessageEle.innerHTML = "<span class=\"tag is-light is-info is-medium\">" +
+      "<span class=\"icon\"><i class=\"fas fa-exclamation-triangle\" aria-hidden=\"true\"></i></span>" +
+      " <span>Unsaved Changes</span>" +
       "</div>";
   }
 

@@ -83,7 +83,7 @@
       <div class="column">
         <p>
           <strong>Total Prize Value</strong><br />
-          $ <%= licence.totalPrizeValue.toFixed(2) %>
+          $ <%= (licence.totalPrizeValue || 0).toFixed(2) %>
         </p>
       </div>
     </div>

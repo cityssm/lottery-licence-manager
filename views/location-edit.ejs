@@ -89,50 +89,55 @@
     </div>
   </div>
 
-  <div class="has-text-right is-fixed-bottom has-padding-10 has-background-grey-light">
-    <span class="is-inline-block has-margin-top-10 has-margin-right-10" id="container--form-message"></span>
+  <div class="is-fixed-bottom has-padding-10 has-background-grey-light">
+    <div class="level">
+      <div class="level-left" id="container--form-message"></div>
+      <div class="level-right">
+        <div class="buttons">
+          <% if (isCreate) { %>
+            <a class="button" href="/locations">
+              Cancel
+            </a>
+          <% } %>
 
-    <% if (isCreate) { %>
-      <a class="button" href="/locations">
-        Cancel
-      </a>
-    <% } %>
-
-    <button class="button is-success" type="submit">
-      <span class="icon">
-        <i class="fas fa-save" aria-hidden="true"></i>
-      </span>
-      <span>
-        <%= (isCreate ? "Create New Location and Continue" : "Update Location") %>
-      </span>
-    </button>
-
-    <% if (!isCreate) { %>
-      <div class="dropdown is-hoverable is-right is-up">
-        <div class="dropdown-trigger">
-          <button class="button" type="button" aria-haspopup="true">
-            <span>Options</span>
+          <button class="button is-success" type="submit">
             <span class="icon">
-              <i class="fas fa-angle-up" aria-hidden="true"></i>
+              <i class="fas fa-save" aria-hidden="true"></i>
+            </span>
+            <span>
+              <%= (isCreate ? "Create New Location and Continue" : "Update Location") %>
             </span>
           </button>
-        </div>
-        <div class="dropdown-menu" role="menu">
-          <div class="dropdown-content">
-            <% if (user.userProperties.isAdmin) { %>
-              <a class="dropdown-item is-merge-button" href="#">
-                <span class="icon"><i class="fas fa-fw fa-compress-alt has-text-danger" aria-hidden="true"></i></span>
-                <span>Merge with Another Location</span>
-              </a>
-            <% } %>
-            <a class="dropdown-item is-delete-button" href="#">
-              <span class="icon"><i class="fas fa-fw fa-trash has-text-danger" aria-hidden="true"></i></span>
-              <span>Delete Location</span>
-            </a>
-          </div>
+
+          <% if (!isCreate) { %>
+            <div class="dropdown is-hoverable is-right is-up">
+              <div class="dropdown-trigger">
+                <button class="button" type="button" aria-haspopup="true">
+                  <span>Options</span>
+                  <span class="icon">
+                    <i class="fas fa-angle-up" aria-hidden="true"></i>
+                  </span>
+                </button>
+              </div>
+              <div class="dropdown-menu" role="menu">
+                <div class="dropdown-content">
+                  <% if (user.userProperties.isAdmin) { %>
+                    <a class="dropdown-item is-merge-button" href="#">
+                      <span class="icon"><i class="fas fa-fw fa-compress-alt has-text-danger" aria-hidden="true"></i></span>
+                      <span>Merge with Another Location</span>
+                    </a>
+                  <% } %>
+                  <a class="dropdown-item is-delete-button" href="#">
+                    <span class="icon"><i class="fas fa-fw fa-trash has-text-danger" aria-hidden="true"></i></span>
+                    <span>Delete Location</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          <% } %>
         </div>
       </div>
-    <% } %>
+    </div>
   </div>
 </form>
 

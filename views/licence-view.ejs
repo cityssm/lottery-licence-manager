@@ -28,7 +28,7 @@
       <% } %>
       <% if (licence.licenceFeeIsPaid) { %>
         <div class="control">
-          <a class="button is-link" href="/licences/<%= licence.licenceID %>/print" target="_blank">
+          <a class="button is-link" href="/licences/<%= licence.licenceID %>/print" target="_blank" download>
             <span class="icon is-small">
               <i class="fas fa-print" aria-hidden="true"></i>
             </span>
@@ -144,7 +144,7 @@
       <div class="column is-6">
         <p>
           <strong>Total Prize Value</strong><br />
-          $ <%= licence.totalPrizeValue.toFixed(2) %>
+          $ <%= (licence.totalPrizeValue || 0).toFixed(2) %>
         </p>
       </div>
     </div>
@@ -175,9 +175,14 @@
       </thead>
       <tbody>
         <%
+          let ticketTypeLicenceFeeTotal = 0;
+          let ticketTypePrizesTotal = 0;
+
           for (let ticketTypeIndex = 0; ticketTypeIndex < licence.licenceTicketTypes.length; ticketTypeIndex += 1) {
             const licenceTicketTypeObj = licence.licenceTicketTypes[ticketTypeIndex];
             const ticketType = (licenceType && licenceType.ticketTypes ? licenceType.ticketTypes.find(ele => ele.ticketType === licenceTicketTypeObj.ticketType) : null);
+
+            ticketTypeLicenceFeeTotal += licenceTicketTypeObj.licenceFee;
         %>
             <tr>
               <td><%= licenceTicketTypeObj.ticketType %></td>
@@ -195,17 +200,50 @@
                 <%
                   let prizesPerDeal = (ticketType ? ticketType.prizesPerDeal : 0);
                   let totalPrizesPerDeal = (prizesPerDeal * licenceTicketTypeObj.unitCount).toFixed(2);
+
+                  ticketTypePrizesTotal += (prizesPerDeal * licenceTicketTypeObj.unitCount);
                 %>
                 <span data-tooltip="$<%= prizesPerDeal.toFixed(2) %> prizes per deal">$ <%= totalPrizesPerDeal %></span>
               </td>
               <td class="has-text-right">
                 <%= "$ " + licenceTicketTypeObj.licenceFee.toFixed(2) %>
               </td>
-              <td><%= licenceTicketTypeObj.distributorLocationDisplayName %></td>
-              <td><%= licenceTicketTypeObj.manufacturerLocationDisplayName %></td>
+              <td>
+                <span>
+                  <% if (licenceTicketTypeObj.distributorLocationID === null) { %>
+                    <span class="has-text-grey">(Not Set)</span>
+                  <% } else { %>
+                    <%= licenceTicketTypeObj.distributorLocationDisplayName %>
+                  <% } %>
+                </span>
+              </td>
+              <td>
+                <span>
+                  <% if (licenceTicketTypeObj.manufacturerLocationID === null) { %>
+                    <span class="has-text-grey">(Not Set)</span>
+                  <% } else { %>
+                    <%= licenceTicketTypeObj.manufacturerLocationDisplayName %>
+                  <% } %>
+                </span>
+              </td>
             </tr>
         <% } %>
       </tbody>
+      <tfoot>
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+          <th class="has-text-right">
+            $ <%= ticketTypePrizesTotal.toFixed(2) %>
+          </th>
+          <th class="has-text-right">
+            $ <%= ticketTypeLicenceFeeTotal.toFixed(2) %>
+          </th>
+          <td></td>
+          <td></td>
+        </tr>
+      </tfoot>
     </table>
   </div>
 <% } %>
@@ -219,7 +257,7 @@
             <h2 class="has-text-weight-bold">Event Dates</h2>
           </div>
           <div class="level-right has-text-weight-normal has-text-right">
-            <a class="button is-small" href="/reports/events-byLicence?licenceID=<%= licence.licenceID %>">
+            <a class="button is-small" href="/reports/events-byLicence?licenceID=<%= licence.licenceID %>" target="_blank" download>
               <span class="icon is-small">
                 <i class="fas fa-file-download" aria-hidden="true"></i>
               </span>

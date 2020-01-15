@@ -1182,6 +1182,49 @@ const licencesDB = (function() {
         }
       }
 
+      // ticket types
+
+      if (typeof(reqBody.ticketType_ticketType) === "string") {
+
+        db.prepare("insert into LotteryLicenceTicketTypes (" +
+            "licenceID, ticketType," +
+            " distributorLocationID, manufacturerLocationID," +
+            " unitCount, licenceFee," +
+            " recordCreate_userName, recordCreate_timeMillis, recordUpdate_userName, recordUpdate_timeMillis)" +
+            " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
+          .run(licenceID,
+            reqBody.ticketType_ticketType,
+            (reqBody.ticketType_distributorLocationID === "" ? null : reqBody.ticketType_distributorLocationID),
+            (reqBody.ticketType_manufacturerLocationID === "" ? null : reqBody.ticketType_manufacturerLocationID),
+            reqBody.ticketType_unitCount,
+            reqBody.ticketType_licenceFee,
+            reqSession.user.userName,
+            nowMillis,
+            reqSession.user.userName,
+            nowMillis);
+
+      } else if (typeof(reqBody.ticketType_ticketType) === "object") {
+
+        for (let ticketTypeIndex = 0; ticketTypeIndex < reqBody.ticketType_ticketType.length; ticketTypeIndex += 1) {
+
+          db.prepare("insert into LotteryLicenceTicketTypes (" +
+              "licenceID, ticketType," +
+              " distributorLocationID, manufacturerLocationID," +
+              " unitCount, licenceFee," +
+              " recordCreate_userName, recordCreate_timeMillis, recordUpdate_userName, recordUpdate_timeMillis)" +
+              " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
+            .run(licenceID,
+              reqBody.ticketType_ticketType[ticketTypeIndex],
+              (reqBody.ticketType_distributorLocationID[ticketTypeIndex] === "" ? null : reqBody.ticketType_distributorLocationID[ticketTypeIndex]),
+              (reqBody.ticketType_manufacturerLocationID[ticketTypeIndex] === "" ? null : reqBody.ticketType_manufacturerLocationID[ticketTypeIndex]),
+              reqBody.ticketType_unitCount[ticketTypeIndex],
+              reqBody.ticketType_licenceFee[ticketTypeIndex],
+              reqSession.user.userName,
+              nowMillis,
+              reqSession.user.userName,
+              nowMillis);
+        }
+      }
 
       // events
 
@@ -1319,7 +1362,7 @@ const licencesDB = (function() {
         if (licenceObj_past.startDate !== startDate_now ||
           licenceObj_past.endDate !== endDate_now ||
           licenceObj_past.startTime !== startTime_now ||
-          licenceObj_past.endTime !== endDate_now) {
+          licenceObj_past.endTime !== endTime_now) {
 
           newAmendmentIndex += 1;
 
@@ -1378,6 +1421,161 @@ const licencesDB = (function() {
           .run(reqBody.licenceID, fieldKey, fieldValue);
       }
 
+      /*
+       * ticket types
+       */
+
+      // do deletes
+
+      if (typeof(reqBody.ticketType_toDelete) === "string") {
+
+        db.prepare("update LotteryLicenceTicketTypes" +
+            " set recordDelete_userName = ?," +
+            " recordDelete_timeMillis = ?" +
+            " where licenceID = ?" +
+            " and ticketType = ?")
+          .run(reqSession.user.userName,
+            nowMillis,
+            reqBody.licenceID,
+            reqBody.ticketType_toDelete);
+
+      } else if (typeof(reqBody.ticketType_toDelete) === "object") {
+
+        for (let deleteIndex = 0; deleteIndex < reqBody.ticketType_toDelete.length; deleteIndex += 1) {
+
+          db.prepare("update LotteryLicenceTicketTypes" +
+              " set recordDelete_userName = ?," +
+              " recordDelete_timeMillis = ?" +
+              " where licenceID = ?" +
+              " and ticketType = ?")
+            .run(reqSession.user.userName,
+              nowMillis,
+              reqBody.licenceID,
+              reqBody.ticketType_toDelete[deleteIndex]);
+        }
+      }
+
+      // do adds
+
+      if (typeof(reqBody.ticketType_toAdd) === "string") {
+
+        const addInfo = db.prepare("update LotteryLicenceTicketTypes" +
+            " set costs_receipts = null," +
+            " costs_admin = null," +
+            " costs_prizesAwarded = null," +
+            " recordDelete_userName = null," +
+            " recordDelete_timeMillis = null," +
+            " recordUpdate_userName = ?," +
+            " recordUpdate_timeMillis = ?" +
+            " where licenceID = ?" +
+            " and ticketType = ?" +
+            " and recordDelete_timeMillis is not null")
+          .run(reqSession.user.userName,
+            nowMillis,
+            reqBody.licenceID,
+            reqBody.ticketType_toAdd);
+
+        if (addInfo.changes === 0) {
+
+          db.prepare("insert or ignore into LotteryLicenceTicketTypes" +
+              " (licenceID, ticketType, unitCount," +
+              " recordCreate_userName, recordCreate_timeMillis, recordUpdate_userName, recordUpdate_timeMillis)" +
+              " values (?, ?, ?, ?, ?, ?, ?)")
+            .run(reqBody.licenceID,
+              reqBody.ticketType_toAdd,
+              0,
+              reqSession.user.userName,
+              nowMillis,
+              reqSession.user.userName,
+              nowMillis);
+        }
+
+      } else if (typeof(reqBody.ticketType_toAdd) === "object") {
+
+        for (let addIndex = 0; addIndex < reqBody.ticketType_toAdd.length; addIndex += 1) {
+
+          const addInfo = db.prepare("update LotteryLicenceTicketTypes" +
+              " set costs_receipts = null," +
+              " costs_admin = null," +
+              " costs_prizesAwarded = null," +
+              " recordDelete_userName = null," +
+              " recordDelete_timeMillis = null," +
+              " recordUpdate_userName = ?," +
+              " recordUpdate_timeMillis = ?" +
+              " where licenceID = ?" +
+              " and ticketType = ?" +
+              " and recordDelete_timeMillis is not null")
+            .run(reqSession.user.userName,
+              nowMillis,
+              reqBody.licenceID,
+              reqBody.ticketType_toAdd[addIndex]);
+
+          if (addInfo.changes === 0) {
+
+            db.prepare("insert or ignore into LotteryLicenceTicketTypes" +
+                " (licenceID, ticketType, unitCount," +
+                " recordCreate_userName, recordCreate_timeMillis, recordUpdate_userName, recordUpdate_timeMillis)" +
+                " values (?, ?, ?, ?, ?, ?, ?)")
+              .run(reqBody.licenceID,
+                reqBody.ticketType_toAdd[addIndex],
+                0,
+                reqSession.user.userName,
+                nowMillis,
+                reqSession.user.userName,
+                nowMillis);
+          }
+        }
+      }
+
+      // do updates
+
+      if (typeof(reqBody.ticketType_ticketType) === "string") {
+
+        db.prepare("update LotteryLicenceTicketTypes" +
+            " set distributorLocationID = ?," +
+            " manufacturerLocationID = ?," +
+            " unitCount = ?," +
+            " licenceFee = ?," +
+            " recordUpdate_userName = ?," +
+            " recordUpdate_timeMillis = ?" +
+            " where licenceID = ?" +
+            " and ticketType = ?" +
+            " and recordDelete_timeMillis is null")
+          .run(
+            (reqBody.ticketType_distributorLocationID === "" ? null : reqBody.ticketType_distributorLocationID),
+            (reqBody.ticketType_manufacturerLocationID === "" ? null : reqBody.ticketType_manufacturerLocationID),
+            reqBody.ticketType_unitCount,
+            reqBody.ticketType_licenceFee,
+            reqSession.user.userName,
+            nowMillis,
+            reqBody.licenceID,
+            reqBody.ticketType_ticketType);
+
+      } else if (typeof(reqBody.ticketType_ticketType) === "object") {
+
+        for (let ticketTypeIndex = 0; ticketTypeIndex < reqBody.ticketType_ticketType.length; ticketTypeIndex += 1) {
+
+          db.prepare("update LotteryLicenceTicketTypes" +
+              " set distributorLocationID = ?," +
+              " manufacturerLocationID = ?," +
+              " unitCount = ?," +
+              " licenceFee = ?," +
+              " recordUpdate_userName = ?," +
+              " recordUpdate_timeMillis = ?" +
+              " where licenceID = ?" +
+              " and ticketType = ?" +
+              " and recordDelete_timeMillis is null")
+            .run(
+              (reqBody.ticketType_distributorLocationID[ticketTypeIndex] === "" ? null : reqBody.ticketType_distributorLocationID[ticketTypeIndex]),
+              (reqBody.ticketType_manufacturerLocationID[ticketTypeIndex] === "" ? null : reqBody.ticketType_manufacturerLocationID[ticketTypeIndex]),
+              reqBody.ticketType_unitCount[ticketTypeIndex],
+              reqBody.ticketType_licenceFee[ticketTypeIndex],
+              reqSession.user.userName,
+              nowMillis,
+              reqBody.licenceID,
+              reqBody.ticketType_ticketType[ticketTypeIndex]);
+        }
+      }
 
       // events
 
