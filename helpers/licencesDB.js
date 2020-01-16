@@ -107,78 +107,102 @@ const licencesDB = (function() {
       licenceObj.startTimeString = dateTimeFns.timeIntegerToString(licenceObj.startTime || 0);
       licenceObj.endTimeString = dateTimeFns.timeIntegerToString(licenceObj.endTime || 0);
 
+      licenceObj.issueDateString = dateTimeFns.dateIntegerToString(licenceObj.issueDate || 0);
+      licenceObj.issueTimeString = dateTimeFns.timeIntegerToString(licenceObj.issueTime || 0);
+
       licenceObj.locationDisplayName = (licenceObj.locationName === "" ? licenceObj.locationAddress1 : licenceObj.locationName);
 
       licenceObj.canUpdate = canUpdateObject("licence", licenceObj, reqSession);
 
       // ticket types
+      {
+        const ticketTypesList = db.prepare("select t.ticketType," +
+            " t.distributorLocationID, d.locationName as distributorLocationName, d.locationAddress1 as distributorLocationAddress1," +
+            " t.manufacturerLocationID, m.locationName as manufacturerLocationName, m.locationAddress1 as manufacturerLocationAddress1," +
+            " t.unitCount, t.licenceFee" +
+            " from LotteryLicenceTicketTypes t" +
+            " left join Locations d on t.distributorLocationID = d.locationID" +
+            " left join Locations m on t.manufacturerLocationID = m.locationID" +
+            " where t.recordDelete_timeMillis is null" +
+            " and t.licenceID = ?" +
+            " order by t.ticketType")
+          .all(licenceID);
 
-      const ticketTypesList = db.prepare("select t.ticketType," +
-          " t.distributorLocationID, d.locationName as distributorLocationName, d.locationAddress1 as distributorLocationAddress1," +
-          " t.manufacturerLocationID, m.locationName as manufacturerLocationName, m.locationAddress1 as manufacturerLocationAddress1," +
-          " t.unitCount, t.licenceFee" +
-          " from LotteryLicenceTicketTypes t" +
-          " left join Locations d on t.distributorLocationID = d.locationID" +
-          " left join Locations m on t.manufacturerLocationID = m.locationID" +
-          " where t.recordDelete_timeMillis is null" +
-          " and t.licenceID = ?" +
-          " order by t.ticketType")
-        .all(licenceID);
+        for (let index = 0; index < ticketTypesList.length; index += 1) {
 
-      for (let ticketTypeIndex = 0; ticketTypeIndex < ticketTypesList.length; ticketTypeIndex += 1) {
+          const ticketTypeObj = ticketTypesList[index];
 
-        const ticketTypeObj = ticketTypesList[ticketTypeIndex];
+          ticketTypeObj.distributorLocationDisplayName = ticketTypeObj.distributorLocationName === "" ?
+            ticketTypeObj.distributorLocationAddress1 :
+            ticketTypeObj.distributorLocationName;
 
-        ticketTypeObj.distributorLocationDisplayName = ticketTypeObj.distributorLocationName === "" ?
-          ticketTypeObj.distributorLocationAddress1 :
-          ticketTypeObj.distributorLocationName;
+          ticketTypeObj.manufacturerLocationDisplayName = ticketTypeObj.manufacturerLocationName === "" ?
+            ticketTypeObj.manufacturerLocationAddress1 :
+            ticketTypeObj.manufacturerLocationName;
+        }
 
-        ticketTypeObj.manufacturerLocationDisplayName = ticketTypeObj.manufacturerLocationName === "" ?
-          ticketTypeObj.manufacturerLocationAddress1 :
-          ticketTypeObj.manufacturerLocationName;
+        licenceObj.licenceTicketTypes = ticketTypesList;
       }
-
-      licenceObj.licenceTicketTypes = ticketTypesList;
 
       // fields
+      {
+        const fieldList = db.prepare("select * from LotteryLicenceFields" +
+            " where licenceID = ?")
+          .all(licenceID);
 
-      const fieldList = db.prepare("select * from LotteryLicenceFields" +
-          " where licenceID = ?")
-        .all(licenceID);
-
-      licenceObj.licenceFields = fieldList;
+        licenceObj.licenceFields = fieldList;
+      }
 
       // events
+      {
+        const eventList = db.prepare("select eventDate from LotteryEvents" +
+            " where licenceID = ?" +
+            " and recordDelete_timeMillis is null" +
+            " order by eventDate")
+          .all(licenceID);
 
-      const eventList = db.prepare("select eventDate from LotteryEvents" +
-          " where licenceID = ?" +
-          " and recordDelete_timeMillis is null" +
-          " order by eventDate")
-        .all(licenceID);
+        for (let index = 0; index < eventList.length; index += 1) {
+          const eventObj = eventList[index];
+          eventObj.eventDateString = dateTimeFns.dateIntegerToString(eventObj.eventDate);
+        }
 
-      for (let eventIndex = 0; eventIndex < eventList.length; eventIndex += 1) {
-        const eventObj = eventList[eventIndex];
-        eventObj.eventDateString = dateTimeFns.dateIntegerToString(eventObj.eventDate);
+        licenceObj.events = eventList;
       }
-
-      licenceObj.events = eventList;
 
       // amendments
+      {
+        const amendments = db.prepare("select *" +
+            " from LotteryLicenceAmendments" +
+            " where licenceID = ?" +
+            " and recordDelete_timeMillis is null" +
+            " order by amendmentDate, amendmentTime, amendmentIndex")
+          .all(licenceID);
 
-      const amendments = db.prepare("select *" +
-          " from LotteryLicenceAmendments" +
-          " where licenceID = ?" +
-          " and recordDelete_timeMillis is null" +
-          " order by amendmentDate, amendmentTime, amendmentIndex")
-        .all(licenceID);
+        for (let index = 0; index < amendments.length; index += 1) {
+          const amendmentObj = amendments[index];
+          amendmentObj.amendmentDateString = dateTimeFns.dateIntegerToString(amendmentObj.amendmentDate);
+          amendmentObj.amendmentTimeString = dateTimeFns.timeIntegerToString(amendmentObj.amendmentTime);
+        }
 
-      for (let amendmentIndex = 0; amendmentIndex < amendments.length; amendmentIndex += 1) {
-        const amendmentObj = amendments[amendmentIndex];
-        amendmentObj.amendmentDateString = dateTimeFns.dateIntegerToString(amendmentObj.amendmentDate);
-        amendmentObj.amendmentTimeString = dateTimeFns.timeIntegerToString(amendmentObj.amendmentTime);
+        licenceObj.licenceAmendments = amendments;
       }
 
-      licenceObj.licenceAmendments = amendments;
+      // transactions
+      {
+        const transactions = db.prepare("select * from LotteryLicenceTransactions" +
+            " where licenceID = ?" +
+            " and recordDelete_timeMillis is null" +
+            " order by transactionDate, transactionTime, transactionIndex")
+          .all(licenceID);
+
+        for (let index = 0; index < transactions.length; index += 1) {
+          const amendmentObj = transactions[index];
+          amendmentObj.transactionDateString = dateTimeFns.dateIntegerToString(amendmentObj.transactionDate);
+          amendmentObj.transactionTimeString = dateTimeFns.timeIntegerToString(amendmentObj.transactionTime);
+        }
+
+        licenceObj.licenceTransactions = transactions;
+      }
     }
 
     return licenceObj;
@@ -331,8 +355,8 @@ const licencesDB = (function() {
           reqBody.locationCity,
           reqBody.locationProvince,
           reqBody.locationPostalCode,
-          reqBody.locationIsDistributor ? 1 : 0,
-          reqBody.locationIsManufacturer ? 1 : 0,
+          reqBody.locationIsDistributor || 0,
+          reqBody.locationIsManufacturer || 0,
           reqSession.user.userName,
           nowMillis,
           reqSession.user.userName,
@@ -991,7 +1015,7 @@ const licencesDB = (function() {
         " l.startDate, l.startTime, l.endDate, l.endTime," +
         " l.locationID, lo.locationName, lo.locationAddress1," +
         " l.municipality, l.licenceDetails, l.termsConditions," +
-        " l.externalLicenceNumber, l.licenceFeeIsPaid," +
+        " l.externalLicenceNumber, l.issueDate," +
         " l.recordCreate_userName, l.recordCreate_timeMillis, l.recordUpdate_userName, l.recordUpdate_timeMillis" +
         " from LotteryLicences l" +
         " left join Locations lo on l.locationID = lo.locationID" +
@@ -1059,6 +1083,8 @@ const licencesDB = (function() {
 
         licenceObj.startTimeString = dateTimeFns.timeIntegerToString(licenceObj.startTime || 0);
         licenceObj.endTimeString = dateTimeFns.timeIntegerToString(licenceObj.endTime || 0);
+
+        licenceObj.issueDateString = dateTimeFns.dateIntegerToString(licenceObj.issueDate || 0);
 
         licenceObj.locationDisplayName = (licenceObj.locationName === "" ? licenceObj.locationAddress1 : licenceObj.locationName);
 
@@ -1174,12 +1200,14 @@ const licencesDB = (function() {
         const fieldKey = fieldKeys[fieldIndex];
         const fieldValue = reqBody[fieldKey];
 
-        if (fieldValue !== "") {
-          db.prepare("insert into LotteryLicenceFields" +
-              " (licenceID, fieldKey, fieldValue)" +
-              " values (?, ?, ?)")
-            .run(licenceID, fieldKey, fieldValue);
+        if (fieldKey === "" || fieldValue === "") {
+          continue;
         }
+
+        db.prepare("insert into LotteryLicenceFields" +
+            " (licenceID, fieldKey, fieldValue)" +
+            " values (?, ?, ?)")
+          .run(licenceID, fieldKey, fieldValue);
       }
 
       // ticket types
@@ -1262,6 +1290,18 @@ const licencesDB = (function() {
         }
       }
 
+      // calculate licence fee
+
+      const licenceObj = getLicence(licenceID, reqSession, db);
+
+      const feeCalculation = configFns.getProperty("licences.feeCalculationFn")(licenceObj);
+
+      db.prepare("update LotteryLicences" +
+          " set licenceFee = ?" +
+          " where licenceID = ?")
+        .run(feeCalculation.fee,
+          licenceID);
+
       db.close();
 
       return licenceID;
@@ -1310,6 +1350,7 @@ const licencesDB = (function() {
           " licenceDetails = ?," +
           " termsConditions = ?," +
           " totalPrizeValue = ?," +
+          " licenceFee = ?," +
           " externalLicenceNumber = ?," +
           " externalLicenceNumberInteger = ?," +
           " recordUpdate_userName = ?," +
@@ -1329,6 +1370,7 @@ const licencesDB = (function() {
           reqBody.licenceDetails,
           reqBody.termsConditions,
           reqBody.totalPrizeValue,
+          reqBody.licenceFee,
           reqBody.externalLicenceNumber,
           externalLicenceNumberInteger,
           reqSession.user.userName,
@@ -1721,25 +1763,27 @@ const licencesDB = (function() {
       return changeCount;
     },
 
-    markLicenceFeePaid: function(reqBody, reqSession) {
+    issueLicence: function(reqBody, reqSession) {
 
       const db = sqlite(dbPath);
 
       const nowMillis = Date.now();
 
+      const issueDate = dateTimeFns.dateToInteger(new Date());
+      const issueTime = dateTimeFns.dateToTimeInteger(new Date());
+
       const info = db.prepare("update LotteryLicences" +
-          " set licenceFee = ?," +
-          " externalReceiptNumber = ?," +
-          " licenceFeeIsPaid = 1," +
+          " set issueDate = ?," +
+          " issueTime = ?," +
           " trackUpdatesAsAmendments = 1," +
           " recordUpdate_userName = ?," +
           " recordUpdate_timeMillis = ?" +
           " where licenceID = ?" +
           " and recordDelete_timeMillis is null" +
-          " and licenceFeeIsPaid = 0")
+          " and issueDate is null")
         .run(
-          reqBody.licenceFee,
-          reqBody.externalReceiptNumber,
+          issueDate,
+          issueTime,
           reqSession.user.userName,
           nowMillis,
           reqBody.licenceID
@@ -1752,21 +1796,20 @@ const licencesDB = (function() {
       return changeCount;
     },
 
-    markLicenceFeeUnpaid: function(licenceID, reqSession) {
+    unissueLicence: function(licenceID, reqSession) {
 
       const db = sqlite(dbPath);
 
       const nowMillis = Date.now();
 
       const info = db.prepare("update LotteryLicences" +
-          " set licenceFee = null," +
-          " externalReceiptNumber = null," +
-          " licenceFeeIsPaid = 0," +
+          " set issueDate = null," +
+          " issueTime = null," +
           " recordUpdate_userName = ?," +
           " recordUpdate_timeMillis = ?" +
           " where licenceID = ?" +
           " and recordDelete_timeMillis is null" +
-          " and licenceFeeIsPaid = 1")
+          " and issueDate is not null")
         .run(
           reqSession.user.userName,
           nowMillis,
@@ -1778,6 +1821,50 @@ const licencesDB = (function() {
       db.close();
 
       return changeCount;
+    },
+
+    /*
+     * TRANSACTIONS
+     */
+
+    addTransaction: function(reqBody, reqSession) {
+
+      const db = sqlite(dbPath);
+
+      const row = db.prepare("select ifnull(max(transactionIndex), -1) as maxIndex" +
+          " from LotteryLicenceTransactions" +
+          " where licenceID = ?")
+        .get(reqBody.licenceID);
+
+      const newTransactionIndex = row.maxIndex + 1;
+
+      const rightNow = new Date();
+
+      const transactionDate = dateTimeFns.dateToInteger(rightNow);
+      const transactionTime = dateTimeFns.dateToTimeInteger(rightNow);
+
+      db.prepare("insert into LotteryLicenceTransactions (" +
+          "licenceID, transactionIndex," +
+          " transactionDate, transactionTime," +
+          " externalReceiptNumber, transactionAmount, transactionNote," +
+          " recordCreate_userName, recordCreate_timeMillis," +
+          " recordUpdate_userName, recordUpdate_timeMillis)" +
+          " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
+        .run(reqBody.licenceID,
+          newTransactionIndex,
+          transactionDate,
+          transactionTime,
+          reqBody.externalReceiptNumber,
+          reqBody.transactionAmount,
+          reqBody.transactionNote,
+          reqSession.user.userName,
+          rightNow.getTime(),
+          reqSession.user.userName,
+          rightNow.getTime());
+
+      db.close();
+
+      return newTransactionIndex;
     },
 
     /*

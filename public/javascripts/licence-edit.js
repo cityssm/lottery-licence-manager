@@ -15,8 +15,6 @@
   const licenceID = document.getElementById("licence--licenceID").value;
   const isCreate = licenceID === "";
 
-  const feeFormEle = document.getElementById("form--licenceFee");
-
   let doRefreshAfterSave = false;
 
   const events_containerEle = document.getElementById("container--events");
@@ -114,10 +112,6 @@
   // Nav blocker
 
   function setDoRefreshAfterSave() {
-    if (feeFormEle) {
-      feeFormEle.getElementsByTagName("fieldset")[0].setAttribute("disabled", "disabled");
-    }
-
     doRefreshAfterSave = true;
   }
 
@@ -129,6 +123,11 @@
       "<span class=\"icon\"><i class=\"fas fa-exclamation-triangle\" aria-hidden=\"true\"></i></span>" +
       " <span>Unsaved Changes</span>" +
       "</div>";
+
+    if (!isCreate) {
+      document.getElementById("is-add-transaction-button").setAttribute("disabled", "disabled");
+      document.getElementById("is-disabled-transaction-message").classList.remove("is-hidden");
+    }
 
     if (changeEvent &&
       (changeEvent.currentTarget.type === "number" || changeEvent.currentTarget.type === "date" || changeEvent.currentTarget.type === "time")) {
@@ -1075,8 +1074,8 @@
         });
 
         if (!isCreate) {
-            formEle.insertAdjacentHTML("beforeend",
-              "<input class=\"is-removed-after-save\" name=\"ticketType_toAdd\" type=\"hidden\" value=\"" + document.getElementById("ticketTypeAdd--ticketType").value + "\" />");
+          formEle.insertAdjacentHTML("beforeend",
+            "<input class=\"is-removed-after-save\" name=\"ticketType_toAdd\" type=\"hidden\" value=\"" + document.getElementById("ticketTypeAdd--ticketType").value + "\" />");
         }
 
         addTicketType_closeModalFn();
@@ -1303,6 +1302,70 @@
 
   if (!isCreate) {
 
+    const updateFeeButtonEle = document.getElementById("is-update-expected-licence-fee-button");
+
+    if (updateFeeButtonEle) {
+      updateFeeButtonEle.addEventListener("click", function() {
+
+        const licenceFeeEle = document.getElementById("licence--licenceFee");
+
+        licenceFeeEle.value = updateFeeButtonEle.getAttribute("data-licence-fee-expected");
+        licenceFeeEle.classList.remove("is-danger");
+        licenceFeeEle.closest(".field").getElementsByClassName("help")[0].remove();
+
+        setUnsavedChanges();
+        setDoRefreshAfterSave();
+      });
+    }
+
+    document.getElementById("is-add-transaction-button").addEventListener("click", function() {
+
+      const addTransactionFn = function(formEvent) {
+        formEvent.preventDefault();
+
+        window.fetch("/licences/doAddTransaction", {
+            method: "POST",
+            credentials: "include",
+            body: new URLSearchParams(new FormData(formEvent.currentTarget))
+          })
+          .then(function(response) {
+            return response.json();
+          })
+          .then(function(responseJSON) {
+
+            if (responseJSON.success) {
+              window.location.reload(true);
+            }
+
+          });
+      };
+
+      window.llm.openHtmlModal("licence-transactionAdd", {
+        onshow: function(modalEle) {
+
+          window.llm.getDefaultConfigProperty("externalReceiptNumber_fieldLabel", function(fieldLabel) {
+            modalEle.querySelector("label[for='transactionAdd--externalReceiptNumber']").innerText = fieldLabel;
+          });
+
+          document.getElementById("transactionAdd--licenceID").value = licenceID;
+
+          const licenceFee = document.getElementById("licence--licenceFee").value;
+          const transactionTotal = document.getElementById("licence--transactionTotal").innerText;
+
+          document.getElementById("transactionAdd--licenceFee").innerText = licenceFee;
+          document.getElementById("transactionAdd--transactionTotal").innerText = transactionTotal;
+
+          const discrepancy = (licenceFee - transactionTotal).toFixed(2);
+
+          document.getElementById("transactionAdd--discrepancy").innerText = discrepancy;
+          document.getElementById("transactionAdd--transactionAmount").value = discrepancy;
+
+          modalEle.getElementsByTagName("form")[0].addEventListener("submit", addTransactionFn);
+        }
+      });
+    });
+
+    /*
     if (feeFormEle) {
 
       // mark fee as paid form
@@ -1373,5 +1436,6 @@
           confirmFn_removeFee);
       });
     }
+    */
   }
 }());

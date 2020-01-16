@@ -148,7 +148,7 @@ router.post("/doSave", function(req, res) {
 });
 
 
-router.post("/doMarkLicenceFeePaid", function(req, res) {
+router.post("/doAddTransaction", function(req, res) {
   "use strict";
 
   if (req.session.user.userProperties.canCreate !== "true") {
@@ -159,23 +159,23 @@ router.post("/doMarkLicenceFeePaid", function(req, res) {
     return;
   }
 
-  const changeCount = licencesDB.markLicenceFeePaid(req.body, req.session);
+  const changeCount = licencesDB.addTransaction(req.body, req.session);
 
   if (changeCount) {
     res.json({
       success: true,
-      message: "Licence Fee Paid"
+      message: "Transaction Added Successfully"
     });
   } else {
     res.json({
       success: false,
-      message: "Record Not Saved"
+      message: "Transaction Not Added"
     });
   }
 });
 
 
-router.post("/doRemoveLicenceFee", function(req, res) {
+router.post("/doIssueLicence", function(req, res) {
   "use strict";
 
   if (req.session.user.userProperties.canCreate !== "true") {
@@ -186,17 +186,44 @@ router.post("/doRemoveLicenceFee", function(req, res) {
     return;
   }
 
-  const changeCount = licencesDB.markLicenceFeeUnpaid(req.body.licenceID, req.session);
+  const changeCount = licencesDB.issueLicence(req.body, req.session);
 
   if (changeCount) {
     res.json({
       success: true,
-      message: "Licence Fee Payment Removed"
+      message: "Licence Issued Successfully"
     });
   } else {
     res.json({
       success: false,
-      message: "Record Not Saved"
+      message: "Licence Not Issued"
+    });
+  }
+});
+
+
+router.post("/doUnissueLicence", function(req, res) {
+  "use strict";
+
+  if (req.session.user.userProperties.canCreate !== "true") {
+    res.json({
+      success: false,
+      message: "Not Allowed"
+    });
+    return;
+  }
+
+  const changeCount = licencesDB.unissueLicence(req.body.licenceID, req.session);
+
+  if (changeCount) {
+    res.json({
+      success: true,
+      message: "Licence Unissued Successfully"
+    });
+  } else {
+    res.json({
+      success: false,
+      message: "Licence Not Unissued"
     });
   }
 });
@@ -310,8 +337,8 @@ router.get("/:licenceID/print", function(req, res, next) {
     return;
   }
 
-  if (!licence.licenceFeeIsPaid) {
-    res.redirect("/licences/?error=licenceFeeNotPaid");
+  if (!licence.issueDate) {
+    res.redirect("/licences/?error=licenceNotIssued");
     return;
   }
 
@@ -328,7 +355,7 @@ router.get("/:licenceID/print", function(req, res, next) {
     }, {},
     function(ejsErr, ejsData) {
       if (ejsErr) {
-        next();
+        next(ejsErr);
       } else {
 
         let options = {

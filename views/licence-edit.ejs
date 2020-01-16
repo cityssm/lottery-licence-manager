@@ -19,7 +19,7 @@
       <%= (isCreate ? "Create a New Licence" : "Update an Existing Licence") %>
     </h1>
   </div>
-  <% if (licence.licenceFeeIsPaid) { %>
+  <% if (licence.issueDate) { %>
     <div class="level-right has-text-right">
       <a class="button is-link" href="/licences/<%= licence.licenceID %>/print" target="_blank" download>
         <span class="icon is-small">
@@ -582,6 +582,151 @@
     </div>
   <% } %>
 
+  <%
+    if (!isCreate) {
+
+      const hasLicenceFeeDiscrepancy = (licence.licenceFee !== parseFloat(feeCalculation.fee));
+  %>
+  <div class="columns">
+    <div class="column is-one-quarter">
+      <div class="panel">
+        <div class="panel-heading">
+          <h2 class="has-text-weight-bold">Licence Fee</h2>
+        </div>
+        <div class="panel-block is-block">
+          <div class="field">
+            <label class="label" for="licence--licenceFee">Licence Fee</label>
+            <div class="control has-icons-left">
+              <input class="input has-text-right is-readonly <%= (hasLicenceFeeDiscrepancy ? " is-danger" : "")%>" id="licence--licenceFee" name="licenceFee" type="text" value="<%= licence.licenceFee %>" />
+              <span class="icon is-small is-left">
+                <i class="fas fa-dollar-sign" aria-hidden="true"></i>
+              </span>
+            </div>
+            <% if (hasLicenceFeeDiscrepancy) { %>
+              <p class="help is-danger">
+                The licence fee recorded on this licence record
+                does not match the current licence fee calculation.
+              </p>
+            <% } else { %>
+              <p class="help has-text-right"><%= feeCalculation.message %></p>
+            <% } %>
+          </div>
+        </div>
+        <% if (hasLicenceFeeDiscrepancy) { %>
+          <div class="panel-block is-block">
+            <div class="columns">
+              <div class="column">
+                <strong>Licence Fee Expected</strong>
+              </div>
+              <div class="column is-narrow">
+                <strong>$ <%= feeCalculation.fee %></strong>
+              </div>
+            </div>
+            <p class="has-text-right is-size-7"><%= feeCalculation.message %></p>
+            <button class="button is-small is-fullwidth has-margin-top-10 is-primary" id="is-update-expected-licence-fee-button" data-licence-fee-expected="<%= feeCalculation.fee %>" type="button">
+              Update Licence Fee
+            </button>
+          </div>
+        <% } %>
+      </div>
+    </div>
+    <div class="column">
+      <div class="panel">
+        <div class="panel-heading">
+          <div class="level">
+            <div class="level-left">
+              <h2 class="has-text-weight-bold">Transactions</h2>
+            </div>
+            <div class="level-right has-text-weight-normal has-text-right">
+              <div class="buttons">
+                <a class="button is-small" href="/reports/transactions-byLicence?licenceID=<%= licence.licenceID %>" target="_blank" download>
+                  <span class="icon is-small">
+                    <i class="fas fa-file-download" aria-hidden="true"></i>
+                  </span>
+                  <span>Export Transactions</span>
+                </a>
+                <button class="button is-small is-primary" id="is-add-transaction-button" type="button">
+                  <span class="icon is-small">
+                    <i class="fas fa-plus" aria-hidden="true"></i>
+                  </span>
+                  <span>Add a Transaction</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="panel-block is-block is-hidden" id="is-disabled-transaction-message">
+          <div class="message is-warning">
+            <p class="message-body">
+              <strong>Changes have been made to the licence which may affect the licence fee.</strong><br />
+              Please save the licence changes to re-enable transaction changes.
+            </p>
+          </div>
+        </div>
+        <% if (licence.licenceTransactions.length === 0) { %>
+          <div class="panel-block is-block">
+            <div class="message is-warning">
+              <p class="message-body">
+                No transactions have been recorded for this licence.
+              </p>
+            </div>
+          </div>
+        <% } else { %>
+          <table class="table is-fullwidth">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th class="has-text-right">Amount</th>
+                <th><%= configFns.getProperty("licences.externalReceiptNumber.fieldLabel") %></th>
+                <th>Note</th>
+              </tr>
+            </thead>
+            <tbody>
+              <%
+                let transactionTotal = 0;
+
+                for (let index = 0; index < licence.licenceTransactions.length; index += 1) {
+                  const transactionObj = licence.licenceTransactions[index];
+
+                  transactionTotal += transactionObj.transactionAmount;
+              %>
+              <tr>
+                <td><%= transactionObj.transactionDateString %></td>
+                <td class="has-text-right">
+                  $ <%= transactionObj.transactionAmount.toFixed(2) %>
+                </td>
+                <td><%= transactionObj.externalReceiptNumber %></td>
+                <td class="has-newline-chars"><%= transactionObj.transactionNote %></td>
+              </tr>
+              <%
+                }
+              %>
+            </tbody>
+            <tfoot>
+              <tr>
+                <td></td>
+                <td class="has-text-right has-text-weight-bold">
+                  $ <span id="licence--transactionTotal"><%= transactionTotal.toFixed(2) %></span>
+                  <% if (licence.licenceFee !== transactionTotal) { %>
+                    <br />
+                    <span class="is-size-7 has-text-danger">
+                      $ <%= (licence.licenceFee - transactionTotal).toFixed(2) %> discrepancy
+                    </span>
+                  <% } %>
+                </td>
+                <td></td>
+                <td></td>
+              </tr>
+            </tfoot>
+          </table>
+        <% } %>
+      </div>
+    </div>
+  </div>
+  <%
+    }
+  %>
+
   <div class="is-fixed-bottom has-padding-10 has-background-grey-light">
     <div class="level">
       <div class="level-left" id="container--form-message"></div>
@@ -623,117 +768,6 @@
     </div>
   </div>
 </form>
-
-
-<%
-  if (!isCreate) {
-    if (licence.licenceFeeIsPaid) {
-%>
-  <div class="panel">
-    <div class="panel-heading">
-      <div class="level">
-        <div class="level-left">
-          <h2 class="has-text-weight-bold">Licence Fee Payment</h2>
-        </div>
-        <div class="level-right">
-          <button class="button is-danger is-small" id="is-remove-licence-fee-button" type="button">
-            <span class="icon"><i class="fas fa-ban" aria-hidden="true"></i></span>
-            <span>Remove Fee Payment</span>
-          </button>
-        </div>
-      </div>
-    </div>
-    <div class="panel-block">
-      <p>
-        <strong>Fee Collected</strong><br />
-        $ <%= licence.licenceFee.toFixed(2) %>
-      </p>
-    </div>
-    <div class="panel-block">
-      <p>
-        <strong><%= configFns.getProperty("licences.externalReceiptNumber.fieldLabel") %></strong><br />
-        <%= licence.externalReceiptNumber %>
-        <%- (licence.externalReceiptNumber === "" ? "<span class=\"has-text-grey\">(Not Set)</span>" : "") %>
-      </p>
-    </div>
-  </div>
-<%
-    } else {
-%>
-  <div class="panel is-warning">
-    <div class="panel-heading">
-      <div class="level">
-        <div class="level-left">
-          <h2 class="has-text-weight-bold">Licence Fee Payment Status</h2>
-        </div>
-        <div class="level-right has-text-right">
-          <span class="tag is-warning">Unpaid</span>
-        </div>
-      </div>
-    </div>
-    <div class="panel-block is-block">
-      <div class="columns">
-        <div class="column is-4">
-          <div class="columns">
-            <div class="column">
-              <strong>Fee Calculation</strong>
-            </div>
-            <div class="column is-narrow">
-              <strong>$ <%= feeCalculation.fee %></strong>
-            </div>
-          </div>
-          <p class="has-text-right is-size-7"><%= feeCalculation.message %></p>
-        </div>
-        <div class="is-divider-vertical"></div>
-        <div class="column">
-          <form id="form--licenceFee">
-            <fieldset>
-              <input name="licenceID" type="hidden" value="<%= licence.licenceID %>" />
-              <div class="message is-warning is-hidden-enabled">
-                <div class="message-body">
-                  Changes have been made that could impact the fee calculation.
-                  Save the licence changes before taking any fee payments.
-                </div>
-              </div>
-              <div class="columns align-items-flex-end">
-                <div class="column">
-                  <div class="field">
-                    <label class="label" for="licencePayment--licenceFee">
-                      Licence Fee Collected
-                    </label>
-                    <div class="control has-icons-left">
-                      <input class="input" id="licencePayment--licenceFee" name="licenceFee" type="number" value="<%= feeCalculation.fee %>" min="0.00" max="99999999.99" step="0.01" required onwheel="return false;" />
-                      <span class="icon is-left">
-                        <i class="fas fa-dollar-sign" aria-hidden="true"></i>
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <div class="column">
-                  <div class="field">
-                    <label class="label" for="licence--externalReceiptNumber"><%= configFns.getProperty("licences.externalReceiptNumber.fieldLabel") %></label>
-                    <div class="control">
-                      <input class="input" id="licence--externalReceiptNumber" name="externalReceiptNumber" type="text" maxlength="20" autocomplete="off" required />
-                    </div>
-                  </div>
-                </div>
-                <div class="column is-narrow">
-                  <button class="button is-primary" type="submit">
-                    <span class="icon"><i class="far fa-money-bill-alt" aria-hidden="true"></i></span>
-                    <span>Mark Fee as Paid</span>
-                  </button>
-                </div>
-              </div>
-            </fieldset>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
-<%
-    }
-  }
-%>
 
 
 <div class="modal" id="is-termsConditions-lookup-modal">

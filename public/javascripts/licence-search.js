@@ -84,18 +84,17 @@
               "<td class=\"has-text-right is-nowrap\">" +
 
               (licenceObj.canUpdate ?
-
                 "<a class=\"button is-small\" data-tooltip=\"Edit Licence\" href=\"/licences/" + licenceObj.licenceID + "/edit\">" +
                 "<span class=\"icon\"><i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i></span>" +
                 "<span>Edit</span>" +
                 "</a> " : "") +
-              (licenceObj.licenceFeeIsPaid ?
 
+              (licenceObj.issueDate ?
                 "<a class=\"button is-small\" data-tooltip=\"Print Licence\" href=\"/licences/" + licenceObj.licenceID + "/print\" target=\"_blank\" download>" +
                 "<i class=\"fas fa-print\" aria-hidden=\"true\"></i>" +
                 "<span class=\"sr-only\">Print</span>" +
                 "</a>" :
-              "<span class=\"tag is-warning\">Unpaid</span>") +
+                "<span class=\"tag is-warning\">Unpaid</span>") +
               "</div>" +
 
               "</td>";

@@ -164,7 +164,8 @@ router.all("/:reportName", function(req, res) {
         " l.startDate, l.endDate, l.startTime, l.endTime," +
         " lo.locationName, lo.locationAddress1," +
         " l.municipality, l.licenceDetails, l.termsConditions," +
-        " l.totalPrizeValue, l.licenceFee, l.externalReceiptNumber, l.licenceFeeIsPaid," +
+        " l.totalPrizeValue, l.licenceFee," +
+        " l.issueDate," +
         " l.recordCreate_userName, l.recordCreate_timeMillis, l.recordUpdate_userName, l.recordUpdate_timeMillis" +
         " from LotteryLicences l" +
         " left join Locations lo on l.locationID = lo.locationID" +
@@ -187,7 +188,7 @@ router.all("/:reportName", function(req, res) {
         " l.startDate, l.endDate, l.startTime, l.endTime," +
         " lo.locationName, lo.locationAddress1," +
         " l.municipality, l.licenceDetails, l.termsConditions," +
-        " l.totalPrizeValue, l.licenceFee, l.externalReceiptNumber, l.licenceFeeIsPaid," +
+        " l.totalPrizeValue, l.licenceFee, l.issueDate," +
         " l.recordCreate_userName, l.recordCreate_timeMillis, l.recordUpdate_userName, l.recordUpdate_timeMillis" +
         " from LotteryLicences l" +
         " left join Locations lo on l.locationID = lo.locationID" +
@@ -201,7 +202,7 @@ router.all("/:reportName", function(req, res) {
 
       break;
 
-    case "licences-unpaid":
+    case "licences-notIssued":
 
       sql = "select l.licenceID, l.externalLicenceNumber, l.applicationDate," +
         " o.organizationID, o.organizationName," +
@@ -215,7 +216,7 @@ router.all("/:reportName", function(req, res) {
         " left join Locations lo on l.locationID = lo.locationID" +
         " left join Organizations o on l.organizationID = o.organizationID" +
         " where l.recordDelete_timeMillis is null" +
-        " and l.licenceFeeIsPaid = 0";
+        " and l.issueDate is null";
 
       break;
 
@@ -232,6 +233,25 @@ router.all("/:reportName", function(req, res) {
         " from LotteryLicenceAmendments" +
         " where recordDelete_timeMillis is null" +
         " and licenceID = ?";
+
+      params = [
+        req.query.licenceID
+      ];
+
+      break;
+
+      /*
+       * Lottery Licence Transactions
+       */
+
+    case "transactions-byLicence":
+
+      sql = "select licenceID, transactionIndex," +
+        " transactionDate, transactionTime," +
+        " externalReceiptNumber, transactionAmount, transactionNote" +
+        " from LotteryLicenceTransactions" +
+        " where licenceID = ?" +
+        " and recordDelete_timeMillis is null";
 
       params = [
         req.query.licenceID

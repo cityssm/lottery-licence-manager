@@ -91,11 +91,7 @@
       <div class="column">
         <p>
           <strong>Licence Fee</strong><br />
-          <% if (licence.licenceFeeIsPaid) { %>
-            $ <%= licence.licenceFee.toFixed(2) %>
-          <% } else { %>
-            <span class="tag is-warning">Unpaid</span>
-          <% } %>
+          $ <%= licence.licenceFee.toFixed(2) %>
         </p>
       </div>
       <div class="column">

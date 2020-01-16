@@ -155,10 +155,9 @@ let dbInit = {
         " termsConditions text," +
 
         " totalPrizeValue decimal(10, 2)," +
-
-        " externalReceiptNumber varchar(20)," +
         " licenceFee decimal(10, 2)," +
-        " licenceFeeIsPaid bit not null default 0," +
+
+        " issueDate integer, issueTime integer," +
 
         " trackUpdatesAsAmendments bit not null default 0," +
 
@@ -177,6 +176,29 @@ let dbInit = {
       licencesDB.prepare("create index if not exists LotteryLicences_ExternalLicenceNumberInteger_Index" +
         " on LotteryLicences (externalLicenceNumberInteger desc)" +
         " where externalLicenceNumberInteger <> -1").run();
+
+      licencesDB.prepare("create table if not exists LotteryLicenceTransactions (" +
+        "licenceID integer not null," +
+        " transactionIndex integer not null," +
+        " transactionDate integer not null," +
+        " transactionTime integer not null," +
+        " externalReceiptNumber varchar(20)," +
+        " transactionAmount decimal(10, 2) not null," +
+
+        " transactionNote text," +
+
+        " recordCreate_userName varchar(30) not null," +
+        " recordCreate_timeMillis integer not null," +
+        " recordUpdate_userName varchar(30) not null," +
+        " recordUpdate_timeMillis integer not null," +
+        " recordDelete_userName varchar(30)," +
+        " recordDelete_timeMillis integer," +
+
+        " primary key (licenceID, transactionIndex)," +
+
+        " foreign key (licenceID) references LotteryLicences (licenceID)" +
+
+        ") without rowid").run();
 
       licencesDB.prepare("create table if not exists LotteryLicenceAmendments (" +
         "licenceID integer not null," +
