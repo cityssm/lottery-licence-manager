@@ -13,9 +13,12 @@
   const formEle = document.getElementById("form--licence");
   const formMessageEle = document.getElementById("container--form-message");
   const licenceID = document.getElementById("licence--licenceID").value;
+
   const isCreate = licenceID === "";
+  const isIssued = formEle.getAttribute("data-licence-is-issued") === "true";
 
   let doRefreshAfterSave = false;
+  let hasUnsavedChanges = false;
 
   const events_containerEle = document.getElementById("container--events");
 
@@ -47,6 +50,7 @@
 
         if (responseJSON.success) {
           window.llm.disableNavBlocker();
+          hasUnsavedChanges = false;
         }
 
         if (responseJSON.success && isCreate) {
@@ -118,6 +122,8 @@
   function setUnsavedChanges(changeEvent) {
 
     window.llm.enableNavBlocker();
+
+    hasUnsavedChanges = true;
 
     formMessageEle.innerHTML = "<span class=\"tag is-light is-info is-medium\">" +
       "<span class=\"icon\"><i class=\"fas fa-exclamation-triangle\" aria-hidden=\"true\"></i></span>" +
@@ -828,9 +834,9 @@
         "<td></td>" +
         "<td></td>" +
         "<td></td>" +
-        "<th class=\"has-text-right\">$ " + prizeValueTotal.toFixed(2) + "</th>" +
+        "<th class=\"has-text-right is-nowrap\">$ " + prizeValueTotal.toFixed(2) + "</th>" +
         "<td></td>" +
-        "<th class=\"has-text-right\">$ " + licenceFeeTotal.toFixed(2) + "</th>" +
+        "<th class=\"has-text-right is-nowrap\">$ " + licenceFeeTotal.toFixed(2) + "</th>" +
         "<td></td>" +
         "<td></td>" +
         "<td></td>" +
@@ -1186,7 +1192,7 @@
       const valuePerDeal = obj.valuePerDeal;
       const totalValuePerDeal = (valuePerDeal * unitCount).toFixed(2);
 
-      trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right\">" +
+      trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right is-nowrap\">" +
         "<span data-tooltip=\"$" + valuePerDeal + " value per deal\">$ " + totalValuePerDeal + "</span>" +
         "</td>");
 
@@ -1195,7 +1201,7 @@
       const prizesPerDeal = obj.prizesPerDeal;
       const totalPrizesPerDeal = (prizesPerDeal * unitCount).toFixed(2);
 
-      trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right\">" +
+      trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right is-nowrap\">" +
         "<input class=\"is-total-prizes-per-deal\" type=\"hidden\" value=\"" + totalPrizesPerDeal + "\" />" +
         "<span data-tooltip=\"$" + prizesPerDeal + " prizes per deal\">$ " + totalPrizesPerDeal + "</span>" +
         "</td>");
@@ -1223,7 +1229,7 @@
 
       const licenceFee = obj.licenceFee;
 
-      trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right\">" +
+      trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right is-nowrap\">" +
         "<input class=\"is-licence-fee\" name=\"ticketType_licenceFee\" type=\"hidden\" value=\"" + licenceFee + "\" />" +
         "<span>$ " + licenceFee + "</span>" +
         "</td>");
@@ -1236,7 +1242,10 @@
         "</td>");
 
       trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right\">" +
-        "<button class=\"button is-small is-amend-ticket-type-distributor-button\" type=\"button\">Change</button>" +
+        "<button class=\"button is-small is-amend-ticket-type-distributor-button\" data-tooltip=\"Change Distributor\" type=\"button\">" +
+        "<i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i>" +
+        "<span class=\"sr-only\">Change Distributor</span>" +
+        "</button>" +
         "</td>");
 
       trEle.getElementsByClassName("is-amend-ticket-type-distributor-button")[0].addEventListener("click", amendDistributor_openModal);
@@ -1249,7 +1258,10 @@
         "</td>");
 
       trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right\">" +
-        "<button class=\"button is-small is-amend-ticket-type-manufacturer-button\" type=\"button\">Change</button>" +
+        "<button class=\"button is-small is-amend-ticket-type-manufacturer-button\" data-tooltip=\"Change Manufacturer\" type=\"button\">" +
+        "<i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i>" +
+        "<span class=\"sr-only\">Change Manufacturer</span>" +
+        "</button>" +
         "</td>");
 
       trEle.getElementsByClassName("is-amend-ticket-type-manufacturer-button")[0].addEventListener("click", amendManufacturer_openModal);
@@ -1313,6 +1325,8 @@
         licenceFeeEle.classList.remove("is-danger");
         licenceFeeEle.closest(".field").getElementsByClassName("help")[0].remove();
 
+        updateFeeButtonEle.remove();
+
         setUnsavedChanges();
         setDoRefreshAfterSave();
       });
@@ -1320,13 +1334,18 @@
 
     document.getElementById("is-add-transaction-button").addEventListener("click", function() {
 
+      let addTransactionFormEle;
+
       const addTransactionFn = function(formEvent) {
-        formEvent.preventDefault();
+
+        if (formEvent) {
+          formEvent.preventDefault();
+        }
 
         window.fetch("/licences/doAddTransaction", {
             method: "POST",
             credentials: "include",
-            body: new URLSearchParams(new FormData(formEvent.currentTarget))
+            body: new URLSearchParams(new FormData(addTransactionFormEle))
           })
           .then(function(response) {
             return response.json();
@@ -1341,6 +1360,7 @@
       };
 
       window.llm.openHtmlModal("licence-transactionAdd", {
+
         onshow: function(modalEle) {
 
           window.llm.getDefaultConfigProperty("externalReceiptNumber_fieldLabel", function(fieldLabel) {
@@ -1350,7 +1370,9 @@
           document.getElementById("transactionAdd--licenceID").value = licenceID;
 
           const licenceFee = document.getElementById("licence--licenceFee").value;
-          const transactionTotal = document.getElementById("licence--transactionTotal").innerText;
+
+          const transactionTotalEle = document.getElementById("licence--transactionTotal");
+          const transactionTotal = (transactionTotalEle ? transactionTotalEle.innerText : 0);
 
           document.getElementById("transactionAdd--licenceFee").innerText = licenceFee;
           document.getElementById("transactionAdd--transactionTotal").innerText = transactionTotal;
@@ -1360,82 +1382,108 @@
           document.getElementById("transactionAdd--discrepancy").innerText = discrepancy;
           document.getElementById("transactionAdd--transactionAmount").value = discrepancy;
 
-          modalEle.getElementsByTagName("form")[0].addEventListener("submit", addTransactionFn);
+          addTransactionFormEle = modalEle.getElementsByTagName("form")[0];
+
+          addTransactionFormEle.addEventListener("submit", addTransactionFn);
+
+          if (!isIssued) {
+
+            const addAndIssueButtonEle = document.getElementById("is-add-transaction-issue-licence-button");
+
+            addAndIssueButtonEle.classList.remove("is-hidden");
+
+            addAndIssueButtonEle.addEventListener("click", function() {
+              document.getElementById("transactionAdd--issueLicence").value = "true";
+              addTransactionFn();
+            });
+          }
         }
       });
     });
+  }
 
-    /*
-    if (feeFormEle) {
 
-      // mark fee as paid form
+  /*
+   * ISSUE / UNISSUE LICENCE
+   */
 
-      const submitFn_feeForm = function() {
+  if (!isCreate) {
 
-        window.fetch("/licences/doMarkLicenceFeePaid", {
-            method: "POST",
-            credentials: "include",
-            body: new URLSearchParams(new FormData(feeFormEle))
-          })
-          .then(function(response) {
-            return response.json();
-          })
-          .then(function(responseJSON) {
+    const unissueLicenceButtonEle = document.getElementById("is-unissue-licence-button");
 
-            if (responseJSON.success) {
-              window.llm.disableNavBlocker();
-              window.location.reload(true);
-            }
-          });
-      };
+    if (unissueLicenceButtonEle) {
+      unissueLicenceButtonEle.addEventListener("click", function() {
 
-      feeFormEle.addEventListener("submit", function(formEvent) {
-        formEvent.preventDefault();
+        const unissueFn = function() {
 
-        window.llm.confirmModal("Mark Fee as Paid?",
-          "Are you sure you want to mark the licence fee as paid?",
-          "Yes, Paid",
-          "info",
-          submitFn_feeForm);
+          window.fetch("/licences/doUnissueLicence", {
+              method: "POST",
+              credentials: "include",
+              headers: {
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({
+                licenceID: licenceID
+              })
+            })
+            .then(function(response) {
+              return response.json();
+            })
+            .then(function(responseJSON) {
+
+              if (responseJSON.success) {
+                window.location.reload(true);
+              }
+            });
+        };
+
+        window.llm.confirmModal("Unissue Licence?",
+          "Are you sure you want to unissue this lottery licence?",
+          "Yes, Unissue",
+          "danger",
+          unissueFn);
       });
-
     } else {
 
-      const confirmFn_removeFee = function() {
+      document.getElementById("is-issue-licence-button").addEventListener("click", function() {
 
-        window.fetch("/licences/doRemoveLicenceFee", {
-            method: "POST",
-            credentials: "include",
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-              licenceID: licenceID
+        const issueFn = function() {
+
+          window.fetch("/licences/doIssueLicence", {
+              method: "POST",
+              credentials: "include",
+              headers: {
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({
+                licenceID: licenceID
+              })
             })
-          })
-          .then(function(response) {
-            return response.json();
-          })
-          .then(function(responseJSON) {
+            .then(function(response) {
+              return response.json();
+            })
+            .then(function(responseJSON) {
 
-            if (responseJSON.success) {
-              window.llm.disableNavBlocker();
-              window.location.reload(true);
-            }
-          });
-      };
+              if (responseJSON.success) {
+                window.location.reload(true);
+              }
+            });
+        };
 
-      // button to remove payment
+        if (hasUnsavedChanges) {
+          window.llm.alertModal("Unsaved Changes",
+            "Please save all unsaved changes before issuing this licence.",
+            "OK",
+            "warning");
 
-      document.getElementById("is-remove-licence-fee-button").addEventListener("click", function() {
-
-        window.llm.confirmModal("Remove Fee Payment?",
-          "Are you sure you want to remove the fee payment and change the licence to unpaid?",
-          "Yes, Remove Payment",
-          "danger",
-          confirmFn_removeFee);
+        } else {
+          window.llm.confirmModal("Issue Licence?",
+            "Are you sure you want to issue this lottery licence?",
+            "Yes, Issue",
+            "success",
+            issueFn);
+        }
       });
     }
-    */
   }
 }());

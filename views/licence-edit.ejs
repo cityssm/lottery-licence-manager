@@ -19,19 +19,26 @@
       <%= (isCreate ? "Create a New Licence" : "Update an Existing Licence") %>
     </h1>
   </div>
-  <% if (licence.issueDate) { %>
-    <div class="level-right has-text-right">
+  <div class="level-right has-text-right">
+    <% if (licence.issueDate) { %>
       <a class="button is-link" href="/licences/<%= licence.licenceID %>/print" target="_blank" download>
         <span class="icon is-small">
           <i class="fas fa-print" aria-hidden="true"></i>
         </span>
         <span>Print Licence</span>
       </a>
-    </div>
-  <% } %>
+    <% } else { %>
+      <button class="button is-success" id="is-issue-licence-button">
+        <span class="icon is-small">
+          <i class="fas fa-stamp" aria-hidden="true"></i>
+        </span>
+        <span>Issue Licence</span>
+      </button>
+    <% } %>
+  </div>
 </div>
 
-<form id="form--licence">
+<form id="form--licence" data-licence-is-issued="<%= (licence.issueDate ? "true" : "false") %>">
 
   <div class="columns">
     <div class="column">
@@ -286,12 +293,18 @@
           <h2 class="has-text-weight-bold">Ticket Types</h2>
         </div>
         <div class="level-right">
-          <button class="button is-small" id="is-add-ticket-type-button" type="button" aria-haspopup="true">
-            <span class="icon">
-              <i class="fas fa-plus" aria-hidden="true"></i>
-            </span>
-            <span>Add</span>
-          </button>
+          <div class="buttons justify-flex-end">
+            <button class="button is-small" id="is-add-ticket-type-button" type="button" aria-haspopup="true">
+              <span class="icon">
+                <i class="fas fa-plus" aria-hidden="true"></i>
+              </span>
+              <span>Add</span>
+            </button>
+            <a class="button is-small" data-tooltip="Export Ticket Types" href="/reports/ticketTypes-byLicence?licenceID=<%= licence.licenceID %>" target="_blank" download>
+              <i class="fas fa-file-download" aria-hidden="true"></i>
+              <span class="sr-only">Export Ticket Types</span>
+            </a>
+          </div>
         </div>
       </div>
     </div>
@@ -325,7 +338,7 @@
                 <input name="ticketType_unitCount" type="hidden" value="<%= licenceTicketTypeObj.unitCount %>" />
                 <span><%= licenceTicketTypeObj.unitCount %></span>
               </td>
-              <td class="has-text-right">
+              <td class="has-text-right is-nowrap">
                 <%
                   let ticketValue = (ticketType ? (ticketType.ticketPrice * ticketType.ticketCount) : 0);
                   let totalValue = (ticketValue * licenceTicketTypeObj.unitCount).toFixed(2);
@@ -333,7 +346,7 @@
                 <input class="is-total-value-per-deal" type="hidden" value="<%= totalValue %>" />
                 <span data-tooltip="$<%= ticketValue %> value per deal">$ <%= totalValue %></span>
               </td>
-              <td class="has-text-right">
+              <td class="has-text-right is-nowrap">
                 <%
                   let prizesPerDeal = (ticketType ? ticketType.prizesPerDeal : 0);
                   let totalPrizesPerDeal = (prizesPerDeal * licenceTicketTypeObj.unitCount).toFixed(2);
@@ -354,7 +367,7 @@
                   </div>
                 </div>
               </td>
-              <td class="has-text-right">
+              <td class="has-text-right is-nowrap">
                 <input class="is-licence-fee" name="ticketType_licenceFee" type="hidden" value="<%= licenceTicketTypeObj.licenceFee.toFixed(2) %>" />
                 <span><%= "$ " + licenceTicketTypeObj.licenceFee.toFixed(2) %></span>
               </td>
@@ -369,7 +382,10 @@
                 </span>
               </td>
               <td class="has-text-right">
-                <button class="button is-small is-amend-ticket-type-distributor-button" type="button">Change</button>
+                <button class="button is-small is-amend-ticket-type-distributor-button" data-tooltip="Change Distributor" type="button">
+                  <i class="fas fa-pencil-alt" aria-hidden="true"></i>
+                  <span class="sr-only">Change Distributor</span>
+                </button>
               </td>
               <td>
                 <input name="ticketType_manufacturerLocationID" type="hidden" value="<%= licenceTicketTypeObj.manufacturerLocationID %>" />
@@ -382,7 +398,10 @@
                 </span>
               </td>
               <td class="has-text-right">
-                <button class="button is-small is-amend-ticket-type-manufacturer-button" type="button">Change</button>
+                <button class="button is-small is-amend-ticket-type-manufacturer-button" data-tooltip="Change Manufacturer" type="button">
+                  <i class="fas fa-pencil-alt" aria-hidden="true"></i>
+                  <span class="sr-only">Change Manufacturer</span>
+                </button>
               </td>
             </tr>
         <% } %>
@@ -597,7 +616,7 @@
           <div class="field">
             <label class="label" for="licence--licenceFee">Licence Fee</label>
             <div class="control has-icons-left">
-              <input class="input has-text-right is-readonly <%= (hasLicenceFeeDiscrepancy ? " is-danger" : "")%>" id="licence--licenceFee" name="licenceFee" type="text" value="<%= licence.licenceFee %>" />
+              <input class="input has-text-right is-readonly <%= (hasLicenceFeeDiscrepancy ? " is-danger" : "")%>" id="licence--licenceFee" name="licenceFee" type="text" value="<%= licence.licenceFee.toFixed(2) %>" />
               <span class="icon is-small is-left">
                 <i class="fas fa-dollar-sign" aria-hidden="true"></i>
               </span>
@@ -639,18 +658,16 @@
             </div>
             <div class="level-right has-text-weight-normal has-text-right">
               <div class="buttons">
-                <a class="button is-small" href="/reports/transactions-byLicence?licenceID=<%= licence.licenceID %>" target="_blank" download>
-                  <span class="icon is-small">
-                    <i class="fas fa-file-download" aria-hidden="true"></i>
-                  </span>
-                  <span>Export Transactions</span>
-                </a>
-                <button class="button is-small is-primary" id="is-add-transaction-button" type="button">
+                <button class="button is-small" id="is-add-transaction-button" type="button">
                   <span class="icon is-small">
                     <i class="fas fa-plus" aria-hidden="true"></i>
                   </span>
                   <span>Add a Transaction</span>
                 </button>
+                <a class="button is-small" data-tooltip="Export Transactions" href="/reports/transactions-byLicence?licenceID=<%= licence.licenceID %>" target="_blank" download>
+                  <i class="fas fa-file-download" aria-hidden="true"></i>
+                  <span class="sr-only">Export Transactions</span>
+                </a>
               </div>
             </div>
           </div>
@@ -729,9 +746,16 @@
 
   <div class="is-fixed-bottom has-padding-10 has-background-grey-light">
     <div class="level">
-      <div class="level-left" id="container--form-message"></div>
+      <div class="level-left">
+        <div class="tags">
+          <% if (!licence.issueDate) { %>
+            <span class="tag is-medium is-warning is-light">Licence Not Issued</span>
+          <% } %>
+          <span id="container--form-message"></span>
+        </div>
+      </div>
       <div class="level-right">
-        <div class="buttons">
+        <div class="buttons justify-flex-end">
           <% if (isCreate) { %>
             <a class="button" href="/licences">
               Cancel
@@ -759,6 +783,12 @@
                     <span class="icon"><i class="fas fa-trash has-text-danger" aria-hidden="true"></i></span>
                     <span>Delete Licence</span>
                   </a>
+                  <% if (licence.issueDate) { %>
+                    <a class="dropdown-item" id="is-unissue-licence-button" href="#">
+                      <span class="icon"><i class="fas fa-ban has-text-danger" aria-hidden="true"></i></span>
+                      <span>Unissue Licence</span>
+                    </a>
+                  <% } %>
                 </div>
               </div>
             </div>

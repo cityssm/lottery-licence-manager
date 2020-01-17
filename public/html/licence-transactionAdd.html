@@ -35,6 +35,8 @@
         </div>
 
         <input id="transactionAdd--licenceID" name="licenceID" type="hidden" />
+        <input id="transactionAdd--issueLicence" name="issueLicence" type="hidden" value="false" />
+
         <div class="columns">
           <div class="column">
             <div class="field">
@@ -65,6 +67,7 @@
       </section>
       <footer class="modal-card-foot justify-right">
         <button class="button is-close-modal-button" type="button">Cancel</button>
+        <button class="button is-success is-hidden" id="is-add-transaction-issue-licence-button" type="button">Add Transaction and Issue Licence</button>
         <button class="button is-success" type="submit">Add Transaction</button>
       </footer>
     </form>

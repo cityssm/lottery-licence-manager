@@ -209,6 +209,40 @@ const licencesDB = (function() {
   }
 
 
+  function addLicenceAmendment(licenceID, amendmentType, amendment, isHidden, reqSession, db) {
+
+    const amendmentIndexRecord = db.prepare("select amendmentIndex" +
+        " from LotteryLicenceAmendments" +
+        " where licenceID = ?" +
+        " order by amendmentIndex desc" +
+        " limit 1")
+      .get(licenceID);
+
+    const amendmentIndex = (amendmentIndexRecord ? amendmentIndexRecord.amendmentIndex : 0) + 1;
+
+    const nowDate = new Date();
+
+    const amendmentDate = dateTimeFns.dateToInteger(nowDate);
+    const amendmentTime = dateTimeFns.dateToTimeInteger(nowDate);
+
+    db.prepare("insert into LotteryLicenceAmendments" +
+        " (licenceID, amendmentIndex, amendmentDate, amendmentTime, amendmentType, amendment, isHidden," +
+        " recordCreate_userName, recordCreate_timeMillis, recordUpdate_userName, recordUpdate_timeMillis)" +
+        " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
+      .run(licenceID,
+        amendmentIndex,
+        amendmentDate,
+        amendmentTime,
+        amendmentType,
+        amendment,
+        isHidden,
+        reqSession.user.userName,
+        nowDate.getTime(),
+        reqSession.user.userName,
+        nowDate.getTime());
+  }
+
+
   return {
 
     getRawRowsColumns: function(sql, params) {
@@ -1387,26 +1421,12 @@ const licencesDB = (function() {
 
       // record amendments (if necessary)
 
-      let newAmendmentIndex = -1;
-
-      const nowDate = new Date(nowMillis);
-      const newAmendmentDate = dateTimeFns.dateToInteger(nowDate);
-      const newAmendmentTime = dateTimeFns.dateToTimeInteger(nowDate);
-
       if (licenceObj_past.trackUpdatesAsAmendments) {
-
-        for (let arrayIndex = 0; arrayIndex < licenceObj_past.licenceAmendments.length; arrayIndex += 1) {
-          newAmendmentIndex = Math.max(newAmendmentIndex, licenceObj_past.licenceAmendments[arrayIndex].amendmentIndex);
-        }
-
-        newAmendmentIndex += 1;
 
         if (licenceObj_past.startDate !== startDate_now ||
           licenceObj_past.endDate !== endDate_now ||
           licenceObj_past.startTime !== startTime_now ||
           licenceObj_past.endTime !== endTime_now) {
-
-          newAmendmentIndex += 1;
 
           const amendment = (
             (licenceObj_past.startDate !== startDate_now ?
@@ -1422,21 +1442,35 @@ const licencesDB = (function() {
               `End Time: ${licenceObj_past.endTime} -> ${endTime_now}` + "\n" :
               "")).trim();
 
-          db.prepare("insert into LotteryLicenceAmendments" +
-              " (licenceID, amendmentIndex, amendmentDate, amendmentTime, amendmentType, amendment, isHidden," +
-              " recordCreate_userName, recordCreate_timeMillis, recordUpdate_userName, recordUpdate_timeMillis)" +
-              " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
-            .run(reqBody.licenceID,
-              newAmendmentIndex,
-              newAmendmentDate,
-              newAmendmentTime,
-              "Licence Dates Update",
-              amendment,
-              0,
-              reqSession.user.userName,
-              nowMillis,
-              reqSession.user.userName,
-              nowMillis);
+          addLicenceAmendment(reqBody.licenceID,
+            "Date Update",
+            amendment,
+            0,
+            reqSession,
+            db
+          );
+        }
+
+        if (licenceObj_past.organizationID !== parseInt(reqBody.organizationID)) {
+
+          addLicenceAmendment(reqBody.licenceID,
+            "Organization Change",
+            "",
+            0,
+            reqSession,
+            db
+          );
+        }
+
+        if (licenceObj_past.locationID !== parseInt(reqBody.locationID)) {
+
+          addLicenceAmendment(reqBody.licenceID,
+            "Location Change",
+            "",
+            0,
+            reqSession,
+            db
+          );
         }
       }
 
@@ -1767,10 +1801,10 @@ const licencesDB = (function() {
 
       const db = sqlite(dbPath);
 
-      const nowMillis = Date.now();
+      const nowDate = new Date();
 
-      const issueDate = dateTimeFns.dateToInteger(new Date());
-      const issueTime = dateTimeFns.dateToTimeInteger(new Date());
+      const issueDate = dateTimeFns.dateToInteger(nowDate);
+      const issueTime = dateTimeFns.dateToTimeInteger(nowDate);
 
       const info = db.prepare("update LotteryLicences" +
           " set issueDate = ?," +
@@ -1785,7 +1819,7 @@ const licencesDB = (function() {
           issueDate,
           issueTime,
           reqSession.user.userName,
-          nowMillis,
+          nowDate.getTime(),
           reqBody.licenceID
         );
 
@@ -1817,6 +1851,15 @@ const licencesDB = (function() {
         );
 
       const changeCount = info.changes;
+
+      if (changeCount) {
+        addLicenceAmendment(licenceID,
+          "Unissue Licence",
+          "",
+          1,
+          reqSession,
+          db);
+      }
 
       db.close();
 
@@ -1861,6 +1904,26 @@ const licencesDB = (function() {
           rightNow.getTime(),
           reqSession.user.userName,
           rightNow.getTime());
+
+      if (reqBody.issueLicence === "true") {
+
+        db.prepare("update LotteryLicences" +
+            " set issueDate = ?," +
+            " issueTime = ?," +
+            " trackUpdatesAsAmendments = 1," +
+            " recordUpdate_userName = ?," +
+            " recordUpdate_timeMillis = ?" +
+            " where licenceID = ?" +
+            " and recordDelete_timeMillis is null" +
+            " and issueDate is null")
+          .run(
+            transactionDate,
+            transactionTime,
+            reqSession.user.userName,
+            rightNow.getTime(),
+            reqBody.licenceID
+          );
+      }
 
       db.close();
 

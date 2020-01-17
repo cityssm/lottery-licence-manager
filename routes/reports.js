@@ -221,6 +221,37 @@ router.all("/:reportName", function(req, res) {
       break;
 
       /*
+       * Lottery Licence Ticket Types
+       */
+
+    case "ticketTypes-byLicence":
+
+      sql = "select t.licenceID, t.ticketType," +
+        " t.unitCount, t.licenceFee," +
+
+        " t.distributorLocationID," +
+        " d.locationName as distributorLocationName," +
+        " d.locationAddress1 as distributorAddress1," +
+
+        " t.manufacturerLocationID," +
+        " m.locationName as manufacturerLocationName," +
+        " m.locationAddress1 as manufacturerLocationAddress1," +
+
+        " t.recordCreate_userName, t.recordCreate_timeMillis, t.recordUpdate_userName, t.recordUpdate_timeMillis" +
+
+        " from LotteryLicenceTicketTypes t" +
+        " left join Locations d on distributorLocationID = d.locationID" +
+        " left join Locations m on manufacturerLocationID = m.locationID" +
+        " where t.recordDelete_timeMillis is null" +
+        " and t.licenceID = ?";
+
+      params = [
+        req.query.licenceID
+      ];
+
+      break;
+
+      /*
        * Lottery Licence Amendments
        */
 

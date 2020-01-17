@@ -159,19 +159,13 @@ router.post("/doAddTransaction", function(req, res) {
     return;
   }
 
-  const changeCount = licencesDB.addTransaction(req.body, req.session);
+  const newTransactionIndex = licencesDB.addTransaction(req.body, req.session);
 
-  if (changeCount) {
-    res.json({
-      success: true,
-      message: "Transaction Added Successfully"
-    });
-  } else {
-    res.json({
-      success: false,
-      message: "Transaction Not Added"
-    });
-  }
+  res.json({
+    success: true,
+    message: "Transaction Added Successfully",
+    transactionIndex: newTransactionIndex
+  });
 });
 
 
