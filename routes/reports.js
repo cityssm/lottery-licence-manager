@@ -11,8 +11,11 @@ const dateTimeFns = require("../helpers/dateTimeFns");
 router.get("/", function(req, res) {
   "use strict";
 
+  const rightNow = new Date();
+  
   res.render("report-search", {
-    headTitle: "Reports"
+    headTitle: "Reports",
+    todayDateString: dateTimeFns.dateToString(rightNow)
   });
 });
 
@@ -274,6 +277,21 @@ router.all("/:reportName", function(req, res) {
       /*
        * Lottery Licence Transactions
        */
+
+    case "transactions-byTransactionDate":
+
+      sql = "select licenceID, transactionIndex," +
+        " transactionDate, transactionTime," +
+        " externalReceiptNumber, transactionAmount, transactionNote" +
+        " from LotteryLicenceTransactions" +
+        " where transactionDate = ?" +
+        " and recordDelete_timeMillis is null";
+
+      params = [
+        req.query.transactionDate.replace(/-/g, "")
+      ];
+
+      break;
 
     case "transactions-byLicence":
 

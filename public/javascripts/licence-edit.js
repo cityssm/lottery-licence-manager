@@ -1138,7 +1138,7 @@
           optionEle.setAttribute("data-fee-per-unit", (ticketTypeObj.feePerUnit || 0).toFixed(2));
 
           optionEle.value = ticketTypeObj.ticketType;
-          optionEle.innerText = ticketTypeObj.ticketType;
+          optionEle.innerText = ticketTypeObj.ticketType + " (" + ticketTypeObj.ticketCount + " tickets, $" + ticketTypeObj.ticketPrice.toFixed(2) + " each)";
 
           addTicketType_ticketTypeEle.insertAdjacentElement("beforeend", optionEle);
         }

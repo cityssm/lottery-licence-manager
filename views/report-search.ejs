@@ -105,10 +105,45 @@
         <div>
           <h3 class="title is-5 is-marginless">Licences Not Issued</h3>
           <p>
-            All licences in the syatem that have not been issued.
+            All licences in the system that have not been issued.
           </p>
         </div>
       </a>
+    </div>
+    <div class="panel">
+      <h2 class="panel-heading">
+        <i class="fas fa-fw fa-dollar-sign" aria-hidden="true"></i>
+        Transactions
+      </h2>
+      <div class="panel-block align-items-flex-start">
+        <div class="has-text-centered has-margin-10">
+          <span class="icon has-text-info">
+            <i class="fas fa-2x fa-file" aria-hidden="true"></i>
+          </span><br />
+          <span class="tag is-info">CSV</span>
+        </div>
+        <div>
+          <h3 class="title is-5 is-marginless">Transactions by Date</h3>
+          <p>
+            All transactions occurring on a selected date.
+          </p>
+          <form action="/reports/transactions-byTransactionDate" method="get">
+            <div class="field has-addons has-margin-top-5">
+              <div class="control is-expanded has-icons-left" data-tooltip="Transaction Date">
+                <input class="input" name="transactionDate" type="date" value="<%= todayDateString %>" required />
+                <span class="icon is-left">
+                  <i class="fas fa-calendar" aria-hidden="true"></i>
+                </span>
+              </div>
+              <div class="control">
+                <button class="button is-info" type="submit">
+                  Export
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
     <div class="panel">
       <h2 class="panel-heading">
