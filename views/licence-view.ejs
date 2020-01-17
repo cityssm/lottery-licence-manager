@@ -339,34 +339,68 @@
       %>
     </div>
   </div>
-  <div class="column">
-    <div class="panel">
-      <h2 class="panel-heading">Licence Fee Payment</h2>
+</div>
 
-      <% if (licence.licenceFeeIsPaid) { %>
-        <div class="panel-block">
-          <p>
-            <strong>Fee Collected</strong><br />
-            $ <%= licence.licenceFee.toFixed(2) %>
-          </p>
-        </div>
-        <div class="panel-block">
-          <p>
-            <strong><%= configFns.getProperty("licences.externalReceiptNumber.fieldLabel") %></strong><br />
-            <%= licence.externalReceiptNumber %>
-          </p>
-        </div>
-      <% } else { %>
-        <div class="panel-block is-block">
-          <div class="message is-warning">
-            <div class="message-body">
-              This licence is currently unpaid.
-            </div>
-          </div>
-        </div>
-      <% } %>
+<div class="panel">
+  <h2 class="panel-heading">Transactions</h2>
+
+  <% if (licence.licenceTransactions.length === 0) { %>
+    <div class="panel-block is-block">
+      <div class="message is-warning">
+        <p class="message-body">
+          No transactions have been recorded for this licence.
+        </p>
+      </div>
     </div>
-  </div>
+  <% } else { %>
+    <table class="table is-fullwidth">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th class="has-text-right">Amount</th>
+          <th><%= configFns.getProperty("licences.externalReceiptNumber.fieldLabel") %></th>
+          <th>Note</th>
+        </tr>
+      </thead>
+      <tbody>
+        <%
+          let transactionTotal = 0;
+
+          for (let index = 0; index < licence.licenceTransactions.length; index += 1) {
+            const transactionObj = licence.licenceTransactions[index];
+
+            transactionTotal += transactionObj.transactionAmount;
+        %>
+        <tr>
+          <td><%= transactionObj.transactionDateString %></td>
+          <td class="has-text-right">
+            $ <%= transactionObj.transactionAmount.toFixed(2) %>
+          </td>
+          <td><%= transactionObj.externalReceiptNumber %></td>
+          <td class="has-newline-chars"><%= transactionObj.transactionNote %></td>
+        </tr>
+        <%
+          }
+        %>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td></td>
+          <td class="has-text-right has-text-weight-bold">
+            $ <span id="licence--transactionTotal"><%= transactionTotal.toFixed(2) %></span>
+            <% if (licence.licenceFee !== transactionTotal) { %>
+              <br />
+              <span class="is-size-7 has-text-danger">
+                $ <%= (licence.licenceFee - transactionTotal).toFixed(2) %> discrepancy
+              </span>
+            <% } %>
+          </td>
+          <td></td>
+          <td></td>
+        </tr>
+      </tfoot>
+    </table>
+  <% } %>
 </div>
 
 
