@@ -1,11 +1,10 @@
 /* global window, document */
 
+"use strict";
 
 (function() {
-  "use strict";
 
   // licences
-
   window.llm.initializeTabs(document.getElementById("tabs--licences"));
 
 }());

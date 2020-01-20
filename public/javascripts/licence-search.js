@@ -1,9 +1,9 @@
 /* global window, document */
 /* global URLSearchParams, FormData */
 
+"use strict";
 
 (function() {
-  "use strict";
 
   let licenceType_keyToName = {};
 
@@ -26,7 +26,9 @@
         body: new URLSearchParams(new FormData(formEle))
       })
       .then(function(response) {
+
         return response.json();
+
       })
       .then(function(licenceList) {
 
@@ -42,6 +44,7 @@
           return;
 
         } else {
+
           searchResultsEle.innerHTML = "<table class=\"table is-fullwidth is-striped is-hoverable\">" +
             "<thead><tr>" +
             "<th>" + externalLicenceNumberLabel + "</th>" +
@@ -100,9 +103,13 @@
               "</td>";
 
             tbodyEle.insertAdjacentElement("beforeend", trEle);
+
           }
+
         }
+
       });
+
   }
 
 
@@ -110,20 +117,27 @@
 
   // start at 1 to skip the blank first record
   for (let optionIndex = 1; optionIndex < licenceTypeOptionEles.length; optionIndex += 1) {
+
     const optionEle = licenceTypeOptionEles[optionIndex];
     licenceType_keyToName[optionEle.value] = optionEle.innerText;
+
   }
 
 
   formEle.addEventListener("submit", function(formEvent) {
+
     formEvent.preventDefault();
+
   });
 
   const inputEles = formEle.querySelectorAll(".input, .select select");
 
   for (let inputIndex = 0; inputIndex < inputEles.length; inputIndex += 1) {
+
     inputEles[inputIndex].addEventListener("change", doLicenceSearch);
+
   }
 
   doLicenceSearch();
+
 }());

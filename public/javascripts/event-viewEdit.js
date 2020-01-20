@@ -1,8 +1,8 @@
 /* global window, document */
 
+"use strict";
 
 (function() {
-  "use strict";
 
   // Switch dates nav
 
@@ -13,5 +13,7 @@
     const isEdit = changeEvent.currentTarget.getAttribute("data-is-edit") === "true";
 
     window.location.href = "/events/" + licenceID + "/" + newEventDate + (isEdit ? "/edit" : "");
+
   });
+
 }());

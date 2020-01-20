@@ -1,6 +1,7 @@
 /* global require, console, module */
 /* eslint-disable no-console */
 
+"use strict";
 
 const sqlite = require("better-sqlite3");
 
@@ -8,8 +9,6 @@ const sqlite = require("better-sqlite3");
 let dbInit = {
 
   initUsersDB: function() {
-
-    "use strict";
 
     const usersDB = sqlite("data/users.db");
 
@@ -37,14 +36,14 @@ let dbInit = {
       usersDB.close();
 
       return true;
+
     }
 
     return false;
+
   },
 
   initLicencesDB: function() {
-
-    "use strict";
 
     const licencesDB = sqlite("data/licences.db");
 
@@ -334,9 +333,11 @@ let dbInit = {
           2,
           "init",
           Date.now());
+
     }
 
     return false;
+
   }
 };
 

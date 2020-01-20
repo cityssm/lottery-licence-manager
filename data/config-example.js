@@ -1,5 +1,6 @@
 /* global require, module */
 
+"use strict";
 
 const config = require("./config-ontario");
 
@@ -13,13 +14,11 @@ config.application = {
 };
 
 
-
 /*
  * DEFAULT VALUES
  */
 
 config.defaults.city = "";
-
 
 
 module.exports = config;

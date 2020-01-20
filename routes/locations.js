@@ -1,5 +1,7 @@
 /* global require, module */
 
+"use strict";
+
 const express = require("express");
 const router = express.Router();
 
@@ -9,32 +11,34 @@ const licencesDB = require("../helpers/licencesDB");
 
 
 router.get("/", function(req, res) {
-  "use strict";
 
   res.render("location-search", {
     headTitle: "Locations"
   });
+
 });
 
 
 router.all("/doGetLocations", function(req, res) {
-  "use strict";
 
   const locations = licencesDB.getLocations(req.body, req.session);
 
   res.json(locations);
+
 });
 
 
 router.post("/doCreate", function(req, res) {
-  "use strict";
 
   if (req.session.user.userProperties.canCreate !== "true") {
+
     res.json({
       success: false,
       message: "Not Allowed"
     });
+
     return;
+
   }
 
   const locationID = licencesDB.createLocation(req.body, req.session);
@@ -44,66 +48,81 @@ router.post("/doCreate", function(req, res) {
     locationID: locationID,
     locationDisplayName: (req.body.locationName === "" ? req.body.locationAddress1 : req.body.locationName)
   });
+
 });
 
 
 router.post("/doUpdate", function(req, res) {
-  "use strict";
 
   if (req.session.user.userProperties.canCreate !== "true") {
+
     res.json({
       success: false,
       message: "Not Allowed"
     });
+
     return;
+
   }
 
   const changeCount = licencesDB.updateLocation(req.body, req.session);
 
   if (changeCount) {
+
     res.json({
       success: true,
       message: "Location updated successfully."
     });
+
   } else {
+
     res.json({
       success: false,
       message: "Record Not Saved"
     });
+
   }
+
 });
 
 
 router.post("/doDelete", function(req, res) {
-  "use strict";
 
   if (req.session.user.userProperties.canCreate !== "true") {
+
     res.json("not allowed");
     return;
+
   }
 
   const changeCount = licencesDB.deleteLocation(req.body.locationID, req.session);
 
   if (changeCount) {
+
     res.json({
       success: true,
       message: "Location deleted successfully."
     });
+
   } else {
+
     res.json({
       success: false,
       message: "Location could not be deleted."
     });
+
   }
+
 });
 
 
 router.post("/doMerge", function(req, res) {
-  "use strict";
 
   if (req.session.user.userProperties.isAdmin !== "true") {
+
     res.json("not allowed");
     return;
+
   }
 
   const targetLocationID = req.body.targetLocationID;
@@ -114,15 +133,17 @@ router.post("/doMerge", function(req, res) {
   res.json({
     success: success
   });
+
 });
 
 
 router.get("/new", function(req, res) {
-  "use strict";
 
   if (req.session.user.userProperties.canCreate !== "true") {
+
     res.redirect("/locations/?error=accessDenied-noCreate");
     return;
+
   }
 
   const dateTimeFns = require("../helpers/dateTimeFns");
@@ -138,19 +159,21 @@ router.get("/new", function(req, res) {
     stringFns: stringFns,
     isCreate: true
   });
+
 });
 
 
 router.get("/:locationID", function(req, res) {
-  "use strict";
 
   const locationID = req.params.locationID;
 
   const location = licencesDB.getLocation(locationID, req.session);
 
   if (!location) {
+
     res.redirect("/locations/?error=locationNotFound");
     return;
+
   }
 
   const dateTimeFns = require("../helpers/dateTimeFns");
@@ -167,29 +190,35 @@ router.get("/:locationID", function(req, res) {
     currentDateInteger: dateTimeFns.dateToInteger(new Date()),
     stringFns: stringFns
   });
+
 });
 
 
 router.get("/:locationID/edit", function(req, res) {
-  "use strict";
 
   const locationID = req.params.locationID;
 
   if (req.session.user.userProperties.canCreate !== "true") {
+
     res.redirect("/locations/" + locationID + "/?error=accessDenied-noCreate");
     return;
+
   }
 
   const location = licencesDB.getLocation(locationID, req.session);
 
   if (!location) {
+
     res.redirect("/locations/?error=locationNotFound");
     return;
+
   }
 
   if (!location.canUpdate) {
+
     res.redirect("/locations/" + locationID + "/?error=accessDenied-noUpdate");
     return;
+
   }
 
   const dateTimeFns = require("../helpers/dateTimeFns");
@@ -207,6 +236,7 @@ router.get("/:locationID/edit", function(req, res) {
     stringFns: stringFns,
     isCreate: false
   });
+
 });
 
 

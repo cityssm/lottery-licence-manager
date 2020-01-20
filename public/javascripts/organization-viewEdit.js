@@ -1,8 +1,8 @@
 /* global window, document */
 
+"use strict";
 
 (function() {
-  "use strict";
 
   // licences
 
@@ -18,25 +18,33 @@
     let refreshRemarksFn;
 
     const editRemarkFn = function(buttonEvent) {
+
       const remarkIndex = buttonEvent.currentTarget.getAttribute("data-remark-index");
       window.llm.organizationRemarks.openEditRemarkModal(organizationID, remarkIndex, refreshRemarksFn);
+
     };
 
     const deleteRemarkFn = function(buttonEvent) {
+
       const remarkIndex = buttonEvent.currentTarget.getAttribute("data-remark-index");
       window.llm.organizationRemarks.deleteRemark(organizationID, remarkIndex, true, refreshRemarksFn);
+
     };
 
     refreshRemarksFn = function() {
+
       window.llm.organizationRemarks.getRemarksByOrganizationID(organizationID, function(remarkList) {
 
         window.llm.clearElement(remarksContainerEle);
 
         if (remarkList.length === 0) {
+
           remarksContainerEle.innerHTML = "<div class=\"panel-block\">" +
             "<div class=\"message is-info\"><p class=\"message-body\">There are no remarks associated with this organization.</p></div>" +
             "</div>";
+
         } else {
+
           for (let remarkIndex = 0; remarkIndex < remarkList.length; remarkIndex += 1) {
 
             const remark = remarkList[remarkIndex];
@@ -70,38 +78,54 @@
                 "") +
               "</div>" +
               "</div>");
+
           }
 
           const editBtnEles = remarksContainerEle.getElementsByClassName("is-edit-remark-button");
 
           for (let btnIndex = 0; btnIndex < editBtnEles.length; btnIndex += 1) {
+
             editBtnEles[btnIndex].addEventListener("click", editRemarkFn);
+
           }
 
           const deleteBtnEles = remarksContainerEle.getElementsByClassName("is-delete-remark-button");
 
           for (let btnIndex = 0; btnIndex < deleteBtnEles.length; btnIndex += 1) {
+
             deleteBtnEles[btnIndex].addEventListener("click", deleteRemarkFn);
+
           }
+
         }
+
       });
+
     };
 
     document.getElementsByClassName("is-add-remark-button")[0].addEventListener("click", function(clickEvent) {
+
       clickEvent.preventDefault();
       window.llm.organizationRemarks.openAddRemarkModal(organizationID, refreshRemarksFn);
+
     });
 
     const editBtnEles = remarksContainerEle.getElementsByClassName("is-edit-remark-button");
 
     for (let btnIndex = 0; btnIndex < editBtnEles.length; btnIndex += 1) {
+
       editBtnEles[btnIndex].addEventListener("click", editRemarkFn);
+
     }
 
     const deleteBtnEles = remarksContainerEle.getElementsByClassName("is-delete-remark-button");
 
     for (let btnIndex = 0; btnIndex < deleteBtnEles.length; btnIndex += 1) {
+
       deleteBtnEles[btnIndex].addEventListener("click", deleteRemarkFn);
+
     }
+
   }
+
 }());

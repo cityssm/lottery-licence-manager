@@ -1,9 +1,9 @@
 /* global window, document */
 /* global URLSearchParams, FormData */
 
+"use strict";
 
 (function() {
-  "use strict";
 
   const formEle = document.getElementById("form--filters");
   const searchResultsEle = document.getElementById("container--searchResults");
@@ -24,7 +24,9 @@
         body: new URLSearchParams(new FormData(formEle))
       })
       .then(function(response) {
+
         return response.json();
+
       })
       .then(function(organizationsList) {
 
@@ -61,8 +63,10 @@
             const organizationNameLinkEle = document.createElement("a");
 
             if (!organizationObj.isEligibleForLicences) {
+
               organizationNameLinkEle.className = "has-text-danger";
               organizationNameLinkEle.setAttribute("data-tooltip", "Not Eligible for New Licences");
+
             }
 
             organizationNameLinkEle.innerText = organizationObj.organizationName;
@@ -80,6 +84,7 @@
               "</td>");
 
             if (canCreate) {
+
               trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right\">" +
                 (organizationObj.canUpdate ?
                   "<a class=\"button is-small\" data-tooltip=\"Edit Organization\" href=\"/organizations/" + organizationObj.organizationID + "/edit\">" +
@@ -88,6 +93,7 @@
                   "</a>" :
                   "") +
                 "</td>");
+
             }
 
             let licenceHTML = "";
@@ -103,6 +109,7 @@
               licenceHTML = "<span class=\"tag has-cursor-default is-info is-light\" data-tooltip=\"Last Licence End Date\">" +
                 "<i class=\"fas fa-stop has-margin-right-5\" aria-hidden=\"true\"></i> " + organizationObj.licences_endDateMaxString +
                 "</span>";
+
             }
 
 
@@ -117,25 +124,34 @@
                   "<span>New</span>" +
                   "</a>" : "") +
                 "</td>");
+
             }
 
             tbodyEle.insertAdjacentElement("beforeend", trEle);
+
           }
+
         }
 
       });
+
   }
 
 
   formEle.addEventListener("submit", function(formEvent) {
+
     formEvent.preventDefault();
+
   });
 
   const inputEles = formEle.querySelectorAll(".input, .select");
 
   for (let inputIndex = 0; inputIndex < inputEles.length; inputIndex += 1) {
+
     inputEles[inputIndex].addEventListener("change", doOrganizationSearch);
+
   }
 
   doOrganizationSearch();
+
 }());

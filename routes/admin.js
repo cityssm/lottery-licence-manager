@@ -1,5 +1,7 @@
 /* global require, module */
 
+"use strict";
+
 const express = require("express");
 const router = express.Router();
 
@@ -10,13 +12,13 @@ const usersDB = require("../helpers/usersDB");
 
 // Application Settings
 
-
 router.get("/applicationSettings", function(req, res) {
-  "use strict";
 
   if (req.session.user.userProperties.isAdmin !== "true") {
+
     res.redirect("/dashboard/?error=accessDenied");
     return;
+
   }
 
   const applicationSettings = licencesDB.getApplicationSettings();
@@ -25,18 +27,21 @@ router.get("/applicationSettings", function(req, res) {
     headTitle: "Application Settings",
     applicationSettings: applicationSettings
   });
+
 });
 
 
 router.post("/doSaveApplicationSetting", function(req, res) {
-  "use strict";
 
   if (req.session.user.userProperties.isAdmin !== "true") {
+
     res.json({
       success: false,
       message: "Not Allowed"
     });
+
     return;
+
   }
 
   const settingKey = req.body.settingKey;
@@ -47,6 +52,7 @@ router.post("/doSaveApplicationSetting", function(req, res) {
   res.json({
     success: (changeCount === 1)
   });
+
 });
 
 
@@ -54,11 +60,12 @@ router.post("/doSaveApplicationSetting", function(req, res) {
 
 
 router.get("/userManagement", function(req, res) {
-  "use strict";
 
   if (req.session.user.userProperties.isAdmin !== "true") {
+
     res.redirect("/dashboard/?error=accessDenied");
     return;
+
   }
 
   const users = usersDB.getAllUsers();
@@ -67,47 +74,55 @@ router.get("/userManagement", function(req, res) {
     headTitle: "User Management",
     users: users
   });
+
 });
 
 
 router.post("/doCreateUser", function(req, res) {
-  "use strict";
 
   if (req.session.user.userProperties.isAdmin !== "true") {
+
     res.json({
       success: false,
       message: "Not Allowed"
     });
+
     return;
+
   }
 
   const newPassword = usersDB.createUser(req.body);
 
   if (!newPassword) {
+
     res.json({
       success: false,
       message: "New Account Not Created"
     });
+
   } else {
+
     res.json({
       success: true,
       newPassword: newPassword
     });
-  }
 
+  }
 
 });
 
 
 router.post("/doUpdateUser", function(req, res) {
-  "use strict";
 
   if (req.session.user.userProperties.isAdmin !== "true") {
+
     res.json({
       success: false,
       message: "Not Allowed"
     });
+
     return;
+
   }
 
   const changeCount = usersDB.updateUser(req.body);
@@ -115,18 +130,21 @@ router.post("/doUpdateUser", function(req, res) {
   res.json({
     success: (changeCount === 1)
   });
+
 });
 
 
 router.post("/doUpdateUserProperty", function(req, res) {
-  "use strict";
 
   if (req.session.user.userProperties.isAdmin !== "true") {
+
     res.json({
       success: false,
       message: "Not Allowed"
     });
+
     return;
+
   }
 
   const changeCount = usersDB.updateUserProperty(req.body);
@@ -134,18 +152,21 @@ router.post("/doUpdateUserProperty", function(req, res) {
   res.json({
     success: (changeCount === 1)
   });
+
 });
 
 
 router.post("/doResetPassword", function(req, res) {
-  "use strict";
 
   if (req.session.user.userProperties.isAdmin !== "true") {
+
     res.json({
       success: false,
       message: "Not Allowed"
     });
+
     return;
+
   }
 
   const newPassword = usersDB.generateNewPassword(req.body.userName);
@@ -154,23 +175,27 @@ router.post("/doResetPassword", function(req, res) {
     success: true,
     newPassword: newPassword
   });
+
 });
 
 
 router.post("/doGetUserProperties", function(req, res) {
-  "use strict";
 
   if (req.session.user.userProperties.isAdmin !== "true") {
+
     res.json({
       success: false,
       message: "Not Allowed"
     });
+
     return;
+
   }
 
   const userProperties = usersDB.getUserProperties(req.body.userName);
 
   res.json(userProperties);
+
 });
 
 

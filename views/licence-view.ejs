@@ -287,62 +287,88 @@
     </div>
   </div>
   <div class="column">
-    <div class="panel">
-      <h2 class="panel-heading">
-        Additional <%= (licenceType ? licenceType.licenceType : licence.licenceTypeKey) %> Fields
-      </h2>
-      <%
+    <%
+      if (licence.licenceFields.length > 0) {
         const licenceFields = licenceType.licenceFields || [];
-        let fieldKeys = "";
+    %>
+      <div class="panel">
+        <h2 class="panel-heading">
+          Additional <%= (licenceType ? licenceType.licenceType : licence.licenceTypeKey) %> Fields
+        </h2>
+        <%
+          let fieldKeys = "";
 
-        for (let fieldIndex = 0; fieldIndex < licenceFields.length; fieldIndex += 1) {
-          const licenceField = licenceFields[fieldIndex];
+          for (let fieldIndex = 0; fieldIndex < licenceFields.length; fieldIndex += 1) {
+            const licenceField = licenceFields[fieldIndex];
 
-          const inputName = licenceType.licenceTypeKey + "-" + licenceField.fieldKey;
+            const inputName = licenceType.licenceTypeKey + "-" + licenceField.fieldKey;
 
-          let fieldValue = "";
+            let fieldValue = "";
+
+            for (let savedFieldIndex = 0; savedFieldIndex < licence.licenceFields.length; savedFieldIndex += 1) {
+              if (licence.licenceFields[savedFieldIndex].fieldKey === inputName) {
+                licence.licenceFields[savedFieldIndex].isDisplayed = true;
+                fieldValue = licence.licenceFields[savedFieldIndex].fieldValue;
+                break;
+              }
+            }
+
+            if (fieldValue === "") {
+              continue;
+            }
+        %>
+        <div class="panel-block">
+          <p>
+            <strong><%= licenceField.fieldLabel || licenceField.fieldKey %></strong><br />
+            <%= fieldValue %>
+          </p>
+        </div>
+        <%
+          }
 
           for (let savedFieldIndex = 0; savedFieldIndex < licence.licenceFields.length; savedFieldIndex += 1) {
-            if (licence.licenceFields[savedFieldIndex].fieldKey === inputName) {
-              licence.licenceFields[savedFieldIndex].isDisplayed = true;
-              fieldValue = licence.licenceFields[savedFieldIndex].fieldValue;
-              break;
+            const savedField = licence.licenceFields[savedFieldIndex];
+            if (!savedField.isDisplayed) {
+        %>
+            <div class="panel-block">
+              <p>
+                <strong><%= savedField.fieldKey %></strong><br />
+                <%= savedField.fieldValue %>
+              </p>
+            </div>
+        <%
             }
           }
-
-          if (fieldValue === "") {
-            continue;
-          }
-      %>
-      <div class="panel-block">
-        <p>
-          <strong><%= licenceField.fieldLabel || licenceField.fieldKey %></strong><br />
-          <%= fieldValue %>
+        %>
+      </div>
+    <%
+      } else {
+    %>
+      <div class="message is-info">
+        <p class="message-body">
+          There are no additional fields recorded for this licence.
         </p>
       </div>
-      <%
-        }
-
-        for (let savedFieldIndex = 0; savedFieldIndex < licence.licenceFields.length; savedFieldIndex += 1) {
-          const savedField = licence.licenceFields[savedFieldIndex];
-          if (!savedField.isDisplayed) {
-      %>
-          <div class="panel-block">
-            <p>
-              <strong><%= savedField.fieldKey %></strong><br />
-              <%= savedField.fieldValue %>
-            </p>
-          </div>
-      <%
-          }
-        }
-      %>
-    </div>
+    <%
+      }
+    %>
   </div>
 </div>
 
 <div class="panel">
-  <h2 class="panel-heading">Transactions</h2>
+  <div class="panel-heading">
+    <div class="level">
+      <div class="level-left">
+        <h2 class="has-text-weight-bold">Transactions</h2>
+      </div>
+      <div class="level-right has-text-weight-normal has-text-right">
+        <a class="button is-small" data-tooltip="Export Transactions" href="/reports/transactions-byLicence?licenceID=<%= licence.licenceID %>" target="_blank" download>
+          <span class="icon"><i class="fas fa-file-download" aria-hidden="true"></i></span>
+          <span>Export Transactions</span>
+        </a>
+      </div>
+    </div>
+  </div>
 
   <% if (licence.licenceTransactions.length === 0) { %>
     <div class="panel-block is-block">

@@ -1,9 +1,9 @@
 /* global window, document */
 /* global URLSearchParams, FormData */
 
+"use strict";
 
 window.llm.organizationRemarks = (function() {
-  "use strict";
 
   function getRemarksByOrganizationID(organizationID, callbackFn) {
 
@@ -18,9 +18,12 @@ window.llm.organizationRemarks = (function() {
         })
       })
       .then(function(response) {
+
         return response.json();
+
       })
       .then(callbackFn);
+
   }
 
   function getRemarkByID(organizationID, remarkIndex, callbackFn) {
@@ -37,9 +40,12 @@ window.llm.organizationRemarks = (function() {
         })
       })
       .then(function(response) {
+
         return response.json();
+
       })
       .then(callbackFn);
+
   }
 
 
@@ -51,9 +57,12 @@ window.llm.organizationRemarks = (function() {
         body: new URLSearchParams(new FormData(formEle))
       })
       .then(function(response) {
+
         return response.json();
+
       })
       .then(callbackFn);
+
   }
 
   function openAddRemarkModal(organizationID, updateCallbackFn) {
@@ -61,6 +70,7 @@ window.llm.organizationRemarks = (function() {
     let addRemark_closeModalFn;
 
     const formFn_add = function(formEvent) {
+
       formEvent.preventDefault();
 
       doAddRemark(formEvent.currentTarget, function() {
@@ -68,19 +78,25 @@ window.llm.organizationRemarks = (function() {
         addRemark_closeModalFn();
 
         if (updateCallbackFn) {
+
           updateCallbackFn();
+
         }
+
       });
 
     };
 
     window.llm.openHtmlModal("remarkAdd", {
       onshown: function(modalEle, closeModalFn) {
+
         document.getElementById("addRemark--organizationID").value = organizationID;
         modalEle.getElementsByTagName("form")[0].addEventListener("submit", formFn_add);
         addRemark_closeModalFn = closeModalFn;
+
       }
     });
+
   }
 
 
@@ -92,9 +108,12 @@ window.llm.organizationRemarks = (function() {
         body: new URLSearchParams(new FormData(formEle))
       })
       .then(function(response) {
+
         return response.json();
+
       })
       .then(callbackFn);
+
   }
 
   function openEditRemarkModal(organizationID, remarkIndex, updateCallbackFn) {
@@ -102,6 +121,7 @@ window.llm.organizationRemarks = (function() {
     let editRemark_closeModalFn;
 
     const formFn_edit = function(formEvent) {
+
       formEvent.preventDefault();
 
       doEditRemark(formEvent.currentTarget, function() {
@@ -109,8 +129,11 @@ window.llm.organizationRemarks = (function() {
         editRemark_closeModalFn();
 
         if (updateCallbackFn) {
+
           updateCallbackFn();
+
         }
+
       });
 
     };
@@ -131,16 +154,23 @@ window.llm.organizationRemarks = (function() {
           document.getElementById("editRemark--remarkTimeString").value = remark.remarkTimeString;
 
           if (remark.isImportant) {
+
             document.getElementById("editRemark--isImportant").setAttribute("checked", "checked");
+
           }
+
         });
 
         modalEle.getElementsByTagName("form")[0].addEventListener("submit", formFn_edit);
+
       },
       onshown: function(modalEle, closeModalFn) {
+
         editRemark_closeModalFn = closeModalFn;
+
       }
     });
+
   }
 
 
@@ -158,9 +188,12 @@ window.llm.organizationRemarks = (function() {
         })
       })
       .then(function(response) {
+
         return response.json();
+
       })
       .then(callbackFn);
+
   }
 
   function deleteRemark(organizationID, remarkIndex, doConfirm, deleteCallbackFn) {
@@ -172,12 +205,18 @@ window.llm.organizationRemarks = (function() {
         "Yes, Delete",
         "danger",
         function() {
+
           doDeleteRemark(organizationID, remarkIndex, deleteCallbackFn);
+
         }
       );
+
     } else {
+
       doDeleteRemark(organizationID, remarkIndex, deleteCallbackFn);
+
     }
+
   }
 
 
@@ -193,4 +232,5 @@ window.llm.organizationRemarks = (function() {
 
     deleteRemark: deleteRemark
   };
+
 }());

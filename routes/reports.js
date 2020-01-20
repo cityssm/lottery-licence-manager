@@ -1,5 +1,7 @@
 /* global require, module */
 
+"use strict";
+
 const express = require("express");
 const router = express.Router();
 
@@ -7,20 +9,18 @@ const licencesDB = require("../helpers/licencesDB");
 const stringFns = require("../helpers/stringFns");
 const dateTimeFns = require("../helpers/dateTimeFns");
 
-
 router.get("/", function(req, res) {
-  "use strict";
 
   const rightNow = new Date();
-  
+
   res.render("report-search", {
     headTitle: "Reports",
     todayDateString: dateTimeFns.dateToString(rightNow)
   });
+
 });
 
 router.all("/:reportName", function(req, res) {
-  "use strict";
 
   const reportName = req.params.reportName;
 
@@ -32,6 +32,11 @@ router.all("/:reportName", function(req, res) {
     /*
      * Locations
      */
+
+    case "locations-all":
+
+      sql = "select * from Locations";
+      break;
 
     case "locations-unused":
 
@@ -82,6 +87,11 @@ router.all("/:reportName", function(req, res) {
        * Organizations
        */
 
+    case "organizations-all":
+
+      sql = "select * from Organizations";
+      break;
+
     case "organizations-withDefaultRepresentatives":
 
       sql = "select o.organizationID, o.organizationName, o.organizationAddress1, o.organizationAddress2," +
@@ -118,7 +128,16 @@ router.all("/:reportName", function(req, res) {
 
       break;
 
-    case "organizationRepresentatives-byOrganization":
+      /*
+       * Organization Representatives
+       */
+
+    case "representatives-all":
+
+      sql = "select * from OrganizationRepresentatives";
+      break;
+
+    case "representatives-byOrganization":
 
       sql = "select organizationID, representativeIndex," +
         " representativeName, representativeTitle," +
@@ -137,6 +156,11 @@ router.all("/:reportName", function(req, res) {
       /*
        * Organization Remarks
        */
+
+    case "remarks-all":
+
+      sql = "select * from OrganizationRemarks";
+      break;
 
     case "remarks-byOrganization":
 
@@ -157,6 +181,10 @@ router.all("/:reportName", function(req, res) {
       /*
        * Lottery Licences
        */
+
+    case "licences-all":
+      sql = "select * from LotteryLicences";
+      break;
 
     case "licences-byOrganization":
 
@@ -227,6 +255,11 @@ router.all("/:reportName", function(req, res) {
        * Lottery Licence Ticket Types
        */
 
+    case "ticketTypes-all":
+
+      sql = "select * from LotteryLicenceTicketTypes";
+      break;
+
     case "ticketTypes-byLicence":
 
       sql = "select t.licenceID, t.ticketType," +
@@ -258,6 +291,11 @@ router.all("/:reportName", function(req, res) {
        * Lottery Licence Amendments
        */
 
+    case "amendments-all":
+
+      sql = "select * from LotteryLicenceAmendments";
+      break;
+
     case "amendments-byLicence":
 
       sql = "select licenceID, amendmentIndex, amendmentDate, amendmentTime," +
@@ -277,6 +315,11 @@ router.all("/:reportName", function(req, res) {
       /*
        * Lottery Licence Transactions
        */
+
+    case "transactions-all":
+
+      sql = "select * from LotteryLicenceTransactions";
+      break;
 
     case "transactions-byTransactionDate":
 
@@ -311,6 +354,11 @@ router.all("/:reportName", function(req, res) {
       /*
        * Lottery Events
        */
+
+    case "events-all":
+
+      sql = "select * from LotteryEvents";
+      break;
 
     case "events-upcoming":
 
@@ -376,11 +424,14 @@ router.all("/:reportName", function(req, res) {
       ];
 
       break;
+
   }
 
   if (sql === "") {
+
     res.redirect("/reports/?error=reportNotFound");
     return;
+
   }
 
   const rowsColumnsObj = licencesDB.getRawRowsColumns(sql, params);
@@ -390,6 +441,8 @@ router.all("/:reportName", function(req, res) {
   res.setHeader("Content-Disposition", "attachment; filename=" + reportName + "-" + Date.now() + ".csv");
   res.setHeader("Content-Type", "text/csv");
   res.send(csv);
+
 });
+
 
 module.exports = router;

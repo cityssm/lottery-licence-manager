@@ -1,9 +1,9 @@
 /* global window, document */
 /* global config_licenceTypes */
 
+"use strict";
 
 (function() {
-  "use strict";
 
   const licenceTypes = window.llm.arrayToObject(config_licenceTypes, "licenceTypeKey");
 
@@ -35,16 +35,20 @@
         })
       })
       .then(function(response) {
+
         return response.json();
+
       })
       .then(function(eventList) {
 
         if (eventList.length === 0) {
+
           resultsEle.innerHTML = "<div class=\"message is-info\">" +
             "<div class=\"message-body\">" +
             "There are no lottery events scheduled in " + monthName + " " + yearValue + "." +
             "</div>" +
             "</div>";
+
         } else {
 
           resultsEle.innerHTML = "";
@@ -62,13 +66,16 @@
             if (currentDate !== eventObj.eventDate) {
 
               if (currentDate !== 0) {
+
                 resultsEle.insertAdjacentElement("beforeend", currentDateListEle);
+
               }
 
               currentDate = eventObj.eventDate;
               resultsEle.insertAdjacentHTML("beforeend", "<h2 class=\"title is-4\">" + eventObj.eventDateString + "</h2>");
               currentDateListEle = document.createElement("ul");
               currentDateListEle.className = "list";
+
             }
 
             currentDateListEle.insertAdjacentHTML("beforeend", "<li class=\"list-item\">" +
@@ -101,41 +108,55 @@
               "</div>" +
               "</div>" +
               "</li>");
+
           }
 
           resultsEle.insertAdjacentElement("beforeend", currentDateListEle);
+
         }
+
       });
+
   }
 
   document.getElementById("filter--previous").addEventListener("click", function() {
 
     if (filterMonthEle.value === "1") {
+
       filterMonthEle.value = "12";
       filterYearEle.value = parseInt(filterYearEle.value) - 1;
+
     } else {
+
       filterMonthEle.value = parseInt(filterMonthEle.value) - 1;
+
     }
 
     getEvents();
+
   });
 
   document.getElementById("filter--next").addEventListener("click", function() {
 
     if (filterMonthEle.value === "12") {
+
       filterMonthEle.value = "1";
       filterYearEle.value = parseInt(filterYearEle.value) + 1;
+
     } else {
+
       filterMonthEle.value = parseInt(filterMonthEle.value) + 1;
+
     }
 
     getEvents();
+
   });
 
   filterMonthEle.addEventListener("change", getEvents);
   filterYearEle.addEventListener("change", getEvents);
 
 
-
   getEvents();
+
 }());

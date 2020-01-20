@@ -1,9 +1,9 @@
 /* global window, document */
 /* global URLSearchParams, FormData */
 
+"use strict";
 
 (function() {
-  "use strict";
 
   const formEle = document.getElementById("form--location");
   const formMessageEle = document.getElementById("container--form-message");
@@ -15,6 +15,7 @@
   const isAdmin = (document.getElementsByTagName("main")[0].getAttribute("data-is-admin") === "true");
 
   formEle.addEventListener("submit", function(formEvent) {
+
     formEvent.preventDefault();
 
     formMessageEle.innerHTML = "Saving... <i class=\"fas fa-circle-notch fa-spin\" aria-hidden=\"true\"></i>";
@@ -26,25 +27,34 @@
           body: new URLSearchParams(new FormData(formEle))
         })
       .then(function(response) {
+
         return response.json();
+
       })
       .then(function(responseJSON) {
 
         if (responseJSON.success) {
+
           hasUnsavedChanges = false;
           window.llm.disableNavBlocker();
+
         }
 
         if (responseJSON.success && isCreate) {
+
           window.location.href = "/locations/" + responseJSON.locationID + "/edit";
 
         } else {
+
           formMessageEle.innerHTML = "";
 
           window.llm.alertModal(responseJSON.message, "", "OK",
             responseJSON.success ? "success" : "danger");
+
         }
+
       });
+
   });
 
 
@@ -63,13 +73,20 @@
           })
         })
         .then(function(response) {
+
           return response.json();
+
         })
         .then(function(responseJSON) {
+
           if (responseJSON.success) {
+
             window.location.href = "/locations";
+
           }
+
         });
+
     };
 
     formEle.getElementsByClassName("is-delete-button")[0].addEventListener("click", function(clickEvent) {
@@ -82,7 +99,9 @@
         "Yes, Delete Location",
         "warning",
         deleteLocationFn);
+
     });
+
   }
 
 
@@ -95,10 +114,12 @@
       mergeButton_clickEvent.preventDefault();
 
       if (hasUnsavedChanges) {
+
         window.llm.alertModal("Unsaved Changes",
           "You must save all unsaved changes before merging this location record.",
           "OK", "warning");
         return;
+
       }
 
       // get location display name
@@ -132,15 +153,24 @@
               })
             })
           .then(function(response) {
+
             return response.json();
+
           })
           .then(function(responseJSON) {
+
             if (responseJSON.success) {
+
               window.location.reload(true);
+
             } else {
+
               window.llm.alertModal("Merge Not Completed", "Please try again.", "OK", "danger");
+
             }
+
           });
+
       };
 
       const clickFn_selectSourceLocation = function(clickEvent) {
@@ -159,6 +189,7 @@
           " <em>" + locationDisplayNameAndID_target + "</em>?",
           "Yes, Complete Merge", "warning",
           doMerge);
+
       };
 
       const filterLocationsFn = function() {
@@ -173,7 +204,9 @@
           const locationObj = locationsList[locationIndex];
 
           if (locationObj.locationID === intLocationID) {
+
             continue;
+
           }
 
           let showLocation = true;
@@ -183,13 +216,18 @@
             const filterString = filterSplit[filterIndex];
 
             if (locationObj.locationName.toLowerCase().indexOf(filterString) === -1) {
+
               showLocation = false;
               break;
+
             }
+
           }
 
           if (!showLocation) {
+
             continue;
+
           }
 
           const listItemEle = document.createElement("a");
@@ -230,10 +268,12 @@
             "</div>";
 
           listEle.insertAdjacentElement("beforeend", listItemEle);
+
         }
 
         window.llm.clearElement(sourceLocationsContainerEle);
         sourceLocationsContainerEle.insertAdjacentElement("beforeend", listEle);
+
       };
 
       window.llm.openHtmlModal("locationMerge", {
@@ -244,7 +284,9 @@
           const locationDisplayNameAndID_target_eles = modalEle.getElementsByClassName("mergeLocation--locationDisplayNameAndID_target");
 
           for (let index = 0; index < locationDisplayNameAndID_target_eles.length; index += 1) {
+
             locationDisplayNameAndID_target_eles[index].innerText = locationDisplayNameAndID_target;
+
           }
 
           // locations - source
@@ -260,19 +302,29 @@
                 credentials: "include"
               })
             .then(function(response) {
+
               return response.json();
+
             })
             .then(function(responseJSON) {
+
               locationsList = responseJSON;
               locationFilterEle.removeAttribute("disabled");
               filterLocationsFn();
+
             });
+
         },
         onshown: function(modalEle, closeModalFn) {
+
           closeMergeLocationModalFn = closeModalFn;
+
         }
+
       });
+
     });
+
   }
 
 
@@ -288,11 +340,15 @@
       "<span class=\"icon\"><i class=\"fas fa-exclamation-triangle\" aria-hidden=\"true\"></i></span>" +
       " <span>Unsaved Changes</span>" +
       "</div>";
+
   }
 
   const inputEles = formEle.getElementsByTagName("input");
 
   for (let inputIndex = 0; inputIndex < inputEles.length; inputIndex += 1) {
+
     inputEles[inputIndex].addEventListener("change", setUnsavedChanges);
+
   }
+
 }());

@@ -1,5 +1,6 @@
 /* global require, module */
 
+"use strict";
 
 const config = require("./config-ontario");
 
@@ -11,7 +12,6 @@ const config = require("./config-ontario");
 config.application = {
   applicationName: "SSM Lottery Licence Manager"
 };
-
 
 
 /*
@@ -36,7 +36,6 @@ config.licences.externalReceiptNumber = {
 };
 
 config.licences.feeCalculationFn = function(licenceObj) {
-  "use strict";
 
   const totalPrizeValue = (licenceObj.totalPrizeValue || 0.0);
 
@@ -61,30 +60,41 @@ config.licences.feeCalculationFn = function(licenceObj) {
     let ticketCost = parseFloat(licenceFields.ticketCost || "0");
 
     if (licenceFields.discount1_tickets !== "" && licenceFields.discount1_cost !== "") {
+
       const discountTicketCost = parseFloat(licenceFields.discount1_cost) / parseInt(licenceFields.discount1_tickets);
       ticketCost = Math.min(ticketCost, discountTicketCost);
+
     }
 
     if (licenceFields.discount2_tickets !== "" && licenceFields.discount2_cost !== "") {
+
       const discountTicketCost = parseFloat(licenceFields.discount2_cost) / parseInt(licenceFields.discount2_tickets);
       ticketCost = Math.min(ticketCost, discountTicketCost);
+
     }
 
     if (licenceFields.discount3_tickets !== "" && licenceFields.discount3_cost !== "") {
-      const discountTicketCost = parseFloat(licenceFields.discount3_cost) / parseInt(licenceFields.discount3_tickets);
+
+      const discountTicketCost =
+        parseFloat(licenceFields.discount3_cost) / parseInt(licenceFields.discount3_tickets);
       ticketCost = Math.min(ticketCost, discountTicketCost);
+
     }
 
     // calculate the minimum prize value
 
-    let minPotentialTakeIn = ticketCost * parseInt(licenceFields.ticketCount || "0");
+    let minPotentialTakeIn =
+      ticketCost * parseInt(licenceFields.ticketCount || "0");
 
     let minPrizeValue = minPotentialTakeIn * 0.2;
 
     if (totalPrizeValue < minPrizeValue) {
+
       licenceHasErrors = true;
       message = "Total Prize Value must be a minimum of $" + minPrizeValue + ".";
+
     }
+
   }
 
   return {
@@ -92,8 +102,8 @@ config.licences.feeCalculationFn = function(licenceObj) {
     message: message,
     licenceHasErrors: licenceHasErrors
   };
-};
 
+};
 
 
 /*
@@ -101,8 +111,9 @@ config.licences.feeCalculationFn = function(licenceObj) {
  */
 
 let licenceType_nevada = config.licenceTypes.find(function(licenceType) {
-  "use strict";
+
   return licenceType.licenceTypeKey === "NV";
+
 });
 
 
@@ -111,8 +122,10 @@ let licenceType_nevada = config.licenceTypes.find(function(licenceType) {
  */
 
 for (let ticketTypeIndex = 0; ticketTypeIndex < licenceType_nevada.ticketTypes.length; ticketTypeIndex += 1) {
+
   licenceType_nevada.ticketTypes[ticketTypeIndex].feePerUnit =
     Math.round(licenceType_nevada.ticketTypes[ticketTypeIndex].prizesPerDeal * 0.03 * 100) / 100;
+
 }
 
 
@@ -148,7 +161,6 @@ licenceType_nevada.licenceFields = [{
     step: 1
   }
 }];
-
 
 
 module.exports = config;

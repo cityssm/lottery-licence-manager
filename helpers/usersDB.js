@@ -1,12 +1,11 @@
 /* global require, module */
 
+"use strict";
 
 const configFns = require("./configFns");
 
-
 const sqlite = require("better-sqlite3");
 const dbPath = "data/users.db";
-
 
 const bcrypt = require("bcrypt");
 
@@ -14,7 +13,6 @@ const bcrypt = require("bcrypt");
 let usersDB = {
 
   getUser: function(userName, passwordPlain) {
-    "use strict";
 
     const db = sqlite(dbPath);
 
@@ -34,7 +32,9 @@ let usersDB = {
         const adminPasswordPlain = configFns.getProperty("admin.defaultPassword");
 
         if (adminPasswordPlain === "") {
+
           return null;
+
         }
 
         if (adminPasswordPlain === passwordPlain) {
@@ -47,7 +47,9 @@ let usersDB = {
             userName: userName,
             userProperties: userProperties
           };
+
         }
+
       }
 
       return null;
@@ -55,7 +57,9 @@ let usersDB = {
     } else if (row.isActive === 0) {
 
       db.close();
+
       return null;
+
     }
 
     // Check if the password matches
@@ -65,12 +69,16 @@ let usersDB = {
     let passwordIsValid = false;
 
     if (bcrypt.compareSync(userName + "::" + passwordPlain, row.passwordHash)) {
+
       passwordIsValid = true;
+
     }
 
     if (!passwordIsValid) {
+
       db.close();
       return null;
+
     }
 
     // Get user properties
@@ -84,7 +92,10 @@ let usersDB = {
       .all(userName);
 
     for (let userPropertyIndex = 0; userPropertyIndex < userPropertyRows.length; userPropertyIndex += 1) {
-      userProperties[userPropertyRows[userPropertyIndex].propertyName] = userPropertyRows[userPropertyIndex].propertyValue;
+
+      userProperties[userPropertyRows[userPropertyIndex].propertyName] =
+        userPropertyRows[userPropertyIndex].propertyValue;
+
     }
 
     db.close();
@@ -93,10 +104,10 @@ let usersDB = {
       userName: userName,
       userProperties: userProperties
     };
+
   },
 
   tryResetPassword: function(userName, oldPasswordPlain, newPasswordPlain) {
-    "use strict";
 
     const db = sqlite(dbPath);
 
@@ -106,21 +117,25 @@ let usersDB = {
       .get(userName);
 
     if (!row) {
+
       db.close();
       return {
         success: false,
         message: "User record not found."
       };
+
     }
 
     const oldPasswordMatches = bcrypt.compareSync(userName + "::" + oldPasswordPlain, row.passwordHash);
 
     if (!oldPasswordMatches) {
+
       db.close();
       return {
         success: false,
         message: "Old password does not match."
       };
+
     }
 
     const newPasswordHash = bcrypt.hashSync(userName + "::" + newPasswordPlain, 10);
@@ -136,10 +151,10 @@ let usersDB = {
       success: true,
       message: "Password updated successfully."
     };
+
   },
 
   getAllUsers: function() {
-    "use strict";
 
     const db = sqlite(dbPath, {
       readonly: true
@@ -154,10 +169,10 @@ let usersDB = {
     db.close();
 
     return rows;
+
   },
 
   getUserProperties: function(userName) {
-    "use strict";
 
     const db = sqlite(dbPath, {
       readonly: true
@@ -171,16 +186,19 @@ let usersDB = {
       .all(userName);
 
     for (let userPropertyIndex = 0; userPropertyIndex < userPropertyRows.length; userPropertyIndex += 1) {
-      userProperties[userPropertyRows[userPropertyIndex].propertyName] = userPropertyRows[userPropertyIndex].propertyValue;
+
+      userProperties[userPropertyRows[userPropertyIndex].propertyName] =
+        userPropertyRows[userPropertyIndex].propertyValue;
+
     }
 
     db.close();
 
     return userProperties;
+
   },
 
   createUser: function(reqBody) {
-    "use strict";
 
     const freshPassword = require("fresh-password");
     const newPasswordPlain = freshPassword.generate();
@@ -194,11 +212,14 @@ let usersDB = {
       .get(reqBody.userName);
 
     if (row) {
+
       if (row.isActive) {
+
         db.close();
         return false;
 
       } else {
+
         db.prepare("update Users" +
             " set firstName = ?," +
             " lastName = ?," +
@@ -206,20 +227,23 @@ let usersDB = {
             " isActive = 1" +
             " where userName = ?")
           .run();
+
       }
 
     } else {
+
       db.prepare("insert into Users" +
           " (userName, firstName, lastName, isActive, passwordHash)" +
           " values (?, ?, ?, 1, ?)")
         .run(reqBody.userName, reqBody.firstName, reqBody.lastName, hash);
+
     }
 
     return newPasswordPlain;
+
   },
 
   updateUser: function(reqBody) {
-    "use strict";
 
     const db = sqlite(dbPath);
 
@@ -235,21 +259,23 @@ let usersDB = {
     db.close();
 
     return info.changes;
+
   },
 
   updateUserProperty: function(reqBody) {
-    "use strict";
 
     const db = sqlite(dbPath);
 
     let info;
 
     if (reqBody.propertyValue === "") {
+
       info = db.prepare("delete from UserProperties" +
           " where userName = ?" +
           " and propertyName = ?")
         .run(reqBody.userName,
           reqBody.propertyName);
+
     } else {
 
       info = db.prepare("replace into UserProperties" +
@@ -259,15 +285,16 @@ let usersDB = {
           reqBody.propertyName,
           reqBody.propertyValue
         );
+
     }
 
     db.close();
 
     return info.changes;
+
   },
 
   generateNewPassword: function(userName) {
-    "use strict";
 
     const freshPassword = require("fresh-password");
     const newPasswordPlain = freshPassword.generate();
@@ -283,9 +310,9 @@ let usersDB = {
     db.close();
 
     return newPasswordPlain;
+
   }
 };
-
 
 
 module.exports = usersDB;

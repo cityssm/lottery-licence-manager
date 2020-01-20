@@ -1,9 +1,9 @@
 /* global window, document */
 /* global URLSearchParams, FormData */
 
+"use strict";
 
 (function() {
-  "use strict";
 
   /*
    * create user
@@ -12,6 +12,7 @@
   const createUser_modalEle = document.getElementsByClassName("is-create-user-modal")[0];
 
   createUser_modalEle.getElementsByTagName("form")[0].addEventListener("submit", function(formEvent) {
+
     formEvent.preventDefault();
 
     window.fetch("/admin/doCreateUser", {
@@ -20,23 +21,34 @@
         body: new URLSearchParams(new FormData(formEvent.currentTarget))
       })
       .then(function(response) {
+
         return response.json();
+
       })
       .then(function(responseJSON) {
+
         if (responseJSON.success) {
+
           window.location.reload(true);
+
         }
+
       });
+
   });
 
   document.getElementsByClassName("is-create-user-button")[0].addEventListener("click", function() {
+
     window.llm.showModal(createUser_modalEle);
+
   });
 
   let cancelButtonEles = createUser_modalEle.getElementsByClassName("is-cancel-button");
 
   for (let buttonIndex = 0; buttonIndex < cancelButtonEles.length; buttonIndex += 1) {
+
     cancelButtonEles[buttonIndex].addEventListener("click", window.llm.hideModal);
+
   }
 
   // existing users
@@ -53,6 +65,7 @@
   window.llm.initializeTabs(updateUser_modalEle.getElementsByClassName("tabs")[0].getElementsByTagName("ul")[0]);
 
   function submitFn_updateUserSetting(formEvent) {
+
     formEvent.preventDefault();
 
     const formEle = formEvent.currentTarget;
@@ -63,9 +76,12 @@
         body: new URLSearchParams(new FormData(formEle))
       })
       .then(function(response) {
+
         return response.json();
+
       })
       .then(function(responseJSON) {
+
         if (responseJSON.success) {
 
           const inputEle = formEle.getElementsByClassName("input")[0];
@@ -77,8 +93,11 @@
 
           submitBtnEle.classList.add("is-success");
           submitBtnEle.classList.remove("is-danger");
+
         }
+
       });
+
   }
 
   function keyupFn_markSettingUnsaved(keyupEvent) {
@@ -94,6 +113,7 @@
     submitBtnEle.classList.add("is-danger");
     submitBtnEle.classList.remove("is-primary");
     submitBtnEle.classList.remove("is-success");
+
   }
 
   function clickFn_updateUser(clickEvent) {
@@ -106,7 +126,9 @@
 
     // spans
     for (let index = 0; index < updateUser_userNameSpanEles.length; index += 1) {
+
       updateUser_userNameSpanEles[index].innerText = userName;
+
     }
 
     // name form
@@ -131,13 +153,16 @@
         })
       })
       .then(function(response) {
+
         return response.json();
+
       })
       .then(function(userPropertiesJSON) {
 
         let propertyIndex = 0;
 
         for (let propertyName in userPropertiesJSON) {
+
           if (userPropertiesJSON.hasOwnProperty(propertyName)) {
 
             propertyIndex += 1;
@@ -174,8 +199,11 @@
             formEle.addEventListener("submit", submitFn_updateUserSetting);
 
             userPropertiesContainerEle.insertAdjacentElement("beforeend", formEle);
+
           }
+
         }
+
       });
 
 
@@ -185,24 +213,30 @@
     document.getElementById("resetPassword--newPassword").closest(".message").setAttribute("hidden", "hidden");
 
     window.llm.showModal(updateUser_modalEle);
+
   }
 
   const updateUserButtonEles = userContainerEle.getElementsByTagName("a");
 
   for (let buttonIndex = 0; buttonIndex < updateUserButtonEles.length; buttonIndex += 1) {
+
     updateUserButtonEles[buttonIndex].addEventListener("click", clickFn_updateUser);
+
   }
 
   cancelButtonEles = updateUser_modalEle.getElementsByClassName("is-cancel-button");
 
   for (let buttonIndex = 0; buttonIndex < cancelButtonEles.length; buttonIndex += 1) {
+
     cancelButtonEles[buttonIndex].addEventListener("click", window.llm.hideModal);
+
   }
 
   // user name
 
   document.getElementById("tab--updateUser-name").getElementsByTagName("form")[0]
     .addEventListener("submit", function(formEvent) {
+
       formEvent.preventDefault();
 
       window.fetch("/admin/doUpdateUser", {
@@ -211,13 +245,20 @@
           body: new URLSearchParams(new FormData(formEvent.currentTarget))
         })
         .then(function(response) {
+
           return response.json();
+
         })
         .then(function(responseJSON) {
+
           if (responseJSON.success) {
+
             window.location.reload(true);
+
           }
+
         });
+
     });
 
   // reset password
@@ -233,9 +274,12 @@
           body: new URLSearchParams(new FormData(formEvent.currentTarget))
         })
         .then(function(response) {
+
           return response.json();
+
         })
         .then(function(responseJSON) {
+
           if (responseJSON.success) {
 
             const newPasswordEle = document.getElementById("resetPassword--newPassword");
@@ -243,7 +287,11 @@
             newPasswordEle.innerText = responseJSON.newPassword;
 
             newPasswordEle.closest(".message").removeAttribute("hidden");
+
           }
+
         });
+
     });
+
 }());

@@ -1,8 +1,8 @@
 /* global window, document */
 
+"use strict";
 
 (function() {
-  "use strict";
 
   if (document.getElementsByTagName("main")[0].getAttribute("data-can-update") === "true") {
 
@@ -27,13 +27,20 @@
             })
           })
           .then(function(response) {
+
             return response.json();
+
           })
           .then(function(responseJSON) {
+
             if (responseJSON.success) {
+
               window.location.href = "/organizations/" + organizationID + "?_" + Date.now();
+
             }
+
           });
+
       };
 
       buttonEle.addEventListener("click", function() {
@@ -45,7 +52,11 @@
           "Yes, Restore",
           "warning",
           restoreFn);
+
       });
+
     }
+
   }
+
 }());

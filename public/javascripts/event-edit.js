@@ -1,9 +1,9 @@
 /* global window, document */
 /* global URLSearchParams, FormData */
 
+"use strict";
 
 (function() {
-  "use strict";
 
   const eventDateNavEle = document.getElementById("eventNav--eventDate");
 
@@ -15,6 +15,7 @@
 
 
   formEle.addEventListener("submit", function(formEvent) {
+
     formEvent.preventDefault();
 
     formMessageEle.innerHTML = "Saving... <i class=\"fas fa-circle-notch fa-spin\" aria-hidden=\"true\"></i>";
@@ -25,24 +26,31 @@
         body: new URLSearchParams(new FormData(formEle))
       })
       .then(function(response) {
+
         return response.json();
+
       })
       .then(function(responseJSON) {
 
         if (responseJSON.success) {
+
           window.llm.disableNavBlocker();
           eventDateNavEle.removeAttribute("disabled");
+
         }
 
         formMessageEle.innerHTML = "";
 
         window.llm.alertModal(responseJSON.message, "", "OK",
           responseJSON.success ? "success" : "danger");
+
       });
+
   });
 
 
   document.getElementById("is-delete-event-button").addEventListener("click", function(clickEvent) {
+
     clickEvent.preventDefault();
 
     window.llm.confirmModal("Delete Event?", "Are you sure you want to delete this event?", "Yes, Delete", "danger", function() {
@@ -59,16 +67,23 @@
           })
         })
         .then(function(response) {
+
           return response.json();
+
         })
         .then(function(responseJSON) {
 
           if (responseJSON.success) {
+
             window.llm.disableNavBlocker();
             window.location.href = "/licences/" + licenceID;
+
           }
+
         });
+
     });
+
   });
 
 
@@ -83,15 +98,19 @@
       "<span class=\"icon\"><i class=\"fas fa-exclamation-triangle\" aria-hidden=\"true\"></i></span>" +
       " <span>Unsaved Changes</span>" +
       "</div>";
+
   }
 
   const inputEles = formEle.querySelectorAll("input, select, textarea");
 
   for (let inputIndex = 0; inputIndex < inputEles.length; inputIndex += 1) {
-    if (inputEles[inputIndex].name !== "") {
-      inputEles[inputIndex].addEventListener("change", setUnsavedChanges);
-    }
-  }
 
+    if (inputEles[inputIndex].name !== "") {
+
+      inputEles[inputIndex].addEventListener("change", setUnsavedChanges);
+
+    }
+
+  }
 
 }());

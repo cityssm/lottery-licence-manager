@@ -1,5 +1,6 @@
 /* global require, console, module, __dirname */
 
+"use strict";
 
 const createError = require("http-errors");
 const express = require("express");
@@ -66,8 +67,8 @@ app.use(cookieParser());
 
 
 app.use(express.static(path.join(__dirname, "public")));
-app.use("/docs/images", express.static(path.join(__dirname, "docs/images")));
-app.use("/fa", express.static(__dirname + "/node_modules/@fortawesome/fontawesome-free"));
+app.use("/docs/images", express.static(path.join(__dirname, "docs", "images")));
+app.use("/fa", express.static(path.join(__dirname, "node_modules", "@fortawesome", "fontawesome-free")));
 
 
 /*
@@ -96,21 +97,30 @@ app.use(session({
 
 // clear cookie if no corresponding session
 app.use(function(req, res, next) {
-  "use strict";
+
   if (req.cookies[sessionCookieName] && !req.session.user) {
+
     res.clearCookie(sessionCookieName);
+
   }
+
   next();
+
 });
 
 // redirect logged in users
 const sessionChecker = function(req, res, next) {
-  "use strict";
+
   if (req.session.user && req.cookies[sessionCookieName]) {
+
     next();
+
   } else {
+
     res.redirect("/login?redirect=" + req.originalUrl);
+
   }
+
 };
 
 
@@ -119,19 +129,20 @@ const sessionChecker = function(req, res, next) {
  */
 
 
-
 // make the user and config objects available to the templates
 app.use(function(req, res, next) {
-  "use strict";
+
   res.locals.user = req.session.user;
   res.locals.configFns = configFns;
   next();
+
 });
 
 
 app.get("/", sessionChecker, function(req, res) {
-  "use strict";
+
   res.redirect("/dashboard");
+
 });
 
 app.use("/docs", router_docs);
@@ -147,27 +158,33 @@ app.use("/admin", sessionChecker, router_admin);
 app.use("/login", router_login);
 
 app.get("/logout", function(req, res) {
-  "use strict";
+
   if (req.session.user && req.cookies[sessionCookieName]) {
+
     req.session.destroy();
     req.session = null;
     res.clearCookie(sessionCookieName);
     res.redirect("/");
+
   } else {
+
     res.redirect("/login");
+
   }
+
 });
 
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  "use strict";
+
   next(createError(404));
+
 });
 
 // error handler
 app.use(function(err, req, res) {
-  "use strict";
+
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get("env") === "development" ? err : {};
@@ -175,6 +192,7 @@ app.use(function(err, req, res) {
   // render the error page
   res.status(err.status || 500);
   res.render("error");
+
 });
 
 
@@ -186,17 +204,20 @@ app.use(function(err, req, res) {
 const httpPort = configFns.getProperty("application.httpPort");
 
 if (httpPort) {
+
   app.listen(httpPort, function() {
-    "use strict";
 
     // eslint-disable-next-line no-console
     console.log("HTTP listening on port " + httpPort);
+
   });
+
 }
 
 const httpsConfig = configFns.getProperty("application.https");
 
 if (httpsConfig) {
+
   https.createServer({
       key: fs.readFileSync(httpsConfig.keyPath),
       cert: fs.readFileSync(httpsConfig.certPath),
@@ -204,8 +225,10 @@ if (httpsConfig) {
     }, app)
     .listen(httpsConfig.port);
 
-    // eslint-disable-next-line no-console
-    console.log("HTTPS listening on port " + httpsConfig.port);
+  // eslint-disable-next-line no-console
+  console.log("HTTPS listening on port " + httpsConfig.port);
+
 }
+
 
 module.exports = app;

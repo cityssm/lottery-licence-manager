@@ -1,8 +1,8 @@
 /* global window, document */
 
+"use strict";
 
 (function() {
-  "use strict";
 
   const searchStrEle = document.getElementById("filter--locationNameAddress");
   const locationIsDistributorEle = document.getElementById("filter--locationIsDistributor");
@@ -37,14 +37,21 @@
           })
         })
         .then(function(response) {
+
           return response.json();
+
         })
         .then(function(responseJSON) {
+
           if (responseJSON.success) {
+
             locationsList.splice(locationIndex, 1);
             filterLocations();
+
           }
+
         });
+
     };
 
 
@@ -54,6 +61,7 @@
       "warning",
       deleteFn
     );
+
   }
 
 
@@ -97,35 +105,49 @@
         let doDisplay = true;
 
         if (locationIsDistributorValue !== "") {
+
           if (parseInt(locationIsDistributorValue) !== locationObj.locationIsDistributor) {
+
             doDisplay = false;
             continue;
+
           }
+
         }
 
         if (locationIsManufacturerValue !== "") {
+
           if (parseInt(locationIsManufacturerValue) !== locationObj.locationIsManufacturer) {
+
             doDisplay = false;
             continue;
+
           }
+
         }
 
         const searchStrSplit = searchStrEle.value.trim().toLowerCase().split(" ");
 
         for (let searchStrIndex = 0; searchStrIndex < searchStrSplit.length; searchStrIndex += 1) {
+
           const searchStrPiece = searchStrSplit[searchStrIndex];
 
           if (locationObj.locationName.toLowerCase().indexOf(searchStrPiece) === -1 &&
             locationObj.locationAddress1.toLowerCase().indexOf(searchStrPiece) === -1 &&
             locationObj.locationAddress2.toLowerCase().indexOf(searchStrPiece) === -1 &&
             locationObj.locationCity.toLowerCase().indexOf(searchStrPiece) === -1) {
+
             doDisplay = false;
             break;
+
           }
+
         }
 
         if (!doDisplay) {
+
           continue;
+
         }
 
         displayLimit -= 1;
@@ -202,8 +224,11 @@
             "</td>");
 
           if (canDeleteLocation) {
+
             trEle.getElementsByClassName("is-delete-location-button")[0].addEventListener("click", clickFn_deleteLocation);
+
           }
+
         }
 
 
@@ -211,17 +236,24 @@
 
 
         if (displayLimit === 0) {
+
           break;
+
         }
+
       }
 
       if (displayLimit === 0) {
+
         searchResultsEle.insertAdjacentHTML("beforeend",
           "<div class=\"message is-warning\">" +
           "<p class=\"message-body\">Display Limit Reached</p>" +
           "</div>");
+
       }
+
     }
+
   };
 
 
@@ -230,11 +262,15 @@
       credentials: "include"
     })
     .then(function(response) {
+
       return response.json();
+
     })
     .then(function(locationsListResponse) {
+
       locationsList = locationsListResponse;
       filterLocations();
+
     });
 
 

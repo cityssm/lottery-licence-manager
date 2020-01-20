@@ -1,15 +1,22 @@
 /* global require, module, console */
 
+"use strict";
 
 let config;
 
 try {
+
   config = require("../data/config");
+
 } catch (e) {
+
   config = {};
 
   // eslint-disable-next-line no-console
-  console.log("No \"config.js\" found.  To customize, create your own \"config.js\" in the \"data\" folder.  See \"config-example-ontario.js\" to get started.");
+  console.log("No \"config.js\" found." +
+    " To customize, create your own \"config.js\" in the \"data\" folder." +
+    " See \"config-example-ontario.js\" to get started.");
+
 }
 
 
@@ -38,12 +45,13 @@ const configFallbackValues = {
   "licences.externalLicenceNumber.newCalculation": "",
 
   "licences.feeCalculationFn": function() {
-    "use strict";
+
     return {
       fee: 10,
       message: "Using base licence fee.",
       licenceHasErrors: false
     };
+
   },
 
   "licences.printTemplate": "licence-print",
@@ -53,21 +61,25 @@ const configFallbackValues = {
 
 
 function getProperty(propertyName) {
-  "use strict";
 
   const propertyNameSplit = propertyName.split(".");
 
   let currentObj = config;
 
   for (let index = 0; index < propertyNameSplit.length; index += 1) {
+
     currentObj = currentObj[propertyNameSplit[index]];
 
     if (!currentObj) {
+
       return configFallbackValues[propertyName];
+
     }
+
   }
 
   return currentObj;
+
 }
 
 
@@ -76,20 +88,25 @@ let configFns = {
   getProperty: getProperty,
 
   getLicenceType: function(licenceTypeKey) {
-    "use strict";
 
     const licenceTypes = getProperty("licenceTypes");
 
     for (let index = 0; index < licenceTypes.length; index += 1) {
+
       if (licenceTypes[index].licenceTypeKey === licenceTypeKey) {
+
         return licenceTypes[index];
+
       }
+
     }
 
     return null;
+
   },
 
   config: config
 };
+
 
 module.exports = configFns;

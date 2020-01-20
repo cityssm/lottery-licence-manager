@@ -1,5 +1,7 @@
 /* global require, module */
 
+"use strict";
+
 const config = {};
 
 
@@ -9,11 +11,9 @@ config.defaults = {
 };
 
 
-
 config.licences = {
 
   feeCalculationFn: function(licenceObj) {
-    "use strict";
 
     const totalPrizeValue = (licenceObj.totalPrizeValue || 0.0);
 
@@ -38,18 +38,24 @@ config.licences = {
       let ticketCost = parseFloat(licenceFields.ticketCost || "0");
 
       if (licenceFields.discount1_tickets !== "" && licenceFields.discount1_cost !== "") {
+
         const discountTicketCost = parseFloat(licenceFields.discount1_cost) / parseInt(licenceFields.discount1_tickets);
         ticketCost = Math.min(ticketCost, discountTicketCost);
+
       }
 
       if (licenceFields.discount2_tickets !== "" && licenceFields.discount2_cost !== "") {
+
         const discountTicketCost = parseFloat(licenceFields.discount2_cost) / parseInt(licenceFields.discount2_tickets);
         ticketCost = Math.min(ticketCost, discountTicketCost);
+
       }
 
       if (licenceFields.discount3_tickets !== "" && licenceFields.discount3_cost !== "") {
+
         const discountTicketCost = parseFloat(licenceFields.discount3_cost) / parseInt(licenceFields.discount3_tickets);
         ticketCost = Math.min(ticketCost, discountTicketCost);
+
       }
 
       // calculate the minimum prize value
@@ -59,9 +65,12 @@ config.licences = {
       let minPrizeValue = minPotentialTakeIn * 0.2;
 
       if (totalPrizeValue < minPrizeValue) {
+
         licenceHasErrors = true;
         message = "Total Prize Value must be a minimum of $" + minPrizeValue + ".";
+
       }
+
     }
 
     return {
@@ -69,6 +78,7 @@ config.licences = {
       message: message,
       licenceHasErrors: licenceHasErrors
     };
+
   },
 
   printTemplate: "licence-print-agco.ejs"

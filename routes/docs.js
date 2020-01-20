@@ -1,6 +1,7 @@
 /* global require, module */
 /* global __dirname */
 
+"use strict";
 
 const express = require("express");
 const router = express.Router();
@@ -12,13 +13,13 @@ const marked = require("marked");
 
 
 router.all("/", function(req, res) {
-  "use strict";
+
   res.redirect("/docs/readme.md");
+
 });
 
 
 router.all("/:mdFileName", function(req, res, next) {
-  "use strict";
 
   const mdFileName = req.params.mdFileName;
 
@@ -27,9 +28,12 @@ router.all("/:mdFileName", function(req, res, next) {
   fs.readFile(mdPath, "utf8", function(err, data) {
 
     if (err) {
+
       next(createError(400));
       return;
+
     }
+
     res.send(`
       <html>
         <head>
@@ -43,7 +47,9 @@ router.all("/:mdFileName", function(req, res, next) {
       </body>
       </html>`
     );
+
   });
+
 });
 
 

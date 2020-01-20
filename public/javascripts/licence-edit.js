@@ -1,10 +1,9 @@
 /* global window, document */
 /* global URLSearchParams, FormData */
 
+"use strict";
 
 (function() {
-  "use strict";
-
 
   /*
    * FORM
@@ -23,6 +22,7 @@
   const events_containerEle = document.getElementById("container--events");
 
   formEle.addEventListener("submit", function(formEvent) {
+
     formEvent.preventDefault();
 
     // ensure at least one event
@@ -30,8 +30,10 @@
     const eventDateInputEles = events_containerEle.getElementsByTagName("input");
 
     if (eventDateInputEles.length === 0) {
+
       window.llm.alertModal("Event Date Error", "Please ensure there is at least one event date.", "OK", "warning");
       return;
+
     }
 
     // ensure event dates are distinct
@@ -44,42 +46,52 @@
         body: new URLSearchParams(new FormData(formEle))
       })
       .then(function(response) {
+
         return response.json();
+
       })
       .then(function(responseJSON) {
 
         if (responseJSON.success) {
+
           window.llm.disableNavBlocker();
           hasUnsavedChanges = false;
+
         }
 
         if (responseJSON.success && isCreate) {
+
           window.location.href = "/licences/" + responseJSON.licenceID + "/edit";
+
+        } else if (responseJSON.success && doRefreshAfterSave) {
+
+          window.location.reload(true);
 
         } else {
 
-          if (responseJSON.success && doRefreshAfterSave) {
-            window.location.reload(true);
+          formMessageEle.innerHTML = "";
 
-          } else {
-            formMessageEle.innerHTML = "";
+          window.llm.alertModal(responseJSON.message, "", "OK",
+            responseJSON.success ? "success" : "danger");
 
-            window.llm.alertModal(responseJSON.message, "", "OK",
-              responseJSON.success ? "success" : "danger");
+          const removeInputEles = document.getElementsByClassName("is-removed-after-save");
 
-            const removeInputEles = document.getElementsByClassName("is-removed-after-save");
+          for (let index = 0; index < removeInputEles.length; index += 1) {
 
-            for (let index = 0; index < removeInputEles.length; index += 1) {
-              removeInputEles[index].remove();
-            }
+            removeInputEles[index].remove();
+
           }
+
         }
+
       });
+
   });
 
   if (!isCreate) {
 
     document.getElementById("is-delete-licence-button").addEventListener("click", function(clickEvent) {
+
       clickEvent.preventDefault();
 
       window.llm.confirmModal("Delete Licence?",
@@ -99,24 +111,34 @@
               })
             })
             .then(function(response) {
+
               return response.json();
+
             })
             .then(function(responseJSON) {
 
               if (responseJSON.success) {
+
                 window.llm.disableNavBlocker();
                 window.location.href = "/licences";
+
               }
+
             });
+
         });
+
     });
+
   }
 
 
   // Nav blocker
 
   function setDoRefreshAfterSave() {
+
     doRefreshAfterSave = true;
+
   }
 
   function setUnsavedChanges(changeEvent) {
@@ -131,23 +153,31 @@
       "</div>";
 
     if (!isCreate) {
+
       document.getElementById("is-add-transaction-button").setAttribute("disabled", "disabled");
       document.getElementById("is-disabled-transaction-message").classList.remove("is-hidden");
+
     }
 
     if (changeEvent &&
       (changeEvent.currentTarget.type === "number" || changeEvent.currentTarget.type === "date" || changeEvent.currentTarget.type === "time")) {
 
       setDoRefreshAfterSave();
+
     }
+
   }
 
   const inputEles = formEle.querySelectorAll("input, select, textarea");
 
   for (let inputIndex = 0; inputIndex < inputEles.length; inputIndex += 1) {
+
     if (inputEles[inputIndex].name !== "") {
+
       inputEles[inputIndex].addEventListener("change", setUnsavedChanges);
+
     }
+
   }
 
 
@@ -159,12 +189,16 @@
   const externalLicenceNumberUnlockBtnEle = document.getElementById("is-external-licence-number-unlock-button");
 
   if (externalLicenceNumberUnlockBtnEle) {
+
     externalLicenceNumberUnlockBtnEle.addEventListener("click", function() {
+
       const externalLicenceNumberEle = document.getElementById("licence--externalLicenceNumber");
       externalLicenceNumberEle.classList.remove("is-readonly");
       externalLicenceNumberEle.removeAttribute("readonly");
       externalLicenceNumberEle.focus();
+
     });
+
   }
 
 
@@ -173,6 +207,7 @@
    */
 
   {
+
     let organizationList = [];
 
     let organizationLookup_closeModalFn;
@@ -191,6 +226,7 @@
       organizationLookup_closeModalFn();
 
       setUnsavedChanges();
+
     };
 
     const organizationLookupFn_refreshResults = function() {
@@ -209,19 +245,26 @@
         const organizationObj = organizationList[organizationIndex];
 
         if (!organizationObj.isEligibleForLicences) {
+
           continue;
+
         }
 
         const organizationName = organizationObj.organizationName.toLowerCase();
 
         for (let searchStringIndex = 0; searchStringIndex < searchStringSplit.length; searchStringIndex += 1) {
+
           if (organizationName.indexOf(searchStringSplit[searchStringIndex]) === -1) {
+
             doDisplayRecord = false;
             break;
+
           }
+
         }
 
         if (doDisplayRecord) {
+
           displayLimit -= 1;
 
           const listItemEle = document.createElement("a");
@@ -232,12 +275,15 @@
           listItemEle.innerText = organizationObj.organizationName;
           listItemEle.addEventListener("click", organizationLookupFn_setOrganization);
           listEle.insertAdjacentElement("beforeend", listItemEle);
+
         }
+
       }
 
       window.llm.clearElement(organizationLookup_resultsEle);
 
       organizationLookup_resultsEle.insertAdjacentElement("beforeend", listEle);
+
     };
 
     const organizationLookupFn_openModal = function() {
@@ -245,6 +291,7 @@
       window.llm.openHtmlModal("licence-organizationLookup", {
 
         onshow: function() {
+
           organizationLookup_searchStrEle = document.getElementById("organizationLookup--searchStr");
           organizationLookup_searchStrEle.addEventListener("keyup", organizationLookupFn_refreshResults);
 
@@ -257,32 +304,45 @@
                 credentials: "include"
               })
               .then(function(response) {
+
                 return response.json();
+
               })
               .then(function(organizationListRes) {
+
                 organizationList = organizationListRes;
                 organizationLookup_searchStrEle.removeAttribute("disabled");
                 organizationLookupFn_refreshResults();
 
                 organizationLookup_searchStrEle.focus();
+
               });
+
           } else {
+
             organizationLookup_searchStrEle.removeAttribute("disabled");
             organizationLookupFn_refreshResults();
 
             organizationLookup_searchStrEle.focus();
+
           }
+
         },
 
         onshown: function(modalEle, closeModalFn) {
+
           organizationLookup_closeModalFn = closeModalFn;
           organizationLookup_searchStrEle.focus();
+
         }
+
       });
+
     };
 
     document.getElementById("is-organization-lookup-button").addEventListener("click", organizationLookupFn_openModal);
     document.getElementById("licence--organizationName").addEventListener("dblclick", organizationLookupFn_openModal);
+
   }
 
 
@@ -301,26 +361,37 @@
           credentials: "include"
         })
         .then(function(response) {
+
           return response.json();
+
         })
         .then(function(locationListRes) {
+
           locationList = locationListRes;
           callbackFn();
+
         });
+
     } else {
+
       callbackFn();
+
     }
+
   }
 
   {
+
     let locationLookup_closeModalFn;
     let locationLookup_searchStrEle;
     let locationLookup_resultsEle;
 
 
     const locationLookupFn_setLocation = function(locationID, locationDisplayName) {
+
       document.getElementById("licence--locationID").value = locationID;
       document.getElementById("licence--locationDisplayName").value = locationDisplayName;
+
     };
 
     const locationLookupFn_setLocationFromExisting = function(clickEvent) {
@@ -336,6 +407,7 @@
       locationLookup_closeModalFn();
 
       setUnsavedChanges();
+
     };
 
     const locationLookupFn_refreshResults = function() {
@@ -356,13 +428,18 @@
         const locationName = locationObj.locationName.toLowerCase();
 
         for (let searchStringIndex = 0; searchStringIndex < searchStringSplit.length; searchStringIndex += 1) {
+
           if (locationName.indexOf(searchStringSplit[searchStringIndex]) === -1) {
+
             doDisplayRecord = false;
             break;
+
           }
+
         }
 
         if (doDisplayRecord) {
+
           displayLimit -= 1;
 
           const locationDisplayName = locationObj.locationName === "" ? locationObj.locationAddress1 : locationObj.locationName;
@@ -376,12 +453,15 @@
             (locationObj.locationName === "" ? "" : "<br /><small>" + locationObj.locationAddress1 + "</small>");
           listItemEle.addEventListener("click", locationLookupFn_setLocationFromExisting);
           listEle.insertAdjacentElement("beforeend", listItemEle);
+
         }
+
       }
 
       window.llm.clearElement(locationLookup_resultsEle);
 
       locationLookup_resultsEle.insertAdjacentElement("beforeend", listEle);
+
     };
 
     const locationLookupFn_openModal = function() {
@@ -398,26 +478,37 @@
           locationLookup_resultsEle = document.getElementById("container--locationLookup");
 
           loadLocationList(function() {
+
             locationLookup_searchStrEle.removeAttribute("disabled");
             locationLookupFn_refreshResults();
             locationLookup_searchStrEle.focus();
+
           });
 
           // new location
 
           window.llm.getDefaultConfigProperty("city", function(defaultCity) {
+
             if (defaultCity) {
+
               document.getElementById("newLocation--locationCity").value = defaultCity;
+
             }
+
           });
 
           window.llm.getDefaultConfigProperty("province", function(defaultProvince) {
+
             if (defaultProvince) {
+
               document.getElementById("newLocation--locationProvince").value = defaultProvince;
+
             }
+
           });
 
           document.getElementById("form--newLocation").addEventListener("submit", function(formEvent) {
+
             formEvent.preventDefault();
 
             window.fetch("/locations/doCreate", {
@@ -426,30 +517,42 @@
                 body: new URLSearchParams(new FormData(formEvent.currentTarget))
               })
               .then(function(response) {
+
                 return response.json();
+
               })
               .then(function(responseJSON) {
 
                 if (responseJSON.success) {
+
                   locationList = [];
                   locationLookupFn_setLocation(responseJSON.locationID, responseJSON.locationDisplayName);
                   locationLookup_closeModalFn();
+
                 }
+
               });
+
           });
 
           window.llm.initializeTabs(modalEle.querySelector(".tabs ul"));
+
         },
 
         onshown: function(modalEle, closeModalFn) {
+
           locationLookup_closeModalFn = closeModalFn;
           locationLookup_searchStrEle.focus();
+
         }
+
       });
+
     };
 
     document.getElementById("is-location-lookup-button").addEventListener("click", locationLookupFn_openModal);
     document.getElementById("licence--locationDisplayName").addEventListener("dblclick", locationLookupFn_openModal);
+
   }
 
 
@@ -458,6 +561,7 @@
    */
 
   {
+
     let termsConditionsList = [];
 
     const termsConditionsLookup_modalEle = document.getElementById("is-termsConditions-lookup-modal");
@@ -474,6 +578,7 @@
       window.llm.hideModal(termsConditionsLookup_modalEle);
 
       setUnsavedChanges();
+
     };
 
     document.getElementById("is-termsConditions-lookup-button").addEventListener("click", function() {
@@ -484,8 +589,10 @@
       const organizationID = document.getElementById("licence--organizationID").value;
 
       if (organizationID === "") {
+
         window.llm.alertModal("No Organization Selected", "An organization must be selected before the previously used terms and conditions can be retrieved.", "OK", "warning");
         return;
+
       }
 
       termsConditionsLookup_resultsEle.innerHTML = "<p class=\"has-text-centered has-text-grey-lighter\">" +
@@ -504,7 +611,9 @@
           })
         })
         .then(function(response) {
+
           return response.json();
+
         })
         .then(function(termsConditionsListRes) {
 
@@ -536,26 +645,33 @@
                 (termsConditionsObj.termsConditionsCount > 1 ?
                   "<span class=\"tag is-light\">Used " + termsConditionsObj.termsConditionsCount + " times</span>" :
                   "") +
-                "<span class=\"tag is-info\">" + termsConditionsObj.startDateMaxString + "</span>" +
+                "<span class=\"tag is-info has-tooltip-left\" data-tooltip=\"Most Recent Licence Start Date\">" + termsConditionsObj.startDateMaxString + "</span>" +
                 "</p>";
               listItemEle.addEventListener("click", termsConditionsLookupFn_setTermsConditions);
               listEle.insertAdjacentElement("beforeend", listItemEle);
+
             }
 
             window.llm.clearElement(termsConditionsLookup_resultsEle);
 
             termsConditionsLookup_resultsEle.insertAdjacentElement("beforeend", listEle);
+
           }
+
         });
 
       window.llm.showModal(termsConditionsLookup_modalEle);
+
     });
 
     const cancelButtonEles = termsConditionsLookup_modalEle.getElementsByClassName("is-close-modal-button");
 
     for (let buttonIndex = 0; buttonIndex < cancelButtonEles.length; buttonIndex += 1) {
+
       cancelButtonEles[buttonIndex].addEventListener("click", window.llm.hideModal);
+
     }
+
   }
 
 
@@ -578,12 +694,14 @@
       const totalPrizeValueEle = document.getElementById("licence--totalPrizeValue");
 
       if (hasTicketTypes) {
+
         document.getElementById("is-ticket-types-panel").classList.remove("is-hidden");
 
         totalPrizeValueEle.setAttribute("readonly", "readonly");
         totalPrizeValueEle.classList.add("is-readonly");
 
       } else {
+
         const ticketTypesPanelEle = document.getElementById("is-ticket-types-panel");
 
         ticketTypesPanelEle.classList.add("is-hidden");
@@ -592,6 +710,7 @@
 
         totalPrizeValueEle.removeAttribute("readonly");
         totalPrizeValueEle.classList.remove("is-readonly");
+
       }
 
       // fields
@@ -605,16 +724,23 @@
         const fieldContainerEle = licenceType_fieldContainerEles[containerIndex];
 
         if (fieldContainerEle.id === idToShow) {
+
           licenceType_fieldContainerEles[containerIndex].removeAttribute("disabled");
           licenceType_fieldContainerEles[containerIndex].classList.remove("is-hidden");
+
         } else {
+
           licenceType_fieldContainerEles[containerIndex].classList.add("is-hidden");
           licenceType_fieldContainerEles[containerIndex].setAttribute("disabled", "disabled");
+
         }
+
       }
+
     };
 
     licenceType_selectEle.addEventListener("change", changeFn_licenceType);
+
   }
 
 
@@ -623,6 +749,7 @@
    */
 
   {
+
     const startDateEle = document.getElementById("licence--startDateString");
     const endDateEle = document.getElementById("licence--endDateString");
 
@@ -633,14 +760,19 @@
       endDateEle.setAttribute("min", startDateString);
 
       if (endDateEle.value < startDateString) {
+
         endDateEle.value = startDateString;
+
       }
 
       const eventDateEles = events_containerEle.getElementsByTagName("input");
 
       for (let eleIndex = 0; eleIndex < eventDateEles.length; eleIndex += 1) {
+
         eventDateEles[eleIndex].setAttribute("min", startDateString);
+
       }
+
     };
 
     const dateFn_setMax = function() {
@@ -650,12 +782,17 @@
       const eventDateEles = events_containerEle.getElementsByTagName("input");
 
       for (let eleIndex = 0; eleIndex < eventDateEles.length; eleIndex += 1) {
+
         eventDateEles[eleIndex].setAttribute("max", endDateString);
+
       }
+
     };
 
     document.getElementById("licence--applicationDateString").addEventListener("change", function(changeEvent) {
+
       startDateEle.setAttribute("min", changeEvent.currentTarget.value);
+
     });
 
     startDateEle.addEventListener("change", dateFn_setMin);
@@ -668,10 +805,12 @@
 
 
     const eventFn_remove = function(clickEvent) {
+
       clickEvent.currentTarget.closest(".panel-block").remove();
 
       doRefreshAfterSave = true;
       setUnsavedChanges();
+
     };
 
     const eventFn_add = function(eventDate) {
@@ -681,16 +820,19 @@
       if (eventDate) {
 
         if (eventDate instanceof Date) {
+
           eventDateString = eventDate.getFullYear() + "-" +
             ("00" + (eventDate.getMonth() + 1)).slice(-2) + "-" +
             ("00" + eventDate.getDate()).slice(-2);
 
         } else if (eventDate.constructor === String) {
+
           eventDateString = eventDate;
 
         } else if (eventDate instanceof Object) {
 
           try {
+
             eventDate.preventDefault();
 
             const sourceEleID = eventDate.currentTarget.getAttribute("data-source");
@@ -700,7 +842,9 @@
           } catch (e) {
             // ignore
           }
+
         }
+
       }
 
       events_containerEle.insertAdjacentHTML("beforeend",
@@ -730,6 +874,7 @@
 
       doRefreshAfterSave = true;
       setUnsavedChanges();
+
     };
 
     const eventCalculator_modalEle = document.getElementById("is-event-calculator-modal");
@@ -752,27 +897,36 @@
         eventFn_add(eventDate);
 
         eventDate.setDate(eventDate.getDate() + dayInterval);
+
       }
 
       window.llm.hideModal(eventCalculator_modalEle);
+
     });
 
 
     document.getElementById("is-event-calculator-button").addEventListener("click", function() {
+
       window.llm.showModal(eventCalculator_modalEle);
+
     });
 
     const cancelButtonEles = eventCalculator_modalEle.getElementsByClassName("is-close-modal-button");
 
     for (let buttonIndex = 0; buttonIndex < cancelButtonEles.length; buttonIndex += 1) {
+
       cancelButtonEles[buttonIndex].addEventListener("click", window.llm.hideModal);
+
     }
 
     const addEventBtnEles = document.getElementsByClassName("is-add-event-button");
 
     for (let btnIndex = 0; btnIndex < addEventBtnEles.length; btnIndex += 1) {
+
       addEventBtnEles[btnIndex].addEventListener("click", eventFn_add);
+
     }
+
   }
 
 
@@ -787,11 +941,15 @@
     let licenceTypeKeyToTicketTypes = {};
 
     const ticketTypes_getAll = function(callbackFn) {
+
       const licenceTypeKey = licenceType_selectEle.value;
 
       if (licenceTypeKey in licenceTypeKeyToTicketTypes) {
+
         callbackFn(licenceTypeKeyToTicketTypes[licenceTypeKey]);
+
       } else {
+
         window.fetch("/licences/doGetTicketTypes", {
             method: "POST",
             credentials: "include",
@@ -803,13 +961,19 @@
             })
           })
           .then(function(response) {
+
             return response.json();
+
           })
           .then(function(ticketTypes) {
+
             licenceTypeKeyToTicketTypes[licenceTypeKey] = ticketTypes;
             callbackFn(ticketTypes);
+
           });
+
       }
+
     };
 
     const ticketTypes_calculateTfoot = function() {
@@ -819,7 +983,9 @@
       const prizeValueEles = ticketTypesPanelEle.getElementsByClassName("is-total-prizes-per-deal");
 
       for (let eleIndex = 0; eleIndex < prizeValueEles.length; eleIndex += 1) {
+
         prizeValueTotal += parseFloat(prizeValueEles[eleIndex].value);
+
       }
 
       let licenceFeeTotal = 0;
@@ -827,7 +993,9 @@
       const licenceFeeEles = ticketTypesPanelEle.getElementsByClassName("is-licence-fee");
 
       for (let eleIndex = 0; eleIndex < licenceFeeEles.length; eleIndex += 1) {
+
         licenceFeeTotal += parseFloat(licenceFeeEles[eleIndex].value);
+
       }
 
       ticketTypesPanelEle.getElementsByTagName("tfoot")[0].innerHTML = "<tr>" +
@@ -844,6 +1012,7 @@
         "</tr>";
 
       document.getElementById("licence--totalPrizeValue").value = prizeValueTotal;
+
     };
 
     let ticketTypes_addTr;
@@ -854,6 +1023,7 @@
       const ticketType = trEle.getAttribute("data-ticket-type");
 
       const doDeleteTicketType = function() {
+
         trEle.remove();
 
         if (!isCreate) {
@@ -861,18 +1031,23 @@
           const addEle = formEle.querySelector("input[name='ticketType_toAdd'][value='" + ticketType + "']");
 
           if (addEle) {
+
             addEle.remove();
 
           } else {
+
             formEle.insertAdjacentHTML("beforeend",
               "<input class=\"is-removed-after-save\" name=\"ticketType_toDelete\" type=\"hidden\" value=\"" + ticketType + "\" />");
+
           }
+
         }
 
         ticketTypes_calculateTfoot();
 
         setUnsavedChanges();
         setDoRefreshAfterSave();
+
       };
 
       window.llm.confirmModal("Delete Ticket Type?",
@@ -880,6 +1055,7 @@
         "Yes, Delete",
         "danger",
         doDeleteTicketType);
+
     };
 
     const amendUnitCount_openModal = function(buttonEvent) {
@@ -892,6 +1068,7 @@
       let amendUnitCount_closeModalFn;
 
       const amendUnitCount_closeAndUpdate = function(formEvent) {
+
         formEvent.preventDefault();
 
         const unitCount = document.getElementById("amendUnit_unitCount").value;
@@ -919,16 +1096,19 @@
         ticketTypes_calculateTfoot();
         setUnsavedChanges();
         setDoRefreshAfterSave();
+
       };
 
       const amendUnitCount_calculateLicenceFee = function() {
 
         document.getElementById("amendUnit_licenceFee").value =
           (ticketTypeObj.feePerUnit * document.getElementById("amendUnit_unitCount").value).toFixed(2);
+
       };
 
       window.llm.openHtmlModal("licence-ticketTypeUnitAmend", {
         onshow: function(modalEle) {
+
           document.getElementById("amendUnit_ticketType").value = ticketType;
 
           const unitCountCurrent = trEle.querySelector("input[name='ticketType_unitCount']").value;
@@ -939,18 +1119,24 @@
           unitCountEle.value = unitCountCurrent;
 
           ticketTypes_getAll(function(ticketTypes) {
+
             ticketTypeObj = ticketTypes.find(ele => ele.ticketType === ticketType);
 
             unitCountEle.addEventListener("change", amendUnitCount_calculateLicenceFee);
             amendUnitCount_calculateLicenceFee();
+
           });
 
           modalEle.getElementsByTagName("form")[0].addEventListener("submit", amendUnitCount_closeAndUpdate);
+
         },
         onshown: function(modalEle, closeModalFn) {
+
           amendUnitCount_closeModalFn = closeModalFn;
+
         }
       });
+
     };
 
     const amendDistributor_openModal = function(buttonEvent) {
@@ -967,11 +1153,13 @@
         distributorLookup_closeModalFn();
 
         setUnsavedChanges();
+
       };
 
       window.llm.openHtmlModal("licence-distributorLookup", {
 
         onshow: function() {
+
           loadLocationList(function() {
 
             const listEle = document.createElement("div");
@@ -982,8 +1170,11 @@
               const locationObj = locationList[index];
 
               if (!locationObj.locationIsDistributor) {
+
                 continue;
+
               }
+
 
               const listItemEle = document.createElement("a");
               listItemEle.className = "list-item";
@@ -994,17 +1185,23 @@
               listItemEle.addEventListener("click", distributorLookup_updateDistributor);
 
               listEle.insertAdjacentElement("beforeend", listItemEle);
+
             }
 
             const lookupContainerEle = document.getElementById("container--distributorLookup");
             window.llm.clearElement(lookupContainerEle);
             lookupContainerEle.insertAdjacentElement("beforeend", listEle);
+
           });
+
         },
         onshown: function(modalEle, closeModalFn) {
+
           distributorLookup_closeModalFn = closeModalFn;
+
         }
       });
+
     };
 
     const amendManufacturer_openModal = function(buttonEvent) {
@@ -1021,11 +1218,13 @@
         manufacturerLookup_closeModalFn();
 
         setUnsavedChanges();
+
       };
 
       window.llm.openHtmlModal("licence-manufacturerLookup", {
 
         onshow: function() {
+
           loadLocationList(function() {
 
             const listEle = document.createElement("div");
@@ -1036,7 +1235,9 @@
               const locationObj = locationList[index];
 
               if (!locationObj.locationIsManufacturer) {
+
                 continue;
+
               }
 
               const listItemEle = document.createElement("a");
@@ -1048,17 +1249,23 @@
               listItemEle.addEventListener("click", manufacturerLookup_updateManufacturer);
 
               listEle.insertAdjacentElement("beforeend", listItemEle);
+
             }
 
             const lookupContainerEle = document.getElementById("container--manufacturerLookup");
             window.llm.clearElement(lookupContainerEle);
             lookupContainerEle.insertAdjacentElement("beforeend", listEle);
+
           });
+
         },
         onshown: function(modalEle, closeModalFn) {
+
           manufacturerLookup_closeModalFn = closeModalFn;
+
         }
       });
+
     };
 
     const addTicketType_openModal = function() {
@@ -1080,11 +1287,14 @@
         });
 
         if (!isCreate) {
+
           formEle.insertAdjacentHTML("beforeend",
             "<input class=\"is-removed-after-save\" name=\"ticketType_toAdd\" type=\"hidden\" value=\"" + document.getElementById("ticketTypeAdd--ticketType").value + "\" />");
+
         }
 
         addTicketType_closeModalFn();
+
       };
 
       const addTicketType_refreshUnitCountChange = function() {
@@ -1096,9 +1306,11 @@
 
         document.getElementById("ticketTypeAdd--licenceFee").value =
           (document.getElementById("ticketTypeAdd--feePerUnit").value * unitCount).toFixed(2);
+
       };
 
       const addTicketType_refreshTicketTypeChange = function() {
+
         const ticketTypeOptionEle = addTicketType_ticketTypeEle.selectedOptions[0];
 
         document.getElementById("ticketTypeAdd--ticketPrice").value = ticketTypeOptionEle.getAttribute("data-ticket-price");
@@ -1112,14 +1324,17 @@
         document.getElementById("ticketTypeAdd--feePerUnit").value = ticketTypeOptionEle.getAttribute("data-fee-per-unit");
 
         addTicketType_refreshUnitCountChange();
+
       };
 
       const addTicketType_populateTicketTypeSelect = function(ticketTypes) {
 
         if (!ticketTypes || ticketTypes.length === 0) {
+
           addTicketType_closeModalFn();
           window.llm.alertModal("No ticket types available", "", "OK", "danger");
           return;
+
         }
 
         for (let ticketTypeIndex = 0; ticketTypeIndex < ticketTypes.length; ticketTypeIndex += 1) {
@@ -1127,7 +1342,9 @@
           const ticketTypeObj = ticketTypes[ticketTypeIndex];
 
           if (ticketTypesPanelEle.querySelector("tr[data-ticket-type='" + ticketTypeObj.ticketType + "']")) {
+
             continue;
+
           }
 
           const optionEle = document.createElement("option");
@@ -1141,14 +1358,17 @@
           optionEle.innerText = ticketTypeObj.ticketType + " (" + ticketTypeObj.ticketCount + " tickets, $" + ticketTypeObj.ticketPrice.toFixed(2) + " each)";
 
           addTicketType_ticketTypeEle.insertAdjacentElement("beforeend", optionEle);
+
         }
 
         addTicketType_refreshTicketTypeChange();
+
       };
 
       window.llm.openHtmlModal("licence-ticketTypeAdd", {
 
         onshow: function(modalEle) {
+
           addTicketType_ticketTypeEle = document.getElementById("ticketTypeAdd--ticketType");
           addTicketType_ticketTypeEle.addEventListener("change", addTicketType_refreshTicketTypeChange);
 
@@ -1156,14 +1376,17 @@
           addTicketType_unitCountEle.addEventListener("change", addTicketType_refreshUnitCountChange);
 
           modalEle.getElementsByTagName("form")[0].addEventListener("submit", addTicketType_addTicketType);
+
         },
 
         onshown: function(modalEle, closeModalFn) {
 
           addTicketType_closeModalFn = closeModalFn;
           ticketTypes_getAll(addTicketType_populateTicketTypeSelect);
+
         }
       });
+
     };
 
     ticketTypes_addTr = function(obj) {
@@ -1274,9 +1497,11 @@
 
       setUnsavedChanges();
       setDoRefreshAfterSave();
+
     };
 
     {
+
       ticketTypes_calculateTfoot();
 
       document.getElementById("is-add-ticket-type-button").addEventListener("click", addTicketType_openModal);
@@ -1284,27 +1509,37 @@
       const amendUnitButtonEles = ticketTypesPanelEle.getElementsByClassName("is-amend-ticket-type-unit-count-button");
 
       for (let buttonIndex = 0; buttonIndex < amendUnitButtonEles.length; buttonIndex += 1) {
+
         amendUnitButtonEles[buttonIndex].addEventListener("click", amendUnitCount_openModal);
+
       }
 
       const deleteButtonEles = ticketTypesPanelEle.getElementsByClassName("is-delete-ticket-type-button");
 
       for (let buttonIndex = 0; buttonIndex < deleteButtonEles.length; buttonIndex += 1) {
+
         deleteButtonEles[buttonIndex].addEventListener("click", deleteTicketType_openConfirm);
+
       }
 
       const amendDistributorButtonEles = ticketTypesPanelEle.getElementsByClassName("is-amend-ticket-type-distributor-button");
 
       for (let buttonIndex = 0; buttonIndex < amendDistributorButtonEles.length; buttonIndex += 1) {
+
         amendDistributorButtonEles[buttonIndex].addEventListener("click", amendDistributor_openModal);
+
       }
 
       const amendManufacturerButtonEles = ticketTypesPanelEle.getElementsByClassName("is-amend-ticket-type-manufacturer-button");
 
       for (let buttonIndex = 0; buttonIndex < amendManufacturerButtonEles.length; buttonIndex += 1) {
+
         amendManufacturerButtonEles[buttonIndex].addEventListener("click", amendManufacturer_openModal);
+
       }
+
     }
+
   }
 
 
@@ -1317,6 +1552,7 @@
     const updateFeeButtonEle = document.getElementById("is-update-expected-licence-fee-button");
 
     if (updateFeeButtonEle) {
+
       updateFeeButtonEle.addEventListener("click", function() {
 
         const licenceFeeEle = document.getElementById("licence--licenceFee");
@@ -1329,7 +1565,9 @@
 
         setUnsavedChanges();
         setDoRefreshAfterSave();
+
       });
+
     }
 
     document.getElementById("is-add-transaction-button").addEventListener("click", function() {
@@ -1339,7 +1577,9 @@
       const addTransactionFn = function(formEvent) {
 
         if (formEvent) {
+
           formEvent.preventDefault();
+
         }
 
         window.fetch("/licences/doAddTransaction", {
@@ -1348,15 +1588,20 @@
             body: new URLSearchParams(new FormData(addTransactionFormEle))
           })
           .then(function(response) {
+
             return response.json();
+
           })
           .then(function(responseJSON) {
 
             if (responseJSON.success) {
+
               window.location.reload(true);
+
             }
 
           });
+
       };
 
       window.llm.openHtmlModal("licence-transactionAdd", {
@@ -1364,7 +1609,9 @@
         onshow: function(modalEle) {
 
           window.llm.getDefaultConfigProperty("externalReceiptNumber_fieldLabel", function(fieldLabel) {
+
             modalEle.querySelector("label[for='transactionAdd--externalReceiptNumber']").innerText = fieldLabel;
+
           });
 
           document.getElementById("transactionAdd--licenceID").value = licenceID;
@@ -1393,13 +1640,20 @@
             addAndIssueButtonEle.classList.remove("is-hidden");
 
             addAndIssueButtonEle.addEventListener("click", function() {
+
               document.getElementById("transactionAdd--issueLicence").value = "true";
               addTransactionFn();
+
             });
+
           }
+
         }
+
       });
+
     });
+
   }
 
 
@@ -1412,6 +1666,7 @@
     const unissueLicenceButtonEle = document.getElementById("is-unissue-licence-button");
 
     if (unissueLicenceButtonEle) {
+
       unissueLicenceButtonEle.addEventListener("click", function() {
 
         const unissueFn = function() {
@@ -1427,14 +1682,20 @@
               })
             })
             .then(function(response) {
+
               return response.json();
+
             })
             .then(function(responseJSON) {
 
               if (responseJSON.success) {
+
                 window.location.reload(true);
+
               }
+
             });
+
         };
 
         window.llm.confirmModal("Unissue Licence?",
@@ -1442,7 +1703,9 @@
           "Yes, Unissue",
           "danger",
           unissueFn);
+
       });
+
     } else {
 
       document.getElementById("is-issue-licence-button").addEventListener("click", function() {
@@ -1460,30 +1723,43 @@
               })
             })
             .then(function(response) {
+
               return response.json();
+
             })
             .then(function(responseJSON) {
 
               if (responseJSON.success) {
+
                 window.location.reload(true);
+
               }
+
             });
+
         };
 
         if (hasUnsavedChanges) {
+
           window.llm.alertModal("Unsaved Changes",
             "Please save all unsaved changes before issuing this licence.",
             "OK",
             "warning");
 
         } else {
+
           window.llm.confirmModal("Issue Licence?",
             "Are you sure you want to issue this lottery licence?",
             "Yes, Issue",
             "success",
             issueFn);
+
         }
+
       });
+
     }
+
   }
+
 }());

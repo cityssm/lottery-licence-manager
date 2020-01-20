@@ -1,5 +1,7 @@
 /* global module */
 
+"use strict";
+
 /*
  * Source
  * https://www.agco.ca/sites/default/files/schedule_of_approved_bot_types_and_associated_expense_maximumsen.pdf
