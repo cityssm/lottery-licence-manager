@@ -36,6 +36,10 @@
 
     /* bulma-like styles */
 
+    .has-padding-left-20 {
+      padding-left: 20px;
+    }
+
     .has-padding-right-10 {
       padding-right: 10px;
     }
@@ -312,6 +316,25 @@
               Date de délivrance de la licence (aaaa/mm/jj)
               <div class="field">
                 <%= licence.issueDateString.replace(/-/g, "/") %>
+                <%
+                  let hasVisibleAmendments = false;
+                  let maxVisibleAmendmentDate = "";
+
+                  for (let index = licence.licenceAmendments.length - 1; index >= 0; index -= 1) {
+
+                    if (!licence.licenceAmendments[index].isHidden) {
+                      hasVisibleAmendments = true;
+                      maxVisibleAmendmentDate = licence.licenceAmendments[index].amendmentDateString.replace(/-/g, "/");
+                      break;
+                    }
+                  }
+
+                  if (hasVisibleAmendments) {
+                %>
+                  <em class="has-padding-left-20">Amended <%= maxVisibleAmendmentDate %></em>
+                <%
+                  }
+                %>
               </div>
             </div>
           </td>

@@ -44,6 +44,17 @@ const configFallbackValues = {
   "licences.externalLicenceNumber.fieldLabel": "External Licence Number",
   "licences.externalLicenceNumber.newCalculation": "",
 
+  "licences.amendments.displayCount": 5,
+
+  "licences.amendments.trackLicenceFeeUpdate": true,
+  "licences.amendments.trackDateTimeUpdate": true,
+  "licences.amendments.trackOrganizationUpdate": true,
+  "licences.amendments.trackLocationUpdate": true,
+
+  "licences.amendments.trackTicketTypeNew": true,
+  "licences.amendments.trackTicketTypeUpdate": true,
+  "licences.amendments.trackTicketTypeDelete": true,
+
   "licences.feeCalculationFn": function() {
 
     return {

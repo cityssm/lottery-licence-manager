@@ -305,6 +305,7 @@ const licencesDB = {
 
   },
 
+
   /*
    * LOCATIONS
    */
@@ -588,6 +589,7 @@ const licencesDB = {
 
   },
 
+
   /*
    * ORGANIZATIONS
    */
@@ -819,6 +821,7 @@ const licencesDB = {
 
   },
 
+
   /*
    * ORGANIZATION REPRESENTATIVES
    */
@@ -946,6 +949,7 @@ const licencesDB = {
     return true;
 
   },
+
 
   /*
    * ORGANIZATION REMARKS
@@ -1108,6 +1112,7 @@ const licencesDB = {
     return changeCount;
 
   },
+
 
   /*
    * LICENCES
@@ -1484,6 +1489,9 @@ const licencesDB = {
 
     const nowMillis = Date.now();
 
+    // get integert version of external licence number
+    // (for indexing)
+
     let externalLicenceNumberInteger = -1;
 
     try {
@@ -1557,10 +1565,11 @@ const licencesDB = {
 
     if (licenceObj_past.trackUpdatesAsAmendments) {
 
-      if (licenceObj_past.startDate !== startDate_now ||
-        licenceObj_past.endDate !== endDate_now ||
-        licenceObj_past.startTime !== startTime_now ||
-        licenceObj_past.endTime !== endTime_now) {
+      if (configFns.getProperty("licences.amendments.trackDateTimeUpdate") &&
+        (licenceObj_past.startDate !== startDate_now ||
+          licenceObj_past.endDate !== endDate_now ||
+          licenceObj_past.startTime !== startTime_now ||
+          licenceObj_past.endTime !== endTime_now)) {
 
         const amendment = (
           (licenceObj_past.startDate !== startDate_now ?
@@ -1586,7 +1595,8 @@ const licencesDB = {
 
       }
 
-      if (licenceObj_past.organizationID !== parseInt(reqBody.organizationID)) {
+      if (licenceObj_past.organizationID !== parseInt(reqBody.organizationID) &&
+        configFns.getProperty("licences.amendments.trackOrganizationUpdate")) {
 
         addLicenceAmendment(reqBody.licenceID,
           "Organization Change",
@@ -1598,11 +1608,25 @@ const licencesDB = {
 
       }
 
-      if (licenceObj_past.locationID !== parseInt(reqBody.locationID)) {
+      if (licenceObj_past.locationID !== parseInt(reqBody.locationID) &&
+        configFns.getProperty("licences.amendments.trackLocationUpdate")) {
 
         addLicenceAmendment(reqBody.licenceID,
           "Location Change",
           "",
+          0,
+          reqSession,
+          db
+        );
+
+      }
+
+      if (licenceObj_past.licenceFee !== parseFloat(reqBody.licenceFee) &&
+        configFns.getProperty("licences.amendments.trackLicenceFeeUpdate")) {
+
+        addLicenceAmendment(reqBody.licenceID,
+          "Licence Fee Change",
+          "$" + licenceObj_past.licenceFee.toFixed(2) + " -> $" + parseFloat(reqBody.licenceFee).toFixed(2),
           0,
           reqSession,
           db
@@ -1656,6 +1680,19 @@ const licencesDB = {
           reqBody.licenceID,
           reqBody.ticketType_toDelete);
 
+      if (licenceObj_past.trackUpdatesAsAmendments &&
+        configFns.getProperty("licences.amendments.trackTicketTypeDelete")) {
+
+        addLicenceAmendment(reqBody.licenceID,
+          "Ticket Type Removed",
+          "Removed " + reqBody.ticketType_toDelete + ".",
+          0,
+          reqSession,
+          db
+        );
+
+      }
+
     } else if (typeof(reqBody.ticketType_toDelete) === "object") {
 
       for (let deleteIndex = 0; deleteIndex < reqBody.ticketType_toDelete.length; deleteIndex += 1) {
@@ -1669,6 +1706,19 @@ const licencesDB = {
             nowMillis,
             reqBody.licenceID,
             reqBody.ticketType_toDelete[deleteIndex]);
+
+        if (licenceObj_past.trackUpdatesAsAmendments &&
+          configFns.getProperty("licences.amendments.trackTicketTypeDelete")) {
+
+          addLicenceAmendment(reqBody.licenceID,
+            "Ticket Type Removed",
+            "Removed " + reqBody.ticketType_toDelete[deleteIndex] + ".",
+            0,
+            reqSession,
+            db
+          );
+
+        }
 
       }
 
@@ -1710,6 +1760,19 @@ const licencesDB = {
 
       }
 
+      if (licenceObj_past.trackUpdatesAsAmendments &&
+        configFns.getProperty("licences.amendments.trackTicketTypeNew")) {
+
+        addLicenceAmendment(reqBody.licenceID,
+          "New Ticket Type",
+          "Added " + reqBody.ticketType_toAdd + ".",
+          0,
+          reqSession,
+          db
+        );
+
+      }
+
     } else if (typeof(reqBody.ticketType_toAdd) === "object") {
 
       for (let addIndex = 0; addIndex < reqBody.ticketType_toAdd.length; addIndex += 1) {
@@ -1746,6 +1809,19 @@ const licencesDB = {
 
         }
 
+        if (licenceObj_past.trackUpdatesAsAmendments &&
+          configFns.getProperty("licences.amendments.trackTicketTypeNew")) {
+
+          addLicenceAmendment(reqBody.licenceID,
+            "New Ticket Type",
+            "Added " + reqBody.ticketType_toAdd[addIndex] + ".",
+            0,
+            reqSession,
+            db
+          );
+
+        }
+
       }
 
     }
@@ -1774,6 +1850,26 @@ const licencesDB = {
           reqBody.licenceID,
           reqBody.ticketType_ticketType);
 
+      if (licenceObj_past.trackUpdatesAsAmendments) {
+
+        const ticketTypeObj_past = licenceObj_past.licenceTicketTypes.find(ele => ele.ticketType === reqBody.ticketType_ticketType);
+
+        if (ticketTypeObj_past &&
+          configFns.getProperty("licences.amendments.trackTicketTypeUpdate") &&
+          ticketTypeObj_past.unitCount !== parseInt(reqBody.ticketType_unitCount)) {
+
+          addLicenceAmendment(reqBody.licenceID,
+            "Ticket Type Change",
+            reqBody.ticketType_ticketType + " Units: " + ticketTypeObj_past.unitCount + " -> " + reqBody.ticketType_unitCount,
+            0,
+            reqSession,
+            db
+          );
+
+        }
+
+      }
+
     } else if (typeof(reqBody.ticketType_ticketType) === "object") {
 
       for (let ticketTypeIndex = 0; ticketTypeIndex < reqBody.ticketType_ticketType.length; ticketTypeIndex += 1) {
@@ -1797,6 +1893,26 @@ const licencesDB = {
             nowMillis,
             reqBody.licenceID,
             reqBody.ticketType_ticketType[ticketTypeIndex]);
+
+        if (licenceObj_past.trackUpdatesAsAmendments) {
+
+          const ticketTypeObj_past = licenceObj_past.licenceTicketTypes.find(ele => ele.ticketType === reqBody.ticketType_ticketType[ticketTypeIndex]);
+
+          if (ticketTypeObj_past &&
+            configFns.getProperty("licences.amendments.trackTicketTypeUpdate") &&
+            ticketTypeObj_past.unitCount !== parseInt(reqBody.ticketType_unitCount[ticketTypeIndex])) {
+
+            addLicenceAmendment(reqBody.licenceID,
+              "Ticket Type Change",
+              reqBody.ticketType_ticketType[ticketTypeIndex] + " Units: " + ticketTypeObj_past.unitCount + " -> " + reqBody.ticketType_unitCount[ticketTypeIndex],
+              0,
+              reqSession,
+              db
+            );
+
+          }
+
+        }
 
       }
 
