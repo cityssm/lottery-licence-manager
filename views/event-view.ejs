@@ -13,11 +13,12 @@
 <div class="level">
   <div class="level-left">
     <h1 class="title is-1">
-      Licence #<%=event.licenceID %><br />
+      Licence #<%=event.licenceID %>
+      <br class="is-hidden-print" />
       <small>Event <%= event.eventDateString %></small>
     </h1>
   </div>
-  <div class="level-right">
+  <div class="level-right is-hidden-print">
     <div class="field is-grouped align-items-center justify-flex-end">
       <% if (event.canUpdate) { %>
         <a class="button is-link" href="/events/<%= licence.licenceID %>/<%= event.eventDate %>/edit">

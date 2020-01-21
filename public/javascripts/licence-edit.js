@@ -1003,12 +1003,12 @@
         "<td></td>" +
         "<td></td>" +
         "<th class=\"has-text-right is-nowrap\">$ " + prizeValueTotal.toFixed(2) + "</th>" +
-        "<td></td>" +
+        "<td class=\"is-hidden-print\"></td>" +
         "<th class=\"has-text-right is-nowrap\">$ " + licenceFeeTotal.toFixed(2) + "</th>" +
         "<td></td>" +
+        "<td class=\"is-hidden-print\"></td>" +
         "<td></td>" +
-        "<td></td>" +
-        "<td></td>" +
+        "<td class=\"is-hidden-print\"></td>" +
         "</tr>";
 
       document.getElementById("licence--totalPrizeValue").value = prizeValueTotal;
@@ -1431,7 +1431,7 @@
 
       // amend/delete
 
-      trEle.insertAdjacentHTML("beforeend", "<td>" +
+      trEle.insertAdjacentHTML("beforeend", "<td class=\"is-hidden-print\">" +
         "<div class=\"field has-addons\">" +
         "<div class=\"control\">" +
         "<button class=\"button is-small is-amend-ticket-type-unit-count-button\" data-tooltip=\"Amend Units\" type=\"button\">Amend</button>" +
@@ -1464,7 +1464,7 @@
         "<span><span class=\"has-text-grey\">(Not Set)</span><span>" +
         "</td>");
 
-      trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right\">" +
+      trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right is-hidden-print\">" +
         "<button class=\"button is-small is-amend-ticket-type-distributor-button\" data-tooltip=\"Change Distributor\" type=\"button\">" +
         "<i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i>" +
         "<span class=\"sr-only\">Change Distributor</span>" +
@@ -1480,7 +1480,7 @@
         "<span><span class=\"has-text-grey\">(Not Set)</span><span>" +
         "</td>");
 
-      trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right\">" +
+      trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right is-hidden-print\">" +
         "<button class=\"button is-small is-amend-ticket-type-manufacturer-button\" data-tooltip=\"Change Manufacturer\" type=\"button\">" +
         "<i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i>" +
         "<span class=\"sr-only\">Change Manufacturer</span>" +

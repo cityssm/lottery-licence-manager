@@ -4,7 +4,7 @@
       <div class="level-left">
         <h2 class="has-text-weight-bold">Lottery Licences</h2>
       </div>
-      <div class="level-right has-text-weight-normal">
+      <div class="level-right has-text-weight-normal is-hidden-print">
         <div class="field is-grouped justify-flex-end">
           <div class="control">
             <a class="button is-small" href="/reports/licences-byOrganization?organizationID=<%= organization.organizationID %>" target="_blank" download>
@@ -37,7 +37,7 @@
       "<th>Location</th>" +
       "<th class=\"has-width-50\">From</th>" +
       "<th class=\"has-width-50\">To</th>" +
-      "<th class=\"has-width-50\"><span class=\"sr-only\">Options</span></th>" +
+      "<th class=\"has-width-50 is-hidden-print\"><span class=\"sr-only\">Options</span></th>" +
       "</tr>";
 
     let rows_active = "";
@@ -77,7 +77,7 @@
           "</td>" +
         "<td>" + licence.startDateString + "</td>" +
         "<td>" + licence.endDateString + "</td>" +
-        "<td class=\"is-nowrap has-text-right\">" +
+        "<td class=\"is-nowrap has-text-right is-hidden-print\">" +
           (canEdit ?
             "<a class=\"button is-small\" href=\"/licences/" + licence.licenceID + "/edit\" data-tooltip=\"Edit Licence\"><span class=\"icon\"><i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i></span><span>Edit</span></a> " :
             "") +

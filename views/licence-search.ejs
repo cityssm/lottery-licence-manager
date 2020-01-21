@@ -14,7 +14,7 @@
     </h1>
   </div>
   <% if (user.userProperties.canCreate === "true") { %>
-    <div class="level-right has-text-right">
+    <div class="level-right has-text-right is-hidden-print">
       <a class="button is-primary" href="/licences/new">
         <span class="icon is-small">
           <i class="fas fa-plus" aria-hidden="true"></i>
@@ -27,7 +27,7 @@
 
 <form id="form--filters">
   <div class="columns">
-    <div class="column is-one-third">
+    <div class="column">
       <div class="field">
         <label class="label" for="filter--licenceTypeKey">Licence Types</label>
         <div class="control has-icons-left">
@@ -54,7 +54,7 @@
         </div>
       </div>
     </div>
-    <div class="column is-one-third">
+    <div class="column">
       <div class="field">
         <label class="label" for="filter--organizationName">Organization Name</label>
         <div class="control has-icons-left">
@@ -65,7 +65,7 @@
         </div>
       </div>
     </div>
-    <div class="column is-one-third">
+    <div class="column">
       <div class="field">
         <label class="label" for="filter--licenceStatus">Status</label>
         <div class="control has-icons-left">

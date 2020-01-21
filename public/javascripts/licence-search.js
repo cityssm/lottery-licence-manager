@@ -52,7 +52,7 @@
             "<th>Organization Name</th>" +
             "<th>Location</th>" +
             "<th>Dates</th>" +
-            "<th><span class=\"sr-only\">Options</span></th>" +
+            "<th class=\"is-hidden-print\"><span class=\"sr-only\">Options</span></th>" +
             "</tr></thead>" +
             "<tbody></tbody>" +
             "</table>";
@@ -84,7 +84,7 @@
                 "<span class=\"has-cursor-default has-tooltip-right\" data-tooltip=\"End Date\"><i class=\"fas fa-fw fa-stop\" aria-hidden=\"true\"></i> " + licenceObj.endDateString + "</span>" +
                 "</td>") +
 
-              "<td class=\"has-text-right is-nowrap\">" +
+              "<td class=\"has-text-right is-nowrap is-hidden-print\">" +
 
               (licenceObj.canUpdate ?
                 "<a class=\"button is-small\" data-tooltip=\"Edit Licence\" href=\"/licences/" + licenceObj.licenceID + "/edit\">" +
@@ -97,7 +97,7 @@
                 "<i class=\"fas fa-print\" aria-hidden=\"true\"></i>" +
                 "<span class=\"sr-only\">Print</span>" +
                 "</a>" :
-                "<span class=\"tag is-warning\">Unpaid</span>") +
+                "<span class=\"tag is-warning\">Not Issued</span>") +
               "</div>" +
 
               "</td>";

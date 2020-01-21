@@ -17,7 +17,7 @@
       <small>Event <%= event.eventDateString %></small>
     </h1>
   </div>
-  <div class="level-right">
+  <div class="level-right is-hidden-print">
     <div class="field has-addons justify-flex-end has-margin-left-10">
       <div class="control">
         <label class="button is-small is-static" for="eventNav--eventDate">Switch Dates</label>
@@ -40,8 +40,8 @@
   </div>
 </div>
 
-<div class="columns">
-  <div class="column is-6">
+<div class="columns is-block-print">
+  <div class="column">
     <%- include('_event-view_edit-snapshot'); -%>
   </div>
   <div class="column">
@@ -263,7 +263,7 @@
       <input name="fieldKeys" type="hidden" value="<%= fieldKeys %>" />
 
 
-      <div class="is-fixed-bottom has-padding-10 has-background-grey-light">
+      <div class="is-fixed-bottom has-padding-10 has-background-grey-light is-hidden-print">
         <div class="level">
           <div class="level-left" id="container--form-message"></div>
           <div class="level-right">

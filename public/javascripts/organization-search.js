@@ -45,8 +45,10 @@
 
           searchResultsEle.innerHTML = "<table class=\"table is-fullwidth is-striped is-hoverable\">" +
             "<thead><tr>" +
-            "<th colspan=\"" + (canCreate ? "3" : "2") + "\">Organization</th>" +
-            "<th" + (canCreate ? " colspan=\"2\"" : "") + ">Licences</th>" +
+            "<th colspan=\"2\">Organization</th>" +
+            (canCreate ? "<th class=\"is-hidden-print\"><span class=\"sr-only\">Organization Options</span></th>" : "") +
+            "<th>Licences</th>" +
+            (canCreate ? "<th class=\"is-hidden-print\"><span class=\"sr-only\">Licence Options</span></th>" : "") +
             "</tr></thead>" +
             "<tbody></tbody>" +
             "</table>";
@@ -85,7 +87,7 @@
 
             if (canCreate) {
 
-              trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right\">" +
+              trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right is-hidden-print\">" +
                 (organizationObj.canUpdate ?
                   "<a class=\"button is-small\" data-tooltip=\"Edit Organization\" href=\"/organizations/" + organizationObj.organizationID + "/edit\">" +
                   "<span class=\"icon\"><i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i></span>" +
@@ -117,7 +119,7 @@
 
             if (canCreate) {
 
-              trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right\">" +
+              trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right is-hidden-print\">" +
                 (organizationObj.isEligibleForLicences ?
                   "<a class=\"button is-small\" data-tooltip=\"Create a New Licence\" href=\"/licences/new/" + organizationObj.organizationID + "\">" +
                   "<span class=\"icon\"><i class=\"fas fa-certificate\" aria-hidden=\"true\"></i></span>" +

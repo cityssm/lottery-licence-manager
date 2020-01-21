@@ -91,7 +91,7 @@
         "<th class=\"has-text-centered\">Licences</th>" +
         "<th class=\"has-text-centered\">Distributor</th>" +
         "<th class=\"has-text-centered\">Manufacturer</th>" +
-        (canCreate ? "<th><span class=\"sr-only\">Options</span></th>" : "") +
+        (canCreate ? "<th class=\"is-hidden-print\"><span class=\"sr-only\">Options</span></th>" : "") +
         "</tr></thead>" +
         "<tbody></tbody>" +
         "</table>";
@@ -208,7 +208,7 @@
           const canDeleteLocation = locationObj.canUpdate && locationObj.licences_count === 0 && locationObj.distributor_count === 0 && locationObj.manufacturer_count === 0;
 
           trEle.insertAdjacentHTML("beforeend",
-            "<td>" +
+            "<td class=\"is-hidden-print\">" +
             "<div class=\"buttons justify-flex-end\">" +
 
             (locationObj.canUpdate ?

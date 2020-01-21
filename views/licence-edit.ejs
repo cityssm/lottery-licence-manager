@@ -19,7 +19,7 @@
       <%= (isCreate ? "Create a New Licence" : "Update an Existing Licence") %>
     </h1>
   </div>
-  <div class="level-right has-text-right">
+  <div class="level-right has-text-right is-hidden-print">
     <% if (licence.issueDate) { %>
       <a class="button is-link" href="/licences/<%= licence.licenceID %>/print" target="_blank" download>
         <span class="icon is-small">
@@ -40,7 +40,7 @@
 
 <form id="form--licence" data-licence-is-issued="<%= (licence.issueDate ? "true" : "false") %>">
 
-  <div class="columns">
+  <div class="columns is-block-print">
     <div class="column">
 
       <div class="columns">
@@ -203,7 +203,7 @@
               <textarea class="textarea" id="licence--termsConditions" name="termsConditions" rows="5"><%= licence.termsConditions.trim() %></textarea>
             </div>
           </div>
-          <div class="has-text-right">
+          <div class="has-text-right is-hidden-print">
             <button class="button is-small" id="is-termsConditions-lookup-button" type="button">
               <span class="icon">
                 <i class="fas fa-search" aria-hidden="true"></i>
@@ -276,7 +276,7 @@
 
     </div>
     <% if (!isCreate && licence.licenceAmendments.length > 0) { %>
-      <div class="column is-3">
+      <div class="column is-3 is-full-print">
         <%- include('_licence-view_edit-amendments'); -%>
       </div>
     <% } %>
@@ -292,7 +292,7 @@
         <div class="level-left">
           <h2 class="has-text-weight-bold">Ticket Types</h2>
         </div>
-        <div class="level-right">
+        <div class="level-right is-hidden-print">
           <div class="buttons justify-flex-end">
             <button class="button is-small" id="is-add-ticket-type-button" type="button" aria-haspopup="true">
               <span class="icon">
@@ -315,12 +315,18 @@
           <th class="has-text-right">Units</th>
           <th class="has-text-right">Value</th>
           <th class="has-text-right">Prizes</th>
-          <th>
+          <th class="is-hidden-print">
             <span class="sr-only">Amend Units</span>
           </th>
           <th class="has-text-right">Licence Fee</th>
-          <th colspan="2">Distributor</th>
-          <th colspan="2">Manufacturer</th>
+          <th>Distributor</th>
+          <th class="is-hidden-print">
+            <span class="sr-only">Distributor Options</span>
+          </th>
+          <th>Manufacturer</th>
+          <th class="is-hidden-print">
+            <span class="sr-only">Manufacturer Options</span>
+          </th>
         </tr>
       </thead>
       <tbody>
@@ -354,7 +360,7 @@
                 <input class="is-total-prizes-per-deal" type="hidden" value="<%= totalPrizesPerDeal %>" />
                 <span data-tooltip="$<%= prizesPerDeal.toFixed(2) %> prizes per deal">$ <%= totalPrizesPerDeal %></span>
               </td>
-              <td>
+              <td class="is-hidden-print">
                 <div class="field has-addons">
                   <div class="control">
                     <button class="button is-small is-amend-ticket-type-unit-count-button" data-tooltip="Amend Units" type="button">Amend</button>
@@ -381,7 +387,7 @@
                   <% } %>
                 </span>
               </td>
-              <td class="has-text-right">
+              <td class="has-text-right is-hidden-print">
                 <button class="button is-small is-amend-ticket-type-distributor-button" data-tooltip="Change Distributor" type="button">
                   <i class="fas fa-pencil-alt" aria-hidden="true"></i>
                   <span class="sr-only">Change Distributor</span>
@@ -397,7 +403,7 @@
                   <% } %>
                 </span>
               </td>
-              <td class="has-text-right">
+              <td class="has-text-right is-hidden-print">
                 <button class="button is-small is-amend-ticket-type-manufacturer-button" data-tooltip="Change Manufacturer" type="button">
                   <i class="fas fa-pencil-alt" aria-hidden="true"></i>
                   <span class="sr-only">Change Manufacturer</span>
@@ -423,7 +429,7 @@
             <div class="level-left">
               <h2 class="has-text-weight-bold">Event Dates</h2>
             </div>
-            <div class="level-right">
+            <div class="level-right is-hidden-print">
               <div>
                 <div class="dropdown is-hoverable">
                   <div class="dropdown-trigger">
@@ -642,7 +648,7 @@
               </div>
             </div>
             <p class="has-text-right is-size-7"><%= feeCalculation.message %></p>
-            <button class="button is-small is-fullwidth has-margin-top-10 is-primary" id="is-update-expected-licence-fee-button" data-licence-fee-expected="<%= feeCalculation.fee %>" type="button">
+            <button class="button is-small is-fullwidth has-margin-top-10 is-primary is-hidden-print" id="is-update-expected-licence-fee-button" data-licence-fee-expected="<%= feeCalculation.fee %>" type="button">
               Update Licence Fee
             </button>
           </div>
@@ -656,7 +662,7 @@
             <div class="level-left">
               <h2 class="has-text-weight-bold">Transactions</h2>
             </div>
-            <div class="level-right has-text-weight-normal has-text-right">
+            <div class="level-right has-text-weight-normal has-text-right is-hidden-print">
               <div class="buttons">
                 <button class="button is-small" id="is-add-transaction-button" type="button">
                   <span class="icon is-small">
@@ -744,7 +750,7 @@
     }
   %>
 
-  <div class="is-fixed-bottom has-padding-10 has-background-grey-light">
+  <div class="is-fixed-bottom has-padding-10 has-background-grey-light is-hidden-print">
     <div class="level">
       <div class="level-left">
         <div class="tags">

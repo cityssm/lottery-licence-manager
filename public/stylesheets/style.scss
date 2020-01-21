@@ -26,8 +26,18 @@
 }
 
 @media print {
-  .is-hidden-print {
+  .is-hidden-print,
+  nav.breadcrumb {
     display: none !important;
+  }
+
+  .is-block-print {
+    display: block !important;
+  }
+
+  .is-full-print {
+    flex: none;
+    width: 100% !important;
   }
 }
 
@@ -38,6 +48,12 @@ fieldset:enabled .is-hidden-enabled {
 
 .is-nowrap {
   white-space: nowrap;
+}
+
+// to fix page titles inside level components
+// set on .level-left
+.has-flex-shrink-1 {
+  flex-shrink: 1;
 }
 
 .has-newline-chars {

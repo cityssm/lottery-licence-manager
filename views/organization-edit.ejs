@@ -103,7 +103,7 @@
     </div>
   <% } %>
 
-  <div class="is-fixed-bottom has-padding-10 has-background-grey-light">
+  <div class="is-fixed-bottom has-padding-10 has-background-grey-light is-hidden-print">
     <div class="level">
       <div class="level-left" id="container--form-message"></div>
       <div class="level-right">
@@ -154,7 +154,7 @@
         <div class="level-left">
           <h2 class="has-text-weight-bold">Organization Representatives</h2>
         </div>
-        <div class="level-right has-text-weight-normal">
+        <div class="level-right has-text-weight-normal is-hidden-print">
           <div class="field is-grouped justify-flex-end">
             <div class="control">
               <a class="button is-small" href="/reports/representatives-byOrganization?organizationID=<%= organization.organizationID %>" target="_blank" download>
@@ -185,7 +185,7 @@
           <th>Address</th>
           <th>Phone Number</th>
           <th>Email Address</th>
-          <th>
+          <th class="is-hidden-print">
             <span class="sr-only">Options</span>
           </th>
         </tr>
@@ -230,7 +230,7 @@
             <td>
               <%= representativeObj.representativeEmailAddress %>
             </td>
-            <td>
+            <td class="is-hidden-print">
               <div class="buttons is-right has-addons">
                 <button class="button is-small is-edit-representative-button" type="button" data-tooltip="Edit Representative">
                   <span class="icon">
