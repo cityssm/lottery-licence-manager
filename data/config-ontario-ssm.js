@@ -110,11 +110,7 @@ config.licences.feeCalculationFn = function(licenceObj) {
  * SAULT STE MARIE SPECIFICS FOR NEVADA LICENSING
  */
 
-let licenceType_nevada = config.licenceTypes.find(function(licenceType) {
-
-  return licenceType.licenceTypeKey === "NV";
-
-});
+let licenceType_nevada = config.licenceTypes.find(licenceType => licenceType.licenceTypeKey === "NV");
 
 
 /*
