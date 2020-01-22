@@ -6,7 +6,7 @@
 const sqlite = require("better-sqlite3");
 
 
-let dbInit = {
+const dbInit = {
 
   initUsersDB: function() {
 
@@ -16,7 +16,8 @@ let dbInit = {
 
     if (!row) {
 
-      console.warn("Creating users.db.  To get started creating users, set the 'admin.defaultPassword' property in your config.js file.");
+      console.warn("Creating users.db." +
+        " To get started creating users, set the 'admin.defaultPassword' property in your config.js file.");
 
       usersDB.prepare("create table if not exists Users (" +
         "userName varchar(30) primary key not null," +
@@ -47,13 +48,15 @@ let dbInit = {
 
     const licencesDB = sqlite("data/licences.db");
 
-    const row = licencesDB.prepare("select name from sqlite_master where type = 'table' and name = 'Organizations'").get();
+    const row = licencesDB
+      .prepare("select name from sqlite_master where type = 'table' and name = 'Organizations'")
+      .get();
 
     if (!row) {
 
       console.warn("Creating licences.db");
 
-      // locations
+      // Locations
 
       licencesDB.prepare("create table if not exists Locations (" +
         "locationID integer primary key autoincrement," +
@@ -75,7 +78,7 @@ let dbInit = {
         " recordDelete_timeMillis integer" +
         ")").run();
 
-      // organizations
+      // Organizations
 
       licencesDB.prepare("create table if not exists Organizations (" +
         "organizationID integer primary key autoincrement," +
@@ -133,7 +136,7 @@ let dbInit = {
         " foreign key (organizationID) references Organizations (organizationID)" +
         ") without rowid").run();
 
-      // licences
+      // Licences
 
       licencesDB.prepare("create table if not exists LotteryLicences (" +
         "licenceID integer primary key autoincrement," +
@@ -259,7 +262,7 @@ let dbInit = {
         ") without rowid").run();
 
 
-      // events
+      // Events
 
       licencesDB.prepare("create table if not exists LotteryEvents (" +
         "licenceID integer not null," +
@@ -298,7 +301,7 @@ let dbInit = {
         " foreign key (licenceID, eventDate) references LotteryEvents (licenceID, eventDate)" +
         ") without rowid").run();
 
-      // settings
+      // Settings
 
       licencesDB.prepare("create table if not exists ApplicationSettings (" +
         "settingKey varchar(50) primary key not null," +
@@ -310,29 +313,36 @@ let dbInit = {
         " recordUpdate_timeMillis integer not null" +
         ") without rowid").run();
 
-      // default settings
+      // Default settings
 
-      let settingInsertSQL = "insert or ignore into ApplicationSettings" +
-        " (settingKey, settingName, settingDescription, settingValue, orderNumber, recordUpdate_userName, recordUpdate_timeMillis)" +
+      const settingInsertSQL = "insert or ignore into ApplicationSettings" +
+        " (settingKey, settingName, settingDescription, settingValue, orderNumber," +
+        " recordUpdate_userName, recordUpdate_timeMillis)" +
         " values (?, ?, ?, ?, ?, ?, ?)";
 
       licencesDB.prepare(settingInsertSQL)
-        .run("licences.externalLicenceNumber.range.start",
+        .run(
+          "licences.externalLicenceNumber.range.start",
           "External Licence Number: Range Start",
-          "When External Licence Numbers are generated using a range, this value will be used as the minimum for the range.",
+          ("When External Licence Numbers are generated using a range," +
+            " this value will be used as the minimum for the range."),
           "-1",
           1,
           "init",
-          Date.now());
+          Date.now()
+        );
 
       licencesDB.prepare(settingInsertSQL)
-        .run("licences.externalLicenceNumber.range.end",
+        .run(
+          "licences.externalLicenceNumber.range.end",
           "External Licence Number: Range End",
-          "When External Licence Numbers are generated using a range, this value will be used as the maximum for the range.",
+          ("When External Licence Numbers are generated using a range," +
+            " this value will be used as the maximum for the range."),
           "0",
           2,
           "init",
-          Date.now());
+          Date.now()
+        );
 
     }
 

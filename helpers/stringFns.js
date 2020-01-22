@@ -3,7 +3,10 @@
 "use strict";
 
 
-let stringFns = {
+const convertArrayToCSV = require("convert-array-to-csv").convertArrayToCSV;
+
+
+const stringFns = {
 
   escapeHTML: function(str) {
 
@@ -17,15 +20,13 @@ let stringFns = {
 
   rawToCSV: function(rowsColumnsObj) {
 
-    let columnNames = new Array(rowsColumnsObj.columns.length);
+    const columnNames = new Array(rowsColumnsObj.columns.length);
 
     for (let columnIndex = 0; columnIndex < rowsColumnsObj.columns.length; columnIndex += 1) {
 
       columnNames[columnIndex] = rowsColumnsObj.columns[columnIndex].name;
 
     }
-
-    const convertArrayToCSV = require("convert-array-to-csv").convertArrayToCSV;
 
     const csv = convertArrayToCSV(rowsColumnsObj.rows, {
       header: columnNames,

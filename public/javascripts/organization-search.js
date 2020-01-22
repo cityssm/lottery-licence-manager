@@ -46,6 +46,7 @@
           searchResultsEle.innerHTML = "<table class=\"table is-fullwidth is-striped is-hoverable\">" +
             "<thead><tr>" +
             "<th colspan=\"2\">Organization</th>" +
+            "<th>Default Representative</th>" +
             (canCreate ? "<th class=\"is-hidden-print\"><span class=\"sr-only\">Organization Options</span></th>" : "") +
             "<th>Licences</th>" +
             (canCreate ? "<th class=\"is-hidden-print\"><span class=\"sr-only\">Licence Options</span></th>" : "") +
@@ -84,6 +85,8 @@
                 "</span>"
               ) +
               "</td>");
+
+            trEle.insertAdjacentHTML("beforeend", "<td>" + organizationObj.representativeName + "</td>");
 
             if (canCreate) {
 

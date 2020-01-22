@@ -305,8 +305,8 @@ window.llm.initializeTabs = function(tabsListEle) {
       ("<footer class=\"modal-card-foot justify-flex-end\">" +
         (modalOptions.hideCancelButton ?
           "" :
-          "<button class=\"button is-cancel-button\" type=\"button\">" + cancelButtonHTML + "</button>") +
-        "<button class=\"button is-ok-button is-" + contextualColorName + "\" type=\"button\">" + okButtonHTML + "</button>" +
+          "<button class=\"button is-cancel-button\" type=\"button\" aria-label=\"Cancel\">" + cancelButtonHTML + "</button>") +
+        "<button class=\"button is-ok-button is-" + contextualColorName + "\" type=\"button\" aria-label=\"OK\">" + okButtonHTML + "</button>" +
         "</footer>") +
       "</div>";
 

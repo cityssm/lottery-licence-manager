@@ -6,6 +6,7 @@ let config;
 
 try {
 
+  // eslint-disable-next-line global-require
   config = require("../data/config");
 
 } catch (e) {
@@ -15,12 +16,13 @@ try {
   // eslint-disable-next-line no-console
   console.log("No \"config.js\" found." +
     " To customize, create your own \"config.js\" in the \"data\" folder." +
-    " See \"config-example-ontario.js\" to get started.");
+    " See \"config-example.js\" or \"config-example-ontario.js\" to get started.");
 
 }
 
 
 const configFallbackValues = {
+
   "application.applicationName": "Lottery Licence System",
   "application.logoURL": "/images/bingoBalls.png",
   "application.httpPort": 3000,
@@ -46,17 +48,6 @@ const configFallbackValues = {
 
   "licences.externalReceiptNumber.fieldLabel": "Receipt Number",
 
-  "licences.amendments.displayCount": 5,
-
-  "licences.amendments.trackLicenceFeeUpdate": true,
-  "licences.amendments.trackDateTimeUpdate": true,
-  "licences.amendments.trackOrganizationUpdate": true,
-  "licences.amendments.trackLocationUpdate": true,
-
-  "licences.amendments.trackTicketTypeNew": true,
-  "licences.amendments.trackTicketTypeUpdate": true,
-  "licences.amendments.trackTicketTypeDelete": true,
-
   "licences.feeCalculationFn": function() {
 
     return {
@@ -69,7 +60,18 @@ const configFallbackValues = {
 
   "licences.printTemplate": "licence-print",
 
-  "licenceTypes": []
+  "licenceTypes": [],
+
+  "amendments.displayCount": 5,
+
+  "amendments.trackLicenceFeeUpdate": true,
+  "amendments.trackDateTimeUpdate": true,
+  "amendments.trackOrganizationUpdate": true,
+  "amendments.trackLocationUpdate": true,
+
+  "amendments.trackTicketTypeNew": true,
+  "amendments.trackTicketTypeUpdate": true,
+  "amendments.trackTicketTypeDelete": true
 };
 
 
@@ -96,7 +98,7 @@ function getProperty(propertyName) {
 }
 
 
-let configFns = {
+const configFns = {
 
   getProperty: getProperty,
 

@@ -1544,7 +1544,7 @@
 
 
   /*
-   * FEE PAYMENT
+   * TRANSACTIONS
    */
 
   if (!isCreate) {
@@ -1653,6 +1653,68 @@
       });
 
     });
+
+    const voidTransactionButtonEle = document.getElementById("is-void-transaction-button");
+
+    if (voidTransactionButtonEle) {
+
+      voidTransactionButtonEle.addEventListener("click", function() {
+
+        if (hasUnsavedChanges) {
+
+          window.llm.alertModal("Unsaved Changes",
+            "Please save all unsaved changes before issuing this licence.",
+            "OK",
+            "warning");
+
+          return;
+
+        }
+
+        const voidFn = function() {
+
+          window.fetch("/licences/doVoidTransaction", {
+              method: "POST",
+              credentials: "include",
+              headers: {
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({
+                licenceID: licenceID,
+                transactionIndex: voidTransactionButtonEle.getAttribute("data-transaction-index")
+              })
+            })
+            .then(function(response) {
+
+              return response.json();
+
+            })
+            .then(function(responseJSON) {
+
+              if (responseJSON.success) {
+
+                window.location.reload(true);
+
+              }
+
+            });
+
+        };
+
+        const reverseTransactionAmount = (voidTransactionButtonEle.getAttribute("data-transaction-amount") * -1).toFixed(2);
+
+        window.llm.confirmModal("Void Transaction?",
+          "<strong>Are you sure you want to void this transaction?</strong><br />" +
+          "If the history of this transaction should be maintained," +
+          " it may be preferred to create a new transaction for $ " + reverseTransactionAmount + ".",
+          "Void Transaction",
+          "warning",
+          voidFn
+        );
+
+      });
+
+    }
 
   }
 

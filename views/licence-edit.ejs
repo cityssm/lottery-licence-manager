@@ -699,7 +699,9 @@
             <thead>
               <tr>
                 <th>Date</th>
+                <th><span class="sr-only">Transaction Type</span></th>
                 <th class="has-text-right">Amount</th>
+                <th><span class="sr-only">Options</span></th>
                 <th><%= configFns.getProperty("licences.externalReceiptNumber.fieldLabel") %></th>
                 <th>Note</th>
               </tr>
@@ -716,7 +718,20 @@
               <tr>
                 <td><%= transactionObj.transactionDateString %></td>
                 <td class="has-text-right">
+                  <% if (transactionObj.transactionAmount < 0) { %>
+                    <span class="tag is-warning">Refund</span>
+                  <% } %>
+                </td>
+                <td class="has-text-right">
                   $ <%= transactionObj.transactionAmount.toFixed(2) %>
+                </td>
+                <td>
+                  <% if (index === licence.licenceTransactions.length - 1) { %>
+                    <button class="button is-small is-danger" id="is-void-transaction-button" data-transaction-index="<%= transactionObj.transactionIndex %>" data-transaction-amount="<%= transactionObj.transactionAmount %>" data-tooltip="Void Transaction" type="button">
+                      <i class="fas fa-trash" aria-hidden="true"></i>
+                      <span class="sr-only">Void Transaction</span>
+                    </button>
+                  <% } %>
                 </td>
                 <td><%= transactionObj.externalReceiptNumber %></td>
                 <td class="has-newline-chars"><%= transactionObj.transactionNote %></td>
@@ -728,6 +743,7 @@
             <tfoot>
               <tr>
                 <td></td>
+                <td></td>
                 <td class="has-text-right has-text-weight-bold">
                   $ <span id="licence--transactionTotal"><%= transactionTotal.toFixed(2) %></span>
                   <% if (licence.licenceFee !== transactionTotal) { %>
@@ -737,6 +753,7 @@
                     </span>
                   <% } %>
                 </td>
+                <td></td>
                 <td></td>
                 <td></td>
               </tr>

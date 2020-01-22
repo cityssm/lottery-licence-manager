@@ -2,6 +2,7 @@
 
 "use strict";
 
+
 const config = require("./config-ontario");
 
 
@@ -11,6 +12,16 @@ const config = require("./config-ontario");
 
 config.application = {
   applicationName: "Lottery Licence Manager"
+};
+
+
+/*
+ * ADMIN SETTINGS
+ */
+
+
+config.admin = {
+  defaultPassword: ""
 };
 
 

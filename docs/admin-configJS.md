@@ -34,6 +34,14 @@ Property Name | Description | Default Value
 `passphrase` | The secret passphrase for the certificate. | `null`
 
 
+## `config.session = {};`
+
+Property Name | Description | Default Value
+------------- | ----------- | -------------
+`cookieName` | The name of the session cookie. | `"lottery-licence-manager-user-sid"`
+`secret` | The secret used to sign the session cookie. | `"cityssm/lottery-licence-manager"`
+`maxAgeMillis` | The session timeout in milliseconds. | `3600000`
+
 
 ## `config.defaults = {};`
 
@@ -99,9 +107,9 @@ Property Name | Description | Sample Value
 Property Name | Description | Sample Value
 ------------- | ----------- | ------------
 `fieldKey` | The one-to-twenty character field key. | `"units"`
-`fieldLabel` | | Total Number of Units
-`isActive` | | `true`
-`inputAttributes` | |
+`fieldLabel` | The visible label for the field. | `"Total Number of Units"`
+`isActive` | Whether or not the field should be available on new licences. | `true`
+`inputAttributes` | An object containing HTML attributes for the field's input element. | `{ type: "number", min: 1, max: 10000, step: 1 }`
 
 
 #### `eventFields = [eventFieldA, eventFieldB, ...];`
@@ -109,6 +117,20 @@ Property Name | Description | Sample Value
 Property Name | Description | Sample Value
 ------------- | ----------- | ------------
 `fieldKey` | The one-to-twenty character field key. | `"distributorCommission"`
-`fieldLabel` | |
-`isActive` | | `true`
-`inputAttributes` | |
+`fieldLabel` | The visible label for the field. | `"Distributor Commission"`
+`isActive` | Whether or not the field should be available on new licences. | `true`
+`inputAttributes` | An object containing HTML attributes for the field's input element. | `{ type: "number", min: 0, max: 10000.00, step: 0.01 }`
+
+
+## `config.amendments = {};`
+
+Property Name | Description | Default Value
+------------- | ----------- | -------------
+`displayCount` | The number of amendments to display in the licence views. | `5`
+`trackLicenceFeeUpdate` | Whether or not to create an amendment record when a licence fee is changed. | `true`
+`trackDateTimeUpdate` | Whether or not to create an amendment record when the date or time range for a licence is changed. | `true`
+`trackOrganizationUpdate` | Whether or not to create an amendment record when the organization associated with a licence is changed. | `true`
+`trackLocationUpdate` | Whether or not to create an amendment record when the location associated with a licence is changed. | `true`
+`trackTicketTypeNew` | Whether or not to create an amendment record when a new ticket type is added to a licence. | `true`
+`trackTicketTypeUpdate` | Whether or not to create an amendment record when the number of units associated with a licence ticket type is changed. | `true`
+`trackTicketTypeDelete` | Whether or not to create an amendment record when a ticket type is removed from a licence. | `true`

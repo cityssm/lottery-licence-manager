@@ -194,6 +194,40 @@ router.post("/doAddTransaction", function(req, res) {
 });
 
 
+router.post("/doVoidTransaction", function(req, res) {
+
+  if (req.session.user.userProperties.canCreate !== "true") {
+
+    res.json({
+      success: false,
+      message: "Not Allowed"
+    });
+
+    return;
+
+  }
+
+  const changeCount = licencesDB.voidTransaction(req.body.licenceID, req.body.transactionIndex, req.session);
+
+  if (changeCount) {
+
+    res.json({
+      success: true,
+      message: "Transaction Voided Successfully"
+    });
+
+  } else {
+
+    res.json({
+      success: false,
+      message: "Transaction Not Voided"
+    });
+
+  }
+
+});
+
+
 router.post("/doIssueLicence", function(req, res) {
 
   if (req.session.user.userProperties.canCreate !== "true") {

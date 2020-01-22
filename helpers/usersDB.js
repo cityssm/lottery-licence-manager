@@ -2,6 +2,7 @@
 
 "use strict";
 
+
 const configFns = require("./configFns");
 
 const sqlite = require("better-sqlite3");
