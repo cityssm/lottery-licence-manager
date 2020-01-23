@@ -27,7 +27,7 @@
         </span>
         <span>Print Licence</span>
       </a>
-    <% } else { %>
+    <% } else if (!isCreate) { %>
       <button class="button is-success" id="is-issue-licence-button">
         <span class="icon is-small">
           <i class="fas fa-stamp" aria-hidden="true"></i>
@@ -771,7 +771,7 @@
     <div class="level">
       <div class="level-left">
         <div class="tags">
-          <% if (!licence.issueDate) { %>
+          <% if (!isCreate && !licence.issueDate) { %>
             <span class="tag is-medium is-warning is-light">Licence Not Issued</span>
           <% } %>
           <span id="container--form-message"></span>

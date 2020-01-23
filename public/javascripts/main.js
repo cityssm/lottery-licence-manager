@@ -83,7 +83,7 @@ llm.getDefaultConfigProperty = function(propertyName, propertyValueCallbackFn) {
         window.localStorage.setItem("defaultConfigProperties", JSON.stringify(defaultConfigProperties));
 
       } catch (e) {
-        // ignore
+        // Ignore
       }
 
       propertyValueCallbackFn(defaultConfigProperties[propertyName]);
@@ -138,7 +138,7 @@ llm.openHtmlModal = function(htmlFileName, callbackFns) {
     })
     .then(function(modalHTML) {
 
-      // append the modal to the end of the body
+      // Append the modal to the end of the body
 
       const modalContainerEle = document.createElement("div");
       modalContainerEle.innerHTML = modalHTML;
@@ -147,7 +147,7 @@ llm.openHtmlModal = function(htmlFileName, callbackFns) {
 
       document.body.insertAdjacentElement("beforeend", modalContainerEle);
 
-      // call the onshow
+      // Call onshow()
 
       if (callbackFns && callbackFns.onshow) {
 
@@ -155,7 +155,7 @@ llm.openHtmlModal = function(htmlFileName, callbackFns) {
 
       }
 
-      // show the modal
+      // Show the modal
 
       modalEle.classList.add("is-active");
 
@@ -165,7 +165,7 @@ llm.openHtmlModal = function(htmlFileName, callbackFns) {
 
         if (callbackFns && callbackFns.onhide && modalWasShown) {
 
-          let doHide = callbackFns.onhide(modalEle);
+          const doHide = callbackFns.onhide(modalEle);
 
           if (doHide) {
 
@@ -193,7 +193,7 @@ llm.openHtmlModal = function(htmlFileName, callbackFns) {
 
       };
 
-      // call the onshown
+      // Call onshown()
 
       if (callbackFns && callbackFns.onshown) {
 
@@ -201,7 +201,7 @@ llm.openHtmlModal = function(htmlFileName, callbackFns) {
 
       }
 
-      // set up close buttons
+      // Set up close buttons
 
       const closeModalBtnEles = modalEle.getElementsByClassName("is-close-modal-button");
 
@@ -239,14 +239,13 @@ llm.initializeTabs = function(tabsListEle) {
     const tabLinkEle = clickEvent.currentTarget;
     const tabContentEle = document.getElementById(tabLinkEle.getAttribute("href").substring(1));
 
-    // remove is-active from all tabs
     for (let index = 0; index < listItemEles.length; index += 1) {
 
       listItemEles[index].classList.remove("is-active");
 
     }
 
-    // add is-active to the selected tab
+    // Add is-active to the selected tab
     (isPanelTabs ? tabLinkEle : tabLinkEle.parentNode).classList.add("is-active");
 
     const tabContentEles = tabContentEle.parentNode.getElementsByClassName("tab-content");
@@ -263,7 +262,9 @@ llm.initializeTabs = function(tabsListEle) {
 
   for (let index = 0; index < listItemEles.length; index += 1) {
 
-    (isPanelTabs ? listItemEles[index] : listItemEles[index].getElementsByTagName("a")[0]).addEventListener("click", tabClickFn);
+    (isPanelTabs ?
+      listItemEles[index] :
+      listItemEles[index].getElementsByTagName("a")[0]).addEventListener("click", tabClickFn);
 
   }
 
