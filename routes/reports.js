@@ -398,13 +398,14 @@ router.all("/:reportName", function(req, res) {
       sql = "select e.licenceID, l.externalLicenceNumber, e.eventDate," +
         " o.organizationName," +
         " l.startDate, l.endDate, l.startTime, l.endTime," +
-        " l.location, l.licenceDetails, l.licenceTypeKey," +
+        " lo.locationName, lo.locationAddress1, l.licenceDetails, l.licenceTypeKey," +
         " l.totalPrizeValue, l.licenceFee," +
         " e.bank_name, e.bank_address, e.bank_accountNumber, e.bank_accountBalance," +
         " e.costs_receipts, e.costs_admin, e.costs_prizesAwarded, e.costs_charitableDonations, e.costs_netProceeds," +
         " e.costs_amountDonated" +
         " from LotteryEvents e" +
         " left join LotteryLicences l on e.licenceID = l.licenceID" +
+        " left join Locations lo on l.locationID = lo.locationID" +
         " left join Organizations o on l.organizationID = o.organizationID" +
         " where e.recordDelete_timeMillis is null" +
         " and l.recordDelete_timeMillis is null" +
