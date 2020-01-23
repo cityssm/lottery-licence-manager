@@ -463,7 +463,10 @@ router.get("/:licenceID/print", function(req, res, next) {
 
         } else {
 
-
+          res.setHeader(
+            "Content-Disposition",
+            "attachment; filename=licence-" + licenceID + "-" + licence.recordUpdate_timeMillis + ".pdf"
+          );
           res.setHeader("Content-Type", "application/pdf");
 
           pdfStream.pipe(res);
