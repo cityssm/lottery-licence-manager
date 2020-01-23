@@ -1,6 +1,3 @@
-/* global window, document */
-/* global URLSearchParams, FormData */
-
 "use strict";
 
 (function() {
@@ -25,18 +22,18 @@
 
     formEvent.preventDefault();
 
-    // ensure at least one event
+    // Ensure at least one event
 
     const eventDateInputEles = events_containerEle.getElementsByTagName("input");
 
     if (eventDateInputEles.length === 0) {
 
-      window.llm.alertModal("Event Date Error", "Please ensure there is at least one event date.", "OK", "warning");
+      llm.alertModal("Event Date Error", "Please ensure there is at least one event date.", "OK", "warning");
       return;
 
     }
 
-    // ensure event dates are distinct
+    // Ensure event dates are distinct
 
     formMessageEle.innerHTML = "Saving... <i class=\"fas fa-circle-notch fa-spin\" aria-hidden=\"true\"></i>";
 
@@ -54,7 +51,7 @@
 
         if (responseJSON.success) {
 
-          window.llm.disableNavBlocker();
+          llm.disableNavBlocker();
           hasUnsavedChanges = false;
 
         }
@@ -71,8 +68,10 @@
 
           formMessageEle.innerHTML = "";
 
-          window.llm.alertModal(responseJSON.message, "", "OK",
-            responseJSON.success ? "success" : "danger");
+          llm.alertModal(
+            responseJSON.message, "", "OK",
+            responseJSON.success ? "success" : "danger"
+          );
 
           const removeInputEles = document.getElementsByClassName("is-removed-after-save");
 
@@ -94,7 +93,8 @@
 
       clickEvent.preventDefault();
 
-      window.llm.confirmModal("Delete Licence?",
+      llm.confirmModal(
+        "Delete Licence?",
         "Are you sure you want to delete this licence and all events associated with it?",
         "Yes, Delete",
         "danger",
@@ -119,14 +119,15 @@
 
               if (responseJSON.success) {
 
-                window.llm.disableNavBlocker();
+                llm.disableNavBlocker();
                 window.location.href = "/licences";
 
               }
 
             });
 
-        });
+        }
+      );
 
     });
 
@@ -143,7 +144,7 @@
 
   function setUnsavedChanges(changeEvent) {
 
-    window.llm.enableNavBlocker();
+    llm.enableNavBlocker();
 
     hasUnsavedChanges = true;
 
@@ -234,7 +235,10 @@
       const listEle = document.createElement("div");
       listEle.className = "list is-hoverable";
 
-      const searchStringSplit = organizationLookup_searchStrEle.value.trim().toLowerCase().split(" ");
+      const searchStringSplit = organizationLookup_searchStrEle.value
+        .trim()
+        .toLowerCase()
+        .split(" ");
 
       let displayLimit = 10;
 
@@ -280,7 +284,7 @@
 
       }
 
-      window.llm.clearElement(organizationLookup_resultsEle);
+      llm.clearElement(organizationLookup_resultsEle);
 
       organizationLookup_resultsEle.insertAdjacentElement("beforeend", listEle);
 
@@ -288,7 +292,7 @@
 
     const organizationLookupFn_openModal = function() {
 
-      window.llm.openHtmlModal("licence-organizationLookup", {
+      llm.openHtmlModal("licence-organizationLookup", {
 
         onshow: function() {
 
@@ -402,7 +406,8 @@
 
       locationLookupFn_setLocation(
         locationEle.getAttribute("data-location-id"),
-        locationEle.getAttribute("data-location-display-name"));
+        locationEle.getAttribute("data-location-display-name")
+      );
 
       locationLookup_closeModalFn();
 
@@ -415,7 +420,10 @@
       const listEle = document.createElement("div");
       listEle.className = "list is-hoverable";
 
-      const searchStringSplit = locationLookup_searchStrEle.value.trim().toLowerCase().split(" ");
+      const searchStringSplit = locationLookup_searchStrEle.value
+        .trim()
+        .toLowerCase()
+        .split(" ");
 
       let displayLimit = 10;
 
@@ -458,7 +466,7 @@
 
       }
 
-      window.llm.clearElement(locationLookup_resultsEle);
+      llm.clearElement(locationLookup_resultsEle);
 
       locationLookup_resultsEle.insertAdjacentElement("beforeend", listEle);
 
@@ -466,7 +474,7 @@
 
     const locationLookupFn_openModal = function() {
 
-      window.llm.openHtmlModal("licence-locationLookup", {
+      llm.openHtmlModal("licence-locationLookup", {
 
         onshow: function(modalEle) {
 
@@ -487,7 +495,7 @@
 
           // new location
 
-          window.llm.getDefaultConfigProperty("city", function(defaultCity) {
+          llm.getDefaultConfigProperty("city", function(defaultCity) {
 
             if (defaultCity) {
 
@@ -497,7 +505,7 @@
 
           });
 
-          window.llm.getDefaultConfigProperty("province", function(defaultProvince) {
+          llm.getDefaultConfigProperty("province", function(defaultProvince) {
 
             if (defaultProvince) {
 
@@ -535,7 +543,7 @@
 
           });
 
-          window.llm.initializeTabs(modalEle.querySelector(".tabs ul"));
+          llm.initializeTabs(modalEle.querySelector(".tabs ul"));
 
         },
 
@@ -575,7 +583,7 @@
 
       document.getElementById("licence--termsConditions").value = termsConditionsList[termsConditionsIndex].termsConditions;
 
-      window.llm.hideModal(termsConditionsLookup_modalEle);
+      llm.hideModal(termsConditionsLookup_modalEle);
 
       setUnsavedChanges();
 
@@ -584,13 +592,13 @@
     document.getElementById("is-termsConditions-lookup-button").addEventListener("click", function() {
 
       termsConditionsList = [];
-      window.llm.clearElement(termsConditionsLookup_resultsEle);
+      llm.clearElement(termsConditionsLookup_resultsEle);
 
       const organizationID = document.getElementById("licence--organizationID").value;
 
       if (organizationID === "") {
 
-        window.llm.alertModal("No Organization Selected", "An organization must be selected before the previously used terms and conditions can be retrieved.", "OK", "warning");
+        llm.alertModal("No Organization Selected", "An organization must be selected before the previously used terms and conditions can be retrieved.", "OK", "warning");
         return;
 
       }
@@ -639,7 +647,7 @@
               listItemEle.setAttribute("data-terms-conditions-index", termsConditionsIndex);
 
               listItemEle.innerHTML = "<p class=\"has-newline-chars\">" +
-                window.llm.escapeHTML(termsConditionsObj.termsConditions) +
+                llm.escapeHTML(termsConditionsObj.termsConditions) +
                 "</p>" +
                 "<p class=\"has-text-right\">" +
                 (termsConditionsObj.termsConditionsCount > 1 ?
@@ -652,7 +660,7 @@
 
             }
 
-            window.llm.clearElement(termsConditionsLookup_resultsEle);
+            llm.clearElement(termsConditionsLookup_resultsEle);
 
             termsConditionsLookup_resultsEle.insertAdjacentElement("beforeend", listEle);
 
@@ -660,7 +668,7 @@
 
         });
 
-      window.llm.showModal(termsConditionsLookup_modalEle);
+      llm.showModal(termsConditionsLookup_modalEle);
 
     });
 
@@ -668,7 +676,7 @@
 
     for (let buttonIndex = 0; buttonIndex < cancelButtonEles.length; buttonIndex += 1) {
 
-      cancelButtonEles[buttonIndex].addEventListener("click", window.llm.hideModal);
+      cancelButtonEles[buttonIndex].addEventListener("click", llm.hideModal);
 
     }
 
@@ -705,8 +713,8 @@
         const ticketTypesPanelEle = document.getElementById("is-ticket-types-panel");
 
         ticketTypesPanelEle.classList.add("is-hidden");
-        window.llm.clearElement(ticketTypesPanelEle.getElementsByTagName("tbody")[0]);
-        window.llm.clearElement(ticketTypesPanelEle.getElementsByTagName("tfoot")[0]);
+        llm.clearElement(ticketTypesPanelEle.getElementsByTagName("tbody")[0]);
+        llm.clearElement(ticketTypesPanelEle.getElementsByTagName("tfoot")[0]);
 
         totalPrizeValueEle.removeAttribute("readonly");
         totalPrizeValueEle.classList.remove("is-readonly");
@@ -847,7 +855,8 @@
 
       }
 
-      events_containerEle.insertAdjacentHTML("beforeend",
+      events_containerEle.insertAdjacentHTML(
+        "beforeend",
         "<div class=\"panel-block is-block\">" +
         "<div class=\"field has-addons\">" +
         ("<div class=\"control is-expanded has-icons-left\">" +
@@ -867,7 +876,8 @@
           "</a>" +
           "</div>") +
         "</div>" +
-        "</div>");
+        "</div>"
+      );
 
       const buttonEles = events_containerEle.getElementsByTagName("a");
       buttonEles[buttonEles.length - 1].addEventListener("click", eventFn_remove);
@@ -900,14 +910,14 @@
 
       }
 
-      window.llm.hideModal(eventCalculator_modalEle);
+      llm.hideModal(eventCalculator_modalEle);
 
     });
 
 
     document.getElementById("is-event-calculator-button").addEventListener("click", function() {
 
-      window.llm.showModal(eventCalculator_modalEle);
+      llm.showModal(eventCalculator_modalEle);
 
     });
 
@@ -915,7 +925,7 @@
 
     for (let buttonIndex = 0; buttonIndex < cancelButtonEles.length; buttonIndex += 1) {
 
-      cancelButtonEles[buttonIndex].addEventListener("click", window.llm.hideModal);
+      cancelButtonEles[buttonIndex].addEventListener("click", llm.hideModal);
 
     }
 
@@ -1036,8 +1046,11 @@
 
           } else {
 
-            formEle.insertAdjacentHTML("beforeend",
-              "<input class=\"is-removed-after-save\" name=\"ticketType_toDelete\" type=\"hidden\" value=\"" + ticketType + "\" />");
+            formEle.insertAdjacentHTML(
+              "beforeend",
+              "<input class=\"is-removed-after-save\" name=\"ticketType_toDelete\"" +
+              " type=\"hidden\" value=\"" + ticketType + "\" />"
+            );
 
           }
 
@@ -1050,11 +1063,13 @@
 
       };
 
-      window.llm.confirmModal("Delete Ticket Type?",
+      llm.confirmModal(
+        "Delete Ticket Type?",
         "Are you sure you want to remove the " + ticketType + " ticket type for this licence?",
         "Yes, Delete",
         "danger",
-        doDeleteTicketType);
+        doDeleteTicketType
+      );
 
     };
 
@@ -1106,7 +1121,7 @@
 
       };
 
-      window.llm.openHtmlModal("licence-ticketTypeUnitAmend", {
+      llm.openHtmlModal("licence-ticketTypeUnitAmend", {
         onshow: function(modalEle) {
 
           document.getElementById("amendUnit_ticketType").value = ticketType;
@@ -1156,7 +1171,7 @@
 
       };
 
-      window.llm.openHtmlModal("licence-distributorLookup", {
+      llm.openHtmlModal("licence-distributorLookup", {
 
         onshow: function() {
 
@@ -1189,7 +1204,7 @@
             }
 
             const lookupContainerEle = document.getElementById("container--distributorLookup");
-            window.llm.clearElement(lookupContainerEle);
+            llm.clearElement(lookupContainerEle);
             lookupContainerEle.insertAdjacentElement("beforeend", listEle);
 
           });
@@ -1221,7 +1236,7 @@
 
       };
 
-      window.llm.openHtmlModal("licence-manufacturerLookup", {
+      llm.openHtmlModal("licence-manufacturerLookup", {
 
         onshow: function() {
 
@@ -1253,7 +1268,7 @@
             }
 
             const lookupContainerEle = document.getElementById("container--manufacturerLookup");
-            window.llm.clearElement(lookupContainerEle);
+            llm.clearElement(lookupContainerEle);
             lookupContainerEle.insertAdjacentElement("beforeend", listEle);
 
           });
@@ -1288,8 +1303,11 @@
 
         if (!isCreate) {
 
-          formEle.insertAdjacentHTML("beforeend",
-            "<input class=\"is-removed-after-save\" name=\"ticketType_toAdd\" type=\"hidden\" value=\"" + document.getElementById("ticketTypeAdd--ticketType").value + "\" />");
+          formEle.insertAdjacentHTML(
+            "beforeend",
+            "<input class=\"is-removed-after-save\" name=\"ticketType_toAdd\"" +
+            " type=\"hidden\" value=\"" + document.getElementById("ticketTypeAdd--ticketType").value + "\" />"
+          );
 
         }
 
@@ -1332,7 +1350,7 @@
         if (!ticketTypes || ticketTypes.length === 0) {
 
           addTicketType_closeModalFn();
-          window.llm.alertModal("No ticket types available", "", "OK", "danger");
+          llm.alertModal("No ticket types available", "", "OK", "danger");
           return;
 
         }
@@ -1365,7 +1383,7 @@
 
       };
 
-      window.llm.openHtmlModal("licence-ticketTypeAdd", {
+      llm.openHtmlModal("licence-ticketTypeAdd", {
 
         onshow: function(modalEle) {
 
@@ -1604,11 +1622,11 @@
 
       };
 
-      window.llm.openHtmlModal("licence-transactionAdd", {
+      llm.openHtmlModal("licence-transactionAdd", {
 
         onshow: function(modalEle) {
 
-          window.llm.getDefaultConfigProperty("externalReceiptNumber_fieldLabel", function(fieldLabel) {
+          llm.getDefaultConfigProperty("externalReceiptNumber_fieldLabel", function(fieldLabel) {
 
             modalEle.querySelector("label[for='transactionAdd--externalReceiptNumber']").innerText = fieldLabel;
 
@@ -1662,10 +1680,12 @@
 
         if (hasUnsavedChanges) {
 
-          window.llm.alertModal("Unsaved Changes",
+          llm.alertModal(
+            "Unsaved Changes",
             "Please save all unsaved changes before issuing this licence.",
             "OK",
-            "warning");
+            "warning"
+          );
 
           return;
 
@@ -1701,9 +1721,11 @@
 
         };
 
-        const reverseTransactionAmount = (voidTransactionButtonEle.getAttribute("data-transaction-amount") * -1).toFixed(2);
+        const reverseTransactionAmount =
+          (voidTransactionButtonEle.getAttribute("data-transaction-amount") * -1).toFixed(2);
 
-        window.llm.confirmModal("Void Transaction?",
+        llm.confirmModal(
+          "Void Transaction?",
           "<strong>Are you sure you want to void this transaction?</strong><br />" +
           "If the history of this transaction should be maintained," +
           " it may be preferred to create a new transaction for $ " + reverseTransactionAmount + ".",
@@ -1760,11 +1782,13 @@
 
         };
 
-        window.llm.confirmModal("Unissue Licence?",
+        llm.confirmModal(
+          "Unissue Licence?",
           "Are you sure you want to unissue this lottery licence?",
           "Yes, Unissue",
           "danger",
-          unissueFn);
+          unissueFn
+        );
 
       });
 
@@ -1803,18 +1827,22 @@
 
         if (hasUnsavedChanges) {
 
-          window.llm.alertModal("Unsaved Changes",
+          llm.alertModal(
+            "Unsaved Changes",
             "Please save all unsaved changes before issuing this licence.",
             "OK",
-            "warning");
+            "warning"
+          );
 
         } else {
 
-          window.llm.confirmModal("Issue Licence?",
+          llm.confirmModal(
+            "Issue Licence?",
             "Are you sure you want to issue this lottery licence?",
             "Yes, Issue",
             "success",
-            issueFn);
+            issueFn
+          );
 
         }
 

@@ -1,15 +1,14 @@
-/* global require, module */
-
 "use strict";
 
 const express = require("express");
 const router = express.Router();
 
+const dateTimeFns = require("../helpers/dateTimeFns");
+
 const licencesDB = require("../helpers/licencesDB");
 
-router.get("/", function(req, res) {
 
-  const dateTimeFns = require("../helpers/dateTimeFns");
+router.get("/", function(req, res) {
 
   res.render("event-search", {
     headTitle: "Events",
@@ -39,7 +38,7 @@ router.post("/doSave", function(req, res) {
 
   }
 
-  let changeCount = licencesDB.updateEvent(req.body, req.session);
+  const changeCount = licencesDB.updateEvent(req.body, req.session);
 
   if (changeCount) {
 

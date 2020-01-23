@@ -1,4 +1,4 @@
-/* global require, console, module, __dirname */
+/* eslint-env node */
 
 "use strict";
 
@@ -16,15 +16,15 @@ const session = require("express-session");
 const SQLiteStore = require("connect-sqlite3")(session);
 
 
-const router_docs = require("./routes/docs");
-const router_login = require("./routes/login");
-const router_dashboard = require("./routes/dashboard");
-const router_organizations = require("./routes/organizations");
-const router_licences = require("./routes/licences");
-const router_locations = require("./routes/locations");
-const router_events = require("./routes/events");
-const router_reports = require("./routes/reports");
-const router_admin = require("./routes/admin");
+const routerDocs = require("./routes/docs");
+const routerLogin = require("./routes/login");
+const routerDashboard = require("./routes/dashboard");
+const routerOrganizations = require("./routes/organizations");
+const routerLicences = require("./routes/licences");
+const routerLocations = require("./routes/locations");
+const routerEvents = require("./routes/events");
+const routerReports = require("./routes/reports");
+const routerAdmin = require("./routes/admin");
 
 const configFns = require("./helpers/configFns");
 
@@ -47,7 +47,7 @@ dbInit.initLicencesDB();
 const app = express();
 
 
-// view engine setup
+// View engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 
@@ -79,7 +79,7 @@ app.use("/fa", express.static(path.join(__dirname, "node_modules", "@fortawesome
 const sessionCookieName = configFns.getProperty("session.cookieName");
 
 
-// initialize session
+// Initialize session
 app.use(session({
   store: new SQLiteStore({
     dir: "data",
@@ -95,7 +95,7 @@ app.use(session({
   }
 }));
 
-// clear cookie if no corresponding session
+// Clear cookie if no corresponding session
 app.use(function(req, res, next) {
 
   if (req.cookies[sessionCookieName] && !req.session.user) {
@@ -108,18 +108,16 @@ app.use(function(req, res, next) {
 
 });
 
-// redirect logged in users
+// Redirect logged in users
 const sessionChecker = function(req, res, next) {
 
   if (req.session.user && req.cookies[sessionCookieName]) {
 
-    next();
-
-  } else {
-
-    res.redirect("/login?redirect=" + req.originalUrl);
+    return next();
 
   }
+
+  return res.redirect("/login?redirect=" + req.originalUrl);
 
 };
 
@@ -129,7 +127,7 @@ const sessionChecker = function(req, res, next) {
  */
 
 
-// make the user and config objects available to the templates
+// Make the user and config objects available to the templates
 app.use(function(req, res, next) {
 
   res.locals.user = req.session.user;
@@ -145,17 +143,17 @@ app.get("/", sessionChecker, function(req, res) {
 
 });
 
-app.use("/docs", router_docs);
+app.use("/docs", routerDocs);
 
-app.use("/dashboard", sessionChecker, router_dashboard);
-app.use("/organizations", sessionChecker, router_organizations);
-app.use("/licences", sessionChecker, router_licences);
-app.use("/locations", sessionChecker, router_locations);
-app.use("/events", sessionChecker, router_events);
-app.use("/reports", sessionChecker, router_reports);
-app.use("/admin", sessionChecker, router_admin);
+app.use("/dashboard", sessionChecker, routerDashboard);
+app.use("/organizations", sessionChecker, routerOrganizations);
+app.use("/licences", sessionChecker, routerLicences);
+app.use("/locations", sessionChecker, routerLocations);
+app.use("/events", sessionChecker, routerEvents);
+app.use("/reports", sessionChecker, routerReports);
+app.use("/admin", sessionChecker, routerAdmin);
 
-app.use("/login", router_login);
+app.use("/login", routerLogin);
 
 app.get("/logout", function(req, res) {
 
@@ -175,21 +173,21 @@ app.get("/logout", function(req, res) {
 });
 
 
-// catch 404 and forward to error handler
+// Catch 404 and forward to error handler
 app.use(function(req, res, next) {
 
   next(createError(404));
 
 });
 
-// error handler
+// Error handler
 app.use(function(err, req, res) {
 
-  // set locals, only providing error in development
+  // Set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get("env") === "development" ? err : {};
 
-  // render the error page
+  // Render the error page
   res.status(err.status || 500);
   res.render("error");
 

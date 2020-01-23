@@ -1,5 +1,3 @@
-/* global require, module */
-
 "use strict";
 
 const express = require("express");
@@ -20,6 +18,7 @@ router.get("/", function(req, res) {
 
 });
 
+// eslint-disable-next-line complexity
 router.all("/:reportName", function(req, res) {
 
   const reportName = req.params.reportName;
@@ -39,8 +38,10 @@ router.all("/:reportName", function(req, res) {
       break;
 
     case "locations-unused":
+      {
 
-      sql = "select lo.locationID, lo.locationName, lo.locationAddress1, lo.locationAddress2, lo.locationCity, lo.locationProvince," +
+        sql = "select lo.locationID, lo.locationName," +
+        " lo.locationAddress1, lo.locationAddress2, lo.locationCity, lo.locationProvince," +
         " l.licences_endDateMax, d.distributor_endDateMax, m.manufacturer_endDateMax" +
         " from Locations lo" +
 
@@ -74,14 +75,19 @@ router.all("/:reportName", function(req, res) {
         " lo.locationAddress1, lo.locationAddress2, lo.locationCity, lo.locationProvince," +
         " l.licences_endDateMax, d.distributor_endDateMax, m.manufacturer_endDateMax" +
 
-        " having max(ifnull(l.licences_endDateMax, 0), ifnull(d.distributor_endDateMax, 0), ifnull(m.manufacturer_endDateMax, 0)) <= ?";
+        (" having max(" +
+          "ifnull(l.licences_endDateMax, 0)," +
+          " ifnull(d.distributor_endDateMax, 0)," +
+          " ifnull(m.manufacturer_endDateMax, 0)) <= ?");
 
-      let threeYearsAgo = new Date();
-      threeYearsAgo.setFullYear(threeYearsAgo.getFullYear() - 3);
+        const threeYearsAgo = new Date();
+        threeYearsAgo.setFullYear(threeYearsAgo.getFullYear() - 3);
 
-      params.push(dateTimeFns.dateToInteger(threeYearsAgo));
+        params.push(dateTimeFns.dateToInteger(threeYearsAgo));
 
-      break;
+        break;
+
+      }
 
       /*
        * Organizations
@@ -121,7 +127,8 @@ router.all("/:reportName", function(req, res) {
     case "organizations-deleted":
 
       sql = "select o.organizationID, o.organizationName, o.organizationAddress1, o.organizationAddress2," +
-        " o.organizationCity, o.organizationProvince, o.organizationPostalCode, o.isEligibleForLicences, o.organizationNote," +
+        " o.organizationCity, o.organizationProvince, o.organizationPostalCode," +
+        " o.isEligibleForLicences, o.organizationNote," +
         " o.recordDelete_userName, o.recordDelete_timeMillis" +
         " from Organizations o" +
         " where o.recordDelete_timeMillis is not null";
@@ -147,9 +154,7 @@ router.all("/:reportName", function(req, res) {
         " from OrganizationRepresentatives" +
         " where organizationID = ?";
 
-      params = [
-        req.query.organizationID
-      ];
+      params = [req.query.organizationID];
 
       break;
 
@@ -172,9 +177,7 @@ router.all("/:reportName", function(req, res) {
         " where recordDelete_timeMillis is null" +
         " and organizationID = ?";
 
-      params = [
-        req.query.organizationID
-      ];
+      params = [req.query.organizationID];
 
       break;
 
@@ -204,9 +207,7 @@ router.all("/:reportName", function(req, res) {
         " where l.recordDelete_timeMillis is null" +
         " and l.organizationID = ?";
 
-      params = [
-        req.query.organizationID
-      ];
+      params = [req.query.organizationID];
 
       break;
 
@@ -227,9 +228,7 @@ router.all("/:reportName", function(req, res) {
         " where l.recordDelete_timeMillis is null" +
         " and l.locationID = ?";
 
-      params = [
-        req.query.locationID
-      ];
+      params = [req.query.locationID];
 
       break;
 
@@ -281,9 +280,7 @@ router.all("/:reportName", function(req, res) {
         " where t.recordDelete_timeMillis is null" +
         " and t.licenceID = ?";
 
-      params = [
-        req.query.licenceID
-      ];
+      params = [req.query.licenceID];
 
       break;
 
@@ -306,9 +303,7 @@ router.all("/:reportName", function(req, res) {
         " where recordDelete_timeMillis is null" +
         " and licenceID = ?";
 
-      params = [
-        req.query.licenceID
-      ];
+      params = [req.query.licenceID];
 
       break;
 
@@ -330,9 +325,7 @@ router.all("/:reportName", function(req, res) {
         " where transactionDate = ?" +
         " and recordDelete_timeMillis is null";
 
-      params = [
-        req.query.transactionDate.replace(/-/g, "")
-      ];
+      params = [req.query.transactionDate.replace(/-/g, "")];
 
       break;
 
@@ -345,9 +338,7 @@ router.all("/:reportName", function(req, res) {
         " where licenceID = ?" +
         " and recordDelete_timeMillis is null";
 
-      params = [
-        req.query.licenceID
-      ];
+      params = [req.query.licenceID];
 
       break;
 
@@ -373,9 +364,7 @@ router.all("/:reportName", function(req, res) {
         " and l.recordDelete_timeMillis is NULL" +
         " and e.eventDate >= ?";
 
-      params = [
-        dateTimeFns.dateToInteger(new Date())
-      ];
+      params = [dateTimeFns.dateToInteger(new Date())];
 
       break;
 
@@ -385,8 +374,11 @@ router.all("/:reportName", function(req, res) {
         " e.bank_name, e.bank_address, e.bank_accountNumber, e.bank_accountBalance," +
         " e.costs_receipts," +
         " l.externalLicenceNumber, l.licenceTypeKey, l.licenceDetails," +
-        " o.organizationID, o.organizationName, o.organizationAddress1, o.organizationAddress2, o.organizationCity, o.organizationProvince, o.organizationPostalCode," +
-        " r.representativeName, r.representativeTitle, r.representativeAddress1, r.representativeAddress2, r.representativeCity, r.representativeProvince, r.representativePostalCode," +
+        " o.organizationID, o.organizationName," +
+        " o.organizationAddress1, o.organizationAddress2," +
+        " o.organizationCity, o.organizationProvince, o.organizationPostalCode," +
+        " r.representativeName, r.representativeTitle, r.representativeAddress1, r.representativeAddress2," +
+        " r.representativeCity, r.representativeProvince, r.representativePostalCode," +
         " r.representativePhoneNumber, r.representativeEmailAddress" +
         " from LotteryEvents e" +
         " left join LotteryLicences l on e.licenceID = l.licenceID" +
@@ -397,9 +389,7 @@ router.all("/:reportName", function(req, res) {
         " and e.eventDate < ?" +
         " and (e.bank_name is null or e.bank_name = '' or e.costs_receipts is null or e.costs_receipts = 0)";
 
-      params = [
-        dateTimeFns.dateToInteger(new Date())
-      ];
+      params = [dateTimeFns.dateToInteger(new Date())];
 
       break;
 
@@ -411,7 +401,8 @@ router.all("/:reportName", function(req, res) {
         " l.location, l.licenceDetails, l.licenceTypeKey," +
         " l.totalPrizeValue, l.licenceFee," +
         " e.bank_name, e.bank_address, e.bank_accountNumber, e.bank_accountBalance," +
-        " e.costs_receipts, e.costs_admin, e.costs_prizesAwarded, e.costs_charitableDonations, e.costs_netProceeds, e.costs_amountDonated" +
+        " e.costs_receipts, e.costs_admin, e.costs_prizesAwarded, e.costs_charitableDonations, e.costs_netProceeds," +
+        " e.costs_amountDonated" +
         " from LotteryEvents e" +
         " left join LotteryLicences l on e.licenceID = l.licenceID" +
         " left join Organizations o on l.organizationID = o.organizationID" +
@@ -419,9 +410,7 @@ router.all("/:reportName", function(req, res) {
         " and l.recordDelete_timeMillis is null" +
         " and e.licenceID = ?";
 
-      params = [
-        req.query.licenceID
-      ];
+      params = [req.query.licenceID];
 
       break;
 

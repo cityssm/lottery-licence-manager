@@ -1,6 +1,3 @@
-/* global window, document */
-/* global URLSearchParams, FormData */
-
 "use strict";
 
 (function() {
@@ -29,8 +26,8 @@
 
           if (responseJSON.success) {
 
-            window.llm.hideModal(changePasswordModalEles[0]);
-            window.llm.alertModal("Password Updated Successfully", "", "OK", "success");
+            llm.hideModal(changePasswordModalEles[0]);
+            llm.alertModal("Password Updated Successfully", "", "OK", "success");
 
           }
 
@@ -38,18 +35,20 @@
 
     });
 
+
     document.getElementsByClassName("is-change-password-button")[0].addEventListener("click", function() {
 
       changePasswordModalEles[0].getElementsByTagName("form")[0].reset();
-      window.llm.showModal(changePasswordModalEles[0]);
+      llm.showModal(changePasswordModalEles[0]);
 
     });
 
-    let cancelButtonEles = changePasswordModalEles[0].getElementsByClassName("is-cancel-button");
+
+    const cancelButtonEles = changePasswordModalEles[0].getElementsByClassName("is-cancel-button");
 
     for (let buttonIndex = 0; buttonIndex < cancelButtonEles.length; buttonIndex += 1) {
 
-      cancelButtonEles[buttonIndex].addEventListener("click", window.llm.hideModal);
+      cancelButtonEles[buttonIndex].addEventListener("click", llm.hideModal);
 
     }
 

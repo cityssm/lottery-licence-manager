@@ -1,11 +1,11 @@
-/* global require, module */
-
 "use strict";
 
 const express = require("express");
 const router = express.Router();
 
 const configFns = require("../helpers/configFns");
+
+const usersDB = require("../helpers/usersDB");
 
 
 router.route("/")
@@ -38,12 +38,11 @@ router.route("/")
   })
   .post(function(req, res) {
 
-    let userName = req.body.userName;
+    const userName = req.body.userName;
     const passwordPlain = req.body.password;
 
     const redirectURL = req.body.redirect;
 
-    const usersDB = require("../helpers/usersDB");
     const userObj = usersDB.getUser(userName, passwordPlain);
 
     if (userObj) {

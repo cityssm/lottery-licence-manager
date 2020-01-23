@@ -1,6 +1,3 @@
-/* global require, module */
-/* global __dirname */
-
 "use strict";
 
 
@@ -39,23 +36,21 @@ router.all("/:mdFileName", function(req, res, next) {
 
     const applicationName = configFns.getProperty("application.applicationName");
 
-    res.send(`
-      <html>
-        <head>
-          <meta charset="utf-8" />
-          <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-          <title>Help: ${applicationName}</title>
-          <link rel="icon" href="/images/favicon.png" />
-          <link rel="stylesheet" href="/stylesheets/docs.min.css" />
-        </head>
-        <body>
-        <article class="markdown-body">` +
+    res.send(`<html>
+      <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <title>Help: ${applicationName}</title>
+        <link rel="icon" href="/images/favicon.png" />
+        <link rel="stylesheet" href="/stylesheets/docs.min.css" />
+      </head>
+      <body>
+      <article class="markdown-body">` +
       marked(data.toString()) +
       `
-        </article>
+      </article>
       </body>
-      </html>`
-    );
+      </html>`);
 
   });
 

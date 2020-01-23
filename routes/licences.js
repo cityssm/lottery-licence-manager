@@ -1,5 +1,3 @@
-/* global require, module, __dirname */
-
 "use strict";
 
 const express = require("express");
@@ -8,7 +6,12 @@ const router = express.Router();
 const configFns = require("../helpers/configFns");
 
 const dateTimeFns = require("../helpers/dateTimeFns");
+
 const licencesDB = require("../helpers/licencesDB");
+
+const path = require("path");
+const ejs = require("ejs");
+const pdf = require("html-pdf");
 
 
 router.get("/", function(req, res) {
@@ -27,9 +30,12 @@ router.post("/doSearch", function(req, res) {
 });
 
 
-router.get(["/new", "/new/:organizationID"], function(req, res) {
+router.get([
+  "/new",
+  "/new/:organizationID"
+], function(req, res) {
 
-  // check permission
+  // Check permission
 
   if (req.session.user.userProperties.canCreate !== "true") {
 
@@ -38,7 +44,7 @@ router.get(["/new", "/new/:organizationID"], function(req, res) {
 
   }
 
-  // get organization (if set)
+  // Get organization (if set)
 
   const organizationID = req.params.organizationID;
 
@@ -56,11 +62,11 @@ router.get(["/new", "/new/:organizationID"], function(req, res) {
 
   }
 
-  // use current date as default
+  // Use current date as default
 
   const currentDateAsString = dateTimeFns.dateToString(new Date());
 
-  // get next external licence number
+  // Get next external licence number
 
   let externalLicenceNumber = "";
 
@@ -393,7 +399,7 @@ router.get("/:licenceID/edit", function(req, res) {
 
   const organization = licencesDB.getOrganization(licence.organizationID, req.session);
 
-  let feeCalculation = configFns.getProperty("licences.feeCalculationFn")(licence);
+  const feeCalculation = configFns.getProperty("licences.feeCalculationFn")(licence);
 
   res.render("licence-edit", {
     headTitle: "Licence #" + licenceID + " Update",
@@ -429,11 +435,8 @@ router.get("/:licenceID/print", function(req, res, next) {
 
   const organization = licencesDB.getOrganization(licence.organizationID, req.session);
 
-  const path = require("path");
-  const ejs = require("ejs");
-  const pdf = require("html-pdf");
-
-  ejs.renderFile(path.join(__dirname, "../reports/", configFns.getProperty("licences.printTemplate")), {
+  ejs.renderFile(
+    path.join(__dirname, "../reports/", configFns.getProperty("licences.printTemplate")), {
       configFns: configFns,
       licence: licence,
       organization: organization
@@ -442,36 +445,37 @@ router.get("/:licenceID/print", function(req, res, next) {
 
       if (ejsErr) {
 
-        next(ejsErr);
-
-      } else {
-
-        let options = {
-          format: "Letter",
-          base: "http://localhost:" + configFns.getProperty("application.httpPort"),
-          phantomArgs: ["--local-url-access=false"]
-        };
-
-        pdf.create(ejsData, options).toStream(function(pdfErr, pdfStream) {
-
-          if (pdfErr) {
-
-            res.send(pdfErr);
-
-          } else {
-
-
-            res.setHeader("Content-Type", "application/pdf");
-
-            pdfStream.pipe(res);
-
-          }
-
-        });
+        return next(ejsErr);
 
       }
 
-    });
+      const pdfOptions = {
+        format: "Letter",
+        base: "http://localhost:" + configFns.getProperty("application.httpPort"),
+        phantomArgs: ["--local-url-access=false"]
+      };
+
+      pdf.create(ejsData, pdfOptions).toStream(function(pdfErr, pdfStream) {
+
+        if (pdfErr) {
+
+          res.send(pdfErr);
+
+        } else {
+
+
+          res.setHeader("Content-Type", "application/pdf");
+
+          pdfStream.pipe(res);
+
+        }
+
+      });
+
+      return null;
+
+    }
+  );
 
 });
 

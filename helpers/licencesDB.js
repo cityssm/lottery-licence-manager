@@ -1,5 +1,3 @@
-/* global require, module */
-
 "use strict";
 
 const configFns = require("./configFns");
@@ -1135,6 +1133,7 @@ const licencesDB = {
    * LICENCES
    */
 
+  // eslint-disable-next-line complexity
   getLicences: function(reqBodyOrParamsObj = {}, includeOrganization, useLimit, reqSession) {
 
     if (reqBodyOrParamsObj.organizationName && reqBodyOrParamsObj.organizationName !== "") {
@@ -1147,7 +1146,7 @@ const licencesDB = {
       readonly: true
     });
 
-    let sqlParams = [];
+    const sqlParams = [];
 
     let sql = "select l.licenceID, l.organizationID," +
       (includeOrganization ?

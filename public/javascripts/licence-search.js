@@ -1,6 +1,3 @@
-/* global window, document */
-/* global URLSearchParams, FormData */
-
 "use strict";
 
 (function() {
@@ -41,8 +38,6 @@
             "</div>" +
             "</div>";
 
-          return;
-
         } else {
 
           searchResultsEle.innerHTML = "<table class=\"table is-fullwidth is-striped is-hoverable\">" +
@@ -69,19 +64,23 @@
             trEle.innerHTML =
               "<td>" +
               "<a href=\"/licences/" + licenceObj.licenceID + "\">" +
-              window.llm.escapeHTML(licenceObj.externalLicenceNumber) + "<br />" +
+              llm.escapeHTML(licenceObj.externalLicenceNumber) + "<br />" +
               "<small>Licence #" + licenceObj.licenceID + "</small>" +
               "</a>" +
               "</td>" +
               "<td>" + (licenceType || licenceObj.licenceTypeKey) + "<br />" +
-              "<small>" + window.llm.escapeHTML(licenceObj.licenceDetails) + "</small>" +
+              "<small>" + llm.escapeHTML(licenceObj.licenceDetails) + "</small>" +
               "</td>" +
-              "<td>" + window.llm.escapeHTML(licenceObj.organizationName) + "</td>" +
-              "<td>" + window.llm.escapeHTML(licenceObj.locationDisplayName) + "</td>" +
+              "<td>" + llm.escapeHTML(licenceObj.organizationName) + "</td>" +
+              "<td>" + llm.escapeHTML(licenceObj.locationDisplayName) + "</td>" +
 
               ("<td class=\"is-nowrap\">" +
-                "<span class=\"has-cursor-default has-tooltip-right\" data-tooltip=\"Start Date\"><i class=\"fas fa-fw fa-play\" aria-hidden=\"true\"></i> " + licenceObj.startDateString + "</span><br />" +
-                "<span class=\"has-cursor-default has-tooltip-right\" data-tooltip=\"End Date\"><i class=\"fas fa-fw fa-stop\" aria-hidden=\"true\"></i> " + licenceObj.endDateString + "</span>" +
+                "<span class=\"has-cursor-default has-tooltip-right\" data-tooltip=\"Start Date\">" +
+                "<i class=\"fas fa-fw fa-play\" aria-hidden=\"true\"></i> " + licenceObj.startDateString +
+                "</span><br />" +
+                "<span class=\"has-cursor-default has-tooltip-right\" data-tooltip=\"End Date\">" +
+                "<i class=\"fas fa-fw fa-stop\" aria-hidden=\"true\"></i> " + licenceObj.endDateString +
+                "</span>" +
                 "</td>") +
 
               "<td class=\"has-text-right is-nowrap is-hidden-print\">" +
@@ -115,7 +114,7 @@
 
   const licenceTypeOptionEles = document.getElementById("filter--licenceTypeKey").getElementsByTagName("option");
 
-  // start at 1 to skip the blank first record
+  // Start at 1 to skip the blank first record
   for (let optionIndex = 1; optionIndex < licenceTypeOptionEles.length; optionIndex += 1) {
 
     const optionEle = licenceTypeOptionEles[optionIndex];

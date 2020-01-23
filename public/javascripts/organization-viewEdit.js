@@ -1,14 +1,12 @@
-/* global window, document */
-
 "use strict";
 
 (function() {
 
-  // licences
+  // Licences
 
-  window.llm.initializeTabs(document.getElementById("tabs--licences"));
+  llm.initializeTabs(document.getElementById("tabs--licences"));
 
-  // remarks
+  // Remarks
 
   if (document.getElementsByTagName("main")[0].getAttribute("data-can-create") === "true") {
 
@@ -20,27 +18,29 @@
     const editRemarkFn = function(buttonEvent) {
 
       const remarkIndex = buttonEvent.currentTarget.getAttribute("data-remark-index");
-      window.llm.organizationRemarks.openEditRemarkModal(organizationID, remarkIndex, refreshRemarksFn);
+      llm.organizationRemarks.openEditRemarkModal(organizationID, remarkIndex, refreshRemarksFn);
 
     };
 
     const deleteRemarkFn = function(buttonEvent) {
 
       const remarkIndex = buttonEvent.currentTarget.getAttribute("data-remark-index");
-      window.llm.organizationRemarks.deleteRemark(organizationID, remarkIndex, true, refreshRemarksFn);
+      llm.organizationRemarks.deleteRemark(organizationID, remarkIndex, true, refreshRemarksFn);
 
     };
 
     refreshRemarksFn = function() {
 
-      window.llm.organizationRemarks.getRemarksByOrganizationID(organizationID, function(remarkList) {
+      llm.organizationRemarks.getRemarksByOrganizationID(organizationID, function(remarkList) {
 
-        window.llm.clearElement(remarksContainerEle);
+        llm.clearElement(remarksContainerEle);
 
         if (remarkList.length === 0) {
 
           remarksContainerEle.innerHTML = "<div class=\"panel-block\">" +
-            "<div class=\"message is-info\"><p class=\"message-body\">There are no remarks associated with this organization.</p></div>" +
+            "<div class=\"message is-info\">" +
+            "<p class=\"message-body\">There are no remarks associated with this organization.</p>" +
+            "</div>" +
             "</div>";
 
         } else {
@@ -57,7 +57,7 @@
                 "<i class=\"far fa-fw fa-comment\" aria-hidden=\"true\"></i>") +
               "</div>" +
               "<div class=\"column\">" +
-              "<p class=\"has-newline-chars\">" + window.llm.escapeHTML(remark.remark) + "</p>" +
+              "<p class=\"has-newline-chars\">" + llm.escapeHTML(remark.remark) + "</p>" +
               "<p class=\"is-size-7\">" +
               remark.recordUpdate_userName + " - " + remark.remarkDateString + " " + remark.remarkTimeString +
               "</p>" +
@@ -106,7 +106,7 @@
     document.getElementsByClassName("is-add-remark-button")[0].addEventListener("click", function(clickEvent) {
 
       clickEvent.preventDefault();
-      window.llm.organizationRemarks.openAddRemarkModal(organizationID, refreshRemarksFn);
+      llm.organizationRemarks.openAddRemarkModal(organizationID, refreshRemarksFn);
 
     });
 

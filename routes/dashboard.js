@@ -1,11 +1,11 @@
-/* global require, module */
-
 "use strict";
 
 const express = require("express");
 const router = express.Router();
 
 const configFns = require("../helpers/configFns");
+
+const usersDB = require("../helpers/usersDB");
 
 
 router.get("/", function(req, res) {
@@ -22,8 +22,6 @@ router.post("/doChangePassword", function(req, res) {
   const userName = req.session.user.userName;
   const oldPassword = req.body.oldPassword;
   const newPassword = req.body.newPassword;
-
-  const usersDB = require("../helpers/usersDB");
 
   const result = usersDB.tryResetPassword(userName, oldPassword, newPassword);
 

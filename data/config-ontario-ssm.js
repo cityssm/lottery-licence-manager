@@ -43,19 +43,19 @@ config.licences.feeCalculationFn = function(licenceObj) {
 
   const calculatedLicenceFee = totalPrizeValue * 0.03;
 
-  let fee = Math.max(licenceFeeMin, calculatedLicenceFee);
+  const fee = Math.max(licenceFeeMin, calculatedLicenceFee);
   let message = (fee === licenceFeeMin ?
     "Base minimum licence fee." :
     "3% of $" + licenceObj.totalPrizeValue);
   let licenceHasErrors = false;
 
-  // check the total prize value
+  // Check the total prize value
 
   if (licenceObj.licenceTypeKey === "RA") {
 
     const licenceFields = licenceObj.licenceFields;
 
-    // get the minimum ticket cost
+    // Get the minimum ticket cost
 
     let ticketCost = parseFloat(licenceFields.ticketCost || "0");
 
@@ -81,12 +81,12 @@ config.licences.feeCalculationFn = function(licenceObj) {
 
     }
 
-    // calculate the minimum prize value
+    // Calculate the minimum prize value
 
-    let minPotentialTakeIn =
+    const minPotentialTakeIn =
       ticketCost * parseInt(licenceFields.ticketCount || "0");
 
-    let minPrizeValue = minPotentialTakeIn * 0.2;
+    const minPrizeValue = minPotentialTakeIn * 0.2;
 
     if (totalPrizeValue < minPrizeValue) {
 
@@ -110,17 +110,17 @@ config.licences.feeCalculationFn = function(licenceObj) {
  * SAULT STE MARIE SPECIFICS FOR NEVADA LICENSING
  */
 
-let licenceType_nevada = config.licenceTypes.find(licenceType => licenceType.licenceTypeKey === "NV");
+const licenceTypeNevada = config.licenceTypes.find(licenceType => licenceType.licenceTypeKey === "NV");
 
 
 /*
  * For each ticket type, set a fee of 3% of the prizesPerDeal
  */
 
-for (let ticketTypeIndex = 0; ticketTypeIndex < licenceType_nevada.ticketTypes.length; ticketTypeIndex += 1) {
+for (let ticketTypeIndex = 0; ticketTypeIndex < licenceTypeNevada.ticketTypes.length; ticketTypeIndex += 1) {
 
-  licenceType_nevada.ticketTypes[ticketTypeIndex].feePerUnit =
-    Math.round(licenceType_nevada.ticketTypes[ticketTypeIndex].prizesPerDeal * 0.03 * 100) / 100;
+  licenceTypeNevada.ticketTypes[ticketTypeIndex].feePerUnit =
+    Math.round(licenceTypeNevada.ticketTypes[ticketTypeIndex].prizesPerDeal * 0.03 * 100) / 100;
 
 }
 
@@ -130,33 +130,38 @@ for (let ticketTypeIndex = 0; ticketTypeIndex < licenceType_nevada.ticketTypes.l
  * to handle older imported licences.
  */
 
-licenceType_nevada.licenceFields = [{
-  fieldKey: "distributor",
-  fieldLabel: "Distributor",
-  isActive: false,
-  inputAttributes: {
-    type: "text",
-    maxlength: 100
+licenceTypeNevada.licenceFields = [
+
+  {
+    fieldKey: "distributor",
+    fieldLabel: "Distributor",
+    isActive: false,
+    inputAttributes: {
+      type: "text",
+      maxlength: 100
+    }
+  },
+  {
+    fieldKey: "manufacturer",
+    fieldLabel: "Manufacturer",
+    isActive: false,
+    inputAttributes: {
+      type: "text",
+      maxlength: 100
+    }
+  },
+  {
+    fieldKey: "units",
+    fieldLabel: "Units",
+    isActive: false,
+    inputAttributes: {
+      type: "number",
+      min: 0,
+      max: 1000000,
+      step: 1
+    }
   }
-}, {
-  fieldKey: "manufacturer",
-  fieldLabel: "Manufacturer",
-  isActive: false,
-  inputAttributes: {
-    type: "text",
-    maxlength: 100
-  }
-}, {
-  fieldKey: "units",
-  fieldLabel: "Units",
-  isActive: false,
-  inputAttributes: {
-    type: "number",
-    min: 0,
-    max: 1000000,
-    step: 1
-  }
-}];
+];
 
 
 module.exports = config;

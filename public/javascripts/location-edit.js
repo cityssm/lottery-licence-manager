@@ -1,6 +1,3 @@
-/* global window, document */
-/* global URLSearchParams, FormData */
-
 "use strict";
 
 (function() {
@@ -20,12 +17,11 @@
 
     formMessageEle.innerHTML = "Saving... <i class=\"fas fa-circle-notch fa-spin\" aria-hidden=\"true\"></i>";
 
-    window.fetch(
-        (isCreate ? "/locations/doCreate" : "/locations/doUpdate"), {
-          method: "POST",
-          credentials: "include",
-          body: new URLSearchParams(new FormData(formEle))
-        })
+    window.fetch((isCreate ? "/locations/doCreate" : "/locations/doUpdate"), {
+        method: "POST",
+        credentials: "include",
+        body: new URLSearchParams(new FormData(formEle))
+      })
       .then(function(response) {
 
         return response.json();
@@ -36,7 +32,7 @@
         if (responseJSON.success) {
 
           hasUnsavedChanges = false;
-          window.llm.disableNavBlocker();
+          llm.disableNavBlocker();
 
         }
 
@@ -48,8 +44,10 @@
 
           formMessageEle.innerHTML = "";
 
-          window.llm.alertModal(responseJSON.message, "", "OK",
-            responseJSON.success ? "success" : "danger");
+          llm.alertModal(
+            responseJSON.message, "", "OK",
+            responseJSON.success ? "success" : "danger"
+          );
 
         }
 
@@ -93,12 +91,14 @@
 
       clickEvent.preventDefault();
 
-      window.llm.confirmModal("Delete Location?",
+      llm.confirmModal(
+        "Delete Location?",
         ("Are you sure you want to delete this location?<br />" +
           "Note that any active licences associated with this location will remain active."),
         "Yes, Delete Location",
         "warning",
-        deleteLocationFn);
+        deleteLocationFn
+      );
 
     });
 
@@ -115,9 +115,12 @@
 
       if (hasUnsavedChanges) {
 
-        window.llm.alertModal("Unsaved Changes",
+        llm.alertModal(
+          "Unsaved Changes",
           "You must save all unsaved changes before merging this location record.",
-          "OK", "warning");
+          "OK",
+          "warning"
+        );
         return;
 
       }
@@ -140,18 +143,17 @@
 
       const doMerge = function() {
 
-        window.fetch(
-            "/locations/doMerge", {
-              method: "POST",
-              credentials: "include",
-              headers: {
-                "Content-Type": "application/json"
-              },
-              body: JSON.stringify({
-                targetLocationID: locationID,
-                sourceLocationID: locationID_source
-              })
+        window.fetch("/locations/doMerge", {
+            method: "POST",
+            credentials: "include",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              targetLocationID: locationID,
+              sourceLocationID: locationID_source
             })
+          })
           .then(function(response) {
 
             return response.json();
@@ -165,7 +167,7 @@
 
             } else {
 
-              window.llm.alertModal("Merge Not Completed", "Please try again.", "OK", "danger");
+              llm.alertModal("Merge Not Completed", "Please try again.", "OK", "danger");
 
             }
 
@@ -182,19 +184,24 @@
 
         closeMergeLocationModalFn();
 
-        window.llm.confirmModal("Confirm Merge",
+        llm.confirmModal(
+          "Confirm Merge",
           "Are you sure you want to update all licences associated with" +
           " <em>" + locationDisplayName_source + ", #" + locationID_source + "</em>" +
           " and associate them with" +
           " <em>" + locationDisplayNameAndID_target + "</em>?",
           "Yes, Complete Merge", "warning",
-          doMerge);
+          doMerge
+        );
 
       };
 
       const filterLocationsFn = function() {
 
-        const filterSplit = locationFilterEle.value.trim().toLowerCase().split(" ");
+        const filterSplit = locationFilterEle.value
+          .trim()
+          .toLowerCase()
+          .split(" ");
 
         const listEle = document.createElement("div");
         listEle.className = "list is-hoverable";
@@ -239,9 +246,9 @@
           listItemEle.innerHTML = "<div class=\"level is-marginless\">" +
             ("<div class=\"level-left\">" +
               "<div>" +
-              window.llm.escapeHTML(locationObj.locationDisplayName) + "<br />" +
+              llm.escapeHTML(locationObj.locationDisplayName) + "<br />" +
               "<small>" +
-              window.llm.escapeHTML(locationObj.locationAddress1) +
+              llm.escapeHTML(locationObj.locationAddress1) +
               "</small>" +
               "</div>" +
               "</div>") +
@@ -271,15 +278,15 @@
 
         }
 
-        window.llm.clearElement(sourceLocationsContainerEle);
+        llm.clearElement(sourceLocationsContainerEle);
         sourceLocationsContainerEle.insertAdjacentElement("beforeend", listEle);
 
       };
 
-      window.llm.openHtmlModal("locationMerge", {
+      llm.openHtmlModal("locationMerge", {
         onshow: function(modalEle) {
 
-          // location name - target
+          // Location name - target
 
           const locationDisplayNameAndID_target_eles = modalEle.getElementsByClassName("mergeLocation--locationDisplayNameAndID_target");
 
@@ -289,18 +296,17 @@
 
           }
 
-          // locations - source
+          // Locations - source
 
           sourceLocationsContainerEle = document.getElementById("container--sourceLocations");
 
           locationFilterEle = document.getElementById("mergeLocation--locationFilter");
           locationFilterEle.addEventListener("keyup", filterLocationsFn);
 
-          window.fetch(
-              "/locations/doGetLocations", {
-                method: "GET",
-                credentials: "include"
-              })
+          window.fetch("/locations/doGetLocations", {
+              method: "GET",
+              credentials: "include"
+            })
             .then(function(response) {
 
               return response.json();
@@ -334,7 +340,7 @@
 
     hasUnsavedChanges = true;
 
-    window.llm.enableNavBlocker();
+    llm.enableNavBlocker();
 
     formMessageEle.innerHTML = "<span class=\"tag is-light is-info is-medium\">" +
       "<span class=\"icon\"><i class=\"fas fa-exclamation-triangle\" aria-hidden=\"true\"></i></span>" +

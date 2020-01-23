@@ -1,5 +1,3 @@
-/* global require, module, console */
-
 "use strict";
 
 let config;

@@ -1,6 +1,3 @@
-/* global window, document */
-/* global URLSearchParams, FormData */
-
 "use strict";
 
 (function() {
@@ -32,7 +29,7 @@
 
         if (responseJSON.success) {
 
-          window.llm.disableNavBlocker();
+          llm.disableNavBlocker();
 
         }
 
@@ -44,8 +41,10 @@
 
           formMessageEle.innerHTML = "";
 
-          window.llm.alertModal(responseJSON.message, "", "OK",
-            responseJSON.success ? "success" : "danger");
+          llm.alertModal(
+            responseJSON.message, "", "OK",
+            responseJSON.success ? "success" : "danger"
+          );
 
         }
 
@@ -87,12 +86,14 @@
 
     formEle.getElementsByClassName("is-delete-button")[0].addEventListener("click", function() {
 
-      window.llm.confirmModal("Delete Organization?",
+      llm.confirmModal(
+        "Delete Organization?",
         ("Are you sure you want to delete this organization?<br />" +
           "Note that any active licences issued to this organization will remain active."),
         "Yes, Delete Organization",
         "warning",
-        deleteOrganizationFn);
+        deleteOrganizationFn
+      );
 
     });
 
@@ -150,7 +151,7 @@
 
     }
 
-    // delete
+    // Delete
 
     const deleteRepresentativeFn = function(clickEvent) {
 
@@ -160,7 +161,8 @@
 
       const representativeName = trEle.getAttribute("data-representative-name");
 
-      window.llm.confirmModal("Delete a Representative?",
+      llm.confirmModal(
+        "Delete a Representative?",
         "<p>Are you sure you want to delete the representative \"" + representativeName + "\"?</p>",
         "Yes, Delete",
         "danger",
@@ -192,7 +194,8 @@
 
             });
 
-        });
+        }
+      );
 
     };
 
@@ -211,7 +214,7 @@
 
     let editRepresentativeTrEle;
 
-    let openEditRepresentativeModalFn = function(clickEvent) {
+    const openEditRepresentativeModalFn = function(clickEvent) {
 
       editRepresentativeTrEle = clickEvent.currentTarget.closest("tr");
 
@@ -249,7 +252,7 @@
       document.getElementById("editOrganizationRepresentative--isDefault").value =
         document.getElementById("representative-isDefault--" + representativeIndex).checked ? "1" : "0";
 
-      window.llm.showModal(editRepresentativeModalEle);
+      llm.showModal(editRepresentativeModalEle);
 
     };
 
@@ -334,7 +337,7 @@
 
     for (let buttonIndex = 0; buttonIndex < cancelButtonEles.length; buttonIndex += 1) {
 
-      cancelButtonEles[buttonIndex].addEventListener("click", window.llm.hideModal);
+      cancelButtonEles[buttonIndex].addEventListener("click", llm.hideModal);
 
     }
 
@@ -362,7 +365,7 @@
             // create row
 
             insertRepresentativeRowFn(responseJSON.organizationRepresentative);
-            window.llm.hideModal(editRepresentativeModalEle);
+            llm.hideModal(editRepresentativeModalEle);
 
           }
 
@@ -379,7 +382,7 @@
     document.getElementsByClassName("is-add-representative-button")[0].addEventListener("click", function() {
 
       addRepresentativeFormEle.reset();
-      window.llm.showModal(addRepresentativeModalEle);
+      llm.showModal(addRepresentativeModalEle);
       document.getElementById("addOrganizationRepresentative--representativeName").focus();
 
     });
@@ -389,7 +392,7 @@
 
     for (let buttonIndex = 0; buttonIndex < cancelButtonEles.length; buttonIndex += 1) {
 
-      cancelButtonEles[buttonIndex].addEventListener("click", window.llm.hideModal);
+      cancelButtonEles[buttonIndex].addEventListener("click", llm.hideModal);
 
     }
 
@@ -422,7 +425,7 @@
 
             // create row
             insertRepresentativeRowFn(responseJSON.organizationRepresentative);
-            window.llm.hideModal(addRepresentativeModalEle);
+            llm.hideModal(addRepresentativeModalEle);
 
           }
 
@@ -458,7 +461,7 @@
 
   function setUnsavedChanges() {
 
-    window.llm.enableNavBlocker();
+    llm.enableNavBlocker();
 
     formMessageEle.innerHTML = "<span class=\"tag is-light is-info is-medium\">" +
       "<span class=\"icon\"><i class=\"fas fa-exclamation-triangle\" aria-hidden=\"true\"></i></span>" +

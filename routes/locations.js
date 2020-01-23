@@ -1,11 +1,11 @@
-/* global require, module */
-
 "use strict";
 
 const express = require("express");
 const router = express.Router();
 
 const configFns = require("../helpers/configFns");
+const dateTimeFns = require("../helpers/dateTimeFns");
+const stringFns = require("../helpers/stringFns");
 
 const licencesDB = require("../helpers/licencesDB");
 
@@ -146,9 +146,6 @@ router.get("/new", function(req, res) {
 
   }
 
-  const dateTimeFns = require("../helpers/dateTimeFns");
-  const stringFns = require("../helpers/stringFns");
-
   res.render("location-edit", {
     headTitle: "Create a New Location",
     location: {
@@ -175,9 +172,6 @@ router.get("/:locationID", function(req, res) {
     return;
 
   }
-
-  const dateTimeFns = require("../helpers/dateTimeFns");
-  const stringFns = require("../helpers/stringFns");
 
   const licences = licencesDB.getLicences({
     locationID: locationID
@@ -220,9 +214,6 @@ router.get("/:locationID/edit", function(req, res) {
     return;
 
   }
-
-  const dateTimeFns = require("../helpers/dateTimeFns");
-  const stringFns = require("../helpers/stringFns");
 
   const licences = licencesDB.getLicences({
     locationID: locationID

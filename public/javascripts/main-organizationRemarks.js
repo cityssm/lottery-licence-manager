@@ -1,9 +1,6 @@
-/* global window, document */
-/* global URLSearchParams, FormData */
-
 "use strict";
 
-window.llm.organizationRemarks = (function() {
+llm.organizationRemarks = (function() {
 
   function getRemarksByOrganizationID(organizationID, callbackFn) {
 
@@ -87,7 +84,7 @@ window.llm.organizationRemarks = (function() {
 
     };
 
-    window.llm.openHtmlModal("remarkAdd", {
+    llm.openHtmlModal("remarkAdd", {
       onshown: function(modalEle, closeModalFn) {
 
         document.getElementById("addRemark--organizationID").value = organizationID;
@@ -138,7 +135,7 @@ window.llm.organizationRemarks = (function() {
 
     };
 
-    window.llm.openHtmlModal("remarkEdit", {
+    llm.openHtmlModal("remarkEdit", {
       onshow: function(modalEle) {
 
         document.getElementById("editRemark--organizationID").value = organizationID;
@@ -200,7 +197,8 @@ window.llm.organizationRemarks = (function() {
 
     if (doConfirm) {
 
-      window.llm.confirmModal("Delete Remark?",
+      llm.confirmModal(
+        "Delete Remark?",
         "Are you sure you want to delete this remark?",
         "Yes, Delete",
         "danger",

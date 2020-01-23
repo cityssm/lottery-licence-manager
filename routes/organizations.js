@@ -1,11 +1,11 @@
-/* global require, module */
-
 "use strict";
 
 const express = require("express");
 const router = express.Router();
 
 const configFns = require("../helpers/configFns");
+const dateTimeFns = require("../helpers/dateTimeFns");
+const stringFns = require("../helpers/stringFns");
 
 const licencesDB = require("../helpers/licencesDB");
 
@@ -282,9 +282,6 @@ router.get("/:organizationID", function(req, res) {
 
   }
 
-  const dateTimeFns = require("../helpers/dateTimeFns");
-  const stringFns = require("../helpers/stringFns");
-
   const licences = licencesDB.getLicences({
     organizationID: organizationID
   }, false, false, req.session) || [];
@@ -334,9 +331,6 @@ router.get("/:organizationID/edit", function(req, res) {
     return;
 
   }
-
-  const dateTimeFns = require("../helpers/dateTimeFns");
-  const stringFns = require("../helpers/stringFns");
 
   const licences = licencesDB.getLicences({
     organizationID: organizationID

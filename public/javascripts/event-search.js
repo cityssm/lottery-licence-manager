@@ -1,11 +1,10 @@
-/* global window, document */
 /* global config_licenceTypes */
 
 "use strict";
 
 (function() {
 
-  const licenceTypes = window.llm.arrayToObject(config_licenceTypes, "licenceTypeKey");
+  const licenceTypes = llm.arrayToObject(config_licenceTypes, "licenceTypeKey");
 
   const filterMonthEle = document.getElementById("filter--month");
   const filterYearEle = document.getElementById("filter--year");
@@ -72,7 +71,10 @@
               }
 
               currentDate = eventObj.eventDate;
-              resultsEle.insertAdjacentHTML("beforeend", "<h2 class=\"title is-4\">" + eventObj.eventDateString + "</h2>");
+              resultsEle.insertAdjacentHTML(
+                "beforeend",
+                "<h2 class=\"title is-4\">" + eventObj.eventDateString + "</h2>"
+              );
               currentDateListEle = document.createElement("ul");
               currentDateListEle.className = "list";
 
@@ -82,19 +84,19 @@
               "<div class=\"columns\">" +
               ("<div class=\"column is-1\">" +
                 "<a href=\"/events/" + eventObj.licenceID + "/" + eventObj.eventDate + "\">" +
-                window.llm.escapeHTML(eventObj.externalLicenceNumber) + "<br />" +
+                llm.escapeHTML(eventObj.externalLicenceNumber) + "<br />" +
                 "<small>Licence #" + eventObj.licenceID + "</small>" +
                 "</a>" +
                 "</div>") +
               ("<div class=\"column\">" +
-                window.llm.escapeHTML(eventObj.organizationName) +
+                llm.escapeHTML(eventObj.organizationName) +
                 "</div>") +
               ("<div class=\"column\">" +
                 licenceType + "<br />" +
-                "<small>" + window.llm.escapeHTML(eventObj.licenceDetails) + "</small>" +
+                "<small>" + llm.escapeHTML(eventObj.licenceDetails) + "</small>" +
                 "</div>") +
               ("<div class=\"column\">" +
-                window.llm.escapeHTML(eventObj.locationDisplayName) + "<br />" +
+                llm.escapeHTML(eventObj.locationDisplayName) + "<br />" +
                 "<small>" + eventObj.startTimeString +
                 (eventObj.startTimeString === eventObj.endTimeString ? "" : " to " + eventObj.endTimeString) +
                 "</small>" +

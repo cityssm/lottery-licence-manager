@@ -1,12 +1,9 @@
-/* global window, document */
-/* global URLSearchParams, FormData */
-
 "use strict";
 
 (function() {
 
   /*
-   * create user
+   * Create user
    */
 
   const createUser_modalEle = document.getElementsByClassName("is-create-user-modal")[0];
@@ -39,7 +36,7 @@
 
   document.getElementsByClassName("is-create-user-button")[0].addEventListener("click", function() {
 
-    window.llm.showModal(createUser_modalEle);
+    llm.showModal(createUser_modalEle);
 
   });
 
@@ -47,7 +44,7 @@
 
   for (let buttonIndex = 0; buttonIndex < cancelButtonEles.length; buttonIndex += 1) {
 
-    cancelButtonEles[buttonIndex].addEventListener("click", window.llm.hideModal);
+    cancelButtonEles[buttonIndex].addEventListener("click", llm.hideModal);
 
   }
 
@@ -62,7 +59,7 @@
   const updateUser_modalEle = document.getElementsByClassName("is-update-user-modal")[0];
   const updateUser_userNameSpanEles = updateUser_modalEle.getElementsByClassName("container--userName");
 
-  window.llm.initializeTabs(updateUser_modalEle.getElementsByClassName("tabs")[0].getElementsByTagName("ul")[0]);
+  llm.initializeTabs(updateUser_modalEle.getElementsByClassName("tabs")[0].getElementsByTagName("ul")[0]);
 
   function submitFn_updateUserSetting(formEvent) {
 
@@ -140,7 +137,7 @@
 
     const userPropertiesContainerEle = document.getElementById("container--userProperties");
 
-    window.llm.clearElement(userPropertiesContainerEle);
+    llm.clearElement(userPropertiesContainerEle);
 
     window.fetch("/admin/doGetUserProperties", {
         method: "POST",
@@ -183,7 +180,10 @@
               ("<div class=\"column\">" +
                 "<div class=\"field has-addons\">" +
                 "<div class=\"control is-expanded\">" +
-                "<input class=\"input is-primary\" id=\"userProperties--propertyValue-" + propertyIndex + "\" name=\"propertyValue\" type=\"text\" value=\"" + window.llm.escapeHTML(propertyValue) + "\" placeholder=\"(Use Default)\" />" +
+                ("<input class=\"input is-primary\"" +
+                  " id=\"userProperties--propertyValue-" + propertyIndex + "\" name=\"propertyValue\"" +
+                  " type=\"text\" value=\"" + llm.escapeHTML(propertyValue) + "\"" +
+                  " placeholder=\"(Use Default)\" />") +
                 "</div>" +
                 "<div class=\"control\">" +
                 "<button class=\"button is-outlined is-primary\" type=\"submit\">" +
@@ -207,12 +207,14 @@
       });
 
 
-    // password form
+    // Password form
     document.getElementById("resetPassword--userName").value = userName;
 
-    document.getElementById("resetPassword--newPassword").closest(".message").setAttribute("hidden", "hidden");
+    document.getElementById("resetPassword--newPassword")
+      .closest(".message")
+      .setAttribute("hidden", "hidden");
 
-    window.llm.showModal(updateUser_modalEle);
+    llm.showModal(updateUser_modalEle);
 
   }
 
@@ -228,7 +230,7 @@
 
   for (let buttonIndex = 0; buttonIndex < cancelButtonEles.length; buttonIndex += 1) {
 
-    cancelButtonEles[buttonIndex].addEventListener("click", window.llm.hideModal);
+    cancelButtonEles[buttonIndex].addEventListener("click", llm.hideModal);
 
   }
 

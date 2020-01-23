@@ -1,5 +1,3 @@
-/* global window, document */
-
 "use strict";
 
 (function() {

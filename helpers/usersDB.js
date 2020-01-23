@@ -1,5 +1,3 @@
-/* global require, module */
-
 "use strict";
 
 
@@ -10,10 +8,12 @@ const dbPath = "data/users.db";
 
 const bcrypt = require("bcrypt");
 
+const freshPassword = require("fresh-password");
 
-let usersDB = {
 
-  getUser: function(userName, passwordPlain) {
+const usersDB = {
+
+  getUser: function(userNameSubmitted, passwordPlain) {
 
     const db = sqlite(dbPath);
 
@@ -22,13 +22,13 @@ let usersDB = {
     const row = db.prepare("select userName, passwordHash, isActive" +
         " from Users" +
         " where userName = ?")
-      .get(userName);
+      .get(userNameSubmitted);
 
     if (!row) {
 
       db.close();
 
-      if (userName === "admin") {
+      if (userNameSubmitted === "admin") {
 
         const adminPasswordPlain = configFns.getProperty("admin.defaultPassword");
 
@@ -40,12 +40,12 @@ let usersDB = {
 
         if (adminPasswordPlain === passwordPlain) {
 
-          let userProperties = Object.assign({}, configFns.getProperty("user.defaultProperties"));
+          const userProperties = Object.assign({}, configFns.getProperty("user.defaultProperties"));
           userProperties.isAdmin = "true";
           userProperties.isDefaultAdmin = "true";
 
           return {
-            userName: userName,
+            userName: userNameSubmitted,
             userProperties: userProperties
           };
 
@@ -65,11 +65,11 @@ let usersDB = {
 
     // Check if the password matches
 
-    userName = row.userName;
+    const databaseUserName = row.userName;
 
     let passwordIsValid = false;
 
-    if (bcrypt.compareSync(userName + "::" + passwordPlain, row.passwordHash)) {
+    if (bcrypt.compareSync(databaseUserName + "::" + passwordPlain, row.passwordHash)) {
 
       passwordIsValid = true;
 
@@ -84,13 +84,13 @@ let usersDB = {
 
     // Get user properties
 
-    let userProperties = Object.assign({}, configFns.getProperty("user.defaultProperties"));
+    const userProperties = Object.assign({}, configFns.getProperty("user.defaultProperties"));
     userProperties.isDefaultAdmin = "false";
 
     const userPropertyRows = db.prepare("select propertyName, propertyValue" +
         " from UserProperties" +
         " where userName = ?")
-      .all(userName);
+      .all(databaseUserName);
 
     for (let userPropertyIndex = 0; userPropertyIndex < userPropertyRows.length; userPropertyIndex += 1) {
 
@@ -102,7 +102,7 @@ let usersDB = {
     db.close();
 
     return {
-      userName: userName,
+      userName: databaseUserName,
       userProperties: userProperties
     };
 
@@ -179,7 +179,7 @@ let usersDB = {
       readonly: true
     });
 
-    let userProperties = Object.assign({}, configFns.getProperty("user.defaultProperties"));
+    const userProperties = Object.assign({}, configFns.getProperty("user.defaultProperties"));
 
     const userPropertyRows = db.prepare("select propertyName, propertyValue" +
         " from UserProperties" +
@@ -201,7 +201,6 @@ let usersDB = {
 
   createUser: function(reqBody) {
 
-    const freshPassword = require("fresh-password");
     const newPasswordPlain = freshPassword.generate();
     const hash = bcrypt.hashSync(reqBody.userName + "::" + newPasswordPlain, 10);
 
@@ -219,17 +218,15 @@ let usersDB = {
         db.close();
         return false;
 
-      } else {
-
-        db.prepare("update Users" +
-            " set firstName = ?," +
-            " lastName = ?," +
-            " passwordHash = ?," +
-            " isActive = 1" +
-            " where userName = ?")
-          .run();
-
       }
+
+      db.prepare("update Users" +
+          " set firstName = ?," +
+          " lastName = ?," +
+          " passwordHash = ?," +
+          " isActive = 1" +
+          " where userName = ?")
+        .run();
 
     } else {
 
@@ -253,9 +250,11 @@ let usersDB = {
         " lastName = ?" +
         " where userName = ?" +
         " and isActive = 1")
-      .run(reqBody.firstName,
+      .run(
+        reqBody.firstName,
         reqBody.lastName,
-        reqBody.userName);
+        reqBody.userName
+      );
 
     db.close();
 
@@ -274,15 +273,18 @@ let usersDB = {
       info = db.prepare("delete from UserProperties" +
           " where userName = ?" +
           " and propertyName = ?")
-        .run(reqBody.userName,
-          reqBody.propertyName);
+        .run(
+          reqBody.userName,
+          reqBody.propertyName
+        );
 
     } else {
 
       info = db.prepare("replace into UserProperties" +
           " (userName, propertyName, propertyValue)" +
           " values (?, ?, ?)")
-        .run(reqBody.userName,
+        .run(
+          reqBody.userName,
           reqBody.propertyName,
           reqBody.propertyValue
         );
@@ -297,7 +299,6 @@ let usersDB = {
 
   generateNewPassword: function(userName) {
 
-    const freshPassword = require("fresh-password");
     const newPasswordPlain = freshPassword.generate();
     const hash = bcrypt.hashSync(userName + "::" + newPasswordPlain, 10);
 

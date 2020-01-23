@@ -1,5 +1,3 @@
-/* global window, document */
-
 "use strict";
 
 (function() {
@@ -47,11 +45,13 @@
 
         const organizationName = buttonEle.getAttribute("data-organization-name");
 
-        window.llm.confirmModal("Restore " + organizationName + "?",
+        llm.confirmModal(
+          "Restore " + organizationName + "?",
           "Are you sure you want to restore this organization?",
           "Yes, Restore",
           "warning",
-          restoreFn);
+          restoreFn
+        );
 
       });
 

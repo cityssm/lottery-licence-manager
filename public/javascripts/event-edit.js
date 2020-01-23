@@ -1,6 +1,3 @@
-/* global window, document */
-/* global URLSearchParams, FormData */
-
 "use strict";
 
 (function() {
@@ -34,15 +31,19 @@
 
         if (responseJSON.success) {
 
-          window.llm.disableNavBlocker();
+          llm.disableNavBlocker();
           eventDateNavEle.removeAttribute("disabled");
 
         }
 
         formMessageEle.innerHTML = "";
 
-        window.llm.alertModal(responseJSON.message, "", "OK",
-          responseJSON.success ? "success" : "danger");
+        llm.alertModal(
+          responseJSON.message,
+          "",
+          "OK",
+          responseJSON.success ? "success" : "danger"
+        );
 
       });
 
@@ -53,36 +54,42 @@
 
     clickEvent.preventDefault();
 
-    window.llm.confirmModal("Delete Event?", "Are you sure you want to delete this event?", "Yes, Delete", "danger", function() {
+    llm.confirmModal(
+      "Delete Event?",
+      "Are you sure you want to delete this event?",
+      "Yes, Delete",
+      "danger",
+      function() {
 
-      window.fetch("/events/doDelete", {
-          method: "POST",
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            licenceID: licenceID,
-            eventDate: eventDate
+        window.fetch("/events/doDelete", {
+            method: "POST",
+            credentials: "include",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              licenceID: licenceID,
+              eventDate: eventDate
+            })
           })
-        })
-        .then(function(response) {
+          .then(function(response) {
 
-          return response.json();
+            return response.json();
 
-        })
-        .then(function(responseJSON) {
+          })
+          .then(function(responseJSON) {
 
-          if (responseJSON.success) {
+            if (responseJSON.success) {
 
-            window.llm.disableNavBlocker();
-            window.location.href = "/licences/" + licenceID;
+              llm.disableNavBlocker();
+              window.location.href = "/licences/" + licenceID;
 
-          }
+            }
 
-        });
+          });
 
-    });
+      }
+    );
 
   });
 
@@ -91,7 +98,7 @@
 
   function setUnsavedChanges() {
 
-    window.llm.enableNavBlocker();
+    llm.enableNavBlocker();
     eventDateNavEle.setAttribute("disabled", "disabled");
 
     formMessageEle.innerHTML = "<span class=\"tag is-light is-info is-medium\">" +

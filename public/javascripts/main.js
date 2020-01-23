@@ -1,5 +1,3 @@
-/* global window, document */
-
 "use strict";
 
 window.llm = {};
@@ -9,7 +7,7 @@ window.llm = {};
  * HELPERS
  */
 
-window.llm.clearElement = function(ele) {
+llm.clearElement = function(ele) {
 
   while (ele.firstChild) {
 
@@ -19,7 +17,7 @@ window.llm.clearElement = function(ele) {
 
 };
 
-window.llm.escapeHTML = function(str) {
+llm.escapeHTML = function(str) {
 
   return String(str)
     .replace(/&/g, "&amp;")
@@ -29,9 +27,9 @@ window.llm.escapeHTML = function(str) {
 
 };
 
-window.llm.arrayToObject = function(array, objectKey) {
+llm.arrayToObject = function(array, objectKey) {
 
-  let obj = {};
+  const obj = {};
 
   for (let arrayIndex = 0; arrayIndex < array.length; arrayIndex += 1) {
 
@@ -48,17 +46,17 @@ window.llm.arrayToObject = function(array, objectKey) {
  * CONFIG DEFAULTS
  */
 
-window.llm.getDefaultConfigProperty = function(propertyName, propertyValueCallbackFn) {
+llm.getDefaultConfigProperty = function(propertyName, propertyValueCallbackFn) {
 
-  // check local storage
+  // Check local storage
 
   try {
 
-    let defaultConfigPropertiesString = window.localStorage.getItem("defaultConfigProperties");
+    const defaultConfigPropertiesString = window.localStorage.getItem("defaultConfigProperties");
 
     if (defaultConfigPropertiesString) {
 
-      let defaultConfigProperties = JSON.parse(defaultConfigPropertiesString);
+      const defaultConfigProperties = JSON.parse(defaultConfigPropertiesString);
 
       propertyValueCallbackFn(defaultConfigProperties[propertyName]);
 
@@ -67,10 +65,10 @@ window.llm.getDefaultConfigProperty = function(propertyName, propertyValueCallba
     }
 
   } catch (e) {
-    // ignore
+    // Ignore
   }
 
-  // populate local storage
+  // Populate local storage
 
   window.fetch("/dashboard/doGetDefaultConfigProperties")
     .then(function(response) {
@@ -99,13 +97,13 @@ window.llm.getDefaultConfigProperty = function(propertyName, propertyValueCallba
  * MODAL TOGGLES
  */
 
-window.llm.showModal = function(modalEle) {
+llm.showModal = function(modalEle) {
 
   modalEle.classList.add("is-active");
 
 };
 
-window.llm.hideModal = function(internalEle_or_internalEvent) {
+llm.hideModal = function(internalEle_or_internalEvent) {
 
   const internalEle = internalEle_or_internalEvent.currentTarget || internalEle_or_internalEvent;
 
@@ -115,7 +113,7 @@ window.llm.hideModal = function(internalEle_or_internalEvent) {
 
 };
 
-window.llm.openHtmlModal = function(htmlFileName, callbackFns) {
+llm.openHtmlModal = function(htmlFileName, callbackFns) {
 
   /*
    * callbackFns
@@ -222,7 +220,7 @@ window.llm.openHtmlModal = function(htmlFileName, callbackFns) {
  * TABS
  */
 
-window.llm.initializeTabs = function(tabsListEle) {
+llm.initializeTabs = function(tabsListEle) {
 
   if (!tabsListEle) {
 
@@ -292,7 +290,7 @@ window.llm.initializeTabs = function(tabsListEle) {
     const cancelButtonHTML = modalOptions.cancelButtomHTML || "Cancel";
     const okButtonHTML = modalOptions.okButtonHTML || "OK";
 
-    const contextualColorIsDark = (contextualColorName === "warning" ? false : true);
+    const contextualColorIsDark = !(contextualColorName === "warning");
 
     modalEle.innerHTML = "<div class=\"modal-background\"></div>" +
       "<div class=\"modal-card\">" +
@@ -340,7 +338,7 @@ window.llm.initializeTabs = function(tabsListEle) {
 
   }
 
-  window.llm.confirmModal = function(titleString, bodyHTML, okButtonHTML, contextualColorName, callbackFn) {
+  llm.confirmModal = function(titleString, bodyHTML, okButtonHTML, contextualColorName, callbackFn) {
 
     confirmModalFn({
       contextualColorName: contextualColorName,
@@ -352,7 +350,7 @@ window.llm.initializeTabs = function(tabsListEle) {
 
   };
 
-  window.llm.alertModal = function(titleString, bodyHTML, okButtonHTML, contextualColorName) {
+  llm.alertModal = function(titleString, bodyHTML, okButtonHTML, contextualColorName) {
 
     confirmModalFn({
       contextualColorName: contextualColorName,
@@ -379,7 +377,7 @@ window.llm.initializeTabs = function(tabsListEle) {
 
   }
 
-  window.llm.enableNavBlocker = function() {
+  llm.enableNavBlocker = function() {
 
     if (!isNavBlockerEnabled) {
 
@@ -390,7 +388,7 @@ window.llm.initializeTabs = function(tabsListEle) {
 
   };
 
-  window.llm.disableNavBlocker = function() {
+  llm.disableNavBlocker = function() {
 
     if (isNavBlockerEnabled) {
 
@@ -422,7 +420,8 @@ window.llm.initializeTabs = function(tabsListEle) {
   function openLogoutModal(clickEvent) {
 
     clickEvent.preventDefault();
-    window.llm.confirmModal("Log Out?",
+    llm.confirmModal(
+      "Log Out?",
       "<p>Are you sure you want to log out?</p>",
       "<span class=\"icon\"><i class=\"fas fa-sign-out-alt\" aria-hidden=\"true\"></i></span><span>Log Out</span>",
       "warning",
@@ -431,7 +430,8 @@ window.llm.initializeTabs = function(tabsListEle) {
         window.localStorage.clear();
         window.location.href = "/logout";
 
-      });
+      }
+    );
 
   }
 

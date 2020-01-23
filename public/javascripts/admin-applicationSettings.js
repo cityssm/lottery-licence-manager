@@ -1,6 +1,3 @@
-/* global window, document */
-/* global URLSearchParams, FormData */
-
 "use strict";
 
 (function() {
@@ -11,7 +8,7 @@
 
   }
 
-  // form
+  // Form
 
   function submitFn(formEvent) {
 
