@@ -746,7 +746,7 @@
                 <td></td>
                 <td class="has-text-right has-text-weight-bold">
                   $ <span id="licence--transactionTotal"><%= transactionTotal.toFixed(2) %></span>
-                  <% if (licence.licenceFee !== transactionTotal) { %>
+                  <% if (licence.licenceFee.toFixed(2) !== transactionTotal.toFixed(2)) { %>
                     <br />
                     <span class="is-size-7 has-text-danger">
                       $ <%= (licence.licenceFee - transactionTotal).toFixed(2) %> discrepancy
