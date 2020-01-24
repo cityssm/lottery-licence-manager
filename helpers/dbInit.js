@@ -267,6 +267,8 @@ const dbInit = {
         "licenceID integer not null," +
         " eventDate integer not null," +
 
+        " reportDate integer," +
+
         " bank_name varchar(50)," +
         " bank_address varchar(50)," +
         " bank_accountNumber varchar(20)," +
