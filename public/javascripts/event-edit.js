@@ -17,17 +17,10 @@
 
     formMessageEle.innerHTML = "Saving... <i class=\"fas fa-circle-notch fa-spin\" aria-hidden=\"true\"></i>";
 
-    window.fetch("/events/doSave", {
-        method: "POST",
-        credentials: "include",
-        body: new URLSearchParams(new FormData(formEle))
-      })
-      .then(function(response) {
-
-        return response.json();
-
-      })
-      .then(function(responseJSON) {
+    llm.postJSON(
+      "/events/doSave",
+      formEle,
+      function(responseJSON) {
 
         if (responseJSON.success) {
 
@@ -45,7 +38,8 @@
           responseJSON.success ? "success" : "danger"
         );
 
-      });
+      }
+    );
 
   });
 
@@ -61,23 +55,12 @@
       "danger",
       function() {
 
-        window.fetch("/events/doDelete", {
-            method: "POST",
-            credentials: "include",
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-              licenceID: licenceID,
-              eventDate: eventDate
-            })
-          })
-          .then(function(response) {
-
-            return response.json();
-
-          })
-          .then(function(responseJSON) {
+        llm.postJSON(
+          "/events/doDelete", {
+            licenceID: licenceID,
+            eventDate: eventDate
+          },
+          function(responseJSON) {
 
             if (responseJSON.success) {
 
@@ -86,7 +69,8 @@
 
             }
 
-          });
+          }
+        );
 
       }
     );

@@ -17,17 +17,10 @@
 
     formMessageEle.innerHTML = "Saving... <i class=\"fas fa-circle-notch fa-spin\" aria-hidden=\"true\"></i>";
 
-    window.fetch((isCreate ? "/locations/doCreate" : "/locations/doUpdate"), {
-        method: "POST",
-        credentials: "include",
-        body: new URLSearchParams(new FormData(formEle))
-      })
-      .then(function(response) {
-
-        return response.json();
-
-      })
-      .then(function(responseJSON) {
+    llm.postJSON(
+      (isCreate ? "/locations/doCreate" : "/locations/doUpdate"),
+      formEle,
+      function(responseJSON) {
 
         if (responseJSON.success) {
 
@@ -51,7 +44,8 @@
 
         }
 
-      });
+      }
+    );
 
   });
 
@@ -60,22 +54,11 @@
 
     const deleteLocationFn = function() {
 
-      window.fetch("/locations/doDelete", {
-          method: "POST",
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            locationID: locationID
-          })
-        })
-        .then(function(response) {
-
-          return response.json();
-
-        })
-        .then(function(responseJSON) {
+      llm.postJSON(
+        "/locations/doDelete", {
+          locationID: locationID
+        },
+        function(responseJSON) {
 
           if (responseJSON.success) {
 
@@ -83,7 +66,8 @@
 
           }
 
-        });
+        }
+      );
 
     };
 
@@ -143,23 +127,12 @@
 
       const doMerge = function() {
 
-        window.fetch("/locations/doMerge", {
-            method: "POST",
-            credentials: "include",
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-              targetLocationID: locationID,
-              sourceLocationID: locationID_source
-            })
-          })
-          .then(function(response) {
-
-            return response.json();
-
-          })
-          .then(function(responseJSON) {
+        llm.postJSON(
+          "/locations/doMerge", {
+            targetLocationID: locationID,
+            sourceLocationID: locationID_source
+          },
+          function(responseJSON) {
 
             if (responseJSON.success) {
 
@@ -171,7 +144,8 @@
 
             }
 
-          });
+          }
+        );
 
       };
 
@@ -303,22 +277,17 @@
           locationFilterEle = document.getElementById("mergeLocation--locationFilter");
           locationFilterEle.addEventListener("keyup", filterLocationsFn);
 
-          window.fetch("/locations/doGetLocations", {
-              method: "GET",
-              credentials: "include"
-            })
-            .then(function(response) {
-
-              return response.json();
-
-            })
-            .then(function(responseJSON) {
+          llm.postJSON(
+            "/locations/doGetLocations",
+            null,
+            function(responseJSON) {
 
               locationsList = responseJSON;
               locationFilterEle.removeAttribute("disabled");
               filterLocationsFn();
 
-            });
+            }
+          );
 
         },
         onshown: function(modalEle, closeModalFn) {

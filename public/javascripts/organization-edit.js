@@ -15,17 +15,10 @@
 
     formMessageEle.innerHTML = "Saving... <i class=\"fas fa-circle-notch fa-spin\" aria-hidden=\"true\"></i>";
 
-    window.fetch("/organizations/doSave", {
-        method: "POST",
-        credentials: "include",
-        body: new URLSearchParams(new FormData(formEle))
-      })
-      .then(function(response) {
-
-        return response.json();
-
-      })
-      .then(function(responseJSON) {
+    llm.postJSON(
+      "/organizations/doSave",
+      formEle,
+      function(responseJSON) {
 
         if (responseJSON.success) {
 
@@ -48,7 +41,8 @@
 
         }
 
-      });
+      }
+    );
 
   });
 
@@ -57,22 +51,11 @@
 
     const deleteOrganizationFn = function() {
 
-      window.fetch("/organizations/doDelete", {
-          method: "POST",
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            organizationID: organizationID
-          })
-        })
-        .then(function(response) {
-
-          return response.json();
-
-        })
-        .then(function(responseJSON) {
+      llm.postJSON(
+        "/organizations/doDelete", {
+          organizationID: organizationID
+        },
+        function(responseJSON) {
 
           if (responseJSON.success) {
 
@@ -80,7 +63,8 @@
 
           }
 
-        });
+        }
+      );
 
     };
 
@@ -123,21 +107,14 @@
 
       const defaultRepresentativeIndex = changeEvent.currentTarget.value;
 
-      window.fetch("/organizations/" + organizationID + "/doSetDefaultRepresentative", {
-          method: "POST",
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            isDefaultRepresentativeIndex: defaultRepresentativeIndex
-          })
-        })
-        .then(function(response) {
-
-          return response.json();
-
-        });
+      llm.postJSON(
+        "/organizations/" + organizationID + "/doSetDefaultRepresentative", {
+          isDefaultRepresentativeIndex: defaultRepresentativeIndex
+        },
+        function() {
+          // Ignore
+        }
+      );
 
     };
 
@@ -168,22 +145,11 @@
         "danger",
         function() {
 
-          window.fetch("/organizations/" + organizationID + "/doDeleteOrganizationRepresentative", {
-              method: "POST",
-              credentials: "include",
-              headers: {
-                "Content-Type": "application/json"
-              },
-              body: JSON.stringify({
-                representativeIndex: trEle.getAttribute("data-representative-index")
-              })
-            })
-            .then(function(response) {
-
-              return response.json();
-
-            })
-            .then(function(responseJSON) {
+          llm.postJSON(
+            "/organizations/" + organizationID + "/doDeleteOrganizationRepresentative", {
+              representativeIndex: trEle.getAttribute("data-representative-index")
+            },
+            function(responseJSON) {
 
               if (responseJSON.success) {
 
@@ -192,7 +158,8 @@
 
               }
 
-            });
+            }
+          );
 
         }
       );
@@ -207,7 +174,7 @@
 
     }
 
-    // add / edit
+    // Add / edit
 
     const editRepresentativeModalEle = document.getElementsByClassName("is-edit-representative-modal")[0];
     const editRepresentativeFormEle = editRepresentativeModalEle.getElementsByTagName("form")[0];
@@ -332,7 +299,7 @@
 
     }
 
-    // close edit
+    // Close edit
     let cancelButtonEles = editRepresentativeModalEle.getElementsByClassName("is-cancel-button");
 
     for (let buttonIndex = 0; buttonIndex < cancelButtonEles.length; buttonIndex += 1) {
@@ -345,31 +312,25 @@
 
       formEvent.preventDefault();
 
-      window.fetch("/organizations/" + organizationID + "/doEditOrganizationRepresentative", {
-          method: "POST",
-          credentials: "include",
-          body: new URLSearchParams(new FormData(formEvent.currentTarget))
-        })
-        .then(function(response) {
-
-          return response.json();
-
-        })
-        .then(function(responseJSON) {
+      llm.postJSON(
+        "/organizations/" + organizationID + "/doEditOrganizationRepresentative",
+        formEvent.currentTarget,
+        function(responseJSON) {
 
           if (responseJSON.success) {
 
             editRepresentativeTrEle.remove();
             editRepresentativeTrEle = null;
 
-            // create row
+            // Create row
 
             insertRepresentativeRowFn(responseJSON.organizationRepresentative);
             llm.hideModal(editRepresentativeModalEle);
 
           }
 
-        });
+        }
+      );
 
     });
 
@@ -400,59 +361,55 @@
 
       formEvent.preventDefault();
 
-      window.fetch("/organizations/" + organizationID + "/doAddOrganizationRepresentative", {
-          method: "POST",
-          credentials: "include",
-          body: new URLSearchParams(new FormData(formEvent.currentTarget))
-        })
-        .then(function(response) {
-
-          return response.json();
-
-        })
-        .then(function(responseJSON) {
+      llm.postJSON(
+        "/organizations/" + organizationID + "/doAddOrganizationRepresentative",
+        formEvent.currentTarget,
+        function(responseJSON) {
 
           if (responseJSON.success) {
 
-            // remove empty warning
+            // Remove empty warning
 
-            let emptyWarningEle = representativeTbodyEle.getElementsByClassName("is-empty-warning");
+            const emptyWarningEle = representativeTbodyEle.getElementsByClassName("is-empty-warning");
             if (emptyWarningEle.length > 0) {
 
               emptyWarningEle[0].remove();
 
             }
 
-            // create row
+            // Create row
+
             insertRepresentativeRowFn(responseJSON.organizationRepresentative);
             llm.hideModal(addRepresentativeModalEle);
 
           }
 
-        });
+        }
+      );
 
     });
 
-    addRepresentativeModalEle.getElementsByClassName("is-copy-organization-address-button")[0].addEventListener("click", function(clickEvent) {
+    addRepresentativeModalEle.getElementsByClassName("is-copy-organization-address-button")[0]
+      .addEventListener("click", function(clickEvent) {
 
-      clickEvent.preventDefault();
+        clickEvent.preventDefault();
 
-      document.getElementById("addOrganizationRepresentative--representativeAddress1").value =
-        document.getElementById("organization--organizationAddress1").value;
+        document.getElementById("addOrganizationRepresentative--representativeAddress1").value =
+          document.getElementById("organization--organizationAddress1").value;
 
-      document.getElementById("addOrganizationRepresentative--representativeAddress2").value =
-        document.getElementById("organization--organizationAddress2").value;
+        document.getElementById("addOrganizationRepresentative--representativeAddress2").value =
+          document.getElementById("organization--organizationAddress2").value;
 
-      document.getElementById("addOrganizationRepresentative--representativeCity").value =
-        document.getElementById("organization--organizationCity").value;
+        document.getElementById("addOrganizationRepresentative--representativeCity").value =
+          document.getElementById("organization--organizationCity").value;
 
-      document.getElementById("addOrganizationRepresentative--representativeProvince").value =
-        document.getElementById("organization--organizationProvince").value;
+        document.getElementById("addOrganizationRepresentative--representativeProvince").value =
+          document.getElementById("organization--organizationProvince").value;
 
-      document.getElementById("addOrganizationRepresentative--representativePostalCode").value =
-        document.getElementById("organization--organizationPostalCode").value;
+        document.getElementById("addOrganizationRepresentative--representativePostalCode").value =
+          document.getElementById("organization--organizationPostalCode").value;
 
-    });
+      });
 
   }
 

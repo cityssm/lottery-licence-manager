@@ -17,17 +17,10 @@
       "<em>Loading licences...</em>" +
       "</p>";
 
-    window.fetch("/licences/doSearch", {
-        method: "POST",
-        credentials: "include",
-        body: new URLSearchParams(new FormData(formEle))
-      })
-      .then(function(response) {
-
-        return response.json();
-
-      })
-      .then(function(licenceList) {
+    llm.postJSON(
+      "/licences/doSearch",
+      formEle,
+      function(licenceList) {
 
         if (licenceList.length === 0) {
 
@@ -107,7 +100,8 @@
 
         }
 
-      });
+      }
+    );
 
   }
 

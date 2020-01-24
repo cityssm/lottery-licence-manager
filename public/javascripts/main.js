@@ -60,17 +60,21 @@ llm.postJSON = function(fetchUrl, formEleOrObj, responseFn) {
   };
 
 
-  if (formEleOrObj && formEleOrObj.tagName && formEleOrObj.tagName === "FORM") {
+  if (formEleOrObj) {
 
-    fetchOptions.body = new URLSearchParams(new FormData(formEleOrObj));
+    if (formEleOrObj.tagName && formEleOrObj.tagName === "FORM") {
 
-  } else {
+      fetchOptions.body = new URLSearchParams(new FormData(formEleOrObj));
 
-    fetchOptions.headers = {
-      "Content-Type": "application/json"
-    };
+    } else if (formEleOrObj.constructor === Object) {
 
-    fetchOptions.body = JSON.stringify(formEleOrObj);
+      fetchOptions.headers = {
+        "Content-Type": "application/json"
+      };
+
+      fetchOptions.body = JSON.stringify(formEleOrObj);
+
+    }
 
   }
 
@@ -110,13 +114,9 @@ llm.getDefaultConfigProperty = function(propertyName, propertyValueCallbackFn) {
 
   // Populate local storage
 
-  window.fetch("/dashboard/doGetDefaultConfigProperties")
-    .then(function(response) {
-
-      return response.json();
-
-    })
-    .then(function(defaultConfigProperties) {
+  llm.postJSON(
+    "/dashboard/doGetDefaultConfigProperties", {},
+    function(defaultConfigProperties) {
 
       try {
 
@@ -128,7 +128,8 @@ llm.getDefaultConfigProperty = function(propertyName, propertyValueCallbackFn) {
 
       propertyValueCallbackFn(defaultConfigProperties[propertyName]);
 
-    });
+    }
+  );
 
 };
 

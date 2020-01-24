@@ -7,16 +7,18 @@ const dateTimeFns = require("../helpers/dateTimeFns");
 
 const licencesDB = require("../helpers/licencesDB");
 
+/*
+ * Event Calendar
+ */
 
 router.get("/", function(req, res) {
 
   res.render("event-search", {
-    headTitle: "Events",
+    headTitle: "Event Calendar",
     dateTimeFns: dateTimeFns
   });
 
 });
-
 
 router.post("/doSearch", function(req, res) {
 
@@ -24,6 +26,24 @@ router.post("/doSearch", function(req, res) {
 
 });
 
+/*
+ * Outstanding Events Report
+ */
+
+router.get("/outstanding", function(req, res) {
+
+  const outstandingEvents = licencesDB.getOutstandingEvents(req.session);
+
+  res.render("event-outstanding", {
+    headTitle: "Outstanding Events",
+    outstandingEvents: outstandingEvents
+  });
+
+});
+
+/*
+ * Event View / Edit
+ */
 
 router.post("/doSave", function(req, res) {
 

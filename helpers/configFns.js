@@ -102,19 +102,7 @@ const configFns = {
 
   getLicenceType: function(licenceTypeKey) {
 
-    const licenceTypes = getProperty("licenceTypes");
-
-    for (let index = 0; index < licenceTypes.length; index += 1) {
-
-      if (licenceTypes[index].licenceTypeKey === licenceTypeKey) {
-
-        return licenceTypes[index];
-
-      }
-
-    }
-
-    return null;
+    return getProperty("licenceTypes").find(ele => (ele.licenceTypeKey === licenceTypeKey));
 
   },
 

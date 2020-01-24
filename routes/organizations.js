@@ -31,7 +31,7 @@ router.post("/doSearch", function(req, res) {
 });
 
 
-router.get("/doGetAll", function(req, res) {
+router.all("/doGetAll", function(req, res) {
 
   res.json(licencesDB.getOrganizations({}, false, req.session));
 

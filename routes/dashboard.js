@@ -30,7 +30,7 @@ router.post("/doChangePassword", function(req, res) {
 });
 
 
-router.get("/doGetDefaultConfigProperties", function(req, res) {
+router.all("/doGetDefaultConfigProperties", function(req, res) {
 
   res.json({
     city: configFns.getProperty("defaults.city"),

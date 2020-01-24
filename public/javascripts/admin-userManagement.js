@@ -6,23 +6,16 @@
    * Create user
    */
 
-  const createUser_modalEle = document.getElementsByClassName("is-create-user-modal")[0];
+  const createUserModalEle = document.getElementsByClassName("is-create-user-modal")[0];
 
-  createUser_modalEle.getElementsByTagName("form")[0].addEventListener("submit", function(formEvent) {
+  createUserModalEle.getElementsByTagName("form")[0].addEventListener("submit", function(formEvent) {
 
     formEvent.preventDefault();
 
-    window.fetch("/admin/doCreateUser", {
-        method: "POST",
-        credentials: "include",
-        body: new URLSearchParams(new FormData(formEvent.currentTarget))
-      })
-      .then(function(response) {
-
-        return response.json();
-
-      })
-      .then(function(responseJSON) {
+    llm.postJSON(
+      "/admin/doCreateUser",
+      formEvent.currentTarget,
+      function(responseJSON) {
 
         if (responseJSON.success) {
 
@@ -30,17 +23,18 @@
 
         }
 
-      });
+      }
+    );
 
   });
 
-  document.getElementsByClassName("is-create-user-button")[0].addEventListener("click", function() {
+  document.getElementById("is-create-user-button").addEventListener("click", function() {
 
-    llm.showModal(createUser_modalEle);
+    llm.showModal(createUserModalEle);
 
   });
 
-  let cancelButtonEles = createUser_modalEle.getElementsByClassName("is-cancel-button");
+  let cancelButtonEles = createUserModalEle.getElementsByClassName("is-cancel-button");
 
   for (let buttonIndex = 0; buttonIndex < cancelButtonEles.length; buttonIndex += 1) {
 
@@ -48,12 +42,12 @@
 
   }
 
-  // existing users
+  // Existing users
 
   const userContainerEle = document.getElementById("container--users");
 
   /*
-   * update user
+   * Update user
    */
 
   const updateUser_modalEle = document.getElementsByClassName("is-update-user-modal")[0];
@@ -67,17 +61,10 @@
 
     const formEle = formEvent.currentTarget;
 
-    window.fetch("/admin/doUpdateUserProperty", {
-        method: "POST",
-        credentials: "include",
-        body: new URLSearchParams(new FormData(formEle))
-      })
-      .then(function(response) {
-
-        return response.json();
-
-      })
-      .then(function(responseJSON) {
+    llm.postJSON(
+      "/admin/doUpdateUserProperty",
+      formEle,
+      function(responseJSON) {
 
         if (responseJSON.success) {
 
@@ -93,7 +80,8 @@
 
         }
 
-      });
+      }
+    );
 
   }
 
@@ -121,40 +109,31 @@
     const firstName = linkEle.getAttribute("data-first-name");
     const lastName = linkEle.getAttribute("data-last-name");
 
-    // spans
+    // Spans
+
     for (let index = 0; index < updateUser_userNameSpanEles.length; index += 1) {
 
       updateUser_userNameSpanEles[index].innerText = userName;
 
     }
 
-    // name form
+    // Name form
+
     document.getElementById("updateUser--userName").value = userName;
     document.getElementById("updateUser--firstName").value = firstName;
     document.getElementById("updateUser--lastName").value = lastName;
 
-    // properties form
+    // Properties form
 
     const userPropertiesContainerEle = document.getElementById("container--userProperties");
 
     llm.clearElement(userPropertiesContainerEle);
 
-    window.fetch("/admin/doGetUserProperties", {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          userName: userName
-        })
-      })
-      .then(function(response) {
-
-        return response.json();
-
-      })
-      .then(function(userPropertiesJSON) {
+    llm.postJSON(
+      "/admin/doGetUserProperties", {
+        userName: userName
+      },
+      function(userPropertiesJSON) {
 
         let propertyIndex = 0;
 
@@ -204,7 +183,8 @@
 
         }
 
-      });
+      }
+    );
 
 
     // Password form
@@ -234,24 +214,17 @@
 
   }
 
-  // user name
+  // User name
 
   document.getElementById("tab--updateUser-name").getElementsByTagName("form")[0]
     .addEventListener("submit", function(formEvent) {
 
       formEvent.preventDefault();
 
-      window.fetch("/admin/doUpdateUser", {
-          method: "POST",
-          credentials: "include",
-          body: new URLSearchParams(new FormData(formEvent.currentTarget))
-        })
-        .then(function(response) {
-
-          return response.json();
-
-        })
-        .then(function(responseJSON) {
+      llm.postJSON(
+        "/admin/doUpdateUser",
+        formEvent.currentTarget,
+        function(responseJSON) {
 
           if (responseJSON.success) {
 
@@ -259,28 +232,22 @@
 
           }
 
-        });
+        }
+      );
 
     });
 
-  // reset password
+  // Reset password
 
   document.getElementById("tab--updateUser-password").getElementsByTagName("form")[0]
     .addEventListener("submit", function(formEvent) {
 
       formEvent.preventDefault();
 
-      window.fetch("/admin/doResetPassword", {
-          method: "POST",
-          credentials: "include",
-          body: new URLSearchParams(new FormData(formEvent.currentTarget))
-        })
-        .then(function(response) {
-
-          return response.json();
-
-        })
-        .then(function(responseJSON) {
+      llm.postJSON(
+        "/admin/doResetPassword",
+        formEvent.currentTarget,
+        function(responseJSON) {
 
           if (responseJSON.success) {
 
@@ -292,7 +259,8 @@
 
           }
 
-        });
+        }
+      );
 
     });
 

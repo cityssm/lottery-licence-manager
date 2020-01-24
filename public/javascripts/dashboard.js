@@ -12,17 +12,10 @@
 
       const formEle = formEvent.currentTarget;
 
-      window.fetch("/dashboard/doChangePassword", {
-          method: "POST",
-          credentials: "include",
-          body: new URLSearchParams(new FormData(formEle))
-        })
-        .then(function(response) {
-
-          return response.json();
-
-        })
-        .then(function(responseJSON) {
+      llm.postJSON(
+        "/dashboard/doChangePassword",
+        formEle,
+        function(responseJSON) {
 
           if (responseJSON.success) {
 
@@ -31,7 +24,8 @@
 
           }
 
-        });
+        }
+      );
 
     });
 

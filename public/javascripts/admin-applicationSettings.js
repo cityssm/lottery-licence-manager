@@ -19,17 +19,10 @@
 
     messageEle.innerHTML = "Saving... <i class=\"fas fa-circle-notch fa-spin\" aria-hidden=\"true\"></i>";
 
-    window.fetch("/admin/doSaveApplicationSetting", {
-        method: "POST",
-        credentials: "include",
-        body: new URLSearchParams(new FormData(formEle))
-      })
-      .then(function(response) {
-
-        return response.json();
-
-      })
-      .then(function(responseJSON) {
+    llm.postJSON(
+      "/admin/doSaveApplicationSetting",
+      formEle,
+      function(responseJSON) {
 
         if (responseJSON.success) {
 
@@ -41,7 +34,8 @@
 
         }
 
-      });
+      }
+    );
 
   }
 

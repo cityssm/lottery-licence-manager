@@ -4,61 +4,31 @@ llm.organizationRemarks = (function() {
 
   function getRemarksByOrganizationID(organizationID, callbackFn) {
 
-    window.fetch("/organizations/doGetRemarks", {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          organizationID: organizationID
-        })
-      })
-      .then(function(response) {
-
-        return response.json();
-
-      })
-      .then(callbackFn);
+    llm.postJSON(
+      "/organizations/doGetRemarks", {
+        organizationID: organizationID
+      },
+      callbackFn
+    );
 
   }
 
   function getRemarkByID(organizationID, remarkIndex, callbackFn) {
 
-    window.fetch("/organizations/doGetRemark", {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          organizationID: organizationID,
-          remarkIndex: remarkIndex
-        })
-      })
-      .then(function(response) {
-
-        return response.json();
-
-      })
-      .then(callbackFn);
+    llm.postJSON(
+      "/organizations/doGetRemark", {
+        organizationID: organizationID,
+        remarkIndex: remarkIndex
+      },
+      callbackFn
+    );
 
   }
 
 
   function doAddRemark(formEle, callbackFn) {
 
-    window.fetch("/organizations/doAddRemark", {
-        method: "POST",
-        credentials: "include",
-        body: new URLSearchParams(new FormData(formEle))
-      })
-      .then(function(response) {
-
-        return response.json();
-
-      })
-      .then(callbackFn);
+    llm.postJSON("/organizations/doAddRemark", formEle, callbackFn);
 
   }
 
@@ -98,23 +68,13 @@ llm.organizationRemarks = (function() {
 
   function doEditRemark(formEle, callbackFn) {
 
-    window.fetch("/organizations/doEditRemark", {
-        method: "POST",
-        credentials: "include",
-        body: new URLSearchParams(new FormData(formEle))
-      })
-      .then(function(response) {
-
-        return response.json();
-
-      })
-      .then(callbackFn);
+    llm.postJSON("/organizations/doEditRemark", formEle, callbackFn);
 
   }
 
   function openEditRemarkModal(organizationID, remarkIndex, updateCallbackFn) {
 
-    let editRemark_closeModalFn;
+    let editRemarkCloseModalFn;
 
     const formFn_edit = function(formEvent) {
 
@@ -122,7 +82,7 @@ llm.organizationRemarks = (function() {
 
       doEditRemark(formEvent.currentTarget, function() {
 
-        editRemark_closeModalFn();
+        editRemarkCloseModalFn();
 
         if (updateCallbackFn) {
 
@@ -162,7 +122,7 @@ llm.organizationRemarks = (function() {
       },
       onshown: function(modalEle, closeModalFn) {
 
-        editRemark_closeModalFn = closeModalFn;
+        editRemarkCloseModalFn = closeModalFn;
 
       }
     });
@@ -171,23 +131,13 @@ llm.organizationRemarks = (function() {
 
   function doDeleteRemark(organiztionID, remarkIndex, callbackFn) {
 
-    window.fetch("/organizations/doDeleteRemark", {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          organizationID: organiztionID,
-          remarkIndex: remarkIndex
-        })
-      })
-      .then(function(response) {
-
-        return response.json();
-
-      })
-      .then(callbackFn);
+    llm.postJSON(
+      "/organizations/doDeleteRemark", {
+        organizationID: organiztionID,
+        remarkIndex: remarkIndex
+      },
+      callbackFn
+    );
 
   }
 

@@ -227,22 +227,11 @@
 
     const deleteFn = function() {
 
-      window.fetch("/locations/doDelete", {
-          method: "POST",
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            locationID: locationObj.locationID
-          })
-        })
-        .then(function(response) {
-
-          return response.json();
-
-        })
-        .then(function(responseJSON) {
+      llm.postJSON(
+        "/locations/doDelete", {
+          locationID: locationObj.locationID
+        },
+        function(responseJSON) {
 
           if (responseJSON.success) {
 
@@ -251,7 +240,8 @@
 
           }
 
-        });
+        }
+      );
 
     };
 
@@ -267,16 +257,7 @@
   };
 
 
-  window.fetch("/locations/doGetLocations", {
-      method: "POST",
-      credentials: "include"
-    })
-    .then(function(response) {
-
-      return response.json();
-
-    })
-    .then(function(locationsListResponse) {
+  llm.postJSON("/locations/doGetLocations", null, function(locationsListResponse) {
 
       locationsList = locationsListResponse;
       filterLocations();

@@ -16,7 +16,7 @@
   let doRefreshAfterSave = false;
   let hasUnsavedChanges = false;
 
-  const events_containerEle = document.getElementById("container--events");
+  const eventsContainerEle = document.getElementById("container--events");
 
   formEle.addEventListener("submit", function(formEvent) {
 
@@ -24,7 +24,7 @@
 
     // Ensure at least one event
 
-    const eventDateInputEles = events_containerEle.getElementsByTagName("input");
+    const eventDateInputEles = eventsContainerEle.getElementsByTagName("input");
 
     if (eventDateInputEles.length === 0) {
 
@@ -37,53 +37,43 @@
 
     formMessageEle.innerHTML = "Saving... <i class=\"fas fa-circle-notch fa-spin\" aria-hidden=\"true\"></i>";
 
-    window.fetch("/licences/doSave", {
-        method: "POST",
-        credentials: "include",
-        body: new URLSearchParams(new FormData(formEle))
-      })
-      .then(function(response) {
+    llm.postJSON("/licences/doSave", formEle, function(responseJSON) {
 
-        return response.json();
+      if (responseJSON.success) {
 
-      })
-      .then(function(responseJSON) {
+        llm.disableNavBlocker();
+        hasUnsavedChanges = false;
 
-        if (responseJSON.success) {
+      }
 
-          llm.disableNavBlocker();
-          hasUnsavedChanges = false;
+      if (responseJSON.success && isCreate) {
 
-        }
+        window.location.href = "/licences/" + responseJSON.licenceID + "/edit";
 
-        if (responseJSON.success && isCreate) {
+      } else if (responseJSON.success && doRefreshAfterSave) {
 
-          window.location.href = "/licences/" + responseJSON.licenceID + "/edit";
+        window.location.reload(true);
 
-        } else if (responseJSON.success && doRefreshAfterSave) {
+      } else {
 
-          window.location.reload(true);
+        formMessageEle.innerHTML = "";
 
-        } else {
+        llm.alertModal(
+          responseJSON.message, "", "OK",
+          responseJSON.success ? "success" : "danger"
+        );
 
-          formMessageEle.innerHTML = "";
+        const removeInputEles = document.getElementsByClassName("is-removed-after-save");
 
-          llm.alertModal(
-            responseJSON.message, "", "OK",
-            responseJSON.success ? "success" : "danger"
-          );
+        for (let index = 0; index < removeInputEles.length; index += 1) {
 
-          const removeInputEles = document.getElementsByClassName("is-removed-after-save");
-
-          for (let index = 0; index < removeInputEles.length; index += 1) {
-
-            removeInputEles[index].remove();
-
-          }
+          removeInputEles[index].remove();
 
         }
 
-      });
+      }
+
+    });
 
   });
 
@@ -100,22 +90,11 @@
         "danger",
         function() {
 
-          window.fetch("/licences/doDelete", {
-              method: "POST",
-              credentials: "include",
-              headers: {
-                "Content-Type": "application/json"
-              },
-              body: JSON.stringify({
-                licenceID: licenceID
-              })
-            })
-            .then(function(response) {
-
-              return response.json();
-
-            })
-            .then(function(responseJSON) {
+          llm.postJSON(
+            "/licences/doDelete", {
+              licenceID: licenceID
+            },
+            function(responseJSON) {
 
               if (responseJSON.success) {
 
@@ -124,7 +103,8 @@
 
               }
 
-            });
+            }
+          );
 
         }
       );
@@ -211,9 +191,9 @@
 
     let organizationList = [];
 
-    let organizationLookup_closeModalFn;
-    let organizationLookup_searchStrEle;
-    let organizationLookup_resultsEle;
+    let organizationLookupCloseModalFn;
+    let organizationLookupSearchStrEle;
+    let organizationLookupResultsEle;
 
     const organizationLookupFn_setOrganization = function(clickEvent) {
 
@@ -224,7 +204,7 @@
       document.getElementById("licence--organizationID").value = organizationEle.getAttribute("data-organization-id");
       document.getElementById("licence--organizationName").value = organizationEle.getAttribute("data-organization-name");
 
-      organizationLookup_closeModalFn();
+      organizationLookupCloseModalFn();
 
       setUnsavedChanges();
 
@@ -235,7 +215,7 @@
       const listEle = document.createElement("div");
       listEle.className = "list is-hoverable";
 
-      const searchStringSplit = organizationLookup_searchStrEle.value
+      const searchStringSplit = organizationLookupSearchStrEle.value
         .trim()
         .toLowerCase()
         .split(" ");
@@ -284,9 +264,9 @@
 
       }
 
-      llm.clearElement(organizationLookup_resultsEle);
+      llm.clearElement(organizationLookupResultsEle);
 
-      organizationLookup_resultsEle.insertAdjacentElement("beforeend", listEle);
+      organizationLookupResultsEle.insertAdjacentElement("beforeend", listEle);
 
     };
 
@@ -296,38 +276,33 @@
 
         onshow: function() {
 
-          organizationLookup_searchStrEle = document.getElementById("organizationLookup--searchStr");
-          organizationLookup_searchStrEle.addEventListener("keyup", organizationLookupFn_refreshResults);
+          organizationLookupSearchStrEle = document.getElementById("organizationLookup--searchStr");
+          organizationLookupSearchStrEle.addEventListener("keyup", organizationLookupFn_refreshResults);
 
-          organizationLookup_resultsEle = document.getElementById("container--organizationLookup");
+          organizationLookupResultsEle = document.getElementById("container--organizationLookup");
 
           if (organizationList.length === 0) {
 
-            window.fetch("/organizations/doGetAll", {
-                method: "GET",
-                credentials: "include"
-              })
-              .then(function(response) {
-
-                return response.json();
-
-              })
-              .then(function(organizationListRes) {
+            llm.postJSON(
+              "/organizations/doGetAll",
+              null,
+              function(organizationListRes) {
 
                 organizationList = organizationListRes;
-                organizationLookup_searchStrEle.removeAttribute("disabled");
+                organizationLookupSearchStrEle.removeAttribute("disabled");
                 organizationLookupFn_refreshResults();
 
-                organizationLookup_searchStrEle.focus();
+                organizationLookupSearchStrEle.focus();
 
-              });
+              }
+            );
 
           } else {
 
-            organizationLookup_searchStrEle.removeAttribute("disabled");
+            organizationLookupSearchStrEle.removeAttribute("disabled");
             organizationLookupFn_refreshResults();
 
-            organizationLookup_searchStrEle.focus();
+            organizationLookupSearchStrEle.focus();
 
           }
 
@@ -335,8 +310,8 @@
 
         onshown: function(modalEle, closeModalFn) {
 
-          organizationLookup_closeModalFn = closeModalFn;
-          organizationLookup_searchStrEle.focus();
+          organizationLookupCloseModalFn = closeModalFn;
+          organizationLookupSearchStrEle.focus();
 
         }
 
@@ -360,21 +335,16 @@
 
     if (locationList.length === 0) {
 
-      window.fetch("/locations/doGetLocations", {
-          method: "GET",
-          credentials: "include"
-        })
-        .then(function(response) {
-
-          return response.json();
-
-        })
-        .then(function(locationListRes) {
+      llm.postJSON(
+        "/locations/doGetLocations",
+        null,
+        function(locationListRes) {
 
           locationList = locationListRes;
           callbackFn();
 
-        });
+        }
+      );
 
     } else {
 
@@ -519,17 +489,10 @@
 
             formEvent.preventDefault();
 
-            window.fetch("/locations/doCreate", {
-                method: "POST",
-                credentials: "include",
-                body: new URLSearchParams(new FormData(formEvent.currentTarget))
-              })
-              .then(function(response) {
-
-                return response.json();
-
-              })
-              .then(function(responseJSON) {
+            llm.postJSON(
+              "/locations/doCreate",
+              formEvent.currentTarget,
+              function(responseJSON) {
 
                 if (responseJSON.success) {
 
@@ -539,7 +502,8 @@
 
                 }
 
-              });
+              }
+            );
 
           });
 
@@ -572,8 +536,8 @@
 
     let termsConditionsList = [];
 
-    const termsConditionsLookup_modalEle = document.getElementById("is-termsConditions-lookup-modal");
-    const termsConditionsLookup_resultsEle = document.getElementById("container--termsConditionsPrevious");
+    const termsConditionsLookupModalEle = document.getElementById("is-termsConditions-lookup-modal");
+    const termsConditionsLookupResultsEle = document.getElementById("container--termsConditionsPrevious");
 
     const termsConditionsLookupFn_setTermsConditions = function(clickEvent) {
 
@@ -583,7 +547,7 @@
 
       document.getElementById("licence--termsConditions").value = termsConditionsList[termsConditionsIndex].termsConditions;
 
-      llm.hideModal(termsConditionsLookup_modalEle);
+      llm.hideModal(termsConditionsLookupModalEle);
 
       setUnsavedChanges();
 
@@ -592,44 +556,39 @@
     document.getElementById("is-termsConditions-lookup-button").addEventListener("click", function() {
 
       termsConditionsList = [];
-      llm.clearElement(termsConditionsLookup_resultsEle);
+      llm.clearElement(termsConditionsLookupResultsEle);
 
       const organizationID = document.getElementById("licence--organizationID").value;
 
       if (organizationID === "") {
 
-        llm.alertModal("No Organization Selected", "An organization must be selected before the previously used terms and conditions can be retrieved.", "OK", "warning");
+        llm.alertModal(
+          "No Organization Selected",
+          "An organization must be selected before the previously used terms and conditions can be retrieved.",
+          "OK",
+          "warning"
+        );
+
         return;
 
       }
 
-      termsConditionsLookup_resultsEle.innerHTML = "<p class=\"has-text-centered has-text-grey-lighter\">" +
+      termsConditionsLookupResultsEle.innerHTML = "<p class=\"has-text-centered has-text-grey-lighter\">" +
         "<i class=\"fas fa-3x fa-circle-notch fa-spin\" aria-hidden=\"true\"></i><br />" +
         "Loading previously used terms and conditions..." +
         "</p>";
 
-      window.fetch("/licences/doGetDistinctTermsConditions", {
-          method: "POST",
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            organizationID: organizationID
-          })
-        })
-        .then(function(response) {
-
-          return response.json();
-
-        })
-        .then(function(termsConditionsListRes) {
+      llm.postJSON(
+        "/licences/doGetDistinctTermsConditions", {
+          organizationID: organizationID
+        },
+        function(termsConditionsListRes) {
 
           termsConditionsList = termsConditionsListRes;
 
           if (termsConditionsList.length === 0) {
 
-            termsConditionsLookup_resultsEle.innerHTML = "<p class=\"has-text-centered\">" +
+            termsConditionsLookupResultsEle.innerHTML = "<p class=\"has-text-centered\">" +
               "No previously used terms and conditions found for this organization." +
               "</p>";
 
@@ -660,19 +619,20 @@
 
             }
 
-            llm.clearElement(termsConditionsLookup_resultsEle);
+            llm.clearElement(termsConditionsLookupResultsEle);
 
-            termsConditionsLookup_resultsEle.insertAdjacentElement("beforeend", listEle);
+            termsConditionsLookupResultsEle.insertAdjacentElement("beforeend", listEle);
 
           }
 
-        });
+        }
+      );
 
-      llm.showModal(termsConditionsLookup_modalEle);
+      llm.showModal(termsConditionsLookupModalEle);
 
     });
 
-    const cancelButtonEles = termsConditionsLookup_modalEle.getElementsByClassName("is-close-modal-button");
+    const cancelButtonEles = termsConditionsLookupModalEle.getElementsByClassName("is-close-modal-button");
 
     for (let buttonIndex = 0; buttonIndex < cancelButtonEles.length; buttonIndex += 1) {
 
@@ -773,7 +733,7 @@
 
       }
 
-      const eventDateEles = events_containerEle.getElementsByTagName("input");
+      const eventDateEles = eventsContainerEle.getElementsByTagName("input");
 
       for (let eleIndex = 0; eleIndex < eventDateEles.length; eleIndex += 1) {
 
@@ -787,7 +747,7 @@
 
       const endDateString = endDateEle.value;
 
-      const eventDateEles = events_containerEle.getElementsByTagName("input");
+      const eventDateEles = eventsContainerEle.getElementsByTagName("input");
 
       for (let eleIndex = 0; eleIndex < eventDateEles.length; eleIndex += 1) {
 
@@ -855,7 +815,7 @@
 
       }
 
-      events_containerEle.insertAdjacentHTML(
+      eventsContainerEle.insertAdjacentHTML(
         "beforeend",
         "<div class=\"panel-block is-block\">" +
         "<div class=\"field has-addons\">" +
@@ -879,7 +839,7 @@
         "</div>"
       );
 
-      const buttonEles = events_containerEle.getElementsByTagName("a");
+      const buttonEles = eventsContainerEle.getElementsByTagName("a");
       buttonEles[buttonEles.length - 1].addEventListener("click", eventFn_remove);
 
       doRefreshAfterSave = true;
@@ -960,27 +920,17 @@
 
       } else {
 
-        window.fetch("/licences/doGetTicketTypes", {
-            method: "POST",
-            credentials: "include",
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-              licenceTypeKey: licenceTypeKey
-            })
-          })
-          .then(function(response) {
-
-            return response.json();
-
-          })
-          .then(function(ticketTypes) {
+        llm.postJSON(
+          "/licences/doGetTicketTypes", {
+            licenceTypeKey: licenceTypeKey
+          },
+          function(ticketTypes) {
 
             licenceTypeKeyToTicketTypes[licenceTypeKey] = ticketTypes;
             callbackFn(ticketTypes);
 
-          });
+          }
+        );
 
       }
 
@@ -1600,17 +1550,10 @@
 
         }
 
-        window.fetch("/licences/doAddTransaction", {
-            method: "POST",
-            credentials: "include",
-            body: new URLSearchParams(new FormData(addTransactionFormEle))
-          })
-          .then(function(response) {
-
-            return response.json();
-
-          })
-          .then(function(responseJSON) {
+        llm.postJSON(
+          "/licences/doAddTransaction",
+          addTransactionFormEle,
+          function(responseJSON) {
 
             if (responseJSON.success) {
 
@@ -1618,7 +1561,8 @@
 
             }
 
-          });
+          }
+        );
 
       };
 
@@ -1693,23 +1637,12 @@
 
         const voidFn = function() {
 
-          window.fetch("/licences/doVoidTransaction", {
-              method: "POST",
-              credentials: "include",
-              headers: {
-                "Content-Type": "application/json"
-              },
-              body: JSON.stringify({
-                licenceID: licenceID,
-                transactionIndex: voidTransactionButtonEle.getAttribute("data-transaction-index")
-              })
-            })
-            .then(function(response) {
-
-              return response.json();
-
-            })
-            .then(function(responseJSON) {
+          llm.postJSON(
+            "/licences/doVoidTransaction", {
+              licenceID: licenceID,
+              transactionIndex: voidTransactionButtonEle.getAttribute("data-transaction-index")
+            },
+            function(responseJSON) {
 
               if (responseJSON.success) {
 
@@ -1717,7 +1650,8 @@
 
               }
 
-            });
+            }
+          );
 
         };
 
@@ -1755,22 +1689,11 @@
 
         const unissueFn = function() {
 
-          window.fetch("/licences/doUnissueLicence", {
-              method: "POST",
-              credentials: "include",
-              headers: {
-                "Content-Type": "application/json"
-              },
-              body: JSON.stringify({
-                licenceID: licenceID
-              })
-            })
-            .then(function(response) {
-
-              return response.json();
-
-            })
-            .then(function(responseJSON) {
+          llm.postJSON(
+            "/licences/doUnissueLicence", {
+              licenceID: licenceID
+            },
+            function(responseJSON) {
 
               if (responseJSON.success) {
 
@@ -1778,7 +1701,8 @@
 
               }
 
-            });
+            }
+          );
 
         };
 
@@ -1798,22 +1722,11 @@
 
         const issueFn = function() {
 
-          window.fetch("/licences/doIssueLicence", {
-              method: "POST",
-              credentials: "include",
-              headers: {
-                "Content-Type": "application/json"
-              },
-              body: JSON.stringify({
-                licenceID: licenceID
-              })
-            })
-            .then(function(response) {
-
-              return response.json();
-
-            })
-            .then(function(responseJSON) {
+          llm.postJSON(
+            "/licences/doIssueLicence", {
+              licenceID: licenceID
+            },
+            function(responseJSON) {
 
               if (responseJSON.success) {
 
@@ -1821,7 +1734,8 @@
 
               }
 
-            });
+            }
+          );
 
         };
 

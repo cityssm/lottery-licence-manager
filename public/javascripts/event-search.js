@@ -22,23 +22,12 @@
     const monthValue = filterMonthEle.value;
     const monthName = filterMonthEle.options[filterMonthEle.selectedIndex].text;
 
-    window.fetch("/events/doSearch", {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          year: yearValue,
-          month: monthValue
-        })
-      })
-      .then(function(response) {
-
-        return response.json();
-
-      })
-      .then(function(eventList) {
+    llm.postJSON(
+      "/events/doSearch", {
+        year: yearValue,
+        month: monthValue
+      },
+      function(eventList) {
 
         if (eventList.length === 0) {
 
@@ -117,7 +106,8 @@
 
         }
 
-      });
+      }
+    );
 
   }
 

@@ -15,17 +15,10 @@
       "<em>Loading organizations...</em>" +
       "</p>";
 
-    window.fetch("/organizations/doSearch", {
-        method: "POST",
-        credentials: "include",
-        body: new URLSearchParams(new FormData(formEle))
-      })
-      .then(function(response) {
-
-        return response.json();
-
-      })
-      .then(function(organizationsList) {
+    llm.postJSON(
+      "/organizations/doSearch",
+      formEle,
+      function(organizationsList) {
 
         if (organizationsList.length === 0) {
 

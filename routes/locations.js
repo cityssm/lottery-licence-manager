@@ -19,7 +19,7 @@ router.get("/", function(req, res) {
 });
 
 
-router.all("/doGetLocations", function(req, res) {
+router.post("/doGetLocations", function(req, res) {
 
   const locations = licencesDB.getLocations(req.body, req.session);
 

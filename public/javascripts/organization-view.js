@@ -14,22 +14,11 @@
 
       const restoreFn = function() {
 
-        window.fetch("/organizations/doRestore", {
-            method: "POST",
-            credentials: "include",
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-              organizationID: organizationID
-            })
-          })
-          .then(function(response) {
-
-            return response.json();
-
-          })
-          .then(function(responseJSON) {
+        llm.postJSON(
+          "/organizations/doRestore", {
+            organizationID: organizationID
+          },
+          function(responseJSON) {
 
             if (responseJSON.success) {
 
@@ -37,7 +26,8 @@
 
             }
 
-          });
+          }
+        );
 
       };
 

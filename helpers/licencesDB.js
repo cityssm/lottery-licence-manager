@@ -46,7 +46,8 @@ function canUpdateObject(objType, obj, reqSession) {
     canUpdate = true;
 
   } else if (reqSession.user.userProperties.canCreate === "true" &&
-    (obj.recordCreate_userName === reqSession.user.userName || obj.recordUpdate_userName === reqSession.user.userName) &&
+    (obj.recordCreate_userName === reqSession.user.userName ||
+      obj.recordUpdate_userName === reqSession.user.userName) &&
     obj.recordUpdate_timeMillis + configFns.getProperty("user.createUpdateWindowMillis") > Date.now()) {
 
     // Users with only create permission can update their own records within the time window
@@ -2365,6 +2366,7 @@ const licencesDB = {
 
   },
 
+
   /*
    * EVENTS
    */
@@ -2412,6 +2414,55 @@ const licencesDB = {
       delete eventObj.locationAddress1;
       delete eventObj.bank_name;
       delete eventObj.costs_receipts;
+
+    }
+
+    return rows;
+
+  },
+
+  getOutstandingEvents: function(reqSession) {
+
+    const db = sqlite(dbPath, {
+      readonly: true
+    });
+
+    const rows = db.prepare("select" +
+        " o.organizationID, o.organizationName," +
+        " e.eventDate, e.reportDate," +
+        " l.licenceTypeKey, l.licenceID, l.externalLicenceNumber," +
+        " e.bank_name, e.bank_address, e.bank_accountNumber, e.bank_accountBalance," +
+        " e.costs_receipts, e.costs_prizesAwarded, e.costs_netProceeds, e.costs_amountDonated," +
+        " e.recordUpdate_userName, e.recordUpdate_timeMillis" +
+        " from LotteryEvents e" +
+        " left join LotteryLicences l on e.licenceID = l.licenceID" +
+        " left join Organizations o on l.organizationID = o.organizationID" +
+
+        " where e.recordDelete_timeMillis is null" +
+        " and l.recordDelete_timeMillis is null" +
+        (" and (" +
+          "e.reportDate is null or e.reportDate = 0" +
+          " or e.bank_name is null or e.bank_name = ''" +
+          " or e.costs_receipts is null or e.costs_receipts = 0" +
+          " or e.costs_prizesAwarded is null or e.costs_prizesAwarded = 0" +
+          " or e.costs_netProceeds is null or e.costs_netProceeds = 0" +
+          " or e.costs_amountDonated is null or e.costs_amountDonated = 0" +
+          ")") +
+        " order by o.organizationName, o.organizationID, e.eventDate, l.licenceID")
+      .all();
+
+    db.close();
+
+    for (let eventIndex = 0; eventIndex < rows.length; eventIndex += 1) {
+
+      const eventObj = rows[eventIndex];
+
+      eventObj.eventDateString = dateTimeFns.dateIntegerToString(eventObj.eventDate);
+      eventObj.reportDateString = dateTimeFns.dateIntegerToString(eventObj.reportDate);
+
+      eventObj.bank_name_isOutstanding = (eventObj.bank_name === null || eventObj.bank_name === "");
+
+      eventObj.canUpdate = canUpdateObject("event", eventObj, reqSession);
 
     }
 
