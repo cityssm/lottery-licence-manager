@@ -116,6 +116,36 @@ router.post("/doDelete", function(req, res) {
 });
 
 
+router.post("/doRestore", function(req, res) {
+
+  if (req.session.user.userProperties.canUpdate !== "true") {
+
+    res.json("not allowed");
+    return;
+
+  }
+
+  const changeCount = licencesDB.restoreLocation(req.body.locationID, req.session);
+
+  if (changeCount) {
+
+    res.json({
+      success: true,
+      message: "Location restored successfully."
+    });
+
+  } else {
+
+    res.json({
+      success: false,
+      message: "Location could not be restored."
+    });
+
+  }
+
+});
+
+
 router.post("/doMerge", function(req, res) {
 
   if (req.session.user.userProperties.isAdmin !== "true") {

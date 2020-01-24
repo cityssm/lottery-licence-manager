@@ -64,15 +64,15 @@ llm.organizationRemarks = (function() {
 
   function openAddRemarkModal(organizationID, updateCallbackFn) {
 
-    let addRemark_closeModalFn;
+    let addRemarkCloseModalFn;
 
-    const formFn_add = function(formEvent) {
+    const addFormFn = function(formEvent) {
 
       formEvent.preventDefault();
 
       doAddRemark(formEvent.currentTarget, function() {
 
-        addRemark_closeModalFn();
+        addRemarkCloseModalFn();
 
         if (updateCallbackFn) {
 
@@ -88,14 +88,13 @@ llm.organizationRemarks = (function() {
       onshown: function(modalEle, closeModalFn) {
 
         document.getElementById("addRemark--organizationID").value = organizationID;
-        modalEle.getElementsByTagName("form")[0].addEventListener("submit", formFn_add);
-        addRemark_closeModalFn = closeModalFn;
+        modalEle.getElementsByTagName("form")[0].addEventListener("submit", addFormFn);
+        addRemarkCloseModalFn = closeModalFn;
 
       }
     });
 
   }
-
 
   function doEditRemark(formEle, callbackFn) {
 
@@ -169,7 +168,6 @@ llm.organizationRemarks = (function() {
     });
 
   }
-
 
   function doDeleteRemark(organiztionID, remarkIndex, callbackFn) {
 

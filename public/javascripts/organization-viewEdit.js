@@ -2,15 +2,22 @@
 
 (function() {
 
-  // Licences
+  /*
+   * Licences
+   */
 
   llm.initializeTabs(document.getElementById("tabs--licences"));
 
-  // Remarks
+  /*
+   * Remarks
+   */
+
+  const remarksContainerEle = document.getElementById("container--remarks");
+
+  // Update remarks
 
   if (document.getElementsByTagName("main")[0].getAttribute("data-can-create") === "true") {
 
-    const remarksContainerEle = document.getElementById("container--remarks");
     const organizationID = remarksContainerEle.getAttribute("data-organization-id");
 
     let refreshRemarksFn;
@@ -127,5 +134,65 @@
     }
 
   }
+
+  // Filter remarks
+
+  const remarkSearchStrEle = document.getElementById("remark--searchStr");
+
+  if (remarkSearchStrEle) {
+
+    remarkSearchStrEle.value = "";
+
+    const remarkDisplayCountEle = document.getElementById("remark--displayCount");
+    const remarkBlockEles = remarksContainerEle.getElementsByClassName("is-remark-block");
+
+    remarkSearchStrEle.addEventListener("keyup", function(keyupEvent) {
+
+      const searchStrSplit = keyupEvent.currentTarget.value
+        .trim()
+        .toLowerCase()
+        .split(" ");
+
+      let displayCount = remarkBlockEles.length;
+
+      for (let remarkBlockIndex = 0; remarkBlockIndex < remarkBlockEles.length; remarkBlockIndex += 1) {
+
+        const remark = remarkBlockEles[remarkBlockIndex].getElementsByClassName("is-remark")[0].innerText
+          .trim()
+          .toLowerCase();
+
+        let showRemark = true;
+
+        for (let searchStrIndex = 0; searchStrIndex < searchStrSplit.length; searchStrIndex += 1) {
+
+          if (remark.indexOf(searchStrSplit[searchStrIndex]) === -1) {
+
+            showRemark = false;
+            displayCount -= 1;
+
+            break;
+
+          }
+
+        }
+
+        if (showRemark) {
+
+          remarkBlockEles[remarkBlockIndex].classList.remove("is-hidden");
+
+        } else {
+
+          remarkBlockEles[remarkBlockIndex].classList.add("is-hidden");
+
+        }
+
+      }
+
+      remarkDisplayCountEle.innerText = displayCount;
+
+    });
+
+  }
+
 
 }());

@@ -514,6 +514,31 @@ const licencesDB = {
 
   },
 
+  restoreLocation: function(locationID, reqSession) {
+
+    const db = sqlite(dbPath);
+
+    const nowMillis = Date.now();
+
+    const info = db.prepare("update Locations" +
+        " set recordDelete_userName = null," +
+        " recordDelete_timeMillis = null," +
+        " recordUpdate_userName = ?," +
+        " recordUpdate_timeMillis = ?" +
+        " where recordDelete_timeMillis is not null" +
+        " and locationID = ?")
+      .run(
+        reqSession.user.userName,
+        nowMillis,
+        locationID
+      );
+
+    db.close();
+
+    return info.changes;
+
+  },
+
   mergeLocations: function(locationID_target, locationID_source, reqSession) {
 
     const db = sqlite(dbPath);
@@ -1212,7 +1237,10 @@ const licencesDB = {
     if (reqBodyOrParamsObj.locationID) {
 
       sql += " and (l.locationID = ?" +
-        " or licenceID in (select licenceID from LotteryLicenceTicketTypes where recordDelete_timeMillis is null and (distributorLocationID = ? or manufacturerLocationID = ?))" +
+        " or licenceID in (" +
+        "select licenceID from LotteryLicenceTicketTypes" +
+        " where recordDelete_timeMillis is null and (distributorLocationID = ? or manufacturerLocationID = ?)" +
+        ")" +
         ")";
 
       sqlParams.push(reqBodyOrParamsObj.locationID);
@@ -1229,7 +1257,7 @@ const licencesDB = {
 
     }
 
-    let rows = db.prepare(sql).all(sqlParams);
+    const rows = db.prepare(sql).all(sqlParams);
 
     for (let index = 0; index < rows.length; index += 1) {
 

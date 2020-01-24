@@ -42,9 +42,17 @@
 }
 
 
-fieldset:enabled .is-hidden-enabled {
+/*
+ * Status containers
+ */
+
+fieldset:enabled .is-hidden-enabled,
+.has-status-view .is-hidden-status-view {
   display: none;
 }
+
+
+
 
 .is-nowrap {
   white-space: nowrap;

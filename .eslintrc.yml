@@ -121,7 +121,7 @@ rules:
   no-new-object: error
   no-plusplus: error
   no-spaced-func: error
-  no-trailing-spaces: error
+  no-trailing-spaces: warn
   no-underscore-dangle: error
   no-unneeded-ternary: error
   no-whitespace-before-property: error

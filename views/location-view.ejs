@@ -12,6 +12,16 @@
   <div class="message is-danger">
     <div class="message-body">
       <p class="is-size-5 has-text-weight-bold">This location has been deleted.</p>
+      <% if (user.userProperties.canUpdate === "true") { %>
+        <div class="has-text-right">
+          <button class="button is-danger" id="is-location-restore-button" data-location-id="<%= location.locationID %>" type="button">
+            <span class="icon">
+              <i class="fas fa-trash-restore" aria-hidden="true"></i>
+            </span>
+            <span>Restore Location</span>
+          </button>
+        </div>
+      <% } %>
     </div>
   </div>
 <% } %>
@@ -68,6 +78,10 @@
 <%- include('_location-view_edit-licences'); -%>
 
 <%- include('_footerA'); -%>
+
+<% if (user.userProperties.canUpdate === "true") { %>
+  <script src="/javascripts/location-view.min.js"></script>
+<% } %>
 
 <script src="/javascripts/location-viewEdit.min.js"></script>
 

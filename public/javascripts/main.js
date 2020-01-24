@@ -43,6 +43,46 @@ llm.arrayToObject = function(array, objectKey) {
 
 
 /*
+ * FETCH HELPERS
+ */
+
+llm.responseToJSON = function(response) {
+
+  return response.json();
+
+};
+
+llm.postJSON = function(fetchUrl, formEleOrObj, responseFn) {
+
+  const fetchOptions = {
+    method: "POST",
+    credentials: "include"
+  };
+
+
+  if (formEleOrObj && formEleOrObj.tagName && formEleOrObj.tagName === "FORM") {
+
+    fetchOptions.body = new URLSearchParams(new FormData(formEleOrObj));
+
+  } else {
+
+    fetchOptions.headers = {
+      "Content-Type": "application/json"
+    };
+
+    fetchOptions.body = JSON.stringify(formEleOrObj);
+
+  }
+
+
+  window.fetch(fetchUrl, fetchOptions)
+    .then(llm.responseToJSON)
+    .then(responseFn);
+
+};
+
+
+/*
  * CONFIG DEFAULTS
  */
 
@@ -304,8 +344,12 @@ llm.initializeTabs = function(tabsListEle) {
       ("<footer class=\"modal-card-foot justify-flex-end\">" +
         (modalOptions.hideCancelButton ?
           "" :
-          "<button class=\"button is-cancel-button\" type=\"button\" aria-label=\"Cancel\">" + cancelButtonHTML + "</button>") +
-        "<button class=\"button is-ok-button is-" + contextualColorName + "\" type=\"button\" aria-label=\"OK\">" + okButtonHTML + "</button>" +
+          "<button class=\"button is-cancel-button\" type=\"button\" aria-label=\"Cancel\">" +
+          cancelButtonHTML +
+          "</button>") +
+        ("<button class=\"button is-ok-button is-" + contextualColorName + "\" type=\"button\" aria-label=\"OK\">" +
+          okButtonHTML +
+          "</button>") +
         "</footer>") +
       "</div>";
 
