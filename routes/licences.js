@@ -4,7 +4,6 @@ const express = require("express");
 const router = express.Router();
 
 const configFns = require("../helpers/configFns");
-
 const dateTimeFns = require("../helpers/dateTimeFns");
 
 const licencesDB = require("../helpers/licencesDB");
@@ -12,6 +11,11 @@ const licencesDB = require("../helpers/licencesDB");
 const path = require("path");
 const ejs = require("ejs");
 const pdf = require("html-pdf");
+
+
+/*
+ * Licence Search
+ */
 
 
 router.get("/", function(req, res) {
@@ -29,6 +33,51 @@ router.post("/doSearch", function(req, res) {
 
 });
 
+
+/*
+ * Licence Type Summary
+ */
+
+
+router.get("/licenceTypes", function(req, res) {
+
+  const applicationDate = new Date();
+  
+  applicationDate.setMonth(applicationDate.getMonth() - 1);
+  applicationDate.setDate(1);
+
+  const applicationDateStartString = dateTimeFns.dateToString(applicationDate);
+
+  applicationDate.setMonth(applicationDate.getMonth() + 1);
+  applicationDate.setDate(0);
+
+  const applicationDateEndString = dateTimeFns.dateToString(applicationDate);
+
+  res.render("licence-licenceType", {
+    headTitle: "Licence Type Summary",
+    applicationDateStartString: applicationDateStartString,
+    applicationDateEndString: applicationDateEndString
+  });
+
+});
+
+router.post("/doGetLicenceTypeSummary", function(req, res) {
+
+  res.json(licencesDB.getLicenceTypeSummary(req.body, req.session));
+
+});
+
+
+/*
+ * Licence View / Edit
+ */
+
+
+router.post("/doSearch", function(req, res) {
+
+  res.json(licencesDB.getLicences(req.body, true, true, req.session));
+
+});
 
 router.get([
   "/new",

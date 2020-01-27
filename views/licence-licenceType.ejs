@@ -1,0 +1,78 @@
+<%- include('_header'); -%>
+
+<div class="columns is-block-print">
+  <div class="column is-3 is-hidden-print">
+    <%- include("_licence-sideMenu"); -%>
+  </div>
+  <div class="column is-block-print">
+    <nav class="breadcrumb">
+      <ul>
+        <li><a href="/dashboard">Home</a></li>
+        <li><a href="/licences">Licences</a></li>
+        <li class="is-active"><a href="#" aria-current="page">Licence Type Summary</a></li>
+      </ul>
+    </nav>
+
+    <h1 class="title is-1">
+      Licence Type Summary
+    </h1>
+
+    <form class="is-block-print" id="form--licenceTypes">
+      <div class="columns">
+        <div class="column">
+          <div class="field">
+            <label class="label" for="filter--applicationDateStartString">Application Date Start</label>
+            <div class="control">
+              <input class="input" id="filter--applicationDateStartString" name="applicationDateStartString" type="date" value="<%= applicationDateStartString %>" required />
+            </div>
+          </div>
+        </div>
+        <div class="column">
+          <div class="field">
+            <label class="label" for="filter--applicationDateEndString">Application Date End</label>
+            <div class="control">
+              <input class="input" id="filter--applicationDateEndString" name="applicationDateEndString" type="date" value="<%= applicationDateEndString %>" required />
+            </div>
+          </div>
+        </div>
+        <div class="column">
+          <div class="field">
+            <label class="label" for="filter--licenceTypeKey">Licence Type</label>
+            <div class="control has-icons-left">
+              <div class="select is-fullwidth">
+                <select id="filter--licenceTypeKey" name="licenceTypeKey">
+                  <option value="">(All)</option>
+                  <%
+                    const licenceTypes = configFns.getProperty("licenceTypes");
+                    for (let index = 0; index < licenceTypes.length; index += 1) {
+                      if (!licenceTypes[index].isActive) {
+                        continue;
+                      }
+                  %>
+                    <option value="<%= licenceTypes[index].licenceTypeKey %>">
+                      <%= licenceTypes[index].licenceType %>
+                    </option>
+                  <%
+                    }
+                  %>
+                </select>
+              </div>
+              <div class="icon is-small is-left">
+                <i class="fas fa-filter" aria-hidden="true"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+
+    <div class="has-margin-top-20" id="container--licenceTypes"></div>
+
+  </div>
+</div>
+
+<%- include('_footerA'); -%>
+
+<script src="/javascripts/licence-licenceType.min.js"></script>
+
+<%- include('_footerB'); -%>

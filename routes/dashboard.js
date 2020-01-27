@@ -35,6 +35,7 @@ router.all("/doGetDefaultConfigProperties", function(req, res) {
   res.json({
     city: configFns.getProperty("defaults.city"),
     province: configFns.getProperty("defaults.province"),
+    externalLicenceNumber_fieldLabel: configFns.getProperty("licences.externalLicenceNumber.fieldLabel"),
     externalReceiptNumber_fieldLabel: configFns.getProperty("licences.externalReceiptNumber.fieldLabel")
   });
 

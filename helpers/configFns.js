@@ -72,6 +72,8 @@ const configFallbackValues = {
   "amendments.trackTicketTypeDelete": true
 };
 
+const licenceTypeCache = {};
+
 
 function getProperty(propertyName) {
 
@@ -102,7 +104,14 @@ const configFns = {
 
   getLicenceType: function(licenceTypeKey) {
 
-    return getProperty("licenceTypes").find(ele => (ele.licenceTypeKey === licenceTypeKey));
+    if (!licenceTypeCache[licenceTypeKey]) {
+
+      licenceTypeCache[licenceTypeKey] =
+        getProperty("licenceTypes").find(ele => (ele.licenceTypeKey === licenceTypeKey));
+
+    }
+
+    return licenceTypeCache[licenceTypeKey];
 
   },
 

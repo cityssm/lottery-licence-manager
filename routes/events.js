@@ -32,14 +32,21 @@ router.post("/doSearch", function(req, res) {
 
 router.get("/outstanding", function(req, res) {
 
-  const outstandingEvents = licencesDB.getOutstandingEvents(req.session);
-
   res.render("event-outstanding", {
-    headTitle: "Outstanding Events",
-    outstandingEvents: outstandingEvents
+    headTitle: "Outstanding Events"
   });
 
 });
+
+
+router.post("/doGetOutstandingEvents", function(req, res) {
+
+  const events = licencesDB.getOutstandingEvents(req.body, req.session);
+
+  res.json(events);
+
+});
+
 
 /*
  * Event View / Edit

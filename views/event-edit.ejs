@@ -50,6 +50,18 @@
       <input id="event--eventDate" name="eventDate" type="hidden" value="<%= event.eventDate %>" />
 
       <div class="panel">
+        <h2 class="panel-heading">Event Reporting</h2>
+        <div class="panel-block is-block">
+          <div class="field">
+            <label class="label" for="event--reportDateString">Report Date</label>
+            <div class="control">
+              <input class="input" id="event--reportDateString" name="reportDateString" type="date" value="<%= event.reportDateString %>" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
         <h2 class="panel-heading">Bank Information</h2>
         <div class="panel-block is-block">
           <div class="field">

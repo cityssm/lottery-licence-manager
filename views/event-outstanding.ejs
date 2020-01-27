@@ -4,7 +4,7 @@
   <div class="column is-3 is-hidden-print">
     <%- include("_event-sideMenu"); -%>
   </div>
-  <div class="column">
+  <div class="column is-block-print is-full-print">
     <nav class="breadcrumb">
       <ul>
         <li><a href="/dashboard">Home</a></li>
@@ -17,145 +17,49 @@
       Outstanding Events Report
     </h1>
 
-    <% if (outstandingEvents.length === 0) { %>
-      <div class="message is-info">
-        <p class="message-body">
-          There are no events with outstanding fiscals.
-        </p>
-      </div>
-    <% } else { %>
+    <form class="is-block-print" id="form--outstandingEvents">
       <table class="table is-fullwidth">
         <thead>
           <tr>
             <th><%= configFns.getProperty("licences.externalLicenceNumber.fieldLabel") %></th>
-            <th>Licence Type</th>
+            <th>
+              <div class="field">
+                <label class="label" for="filter--licenceTypeKey">Licence Type</label>
+                <div class="control has-icons-left">
+                  <div class="select is-small">
+                    <select id="filter--licenceTypeKey" name="licenceTypeKey">
+                      <option value="">(All)</option>
+                      <%
+                        const licenceTypes = configFns.getProperty("licenceTypes");
+                        for (let index = 0; index < licenceTypes.length; index += 1) {
+                          if (!licenceTypes[index].isActive) {
+                            continue;
+                          }
+                      %>
+                        <option value="<%= licenceTypes[index].licenceTypeKey %>">
+                          <%= licenceTypes[index].licenceType %>
+                        </option>
+                      <%
+                        }
+                      %>
+                    </select>
+                  </div>
+                  <div class="icon is-small is-left">
+                    <i class="fas fa-filter" aria-hidden="true"></i>
+                  </div>
+                </div>
+              </div>
+            </th>
             <th>Event Date</th>
-            <th>Report Date</th>
+            <th class="has-text-centered">Report Date</th>
             <th class="has-text-centered">Banking</th>
             <th class="has-text-centered">Receipts</th>
-            <th class="has-text-centered">Prizes Awarded</th>
             <th class="has-text-centered">Net Proceeds</th>
-            <th class="has-text-centered">Amount Donated</th>
           </tr>
         </thead>
-        <tbody>
-          <%
-            let currentOrganizationID = -1;
-
-            for (let eventIndex = 0; eventIndex < outstandingEvents.length; eventIndex += 1) {
-
-              const outstandingEventObj = outstandingEvents[eventIndex];
-
-              if (currentOrganizationID !== outstandingEventObj.organizationID) {
-
-                currentOrganizationID = outstandingEventObj.organizationID;
-
-                %>
-                  <tr>
-                    <th class="has-background-grey-lighter" colspan="9">
-                      <h2 class="title is-4"><%= outstandingEventObj.organizationName %></h2>
-                    </th>
-                  </tr>
-                <%
-              }
-
-              %>
-                <tr>
-                  <td>
-                    <a href="/licences/<%= outstandingEventObj.licenceID %>" data-tooltip="View Licence" target="_blank">
-                      <%= outstandingEventObj.externalLicenceNumber %><br />
-                      <small>Licence #<%= outstandingEventObj.licenceID %></small>
-                    </a>
-                  </td>
-                  <td><%= configFns.getLicenceType(outstandingEventObj.licenceTypeKey).licenceType %></td>
-                  <td>
-                    <a href="/events/<%= outstandingEventObj.licenceID %>/<%= outstandingEventObj.eventDate %>" data-tooltip="View Event" target="_blank">
-                      <%= outstandingEventObj.eventDateString %>
-                    </a>
-                  </td>
-                  <td>
-                    <% if (outstandingEventObj.reportDate === null || outstandingEventObj.reportDate === 0) { %>
-                      <span class="icon" data-tooltip="Report Date Not Recorded">
-                        <i class="fas fa-times has-text-danger" aria-hidden="true"></i>
-                      </span>
-                      <span class="sr-only">Report Date Not Recorded</span>
-                    <% } else { %>
-                      <%= outstandingEventObj.reportDateString %>
-                    <% } %>
-                  </td>
-                  <td class="has-text-centered">
-                    <% if (outstandingEventObj.bank_name_isOutstanding) { %>
-                      <span class="icon" data-tooltip="Banking Information Outstanding">
-                        <i class="fas fa-times has-text-danger" aria-hidden="true"></i>
-                      </span>
-                      <span class="sr-only">Banking Information Outstanding</span>
-                    <% } else { %>
-                      <span class="icon" data-tooltip="Banking Information Recorded">
-                        <i class="fas fa-check has-text-success" aria-hidden="true"></i>
-                      </span>
-                      <span class="sr-only">Banking Information Recorded</span>
-                    <% } %>
-                  </td>
-                  <td class="has-text-centered">
-                    <% if (outstandingEventObj.costs_receipts === null || outstandingEventObj.costs_receipts === 0) { %>
-                      <span class="icon" data-tooltip="Receipts Amount Outstanding">
-                        <i class="fas fa-times has-text-danger" aria-hidden="true"></i>
-                      </span>
-                      <span class="sr-only">Receipts Amount Outstanding</span>
-                    <% } else { %>
-                      <span class="icon" data-tooltip="Receipts Amount Recorded">
-                        <i class="fas fa-check has-text-success" aria-hidden="true"></i>
-                      </span>
-                      <span class="sr-only">Receipts Amount Recorded</span>
-                    <% } %>
-                  </td>
-                  <td class="has-text-centered">
-                    <% if (outstandingEventObj.costs_prizesAwarded === null || outstandingEventObj.costs_prizesAwarded === 0) { %>
-                      <span class="icon" data-tooltip="Prizes Awarded Amount Outstanding">
-                        <i class="fas fa-times has-text-danger" aria-hidden="true"></i>
-                      </span>
-                      <span class="sr-only">Prizes Awarded Amount Outstanding</span>
-                    <% } else { %>
-                      <span class="icon" data-tooltip="Prizes Awarded Amount Recorded">
-                        <i class="fas fa-check has-text-success" aria-hidden="true"></i>
-                      </span>
-                      <span class="sr-only">Prizes Awarded Amount Recorded</span>
-                    <% } %>
-                  </td>
-                  <td class="has-text-centered">
-                    <% if (outstandingEventObj.costs_netProceeds === null || outstandingEventObj.costs_netProceeds === 0) { %>
-                      <span class="icon" data-tooltip="Net Proceeds Amount Outstanding">
-                        <i class="fas fa-times has-text-danger" aria-hidden="true"></i>
-                      </span>
-                      <span class="sr-only">Net Proceeds Amount Outstanding</span>
-                    <% } else { %>
-                      <span class="icon" data-tooltip="Net Proceeds Amount Recorded">
-                        <i class="fas fa-check has-text-success" aria-hidden="true"></i>
-                      </span>
-                      <span class="sr-only">Net Proceeds Amount Recorded</span>
-                    <% } %>
-                  </td>
-                  <td class="has-text-centered">
-                    <% if (outstandingEventObj.costs_amountDonated === null || outstandingEventObj.costs_amountDonated === 0) { %>
-                      <span class="icon" data-tooltip="Amount Donated Outstanding">
-                        <i class="fas fa-times has-text-danger" aria-hidden="true"></i>
-                      </span>
-                      <span class="sr-only">Amount Donated Outstanding</span>
-                    <% } else { %>
-                      <span class="icon" data-tooltip="Amount Donated Recorded">
-                        <i class="fas fa-check has-text-success" aria-hidden="true"></i>
-                      </span>
-                      <span class="sr-only">Amount Donated Recorded</span>
-                    <% } %>
-                  </td>
-                </tr>
-              <%
-            }
-          %>
-
-        <% } %>
-      </tbody>
-    </table>
+        <tbody id="tbody--outstandingEvents"></tbody>
+      </table>
+    </form>
   </div>
 </div>
 
