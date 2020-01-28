@@ -27,6 +27,7 @@ const routerReports = require("./routes/reports");
 const routerAdmin = require("./routes/admin");
 
 const configFns = require("./helpers/configFns");
+const dateTimeFns = require("./helpers/dateTimeFns");
 
 
 /*
@@ -132,6 +133,8 @@ app.use(function(req, res, next) {
 
   res.locals.user = req.session.user;
   res.locals.configFns = configFns;
+  res.locals.dateTimeFns = dateTimeFns;
+
   next();
 
 });

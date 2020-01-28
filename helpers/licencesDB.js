@@ -7,6 +7,12 @@ const dateTimeFns = require("./dateTimeFns");
 const sqlite = require("better-sqlite3");
 const dbPath = "data/licences.db";
 
+let licenceTableStats = {};
+let licenceTableStatsExpiryMillis = -1;
+
+let eventTableStats = {};
+let eventTableStatsExpiryMillis = -1;
+
 
 function getApplicationSetting(db, settingKey) {
 
@@ -1160,6 +1166,32 @@ const licencesDB = {
    * LICENCES
    */
 
+  getLicenceTableStats: function() {
+
+    if (Date.now() < licenceTableStatsExpiryMillis) {
+
+      return licenceTableStats;
+
+    }
+
+    licenceTableStatsExpiryMillis = Date.now() + (3600 * 1000);
+
+    const db = sqlite(dbPath, {
+      readonly: true
+    });
+
+    licenceTableStats = db.prepare("select" +
+        " min(applicationDate / 10000) as applicationYearMin" +
+        " from LotteryLicences" +
+        " where recordDelete_timeMillis is null")
+      .get();
+
+    db.close();
+
+    return licenceTableStats;
+
+  },
+
   // eslint-disable-next-line complexity
   getLicences: function(reqBodyOrParamsObj = {}, includeOrganization, useLimit, reqSession) {
 
@@ -1395,7 +1427,7 @@ const licencesDB = {
 
     const licenceID = info.lastInsertRowid;
 
-    // fields
+    // Fields
 
     const fieldKeys = reqBody.fieldKeys.substring(1).split(",");
 
@@ -1474,7 +1506,7 @@ const licencesDB = {
 
     }
 
-    // events
+    // Events
 
     if (typeof(reqBody.eventDate) === "string") {
 
@@ -1514,7 +1546,7 @@ const licencesDB = {
 
     }
 
-    // calculate licence fee
+    // Calculate licence fee
 
     const licenceObj = getLicence(licenceID, reqSession, db);
 
@@ -1527,6 +1559,9 @@ const licencesDB = {
 
     db.close();
 
+    // Reset the cached stats
+    licenceTableStatsExpiryMillis = -1;
+
     return licenceID;
 
   },
@@ -1538,9 +1573,9 @@ const licencesDB = {
 
     const db = sqlite(dbPath);
 
-    const licenceObj_past = getLicence(reqBody.licenceID, reqSession, db);
+    const pastLicenceObj = getLicence(reqBody.licenceID, reqSession, db);
 
-    if (!licenceObj_past.canUpdate) {
+    if (!pastLicenceObj.canUpdate) {
 
       db.close();
       return 0;
@@ -1622,26 +1657,26 @@ const licencesDB = {
 
     // Record amendments (if necessary)
 
-    if (licenceObj_past.trackUpdatesAsAmendments) {
+    if (pastLicenceObj.trackUpdatesAsAmendments) {
 
       if (configFns.getProperty("amendments.trackDateTimeUpdate") &&
-        (licenceObj_past.startDate !== startDate_now ||
-          licenceObj_past.endDate !== endDate_now ||
-          licenceObj_past.startTime !== startTime_now ||
-          licenceObj_past.endTime !== endTime_now)) {
+        (pastLicenceObj.startDate !== startDate_now ||
+          pastLicenceObj.endDate !== endDate_now ||
+          pastLicenceObj.startTime !== startTime_now ||
+          pastLicenceObj.endTime !== endTime_now)) {
 
         const amendment = (
-          (licenceObj_past.startDate !== startDate_now ?
-            `Start Date: ${licenceObj_past.startDate} -> ${startDate_now}` + "\n " :
+          (pastLicenceObj.startDate !== startDate_now ?
+            `Start Date: ${pastLicenceObj.startDate} -> ${startDate_now}` + "\n " :
             "") +
-          (licenceObj_past.endDate !== endDate_now ?
-            `End Date: ${licenceObj_past.endDate} -> ${endDate_now}` + "\n" :
+          (pastLicenceObj.endDate !== endDate_now ?
+            `End Date: ${pastLicenceObj.endDate} -> ${endDate_now}` + "\n" :
             "") +
-          (licenceObj_past.startTime !== startTime_now ?
-            `Start Time: ${licenceObj_past.startTime} -> ${startTime_now}` + "\n" :
+          (pastLicenceObj.startTime !== startTime_now ?
+            `Start Time: ${pastLicenceObj.startTime} -> ${startTime_now}` + "\n" :
             "") +
-          (licenceObj_past.endTime !== endTime_now ?
-            `End Time: ${licenceObj_past.endTime} -> ${endTime_now}` + "\n" :
+          (pastLicenceObj.endTime !== endTime_now ?
+            `End Time: ${pastLicenceObj.endTime} -> ${endTime_now}` + "\n" :
             "")).trim();
 
         addLicenceAmendment(
@@ -1655,7 +1690,7 @@ const licencesDB = {
 
       }
 
-      if (licenceObj_past.organizationID !== parseInt(reqBody.organizationID) &&
+      if (pastLicenceObj.organizationID !== parseInt(reqBody.organizationID) &&
         configFns.getProperty("amendments.trackOrganizationUpdate")) {
 
         addLicenceAmendment(
@@ -1669,7 +1704,7 @@ const licencesDB = {
 
       }
 
-      if (licenceObj_past.locationID !== parseInt(reqBody.locationID) &&
+      if (pastLicenceObj.locationID !== parseInt(reqBody.locationID) &&
         configFns.getProperty("amendments.trackLocationUpdate")) {
 
         addLicenceAmendment(
@@ -1683,13 +1718,13 @@ const licencesDB = {
 
       }
 
-      if (licenceObj_past.licenceFee !== parseFloat(reqBody.licenceFee) &&
+      if (pastLicenceObj.licenceFee !== parseFloat(reqBody.licenceFee) &&
         configFns.getProperty("amendments.trackLicenceFeeUpdate")) {
 
         addLicenceAmendment(
           reqBody.licenceID,
           "Licence Fee Change",
-          "$" + licenceObj_past.licenceFee.toFixed(2) + " -> $" + parseFloat(reqBody.licenceFee).toFixed(2),
+          "$" + pastLicenceObj.licenceFee.toFixed(2) + " -> $" + parseFloat(reqBody.licenceFee).toFixed(2),
           0,
           reqSession,
           db
@@ -1747,7 +1782,7 @@ const licencesDB = {
           reqBody.ticketType_toDelete
         );
 
-      if (licenceObj_past.trackUpdatesAsAmendments &&
+      if (pastLicenceObj.trackUpdatesAsAmendments &&
         configFns.getProperty("amendments.trackTicketTypeDelete")) {
 
         addLicenceAmendment(
@@ -1777,7 +1812,7 @@ const licencesDB = {
             reqBody.ticketType_toDelete[deleteIndex]
           );
 
-        if (licenceObj_past.trackUpdatesAsAmendments &&
+        if (pastLicenceObj.trackUpdatesAsAmendments &&
           configFns.getProperty("amendments.trackTicketTypeDelete")) {
 
           addLicenceAmendment(
@@ -1836,7 +1871,7 @@ const licencesDB = {
 
       }
 
-      if (licenceObj_past.trackUpdatesAsAmendments &&
+      if (pastLicenceObj.trackUpdatesAsAmendments &&
         configFns.getProperty("amendments.trackTicketTypeNew")) {
 
         addLicenceAmendment(
@@ -1890,7 +1925,7 @@ const licencesDB = {
 
         }
 
-        if (licenceObj_past.trackUpdatesAsAmendments &&
+        if (pastLicenceObj.trackUpdatesAsAmendments &&
           configFns.getProperty("amendments.trackTicketTypeNew")) {
 
           addLicenceAmendment(
@@ -1933,10 +1968,10 @@ const licencesDB = {
           reqBody.ticketType_ticketType
         );
 
-      if (licenceObj_past.trackUpdatesAsAmendments) {
+      if (pastLicenceObj.trackUpdatesAsAmendments) {
 
         const ticketTypeObj_past =
-          licenceObj_past.licenceTicketTypes.find(ele => ele.ticketType === reqBody.ticketType_ticketType);
+          pastLicenceObj.licenceTicketTypes.find(ele => ele.ticketType === reqBody.ticketType_ticketType);
 
         if (ticketTypeObj_past &&
           configFns.getProperty("amendments.trackTicketTypeUpdate") &&
@@ -1987,10 +2022,10 @@ const licencesDB = {
             reqBody.ticketType_ticketType[ticketTypeIndex]
           );
 
-        if (licenceObj_past.trackUpdatesAsAmendments) {
+        if (pastLicenceObj.trackUpdatesAsAmendments) {
 
           const ticketTypeObj_past =
-            licenceObj_past.licenceTicketTypes.find(ele => ele.ticketType === reqBody.ticketType_ticketType[ticketTypeIndex]);
+            pastLicenceObj.licenceTicketTypes.find(ele => ele.ticketType === reqBody.ticketType_ticketType[ticketTypeIndex]);
 
           if (ticketTypeObj_past &&
             configFns.getProperty("amendments.trackTicketTypeUpdate") &&
@@ -2022,7 +2057,9 @@ const licencesDB = {
 
       db.prepare("delete from LotteryEventFields" +
           " where licenceID = ?" +
-          " and eventDate in (select eventDate from LotteryEvents where licenceID = ? and recordDelete_timeMillis is not null)")
+          (" and eventDate in (" +
+            "select eventDate from LotteryEvents where licenceID = ? and recordDelete_timeMillis is not null" +
+            ")"))
         .run(reqBody.licenceID, reqBody.licenceID);
 
       db.prepare("delete from LotteryEvents" +
@@ -2072,6 +2109,10 @@ const licencesDB = {
 
     db.close();
 
+    // Reset the cached stats
+    licenceTableStatsExpiryMillis = -1;
+    eventTableStatsExpiryMillis = -1;
+
     return changeCount;
 
   },
@@ -2111,6 +2152,10 @@ const licencesDB = {
     }
 
     db.close();
+
+    // Reset the cached stats
+    licenceTableStatsExpiryMillis = -1;
+    eventTableStatsExpiryMillis = -1;
 
     return changeCount;
 
@@ -2449,6 +2494,33 @@ const licencesDB = {
    * EVENTS
    */
 
+  getEventTableStats: function() {
+
+    if (Date.now() < eventTableStatsExpiryMillis) {
+
+      return eventTableStats;
+
+    }
+
+    eventTableStatsExpiryMillis = Date.now() + (3600 * 1000);
+
+    const db = sqlite(dbPath, {
+      readonly: true
+    });
+
+    eventTableStats = db.prepare("select" +
+        " min(eventDate / 10000) as eventYearMin" +
+        " from LotteryEvents" +
+        " where recordDelete_timeMillis is null" +
+        " and eventDate > 19700000")
+      .get();
+
+    db.close();
+
+    return eventTableStats;
+
+  },
+
   getEvents: function(year, month, reqSession) {
 
     const db = sqlite(dbPath, {
@@ -2561,6 +2633,63 @@ const licencesDB = {
 
   },
 
+  getEventFinancialSummary: function(reqBody) {
+
+    const db = sqlite(dbPath, {
+      readonly: true
+    });
+
+    const sqlParams = [];
+
+    let sql = "select licenceTypeKey," +
+      " count(licenceID) as licenceCount," +
+      " sum(ifnull(licenceFee, 0)) as licenceFeeSum," +
+      " sum(costs_receiptsSum) as costs_receiptsSum," +
+      " sum(costs_adminSum) as costs_adminSum," +
+      " sum(costs_prizesAwardedSum) as costs_prizesAwardedSum," +
+      " sum(costs_charitableDonationsSum) as costs_charitableDonationsSum," +
+      " sum(costs_netProceedsSum) as costs_netProceedsSum," +
+      " sum(costs_amountDonatedSum) as costs_amountDonatedSum" +
+      " from (" +
+      "select l.licenceID, l.licenceTypeKey, l.licenceFee," +
+      " sum(ifnull(e.costs_receipts, 0)) as costs_receiptsSum," +
+      " sum(ifnull(e.costs_admin,0)) as costs_adminSum," +
+      " sum(ifnull(e.costs_prizesAwarded,0)) as costs_prizesAwardedSum," +
+      " sum(ifnull(e.costs_charitableDonations,0)) as costs_charitableDonationsSum," +
+      " sum(ifnull(e.costs_netProceeds,0)) as costs_netProceedsSum," +
+      " sum(ifnull(e.costs_amountDonated,0)) as costs_amountDonatedSum" +
+      " from LotteryLicences l" +
+      " left join LotteryEvents e on l.licenceID = e.licenceID and e.recordDelete_timeMillis is null" +
+      " where l.recordDelete_timeMillis is null";
+
+    if (reqBody.eventDateStartString && reqBody.eventDateStartString !== "") {
+
+      sql += " and (e.eventDate is null or e.eventDate >= ?)";
+
+      sqlParams.push(dateTimeFns.dateStringToInteger(reqBody.eventDateStartString));
+
+    }
+
+    if (reqBody.eventDateEndString && reqBody.eventDateEndString !== "") {
+
+      sql += " and (e.eventDate is null or e.eventDate <= ?)";
+
+      sqlParams.push(dateTimeFns.dateStringToInteger(reqBody.eventDateEndString));
+
+    }
+
+    sql += " group by l.licenceID, l.licenceTypeKey, l.licenceFee" +
+      " ) t" +
+      " group by licenceTypeKey";
+
+    const rows = db.prepare(sql).all(sqlParams);
+
+    db.close();
+
+    return rows;
+
+  },
+
   getEvent: function(licenceID, eventDate, reqSession) {
 
     const db = sqlite(dbPath, {
@@ -2650,7 +2779,7 @@ const licencesDB = {
 
     }
 
-    // fields
+    // Fields
 
     db.prepare("delete from LotteryEventFields" +
         " where licenceID = ?" +
@@ -2677,6 +2806,9 @@ const licencesDB = {
 
     db.close();
 
+    // Purge cached stats
+    eventTableStatsExpiryMillis = -1;
+
     return changeCount;
 
   },
@@ -2700,9 +2832,12 @@ const licencesDB = {
         eventDate
       );
 
-    let changeCount = info.changes;
+    const changeCount = info.changes;
 
     db.close();
+
+    // Purge cached stats
+    eventTableStatsExpiryMillis = -1;
 
     return changeCount;
 
@@ -2727,7 +2862,7 @@ const licencesDB = {
         eventDate
       );
 
-    let changeCount = info.changes;
+    const changeCount = info.changes;
 
     db.close();
 

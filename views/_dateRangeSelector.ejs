@@ -1,0 +1,72 @@
+<%
+  let uid = configFns.getUID();
+%>
+<div class="columns is-date-range-selector" data-field-key="<%= fieldKey %>" data-uid="<%= uid %>">
+  <div class="column">
+    <div class="field" data-field="rangeType">
+      <label class="label" for="rangeType--<%= uid %>"><%= fieldName %> Range Type</label>
+      <div class="control">
+        <div class="select is-fullwidth">
+          <select id="rangeType--<%= uid %>">
+            <option value="">Start and End Dates</option>
+            <option value="year">Year</option>
+            <option value="quarter">Quarter</option>
+            <option value="month">Month</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="column">
+    <div class="field" data-field="range">
+      <label class="label" for="range--<%= uid %>">Range</label>
+      <div class="control">
+        <div class="select is-fullwidth">
+          <select class="is-readonly" id="range--<%= uid %>" readonly>
+            <option data-range-type="" value="">(Not Set)</option>
+            <optgroup class="is-hidden" data-range-type="year" label="Years">
+              <% for (let year = new Date().getFullYear(); year >= yearMin; year -= 1) { %>
+                <option value="<%= year %>"><%= year %></option>
+              <% } %>
+            </optgroup>
+            <optgroup class="is-hidden" data-range-type="quarter" label="Quarters">
+              <% for (let year = new Date().getFullYear(); year >= yearMin; year -= 1) { %>
+                <option value="<%= year %>-q-4"><%= year %> Q4</option>
+                <option value="<%= year %>-q-3"><%= year %> Q3</option>
+                <option value="<%= year %>-q-2"><%= year %> Q2</option>
+                <option value="<%= year %>-q-1"><%= year %> Q1</option>
+              <% } %>
+            </optgroup>
+            <optgroup class="is-hidden" data-range-type="month" label="Months">
+              <%
+                for (let year = new Date().getFullYear(); year >= yearMin; year -= 1) {
+                  for (let month = 12; month >= 1; month -= 1) {
+              %>
+                <option value="<%= year %>-<%= month %>"><%= dateTimeFns.months[month -1] %> <%= year %></option>
+              <%
+                  }
+                }
+              %>
+            </optgroup>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="column">
+    <div class="field" data-field="start">
+      <label class="label" for="start--<%= uid %>">Start Date</label>
+      <div class="control">
+        <input class="input" id="start--<%= uid %>" name="<%= fieldKey %>StartString" type="date" value="<%= startValue %>" required />
+      </div>
+    </div>
+  </div>
+  <div class="column">
+    <div class="field" data-field="end">
+      <label class="label" for="end--<%= uid %>">End Date</label>
+      <div class="control">
+        <input class="input" id="end--<%= uid %>" name="<%= fieldKey %>EndString" type="date" value="<%= endValue %>" required />
+      </div>
+    </div>
+  </div>
+</div>

@@ -6,6 +6,18 @@
 @import 'bulma-radio-checkbox';
 
 
+html.is-fullwidth {
+
+  .navbar > .container,
+  main.container,
+  .footer > .container {
+    max-width: none;
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+}
+
+
 @media screen {
   .has-min-page-height {
     min-height: 100vh;
@@ -58,7 +70,8 @@
  */
 
 fieldset:enabled .is-hidden-enabled,
-.has-status-view .is-hidden-status-view {
+.has-status-view .is-hidden-status-view,
+.has-status-loading .is-hidden-status-loading {
   display: none;
 }
 
@@ -104,8 +117,12 @@ fieldset:enabled .is-hidden-enabled,
 
 
 .is-readonly {
-  cursor: not-allowed;
-  background-color: $light;
+  cursor: not-allowed !important;
+  background-color: $light !important;
+}
+
+select.is-readonly {
+  pointer-events: none;
 }
 
 

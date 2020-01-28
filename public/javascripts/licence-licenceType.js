@@ -147,12 +147,12 @@
   });
 
 
-  const inputEles = formEle.querySelectorAll("input, select");
+  llm.initializeDateRangeSelector(
+    document.querySelector(".is-date-range-selector[data-field-key='applicationDate']"),
+    getLicenceTypeSummary
+  );
 
-  for (let inputIndex = 0; inputIndex < inputEles.length; inputIndex += 1) {
 
-    inputEles[inputIndex].addEventListener("change", getLicenceTypeSummary);
-
-  }
+  document.getElementById("filter--licenceTypeKey").addEventListener("change", getLicenceTypeSummary);
 
 }());

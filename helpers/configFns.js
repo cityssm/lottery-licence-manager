@@ -74,6 +74,8 @@ const configFallbackValues = {
 
 const licenceTypeCache = {};
 
+let uid = Date.now();
+
 
 function getProperty(propertyName) {
 
@@ -115,7 +117,17 @@ const configFns = {
 
   },
 
-  config: config
+  config: config,
+
+  getUID: function() {
+
+    const toReturn = uid;
+
+    uid += 1;
+
+    return "uid" + toReturn.toString();
+
+  }
 };
 
 

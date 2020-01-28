@@ -17,24 +17,18 @@
       Licence Type Summary
     </h1>
 
+
     <form class="is-block-print" id="form--licenceTypes">
+
+      <%- include('_dateRangeSelector', {
+        fieldKey: "applicationDate",
+        fieldName: "Application Date",
+        yearMin: applicationYearMin,
+        startValue: applicationDateStartString,
+        endValue: applicationDateEndString
+      }); -%>
+
       <div class="columns">
-        <div class="column">
-          <div class="field">
-            <label class="label" for="filter--applicationDateStartString">Application Date Start</label>
-            <div class="control">
-              <input class="input" id="filter--applicationDateStartString" name="applicationDateStartString" type="date" value="<%= applicationDateStartString %>" required />
-            </div>
-          </div>
-        </div>
-        <div class="column">
-          <div class="field">
-            <label class="label" for="filter--applicationDateEndString">Application Date End</label>
-            <div class="control">
-              <input class="input" id="filter--applicationDateEndString" name="applicationDateEndString" type="date" value="<%= applicationDateEndString %>" required />
-            </div>
-          </div>
-        </div>
         <div class="column">
           <div class="field">
             <label class="label" for="filter--licenceTypeKey">Licence Type</label>

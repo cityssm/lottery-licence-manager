@@ -1,0 +1,168 @@
+<%- include('_header'); -%>
+
+<div class="columns">
+  <div class="column is-3 is-hidden-print">
+    <%- include("_event-sideMenu"); -%>
+  </div>
+  <div class="column is-block-print is-full-print">
+    <nav class="breadcrumb">
+      <ul>
+        <li><a href="/dashboard">Home</a></li>
+        <li><a href="/events">Events</a></li>
+        <li class="is-active"><a href="#" aria-current="page">Financial Summary</a></li>
+      </ul>
+    </nav>
+
+    <h1 class="title is-1">
+      Financial Summary Report
+    </h1>
+
+    <form id="form--financialSummary">
+      <%- include('_dateRangeSelector', {
+        fieldKey: "eventDate",
+        fieldName: "Event Date",
+        yearMin: eventYearMin,
+        startValue: eventDateStartString,
+        endValue: eventDateEndString
+      }); -%>
+    </form>
+
+    <table class="table is-fullwidth has-margin-top-20 has-status-loading" id="table--financialSummary">
+      <thead>
+        <tr>
+          <th>Licence Type</th>
+          <th class="has-text-right">Count</th>
+          <th class="has-text-right">Receipts</th>
+          <th class="has-text-right">Administration</th>
+          <th class="has-text-right">Prizes Awarded</th>
+          <th class="has-text-right">Charitable Donations</th>
+          <th class="has-text-right">Net Proceeds</th>
+          <th class="has-text-right">Prize Amount Donated</th>
+          <th class="has-text-right">Licence Fee</th>
+        </tr>
+      </thead>
+      <tbody>
+        <%
+          const licenceTypes = configFns.getProperty("licenceTypes");
+
+          for (let index = 0; index < licenceTypes.length; index += 1) {
+            const licenceTypeObj = licenceTypes[index];
+        %>
+          <tr data-licence-type-key="<%= licenceTypeObj.licenceTypeKey %>">
+            <th><%= licenceTypeObj.licenceType %></th>
+            <td class="has-text-right is-nowrap">
+              <span class="is-hidden-status-view has-text-grey-lighter">
+                <i class="fas fa-circle-notch fa-spin" aria-hidden="true"></i>
+              </span>
+              <span class="is-hidden-status-loading" data-field="licenceCount"></span>
+            </td>
+            <td class="has-text-right is-nowrap">
+              <span class="is-hidden-status-view has-text-grey-lighter">
+                <i class="fas fa-circle-notch fa-spin" aria-hidden="true"></i>
+              </span>
+              <span class="is-hidden-status-loading" data-field="costs_receiptsSum"></span>
+            </td>
+            <td class="has-text-right is-nowrap">
+              <span class="is-hidden-status-view has-text-grey-lighter">
+                <i class="fas fa-circle-notch fa-spin" aria-hidden="true"></i>
+              </span>
+              <span class="is-hidden-status-loading" data-field="costs_adminSum"></span>
+            </td>
+            <td class="has-text-right is-nowrap">
+              <span class="is-hidden-status-view has-text-grey-lighter">
+                <i class="fas fa-circle-notch fa-spin" aria-hidden="true"></i>
+              </span>
+              <span class="is-hidden-status-loading" data-field="costs_prizesAwardedSum"></span>
+            </td>
+            <td class="has-text-right is-nowrap">
+              <span class="is-hidden-status-view has-text-grey-lighter">
+                <i class="fas fa-circle-notch fa-spin" aria-hidden="true"></i>
+              </span>
+              <span class="is-hidden-status-loading" data-field="costs_charitableDonationsSum"></span>
+            </td>
+            <td class="has-text-right is-nowrap">
+              <span class="is-hidden-status-view has-text-grey-lighter">
+                <i class="fas fa-circle-notch fa-spin" aria-hidden="true"></i>
+              </span>
+              <span class="is-hidden-status-loading" data-field="costs_netProceedsSum"></span>
+            </td>
+            <td class="has-text-right is-nowrap">
+              <span class="is-hidden-status-view has-text-grey-lighter">
+                <i class="fas fa-circle-notch fa-spin" aria-hidden="true"></i>
+              </span>
+              <span class="is-hidden-status-loading" data-field="costs_amountDonatedSum"></span>
+            </td>
+            <td class="has-text-right is-nowrap">
+              <span class="is-hidden-status-view has-text-grey-lighter">
+                <i class="fas fa-circle-notch fa-spin" aria-hidden="true"></i>
+              </span>
+              <span class="is-hidden-status-loading" data-field="licenceFeeSum"></span>
+            </td>
+          </tr>
+        <%
+          }
+        %>
+      </tbody>
+      <tfoot id="tfoot--financialSummary">
+        <tr>
+          <th>Total</th>
+          <td class="has-text-right is-nowrap">
+            <span class="is-hidden-status-view has-text-grey-lighter">
+              <i class="fas fa-circle-notch fa-spin" aria-hidden="true"></i>
+            </span>
+            <span class="is-hidden-status-loading" data-field="licenceCount"></span>
+          </td>
+          <td class="has-text-right is-nowrap">
+            <span class="is-hidden-status-view has-text-grey-lighter">
+              <i class="fas fa-circle-notch fa-spin" aria-hidden="true"></i>
+            </span>
+            <span class="is-hidden-status-loading" data-field="costs_receiptsSum"></span>
+          </td>
+          <td class="has-text-right is-nowrap">
+            <span class="is-hidden-status-view has-text-grey-lighter">
+              <i class="fas fa-circle-notch fa-spin" aria-hidden="true"></i>
+            </span>
+            <span class="is-hidden-status-loading" data-field="costs_adminSum"></span>
+          </td>
+          <td class="has-text-right is-nowrap">
+            <span class="is-hidden-status-view has-text-grey-lighter">
+              <i class="fas fa-circle-notch fa-spin" aria-hidden="true"></i>
+            </span>
+            <span class="is-hidden-status-loading" data-field="costs_prizesAwardedSum"></span>
+          </td>
+          <td class="has-text-right is-nowrap">
+            <span class="is-hidden-status-view has-text-grey-lighter">
+              <i class="fas fa-circle-notch fa-spin" aria-hidden="true"></i>
+            </span>
+            <span class="is-hidden-status-loading" data-field="costs_charitableDonationsSum"></span>
+          </td>
+          <td class="has-text-right is-nowrap">
+            <span class="is-hidden-status-view has-text-grey-lighter">
+              <i class="fas fa-circle-notch fa-spin" aria-hidden="true"></i>
+            </span>
+            <span class="is-hidden-status-loading" data-field="costs_netProceedsSum"></span>
+          </td>
+          <td class="has-text-right is-nowrap">
+            <span class="is-hidden-status-view has-text-grey-lighter">
+              <i class="fas fa-circle-notch fa-spin" aria-hidden="true"></i>
+            </span>
+            <span class="is-hidden-status-loading" data-field="costs_amountDonatedSum"></span>
+          </td>
+          <td class="has-text-right is-nowrap">
+            <span class="is-hidden-status-view has-text-grey-lighter">
+              <i class="fas fa-circle-notch fa-spin" aria-hidden="true"></i>
+            </span>
+            <span class="is-hidden-status-loading" data-field="licenceFeeSum"></span>
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+
+  </div>
+</div>
+
+<%- include('_footerA'); -%>
+
+<script src="/javascripts/event-financials.min.js"></script>
+
+<%- include('_footerB'); -%>

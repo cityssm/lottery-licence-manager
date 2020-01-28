@@ -21,7 +21,8 @@ const pdf = require("html-pdf");
 router.get("/", function(req, res) {
 
   res.render("licence-search", {
-    headTitle: "Licences"
+    headTitle: "Licences",
+    pageContainerIsFullWidth: true
   });
 
 });
@@ -41,8 +42,14 @@ router.post("/doSearch", function(req, res) {
 
 router.get("/licenceTypes", function(req, res) {
 
+  // Get licence table stats
+
+  const licenceTableStats = licencesDB.getLicenceTableStats();
+
+  // Set application dates
+
   const applicationDate = new Date();
-  
+
   applicationDate.setMonth(applicationDate.getMonth() - 1);
   applicationDate.setDate(1);
 
@@ -53,8 +60,12 @@ router.get("/licenceTypes", function(req, res) {
 
   const applicationDateEndString = dateTimeFns.dateToString(applicationDate);
 
+  // Render
+
   res.render("licence-licenceType", {
     headTitle: "Licence Type Summary",
+    pageContainerIsFullWidth: true,
+    applicationYearMin: (licenceTableStats.applicationYearMin || new Date().getFullYear()),
     applicationDateStartString: applicationDateStartString,
     applicationDateEndString: applicationDateEndString
   });
@@ -143,8 +154,7 @@ router.get([
       licenceTicketTypes: [],
       events: []
     },
-    organization: organization,
-    dateTimeFns: dateTimeFns
+    organization: organization
   });
 
 });
@@ -455,8 +465,7 @@ router.get("/:licenceID/edit", function(req, res) {
     isCreate: false,
     licence: licence,
     organization: organization,
-    feeCalculation: feeCalculation,
-    dateTimeFns: dateTimeFns
+    feeCalculation: feeCalculation
   });
 
 });

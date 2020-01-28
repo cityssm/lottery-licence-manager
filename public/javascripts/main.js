@@ -43,6 +43,162 @@ llm.arrayToObject = function(array, objectKey) {
 
 
 /*
+ * DATE RANGE
+ */
+
+
+llm.initializeDateRangeSelector = function(containerEle, changeFn) {
+
+  const rangeTypeSelectEle = containerEle.querySelector("[data-field='rangeType']").getElementsByTagName("select")[0];
+
+  const rangeSelectEle = containerEle.querySelector("[data-field='range']").getElementsByTagName("select")[0];
+
+  const dateOptionEle = rangeSelectEle.querySelector("[data-range-type='']");
+  const yearOptgroupEle = rangeSelectEle.querySelector("[data-range-type='year']");
+  const quarterOptgroupEle = rangeSelectEle.querySelector("[data-range-type='quarter']");
+  const monthOptgroupEle = rangeSelectEle.querySelector("[data-range-type='month']");
+
+  const startDateEle = containerEle.querySelector("[data-field='start']").getElementsByTagName("input")[0];
+
+  const endDateEle = containerEle.querySelector("[data-field='end']").getElementsByTagName("input")[0];
+
+  const setStartEndDatesFromRange = function() {
+
+    const rangeValue = rangeSelectEle.value;
+
+    if (rangeValue === "") {
+
+      return;
+
+    }
+
+    const range = rangeValue.split("-");
+
+    if (range.length === 1) {
+
+      // Year
+
+      startDateEle.value = range[0] + "-01-01";
+      endDateEle.value = range[0] + "-12-31";
+
+    } else if (range[1] === "q") {
+
+      // Quarter
+
+      const jsQuarterStartMonth = (range[2] - 1) * 3;
+
+      startDateEle.value = range[0] + "-" + ("0" + (jsQuarterStartMonth + 1)).slice(-2) + "-01";
+
+      const endDate = new Date(range[0], jsQuarterStartMonth + 3, 0);
+
+      endDateEle.value = range[0] + "-" + ("0" + (endDate.getMonth() + 1)).slice(-2) + "-" + endDate.getDate();
+
+    } else {
+
+      // Month
+
+      const jsQuarterStartMonth = (range[1] - 1);
+
+      startDateEle.value = range[0] + "-" + ("0" + (jsQuarterStartMonth + 1)).slice(-2) + "-01";
+
+      const endDate = new Date(range[0], jsQuarterStartMonth + 1, 0);
+
+      endDateEle.value = range[0] + "-" + ("0" + (endDate.getMonth() + 1)).slice(-2) + "-" + endDate.getDate();
+
+    }
+
+    if (changeFn) {
+
+      changeFn();
+
+    }
+
+  };
+
+
+  rangeTypeSelectEle.addEventListener("change", function() {
+
+    const rangeType = rangeTypeSelectEle.value;
+
+    if (rangeType === "") {
+
+      rangeSelectEle.setAttribute("readonly", "readonly");
+      rangeSelectEle.classList.add("is-readonly");
+
+      dateOptionEle.classList.remove("is-hidden");
+      yearOptgroupEle.classList.add("is-hidden");
+      quarterOptgroupEle.classList.add("is-hidden");
+      monthOptgroupEle.classList.add("is-hidden");
+
+      rangeSelectEle.value = "";
+
+      startDateEle.removeAttribute("readonly");
+      startDateEle.classList.remove("is-readonly");
+
+      endDateEle.removeAttribute("readonly");
+      endDateEle.classList.remove("is-readonly");
+
+    } else {
+
+      rangeSelectEle.removeAttribute("readonly");
+      rangeSelectEle.classList.remove("is-readonly");
+
+      if (rangeType === "year") {
+
+        yearOptgroupEle.classList.remove("is-hidden");
+        rangeSelectEle.value = yearOptgroupEle.children[0].value;
+
+      } else {
+
+        yearOptgroupEle.classList.add("is-hidden");
+
+      }
+
+      if (rangeType === "quarter") {
+
+        quarterOptgroupEle.classList.remove("is-hidden");
+        rangeSelectEle.value = quarterOptgroupEle.children[0].value;
+
+      } else {
+
+        quarterOptgroupEle.classList.add("is-hidden");
+
+      }
+
+      if (rangeType === "month") {
+
+        monthOptgroupEle.classList.remove("is-hidden");
+        rangeSelectEle.value = monthOptgroupEle.children[0].value;
+
+      } else {
+
+        monthOptgroupEle.classList.add("is-hidden");
+
+      }
+
+      dateOptionEle.classList.add("is-hidden");
+
+      startDateEle.setAttribute("readonly", "readonly");
+      startDateEle.classList.add("is-readonly");
+
+      endDateEle.setAttribute("readonly", "readonly");
+      endDateEle.classList.add("is-readonly");
+
+      setStartEndDatesFromRange();
+
+    }
+
+  });
+
+  rangeSelectEle.addEventListener("change", setStartEndDatesFromRange);
+
+  startDateEle.addEventListener("change", changeFn);
+  endDateEle.addEventListener("change", changeFn);
+
+};
+
+
+/*
  * FETCH HELPERS
  */
 

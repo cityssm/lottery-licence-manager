@@ -14,8 +14,7 @@ const licencesDB = require("../helpers/licencesDB");
 router.get("/", function(req, res) {
 
   res.render("event-search", {
-    headTitle: "Event Calendar",
-    dateTimeFns: dateTimeFns
+    headTitle: "Event Calendar"
   });
 
 });
@@ -44,6 +43,49 @@ router.post("/doGetOutstandingEvents", function(req, res) {
   const events = licencesDB.getOutstandingEvents(req.body, req.session);
 
   res.json(events);
+
+});
+
+
+/*
+ * Financial Summary
+ */
+
+router.get("/financials", function(req, res) {
+
+  // Get event table stats
+
+  const eventTableStats = licencesDB.getEventTableStats();
+
+  // Set application dates
+
+  const eventDate = new Date();
+
+  eventDate.setMonth(eventDate.getMonth() - 1);
+  eventDate.setDate(1);
+
+  const eventDateStartString = dateTimeFns.dateToString(eventDate);
+
+  eventDate.setMonth(eventDate.getMonth() + 1);
+  eventDate.setDate(0);
+
+  const eventDateEndString = dateTimeFns.dateToString(eventDate);
+
+  res.render("event-financials", {
+    headTitle: "Financial Summary",
+    pageContainerIsFullWidth: true,
+    eventYearMin: (eventTableStats.eventYearMin || new Date().getFullYear() + 1),
+    eventDateStartString: eventDateStartString,
+    eventDateEndString: eventDateEndString
+  });
+
+});
+
+router.post("/doGetFinancialSummary", function(req, res) {
+
+  const summary = licencesDB.getEventFinancialSummary(req.body);
+
+  res.json(summary);
 
 });
 
