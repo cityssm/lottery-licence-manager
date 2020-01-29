@@ -55,7 +55,9 @@ const dbInit = {
 
       console.warn("Creating licences.db");
 
-      // Locations
+      /*
+       * Locations
+       */
 
       licencesDB.prepare("create table if not exists Locations (" +
         "locationID integer primary key autoincrement," +
@@ -77,7 +79,9 @@ const dbInit = {
         " recordDelete_timeMillis integer" +
         ")").run();
 
-      // Organizations
+      /*
+       * Organizations
+       */
 
       licencesDB.prepare("create table if not exists Organizations (" +
         "organizationID integer primary key autoincrement," +
@@ -135,7 +139,35 @@ const dbInit = {
         " foreign key (organizationID) references Organizations (organizationID)" +
         ") without rowid").run();
 
-      // Licences
+      licencesDB.prepare("create table if not exists OrganizationBankRecords (" +
+
+        "organizationID integer not null," +
+        " recordIndex integer not null," +
+
+        " bankingYear integer not null," +
+        " bankingMonth integer not null," +
+        " recordType varchar(10) not null," +
+        " accountNumber varchar(20) not null," +
+
+        " recordDate integer," +
+        " recordStatus char(1)," +
+        " recordNote text," +
+
+        " recordCreate_userName varchar(30) not null," +
+        " recordCreate_timeMillis integer not null," +
+        " recordUpdate_userName varchar(30) not null," +
+        " recordUpdate_timeMillis integer not null," +
+        " recordDelete_userName varchar(30)," +
+        " recordDelete_timeMillis integer," +
+
+        " primary key (organizationID, recordIndex)," +
+        " unique (organizationID, bankingYear, bankingMonth, recordType, accountNumber)," +
+        " foreign key (organizationID) references Organizations (organizationID)" +
+        ") without rowid").run();
+
+      /*
+       * Licences
+       */
 
       licencesDB.prepare("create table if not exists LotteryLicences (" +
         "licenceID integer primary key autoincrement," +
@@ -261,7 +293,9 @@ const dbInit = {
         ") without rowid").run();
 
 
-      // Events
+      /*
+       * Events
+       */
 
       licencesDB.prepare("create table if not exists LotteryEvents (" +
         "licenceID integer not null," +

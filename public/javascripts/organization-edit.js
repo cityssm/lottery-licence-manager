@@ -130,6 +130,10 @@
 
     // Delete
 
+
+    /**
+     * @param  {MouseEvent} clickEvent
+     */
     const deleteRepresentativeFn = function(clickEvent) {
 
       clickEvent.preventDefault();
@@ -181,6 +185,10 @@
 
     let editRepresentativeTrEle;
 
+
+    /**
+     * @param  {MouseEvent} clickEvent
+     */
     const openEditRepresentativeModalFn = function(clickEvent) {
 
       editRepresentativeTrEle = clickEvent.currentTarget.closest("tr");
@@ -282,14 +290,17 @@
 
         "</td>");
 
-      trEle.getElementsByClassName("is-edit-representative-button")[0].addEventListener("click", openEditRepresentativeModalFn);
-      trEle.getElementsByClassName("is-delete-representative-button")[0].addEventListener("click", deleteRepresentativeFn);
+      trEle.getElementsByClassName("is-edit-representative-button")[0]
+        .addEventListener("click", openEditRepresentativeModalFn);
+
+      trEle.getElementsByClassName("is-delete-representative-button")[0]
+        .addEventListener("click", deleteRepresentativeFn);
 
       representativeTbodyEle.insertAdjacentElement("beforeend", trEle);
 
     };
 
-    // edit
+    // Edit
 
     const editBtnEles = representativeTbodyEle.getElementsByClassName("is-edit-representative-button");
 
@@ -339,7 +350,7 @@
     const addRepresentativeModalEle = document.getElementsByClassName("is-add-representative-modal")[0];
     const addRepresentativeFormEle = addRepresentativeModalEle.getElementsByTagName("form")[0];
 
-    // open add
+    // Open add
     document.getElementsByClassName("is-add-representative-button")[0].addEventListener("click", function() {
 
       addRepresentativeFormEle.reset();
@@ -348,7 +359,7 @@
 
     });
 
-    // close add
+    // Close add
     cancelButtonEles = addRepresentativeModalEle.getElementsByClassName("is-cancel-button");
 
     for (let buttonIndex = 0; buttonIndex < cancelButtonEles.length; buttonIndex += 1) {

@@ -1,0 +1,21 @@
+<nav class="panel">
+  <div class="panel-heading">
+    Organizations
+  </div>
+  <% if (user.userProperties.canCreate === "true") { %>
+    <div class="panel-block">
+      <a class="button is-primary is-fullwidth" href="/organizations/new">
+        <span class="icon is-small">
+          <i class="fas fa-plus" aria-hidden="true"></i>
+        </span>
+        <span>Create a New Organization</span>
+      </a>
+    </div>
+  <% } %>
+  <a class="panel-block <%= (headTitle === "Organizations" ? " is-active" : "") %>" href="/organizations">
+    <span class="panel-icon">
+      <i class="fas fa-users" aria-hidden="true"></i>
+    </span>
+    Organization Search
+  </a>
+</nav>

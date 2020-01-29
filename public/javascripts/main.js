@@ -7,6 +7,12 @@ window.llm = {};
  * HELPERS
  */
 
+
+/**
+ * Clears the content of an element.
+ *
+ * @param {HTMLElement} ele Element to clear
+ */
 llm.clearElement = function(ele) {
 
   while (ele.firstChild) {
@@ -17,6 +23,13 @@ llm.clearElement = function(ele) {
 
 };
 
+
+/**
+ * Escapes a potentially unsafe string.
+ *
+ * @param  {string} str A string potentially containing characters unsafe for writing on a webpage.
+ * @returns {string}    A string with unsafe characters escaped.
+ */
 llm.escapeHTML = function(str) {
 
   return String(str)
@@ -27,6 +40,14 @@ llm.escapeHTML = function(str) {
 
 };
 
+
+/**
+ * Converts an array of objects into an object, keyed by a property from each object
+ *
+ * @param  {Object[]} array   The array of objects
+ * @param  {string} objectKey The property to use as the key
+ * @returns {Object}          The new object
+ */
 llm.arrayToObject = function(array, objectKey) {
 
   const obj = {};

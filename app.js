@@ -16,6 +16,9 @@ const session = require("express-session");
 const SQLiteStore = require("connect-sqlite3")(session);
 
 
+const buildNumber = require("./buildNumber.json");
+
+
 const routerDocs = require("./routes/docs");
 const routerLogin = require("./routes/login");
 const routerDashboard = require("./routes/dashboard");
@@ -131,6 +134,7 @@ const sessionChecker = function(req, res, next) {
 // Make the user and config objects available to the templates
 app.use(function(req, res, next) {
 
+  res.locals.buildNumber = buildNumber;
   res.locals.user = req.session.user;
   res.locals.configFns = configFns;
   res.locals.dateTimeFns = dateTimeFns;
@@ -162,7 +166,7 @@ app.get("/logout", function(req, res) {
 
   if (req.session.user && req.cookies[sessionCookieName]) {
 
-    req.session.destroy();
+    req.session.destroy(null);
     req.session = null;
     res.clearCookie(sessionCookieName);
     res.redirect("/");

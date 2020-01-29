@@ -2,9 +2,11 @@
 <footer class="footer has-background-grey-lighter has-text-dark has-margin-top-20 is-hidden-print">
   <div class="container">
     <div class="content has-text-right">
-      <p>
-        <strong class="has-text-grey-dark">
-          <%= configFns.getProperty("application.applicationName") %></strong><br />
+      <p class="has-text-grey-dark">
+        <strong>
+          <%= configFns.getProperty("application.applicationName") %>
+        </strong><br />
+        Build <%= buildNumber %>
       </p>
     </div>
   </div>

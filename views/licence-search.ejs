@@ -2,7 +2,7 @@
 
 <div class="columns">
   <div class="column is-3 is-hidden-print">
-    <%- include("_licence-sideMenu"); -%>
+    <%- include("_sideMenu-licences"); -%>
   </div>
   <div class="column">
     <nav class="breadcrumb">
@@ -12,23 +12,9 @@
       </ul>
     </nav>
 
-    <div class="level">
-      <div class="level-left">
-        <h1 class="title is-1">
-          Find a Licence
-        </h1>
-      </div>
-      <% if (user.userProperties.canCreate === "true") { %>
-        <div class="level-right has-text-right is-hidden-print">
-          <a class="button is-primary" href="/licences/new">
-            <span class="icon is-small">
-              <i class="fas fa-plus" aria-hidden="true"></i>
-            </span>
-            <span>Create a New Licence</span>
-          </a>
-        </div>
-      <% } %>
-    </div>
+    <h1 class="title is-1">
+      Find a Licence
+    </h1>
 
     <form id="form--filters">
       <div class="columns">

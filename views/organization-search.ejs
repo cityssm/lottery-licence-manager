@@ -1,76 +1,68 @@
 <%- include('_header'); -%>
 
-<nav class="breadcrumb">
-  <ul>
-    <li><a href="/dashboard">Home</a></li>
-    <li class="is-active"><a href="#" aria-current="page">Organizations</a></li>
-  </ul>
-</nav>
+<div class="columns">
+  <div class="column is-3 is-hidden-print">
+    <%- include("_sideMenu-organizations"); -%>
+  </div>
+  <div class="column">
+    <nav class="breadcrumb">
+      <ul>
+        <li><a href="/dashboard">Home</a></li>
+        <li class="is-active"><a href="#" aria-current="page">Organizations</a></li>
+      </ul>
+    </nav>
 
-<div class="level">
-  <div class="level-left">
     <h1 class="title is-1">
       Find an Organization
     </h1>
-  </div>
-  <% if (user.userProperties.canCreate === "true") { %>
-    <div class="level-right has-text-right is-hidden-print">
-      <a class="button is-primary" href="/organizations/new">
-        <span class="icon is-small">
-          <i class="fas fa-plus" aria-hidden="true"></i>
-        </span>
-        <span>Create a New Organization</span>
-      </a>
-    </div>
-  <% } %>
-</div>
 
-<form id="form--filters">
-  <div class="columns">
-    <div class="column">
-      <div class="field">
-        <label class="label" for="filter--organizationName">Organization Name</label>
-        <div class="control has-icons-left">
-          <input class="input" id="filter--organizationName" name="organizationName" type="text" />
-          <span class="icon is-small is-left">
-            <i class="fas fa-filter" aria-hidden="true"></i>
-          </span>
-        </div>
-      </div>
-    </div>
-    <div class="column">
-      <div class="field">
-        <label class="label" for="filter--representativeName">Representative Name</label>
-        <div class="control has-icons-left">
-          <input class="input" id="filter--representativeName" name="representativeName" type="text" />
-          <span class="icon is-small is-left">
-            <i class="fas fa-filter" aria-hidden="true"></i>
-          </span>
-        </div>
-      </div>
-    </div>
-    <div class="column">
-      <div class="field">
-        <label class="label" for="filter--isEligibleForLicences">Eligibility</label>
-        <div class="control has-icons-left">
-          <div class="select is-fullwidth">
-            <select id="filter--isEligibleForLicences" name="isEligibleForLicences">
-              <option value="">(All Statuses)</option>
-              <option value="1" selected>Eligible for New Licences</option>
-              <option value="0">Not Eligible</option>
-            </select>
+    <form id="form--filters">
+      <div class="columns">
+        <div class="column">
+          <div class="field">
+            <label class="label" for="filter--organizationName">Organization Name</label>
+            <div class="control has-icons-left">
+              <input class="input" id="filter--organizationName" name="organizationName" type="text" />
+              <span class="icon is-small is-left">
+                <i class="fas fa-filter" aria-hidden="true"></i>
+              </span>
+            </div>
           </div>
-          <span class="icon is-small is-left">
-            <i class="fas fa-filter" aria-hidden="true"></i>
-          </span>
+        </div>
+        <div class="column">
+          <div class="field">
+            <label class="label" for="filter--representativeName">Representative Name</label>
+            <div class="control has-icons-left">
+              <input class="input" id="filter--representativeName" name="representativeName" type="text" />
+              <span class="icon is-small is-left">
+                <i class="fas fa-filter" aria-hidden="true"></i>
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="column">
+          <div class="field">
+            <label class="label" for="filter--isEligibleForLicences">Eligibility</label>
+            <div class="control has-icons-left">
+              <div class="select is-fullwidth">
+                <select id="filter--isEligibleForLicences" name="isEligibleForLicences">
+                  <option value="">(All Statuses)</option>
+                  <option value="1" selected>Eligible for New Licences</option>
+                  <option value="0">Not Eligible</option>
+                </select>
+              </div>
+              <span class="icon is-small is-left">
+                <i class="fas fa-filter" aria-hidden="true"></i>
+              </span>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+    </form>
+
+    <div class="has-margin-top-20" id="container--searchResults"></div>
   </div>
-</form>
-
-<div class="has-margin-top-20" id="container--searchResults"></div>
-
+</div>
 
 <%- include('_footerA'); -%>
 

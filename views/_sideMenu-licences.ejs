@@ -2,6 +2,16 @@
   <div class="panel-heading">
     Licences
   </div>
+  <% if (user.userProperties.canCreate === "true") { %>
+    <div class="panel-block">
+      <a class="button is-primary is-fullwidth" href="/licences/new">
+        <span class="icon is-small">
+          <i class="fas fa-plus" aria-hidden="true"></i>
+        </span>
+        <span>Create a New Licence</span>
+      </a>
+    </div>
+  <% } %>
   <a class="panel-block <%= (headTitle === "Licences" ? " is-active" : "") %>" href="/licences">
     <span class="panel-icon">
       <i class="fas fa-certificate" aria-hidden="true"></i>
