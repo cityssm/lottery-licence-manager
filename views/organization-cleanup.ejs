@@ -1,0 +1,47 @@
+<%- include('_header'); -%>
+
+<div class="columns">
+  <div class="column is-3 is-hidden-print">
+    <%- include("_sideMenu-organizations"); -%>
+  </div>
+  <div class="column">
+    <nav class="breadcrumb">
+      <ul>
+        <li><a href="/dashboard">Home</a></li>
+        <li><a href="/organizations">Organizations</a></li>
+        <li class="is-active"><a href="#" aria-current="page">Organization Cleanup</a></li>
+      </ul>
+    </nav>
+
+    <h1 class="title is-1">
+      Organization Cleanup
+    </h1>
+
+    <div class="field">
+      <label class="label" for="filter--inactiveYears">Minimum Years of Inactivity</label>
+      <div class="control has-icons-left">
+        <div class="select">
+          <select id="filter--inactiveYears">
+            <% for (let i = 5; i >= 2; i--) { %>
+              <option value="<%= i %>">
+                <%= i %> Years
+              </option>
+            <% } %>
+            <option value="1">1 Year</option>
+          </select>
+        </div>
+        <span class="icon is-small is-left">
+          <i class="fas fa-filter" aria-hidden="true"></i>
+        </span>
+      </div>
+    </div>
+
+    <div class="has-margin-top-20" id="container--searchResults"></div>
+  </div>
+</div>
+
+<%- include('_footerA'); -%>
+
+<script src="/javascripts/organization-cleanup.min.js"></script>
+
+<%- include('_footerB'); -%>

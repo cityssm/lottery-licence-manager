@@ -1,0 +1,3 @@
+*.min.js
+helpers/*.d.ts
+helpers/*.js

@@ -2,14 +2,23 @@
 
 (function() {
 
+  /**
+   * @param {Element} formEle
+   * @returns {Element}
+   */
   function getMessageEle(formEle) {
 
     return formEle.closest("tr").getElementsByClassName("formMessage")[0];
 
   }
 
-  // Form
+  /*
+   * Form
+   */
 
+  /**
+   * @param {Event} formEvent
+   */
   function submitFn(formEvent) {
 
     formEvent.preventDefault();
@@ -39,11 +48,16 @@
 
   }
 
+
+  /**
+   * @param {Event} inputEvent
+   */
   function changeFn(inputEvent) {
 
     getMessageEle(inputEvent.currentTarget).innerHTML = "<span class=\"has-text-info\">Unsaved Changes</span>";
 
   }
+
 
   const formEles = document.getElementsByClassName("form--applicationSetting");
 

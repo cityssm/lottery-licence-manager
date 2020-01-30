@@ -69,10 +69,12 @@
 
             }
 
+            const eventURL = "/events/" + eventObj.licenceID + "/" + eventObj.eventDate;
+
             currentDateListEle.insertAdjacentHTML("beforeend", "<li class=\"list-item\">" +
               "<div class=\"columns\">" +
               ("<div class=\"column is-1\">" +
-                "<a href=\"/events/" + eventObj.licenceID + "/" + eventObj.eventDate + "\">" +
+                "<a href=\"" + eventURL + "\">" +
                 llm.escapeHTML(eventObj.externalLicenceNumber) + "<br />" +
                 "<small>Licence #" + eventObj.licenceID + "</small>" +
                 "</a>" +
@@ -92,7 +94,7 @@
                 "</div>") +
               "<div class=\"column is-1-desktop is-hidden-print has-text-right\">" +
               (eventObj.canUpdate ?
-                "<a class=\"button is-small\" href=\"/events/" + eventObj.licenceID + "/" + eventObj.eventDate + "/edit\">" +
+                "<a class=\"button is-small\" href=\"" + eventURL + "/edit\">" +
                 "<span class=\"icon\"><i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i></span>" +
                 "<span>Edit</span>" +
                 "</a>" : "") +

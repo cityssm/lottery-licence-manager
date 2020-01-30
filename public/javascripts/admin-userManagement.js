@@ -50,10 +50,10 @@
    * Update user
    */
 
-  const updateUser_modalEle = document.getElementsByClassName("is-update-user-modal")[0];
-  const updateUser_userNameSpanEles = updateUser_modalEle.getElementsByClassName("container--userName");
+  const updateUserModalEle = document.getElementsByClassName("is-update-user-modal")[0];
+  const updateUserUserNameSpanEles = updateUserModalEle.getElementsByClassName("container--userName");
 
-  llm.initializeTabs(updateUser_modalEle.getElementsByClassName("tabs")[0].getElementsByTagName("ul")[0]);
+  llm.initializeTabs(updateUserModalEle.getElementsByClassName("tabs")[0].getElementsByTagName("ul")[0]);
 
   function submitFn_updateUserSetting(formEvent) {
 
@@ -111,9 +111,9 @@
 
     // Spans
 
-    for (let index = 0; index < updateUser_userNameSpanEles.length; index += 1) {
+    for (let index = 0; index < updateUserUserNameSpanEles.length; index += 1) {
 
-      updateUser_userNameSpanEles[index].innerText = userName;
+      updateUserUserNameSpanEles[index].innerText = userName;
 
     }
 
@@ -137,7 +137,7 @@
 
         let propertyIndex = 0;
 
-        for (let propertyName in userPropertiesJSON) {
+        for (const propertyName in userPropertiesJSON) {
 
           if (userPropertiesJSON.hasOwnProperty(propertyName)) {
 
@@ -194,7 +194,7 @@
       .closest(".message")
       .setAttribute("hidden", "hidden");
 
-    llm.showModal(updateUser_modalEle);
+    llm.showModal(updateUserModalEle);
 
   }
 
@@ -206,7 +206,7 @@
 
   }
 
-  cancelButtonEles = updateUser_modalEle.getElementsByClassName("is-cancel-button");
+  cancelButtonEles = updateUserModalEle.getElementsByClassName("is-cancel-button");
 
   for (let buttonIndex = 0; buttonIndex < cancelButtonEles.length; buttonIndex += 1) {
 

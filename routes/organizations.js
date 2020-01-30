@@ -15,7 +15,7 @@ const licencesDB = require("../helpers/licencesDB");
  */
 
 
-router.get("/", function(req, res) {
+router.get("/", function(_req, res) {
 
   res.render("organization-search", {
     headTitle: "Organizations"
@@ -36,6 +36,33 @@ router.all("/doGetAll", function(req, res) {
   res.json(licencesDB.getOrganizations({}, false, req.session));
 
 });
+
+
+/*
+ * CLEANUP
+ */
+
+
+router.get("/cleanup", function(_req, res) {
+
+  res.render("organization-cleanup", {
+    headTitle: "Organization Cleanup"
+  });
+
+});
+
+router.post("/doGetInactive", function(req, res) {
+
+  const inactiveYears = parseInt(req.body.inactiveYears);
+
+  res.json(licencesDB.getInactiveOrganizations(inactiveYears));
+
+});
+
+
+/*
+ * REMARKS
+ */
 
 
 router.post("/doGetRemarks", function(req, res) {
@@ -208,7 +235,11 @@ router.post("/doDelete", function(req, res) {
 
   if (req.session.user.userProperties.canCreate !== "true") {
 
-    res.json("not allowed");
+    res.json({
+      success: false,
+      message: "Access denied."
+    });
+
     return;
 
   }

@@ -229,6 +229,11 @@ llm.responseToJSON = function(response) {
 
 };
 
+/**
+ * @param {string} fetchUrl
+ * @param {Element | Object} formEleOrObj
+ * @param {function} responseFn
+ */
 llm.postJSON = function(fetchUrl, formEleOrObj, responseFn) {
 
   const fetchOptions = {
@@ -333,6 +338,7 @@ llm.hideModal = function(internalEle_or_internalEvent) {
 
 llm.openHtmlModal = function(htmlFileName, callbackFns) {
 
+  // eslint-disable-next-line capitalized-comments
   /*
    * callbackFns
    *
