@@ -1,12 +1,9 @@
-declare type LicenceType = {
-    licenceTypeKey: string;
-    licenceType: string;
-};
+import { Config_LicenceType } from "../helpers/llmTypes";
 declare function getProperty(propertyName: string): any;
-declare const configFns: {
+export declare const configFns: {
     getProperty: typeof getProperty;
-    getLicenceType: (licenceTypeKey: string) => LicenceType;
+    getLicenceType: (licenceTypeKey: string) => Config_LicenceType;
     config: {};
     getUID: () => string;
 };
-export = configFns;
+export {};

@@ -26,11 +26,5 @@
     "insertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis": false,
     "placeOpenBraceOnNewLineForFunctions": false,
     "placeOpenBraceOnNewLineForControlBlocks": false
-  },
-  "types": [
-    "better-sqlite3",
-    "express",
-    "express-serve-static-core",
-    "express-session"
-  ]
+  }
 }

@@ -1,12 +1,12 @@
 "use strict";
 
-import configFns = require("./configFns");
-
-import dateTimeFns = require("./dateTimeFns");
-
 import sqlite = require("better-sqlite3");
-
 const dbPath = "data/licences.db";
+
+import * as llm from "./llmTypes";
+import { configFns } from "./configFns";
+import { dateTimeFns } from "./dateTimeFns";
+
 
 let licenceTableStats = {};
 let licenceTableStatsExpiryMillis = -1;
@@ -20,18 +20,12 @@ let eventTableStatsExpiryMillis = -1;
  */
 
 
-type RawRowsColumnsReturn = {
-  rows: object[],
-  columns: sqlite.ColumnDefinition[]
-};
-
-
 /*
  * REUSED FUNCTIONS
  */
 
 
-function getApplicationSetting(db: sqlite.Database, settingKey: string) {
+function getApplicationSetting(db: sqlite.Database, settingKey: string): string {
 
   const row = db.prepare("select settingValue" +
     " from ApplicationSettings" +
@@ -49,7 +43,7 @@ function getApplicationSetting(db: sqlite.Database, settingKey: string) {
 }
 
 
-function canUpdateObject(objType: string, obj, reqSession: Express.SessionData) {
+function canUpdateObject(obj: llm.Record, reqSession: Express.SessionData) {
 
   // Check user permissions
 
@@ -92,11 +86,11 @@ function canUpdateObject(objType: string, obj, reqSession: Express.SessionData) 
 
     const currentDateInteger = dateTimeFns.dateToInteger(new Date());
 
-    switch (objType) {
+    switch (obj.recordType) {
 
       case "licence":
 
-        if (obj.endDate < currentDateInteger) {
+        if ((<llm.LotteryLicence>obj).endDate < currentDateInteger) {
 
           canUpdate = false;
 
@@ -105,7 +99,7 @@ function canUpdateObject(objType: string, obj, reqSession: Express.SessionData) 
 
       case "event":
 
-        if (obj.bank_name !== "" && obj.costs_receipts) {
+        if ((<llm.LotteryEvent>obj).bank_name !== "" && (<llm.LotteryEvent>obj).costs_receipts) {
 
           canUpdate = false;
 
@@ -124,15 +118,18 @@ function canUpdateObject(objType: string, obj, reqSession: Express.SessionData) 
 
 function getLicence(licenceID: number, reqSession: Express.SessionData, db: sqlite.Database) {
 
-  const licenceObj = db.prepare("select l.*," +
-    " lo.locationName, lo.locationAddress1" +
-    " from LotteryLicences l" +
-    " left join Locations lo on l.locationID = lo.locationID" +
-    " where l.recordDelete_timeMillis is null" +
-    " and l.licenceID = ?")
-    .get(licenceID);
+  const licenceObj: llm.LotteryLicence =
+    db.prepare("select l.*," +
+      " lo.locationName, lo.locationAddress1" +
+      " from LotteryLicences l" +
+      " left join Locations lo on l.locationID = lo.locationID" +
+      " where l.recordDelete_timeMillis is null" +
+      " and l.licenceID = ?")
+      .get(licenceID);
 
   if (licenceObj) {
+
+    licenceObj.recordType = "licence";
 
     licenceObj.applicationDateString = dateTimeFns.dateIntegerToString(licenceObj.applicationDate || 0);
 
@@ -148,7 +145,7 @@ function getLicence(licenceID: number, reqSession: Express.SessionData, db: sqli
     licenceObj.locationDisplayName =
       (licenceObj.locationName === "" ? licenceObj.locationAddress1 : licenceObj.locationName);
 
-    licenceObj.canUpdate = canUpdateObject("licence", licenceObj, reqSession);
+    licenceObj.canUpdate = canUpdateObject(licenceObj, reqSession);
 
     // Ticket types
     {
@@ -303,7 +300,7 @@ function addLicenceAmendment(licenceID: number, amendmentType: string, amendment
 }
 
 
-function getRawRowsColumns(sql: string, params: any[]): RawRowsColumnsReturn {
+function getRawRowsColumns(sql: string, params: any[]): llm.RawRowsColumnsReturn {
 
   const db = sqlite(dbPath, {
     readonly: true
@@ -333,7 +330,7 @@ function getRawRowsColumns(sql: string, params: any[]): RawRowsColumnsReturn {
  */
 
 
-const licencesDB = {
+export const licencesDB = {
 
   getRawRowsColumns: getRawRowsColumns,
 
@@ -342,7 +339,7 @@ const licencesDB = {
    * LOCATIONS
    */
 
-  getLocations: function(reqBodyOrParamsObj = {}, reqSession: Express.SessionData) {
+  getLocations: function(reqBodyOrParamsObj: any, reqSession: Express.SessionData) {
 
     const db = sqlite(dbPath, {
       readonly: true
@@ -405,13 +402,17 @@ const licencesDB = {
       " lo.locationIsDistributor, lo.locationIsManufacturer" +
       " order by case when lo.locationName = '' then lo.locationAddress1 else lo.locationName end";
 
-    const rows = db.prepare(sql).all(sqlParams);
+    const rows: llm.Location[] =
+      db.prepare(sql).all(sqlParams);
 
     db.close();
 
     for (let rowIndex = 0; rowIndex < rows.length; rowIndex += 1) {
 
       const locationObj = rows[rowIndex];
+
+      locationObj.recordType = "location";
+
       locationObj.locationDisplayName =
         locationObj.locationName === "" ? locationObj.locationAddress1 : locationObj.locationName;
 
@@ -419,7 +420,7 @@ const licencesDB = {
       locationObj.distributor_endDateMaxString = dateTimeFns.dateIntegerToString(locationObj.distributor_endDateMax);
       locationObj.manufacturer_endDateMaxString = dateTimeFns.dateIntegerToString(locationObj.manufacturer_endDateMax);
 
-      locationObj.canUpdate = canUpdateObject("location", locationObj, reqSession);
+      locationObj.canUpdate = canUpdateObject(locationObj, reqSession);
 
     }
 
@@ -433,14 +434,14 @@ const licencesDB = {
       readonly: true
     });
 
-    const locationObj = db.prepare("select * from Locations" +
-      " where locationID = ?")
-      .get(locationID);
+    const locationObj: llm.Location =
+      db.prepare("select * from Locations" +
+        " where locationID = ?")
+        .get(locationID);
 
     if (locationObj) {
-
-      locationObj.canUpdate = canUpdateObject("location", locationObj, reqSession);
-
+      locationObj.recordType = "location";
+      locationObj.canUpdate = canUpdateObject(locationObj, reqSession);
     }
 
     db.close();
@@ -452,7 +453,7 @@ const licencesDB = {
 
   },
 
-  createLocation: function(reqBody, reqSession: Express.SessionData) {
+  createLocation: function(reqBody: any, reqSession: Express.SessionData) {
 
     const db = sqlite(dbPath);
 
@@ -484,7 +485,7 @@ const licencesDB = {
 
   },
 
-  updateLocation: function(reqBody, reqSession: Express.SessionData) {
+  updateLocation: function(reqBody: any, reqSession: Express.SessionData) {
 
     const db = sqlite(dbPath);
 
@@ -656,7 +657,7 @@ const licencesDB = {
    * ORGANIZATIONS
    */
 
-  getOrganizations: function(reqBody, useLimit, reqSession: Express.SessionData) {
+  getOrganizations: function(reqBody: any, useLimit: boolean, reqSession: Express.SessionData) {
 
     const db = sqlite(dbPath, {
       readonly: true
@@ -722,9 +723,11 @@ const licencesDB = {
 
       const organization = rows[rowIndex];
 
+      organization.recordType = "organization";
+
       organization.licences_endDateMaxString = dateTimeFns.dateIntegerToString(organization.licences_endDateMax || 0);
 
-      organization.canUpdate = canUpdateObject("organization", rows[rowIndex], reqSession);
+      organization.canUpdate = canUpdateObject(rows[rowIndex], reqSession);
 
       delete organization.recordCreate_userName;
       delete organization.recordCreate_timeMillis;
@@ -737,24 +740,28 @@ const licencesDB = {
 
   },
 
-  getOrganization: function(organizationID: number, reqSession: Express.SessionData) {
+  getOrganization: function(organizationID: number, reqSession: Express.SessionData): llm.Organization {
 
     const db = sqlite(dbPath, {
       readonly: true
     });
 
-    const organizationObj = db.prepare("select * from Organizations" +
-      " where organizationID = ?")
-      .get(organizationID);
+    const organizationObj: llm.Organization =
+      db.prepare("select * from Organizations" +
+        " where organizationID = ?")
+        .get(organizationID);
 
     if (organizationObj) {
 
-      organizationObj.canUpdate = canUpdateObject("organization", organizationObj, reqSession);
+      organizationObj.recordType = "organization";
 
-      const representativesList = db.prepare("select * from OrganizationRepresentatives" +
-        " where organizationID = ?" +
-        " order by isDefault desc, representativeName")
-        .all(organizationID);
+      organizationObj.canUpdate = canUpdateObject(organizationObj, reqSession);
+
+      const representativesList: llm.OrganizationRepresentative[] =
+        db.prepare("select * from OrganizationRepresentatives" +
+          " where organizationID = ?" +
+          " order by isDefault desc, representativeName")
+          .all(organizationID);
 
       organizationObj.organizationRepresentatives = representativesList;
 
@@ -766,7 +773,7 @@ const licencesDB = {
 
   },
 
-  createOrganization: function(reqBody, reqSession: Express.SessionData) {
+  createOrganization: function(reqBody: any, reqSession: Express.SessionData) {
 
     const db = sqlite(dbPath);
 
@@ -799,7 +806,7 @@ const licencesDB = {
 
   },
 
-  updateOrganization: function(reqBody, reqSession: Express.SessionData) {
+  updateOrganization: function(reqBody: any, reqSession: Express.SessionData) {
 
     const db = sqlite(dbPath);
 
@@ -927,7 +934,7 @@ const licencesDB = {
    * ORGANIZATION REPRESENTATIVES
    */
 
-  addOrganizationRepresentative: function(organizationID: number, reqBody) {
+  addOrganizationRepresentative: function(organizationID: number, reqBody: any) {
 
     const db = sqlite(dbPath);
 
@@ -976,7 +983,7 @@ const licencesDB = {
 
   },
 
-  updateOrganizationRepresentative: function(organizationID: number, reqBody) {
+  updateOrganizationRepresentative: function(organizationID: number, reqBody: any) {
 
     const db = sqlite(dbPath);
 
@@ -1066,15 +1073,16 @@ const licencesDB = {
       readonly: true
     });
 
-    const rows = db.prepare("select remarkIndex," +
-      " remarkDate, remarkTime," +
-      " remark, isImportant," +
-      " recordCreate_userName, recordCreate_timeMillis, recordUpdate_userName, recordUpdate_timeMillis" +
-      " from OrganizationRemarks" +
-      " where recordDelete_timeMillis is null" +
-      " and organizationID = ?" +
-      " order by remarkDate desc, remarkTime desc")
-      .all(organizationID);
+    const rows: llm.OrganizationRemark[] =
+      db.prepare("select remarkIndex," +
+        " remarkDate, remarkTime," +
+        " remark, isImportant," +
+        " recordCreate_userName, recordCreate_timeMillis, recordUpdate_userName, recordUpdate_timeMillis" +
+        " from OrganizationRemarks" +
+        " where recordDelete_timeMillis is null" +
+        " and organizationID = ?" +
+        " order by remarkDate desc, remarkTime desc")
+        .all(organizationID);
 
     db.close();
 
@@ -1082,11 +1090,13 @@ const licencesDB = {
 
       const remark = rows[rowIndex];
 
+      remark.recordType = "remark";
+
       remark.remarkDateString = dateTimeFns.dateIntegerToString(remark.remarkDate || 0);
 
       remark.remarkTimeString = dateTimeFns.timeIntegerToString(remark.remarkTime || 0);
 
-      remark.canUpdate = canUpdateObject("remark", remark, reqSession);
+      remark.canUpdate = canUpdateObject(remark, reqSession);
 
     }
 
@@ -1100,29 +1110,31 @@ const licencesDB = {
       readonly: true
     });
 
-    const remark = db.prepare("select" +
-      " remarkDate, remarkTime," +
-      " remark, isImportant," +
-      " recordCreate_userName, recordCreate_timeMillis, recordUpdate_userName, recordUpdate_timeMillis" +
-      " from OrganizationRemarks" +
-      " where recordDelete_timeMillis is null" +
-      " and organizationID = ?" +
-      " and remarkIndex = ?")
-      .get(organizationID, remarkIndex);
+    const remark: llm.OrganizationRemark =
+      db.prepare("select" +
+        " remarkDate, remarkTime," +
+        " remark, isImportant," +
+        " recordCreate_userName, recordCreate_timeMillis, recordUpdate_userName, recordUpdate_timeMillis" +
+        " from OrganizationRemarks" +
+        " where recordDelete_timeMillis is null" +
+        " and organizationID = ?" +
+        " and remarkIndex = ?")
+        .get(organizationID, remarkIndex);
 
     db.close();
 
+    remark.recordType = "remark";
 
     remark.remarkDateString = dateTimeFns.dateIntegerToString(remark.remarkDate || 0);
     remark.remarkTimeString = dateTimeFns.timeIntegerToString(remark.remarkTime || 0);
 
-    remark.canUpdate = canUpdateObject("remark", remark, reqSession);
+    remark.canUpdate = canUpdateObject(remark, reqSession);
 
     return remark;
 
   },
 
-  addOrganizationRemark: function(reqBody, reqSession: Express.SessionData) {
+  addOrganizationRemark: function(reqBody: any, reqSession: Express.SessionData) {
 
     const db = sqlite(dbPath);
 
@@ -1160,7 +1172,7 @@ const licencesDB = {
 
   },
 
-  updateOrganizationRemark: function(reqBody, reqSession: Express.SessionData) {
+  updateOrganizationRemark: function(reqBody: any, reqSession: Express.SessionData) {
 
     const db = sqlite(dbPath);
 
@@ -1253,7 +1265,7 @@ const licencesDB = {
 
   },
 
-  getLicences: function(reqBodyOrParamsObj, includeOrganization: boolean, useLimit: boolean, reqSession: Express.SessionData) {
+  getLicences: function(reqBodyOrParamsObj: any, includeOrganization: boolean, useLimit: boolean, reqSession: Express.SessionData) {
 
     if (reqBodyOrParamsObj.organizationName && reqBodyOrParamsObj.organizationName !== "") {
 
@@ -1351,11 +1363,14 @@ const licencesDB = {
 
     }
 
-    const rows = db.prepare(sql).all(sqlParams);
+    const rows: llm.LotteryLicence[] =
+      db.prepare(sql).all(sqlParams);
 
     for (let index = 0; index < rows.length; index += 1) {
 
       const licenceObj = rows[index];
+
+      licenceObj.recordType = "licence";
 
       licenceObj.applicationDateString = dateTimeFns.dateIntegerToString(licenceObj.applicationDate || 0);
 
@@ -1370,7 +1385,7 @@ const licencesDB = {
       licenceObj.locationDisplayName =
         (licenceObj.locationName === "" ? licenceObj.locationAddress1 : licenceObj.locationName);
 
-      licenceObj.canUpdate = canUpdateObject("licence", licenceObj, reqSession);
+      licenceObj.canUpdate = canUpdateObject(licenceObj, reqSession);
 
     }
 
@@ -1380,7 +1395,7 @@ const licencesDB = {
 
   },
 
-  getLicence: function(licenceID: number, reqSession: Express.SessionData) {
+  getLicence: function(licenceID: number, reqSession: Express.SessionData): llm.LotteryLicence {
 
     const db = sqlite(dbPath, {
       readonly: true
@@ -1438,7 +1453,7 @@ const licencesDB = {
 
   },
 
-  createLicence: function(reqBody, reqSession: Express.SessionData) {
+  createLicence: function(reqBody: any, reqSession: Express.SessionData) {
 
     const db = sqlite(dbPath);
 
@@ -1485,7 +1500,7 @@ const licencesDB = {
         nowMillis
       );
 
-    const licenceID = info.lastInsertRowid;
+    const licenceID: number = Number(info.lastInsertRowid);
 
     // Fields
 
@@ -1626,7 +1641,7 @@ const licencesDB = {
 
   },
 
-  updateLicence: function(reqBody, reqSession: Express.SessionData) {
+  updateLicence: function(reqBody: any, reqSession: Express.SessionData) {
 
     // Check if can update
 
@@ -2275,7 +2290,7 @@ const licencesDB = {
 
   },
 
-  issueLicence: function(reqBody, reqSession: Express.SessionData) {
+  issueLicence: function(reqBody: any, reqSession: Express.SessionData) {
 
     const db = sqlite(dbPath);
 
@@ -2350,7 +2365,7 @@ const licencesDB = {
 
   },
 
-  getLicenceTypeSummary: function(reqBody) {
+  getLicenceTypeSummary: function(reqBody: any) {
 
     const db = sqlite(dbPath, {
       readonly: true
@@ -2427,7 +2442,7 @@ const licencesDB = {
    * TRANSACTIONS
    */
 
-  addTransaction: function(reqBody, reqSession: Express.SessionData) {
+  addTransaction: function(reqBody: any, reqSession: Express.SessionData) {
 
     const db = sqlite(dbPath);
 
@@ -2586,29 +2601,32 @@ const licencesDB = {
       readonly: true
     });
 
-    const rows = db.prepare("select e.eventDate, e.bank_name, e.costs_receipts," +
-      " l.licenceID, l.externalLicenceNumber, l.licenceTypeKey, l.licenceDetails," +
-      " lo.locationName, lo.locationAddress1," +
-      " l.startTime, l.endTime," +
-      " o.organizationName," +
-      " e.recordCreate_userName, e.recordCreate_timeMillis, e.recordUpdate_userName, e.recordUpdate_timeMillis" +
-      " from LotteryEvents e" +
-      " left join LotteryLicences l on e.licenceID = l.licenceID" +
-      " left join Locations lo on l.locationID = lo.locationID" +
-      " left join Organizations o on l.organizationID = o.organizationID" +
-      " where e.recordDelete_timeMillis is null" +
-      " and l.recordDelete_timeMillis is null" +
-      " and o.recordDelete_timeMillis is null" +
-      " and e.eventDate > ((? * 10000) + (? * 100))" +
-      " and e.eventDate < ((? * 10000) + (? * 100) + 99)" +
-      " order by e.eventDate, l.startTime")
-      .all(year, month, year, month);
+    const rows: llm.LotteryEvent[] =
+      db.prepare("select e.eventDate, e.bank_name, e.costs_receipts," +
+        " l.licenceID, l.externalLicenceNumber, l.licenceTypeKey, l.licenceDetails," +
+        " lo.locationName, lo.locationAddress1," +
+        " l.startTime, l.endTime," +
+        " o.organizationName," +
+        " e.recordCreate_userName, e.recordCreate_timeMillis, e.recordUpdate_userName, e.recordUpdate_timeMillis" +
+        " from LotteryEvents e" +
+        " left join LotteryLicences l on e.licenceID = l.licenceID" +
+        " left join Locations lo on l.locationID = lo.locationID" +
+        " left join Organizations o on l.organizationID = o.organizationID" +
+        " where e.recordDelete_timeMillis is null" +
+        " and l.recordDelete_timeMillis is null" +
+        " and o.recordDelete_timeMillis is null" +
+        " and e.eventDate > ((? * 10000) + (? * 100))" +
+        " and e.eventDate < ((? * 10000) + (? * 100) + 99)" +
+        " order by e.eventDate, l.startTime")
+        .all(year, month, year, month);
 
     db.close();
 
     for (let eventIndex = 0; eventIndex < rows.length; eventIndex += 1) {
 
       const eventObj = rows[eventIndex];
+
+      eventObj.recordType = "event";
 
       eventObj.eventDateString = dateTimeFns.dateIntegerToString(eventObj.eventDate);
 
@@ -2617,7 +2635,7 @@ const licencesDB = {
 
       eventObj.locationDisplayName = (eventObj.locationName === "" ? eventObj.locationAddress1 : eventObj.locationName);
 
-      eventObj.canUpdate = canUpdateObject("event", eventObj, reqSession);
+      eventObj.canUpdate = canUpdateObject(eventObj, reqSession);
 
       delete eventObj.locationName;
       delete eventObj.locationAddress1;
@@ -2630,7 +2648,7 @@ const licencesDB = {
 
   },
 
-  getOutstandingEvents: function(reqBody, reqSession: Express.SessionData) {
+  getOutstandingEvents: function(reqBody: any, reqSession: Express.SessionData) {
 
     const db = sqlite(dbPath, {
       readonly: true
@@ -2668,14 +2686,16 @@ const licencesDB = {
 
     sql += " order by o.organizationName, o.organizationID, e.eventDate, l.licenceID";
 
-    const rows = db.prepare(sql)
-      .all(sqlParams);
+    const rows: llm.LotteryEvent[] =
+      db.prepare(sql).all(sqlParams);
 
     db.close();
 
     for (let eventIndex = 0; eventIndex < rows.length; eventIndex += 1) {
 
       const eventObj = rows[eventIndex];
+
+      eventObj.recordType = "event";
 
       eventObj.eventDateString = dateTimeFns.dateIntegerToString(eventObj.eventDate);
       eventObj.reportDateString = dateTimeFns.dateIntegerToString(eventObj.reportDate);
@@ -2684,7 +2704,7 @@ const licencesDB = {
 
       eventObj.bank_name_isOutstanding = (eventObj.bank_name === null || eventObj.bank_name === "");
 
-      eventObj.canUpdate = canUpdateObject("event", eventObj, reqSession);
+      eventObj.canUpdate = canUpdateObject(eventObj, reqSession);
 
     }
 
@@ -2692,7 +2712,7 @@ const licencesDB = {
 
   },
 
-  getEventFinancialSummary: function(reqBody) {
+  getEventFinancialSummary: function(reqBody: any) {
 
     const db = sqlite(dbPath, {
       readonly: true
@@ -2755,7 +2775,7 @@ const licencesDB = {
       readonly: true
     });
 
-    const eventObj = db.prepare("select *" +
+    const eventObj: llm.LotteryEvent = db.prepare("select *" +
       " from LotteryEvents" +
       " where recordDelete_timeMillis is null" +
       " and licenceID = ?" +
@@ -2764,6 +2784,8 @@ const licencesDB = {
 
     if (eventObj) {
 
+      eventObj.recordType = "event";
+
       eventObj.eventDateString = dateTimeFns.dateIntegerToString(eventObj.eventDate);
 
       eventObj.reportDateString = dateTimeFns.dateIntegerToString(eventObj.reportDate);
@@ -2771,7 +2793,7 @@ const licencesDB = {
       eventObj.startTimeString = dateTimeFns.timeIntegerToString(eventObj.startTime || 0);
       eventObj.endTimeString = dateTimeFns.timeIntegerToString(eventObj.endTime || 0);
 
-      eventObj.canUpdate = canUpdateObject("event", eventObj, reqSession);
+      eventObj.canUpdate = canUpdateObject(eventObj, reqSession);
 
       const rows = db.prepare("select fieldKey, fieldValue" +
         " from LotteryEventFields" +
@@ -2788,7 +2810,7 @@ const licencesDB = {
 
   },
 
-  updateEvent: function(reqBody, reqSession: Express.SessionData) {
+  updateEvent: function(reqBody: any, reqSession: Express.SessionData) {
 
     const db = sqlite(dbPath);
 
@@ -2987,6 +3009,3 @@ const licencesDB = {
 
   }
 };
-
-
-export = licencesDB;

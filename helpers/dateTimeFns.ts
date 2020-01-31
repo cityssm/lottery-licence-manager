@@ -1,7 +1,7 @@
 "use strict";
 
 
-const dateTimeFns = {
+export const dateTimeFns = {
 
   /*
    * Date Functions
@@ -76,6 +76,3 @@ const dateTimeFns = {
     return (dateObj.getHours() * 100) + dateObj.getMinutes();
   }
 };
-
-
-export = dateTimeFns;

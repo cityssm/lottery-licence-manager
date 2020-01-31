@@ -1,3 +1,6 @@
 *.min.js
 helpers/*.d.ts
 helpers/*.js
+routes/*.d.ts
+routes/*.js
+public/stylesheets/*.min.css

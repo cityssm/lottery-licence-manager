@@ -1,19 +1,13 @@
 "use strict";
 
-import sqlite = require("better-sqlite3");
+import { RawRowsColumnsReturn } from "./licencesDB";
 
 const convertArrayToCSV = require("convert-array-to-csv").convertArrayToCSV;
 
 
-type RawRowsColumnsReturn = {
-  rows: object[],
-  columns: sqlite.ColumnDefinition[]
-};
+export const stringFns = {
 
-
-const stringFns = {
-
-  escapeHTML: function(str : string) {
+  escapeHTML: function(str : string) : string {
 
     return String(str)
       .replace(/&/g, "&amp;")
@@ -23,7 +17,7 @@ const stringFns = {
 
   },
 
-  rawToCSV: function(rowsColumnsObj : RawRowsColumnsReturn) {
+  rawToCSV: function(rowsColumnsObj : RawRowsColumnsReturn) : string {
 
     const columnNames = new Array(rowsColumnsObj.columns.length);
 
@@ -42,6 +36,3 @@ const stringFns = {
 
   }
 };
-
-
-exports = stringFns;

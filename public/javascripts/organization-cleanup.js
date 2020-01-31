@@ -73,7 +73,7 @@
       }
 
       const tableEle = document.createElement("table");
-      tableEle.className = "table is-fullwidth";
+      tableEle.className = "table is-fullwidth is-striped is-hoverable";
 
       tableEle.innerHTML = "<thead>" +
         "<tr>" +

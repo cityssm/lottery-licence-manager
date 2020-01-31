@@ -1,42 +1,24 @@
 "use strict";
-
-
 const express = require("express");
 const router = express.Router();
-
-const configFns = require("../helpers/configFns");
-
 const createError = require("http-errors");
 const fs = require("fs");
 const path = require("path");
 const marked = require("marked");
-
-
-router.all("/", function(req, res) {
-
-  res.redirect("/docs/readme.md");
-
+const configFns_1 = require("../helpers/configFns");
+router.all("/", function (_req, res) {
+    res.redirect("/docs/readme.md");
 });
-
-
-router.all("/:mdFileName", function(req, res, next) {
-
-  const mdFileName = req.params.mdFileName;
-
-  const mdPath = path.join(__dirname, "..", "docs", mdFileName + (mdFileName.endsWith(".md") ? "" : ".md"));
-
-  fs.readFile(mdPath, "utf8", function(err, data) {
-
-    if (err) {
-
-      next(createError(400));
-      return;
-
-    }
-
-    const applicationName = configFns.getProperty("application.applicationName");
-
-    res.send(`<html>
+router.all("/:mdFileName", function (req, res, next) {
+    const mdFileName = req.params.mdFileName;
+    const mdPath = path.join(__dirname, "..", "docs", mdFileName + (mdFileName.endsWith(".md") ? "" : ".md"));
+    fs.readFile(mdPath, "utf8", function (err, data) {
+        if (err) {
+            next(createError(400));
+            return;
+        }
+        const applicationName = configFns_1.configFns.getProperty("application.applicationName");
+        res.send(`<html>
       <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
@@ -46,15 +28,11 @@ router.all("/:mdFileName", function(req, res, next) {
       </head>
       <body>
       <article class="markdown-body">` +
-      marked(data.toString()) +
-      `
+            marked(data.toString()) +
+            `
       </article>
       </body>
       </html>`);
-
-  });
-
+    });
 });
-
-
 module.exports = router;

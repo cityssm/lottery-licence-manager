@@ -1,22 +1,18 @@
 /// <reference types="express-session" />
 /// <reference types="integer" />
-import sqlite = require("better-sqlite3");
-declare type RawRowsColumnsReturn = {
-    rows: object[];
-    columns: sqlite.ColumnDefinition[];
-};
-declare function getRawRowsColumns(sql: string, params: any[]): RawRowsColumnsReturn;
-declare const licencesDB: {
+import * as llm from "./llmTypes";
+declare function getRawRowsColumns(sql: string, params: any[]): llm.RawRowsColumnsReturn;
+export declare const licencesDB: {
     getRawRowsColumns: typeof getRawRowsColumns;
-    getLocations: (reqBodyOrParamsObj: {}, reqSession: Express.SessionData) => any[];
-    getLocation: (locationID: number, reqSession: Express.SessionData) => any;
+    getLocations: (reqBodyOrParamsObj: any, reqSession: Express.SessionData) => llm.Location[];
+    getLocation: (locationID: number, reqSession: Express.SessionData) => llm.Location;
     createLocation: (reqBody: any, reqSession: Express.SessionData) => import("integer").IntLike;
     updateLocation: (reqBody: any, reqSession: Express.SessionData) => number;
     deleteLocation: (locationID: number, reqSession: Express.SessionData) => number;
     restoreLocation: (locationID: number, reqSession: Express.SessionData) => number;
     mergeLocations: (targetLocationID: number, sourceLocationID: number, reqSession: Express.SessionData) => boolean;
-    getOrganizations: (reqBody: any, useLimit: any, reqSession: Express.SessionData) => any[];
-    getOrganization: (organizationID: number, reqSession: Express.SessionData) => any;
+    getOrganizations: (reqBody: any, useLimit: boolean, reqSession: Express.SessionData) => any[];
+    getOrganization: (organizationID: number, reqSession: Express.SessionData) => llm.Organization;
     createOrganization: (reqBody: any, reqSession: Express.SessionData) => import("integer").IntLike;
     updateOrganization: (reqBody: any, reqSession: Express.SessionData) => number;
     deleteOrganization: (organizationID: number, reqSession: Express.SessionData) => number;
@@ -52,16 +48,16 @@ declare const licencesDB: {
     };
     deleteOrganizationRepresentative: (organizationID: number, representativeIndex: number) => boolean;
     setDefaultOrganizationRepresentative: (organizationID: number, representativeIndex: number) => boolean;
-    getOrganizationRemarks: (organizationID: number, reqSession: Express.SessionData) => any[];
-    getOrganizationRemark: (organizationID: number, remarkIndex: number, reqSession: Express.SessionData) => any;
+    getOrganizationRemarks: (organizationID: number, reqSession: Express.SessionData) => llm.OrganizationRemark[];
+    getOrganizationRemark: (organizationID: number, remarkIndex: number, reqSession: Express.SessionData) => llm.OrganizationRemark;
     addOrganizationRemark: (reqBody: any, reqSession: Express.SessionData) => any;
     updateOrganizationRemark: (reqBody: any, reqSession: Express.SessionData) => number;
     deleteOrganizationRemark: (organizationID: number, remarkIndex: number, reqSession: Express.SessionData) => number;
     getLicenceTableStats: () => {};
-    getLicences: (reqBodyOrParamsObj: any, includeOrganization: boolean, useLimit: boolean, reqSession: Express.SessionData) => any[];
-    getLicence: (licenceID: number, reqSession: Express.SessionData) => any;
+    getLicences: (reqBodyOrParamsObj: any, includeOrganization: boolean, useLimit: boolean, reqSession: Express.SessionData) => llm.LotteryLicence[];
+    getLicence: (licenceID: number, reqSession: Express.SessionData) => llm.LotteryLicence;
     getNextExternalLicenceNumberFromRange: () => any;
-    createLicence: (reqBody: any, reqSession: Express.SessionData) => import("integer").IntLike;
+    createLicence: (reqBody: any, reqSession: Express.SessionData) => number;
     updateLicence: (reqBody: any, reqSession: Express.SessionData) => number;
     deleteLicence: (licenceID: number, reqSession: Express.SessionData) => number;
     getDistinctTermsConditions: (organizationID: number) => any[];
@@ -72,15 +68,15 @@ declare const licencesDB: {
     addTransaction: (reqBody: any, reqSession: Express.SessionData) => any;
     voidTransaction: (licenceID: number, transactionIndex: number, reqSession: Express.SessionData) => number;
     getEventTableStats: () => {};
-    getEvents: (year: number, month: number, reqSession: Express.SessionData) => any[];
-    getOutstandingEvents: (reqBody: any, reqSession: Express.SessionData) => any[];
+    getEvents: (year: number, month: number, reqSession: Express.SessionData) => llm.LotteryEvent[];
+    getOutstandingEvents: (reqBody: any, reqSession: Express.SessionData) => llm.LotteryEvent[];
     getEventFinancialSummary: (reqBody: any) => any[];
-    getEvent: (licenceID: number, eventDate: number, reqSession: Express.SessionData) => any;
+    getEvent: (licenceID: number, eventDate: number, reqSession: Express.SessionData) => llm.LotteryEvent;
     updateEvent: (reqBody: any, reqSession: Express.SessionData) => number;
     deleteEvent: (licenceID: number, eventDate: number, reqSession: Express.SessionData) => number;
     pokeEvent: (licenceID: number, eventDate: number, reqSession: Express.SessionData) => number;
     getApplicationSettings: () => any[];
-    getApplicationSetting: (settingKey: string) => any;
+    getApplicationSetting: (settingKey: string) => string;
     updateApplicationSetting: (settingKey: string, settingValue: string, reqSession: Express.SessionData) => number;
 };
-export = licencesDB;
+export {};

@@ -1,30 +1,18 @@
 "use strict";
 
-
-import configFns = require("./configFns");
-
 import sqlite = require("better-sqlite3");
 const dbPath = "data/users.db";
 
 import bcrypt = require("bcrypt");
-
 import freshPassword = require("fresh-password");
 
-type Body_User = {
-  userName: string,
-  firstName: string,
-  lastName: string
-};
+import { configFns } from "./configFns";
+import { User, UserProperties } from "./llmTypes";
 
-type Body_UserProperty = {
-  userName: string,
-  propertyName: string,
-  propertyValue: string
-};
 
-const usersDB = {
+export const usersDB = {
 
-  getUser: function(userNameSubmitted: string, passwordPlain: string) {
+  getUser: function(userNameSubmitted: string, passwordPlain: string): User {
 
     const db = sqlite(dbPath);
 
@@ -95,7 +83,9 @@ const usersDB = {
 
     // Get user properties
 
-    const userProperties = Object.assign({}, configFns.getProperty("user.defaultProperties"));
+    const userProperties: UserProperties =
+      Object.assign({}, configFns.getProperty("user.defaultProperties"));
+
     userProperties.isDefaultAdmin = "false";
 
     const userPropertyRows = db.prepare("select propertyName, propertyValue" +
@@ -172,11 +162,12 @@ const usersDB = {
       readonly: true
     });
 
-    const rows = db.prepare("select userName, firstName, lastName" +
-      " from Users" +
-      " where isActive = 1" +
-      " order by userName")
-      .all();
+    const rows: User[] =
+      db.prepare("select userName, firstName, lastName" +
+        " from Users" +
+        " where isActive = 1" +
+        " order by userName")
+        .all();
 
     db.close();
 
@@ -190,7 +181,8 @@ const usersDB = {
       readonly: true
     });
 
-    const userProperties = Object.assign({}, configFns.getProperty("user.defaultProperties"));
+    const userProperties: UserProperties =
+      Object.assign({}, configFns.getProperty("user.defaultProperties"));
 
     const userPropertyRows = db.prepare("select propertyName, propertyValue" +
       " from UserProperties" +
@@ -210,7 +202,7 @@ const usersDB = {
 
   },
 
-  createUser: function(reqBody: Body_User) {
+  createUser: function(reqBody: any) {
 
     const newPasswordPlain = freshPassword.generate();
     const hash = bcrypt.hashSync(reqBody.userName + "::" + newPasswordPlain, 10);
@@ -252,7 +244,7 @@ const usersDB = {
 
   },
 
-  updateUser: function(reqBody: Body_User) {
+  updateUser: function(reqBody: any) {
 
     const db = sqlite(dbPath);
 
@@ -273,11 +265,11 @@ const usersDB = {
 
   },
 
-  updateUserProperty: function(reqBody: Body_UserProperty) {
+  updateUserProperty: function(reqBody: any) {
 
     const db = sqlite(dbPath);
 
-    let info : sqlite.RunResult;
+    let info: sqlite.RunResult;
 
     if (reqBody.propertyValue === "") {
 
@@ -310,7 +302,7 @@ const usersDB = {
 
   generateNewPassword: function(userName: string) {
 
-    const newPasswordPlain = freshPassword.generate();
+    const newPasswordPlain: string = freshPassword.generate();
     const hash = bcrypt.hashSync(userName + "::" + newPasswordPlain, 10);
 
     const db = sqlite(dbPath);
@@ -326,6 +318,3 @@ const usersDB = {
 
   }
 };
-
-
-module.exports = usersDB;

@@ -1,11 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const configFns = require("./configFns");
 const sqlite = require("better-sqlite3");
 const dbPath = "data/users.db";
 const bcrypt = require("bcrypt");
 const freshPassword = require("fresh-password");
-const usersDB = {
+const configFns_1 = require("./configFns");
+exports.usersDB = {
     getUser: function (userNameSubmitted, passwordPlain) {
         const db = sqlite(dbPath);
         const row = db.prepare("select userName, passwordHash, isActive" +
@@ -15,12 +15,12 @@ const usersDB = {
         if (!row) {
             db.close();
             if (userNameSubmitted === "admin") {
-                const adminPasswordPlain = configFns.getProperty("admin.defaultPassword");
+                const adminPasswordPlain = configFns_1.configFns.getProperty("admin.defaultPassword");
                 if (adminPasswordPlain === "") {
                     return null;
                 }
                 if (adminPasswordPlain === passwordPlain) {
-                    const userProperties = Object.assign({}, configFns.getProperty("user.defaultProperties"));
+                    const userProperties = Object.assign({}, configFns_1.configFns.getProperty("user.defaultProperties"));
                     userProperties.isAdmin = "true";
                     userProperties.isDefaultAdmin = "true";
                     return {
@@ -44,7 +44,7 @@ const usersDB = {
             db.close();
             return null;
         }
-        const userProperties = Object.assign({}, configFns.getProperty("user.defaultProperties"));
+        const userProperties = Object.assign({}, configFns_1.configFns.getProperty("user.defaultProperties"));
         userProperties.isDefaultAdmin = "false";
         const userPropertyRows = db.prepare("select propertyName, propertyValue" +
             " from UserProperties" +
@@ -108,7 +108,7 @@ const usersDB = {
         const db = sqlite(dbPath, {
             readonly: true
         });
-        const userProperties = Object.assign({}, configFns.getProperty("user.defaultProperties"));
+        const userProperties = Object.assign({}, configFns_1.configFns.getProperty("user.defaultProperties"));
         const userPropertyRows = db.prepare("select propertyName, propertyValue" +
             " from UserProperties" +
             " where userName = ?")
@@ -190,4 +190,3 @@ const usersDB = {
         return newPasswordPlain;
     }
 };
-module.exports = usersDB;

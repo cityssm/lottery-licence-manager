@@ -1,10 +1,11 @@
 "use strict";
-var dateTimeFns = {
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.dateTimeFns = {
     dateIntegerToString: function (dateInteger) {
         if (dateInteger === null || dateInteger === 0) {
             return "";
         }
-        var dateString = dateInteger.toString();
+        const dateString = dateInteger.toString();
         return dateString.substring(0, 4) + "-" + dateString.substring(4, 6) + "-" + dateString.substring(6, 8);
     },
     dateToString: function (dateObj) {
@@ -35,7 +36,7 @@ var dateTimeFns = {
         "December"
     ],
     timeIntegerToString: function (timeInteger) {
-        var timeString = ("0000" + (timeInteger || 0).toString()).slice(-4);
+        const timeString = ("0000" + (timeInteger || 0).toString()).slice(-4);
         return timeString.substring(0, 2) + ":" + timeString.substring(2, 4);
     },
     timeStringToInteger: function (timeString) {
@@ -45,4 +46,3 @@ var dateTimeFns = {
         return (dateObj.getHours() * 100) + dateObj.getMinutes();
     }
 };
-module.exports = dateTimeFns;

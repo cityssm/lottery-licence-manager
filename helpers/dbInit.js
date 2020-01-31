@@ -1,10 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var sqlite = require("better-sqlite3");
-var dbInit = {
+const sqlite = require("better-sqlite3");
+exports.dbInit = {
     initUsersDB: function () {
-        var usersDB = sqlite("data/users.db");
-        var row = usersDB.prepare("select name from sqlite_master where type = 'table' and name = 'Users'").get();
+        const usersDB = sqlite("data/users.db");
+        const row = usersDB.prepare("select name from sqlite_master where type = 'table' and name = 'Users'").get();
         if (!row) {
             console.warn("Creating users.db." +
                 " To get started creating users, set the 'admin.defaultPassword' property in your config.js file.");
@@ -27,8 +27,8 @@ var dbInit = {
         return false;
     },
     initLicencesDB: function () {
-        var licencesDB = sqlite("data/licences.db");
-        var row = licencesDB
+        const licencesDB = sqlite("data/licences.db");
+        const row = licencesDB
             .prepare("select name from sqlite_master where type = 'table' and name = 'Organizations'")
             .get();
         if (!row) {
@@ -247,7 +247,7 @@ var dbInit = {
                 " recordUpdate_userName varchar(30) not null," +
                 " recordUpdate_timeMillis integer not null" +
                 ") without rowid").run();
-            var settingInsertSQL = "insert or ignore into ApplicationSettings" +
+            const settingInsertSQL = "insert or ignore into ApplicationSettings" +
                 " (settingKey, settingName, settingDescription, settingValue, orderNumber," +
                 " recordUpdate_userName, recordUpdate_timeMillis)" +
                 " values (?, ?, ?, ?, ?, ?, ?)";
@@ -261,4 +261,3 @@ var dbInit = {
         return false;
     }
 };
-module.exports = dbInit;

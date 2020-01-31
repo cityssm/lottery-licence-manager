@@ -1,8 +1,9 @@
 "use strict";
-const configFns = require("./configFns");
-const dateTimeFns = require("./dateTimeFns");
+Object.defineProperty(exports, "__esModule", { value: true });
 const sqlite = require("better-sqlite3");
 const dbPath = "data/licences.db";
+const configFns_1 = require("./configFns");
+const dateTimeFns_1 = require("./dateTimeFns");
 let licenceTableStats = {};
 let licenceTableStatsExpiryMillis = -1;
 let eventTableStats = {};
@@ -17,7 +18,7 @@ function getApplicationSetting(db, settingKey) {
     }
     return "";
 }
-function canUpdateObject(objType, obj, reqSession) {
+function canUpdateObject(obj, reqSession) {
     let canUpdate = false;
     if (!reqSession) {
         canUpdate = false;
@@ -31,15 +32,15 @@ function canUpdateObject(objType, obj, reqSession) {
     else if (reqSession.user.userProperties.canCreate === "true" &&
         (obj.recordCreate_userName === reqSession.user.userName ||
             obj.recordUpdate_userName === reqSession.user.userName) &&
-        obj.recordUpdate_timeMillis + configFns.getProperty("user.createUpdateWindowMillis") > Date.now()) {
+        obj.recordUpdate_timeMillis + configFns_1.configFns.getProperty("user.createUpdateWindowMillis") > Date.now()) {
         canUpdate = true;
     }
-    if (obj.recordUpdate_timeMillis + configFns.getProperty("user.createUpdateWindowMillis") > Date.now()) {
+    if (obj.recordUpdate_timeMillis + configFns_1.configFns.getProperty("user.createUpdateWindowMillis") > Date.now()) {
         return canUpdate;
     }
     if (canUpdate) {
-        const currentDateInteger = dateTimeFns.dateToInteger(new Date());
-        switch (objType) {
+        const currentDateInteger = dateTimeFns_1.dateTimeFns.dateToInteger(new Date());
+        switch (obj.recordType) {
             case "licence":
                 if (obj.endDate < currentDateInteger) {
                     canUpdate = false;
@@ -63,16 +64,17 @@ function getLicence(licenceID, reqSession, db) {
         " and l.licenceID = ?")
         .get(licenceID);
     if (licenceObj) {
-        licenceObj.applicationDateString = dateTimeFns.dateIntegerToString(licenceObj.applicationDate || 0);
-        licenceObj.startDateString = dateTimeFns.dateIntegerToString(licenceObj.startDate || 0);
-        licenceObj.endDateString = dateTimeFns.dateIntegerToString(licenceObj.endDate || 0);
-        licenceObj.startTimeString = dateTimeFns.timeIntegerToString(licenceObj.startTime || 0);
-        licenceObj.endTimeString = dateTimeFns.timeIntegerToString(licenceObj.endTime || 0);
-        licenceObj.issueDateString = dateTimeFns.dateIntegerToString(licenceObj.issueDate || 0);
-        licenceObj.issueTimeString = dateTimeFns.timeIntegerToString(licenceObj.issueTime || 0);
+        licenceObj.recordType = "licence";
+        licenceObj.applicationDateString = dateTimeFns_1.dateTimeFns.dateIntegerToString(licenceObj.applicationDate || 0);
+        licenceObj.startDateString = dateTimeFns_1.dateTimeFns.dateIntegerToString(licenceObj.startDate || 0);
+        licenceObj.endDateString = dateTimeFns_1.dateTimeFns.dateIntegerToString(licenceObj.endDate || 0);
+        licenceObj.startTimeString = dateTimeFns_1.dateTimeFns.timeIntegerToString(licenceObj.startTime || 0);
+        licenceObj.endTimeString = dateTimeFns_1.dateTimeFns.timeIntegerToString(licenceObj.endTime || 0);
+        licenceObj.issueDateString = dateTimeFns_1.dateTimeFns.dateIntegerToString(licenceObj.issueDate || 0);
+        licenceObj.issueTimeString = dateTimeFns_1.dateTimeFns.timeIntegerToString(licenceObj.issueTime || 0);
         licenceObj.locationDisplayName =
             (licenceObj.locationName === "" ? licenceObj.locationAddress1 : licenceObj.locationName);
-        licenceObj.canUpdate = canUpdateObject("licence", licenceObj, reqSession);
+        licenceObj.canUpdate = canUpdateObject(licenceObj, reqSession);
         {
             const ticketTypesList = db.prepare("select t.ticketType," +
                 " t.distributorLocationID," +
@@ -112,7 +114,7 @@ function getLicence(licenceID, reqSession, db) {
                 .all(licenceID);
             for (let index = 0; index < eventList.length; index += 1) {
                 const eventObj = eventList[index];
-                eventObj.eventDateString = dateTimeFns.dateIntegerToString(eventObj.eventDate);
+                eventObj.eventDateString = dateTimeFns_1.dateTimeFns.dateIntegerToString(eventObj.eventDate);
             }
             licenceObj.events = eventList;
         }
@@ -125,8 +127,8 @@ function getLicence(licenceID, reqSession, db) {
                 .all(licenceID);
             for (let index = 0; index < amendments.length; index += 1) {
                 const amendmentObj = amendments[index];
-                amendmentObj.amendmentDateString = dateTimeFns.dateIntegerToString(amendmentObj.amendmentDate);
-                amendmentObj.amendmentTimeString = dateTimeFns.timeIntegerToString(amendmentObj.amendmentTime);
+                amendmentObj.amendmentDateString = dateTimeFns_1.dateTimeFns.dateIntegerToString(amendmentObj.amendmentDate);
+                amendmentObj.amendmentTimeString = dateTimeFns_1.dateTimeFns.timeIntegerToString(amendmentObj.amendmentTime);
             }
             licenceObj.licenceAmendments = amendments;
         }
@@ -138,8 +140,8 @@ function getLicence(licenceID, reqSession, db) {
                 .all(licenceID);
             for (let index = 0; index < transactions.length; index += 1) {
                 const amendmentObj = transactions[index];
-                amendmentObj.transactionDateString = dateTimeFns.dateIntegerToString(amendmentObj.transactionDate);
-                amendmentObj.transactionTimeString = dateTimeFns.timeIntegerToString(amendmentObj.transactionTime);
+                amendmentObj.transactionDateString = dateTimeFns_1.dateTimeFns.dateIntegerToString(amendmentObj.transactionDate);
+                amendmentObj.transactionTimeString = dateTimeFns_1.dateTimeFns.timeIntegerToString(amendmentObj.transactionTime);
             }
             licenceObj.licenceTransactions = transactions;
         }
@@ -155,8 +157,8 @@ function addLicenceAmendment(licenceID, amendmentType, amendment, isHidden, reqS
         .get(licenceID);
     const amendmentIndex = (amendmentIndexRecord ? amendmentIndexRecord.amendmentIndex : 0) + 1;
     const nowDate = new Date();
-    const amendmentDate = dateTimeFns.dateToInteger(nowDate);
-    const amendmentTime = dateTimeFns.dateToTimeInteger(nowDate);
+    const amendmentDate = dateTimeFns_1.dateTimeFns.dateToInteger(nowDate);
+    const amendmentTime = dateTimeFns_1.dateTimeFns.dateToTimeInteger(nowDate);
     db.prepare("insert into LotteryLicenceAmendments" +
         " (licenceID, amendmentIndex, amendmentDate, amendmentTime, amendmentType, amendment, isHidden," +
         " recordCreate_userName, recordCreate_timeMillis, recordUpdate_userName, recordUpdate_timeMillis)" +
@@ -178,9 +180,9 @@ function getRawRowsColumns(sql, params) {
         columns: columns
     };
 }
-const licencesDB = {
+exports.licencesDB = {
     getRawRowsColumns: getRawRowsColumns,
-    getLocations: function (reqBodyOrParamsObj = {}, reqSession) {
+    getLocations: function (reqBodyOrParamsObj, reqSession) {
         const db = sqlite(dbPath, {
             readonly: true
         });
@@ -232,12 +234,13 @@ const licencesDB = {
         db.close();
         for (let rowIndex = 0; rowIndex < rows.length; rowIndex += 1) {
             const locationObj = rows[rowIndex];
+            locationObj.recordType = "location";
             locationObj.locationDisplayName =
                 locationObj.locationName === "" ? locationObj.locationAddress1 : locationObj.locationName;
-            locationObj.licences_endDateMaxString = dateTimeFns.dateIntegerToString(locationObj.licences_endDateMax);
-            locationObj.distributor_endDateMaxString = dateTimeFns.dateIntegerToString(locationObj.distributor_endDateMax);
-            locationObj.manufacturer_endDateMaxString = dateTimeFns.dateIntegerToString(locationObj.manufacturer_endDateMax);
-            locationObj.canUpdate = canUpdateObject("location", locationObj, reqSession);
+            locationObj.licences_endDateMaxString = dateTimeFns_1.dateTimeFns.dateIntegerToString(locationObj.licences_endDateMax);
+            locationObj.distributor_endDateMaxString = dateTimeFns_1.dateTimeFns.dateIntegerToString(locationObj.distributor_endDateMax);
+            locationObj.manufacturer_endDateMaxString = dateTimeFns_1.dateTimeFns.dateIntegerToString(locationObj.manufacturer_endDateMax);
+            locationObj.canUpdate = canUpdateObject(locationObj, reqSession);
         }
         return rows;
     },
@@ -249,7 +252,8 @@ const licencesDB = {
             " where locationID = ?")
             .get(locationID);
         if (locationObj) {
-            locationObj.canUpdate = canUpdateObject("location", locationObj, reqSession);
+            locationObj.recordType = "location";
+            locationObj.canUpdate = canUpdateObject(locationObj, reqSession);
         }
         db.close();
         locationObj.locationDisplayName =
@@ -364,7 +368,7 @@ const licencesDB = {
         const db = sqlite(dbPath, {
             readonly: true
         });
-        const sqlParams = [dateTimeFns.dateToInteger(new Date())];
+        const sqlParams = [dateTimeFns_1.dateTimeFns.dateToInteger(new Date())];
         let sql = "select o.organizationID, o.organizationName, o.isEligibleForLicences, o.organizationNote," +
             " r.representativeName," +
             " sum(case when l.endDate >= ? then 1 else 0 end) as licences_activeCount," +
@@ -402,8 +406,9 @@ const licencesDB = {
         db.close();
         for (let rowIndex = 0; rowIndex < rows.length; rowIndex += 1) {
             const organization = rows[rowIndex];
-            organization.licences_endDateMaxString = dateTimeFns.dateIntegerToString(organization.licences_endDateMax || 0);
-            organization.canUpdate = canUpdateObject("organization", rows[rowIndex], reqSession);
+            organization.recordType = "organization";
+            organization.licences_endDateMaxString = dateTimeFns_1.dateTimeFns.dateIntegerToString(organization.licences_endDateMax || 0);
+            organization.canUpdate = canUpdateObject(rows[rowIndex], reqSession);
             delete organization.recordCreate_userName;
             delete organization.recordCreate_timeMillis;
             delete organization.recordUpdate_userName;
@@ -419,7 +424,8 @@ const licencesDB = {
             " where organizationID = ?")
             .get(organizationID);
         if (organizationObj) {
-            organizationObj.canUpdate = canUpdateObject("organization", organizationObj, reqSession);
+            organizationObj.recordType = "organization";
+            organizationObj.canUpdate = canUpdateObject(organizationObj, reqSession);
             const representativesList = db.prepare("select * from OrganizationRepresentatives" +
                 " where organizationID = ?" +
                 " order by isDefault desc, representativeName")
@@ -492,7 +498,7 @@ const licencesDB = {
     getInactiveOrganizations: function (inactiveYears) {
         const cutoffDate = new Date();
         cutoffDate.setFullYear(cutoffDate.getFullYear() - inactiveYears);
-        const cutoffDateInteger = dateTimeFns.dateToInteger(cutoffDate);
+        const cutoffDateInteger = dateTimeFns_1.dateTimeFns.dateToInteger(cutoffDate);
         const db = sqlite(dbPath, {
             readonly: true
         });
@@ -510,7 +516,7 @@ const licencesDB = {
         db.close();
         for (let rowIndex = 0; rowIndex < rows.length; rowIndex += 1) {
             const organization = rows[rowIndex];
-            organization.licences_endDateMaxString = dateTimeFns.dateIntegerToString(organization.licences_endDateMax || 0);
+            organization.licences_endDateMaxString = dateTimeFns_1.dateTimeFns.dateIntegerToString(organization.licences_endDateMax || 0);
         }
         return rows;
     },
@@ -618,9 +624,10 @@ const licencesDB = {
         db.close();
         for (let rowIndex = 0; rowIndex < rows.length; rowIndex += 1) {
             const remark = rows[rowIndex];
-            remark.remarkDateString = dateTimeFns.dateIntegerToString(remark.remarkDate || 0);
-            remark.remarkTimeString = dateTimeFns.timeIntegerToString(remark.remarkTime || 0);
-            remark.canUpdate = canUpdateObject("remark", remark, reqSession);
+            remark.recordType = "remark";
+            remark.remarkDateString = dateTimeFns_1.dateTimeFns.dateIntegerToString(remark.remarkDate || 0);
+            remark.remarkTimeString = dateTimeFns_1.dateTimeFns.timeIntegerToString(remark.remarkTime || 0);
+            remark.canUpdate = canUpdateObject(remark, reqSession);
         }
         return rows;
     },
@@ -638,9 +645,10 @@ const licencesDB = {
             " and remarkIndex = ?")
             .get(organizationID, remarkIndex);
         db.close();
-        remark.remarkDateString = dateTimeFns.dateIntegerToString(remark.remarkDate || 0);
-        remark.remarkTimeString = dateTimeFns.timeIntegerToString(remark.remarkTime || 0);
-        remark.canUpdate = canUpdateObject("remark", remark, reqSession);
+        remark.recordType = "remark";
+        remark.remarkDateString = dateTimeFns_1.dateTimeFns.dateIntegerToString(remark.remarkDate || 0);
+        remark.remarkTimeString = dateTimeFns_1.dateTimeFns.timeIntegerToString(remark.remarkTime || 0);
+        remark.canUpdate = canUpdateObject(remark, reqSession);
         return remark;
     },
     addOrganizationRemark: function (reqBody, reqSession) {
@@ -651,8 +659,8 @@ const licencesDB = {
             .get(reqBody.organizationID);
         const newRemarkIndex = row.maxIndex + 1;
         const rightNow = new Date();
-        const remarkDate = dateTimeFns.dateToInteger(rightNow);
-        const remarkTime = dateTimeFns.dateToTimeInteger(rightNow);
+        const remarkDate = dateTimeFns_1.dateTimeFns.dateToInteger(rightNow);
+        const remarkTime = dateTimeFns_1.dateTimeFns.dateToTimeInteger(rightNow);
         db.prepare("insert into OrganizationRemarks (" +
             "organizationID, remarkIndex," +
             " remarkDate, remarkTime, remark, isImportant," +
@@ -676,7 +684,7 @@ const licencesDB = {
             " where organizationID = ?" +
             " and remarkIndex = ?" +
             " and recordDelete_timeMillis is null")
-            .run(dateTimeFns.dateStringToInteger(reqBody.remarkDateString), dateTimeFns.timeStringToInteger(reqBody.remarkTimeString), reqBody.remark, reqBody.isImportant ? 1 : 0, reqSession.user.userName, nowMillis, reqBody.organizationID, reqBody.remarkIndex);
+            .run(dateTimeFns_1.dateTimeFns.dateStringToInteger(reqBody.remarkDateString), dateTimeFns_1.dateTimeFns.timeStringToInteger(reqBody.remarkTimeString), reqBody.remark, reqBody.isImportant ? 1 : 0, reqSession.user.userName, nowMillis, reqBody.organizationID, reqBody.remarkIndex);
         const changeCount = info.changes;
         db.close();
         return changeCount;
@@ -753,11 +761,11 @@ const licencesDB = {
         if (reqBodyOrParamsObj.licenceStatus) {
             if (reqBodyOrParamsObj.licenceStatus === "past") {
                 sql += " and l.endDate < ?";
-                sqlParams.push(dateTimeFns.dateToInteger(new Date()));
+                sqlParams.push(dateTimeFns_1.dateTimeFns.dateToInteger(new Date()));
             }
             else if (reqBodyOrParamsObj.licenceStatus === "active") {
                 sql += " and l.endDate >= ?";
-                sqlParams.push(dateTimeFns.dateToInteger(new Date()));
+                sqlParams.push(dateTimeFns_1.dateTimeFns.dateToInteger(new Date()));
             }
         }
         if (reqBodyOrParamsObj.locationID) {
@@ -778,15 +786,16 @@ const licencesDB = {
         const rows = db.prepare(sql).all(sqlParams);
         for (let index = 0; index < rows.length; index += 1) {
             const licenceObj = rows[index];
-            licenceObj.applicationDateString = dateTimeFns.dateIntegerToString(licenceObj.applicationDate || 0);
-            licenceObj.startDateString = dateTimeFns.dateIntegerToString(licenceObj.startDate || 0);
-            licenceObj.endDateString = dateTimeFns.dateIntegerToString(licenceObj.endDate || 0);
-            licenceObj.startTimeString = dateTimeFns.timeIntegerToString(licenceObj.startTime || 0);
-            licenceObj.endTimeString = dateTimeFns.timeIntegerToString(licenceObj.endTime || 0);
-            licenceObj.issueDateString = dateTimeFns.dateIntegerToString(licenceObj.issueDate || 0);
+            licenceObj.recordType = "licence";
+            licenceObj.applicationDateString = dateTimeFns_1.dateTimeFns.dateIntegerToString(licenceObj.applicationDate || 0);
+            licenceObj.startDateString = dateTimeFns_1.dateTimeFns.dateIntegerToString(licenceObj.startDate || 0);
+            licenceObj.endDateString = dateTimeFns_1.dateTimeFns.dateIntegerToString(licenceObj.endDate || 0);
+            licenceObj.startTimeString = dateTimeFns_1.dateTimeFns.timeIntegerToString(licenceObj.startTime || 0);
+            licenceObj.endTimeString = dateTimeFns_1.dateTimeFns.timeIntegerToString(licenceObj.endTime || 0);
+            licenceObj.issueDateString = dateTimeFns_1.dateTimeFns.dateIntegerToString(licenceObj.issueDate || 0);
             licenceObj.locationDisplayName =
                 (licenceObj.locationName === "" ? licenceObj.locationAddress1 : licenceObj.locationName);
-            licenceObj.canUpdate = canUpdateObject("licence", licenceObj, reqSession);
+            licenceObj.canUpdate = canUpdateObject(licenceObj, reqSession);
         }
         db.close();
         return rows;
@@ -842,8 +851,8 @@ const licencesDB = {
             " recordCreate_userName, recordCreate_timeMillis," +
             " recordUpdate_userName, recordUpdate_timeMillis)" +
             " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
-            .run(reqBody.organizationID, dateTimeFns.dateStringToInteger(reqBody.applicationDateString), reqBody.licenceTypeKey, dateTimeFns.dateStringToInteger(reqBody.startDateString), dateTimeFns.dateStringToInteger(reqBody.endDateString), dateTimeFns.timeStringToInteger(reqBody.startTimeString), dateTimeFns.timeStringToInteger(reqBody.endTimeString), (reqBody.locationID === "" ? null : reqBody.locationID), reqBody.municipality, reqBody.licenceDetails, reqBody.termsConditions, reqBody.totalPrizeValue, reqBody.externalLicenceNumber, externalLicenceNumberInteger, reqSession.user.userName, nowMillis, reqSession.user.userName, nowMillis);
-        const licenceID = info.lastInsertRowid;
+            .run(reqBody.organizationID, dateTimeFns_1.dateTimeFns.dateStringToInteger(reqBody.applicationDateString), reqBody.licenceTypeKey, dateTimeFns_1.dateTimeFns.dateStringToInteger(reqBody.startDateString), dateTimeFns_1.dateTimeFns.dateStringToInteger(reqBody.endDateString), dateTimeFns_1.dateTimeFns.timeStringToInteger(reqBody.startTimeString), dateTimeFns_1.dateTimeFns.timeStringToInteger(reqBody.endTimeString), (reqBody.locationID === "" ? null : reqBody.locationID), reqBody.municipality, reqBody.licenceDetails, reqBody.termsConditions, reqBody.totalPrizeValue, reqBody.externalLicenceNumber, externalLicenceNumberInteger, reqSession.user.userName, nowMillis, reqSession.user.userName, nowMillis);
+        const licenceID = Number(info.lastInsertRowid);
         const fieldKeys = reqBody.fieldKeys.substring(1).split(",");
         for (let fieldIndex = 0; fieldIndex < fieldKeys.length; fieldIndex += 1) {
             const fieldKey = fieldKeys[fieldIndex];
@@ -886,7 +895,7 @@ const licencesDB = {
                 " recordCreate_userName, recordCreate_timeMillis," +
                 " recordUpdate_userName, recordUpdate_timeMillis)" +
                 " values (?, ?, ?, ?, ?, ?)")
-                .run(licenceID, dateTimeFns.dateStringToInteger(reqBody.eventDate), reqSession.user.userName, nowMillis, reqSession.user.userName, nowMillis);
+                .run(licenceID, dateTimeFns_1.dateTimeFns.dateStringToInteger(reqBody.eventDate), reqSession.user.userName, nowMillis, reqSession.user.userName, nowMillis);
         }
         else if (typeof (reqBody.eventDate) === "object") {
             for (let eventIndex = 0; eventIndex < reqBody.eventDate.length; eventIndex += 1) {
@@ -895,11 +904,11 @@ const licencesDB = {
                     " recordCreate_userName, recordCreate_timeMillis," +
                     " recordUpdate_userName, recordUpdate_timeMillis)" +
                     " values (?, ?, ?, ?, ?, ?)")
-                    .run(licenceID, dateTimeFns.dateStringToInteger(reqBody.eventDate[eventIndex]), reqSession.user.userName, nowMillis, reqSession.user.userName, nowMillis);
+                    .run(licenceID, dateTimeFns_1.dateTimeFns.dateStringToInteger(reqBody.eventDate[eventIndex]), reqSession.user.userName, nowMillis, reqSession.user.userName, nowMillis);
             }
         }
         const licenceObj = getLicence(licenceID, reqSession, db);
-        const feeCalculation = configFns.getProperty("licences.feeCalculationFn")(licenceObj);
+        const feeCalculation = configFns_1.configFns.getProperty("licences.feeCalculationFn")(licenceObj);
         db.prepare("update LotteryLicences" +
             " set licenceFee = ?" +
             " where licenceID = ?")
@@ -923,10 +932,10 @@ const licencesDB = {
         catch (e) {
             externalLicenceNumberInteger = -1;
         }
-        const startDate_now = dateTimeFns.dateStringToInteger(reqBody.startDateString);
-        const endDate_now = dateTimeFns.dateStringToInteger(reqBody.endDateString);
-        const startTime_now = dateTimeFns.timeStringToInteger(reqBody.startTimeString);
-        const endTime_now = dateTimeFns.timeStringToInteger(reqBody.endTimeString);
+        const startDate_now = dateTimeFns_1.dateTimeFns.dateStringToInteger(reqBody.startDateString);
+        const endDate_now = dateTimeFns_1.dateTimeFns.dateStringToInteger(reqBody.endDateString);
+        const startTime_now = dateTimeFns_1.dateTimeFns.timeStringToInteger(reqBody.startTimeString);
+        const endTime_now = dateTimeFns_1.dateTimeFns.timeStringToInteger(reqBody.endTimeString);
         const info = db.prepare("update LotteryLicences" +
             " set organizationID = ?," +
             " applicationDate = ?," +
@@ -947,14 +956,14 @@ const licencesDB = {
             " recordUpdate_timeMillis = ?" +
             " where licenceID = ?" +
             " and recordDelete_timeMillis is null")
-            .run(reqBody.organizationID, dateTimeFns.dateStringToInteger(reqBody.applicationDateString), reqBody.licenceTypeKey, startDate_now, endDate_now, startTime_now, endTime_now, (reqBody.locationID === "" ? null : reqBody.locationID), reqBody.municipality, reqBody.licenceDetails, reqBody.termsConditions, reqBody.totalPrizeValue, reqBody.licenceFee, reqBody.externalLicenceNumber, externalLicenceNumberInteger, reqSession.user.userName, nowMillis, reqBody.licenceID);
+            .run(reqBody.organizationID, dateTimeFns_1.dateTimeFns.dateStringToInteger(reqBody.applicationDateString), reqBody.licenceTypeKey, startDate_now, endDate_now, startTime_now, endTime_now, (reqBody.locationID === "" ? null : reqBody.locationID), reqBody.municipality, reqBody.licenceDetails, reqBody.termsConditions, reqBody.totalPrizeValue, reqBody.licenceFee, reqBody.externalLicenceNumber, externalLicenceNumberInteger, reqSession.user.userName, nowMillis, reqBody.licenceID);
         const changeCount = info.changes;
         if (!changeCount) {
             db.close();
             return changeCount;
         }
         if (pastLicenceObj.trackUpdatesAsAmendments) {
-            if (configFns.getProperty("amendments.trackDateTimeUpdate") &&
+            if (configFns_1.configFns.getProperty("amendments.trackDateTimeUpdate") &&
                 (pastLicenceObj.startDate !== startDate_now ||
                     pastLicenceObj.endDate !== endDate_now ||
                     pastLicenceObj.startTime !== startTime_now ||
@@ -974,15 +983,15 @@ const licencesDB = {
                 addLicenceAmendment(reqBody.licenceID, "Date Update", amendment, 0, reqSession, db);
             }
             if (pastLicenceObj.organizationID !== parseInt(reqBody.organizationID) &&
-                configFns.getProperty("amendments.trackOrganizationUpdate")) {
+                configFns_1.configFns.getProperty("amendments.trackOrganizationUpdate")) {
                 addLicenceAmendment(reqBody.licenceID, "Organization Change", "", 0, reqSession, db);
             }
             if (pastLicenceObj.locationID !== parseInt(reqBody.locationID) &&
-                configFns.getProperty("amendments.trackLocationUpdate")) {
+                configFns_1.configFns.getProperty("amendments.trackLocationUpdate")) {
                 addLicenceAmendment(reqBody.licenceID, "Location Change", "", 0, reqSession, db);
             }
             if (pastLicenceObj.licenceFee !== parseFloat(reqBody.licenceFee) &&
-                configFns.getProperty("amendments.trackLicenceFeeUpdate")) {
+                configFns_1.configFns.getProperty("amendments.trackLicenceFeeUpdate")) {
                 addLicenceAmendment(reqBody.licenceID, "Licence Fee Change", "$" + pastLicenceObj.licenceFee.toFixed(2) + " -> $" + parseFloat(reqBody.licenceFee).toFixed(2), 0, reqSession, db);
             }
         }
@@ -1009,7 +1018,7 @@ const licencesDB = {
                 " and ticketType = ?")
                 .run(reqSession.user.userName, nowMillis, reqBody.licenceID, reqBody.ticketType_toDelete);
             if (pastLicenceObj.trackUpdatesAsAmendments &&
-                configFns.getProperty("amendments.trackTicketTypeDelete")) {
+                configFns_1.configFns.getProperty("amendments.trackTicketTypeDelete")) {
                 addLicenceAmendment(reqBody.licenceID, "Ticket Type Removed", "Removed " + reqBody.ticketType_toDelete + ".", 0, reqSession, db);
             }
         }
@@ -1022,7 +1031,7 @@ const licencesDB = {
                     " and ticketType = ?")
                     .run(reqSession.user.userName, nowMillis, reqBody.licenceID, reqBody.ticketType_toDelete[deleteIndex]);
                 if (pastLicenceObj.trackUpdatesAsAmendments &&
-                    configFns.getProperty("amendments.trackTicketTypeDelete")) {
+                    configFns_1.configFns.getProperty("amendments.trackTicketTypeDelete")) {
                     addLicenceAmendment(reqBody.licenceID, "Ticket Type Removed", "Removed " + reqBody.ticketType_toDelete[deleteIndex] + ".", 0, reqSession, db);
                 }
             }
@@ -1049,7 +1058,7 @@ const licencesDB = {
                     .run(reqBody.licenceID, reqBody.ticketType_toAdd, 0, reqSession.user.userName, nowMillis, reqSession.user.userName, nowMillis);
             }
             if (pastLicenceObj.trackUpdatesAsAmendments &&
-                configFns.getProperty("amendments.trackTicketTypeNew")) {
+                configFns_1.configFns.getProperty("amendments.trackTicketTypeNew")) {
                 addLicenceAmendment(reqBody.licenceID, "New Ticket Type", "Added " + reqBody.ticketType_toAdd + ".", 0, reqSession, db);
             }
         }
@@ -1075,7 +1084,7 @@ const licencesDB = {
                         .run(reqBody.licenceID, reqBody.ticketType_toAdd[addIndex], 0, reqSession.user.userName, nowMillis, reqSession.user.userName, nowMillis);
                 }
                 if (pastLicenceObj.trackUpdatesAsAmendments &&
-                    configFns.getProperty("amendments.trackTicketTypeNew")) {
+                    configFns_1.configFns.getProperty("amendments.trackTicketTypeNew")) {
                     addLicenceAmendment(reqBody.licenceID, "New Ticket Type", "Added " + reqBody.ticketType_toAdd[addIndex] + ".", 0, reqSession, db);
                 }
             }
@@ -1095,7 +1104,7 @@ const licencesDB = {
             if (pastLicenceObj.trackUpdatesAsAmendments) {
                 const ticketTypeObj_past = pastLicenceObj.licenceTicketTypes.find(ele => ele.ticketType === reqBody.ticketType_ticketType);
                 if (ticketTypeObj_past &&
-                    configFns.getProperty("amendments.trackTicketTypeUpdate") &&
+                    configFns_1.configFns.getProperty("amendments.trackTicketTypeUpdate") &&
                     ticketTypeObj_past.unitCount !== parseInt(reqBody.ticketType_unitCount)) {
                     addLicenceAmendment(reqBody.licenceID, "Ticket Type Change", (reqBody.ticketType_ticketType + " Units: " +
                         ticketTypeObj_past.unitCount + " -> " + reqBody.ticketType_unitCount), 0, reqSession, db);
@@ -1122,7 +1131,7 @@ const licencesDB = {
                 if (pastLicenceObj.trackUpdatesAsAmendments) {
                     const ticketTypeObj_past = pastLicenceObj.licenceTicketTypes.find(ele => ele.ticketType === reqBody.ticketType_ticketType[ticketTypeIndex]);
                     if (ticketTypeObj_past &&
-                        configFns.getProperty("amendments.trackTicketTypeUpdate") &&
+                        configFns_1.configFns.getProperty("amendments.trackTicketTypeUpdate") &&
                         ticketTypeObj_past.unitCount !== parseInt(reqBody.ticketType_unitCount[ticketTypeIndex])) {
                         addLicenceAmendment(reqBody.licenceID, "Ticket Type Change", (reqBody.ticketType_ticketType[ticketTypeIndex] + " Units: " +
                             ticketTypeObj_past.unitCount + " -> " + reqBody.ticketType_unitCount[ticketTypeIndex]), 0, reqSession, db);
@@ -1148,7 +1157,7 @@ const licencesDB = {
                 " recordCreate_userName, recordCreate_timeMillis," +
                 " recordUpdate_userName, recordUpdate_timeMillis)" +
                 " values (?, ?, ?, ?, ?, ?)")
-                .run(reqBody.licenceID, dateTimeFns.dateStringToInteger(reqBody.eventDate), reqSession.user.userName, nowMillis, reqSession.user.userName, nowMillis);
+                .run(reqBody.licenceID, dateTimeFns_1.dateTimeFns.dateStringToInteger(reqBody.eventDate), reqSession.user.userName, nowMillis, reqSession.user.userName, nowMillis);
         }
         else if (typeof (reqBody.eventDate) === "object") {
             for (let eventIndex = 0; eventIndex < reqBody.eventDate.length; eventIndex += 1) {
@@ -1157,7 +1166,7 @@ const licencesDB = {
                     " recordCreate_userName, recordCreate_timeMillis," +
                     " recordUpdate_userName, recordUpdate_timeMillis)" +
                     " values (?, ?, ?, ?, ?, ?)")
-                    .run(reqBody.licenceID, dateTimeFns.dateStringToInteger(reqBody.eventDate[eventIndex]), reqSession.user.userName, nowMillis, reqSession.user.userName, nowMillis);
+                    .run(reqBody.licenceID, dateTimeFns_1.dateTimeFns.dateStringToInteger(reqBody.eventDate[eventIndex]), reqSession.user.userName, nowMillis, reqSession.user.userName, nowMillis);
             }
         }
         db.close();
@@ -1205,7 +1214,7 @@ const licencesDB = {
         db.close();
         for (let rowIndex = 0; rowIndex < rows.length; rowIndex += 1) {
             const termsConditionsObj = rows[rowIndex];
-            termsConditionsObj.startDateMaxString = dateTimeFns.dateIntegerToString(termsConditionsObj.startDateMax);
+            termsConditionsObj.startDateMaxString = dateTimeFns_1.dateTimeFns.dateIntegerToString(termsConditionsObj.startDateMax);
         }
         return rows;
     },
@@ -1225,8 +1234,8 @@ const licencesDB = {
     issueLicence: function (reqBody, reqSession) {
         const db = sqlite(dbPath);
         const nowDate = new Date();
-        const issueDate = dateTimeFns.dateToInteger(nowDate);
-        const issueTime = dateTimeFns.dateToTimeInteger(nowDate);
+        const issueDate = dateTimeFns_1.dateTimeFns.dateToInteger(nowDate);
+        const issueTime = dateTimeFns_1.dateTimeFns.dateToTimeInteger(nowDate);
         const info = db.prepare("update LotteryLicences" +
             " set issueDate = ?," +
             " issueTime = ?," +
@@ -1276,12 +1285,12 @@ const licencesDB = {
             " left join LotteryLicenceTransactions t on l.licenceID = t.licenceID and t.recordDelete_timeMillis is null" +
             " where l.recordDelete_timeMillis is null";
         if (reqBody.applicationDateStartString && reqBody.applicationDateStartString !== "") {
-            const applicationDateStart = dateTimeFns.dateStringToInteger(reqBody.applicationDateStartString);
+            const applicationDateStart = dateTimeFns_1.dateTimeFns.dateStringToInteger(reqBody.applicationDateStartString);
             sql += " and l.applicationDate >= ?";
             sqlParams.push(applicationDateStart);
         }
         if (reqBody.applicationDateEndString && reqBody.applicationDateEndString !== "") {
-            const applicationDateEnd = dateTimeFns.dateStringToInteger(reqBody.applicationDateEndString);
+            const applicationDateEnd = dateTimeFns_1.dateTimeFns.dateStringToInteger(reqBody.applicationDateEndString);
             sql += " and l.applicationDate <= ?";
             sqlParams.push(applicationDateEnd);
         }
@@ -1298,11 +1307,11 @@ const licencesDB = {
         db.close();
         for (let rowIndex = 0; rowIndex < rows.length; rowIndex += 1) {
             const record = rows[rowIndex];
-            record.applicationDateString = dateTimeFns.dateIntegerToString(record.applicationDate);
-            record.issueDateString = dateTimeFns.dateIntegerToString(record.issueDate);
+            record.applicationDateString = dateTimeFns_1.dateTimeFns.dateIntegerToString(record.applicationDate);
+            record.issueDateString = dateTimeFns_1.dateTimeFns.dateIntegerToString(record.issueDate);
             record.locationDisplayName =
                 record.locationName === "" ? record.locationAddress1 : record.locationName;
-            record.licenceType = (configFns.getLicenceType(record.licenceTypeKey) || {}).licenceType || "";
+            record.licenceType = (configFns_1.configFns.getLicenceType(record.licenceTypeKey) || {}).licenceType || "";
         }
         return rows;
     },
@@ -1315,8 +1324,8 @@ const licencesDB = {
             .get(reqBody.licenceID);
         const newTransactionIndex = row.maxIndex + 1;
         const rightNow = new Date();
-        const transactionDate = dateTimeFns.dateToInteger(rightNow);
-        const transactionTime = dateTimeFns.dateToTimeInteger(rightNow);
+        const transactionDate = dateTimeFns_1.dateTimeFns.dateToInteger(rightNow);
+        const transactionTime = dateTimeFns_1.dateTimeFns.dateToTimeInteger(rightNow);
         db.prepare("insert into LotteryLicenceTransactions (" +
             "licenceID, transactionIndex," +
             " transactionDate, transactionTime," +
@@ -1402,11 +1411,12 @@ const licencesDB = {
         db.close();
         for (let eventIndex = 0; eventIndex < rows.length; eventIndex += 1) {
             const eventObj = rows[eventIndex];
-            eventObj.eventDateString = dateTimeFns.dateIntegerToString(eventObj.eventDate);
-            eventObj.startTimeString = dateTimeFns.timeIntegerToString(eventObj.startTime || 0);
-            eventObj.endTimeString = dateTimeFns.timeIntegerToString(eventObj.endTime || 0);
+            eventObj.recordType = "event";
+            eventObj.eventDateString = dateTimeFns_1.dateTimeFns.dateIntegerToString(eventObj.eventDate);
+            eventObj.startTimeString = dateTimeFns_1.dateTimeFns.timeIntegerToString(eventObj.startTime || 0);
+            eventObj.endTimeString = dateTimeFns_1.dateTimeFns.timeIntegerToString(eventObj.endTime || 0);
             eventObj.locationDisplayName = (eventObj.locationName === "" ? eventObj.locationAddress1 : eventObj.locationName);
-            eventObj.canUpdate = canUpdateObject("event", eventObj, reqSession);
+            eventObj.canUpdate = canUpdateObject(eventObj, reqSession);
             delete eventObj.locationName;
             delete eventObj.locationAddress1;
             delete eventObj.bank_name;
@@ -1442,16 +1452,16 @@ const licencesDB = {
             sqlParams.push(reqBody.licenceTypeKey);
         }
         sql += " order by o.organizationName, o.organizationID, e.eventDate, l.licenceID";
-        const rows = db.prepare(sql)
-            .all(sqlParams);
+        const rows = db.prepare(sql).all(sqlParams);
         db.close();
         for (let eventIndex = 0; eventIndex < rows.length; eventIndex += 1) {
             const eventObj = rows[eventIndex];
-            eventObj.eventDateString = dateTimeFns.dateIntegerToString(eventObj.eventDate);
-            eventObj.reportDateString = dateTimeFns.dateIntegerToString(eventObj.reportDate);
-            eventObj.licenceType = (configFns.getLicenceType(eventObj.licenceTypeKey) || {}).licenceType || "";
+            eventObj.recordType = "event";
+            eventObj.eventDateString = dateTimeFns_1.dateTimeFns.dateIntegerToString(eventObj.eventDate);
+            eventObj.reportDateString = dateTimeFns_1.dateTimeFns.dateIntegerToString(eventObj.reportDate);
+            eventObj.licenceType = (configFns_1.configFns.getLicenceType(eventObj.licenceTypeKey) || {}).licenceType || "";
             eventObj.bank_name_isOutstanding = (eventObj.bank_name === null || eventObj.bank_name === "");
-            eventObj.canUpdate = canUpdateObject("event", eventObj, reqSession);
+            eventObj.canUpdate = canUpdateObject(eventObj, reqSession);
         }
         return rows;
     },
@@ -1482,11 +1492,11 @@ const licencesDB = {
             " where l.recordDelete_timeMillis is null";
         if (reqBody.eventDateStartString && reqBody.eventDateStartString !== "") {
             sql += " and (e.eventDate is null or e.eventDate >= ?)";
-            sqlParams.push(dateTimeFns.dateStringToInteger(reqBody.eventDateStartString));
+            sqlParams.push(dateTimeFns_1.dateTimeFns.dateStringToInteger(reqBody.eventDateStartString));
         }
         if (reqBody.eventDateEndString && reqBody.eventDateEndString !== "") {
             sql += " and (e.eventDate is null or e.eventDate <= ?)";
-            sqlParams.push(dateTimeFns.dateStringToInteger(reqBody.eventDateEndString));
+            sqlParams.push(dateTimeFns_1.dateTimeFns.dateStringToInteger(reqBody.eventDateEndString));
         }
         sql += " group by l.licenceID, l.licenceTypeKey, l.licenceFee" +
             " ) t" +
@@ -1506,11 +1516,12 @@ const licencesDB = {
             " and eventDate = ?")
             .get(licenceID, eventDate);
         if (eventObj) {
-            eventObj.eventDateString = dateTimeFns.dateIntegerToString(eventObj.eventDate);
-            eventObj.reportDateString = dateTimeFns.dateIntegerToString(eventObj.reportDate);
-            eventObj.startTimeString = dateTimeFns.timeIntegerToString(eventObj.startTime || 0);
-            eventObj.endTimeString = dateTimeFns.timeIntegerToString(eventObj.endTime || 0);
-            eventObj.canUpdate = canUpdateObject("event", eventObj, reqSession);
+            eventObj.recordType = "event";
+            eventObj.eventDateString = dateTimeFns_1.dateTimeFns.dateIntegerToString(eventObj.eventDate);
+            eventObj.reportDateString = dateTimeFns_1.dateTimeFns.dateIntegerToString(eventObj.reportDate);
+            eventObj.startTimeString = dateTimeFns_1.dateTimeFns.timeIntegerToString(eventObj.startTime || 0);
+            eventObj.endTimeString = dateTimeFns_1.dateTimeFns.timeIntegerToString(eventObj.endTime || 0);
+            eventObj.canUpdate = canUpdateObject(eventObj, reqSession);
             const rows = db.prepare("select fieldKey, fieldValue" +
                 " from LotteryEventFields" +
                 " where licenceID = ? and eventDate = ?")
@@ -1540,7 +1551,7 @@ const licencesDB = {
             " where licenceID = ?" +
             " and eventDate = ?" +
             " and recordDelete_timeMillis is null")
-            .run(dateTimeFns.dateStringToInteger(reqBody.reportDateString), reqBody.bank_name, reqBody.bank_address, reqBody.bank_accountNumber, reqBody.bank_accountBalance, reqBody.costs_receipts, reqBody.costs_admin, reqBody.costs_prizesAwarded, reqBody.costs_charitableDonations, reqBody.costs_netProceeds, reqBody.costs_amountDonated, reqSession.user.userName, nowMillis, reqBody.licenceID, reqBody.eventDate);
+            .run(dateTimeFns_1.dateTimeFns.dateStringToInteger(reqBody.reportDateString), reqBody.bank_name, reqBody.bank_address, reqBody.bank_accountNumber, reqBody.bank_accountBalance, reqBody.costs_receipts, reqBody.costs_admin, reqBody.costs_prizesAwarded, reqBody.costs_charitableDonations, reqBody.costs_netProceeds, reqBody.costs_amountDonated, reqSession.user.userName, nowMillis, reqBody.licenceID, reqBody.eventDate);
         const changeCount = info.changes;
         if (!changeCount) {
             db.close();
@@ -1624,4 +1635,3 @@ const licencesDB = {
         return changeCount;
     }
 };
-module.exports = licencesDB;

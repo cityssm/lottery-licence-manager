@@ -5,7 +5,7 @@
 import sqlite = require("better-sqlite3");
 
 
-const dbInit = {
+export const dbInit = {
 
   initUsersDB: function() {
 
@@ -385,6 +385,3 @@ const dbInit = {
 
   }
 };
-
-
-module.exports = dbInit;

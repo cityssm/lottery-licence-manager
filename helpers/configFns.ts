@@ -1,5 +1,7 @@
 "use strict";
 
+import { Config_LicenceType } from "../helpers/llmTypes";
+
 /*
  * LOAD CONFIGURATION
  */
@@ -20,16 +22,6 @@ try {
     " See \"config-example.js\" or \"config-example-ontario.js\" to get started.");
 
 }
-
-
-/*
- * SET UP TYPES
- */
-
-type LicenceType = {
-  licenceTypeKey: string,
-  licenceType: string
-};
 
 
 /*
@@ -122,17 +114,17 @@ let uid = Date.now();
 
 
 
-const configFns = {
+export const configFns = {
 
   getProperty: getProperty,
 
-  getLicenceType: function(licenceTypeKey: string) : LicenceType {
+  getLicenceType: function(licenceTypeKey: string): Config_LicenceType {
 
     if (!licenceTypeCache[licenceTypeKey]) {
 
       licenceTypeCache[licenceTypeKey] =
         getProperty("licenceTypes").find(
-          function(ele: LicenceType) {
+          function(ele: Config_LicenceType) {
             return (ele.licenceTypeKey === licenceTypeKey);
           }
         );
@@ -155,6 +147,3 @@ const configFns = {
 
   }
 };
-
-
-export = configFns;

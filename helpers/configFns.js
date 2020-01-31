@@ -1,5 +1,6 @@
 "use strict";
-var config = {};
+Object.defineProperty(exports, "__esModule", { value: true });
+let config = {};
 try {
     config = require("../data/config");
 }
@@ -9,7 +10,7 @@ catch (e) {
         " To customize, create your own \"config.js\" in the \"data\" folder." +
         " See \"config-example.js\" or \"config-example-ontario.js\" to get started.");
 }
-var configFallbackValues = {
+const configFallbackValues = {
     "application.applicationName": "Lottery Licence System",
     "application.logoURL": "/images/bingoBalls.png",
     "application.httpPort": 3000,
@@ -47,9 +48,9 @@ var configFallbackValues = {
     "amendments.trackTicketTypeDelete": true
 };
 function getProperty(propertyName) {
-    var propertyNameSplit = propertyName.split(".");
-    var currentObj = config;
-    for (var index = 0; index < propertyNameSplit.length; index += 1) {
+    const propertyNameSplit = propertyName.split(".");
+    let currentObj = config;
+    for (let index = 0; index < propertyNameSplit.length; index += 1) {
         currentObj = currentObj[propertyNameSplit[index]];
         if (!currentObj) {
             return configFallbackValues[propertyName];
@@ -57,9 +58,9 @@ function getProperty(propertyName) {
     }
     return currentObj;
 }
-var licenceTypeCache = {};
-var uid = Date.now();
-var configFns = {
+const licenceTypeCache = {};
+let uid = Date.now();
+exports.configFns = {
     getProperty: getProperty,
     getLicenceType: function (licenceTypeKey) {
         if (!licenceTypeCache[licenceTypeKey]) {
@@ -72,9 +73,8 @@ var configFns = {
     },
     config: config,
     getUID: function () {
-        var toReturn = uid;
+        const toReturn = uid;
         uid += 1;
         return "uid" + toReturn.toString();
     }
 };
-module.exports = configFns;

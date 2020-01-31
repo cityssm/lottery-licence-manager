@@ -1,4 +1,4 @@
-declare const dateTimeFns: {
+export declare const dateTimeFns: {
     dateIntegerToString: (dateInteger: number) => string;
     dateToString: (dateObj: Date) => string;
     dateToInteger: (dateObj: Date) => number;
@@ -8,4 +8,3 @@ declare const dateTimeFns: {
     timeStringToInteger: (timeString: string) => number;
     dateToTimeInteger: (dateObj: Date) => number;
 };
-export = dateTimeFns;
