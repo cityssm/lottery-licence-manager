@@ -18,7 +18,7 @@ router.get("/", function(_req, res) {
 
 });
 
-// eslint-disable-next-line complexity
+
 router.all("/:reportName", function(req, res) {
 
   const reportName = req.params.reportName;

@@ -32,10 +32,12 @@ router.post("/doSaveApplicationSetting", function(req, res) {
 
   if (req.session.user.userProperties.isAdmin !== "true") {
 
-    res.json({
-      success: false,
-      message: "Not Allowed"
-    });
+    res
+      .status(403)
+      .json({
+        success: false,
+        message: "Forbidden"
+      });
 
     return;
 
@@ -79,10 +81,12 @@ router.post("/doCreateUser", function(req, res) {
 
   if (req.session.user.userProperties.isAdmin !== "true") {
 
-    res.json({
-      success: false,
-      message: "Not Allowed"
-    });
+    res
+      .status(403)
+      .json({
+        success: false,
+        message: "Forbidden"
+      });
 
     return;
 
@@ -113,10 +117,12 @@ router.post("/doUpdateUser", function(req, res) {
 
   if (req.session.user.userProperties.isAdmin !== "true") {
 
-    res.json({
-      success: false,
-      message: "Not Allowed"
-    });
+    res
+      .status(403)
+      .json({
+        success: false,
+        message: "Forbidden"
+      });
 
     return;
 
@@ -135,10 +141,12 @@ router.post("/doUpdateUserProperty", function(req, res) {
 
   if (req.session.user.userProperties.isAdmin !== "true") {
 
-    res.json({
-      success: false,
-      message: "Not Allowed"
-    });
+    res
+      .status(403)
+      .json({
+        success: false,
+        message: "Forbidden"
+      });
 
     return;
 
@@ -157,10 +165,12 @@ router.post("/doResetPassword", function(req, res) {
 
   if (req.session.user.userProperties.isAdmin !== "true") {
 
-    res.json({
-      success: false,
-      message: "Not Allowed"
-    });
+    res
+      .status(403)
+      .json({
+        success: false,
+        message: "Forbidden"
+      });
 
     return;
 
@@ -180,11 +190,12 @@ router.post("/doGetUserProperties", function(req, res) {
 
   if (req.session.user.userProperties.isAdmin !== "true") {
 
-    res.json({
-      success: false,
-      message: "Not Allowed"
-    });
-
+    res
+      .status(403)
+      .json({
+        success: false,
+        message: "Forbidden"
+      });
     return;
 
   }

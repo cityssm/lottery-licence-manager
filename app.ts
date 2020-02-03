@@ -89,7 +89,7 @@ app.use(session({
     dir: "data",
     db: "sessions.db"
   }),
-  key: sessionCookieName,
+  name: sessionCookieName,
   secret: configFns.getProperty("session.secret"),
   resave: true,
   saveUninitialized: false,
@@ -113,7 +113,7 @@ app.use(function(req, res, next) {
 });
 
 // Redirect logged in users
-const sessionChecker = function(req, res, next) {
+const sessionChecker = function(req: express.Request, res : express.Response, next : express.NextFunction) {
 
   if (req.session.user && req.cookies[sessionCookieName]) {
 
@@ -188,7 +188,7 @@ app.use(function(_req, _res, next) {
 });
 
 // Error handler
-app.use(function(err, req, res, next) {
+app.use(function(err, req: express.Request, res: express.Response, _next : express.NextFunction) {
 
   // Set locals, only providing error in development
   res.locals.message = err.message;

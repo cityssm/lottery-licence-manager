@@ -193,10 +193,12 @@ router.post("/doSave", function(req, res) {
 
   if (req.session.user.userProperties.canCreate !== "true") {
 
-    res.json({
-      success: false,
-      message: "Not Allowed"
-    });
+    res
+      .status(403)
+      .json({
+        success: false,
+        message: "Forbidden"
+      });
 
     return;
 
@@ -240,11 +242,12 @@ router.post("/doAddTransaction", function(req, res) {
 
   if (req.session.user.userProperties.canCreate !== "true") {
 
-    res.json({
-      success: false,
-      message: "Not Allowed"
-    });
-
+    res
+      .status(403)
+      .json({
+        success: false,
+        message: "Forbidden"
+      });
     return;
 
   }
@@ -264,10 +267,12 @@ router.post("/doVoidTransaction", function(req, res) {
 
   if (req.session.user.userProperties.canCreate !== "true") {
 
-    res.json({
-      success: false,
-      message: "Not Allowed"
-    });
+    res
+      .status(403)
+      .json({
+        success: false,
+        message: "Forbidden"
+      });
 
     return;
 
@@ -298,10 +303,12 @@ router.post("/doIssueLicence", function(req, res) {
 
   if (req.session.user.userProperties.canCreate !== "true") {
 
-    res.json({
-      success: false,
-      message: "Not Allowed"
-    });
+    res
+      .status(403)
+      .json({
+        success: false,
+        message: "Forbidden"
+      });
 
     return;
 
@@ -332,11 +339,12 @@ router.post("/doUnissueLicence", function(req, res) {
 
   if (req.session.user.userProperties.canCreate !== "true") {
 
-    res.json({
-      success: false,
-      message: "Not Allowed"
-    });
-
+    res
+      .status(403)
+      .json({
+        success: false,
+        message: "Forbidden"
+      });
     return;
 
   }
@@ -366,10 +374,12 @@ router.post("/doDelete", function(req, res) {
 
   if (req.session.user.userProperties.canCreate !== "true") {
 
-    res.json({
-      success: false,
-      message: "Not Allowed"
-    });
+    res
+      .status(403)
+      .json({
+        success: false,
+        message: "Forbidden"
+      });
 
     return;
 

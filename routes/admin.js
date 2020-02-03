@@ -16,9 +16,11 @@ router.get("/applicationSettings", function (req, res) {
 });
 router.post("/doSaveApplicationSetting", function (req, res) {
     if (req.session.user.userProperties.isAdmin !== "true") {
-        res.json({
+        res
+            .status(403)
+            .json({
             success: false,
-            message: "Not Allowed"
+            message: "Forbidden"
         });
         return;
     }
@@ -42,9 +44,11 @@ router.get("/userManagement", function (req, res) {
 });
 router.post("/doCreateUser", function (req, res) {
     if (req.session.user.userProperties.isAdmin !== "true") {
-        res.json({
+        res
+            .status(403)
+            .json({
             success: false,
-            message: "Not Allowed"
+            message: "Forbidden"
         });
         return;
     }
@@ -64,9 +68,11 @@ router.post("/doCreateUser", function (req, res) {
 });
 router.post("/doUpdateUser", function (req, res) {
     if (req.session.user.userProperties.isAdmin !== "true") {
-        res.json({
+        res
+            .status(403)
+            .json({
             success: false,
-            message: "Not Allowed"
+            message: "Forbidden"
         });
         return;
     }
@@ -77,9 +83,11 @@ router.post("/doUpdateUser", function (req, res) {
 });
 router.post("/doUpdateUserProperty", function (req, res) {
     if (req.session.user.userProperties.isAdmin !== "true") {
-        res.json({
+        res
+            .status(403)
+            .json({
             success: false,
-            message: "Not Allowed"
+            message: "Forbidden"
         });
         return;
     }
@@ -90,9 +98,11 @@ router.post("/doUpdateUserProperty", function (req, res) {
 });
 router.post("/doResetPassword", function (req, res) {
     if (req.session.user.userProperties.isAdmin !== "true") {
-        res.json({
+        res
+            .status(403)
+            .json({
             success: false,
-            message: "Not Allowed"
+            message: "Forbidden"
         });
         return;
     }
@@ -104,9 +114,11 @@ router.post("/doResetPassword", function (req, res) {
 });
 router.post("/doGetUserProperties", function (req, res) {
     if (req.session.user.userProperties.isAdmin !== "true") {
-        res.json({
+        res
+            .status(403)
+            .json({
             success: false,
-            message: "Not Allowed"
+            message: "Forbidden"
         });
         return;
     }

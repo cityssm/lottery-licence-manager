@@ -96,9 +96,11 @@ router.post("/doGetTicketTypes", function (req, res) {
 });
 router.post("/doSave", function (req, res) {
     if (req.session.user.userProperties.canCreate !== "true") {
-        res.json({
+        res
+            .status(403)
+            .json({
             success: false,
-            message: "Not Allowed"
+            message: "Forbidden"
         });
         return;
     }
@@ -127,9 +129,11 @@ router.post("/doSave", function (req, res) {
 });
 router.post("/doAddTransaction", function (req, res) {
     if (req.session.user.userProperties.canCreate !== "true") {
-        res.json({
+        res
+            .status(403)
+            .json({
             success: false,
-            message: "Not Allowed"
+            message: "Forbidden"
         });
         return;
     }
@@ -142,9 +146,11 @@ router.post("/doAddTransaction", function (req, res) {
 });
 router.post("/doVoidTransaction", function (req, res) {
     if (req.session.user.userProperties.canCreate !== "true") {
-        res.json({
+        res
+            .status(403)
+            .json({
             success: false,
-            message: "Not Allowed"
+            message: "Forbidden"
         });
         return;
     }
@@ -164,9 +170,11 @@ router.post("/doVoidTransaction", function (req, res) {
 });
 router.post("/doIssueLicence", function (req, res) {
     if (req.session.user.userProperties.canCreate !== "true") {
-        res.json({
+        res
+            .status(403)
+            .json({
             success: false,
-            message: "Not Allowed"
+            message: "Forbidden"
         });
         return;
     }
@@ -186,9 +194,11 @@ router.post("/doIssueLicence", function (req, res) {
 });
 router.post("/doUnissueLicence", function (req, res) {
     if (req.session.user.userProperties.canCreate !== "true") {
-        res.json({
+        res
+            .status(403)
+            .json({
             success: false,
-            message: "Not Allowed"
+            message: "Forbidden"
         });
         return;
     }
@@ -208,9 +218,11 @@ router.post("/doUnissueLicence", function (req, res) {
 });
 router.post("/doDelete", function (req, res) {
     if (req.session.user.userProperties.canCreate !== "true") {
-        res.json({
+        res
+            .status(403)
+            .json({
             success: false,
-            message: "Not Allowed"
+            message: "Forbidden"
         });
         return;
     }

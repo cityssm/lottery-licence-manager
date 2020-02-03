@@ -43,9 +43,11 @@ router.post("/doGetFinancialSummary", function (req, res) {
 });
 router.post("/doSave", function (req, res) {
     if (req.session.user.userProperties.canUpdate !== "true") {
-        res.json({
+        res
+            .status(403)
+            .json({
             success: false,
-            message: "Not Allowed"
+            message: "Forbidden"
         });
         return;
     }
@@ -65,9 +67,11 @@ router.post("/doSave", function (req, res) {
 });
 router.post("/doDelete", function (req, res) {
     if (req.session.user.userProperties.canUpdate !== "true") {
-        res.json({
+        res
+            .status(403)
+            .json({
             success: false,
-            message: "Not Allowed"
+            message: "Forbidden"
         });
         return;
     }

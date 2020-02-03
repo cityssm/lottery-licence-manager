@@ -51,7 +51,7 @@ type Config_DefaultsConfig = {
 };
 
 type Config_LicencesConfig = {
-  feeCalculationFn: any,
+  feeCalculationFn: Function,
   printTemplate: string,
   externalLicenceNumber?: Config_ExternalLicenceNumber,
   externalReceiptNumber?: Config_ExternalReceiptNumber
@@ -114,14 +114,14 @@ export type RawRowsColumnsReturn = {
 };
 
 export type Record = {
-  recordType: "location" | "organization" | "remark" | "licence" | "event",
+  recordType: "location" | "organization" | "remark" | "bankRecord" | "licence" | "event",
 
   recordCreate_userName: string,
   recordCreate_timeMillis: number,
   recordUpdate_userName: string,
   recordUpdate_timeMillis: number,
-  recordDelete_userName: string,
-  recordDelete_timeMillis: number,
+  recordDelete_userName?: string,
+  recordDelete_timeMillis?: number,
 
   canUpdate: boolean
 };
@@ -168,10 +168,26 @@ export interface Organization extends Record {
 
   // calculated values
   canUpdate: boolean,
-  organizationRepresentatives: OrganizationRepresentative[]
+  organizationRepresentatives: OrganizationRepresentative[],
+
+  // search results
+  licences_endDateMax: number,
+  licences_endDateMaxString: string
 };
 
 export type OrganizationRepresentative = {
+  organizationID: number
+  representativeIndex: number,
+  representativeName: string,
+  representativeTitle: string,
+  representativeAddress1: string,
+  representativeAddress2: string,
+  representativeCity: string,
+  representativeProvince: string,
+  representativePostalCode: string,
+  representativePhoneNumber: string,
+  representativeEmailAddress: string,
+  isDefault: boolean
 };
 
 export interface OrganizationRemark extends Record {
@@ -186,6 +202,26 @@ export interface OrganizationRemark extends Record {
   remarkTimeString: string,
   remark: string,
   isImportant: boolean
+};
+
+export interface OrganizationBankRecord extends Record {
+
+  recordType: "bankRecord",
+
+  organizationID: number,
+  recordIndex: number,
+
+  bankingYear: number,
+  bankingMonth: number,
+  bankRecordType: "statement" | "cheques" | "receipts",
+  accountNumber: string,
+
+  recordDate: number,
+  recordDateString: string,
+
+  recordNote: string,
+
+  recordIsNA: boolean
 };
 
 export interface LotteryLicence extends Location, Record {
@@ -272,6 +308,14 @@ export interface LotteryEvent extends LotteryLicence {
 export type FieldData = {
   fieldKey: string,
   fieldValue: string
+};
+
+export type LotteryEventStats = {
+  eventYearMin: number
+};
+
+export type LotteryLicenceStats = {
+  applicationYearMin: number
 };
 
 

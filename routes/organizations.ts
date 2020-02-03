@@ -88,7 +88,13 @@ router.post("/doAddRemark", function(req, res) {
 
   if (req.session.user.userProperties.canCreate !== "true") {
 
-    res.json("not allowed");
+    res
+      .status(403)
+      .json({
+        success: false,
+        message: "Forbidden"
+      });
+
     return;
 
   }
@@ -108,7 +114,13 @@ router.post("/doEditRemark", function(req, res) {
 
   if (req.session.user.userProperties.canCreate !== "true") {
 
-    res.json("not allowed");
+    res
+      .status(403)
+      .json({
+        success: false,
+        message: "Forbidden"
+      });
+
     return;
 
   }
@@ -138,7 +150,13 @@ router.post("/doDeleteRemark", function(req, res) {
 
   if (req.session.user.userProperties.canCreate !== "true") {
 
-    res.json("not allowed");
+    res
+      .status(403)
+      .json({
+        success: false,
+        message: "Forbidden"
+      });
+
     return;
 
   }
@@ -192,7 +210,13 @@ router.post("/doSave", function(req, res) {
 
   if (req.session.user.userProperties.canCreate !== "true") {
 
-    res.json("not allowed");
+    res
+      .status(403)
+      .json({
+        success: false,
+        message: "Forbidden"
+      });
+
     return;
 
   }
@@ -235,10 +259,12 @@ router.post("/doDelete", function(req, res) {
 
   if (req.session.user.userProperties.canCreate !== "true") {
 
-    res.json({
-      success: false,
-      message: "Access denied."
-    });
+    res
+      .status(403)
+      .json({
+        success: false,
+        message: "Forbidden"
+      });
 
     return;
 
@@ -269,7 +295,13 @@ router.post("/doRestore", function(req, res) {
 
   if (req.session.user.userProperties.canUpdate !== "true") {
 
-    res.json("not allowed");
+    res
+      .status(403)
+      .json({
+        success: false,
+        message: "Forbidden"
+      });
+
     return;
 
   }
@@ -386,7 +418,13 @@ router.post("/:organizationID/doAddOrganizationRepresentative", function(req, re
 
   if (req.session.user.userProperties.canCreate !== "true") {
 
-    res.json("not allowed");
+    res
+      .status(403)
+      .json({
+        success: false,
+        message: "Forbidden"
+      });
+
     return;
 
   }
@@ -417,7 +455,13 @@ router.post("/:organizationID/doEditOrganizationRepresentative", function(req, r
 
   if (req.session.user.userProperties.canCreate !== "true") {
 
-    res.json("not allowed");
+    res
+      .status(403)
+      .json({
+        success: false,
+        message: "Forbidden"
+      });
+
     return;
 
   }
@@ -448,7 +492,13 @@ router.post("/:organizationID/doDeleteOrganizationRepresentative", function(req,
 
   if (req.session.user.userProperties.canCreate !== "true") {
 
-    res.json("not allowed");
+    res
+      .status(403)
+      .json({
+        success: false,
+        message: "Forbidden"
+      });
+
     return;
 
   }
@@ -469,7 +519,13 @@ router.post("/:organizationID/doSetDefaultRepresentative", function(req, res) {
 
   if (req.session.user.userProperties.canCreate !== "true") {
 
-    res.json("not allowed");
+    res
+      .status(403)
+      .json({
+        success: false,
+        message: "Forbidden"
+      });
+      
     return;
 
   }

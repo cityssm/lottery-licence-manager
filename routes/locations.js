@@ -16,9 +16,11 @@ router.post("/doGetLocations", function (req, res) {
 });
 router.post("/doCreate", function (req, res) {
     if (req.session.user.userProperties.canCreate !== "true") {
-        res.json({
+        res
+            .status(403)
+            .json({
             success: false,
-            message: "Not Allowed"
+            message: "Forbidden"
         });
         return;
     }
@@ -31,9 +33,11 @@ router.post("/doCreate", function (req, res) {
 });
 router.post("/doUpdate", function (req, res) {
     if (req.session.user.userProperties.canCreate !== "true") {
-        res.json({
+        res
+            .status(403)
+            .json({
             success: false,
-            message: "Not Allowed"
+            message: "Forbidden"
         });
         return;
     }
@@ -53,7 +57,12 @@ router.post("/doUpdate", function (req, res) {
 });
 router.post("/doDelete", function (req, res) {
     if (req.session.user.userProperties.canCreate !== "true") {
-        res.json("not allowed");
+        res
+            .status(403)
+            .json({
+            success: false,
+            message: "Forbidden"
+        });
         return;
     }
     const changeCount = licencesDB.deleteLocation(req.body.locationID, req.session);
@@ -72,7 +81,12 @@ router.post("/doDelete", function (req, res) {
 });
 router.post("/doRestore", function (req, res) {
     if (req.session.user.userProperties.canUpdate !== "true") {
-        res.json("not allowed");
+        res
+            .status(403)
+            .json({
+            success: false,
+            message: "Forbidden"
+        });
         return;
     }
     const changeCount = licencesDB.restoreLocation(req.body.locationID, req.session);
@@ -91,7 +105,12 @@ router.post("/doRestore", function (req, res) {
 });
 router.post("/doMerge", function (req, res) {
     if (req.session.user.userProperties.isAdmin !== "true") {
-        res.json("not allowed");
+        res
+            .status(403)
+            .json({
+            success: false,
+            message: "Forbidden"
+        });
         return;
     }
     const targetLocationID = req.body.targetLocationID;

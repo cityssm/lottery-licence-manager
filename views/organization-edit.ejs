@@ -148,286 +148,309 @@
 
 <% if (!isCreate) { %>
 
-  <div class="panel">
-    <div class="panel-heading">
-      <div class="level">
-        <div class="level-left">
-          <h2 class="has-text-weight-bold">Organization Representatives</h2>
-        </div>
-        <div class="level-right has-text-weight-normal is-hidden-print">
-          <div class="field is-grouped justify-flex-end">
-            <div class="control">
-              <button class="button is-primary is-small is-add-representative-button">
-                <span class="icon is-small">
-                  <i class="fas fa-user-plus" aria-hidden="true"></i>
-                </span>
-                <span>Add a Representative</span>
-              </button>
+  <div class="tabs is-boxed" id="tabs--organization">
+    <ul>
+      <li class="is-active">
+        <a href="#organizationTab--representatives">Representatives</a>
+      </li>
+      <li>
+        <a href="#organizationTab--licences">Licences</a>
+      </li>
+      <li>
+        <a href="#organizationTab--remarks">Remarks</a>
+      </li>
+      <li>
+        <a href="#organizationTab--bankRecords">Bank Records</a>
+      </li>
+    </ul>
+  </div>
+
+  <div>
+    <div class="tab-content is-active" id="organizationTab--representatives">
+      <div class="panel">
+        <div class="panel-heading">
+          <div class="level">
+            <div class="level-left">
+              <h2 class="has-text-weight-bold">Organization Representatives</h2>
             </div>
-            <div class="control">
-              <a class="button is-small" href="/reports/representatives-byOrganization?organizationID=<%= organization.organizationID %>" target="_blank" download>
-                <span class="icon is-small">
-                  <i class="fas fa-file-download" aria-hidden="true"></i>
-                </span>
-                <span>Export Representatives</span>
-              </a>
+            <div class="level-right has-text-weight-normal is-hidden-print">
+              <div class="field is-grouped justify-flex-end">
+                <div class="control">
+                  <button class="button is-primary is-small is-add-representative-button">
+                    <span class="icon is-small">
+                      <i class="fas fa-user-plus" aria-hidden="true"></i>
+                    </span>
+                    <span>Add a Representative</span>
+                  </button>
+                </div>
+                <div class="control">
+                  <a class="button is-small" href="/reports/representatives-byOrganization?organizationID=<%= organization.organizationID %>" target="_blank" download>
+                    <span class="icon is-small">
+                      <i class="fas fa-file-download" aria-hidden="true"></i>
+                    </span>
+                    <span>Export Representatives</span>
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
         </div>
+
+        <table class="table is-fullwidth is-striped is-hoverable is-representative-table">
+          <thead>
+            <tr>
+              <th class="has-width-50">Default</th>
+              <th>Name</th>
+              <th>Address</th>
+              <th>Phone Number</th>
+              <th>Email Address</th>
+              <th class="is-hidden-print">
+                <span class="sr-only">Options</span>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <%
+              for (let index = 0; index < organization.organizationRepresentatives.length; index += 1) {
+                const representativeObj = organization.organizationRepresentatives[index];
+            %>
+              <tr data-representative-index="<%= representativeObj.representativeIndex %>"
+                data-representative-name="<%= representativeObj.representativeName %>"
+                data-representative-title="<%= representativeObj.representativeTitle %>"
+                data-representative-address-1="<%= representativeObj.representativeAddress1 %>"
+                data-representative-address-2="<%= representativeObj.representativeAddress2 %>"
+                data-representative-city="<%= representativeObj.representativeCity %>"
+                data-representative-province="<%= representativeObj.representativeProvince %>"
+                data-representative-postal-code="<%= representativeObj.representativePostalCode %>"
+                data-representative-phone-number="<%= representativeObj.representativePhoneNumber %>"
+                data-representative-email-address="<%= representativeObj.representativeEmailAddress %>">
+                <td>
+                  <div class="field">
+                    <input class="is-checkradio is-info" id="representative-isDefault--<%= representativeObj.representativeIndex %>" name="representative-isDefault" type="radio" value="<%= representativeObj.representativeIndex %>" <%= (representativeObj.isDefault === 1 ? " checked" : "") %> />
+                    <label for="representative-isDefault--<%= representativeObj.representativeIndex %>"></label>
+                  </div>
+                </td>
+                <td>
+                  <%= representativeObj.representativeName %><br />
+                  <small><%= representativeObj.representativeTitle %></small>
+                </td>
+                <td>
+                  <%= representativeObj.representativeAddress1 %><br />
+                  <small>
+                    <%= representativeObj.representativeAddress2 %>
+                    <%- (representativeObj.representativeAddress2 === "" ? "" : "<br />") %>
+                    <%= representativeObj.representativeCity %>, <%= representativeObj.representativeProvince %><br />
+                    <%= representativeObj.representativePostalCode %>
+                  </small>
+                </td>
+                <td>
+                  <%= representativeObj.representativePhoneNumber %>
+                </td>
+                <td>
+                  <%= representativeObj.representativeEmailAddress %>
+                </td>
+                <td class="is-hidden-print">
+                  <div class="buttons is-right has-addons">
+                    <button class="button is-small is-edit-representative-button" type="button" data-tooltip="Edit Representative">
+                      <span class="icon">
+                        <i class="fas fa-pencil-alt" aria-hidden="true"></i>
+                      </span>
+                      <span>Edit</span>
+                    </button>
+                    <button class="button is-small has-text-danger is-delete-representative-button" type="button" data-tooltip="Delete Representative">
+                      <i class="fas fa-trash" aria-hidden="true"></i>
+                      <span class="sr-only">Delete</span>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal is-add-representative-modal">
+        <div class="modal-background"></div>
+        <form>
+          <div class="modal-card">
+            <header class="modal-card-head">
+              <h3 class="modal-card-title">Add a Representative</h3>
+              <button class="delete is-cancel-button" aria-label="close" type="button"></button>
+            </header>
+            <section class="modal-card-body">
+              <div class="field">
+                <label class="label" for="addOrganizationRepresentative--representativeName">Representative Name</label>
+                <div class="control">
+                  <input class="input" id="addOrganizationRepresentative--representativeName" name="representativeName" type="text" value="" maxlength="100" autocomplete="off" required />
+                </div>
+              </div>
+              <div class="field">
+                <label class="label" for="addOrganizationRepresentative--representativeTitle">Representative Title</label>
+                <div class="control">
+                  <input class="input" id="addOrganizationRepresentative--representativeTitle" name="representativeTitle" type="text" value="" maxlength="100" autocomplete="off" required />
+                </div>
+              </div>
+              <label class="label" for="addOrganizationRepresentative--representativeAddress1">Representative Address</label>
+              <div class="field has-addons">
+                <div class="control is-expanded">
+                  <input class="input" id="addOrganizationRepresentative--representativeAddress1" name="representativeAddress1" type="text" value="" placeholder="Line 1" maxlength="50" autocomplete="off" required />
+                </div>
+                <div class="control">
+                  <a class="button is-copy-organization-address-button" data-tooltip="Copy Organization" role="button" href="#">
+                    <span class="icon"><i class="fas fa-copy" aria-hidden="true"></i></span>
+                    <span>Copy</span>
+                  </a>
+                </div>
+              </div>
+              <div class="field">
+                <div class="control">
+                  <input class="input" id="addOrganizationRepresentative--representativeAddress2" name="representativeAddress2" type="text" value="" placeholder="Line 2" maxlength="50" autocomplete="off" />
+                </div>
+              </div>
+              <div class="columns">
+                <div class="column is-8">
+                  <div class="field">
+                    <label class="label" for="addOrganizationRepresentative--representativeCity">City</label>
+                    <div class="control">
+                      <input class="input" id="addOrganizationRepresentative--representativeCity" name="representativeCity" type="text" value="<%= configFns.getProperty("defaults.city") %>" maxlength="20" required />
+                    </div>
+                  </div>
+                </div>
+                <div class="column">
+                  <div class="field">
+                    <label class="label" for="addOrganizationRepresentative--representativeProvince">Province</label>
+                    <div class="control">
+                      <input class="input" id="addOrganizationRepresentative--representativeProvince" name="representativeProvince" type="text" value="<%= configFns.getProperty("defaults.province") %>" maxlength="2" required />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="columns">
+                <div class="column is-6">
+                  <div class="field">
+                    <label class="label" for="addOrganizationRepresentative--representativePostalCode">Postal Code</label>
+                    <div class="control">
+                      <input class="input" id="addOrganizationRepresentative--representativePostalCode" name="representativePostalCode" type="text" value="" minlength="5" maxlength="7" autocomplete="off" required />
+                    </div>
+                  </div>
+                </div>
+                <div class="column">
+                  <div class="field">
+                    <label class="label" for="addOrganizationRepresentative--representativePhoneNumber">Phone Number</label>
+                    <div class="control">
+                      <input class="input" id="addOrganizationRepresentative--representativePhoneNumber" name="representativePhoneNumber" type="tel" value="" minlength="10" maxlength="30" pattern="^\+?[(]?\d{3}[)]?[ -]?\d{3}[ -]?\d{4}" autocomplete="off" required />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="field has-margin-bottom-20">
+                <label class="label" for="addOrganizationRepresentative--representativeEmailAddress">Email Address</label>
+                <div class="control">
+                  <input class="input" id="addOrganizationRepresentative--representativeEmailAddress" name="representativeEmailAddress" type="email" value="" maxlength="200" autocomplete="off" />
+                </div>
+              </div>
+            </section>
+            <footer class="modal-card-foot justify-right">
+              <button class="button is-cancel-button" type="button">Cancel</button>
+              <button class="button is-success" type="submit">Add Representative</button>
+            </footer>
+          </div>
+        </form>
+      </div>
+      <div class="modal is-edit-representative-modal">
+        <div class="modal-background"></div>
+        <form>
+          <div class="modal-card">
+            <header class="modal-card-head">
+              <h3 class="modal-card-title">Edit a Representative</h3>
+              <button class="delete is-cancel-button" aria-label="close" type="button"></button>
+            </header>
+            <section class="modal-card-body">
+              <input id="editOrganizationRepresentative--representativeIndex" name="representativeIndex" type="hidden" value="" />
+              <input id="editOrganizationRepresentative--isDefault" name="isDefault" type="hidden" value="" />
+              <div class="field">
+                <label class="label" for="editOrganizationRepresentative--representativeName">Representative Name</label>
+                <div class="control">
+                  <input class="input" id="editOrganizationRepresentative--representativeName" name="representativeName" type="text" value="" maxlength="100" autocomplete="off" required />
+                </div>
+              </div>
+              <div class="field">
+                <label class="label" for="editOrganizationRepresentative--representativeTitle">Representative Title</label>
+                <div class="control">
+                  <input class="input" id="editOrganizationRepresentative--representativeTitle" name="representativeTitle" type="text" value="" maxlength="100" autocomplete="off" required />
+                </div>
+              </div>
+              <div class="field">
+                <label class="label" for="editOrganizationRepresentative--representativeAddress1">Representative Address</label>
+                <div class="control">
+                  <input class="input" id="editOrganizationRepresentative--representativeAddress1" name="representativeAddress1" type="text" value="" placeholder="Line 1" maxlength="50" autocomplete="off" required />
+                </div>
+              </div>
+              <div class="field">
+                <div class="control">
+                  <input class="input" id="editOrganizationRepresentative--representativeAddress2" name="representativeAddress2" type="text" value="" placeholder="Line 2" maxlength="50" autocomplete="off" />
+                </div>
+              </div>
+              <div class="columns">
+                <div class="column is-8">
+                  <div class="field">
+                    <label class="label" for="editOrganizationRepresentative--representativeCity">City</label>
+                    <div class="control">
+                      <input class="input" id="editOrganizationRepresentative--representativeCity" name="representativeCity" type="text" value="" maxlength="20" required />
+                    </div>
+                  </div>
+                </div>
+                <div class="column">
+                  <div class="field">
+                    <label class="label" for="editOrganizationRepresentative--representativeProvince">Province</label>
+                    <div class="control">
+                      <input class="input" id="editOrganizationRepresentative--representativeProvince" name="representativeProvince" type="text" value="" maxlength="2" required />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="columns">
+                <div class="column is-6">
+                  <div class="field">
+                    <label class="label" for="editOrganizationRepresentative--representativePostalCode">Postal Code</label>
+                    <div class="control">
+                      <input class="input" id="editOrganizationRepresentative--representativePostalCode" name="representativePostalCode" type="text" value="" minlength="5" maxlength="7" autocomplete="off" required />
+                    </div>
+                  </div>
+                </div>
+                <div class="column">
+                  <div class="field">
+                    <label class="label" for="editOrganizationRepresentative--representativePhoneNumber">Phone Number</label>
+                    <div class="control">
+                      <input class="input" id="editOrganizationRepresentative--representativePhoneNumber" name="representativePhoneNumber" type="tel" value="" minlength="10" maxlength="30" pattern="^\+?[(]?\d{3}[)]?[ -]?\d{3}[ -]?\d{4}" autocomplete="off" required />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="field has-margin-bottom-20">
+                <label class="label" for="editOrganizationRepresentative--representativeEmailAddress">Email Address</label>
+                <div class="control">
+                  <input class="input" id="editOrganizationRepresentative--representativeEmailAddress" name="representativeEmailAddress" type="email" value="" maxlength="200" autocomplete="off" />
+                </div>
+              </div>
+            </section>
+            <footer class="modal-card-foot justify-right">
+              <button class="button is-cancel-button" type="button">Cancel</button>
+              <button class="button is-success" type="submit">Update Representative</button>
+            </footer>
+          </div>
+        </form>
       </div>
     </div>
+    <div class="tab-content" id="organizationTab--licences">
+      <%- include('_organization-view_edit-licences'); -%>
+    </div>
+    <div class="tab-content" id="organizationTab--remarks">
+      <%- include('_organization-view_edit-remarks'); -%>
+    </div>
+    <div class="tab-content" id="organizationTab--bankRecords">
 
-    <table class="table is-fullwidth is-striped is-hoverable is-representative-table">
-      <thead>
-        <tr>
-          <th class="has-width-50">Default</th>
-          <th>Name</th>
-          <th>Address</th>
-          <th>Phone Number</th>
-          <th>Email Address</th>
-          <th class="is-hidden-print">
-            <span class="sr-only">Options</span>
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <%
-          for (let index = 0; index < organization.organizationRepresentatives.length; index += 1) {
-            const representativeObj = organization.organizationRepresentatives[index];
-        %>
-          <tr data-representative-index="<%= representativeObj.representativeIndex %>"
-            data-representative-name="<%= representativeObj.representativeName %>"
-            data-representative-title="<%= representativeObj.representativeTitle %>"
-            data-representative-address-1="<%= representativeObj.representativeAddress1 %>"
-            data-representative-address-2="<%= representativeObj.representativeAddress2 %>"
-            data-representative-city="<%= representativeObj.representativeCity %>"
-            data-representative-province="<%= representativeObj.representativeProvince %>"
-            data-representative-postal-code="<%= representativeObj.representativePostalCode %>"
-            data-representative-phone-number="<%= representativeObj.representativePhoneNumber %>"
-            data-representative-email-address="<%= representativeObj.representativeEmailAddress %>">
-            <td>
-              <div class="field">
-                <input class="is-checkradio is-info" id="representative-isDefault--<%= representativeObj.representativeIndex %>" name="representative-isDefault" type="radio" value="<%= representativeObj.representativeIndex %>" <%= (representativeObj.isDefault === 1 ? " checked" : "") %> />
-                <label for="representative-isDefault--<%= representativeObj.representativeIndex %>"></label>
-              </div>
-            </td>
-            <td>
-              <%= representativeObj.representativeName %><br />
-              <small><%= representativeObj.representativeTitle %></small>
-            </td>
-            <td>
-              <%= representativeObj.representativeAddress1 %><br />
-              <small>
-                <%= representativeObj.representativeAddress2 %>
-                <%- (representativeObj.representativeAddress2 === "" ? "" : "<br />") %>
-                <%= representativeObj.representativeCity %>, <%= representativeObj.representativeProvince %><br />
-                <%= representativeObj.representativePostalCode %>
-              </small>
-            </td>
-            <td>
-              <%= representativeObj.representativePhoneNumber %>
-            </td>
-            <td>
-              <%= representativeObj.representativeEmailAddress %>
-            </td>
-            <td class="is-hidden-print">
-              <div class="buttons is-right has-addons">
-                <button class="button is-small is-edit-representative-button" type="button" data-tooltip="Edit Representative">
-                  <span class="icon">
-                    <i class="fas fa-pencil-alt" aria-hidden="true"></i>
-                  </span>
-                  <span>Edit</span>
-                </button>
-                <button class="button is-small has-text-danger is-delete-representative-button" type="button" data-tooltip="Delete Representative">
-                  <i class="fas fa-trash" aria-hidden="true"></i>
-                  <span class="sr-only">Delete</span>
-                </button>
-              </div>
-            </td>
-          </tr>
-        <% } %>
-      </tbody>
-    </table>
+    </div>
   </div>
-
-  <div class="modal is-add-representative-modal">
-    <div class="modal-background"></div>
-    <form>
-      <div class="modal-card">
-        <header class="modal-card-head">
-          <h3 class="modal-card-title">Add a Representative</h3>
-          <button class="delete is-cancel-button" aria-label="close" type="button"></button>
-        </header>
-        <section class="modal-card-body">
-          <div class="field">
-            <label class="label" for="addOrganizationRepresentative--representativeName">Representative Name</label>
-            <div class="control">
-              <input class="input" id="addOrganizationRepresentative--representativeName" name="representativeName" type="text" value="" maxlength="100" autocomplete="off" required />
-            </div>
-          </div>
-          <div class="field">
-            <label class="label" for="addOrganizationRepresentative--representativeTitle">Representative Title</label>
-            <div class="control">
-              <input class="input" id="addOrganizationRepresentative--representativeTitle" name="representativeTitle" type="text" value="" maxlength="100" autocomplete="off" required />
-            </div>
-          </div>
-          <label class="label" for="addOrganizationRepresentative--representativeAddress1">Representative Address</label>
-          <div class="field has-addons">
-            <div class="control is-expanded">
-              <input class="input" id="addOrganizationRepresentative--representativeAddress1" name="representativeAddress1" type="text" value="" placeholder="Line 1" maxlength="50" autocomplete="off" required />
-            </div>
-            <div class="control">
-              <a class="button is-copy-organization-address-button" data-tooltip="Copy Organization" role="button" href="#">
-                <span class="icon"><i class="fas fa-copy" aria-hidden="true"></i></span>
-                <span>Copy</span>
-              </a>
-            </div>
-          </div>
-          <div class="field">
-            <div class="control">
-              <input class="input" id="addOrganizationRepresentative--representativeAddress2" name="representativeAddress2" type="text" value="" placeholder="Line 2" maxlength="50" autocomplete="off" />
-            </div>
-          </div>
-          <div class="columns">
-            <div class="column is-8">
-              <div class="field">
-                <label class="label" for="addOrganizationRepresentative--representativeCity">City</label>
-                <div class="control">
-                  <input class="input" id="addOrganizationRepresentative--representativeCity" name="representativeCity" type="text" value="<%= configFns.getProperty("defaults.city") %>" maxlength="20" required />
-                </div>
-              </div>
-            </div>
-            <div class="column">
-              <div class="field">
-                <label class="label" for="addOrganizationRepresentative--representativeProvince">Province</label>
-                <div class="control">
-                  <input class="input" id="addOrganizationRepresentative--representativeProvince" name="representativeProvince" type="text" value="<%= configFns.getProperty("defaults.province") %>" maxlength="2" required />
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="columns">
-            <div class="column is-6">
-              <div class="field">
-                <label class="label" for="addOrganizationRepresentative--representativePostalCode">Postal Code</label>
-                <div class="control">
-                  <input class="input" id="addOrganizationRepresentative--representativePostalCode" name="representativePostalCode" type="text" value="" minlength="5" maxlength="7" autocomplete="off" required />
-                </div>
-              </div>
-            </div>
-            <div class="column">
-              <div class="field">
-                <label class="label" for="addOrganizationRepresentative--representativePhoneNumber">Phone Number</label>
-                <div class="control">
-                  <input class="input" id="addOrganizationRepresentative--representativePhoneNumber" name="representativePhoneNumber" type="tel" value="" minlength="10" maxlength="30" pattern="^\+?[(]?\d{3}[)]?[ -]?\d{3}[ -]?\d{4}" autocomplete="off" required />
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="field has-margin-bottom-20">
-            <label class="label" for="addOrganizationRepresentative--representativeEmailAddress">Email Address</label>
-            <div class="control">
-              <input class="input" id="addOrganizationRepresentative--representativeEmailAddress" name="representativeEmailAddress" type="email" value="" maxlength="200" autocomplete="off" />
-            </div>
-          </div>
-        </section>
-        <footer class="modal-card-foot justify-right">
-          <button class="button is-cancel-button" type="button">Cancel</button>
-          <button class="button is-success" type="submit">Add Representative</button>
-        </footer>
-      </div>
-    </form>
-  </div>
-
-  <div class="modal is-edit-representative-modal">
-    <div class="modal-background"></div>
-    <form>
-      <div class="modal-card">
-        <header class="modal-card-head">
-          <h3 class="modal-card-title">Edit a Representative</h3>
-          <button class="delete is-cancel-button" aria-label="close" type="button"></button>
-        </header>
-        <section class="modal-card-body">
-          <input id="editOrganizationRepresentative--representativeIndex" name="representativeIndex" type="hidden" value="" />
-          <input id="editOrganizationRepresentative--isDefault" name="isDefault" type="hidden" value="" />
-          <div class="field">
-            <label class="label" for="editOrganizationRepresentative--representativeName">Representative Name</label>
-            <div class="control">
-              <input class="input" id="editOrganizationRepresentative--representativeName" name="representativeName" type="text" value="" maxlength="100" autocomplete="off" required />
-            </div>
-          </div>
-          <div class="field">
-            <label class="label" for="editOrganizationRepresentative--representativeTitle">Representative Title</label>
-            <div class="control">
-              <input class="input" id="editOrganizationRepresentative--representativeTitle" name="representativeTitle" type="text" value="" maxlength="100" autocomplete="off" required />
-            </div>
-          </div>
-          <div class="field">
-            <label class="label" for="editOrganizationRepresentative--representativeAddress1">Representative Address</label>
-            <div class="control">
-              <input class="input" id="editOrganizationRepresentative--representativeAddress1" name="representativeAddress1" type="text" value="" placeholder="Line 1" maxlength="50" autocomplete="off" required />
-            </div>
-          </div>
-          <div class="field">
-            <div class="control">
-              <input class="input" id="editOrganizationRepresentative--representativeAddress2" name="representativeAddress2" type="text" value="" placeholder="Line 2" maxlength="50" autocomplete="off" />
-            </div>
-          </div>
-          <div class="columns">
-            <div class="column is-8">
-              <div class="field">
-                <label class="label" for="editOrganizationRepresentative--representativeCity">City</label>
-                <div class="control">
-                  <input class="input" id="editOrganizationRepresentative--representativeCity" name="representativeCity" type="text" value="" maxlength="20" required />
-                </div>
-              </div>
-            </div>
-            <div class="column">
-              <div class="field">
-                <label class="label" for="editOrganizationRepresentative--representativeProvince">Province</label>
-                <div class="control">
-                  <input class="input" id="editOrganizationRepresentative--representativeProvince" name="representativeProvince" type="text" value="" maxlength="2" required />
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="columns">
-            <div class="column is-6">
-              <div class="field">
-                <label class="label" for="editOrganizationRepresentative--representativePostalCode">Postal Code</label>
-                <div class="control">
-                  <input class="input" id="editOrganizationRepresentative--representativePostalCode" name="representativePostalCode" type="text" value="" minlength="5" maxlength="7" autocomplete="off" required />
-                </div>
-              </div>
-            </div>
-            <div class="column">
-              <div class="field">
-                <label class="label" for="editOrganizationRepresentative--representativePhoneNumber">Phone Number</label>
-                <div class="control">
-                  <input class="input" id="editOrganizationRepresentative--representativePhoneNumber" name="representativePhoneNumber" type="tel" value="" minlength="10" maxlength="30" pattern="^\+?[(]?\d{3}[)]?[ -]?\d{3}[ -]?\d{4}" autocomplete="off" required />
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="field has-margin-bottom-20">
-            <label class="label" for="editOrganizationRepresentative--representativeEmailAddress">Email Address</label>
-            <div class="control">
-              <input class="input" id="editOrganizationRepresentative--representativeEmailAddress" name="representativeEmailAddress" type="email" value="" maxlength="200" autocomplete="off" />
-            </div>
-          </div>
-        </section>
-        <footer class="modal-card-foot justify-right">
-          <button class="button is-cancel-button" type="button">Cancel</button>
-          <button class="button is-success" type="submit">Update Representative</button>
-        </footer>
-      </div>
-    </form>
-  </div>
-<% } %>
-
-<% if (!isCreate) { %>
-  <%- include('_organization-view_edit-licences'); -%>
-  <%- include('_organization-view_edit-remarks'); -%>
 <% } %>
 
 <%- include('_footerA'); -%>

@@ -38,7 +38,7 @@ declare type Config_DefaultsConfig = {
     province: string;
 };
 declare type Config_LicencesConfig = {
-    feeCalculationFn: any;
+    feeCalculationFn: Function;
     printTemplate: string;
     externalLicenceNumber?: Config_ExternalLicenceNumber;
     externalReceiptNumber?: Config_ExternalReceiptNumber;
@@ -82,13 +82,13 @@ export declare type RawRowsColumnsReturn = {
     columns: sqlite.ColumnDefinition[];
 };
 export declare type Record = {
-    recordType: "location" | "organization" | "remark" | "licence" | "event";
+    recordType: "location" | "organization" | "remark" | "bankRecord" | "licence" | "event";
     recordCreate_userName: string;
     recordCreate_timeMillis: number;
     recordUpdate_userName: string;
     recordUpdate_timeMillis: number;
-    recordDelete_userName: string;
-    recordDelete_timeMillis: number;
+    recordDelete_userName?: string;
+    recordDelete_timeMillis?: number;
     canUpdate: boolean;
 };
 export interface Location extends Record {
@@ -123,8 +123,23 @@ export interface Organization extends Record {
     organizationNote: string;
     canUpdate: boolean;
     organizationRepresentatives: OrganizationRepresentative[];
+    licences_endDateMax: number;
+    licences_endDateMaxString: string;
 }
-export declare type OrganizationRepresentative = {};
+export declare type OrganizationRepresentative = {
+    organizationID: number;
+    representativeIndex: number;
+    representativeName: string;
+    representativeTitle: string;
+    representativeAddress1: string;
+    representativeAddress2: string;
+    representativeCity: string;
+    representativeProvince: string;
+    representativePostalCode: string;
+    representativePhoneNumber: string;
+    representativeEmailAddress: string;
+    isDefault: boolean;
+};
 export interface OrganizationRemark extends Record {
     recordType: "remark";
     organizationID: number;
@@ -135,6 +150,19 @@ export interface OrganizationRemark extends Record {
     remarkTimeString: string;
     remark: string;
     isImportant: boolean;
+}
+export interface OrganizationBankRecord extends Record {
+    recordType: "bankRecord";
+    organizationID: number;
+    recordIndex: number;
+    bankingYear: number;
+    bankingMonth: number;
+    bankRecordType: "statement" | "cheques" | "receipts";
+    accountNumber: string;
+    recordDate: number;
+    recordDateString: string;
+    recordNote: string;
+    recordIsNA: boolean;
 }
 export interface LotteryLicence extends Location, Record {
     recordType: "licence" | "event";
@@ -202,6 +230,12 @@ export interface LotteryEvent extends LotteryLicence {
 export declare type FieldData = {
     fieldKey: string;
     fieldValue: string;
+};
+export declare type LotteryEventStats = {
+    eventYearMin: number;
+};
+export declare type LotteryLicenceStats = {
+    applicationYearMin: number;
 };
 export declare type User = {
     userName: string;

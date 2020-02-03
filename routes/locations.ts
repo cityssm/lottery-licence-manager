@@ -32,10 +32,12 @@ router.post("/doCreate", function(req, res) {
 
   if (req.session.user.userProperties.canCreate !== "true") {
 
-    res.json({
-      success: false,
-      message: "Not Allowed"
-    });
+    res
+      .status(403)
+      .json({
+        success: false,
+        message: "Forbidden"
+      });
 
     return;
 
@@ -56,11 +58,12 @@ router.post("/doUpdate", function(req, res) {
 
   if (req.session.user.userProperties.canCreate !== "true") {
 
-    res.json({
-      success: false,
-      message: "Not Allowed"
-    });
-
+    res
+      .status(403)
+      .json({
+        success: false,
+        message: "Forbidden"
+      });
     return;
 
   }
@@ -90,7 +93,13 @@ router.post("/doDelete", function(req, res) {
 
   if (req.session.user.userProperties.canCreate !== "true") {
 
-    res.json("not allowed");
+    res
+      .status(403)
+      .json({
+        success: false,
+        message: "Forbidden"
+      });
+
     return;
 
   }
@@ -120,7 +129,13 @@ router.post("/doRestore", function(req, res) {
 
   if (req.session.user.userProperties.canUpdate !== "true") {
 
-    res.json("not allowed");
+    res
+      .status(403)
+      .json({
+        success: false,
+        message: "Forbidden"
+      });
+
     return;
 
   }
@@ -150,7 +165,13 @@ router.post("/doMerge", function(req, res) {
 
   if (req.session.user.userProperties.isAdmin !== "true") {
 
-    res.json("not allowed");
+    res
+      .status(403)
+      .json({
+        success: false,
+        message: "Forbidden"
+      });
+      
     return;
 
   }

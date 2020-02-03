@@ -43,7 +43,7 @@ app.use(session({
         dir: "data",
         db: "sessions.db"
     }),
-    key: sessionCookieName,
+    name: sessionCookieName,
     secret: configFns.getProperty("session.secret"),
     resave: true,
     saveUninitialized: false,
@@ -97,7 +97,7 @@ app.get("/logout", function (req, res) {
 app.use(function (_req, _res, next) {
     next(createError(404));
 });
-app.use(function (err, req, res, next) {
+app.use(function (err, req, res, _next) {
     res.locals.message = err.message;
     res.locals.error = req.app.get("env") === "development" ? err : {};
     res.status(err.status || 500);

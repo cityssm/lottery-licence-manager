@@ -36,7 +36,12 @@ router.post("/doGetRemark", function (req, res) {
 });
 router.post("/doAddRemark", function (req, res) {
     if (req.session.user.userProperties.canCreate !== "true") {
-        res.json("not allowed");
+        res
+            .status(403)
+            .json({
+            success: false,
+            message: "Forbidden"
+        });
         return;
     }
     const remarkIndex = licencesDB.addOrganizationRemark(req.body, req.session);
@@ -48,7 +53,12 @@ router.post("/doAddRemark", function (req, res) {
 });
 router.post("/doEditRemark", function (req, res) {
     if (req.session.user.userProperties.canCreate !== "true") {
-        res.json("not allowed");
+        res
+            .status(403)
+            .json({
+            success: false,
+            message: "Forbidden"
+        });
         return;
     }
     const changeCount = licencesDB.updateOrganizationRemark(req.body, req.session);
@@ -67,7 +77,12 @@ router.post("/doEditRemark", function (req, res) {
 });
 router.post("/doDeleteRemark", function (req, res) {
     if (req.session.user.userProperties.canCreate !== "true") {
-        res.json("not allowed");
+        res
+            .status(403)
+            .json({
+            success: false,
+            message: "Forbidden"
+        });
         return;
     }
     const organizationID = req.body.organizationID;
@@ -102,7 +117,12 @@ router.get("/new", function (req, res) {
 });
 router.post("/doSave", function (req, res) {
     if (req.session.user.userProperties.canCreate !== "true") {
-        res.json("not allowed");
+        res
+            .status(403)
+            .json({
+            success: false,
+            message: "Forbidden"
+        });
         return;
     }
     if (req.body.organizationID === "") {
@@ -130,9 +150,11 @@ router.post("/doSave", function (req, res) {
 });
 router.post("/doDelete", function (req, res) {
     if (req.session.user.userProperties.canCreate !== "true") {
-        res.json({
+        res
+            .status(403)
+            .json({
             success: false,
-            message: "Access denied."
+            message: "Forbidden"
         });
         return;
     }
@@ -152,7 +174,12 @@ router.post("/doDelete", function (req, res) {
 });
 router.post("/doRestore", function (req, res) {
     if (req.session.user.userProperties.canUpdate !== "true") {
-        res.json("not allowed");
+        res
+            .status(403)
+            .json({
+            success: false,
+            message: "Forbidden"
+        });
         return;
     }
     const changeCount = licencesDB.restoreOrganization(req.body.organizationID, req.session);
@@ -220,7 +247,12 @@ router.get("/:organizationID/edit", function (req, res) {
 });
 router.post("/:organizationID/doAddOrganizationRepresentative", function (req, res) {
     if (req.session.user.userProperties.canCreate !== "true") {
-        res.json("not allowed");
+        res
+            .status(403)
+            .json({
+            success: false,
+            message: "Forbidden"
+        });
         return;
     }
     const organizationID = parseInt(req.params.organizationID);
@@ -239,7 +271,12 @@ router.post("/:organizationID/doAddOrganizationRepresentative", function (req, r
 });
 router.post("/:organizationID/doEditOrganizationRepresentative", function (req, res) {
     if (req.session.user.userProperties.canCreate !== "true") {
-        res.json("not allowed");
+        res
+            .status(403)
+            .json({
+            success: false,
+            message: "Forbidden"
+        });
         return;
     }
     const organizationID = parseInt(req.params.organizationID);
@@ -258,7 +295,12 @@ router.post("/:organizationID/doEditOrganizationRepresentative", function (req, 
 });
 router.post("/:organizationID/doDeleteOrganizationRepresentative", function (req, res) {
     if (req.session.user.userProperties.canCreate !== "true") {
-        res.json("not allowed");
+        res
+            .status(403)
+            .json({
+            success: false,
+            message: "Forbidden"
+        });
         return;
     }
     const organizationID = parseInt(req.params.organizationID);
@@ -270,7 +312,12 @@ router.post("/:organizationID/doDeleteOrganizationRepresentative", function (req
 });
 router.post("/:organizationID/doSetDefaultRepresentative", function (req, res) {
     if (req.session.user.userProperties.canCreate !== "true") {
-        res.json("not allowed");
+        res
+            .status(403)
+            .json({
+            success: false,
+            message: "Forbidden"
+        });
         return;
     }
     const organizationID = parseInt(req.params.organizationID);

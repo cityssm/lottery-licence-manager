@@ -6,6 +6,7 @@
    * Licences
    */
 
+  llm.initializeTabs(document.getElementById("tabs--organization"));
   llm.initializeTabs(document.getElementById("tabs--licences"));
 
   /*

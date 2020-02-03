@@ -144,11 +144,11 @@ export function initLicencesDB() {
 
       " bankingYear integer not null," +
       " bankingMonth integer not null," +
-      " recordType varchar(10) not null," +
+      " bankRecordType varchar(10) not null," +
       " accountNumber varchar(20) not null," +
+      " recordIsNA bit not null default 0," +
 
       " recordDate integer," +
-      " recordStatus char(1)," +
       " recordNote text," +
 
       " recordCreate_userName varchar(30) not null," +
@@ -159,7 +159,7 @@ export function initLicencesDB() {
       " recordDelete_timeMillis integer," +
 
       " primary key (organizationID, recordIndex)," +
-      " unique (organizationID, bankingYear, bankingMonth, recordType, accountNumber)," +
+      " unique (organizationID, bankingYear, bankingMonth, bankRecordType, accountNumber)," +
       " foreign key (organizationID) references Organizations (organizationID)" +
       ") without rowid").run();
 
