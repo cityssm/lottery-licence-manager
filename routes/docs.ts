@@ -8,7 +8,7 @@ import fs = require("fs");
 import path = require("path");
 import marked = require("marked");
 
-import {configFns} from "../helpers/configFns";
+import * as configFns from "../helpers/configFns";
 
 
 router.all("/", function(_req, res) {

@@ -2,11 +2,12 @@
 
 import { Config_LicenceType } from "../helpers/llmTypes";
 
+
 /*
  * LOAD CONFIGURATION
  */
 
-let config = {};
+export let config = {};
 
 try {
 
@@ -27,7 +28,6 @@ try {
 /*
  * SET UP FALLBACK VALUES
  */
-
 
 const configFallbackValues = {
 
@@ -82,9 +82,7 @@ const configFallbackValues = {
   "amendments.trackTicketTypeDelete": true
 };
 
-
-
-function getProperty(propertyName: string) {
+export function getProperty(propertyName: string): any {
 
   const propertyNameSplit = propertyName.split(".");
 
@@ -107,43 +105,42 @@ function getProperty(propertyName: string) {
 }
 
 
+/*
+ * LICENCE TYPES
+ */
 
 const licenceTypeCache = {};
 
-let uid = Date.now();
+export function getLicenceType(licenceTypeKey: string): Config_LicenceType {
 
+  if (!licenceTypeCache[licenceTypeKey]) {
 
-
-export const configFns = {
-
-  getProperty: getProperty,
-
-  getLicenceType: function(licenceTypeKey: string): Config_LicenceType {
-
-    if (!licenceTypeCache[licenceTypeKey]) {
-
-      licenceTypeCache[licenceTypeKey] =
-        getProperty("licenceTypes").find(
-          function(ele: Config_LicenceType) {
-            return (ele.licenceTypeKey === licenceTypeKey);
-          }
-        );
-
-    }
-
-    return licenceTypeCache[licenceTypeKey];
-
-  },
-
-  config: config,
-
-  getUID: function() {
-
-    const toReturn = uid;
-
-    uid += 1;
-
-    return "uid" + toReturn.toString();
+    licenceTypeCache[licenceTypeKey] =
+      getProperty("licenceTypes").find(
+        function(ele: Config_LicenceType) {
+          return (ele.licenceTypeKey === licenceTypeKey);
+        }
+      );
 
   }
-};
+
+  return licenceTypeCache[licenceTypeKey];
+
+}
+
+
+/*
+ * UID GENERATOR
+ */
+
+let uid = Date.now();
+
+export function getUID() {
+
+  const toReturn = uid;
+
+  uid += 1;
+
+  return "uid" + toReturn.toString();
+
+}

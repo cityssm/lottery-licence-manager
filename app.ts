@@ -28,8 +28,9 @@ import routerEvents = require("./routes/events");
 import routerReports = require("./routes/reports");
 import routerAdmin = require("./routes/admin");
 
-import { configFns } from "./helpers/configFns";
-import { dateTimeFns } from "./helpers/dateTimeFns";
+import { Config_HttpsConfig } from "./helpers/llmTypes";
+import * as configFns from "./helpers/configFns";
+import * as dateTimeFns from "./helpers/dateTimeFns";
 
 
 /*
@@ -37,7 +38,7 @@ import { dateTimeFns } from "./helpers/dateTimeFns";
  */
 
 
-import {dbInit} from "./helpers/dbInit";
+import * as dbInit from "./helpers/dbInit";
 dbInit.initUsersDB();
 dbInit.initLicencesDB();
 
@@ -218,7 +219,7 @@ if (httpPort) {
 
 }
 
-const httpsConfig = configFns.getProperty("application.https");
+const httpsConfig = <Config_HttpsConfig>configFns.getProperty("application.https");
 
 if (httpsConfig) {
 

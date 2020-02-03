@@ -19,11 +19,11 @@ const routerLocations = require("./routes/locations");
 const routerEvents = require("./routes/events");
 const routerReports = require("./routes/reports");
 const routerAdmin = require("./routes/admin");
-const configFns_1 = require("./helpers/configFns");
-const dateTimeFns_1 = require("./helpers/dateTimeFns");
-const dbInit_1 = require("./helpers/dbInit");
-dbInit_1.dbInit.initUsersDB();
-dbInit_1.dbInit.initLicencesDB();
+const configFns = require("./helpers/configFns");
+const dateTimeFns = require("./helpers/dateTimeFns");
+const dbInit = require("./helpers/dbInit");
+dbInit.initUsersDB();
+dbInit.initLicencesDB();
 const app = express();
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
@@ -37,19 +37,19 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/docs/images", express.static(path.join(__dirname, "docs", "images")));
 app.use("/fa", express.static(path.join(__dirname, "node_modules", "@fortawesome", "fontawesome-free")));
-const sessionCookieName = configFns_1.configFns.getProperty("session.cookieName");
+const sessionCookieName = configFns.getProperty("session.cookieName");
 app.use(session({
     store: new SQLiteStore({
         dir: "data",
         db: "sessions.db"
     }),
     key: sessionCookieName,
-    secret: configFns_1.configFns.getProperty("session.secret"),
+    secret: configFns.getProperty("session.secret"),
     resave: true,
     saveUninitialized: false,
     rolling: true,
     cookie: {
-        maxAge: configFns_1.configFns.getProperty("session.maxAgeMillis")
+        maxAge: configFns.getProperty("session.maxAgeMillis")
     }
 }));
 app.use(function (req, res, next) {
@@ -67,8 +67,8 @@ const sessionChecker = function (req, res, next) {
 app.use(function (req, res, next) {
     res.locals.buildNumber = buildNumber;
     res.locals.user = req.session.user;
-    res.locals.configFns = configFns_1.configFns;
-    res.locals.dateTimeFns = dateTimeFns_1.dateTimeFns;
+    res.locals.configFns = configFns;
+    res.locals.dateTimeFns = dateTimeFns;
     next();
 });
 app.get("/", sessionChecker, function (_req, res) {
@@ -103,13 +103,13 @@ app.use(function (err, req, res, next) {
     res.status(err.status || 500);
     res.render("error");
 });
-const httpPort = configFns_1.configFns.getProperty("application.httpPort");
+const httpPort = configFns.getProperty("application.httpPort");
 if (httpPort) {
     app.listen(httpPort, function () {
         console.log("HTTP listening on port " + httpPort);
     });
 }
-const httpsConfig = configFns_1.configFns.getProperty("application.https");
+const httpsConfig = configFns.getProperty("application.https");
 if (httpsConfig) {
     https.createServer({
         key: fs.readFileSync(httpsConfig.keyPath),

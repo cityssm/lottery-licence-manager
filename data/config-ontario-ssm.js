@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const objectFns_1 = require("../helpers/objectFns");
+const objectFns = require("../helpers/objectFns");
 const config = require("./config-ontario");
 config.application = {
     applicationName: "SSM Lottery Licence Manager"
@@ -23,7 +23,7 @@ config.licences.feeCalculationFn = function (licenceObj) {
         "3% of $" + licenceObj.totalPrizeValue);
     let licenceHasErrors = false;
     if (licenceObj.licenceTypeKey === "RA") {
-        const licenceFieldData = objectFns_1.objectFns.fieldDataArrayToObject(licenceObj.licenceFields);
+        const licenceFieldData = objectFns.fieldDataArrayToObject(licenceObj.licenceFields);
         let ticketCost = parseFloat(licenceFieldData.ticketCost || "0");
         if (licenceFieldData.discount1_tickets !== "" && licenceFieldData.discount1_cost !== "") {
             const discountTicketCost = parseFloat(licenceFieldData.discount1_cost) / parseInt(licenceFieldData.discount1_tickets);

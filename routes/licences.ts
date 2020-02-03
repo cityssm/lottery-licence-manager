@@ -7,10 +7,10 @@ import path = require("path");
 import ejs = require("ejs");
 import pdf = require("html-pdf");
 
-import { configFns } from "../helpers/configFns";
-import { dateTimeFns } from "../helpers/dateTimeFns";
+import * as configFns from "../helpers/configFns";
+import * as dateTimeFns from "../helpers/dateTimeFns";
 
-import { licencesDB } from "../helpers/licencesDB";
+import * as licencesDB from "../helpers/licencesDB";
 import { Organization } from "../helpers/llmTypes";
 
 

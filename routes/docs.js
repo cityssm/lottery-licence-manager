@@ -5,7 +5,7 @@ const createError = require("http-errors");
 const fs = require("fs");
 const path = require("path");
 const marked = require("marked");
-const configFns_1 = require("../helpers/configFns");
+const configFns = require("../helpers/configFns");
 router.all("/", function (_req, res) {
     res.redirect("/docs/readme.md");
 });
@@ -17,7 +17,7 @@ router.all("/:mdFileName", function (req, res, next) {
             next(createError(400));
             return;
         }
-        const applicationName = configFns_1.configFns.getProperty("application.applicationName");
+        const applicationName = configFns.getProperty("application.applicationName");
         res.send(`<html>
       <head>
         <meta charset="utf-8" />

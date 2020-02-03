@@ -1,4 +1,2 @@
-export declare const dbInit: {
-    initUsersDB: () => boolean;
-    initLicencesDB: () => boolean;
-};
+export declare function initUsersDB(): boolean;
+export declare function initLicencesDB(): boolean;

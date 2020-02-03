@@ -3,9 +3,9 @@
 import express = require("express");
 const router = express.Router();
 
-import { licencesDB } from "../helpers/licencesDB";
-import { stringFns } from "../helpers/stringFns";
-import { dateTimeFns } from "../helpers/dateTimeFns";
+import * as licencesDB from "../helpers/licencesDB";
+import { rawToCSV } from "../helpers/stringFns";
+import * as dateTimeFns from "../helpers/dateTimeFns";
 
 router.get("/", function(_req, res) {
 
@@ -426,7 +426,7 @@ router.all("/:reportName", function(req, res) {
 
   const rowsColumnsObj = licencesDB.getRawRowsColumns(sql, params);
 
-  const csv = stringFns.rawToCSV(rowsColumnsObj);
+  const csv = rawToCSV(rowsColumnsObj);
 
   res.setHeader("Content-Disposition", "attachment; filename=" + reportName + "-" + Date.now() + ".csv");
   res.setHeader("Content-Type", "text/csv");

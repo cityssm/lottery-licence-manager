@@ -1,14 +1,14 @@
 "use strict";
 const express = require("express");
 const router = express.Router();
-const licencesDB_1 = require("../helpers/licencesDB");
+const licencesDB = require("../helpers/licencesDB");
 const stringFns_1 = require("../helpers/stringFns");
-const dateTimeFns_1 = require("../helpers/dateTimeFns");
+const dateTimeFns = require("../helpers/dateTimeFns");
 router.get("/", function (_req, res) {
     const rightNow = new Date();
     res.render("report-search", {
         headTitle: "Reports",
-        todayDateString: dateTimeFns_1.dateTimeFns.dateToString(rightNow)
+        todayDateString: dateTimeFns.dateToString(rightNow)
     });
 });
 router.all("/:reportName", function (req, res) {
@@ -56,7 +56,7 @@ router.all("/:reportName", function (req, res) {
                         " ifnull(m.manufacturer_endDateMax, 0)) <= ?");
                 const threeYearsAgo = new Date();
                 threeYearsAgo.setFullYear(threeYearsAgo.getFullYear() - 3);
-                params.push(dateTimeFns_1.dateTimeFns.dateToInteger(threeYearsAgo));
+                params.push(dateTimeFns.dateToInteger(threeYearsAgo));
                 break;
             }
         case "organizations-all":
@@ -237,7 +237,7 @@ router.all("/:reportName", function (req, res) {
                 " where e.recordDelete_timeMillis is NULL" +
                 " and l.recordDelete_timeMillis is NULL" +
                 " and e.eventDate >= ?";
-            params = [dateTimeFns_1.dateTimeFns.dateToInteger(new Date())];
+            params = [dateTimeFns.dateToInteger(new Date())];
             break;
         case "events-pastUnreported":
             sql = "select e.licenceID, e.eventDate," +
@@ -258,7 +258,7 @@ router.all("/:reportName", function (req, res) {
                 " and l.recordDelete_timeMillis is null" +
                 " and e.eventDate < ?" +
                 " and (e.bank_name is null or e.bank_name = '' or e.costs_receipts is null or e.costs_receipts = 0)";
-            params = [dateTimeFns_1.dateTimeFns.dateToInteger(new Date())];
+            params = [dateTimeFns.dateToInteger(new Date())];
             break;
         case "events-byLicence":
             sql = "select e.licenceID, l.externalLicenceNumber, e.eventDate," +
@@ -283,8 +283,8 @@ router.all("/:reportName", function (req, res) {
         res.redirect("/reports/?error=reportNotFound");
         return;
     }
-    const rowsColumnsObj = licencesDB_1.licencesDB.getRawRowsColumns(sql, params);
-    const csv = stringFns_1.stringFns.rawToCSV(rowsColumnsObj);
+    const rowsColumnsObj = licencesDB.getRawRowsColumns(sql, params);
+    const csv = stringFns_1.rawToCSV(rowsColumnsObj);
     res.setHeader("Content-Disposition", "attachment; filename=" + reportName + "-" + Date.now() + ".csv");
     res.setHeader("Content-Type", "text/csv");
     res.send(csv);

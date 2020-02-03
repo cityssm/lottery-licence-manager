@@ -1,38 +1,35 @@
 "use strict";
 
-import { RawRowsColumnsReturn } from "./licencesDB";
+import { RawRowsColumnsReturn } from "./llmTypes";
 
 const convertArrayToCSV = require("convert-array-to-csv").convertArrayToCSV;
 
 
-export const stringFns = {
+export function escapeHTML(str: string): string {
 
-  escapeHTML: function(str : string) : string {
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
 
-    return String(str)
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;");
+}
 
-  },
+export function rawToCSV(rowsColumnsObj: RawRowsColumnsReturn): string {
 
-  rawToCSV: function(rowsColumnsObj : RawRowsColumnsReturn) : string {
+  const columnNames = new Array(rowsColumnsObj.columns.length);
 
-    const columnNames = new Array(rowsColumnsObj.columns.length);
+  for (let columnIndex = 0; columnIndex < rowsColumnsObj.columns.length; columnIndex += 1) {
 
-    for (let columnIndex = 0; columnIndex < rowsColumnsObj.columns.length; columnIndex += 1) {
-
-      columnNames[columnIndex] = rowsColumnsObj.columns[columnIndex].name;
-
-    }
-
-    const csv = convertArrayToCSV(rowsColumnsObj.rows, {
-      header: columnNames,
-      separator: ","
-    });
-
-    return csv;
+    columnNames[columnIndex] = rowsColumnsObj.columns[columnIndex].name;
 
   }
-};
+
+  const csv = convertArrayToCSV(rowsColumnsObj.rows, {
+    header: columnNames,
+    separator: ","
+  });
+
+  return csv;
+
+}

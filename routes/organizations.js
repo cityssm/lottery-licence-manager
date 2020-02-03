@@ -1,20 +1,20 @@
 "use strict";
 const express = require("express");
 const router = express.Router();
-const configFns_1 = require("../helpers/configFns");
-const dateTimeFns_1 = require("../helpers/dateTimeFns");
-const stringFns_1 = require("../helpers/stringFns");
-const licencesDB_1 = require("../helpers/licencesDB");
+const configFns = require("../helpers/configFns");
+const dateTimeFns = require("../helpers/dateTimeFns");
+const stringFns = require("../helpers/stringFns");
+const licencesDB = require("../helpers/licencesDB");
 router.get("/", function (_req, res) {
     res.render("organization-search", {
         headTitle: "Organizations"
     });
 });
 router.post("/doSearch", function (req, res) {
-    res.json(licencesDB_1.licencesDB.getOrganizations(req.body, true, req.session));
+    res.json(licencesDB.getOrganizations(req.body, true, req.session));
 });
 router.all("/doGetAll", function (req, res) {
-    res.json(licencesDB_1.licencesDB.getOrganizations({}, false, req.session));
+    res.json(licencesDB.getOrganizations({}, false, req.session));
 });
 router.get("/cleanup", function (_req, res) {
     res.render("organization-cleanup", {
@@ -23,23 +23,23 @@ router.get("/cleanup", function (_req, res) {
 });
 router.post("/doGetInactive", function (req, res) {
     const inactiveYears = parseInt(req.body.inactiveYears);
-    res.json(licencesDB_1.licencesDB.getInactiveOrganizations(inactiveYears));
+    res.json(licencesDB.getInactiveOrganizations(inactiveYears));
 });
 router.post("/doGetRemarks", function (req, res) {
     const organizationID = req.body.organizationID;
-    res.json(licencesDB_1.licencesDB.getOrganizationRemarks(organizationID, req.session));
+    res.json(licencesDB.getOrganizationRemarks(organizationID, req.session));
 });
 router.post("/doGetRemark", function (req, res) {
     const organizationID = req.body.organizationID;
     const remarkIndex = req.body.remarkIndex;
-    res.json(licencesDB_1.licencesDB.getOrganizationRemark(organizationID, remarkIndex, req.session));
+    res.json(licencesDB.getOrganizationRemark(organizationID, remarkIndex, req.session));
 });
 router.post("/doAddRemark", function (req, res) {
     if (req.session.user.userProperties.canCreate !== "true") {
         res.json("not allowed");
         return;
     }
-    const remarkIndex = licencesDB_1.licencesDB.addOrganizationRemark(req.body, req.session);
+    const remarkIndex = licencesDB.addOrganizationRemark(req.body, req.session);
     res.json({
         success: true,
         message: "Remark added successfully.",
@@ -51,7 +51,7 @@ router.post("/doEditRemark", function (req, res) {
         res.json("not allowed");
         return;
     }
-    const changeCount = licencesDB_1.licencesDB.updateOrganizationRemark(req.body, req.session);
+    const changeCount = licencesDB.updateOrganizationRemark(req.body, req.session);
     if (changeCount) {
         res.json({
             success: true,
@@ -72,7 +72,7 @@ router.post("/doDeleteRemark", function (req, res) {
     }
     const organizationID = req.body.organizationID;
     const remarkIndex = req.body.remarkIndex;
-    const changeCount = licencesDB_1.licencesDB.deleteOrganizationRemark(organizationID, remarkIndex, req.session);
+    const changeCount = licencesDB.deleteOrganizationRemark(organizationID, remarkIndex, req.session);
     if (changeCount) {
         res.json({
             success: true,
@@ -95,8 +95,8 @@ router.get("/new", function (req, res) {
         headTitle: "Organization Create",
         isCreate: true,
         organization: {
-            organizationCity: configFns_1.configFns.getProperty("defaults.city"),
-            organizationProvince: configFns_1.configFns.getProperty("defaults.province")
+            organizationCity: configFns.getProperty("defaults.city"),
+            organizationProvince: configFns.getProperty("defaults.province")
         }
     });
 });
@@ -106,14 +106,14 @@ router.post("/doSave", function (req, res) {
         return;
     }
     if (req.body.organizationID === "") {
-        const newOrganizationID = licencesDB_1.licencesDB.createOrganization(req.body, req.session);
+        const newOrganizationID = licencesDB.createOrganization(req.body, req.session);
         res.json({
             success: true,
             organizationID: newOrganizationID
         });
     }
     else {
-        const changeCount = licencesDB_1.licencesDB.updateOrganization(req.body, req.session);
+        const changeCount = licencesDB.updateOrganization(req.body, req.session);
         if (changeCount) {
             res.json({
                 success: true,
@@ -136,7 +136,7 @@ router.post("/doDelete", function (req, res) {
         });
         return;
     }
-    const changeCount = licencesDB_1.licencesDB.deleteOrganization(req.body.organizationID, req.session);
+    const changeCount = licencesDB.deleteOrganization(req.body.organizationID, req.session);
     if (changeCount) {
         res.json({
             success: true,
@@ -155,7 +155,7 @@ router.post("/doRestore", function (req, res) {
         res.json("not allowed");
         return;
     }
-    const changeCount = licencesDB_1.licencesDB.restoreOrganization(req.body.organizationID, req.session);
+    const changeCount = licencesDB.restoreOrganization(req.body.organizationID, req.session);
     if (changeCount) {
         res.json({
             success: true,
@@ -171,22 +171,22 @@ router.post("/doRestore", function (req, res) {
 });
 router.get("/:organizationID", function (req, res) {
     const organizationID = parseInt(req.params.organizationID);
-    const organization = licencesDB_1.licencesDB.getOrganization(organizationID, req.session);
+    const organization = licencesDB.getOrganization(organizationID, req.session);
     if (!organization) {
         res.redirect("/organizations/?error=organizationNotFound");
         return;
     }
-    const licences = licencesDB_1.licencesDB.getLicences({
+    const licences = licencesDB.getLicences({
         organizationID: organizationID
     }, false, false, req.session) || [];
-    const remarks = licencesDB_1.licencesDB.getOrganizationRemarks(organizationID, req.session) || [];
+    const remarks = licencesDB.getOrganizationRemarks(organizationID, req.session) || [];
     res.render("organization-view", {
         headTitle: organization.organizationName,
         organization: organization,
         licences: licences,
         remarks: remarks,
-        currentDateInteger: dateTimeFns_1.dateTimeFns.dateToInteger(new Date()),
-        stringFns: stringFns_1.stringFns
+        currentDateInteger: dateTimeFns.dateToInteger(new Date()),
+        stringFns: stringFns
     });
 });
 router.get("/:organizationID/edit", function (req, res) {
@@ -195,7 +195,7 @@ router.get("/:organizationID/edit", function (req, res) {
         res.redirect("/organizations/" + organizationID + "/?error=accessDenied-noCreate");
         return;
     }
-    const organization = licencesDB_1.licencesDB.getOrganization(organizationID, req.session);
+    const organization = licencesDB.getOrganization(organizationID, req.session);
     if (!organization) {
         res.redirect("/organizations/?error=organizationNotFound");
         return;
@@ -204,18 +204,18 @@ router.get("/:organizationID/edit", function (req, res) {
         res.redirect("/organizations/" + organizationID + "/?error=accessDenied-noUpdate");
         return;
     }
-    const licences = licencesDB_1.licencesDB.getLicences({
+    const licences = licencesDB.getLicences({
         organizationID: organizationID
     }, false, false, req.session) || [];
-    const remarks = licencesDB_1.licencesDB.getOrganizationRemarks(organizationID, req.session) || [];
+    const remarks = licencesDB.getOrganizationRemarks(organizationID, req.session) || [];
     res.render("organization-edit", {
         headTitle: "Organization Update",
         isCreate: false,
         organization: organization,
         licences: licences,
         remarks: remarks,
-        currentDateInteger: dateTimeFns_1.dateTimeFns.dateToInteger(new Date()),
-        stringFns: stringFns_1.stringFns
+        currentDateInteger: dateTimeFns.dateToInteger(new Date()),
+        stringFns: stringFns
     });
 });
 router.post("/:organizationID/doAddOrganizationRepresentative", function (req, res) {
@@ -224,7 +224,7 @@ router.post("/:organizationID/doAddOrganizationRepresentative", function (req, r
         return;
     }
     const organizationID = parseInt(req.params.organizationID);
-    const representativeObj = licencesDB_1.licencesDB.addOrganizationRepresentative(organizationID, req.body);
+    const representativeObj = licencesDB.addOrganizationRepresentative(organizationID, req.body);
     if (representativeObj) {
         res.json({
             success: true,
@@ -243,7 +243,7 @@ router.post("/:organizationID/doEditOrganizationRepresentative", function (req, 
         return;
     }
     const organizationID = parseInt(req.params.organizationID);
-    const representativeObj = licencesDB_1.licencesDB.updateOrganizationRepresentative(organizationID, req.body);
+    const representativeObj = licencesDB.updateOrganizationRepresentative(organizationID, req.body);
     if (representativeObj) {
         res.json({
             success: true,
@@ -263,7 +263,7 @@ router.post("/:organizationID/doDeleteOrganizationRepresentative", function (req
     }
     const organizationID = parseInt(req.params.organizationID);
     const representativeIndex = req.body.representativeIndex;
-    const success = licencesDB_1.licencesDB.deleteOrganizationRepresentative(organizationID, representativeIndex);
+    const success = licencesDB.deleteOrganizationRepresentative(organizationID, representativeIndex);
     res.json({
         success: success
     });
@@ -275,7 +275,7 @@ router.post("/:organizationID/doSetDefaultRepresentative", function (req, res) {
     }
     const organizationID = parseInt(req.params.organizationID);
     const isDefaultRepresentativeIndex = req.body.isDefaultRepresentativeIndex;
-    const success = licencesDB_1.licencesDB.setDefaultOrganizationRepresentative(organizationID, isDefaultRepresentativeIndex);
+    const success = licencesDB.setDefaultOrganizationRepresentative(organizationID, isDefaultRepresentativeIndex);
     res.json({
         success: success
     });

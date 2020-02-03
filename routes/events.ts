@@ -3,9 +3,9 @@
 import express = require("express");
 const router = express.Router();
 
-import {dateTimeFns} from "../helpers/dateTimeFns";
+import * as dateTimeFns from "../helpers/dateTimeFns";
 
-import {licencesDB} from "../helpers/licencesDB";
+import * as licencesDB from "../helpers/licencesDB";
 
 /*
  * Event Calendar

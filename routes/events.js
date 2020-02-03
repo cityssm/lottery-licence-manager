@@ -1,15 +1,15 @@
 "use strict";
 const express = require("express");
 const router = express.Router();
-const dateTimeFns_1 = require("../helpers/dateTimeFns");
-const licencesDB_1 = require("../helpers/licencesDB");
+const dateTimeFns = require("../helpers/dateTimeFns");
+const licencesDB = require("../helpers/licencesDB");
 router.get("/", function (_req, res) {
     res.render("event-search", {
         headTitle: "Event Calendar"
     });
 });
 router.post("/doSearch", function (req, res) {
-    res.json(licencesDB_1.licencesDB.getEvents(req.body.year, req.body.month, req.session));
+    res.json(licencesDB.getEvents(req.body.year, req.body.month, req.session));
 });
 router.get("/outstanding", function (_req, res) {
     res.render("event-outstanding", {
@@ -17,18 +17,18 @@ router.get("/outstanding", function (_req, res) {
     });
 });
 router.post("/doGetOutstandingEvents", function (req, res) {
-    const events = licencesDB_1.licencesDB.getOutstandingEvents(req.body, req.session);
+    const events = licencesDB.getOutstandingEvents(req.body, req.session);
     res.json(events);
 });
 router.get("/financials", function (_req, res) {
-    const eventTableStats = licencesDB_1.licencesDB.getEventTableStats();
+    const eventTableStats = licencesDB.getEventTableStats();
     const eventDate = new Date();
     eventDate.setMonth(eventDate.getMonth() - 1);
     eventDate.setDate(1);
-    const eventDateStartString = dateTimeFns_1.dateTimeFns.dateToString(eventDate);
+    const eventDateStartString = dateTimeFns.dateToString(eventDate);
     eventDate.setMonth(eventDate.getMonth() + 1);
     eventDate.setDate(0);
-    const eventDateEndString = dateTimeFns_1.dateTimeFns.dateToString(eventDate);
+    const eventDateEndString = dateTimeFns.dateToString(eventDate);
     res.render("event-financials", {
         headTitle: "Financial Summary",
         pageContainerIsFullWidth: true,
@@ -38,7 +38,7 @@ router.get("/financials", function (_req, res) {
     });
 });
 router.post("/doGetFinancialSummary", function (req, res) {
-    const summary = licencesDB_1.licencesDB.getEventFinancialSummary(req.body);
+    const summary = licencesDB.getEventFinancialSummary(req.body);
     res.json(summary);
 });
 router.post("/doSave", function (req, res) {
@@ -49,7 +49,7 @@ router.post("/doSave", function (req, res) {
         });
         return;
     }
-    const changeCount = licencesDB_1.licencesDB.updateEvent(req.body, req.session);
+    const changeCount = licencesDB.updateEvent(req.body, req.session);
     if (changeCount) {
         res.json({
             success: true,
@@ -78,7 +78,7 @@ router.post("/doDelete", function (req, res) {
         });
     }
     else {
-        const changeCount = licencesDB_1.licencesDB.deleteEvent(req.body.licenceID, req.body.eventDate, req.session);
+        const changeCount = licencesDB.deleteEvent(req.body.licenceID, req.body.eventDate, req.session);
         if (changeCount) {
             res.json({
                 success: true,
@@ -96,13 +96,13 @@ router.post("/doDelete", function (req, res) {
 router.get("/:licenceID/:eventDate", function (req, res) {
     const licenceID = parseInt(req.params.licenceID);
     const eventDate = parseInt(req.params.eventDate);
-    const eventObj = licencesDB_1.licencesDB.getEvent(licenceID, eventDate, req.session);
+    const eventObj = licencesDB.getEvent(licenceID, eventDate, req.session);
     if (!eventObj) {
         res.redirect("/events/?error=eventNotFound");
         return;
     }
-    const licence = licencesDB_1.licencesDB.getLicence(licenceID, req.session);
-    const organization = licencesDB_1.licencesDB.getOrganization(licence.organizationID, req.session);
+    const licence = licencesDB.getLicence(licenceID, req.session);
+    const organization = licencesDB.getOrganization(licence.organizationID, req.session);
     res.render("event-view", {
         headTitle: "Event View",
         event: eventObj,
@@ -117,7 +117,7 @@ router.get("/:licenceID/:eventDate/edit", function (req, res) {
         res.redirect("/events/" + licenceID + "/" + eventDate + "/?error=accessDenied");
         return;
     }
-    const eventObj = licencesDB_1.licencesDB.getEvent(licenceID, eventDate, req.session);
+    const eventObj = licencesDB.getEvent(licenceID, eventDate, req.session);
     if (!eventObj) {
         res.redirect("/events/?error=eventNotFound");
         return;
@@ -126,8 +126,8 @@ router.get("/:licenceID/:eventDate/edit", function (req, res) {
         res.redirect("/events/" + licenceID + "/" + eventDate + "/?error=accessDenied");
         return;
     }
-    const licence = licencesDB_1.licencesDB.getLicence(licenceID, req.session);
-    const organization = licencesDB_1.licencesDB.getOrganization(licence.organizationID, req.session);
+    const licence = licencesDB.getLicence(licenceID, req.session);
+    const organization = licencesDB.getOrganization(licence.organizationID, req.session);
     res.render("event-edit", {
         headTitle: "Event Update",
         event: eventObj,
@@ -139,7 +139,7 @@ router.get("/:licenceID/:eventDate/poke", function (req, res) {
     const licenceID = parseInt(req.params.licenceID);
     const eventDate = parseInt(req.params.eventDate);
     if (req.session.user.userProperties.isAdmin === "true") {
-        licencesDB_1.licencesDB.pokeEvent(licenceID, eventDate, req.session);
+        licencesDB.pokeEvent(licenceID, eventDate, req.session);
     }
     res.redirect("/events/" + licenceID + "/" + eventDate);
 });

@@ -3,11 +3,11 @@
 import express = require("express");
 const router = express.Router();
 
-import { configFns } from "../helpers/configFns";
-import { dateTimeFns } from "../helpers/dateTimeFns";
-import { stringFns } from "../helpers/stringFns";
+import * as configFns from "../helpers/configFns";
+import * as dateTimeFns from "../helpers/dateTimeFns";
+import * as stringFns from "../helpers/stringFns";
 
-import { licencesDB } from "../helpers/licencesDB";
+import * as licencesDB from "../helpers/licencesDB";
 
 
 router.get("/", function(_req, res) {

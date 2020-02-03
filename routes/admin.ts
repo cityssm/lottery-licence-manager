@@ -3,9 +3,8 @@
 import express = require("express");
 const router = express.Router();
 
-
-import { licencesDB } from "../helpers/licencesDB";
-import { usersDB } from "../helpers/usersDB";
+import * as licencesDB from "../helpers/licencesDB";
+import * as usersDB from "../helpers/usersDB";
 
 
 // Application Settings

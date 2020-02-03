@@ -1,18 +1,16 @@
 import { FieldData } from "../helpers/llmTypes";
 
-export const objectFns = {
 
-  fieldDataArrayToObject: function(fieldDataArray : FieldData[]) : any {
+export function fieldDataArrayToObject(fieldDataArray: FieldData[]): any {
 
-    const fieldDataObject = {};
+  const fieldDataObject = {};
 
-    for (let i = 0; i < fieldDataArray.length; i += 1) {
+  for (let i = 0; i < fieldDataArray.length; i += 1) {
 
-      const fieldData = fieldDataArray[i];
+    const fieldData = fieldDataArray[i];
 
-      fieldDataObject[fieldData.fieldKey] = fieldData.fieldValue;
-    }
-
-    return fieldDataObject;
+    fieldDataObject[fieldData.fieldKey] = fieldData.fieldValue;
   }
+
+  return fieldDataObject;
 }

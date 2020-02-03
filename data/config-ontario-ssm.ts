@@ -4,7 +4,7 @@
 
 import * as llm from "../helpers/llmTypes";
 
-import { objectFns } from "../helpers/objectFns";
+import * as objectFns from "../helpers/objectFns";
 
 import config = require("./config-ontario");
 

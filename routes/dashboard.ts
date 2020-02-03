@@ -3,9 +3,9 @@
 import express = require("express");
 const router = express.Router();
 
-import { configFns } from "../helpers/configFns";
+import * as configFns from "../helpers/configFns";
 
-import { usersDB } from "../helpers/usersDB";
+import * as usersDB from "../helpers/usersDB";
 
 
 router.get("/", function(_req, res) {

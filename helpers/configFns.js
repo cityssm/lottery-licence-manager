@@ -1,11 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-let config = {};
+exports.config = {};
 try {
-    config = require("../data/config");
+    exports.config = require("../data/config");
 }
 catch (e) {
-    config = {};
+    exports.config = {};
     console.log("No \"config.js\" found." +
         " To customize, create your own \"config.js\" in the \"data\" folder." +
         " See \"config-example.js\" or \"config-example-ontario.js\" to get started.");
@@ -49,7 +49,7 @@ const configFallbackValues = {
 };
 function getProperty(propertyName) {
     const propertyNameSplit = propertyName.split(".");
-    let currentObj = config;
+    let currentObj = exports.config;
     for (let index = 0; index < propertyNameSplit.length; index += 1) {
         currentObj = currentObj[propertyNameSplit[index]];
         if (!currentObj) {
@@ -58,23 +58,22 @@ function getProperty(propertyName) {
     }
     return currentObj;
 }
+exports.getProperty = getProperty;
 const licenceTypeCache = {};
-let uid = Date.now();
-exports.configFns = {
-    getProperty: getProperty,
-    getLicenceType: function (licenceTypeKey) {
-        if (!licenceTypeCache[licenceTypeKey]) {
-            licenceTypeCache[licenceTypeKey] =
-                getProperty("licenceTypes").find(function (ele) {
-                    return (ele.licenceTypeKey === licenceTypeKey);
-                });
-        }
-        return licenceTypeCache[licenceTypeKey];
-    },
-    config: config,
-    getUID: function () {
-        const toReturn = uid;
-        uid += 1;
-        return "uid" + toReturn.toString();
+function getLicenceType(licenceTypeKey) {
+    if (!licenceTypeCache[licenceTypeKey]) {
+        licenceTypeCache[licenceTypeKey] =
+            getProperty("licenceTypes").find(function (ele) {
+                return (ele.licenceTypeKey === licenceTypeKey);
+            });
     }
-};
+    return licenceTypeCache[licenceTypeKey];
+}
+exports.getLicenceType = getLicenceType;
+let uid = Date.now();
+function getUID() {
+    const toReturn = uid;
+    uid += 1;
+    return "uid" + toReturn.toString();
+}
+exports.getUID = getUID;

@@ -1,17 +1,17 @@
 "use strict";
 const express = require("express");
 const router = express.Router();
-const configFns_1 = require("../helpers/configFns");
-const dateTimeFns_1 = require("../helpers/dateTimeFns");
-const stringFns_1 = require("../helpers/stringFns");
-const licencesDB_1 = require("../helpers/licencesDB");
+const configFns = require("../helpers/configFns");
+const dateTimeFns = require("../helpers/dateTimeFns");
+const stringFns = require("../helpers/stringFns");
+const licencesDB = require("../helpers/licencesDB");
 router.get("/", function (_req, res) {
     res.render("location-search", {
         headTitle: "Locations"
     });
 });
 router.post("/doGetLocations", function (req, res) {
-    const locations = licencesDB_1.licencesDB.getLocations(req.body, req.session);
+    const locations = licencesDB.getLocations(req.body, req.session);
     res.json(locations);
 });
 router.post("/doCreate", function (req, res) {
@@ -22,7 +22,7 @@ router.post("/doCreate", function (req, res) {
         });
         return;
     }
-    const locationID = licencesDB_1.licencesDB.createLocation(req.body, req.session);
+    const locationID = licencesDB.createLocation(req.body, req.session);
     res.json({
         success: true,
         locationID: locationID,
@@ -37,7 +37,7 @@ router.post("/doUpdate", function (req, res) {
         });
         return;
     }
-    const changeCount = licencesDB_1.licencesDB.updateLocation(req.body, req.session);
+    const changeCount = licencesDB.updateLocation(req.body, req.session);
     if (changeCount) {
         res.json({
             success: true,
@@ -56,7 +56,7 @@ router.post("/doDelete", function (req, res) {
         res.json("not allowed");
         return;
     }
-    const changeCount = licencesDB_1.licencesDB.deleteLocation(req.body.locationID, req.session);
+    const changeCount = licencesDB.deleteLocation(req.body.locationID, req.session);
     if (changeCount) {
         res.json({
             success: true,
@@ -75,7 +75,7 @@ router.post("/doRestore", function (req, res) {
         res.json("not allowed");
         return;
     }
-    const changeCount = licencesDB_1.licencesDB.restoreLocation(req.body.locationID, req.session);
+    const changeCount = licencesDB.restoreLocation(req.body.locationID, req.session);
     if (changeCount) {
         res.json({
             success: true,
@@ -96,7 +96,7 @@ router.post("/doMerge", function (req, res) {
     }
     const targetLocationID = req.body.targetLocationID;
     const sourceLocationID = req.body.sourceLocationID;
-    const success = licencesDB_1.licencesDB.mergeLocations(targetLocationID, sourceLocationID, req.session);
+    const success = licencesDB.mergeLocations(targetLocationID, sourceLocationID, req.session);
     res.json({
         success: success
     });
@@ -109,30 +109,30 @@ router.get("/new", function (req, res) {
     res.render("location-edit", {
         headTitle: "Create a New Location",
         location: {
-            locationCity: configFns_1.configFns.getProperty("defaults.city"),
-            locationProvince: configFns_1.configFns.getProperty("defaults.province")
+            locationCity: configFns.getProperty("defaults.city"),
+            locationProvince: configFns.getProperty("defaults.province")
         },
-        currentDateInteger: dateTimeFns_1.dateTimeFns.dateToInteger(new Date()),
-        stringFns: stringFns_1.stringFns,
+        currentDateInteger: dateTimeFns.dateToInteger(new Date()),
+        stringFns: stringFns,
         isCreate: true
     });
 });
 router.get("/:locationID", function (req, res) {
     const locationID = parseInt(req.params.locationID);
-    const location = licencesDB_1.licencesDB.getLocation(locationID, req.session);
+    const location = licencesDB.getLocation(locationID, req.session);
     if (!location) {
         res.redirect("/locations/?error=locationNotFound");
         return;
     }
-    const licences = licencesDB_1.licencesDB.getLicences({
+    const licences = licencesDB.getLicences({
         locationID: locationID
     }, true, false, req.session);
     res.render("location-view", {
         headTitle: location.locationDisplayName,
         location: location,
         licences: licences,
-        currentDateInteger: dateTimeFns_1.dateTimeFns.dateToInteger(new Date()),
-        stringFns: stringFns_1.stringFns
+        currentDateInteger: dateTimeFns.dateToInteger(new Date()),
+        stringFns: stringFns
     });
 });
 router.get("/:locationID/edit", function (req, res) {
@@ -141,7 +141,7 @@ router.get("/:locationID/edit", function (req, res) {
         res.redirect("/locations/" + locationID + "/?error=accessDenied-noCreate");
         return;
     }
-    const location = licencesDB_1.licencesDB.getLocation(locationID, req.session);
+    const location = licencesDB.getLocation(locationID, req.session);
     if (!location) {
         res.redirect("/locations/?error=locationNotFound");
         return;
@@ -150,15 +150,15 @@ router.get("/:locationID/edit", function (req, res) {
         res.redirect("/locations/" + locationID + "/?error=accessDenied-noUpdate");
         return;
     }
-    const licences = licencesDB_1.licencesDB.getLicences({
+    const licences = licencesDB.getLicences({
         locationID: locationID
     }, true, false, req.session) || [];
     res.render("location-edit", {
         headTitle: location.locationDisplayName,
         location: location,
         licences: licences,
-        currentDateInteger: dateTimeFns_1.dateTimeFns.dateToInteger(new Date()),
-        stringFns: stringFns_1.stringFns,
+        currentDateInteger: dateTimeFns.dateToInteger(new Date()),
+        stringFns: stringFns,
         isCreate: false
     });
 });
