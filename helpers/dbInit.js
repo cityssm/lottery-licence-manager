@@ -101,10 +101,10 @@ function initLicencesDB() {
         licencesDB.prepare("create table if not exists OrganizationBankRecords (" +
             "organizationID integer not null," +
             " recordIndex integer not null," +
+            " accountNumber varchar(20) not null," +
             " bankingYear integer not null," +
             " bankingMonth integer not null," +
             " bankRecordType varchar(10) not null," +
-            " accountNumber varchar(20) not null," +
             " recordIsNA bit not null default 0," +
             " recordDate integer," +
             " recordNote text," +
@@ -115,7 +115,7 @@ function initLicencesDB() {
             " recordDelete_userName varchar(30)," +
             " recordDelete_timeMillis integer," +
             " primary key (organizationID, recordIndex)," +
-            " unique (organizationID, bankingYear, bankingMonth, bankRecordType, accountNumber)," +
+            " unique (organizationID, accountNumber, bankingYear, bankingMonth, bankRecordType)," +
             " foreign key (organizationID) references Organizations (organizationID)" +
             ") without rowid").run();
         licencesDB.prepare("create table if not exists LotteryLicences (" +

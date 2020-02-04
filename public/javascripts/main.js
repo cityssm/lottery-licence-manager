@@ -444,7 +444,7 @@ llm.openHtmlModal = function(htmlFileName, callbackFns) {
  * TABS
  */
 
-llm.initializeTabs = function(tabsListEle) {
+llm.initializeTabs = function(tabsListEle, callbackFns) {
 
   if (!tabsListEle) {
 
@@ -481,6 +481,12 @@ llm.initializeTabs = function(tabsListEle) {
     }
 
     tabContentEle.classList.add("is-active");
+
+    if (callbackFns && callbackFns.onshown) {
+
+      callbackFns.onshown(tabContentEle);
+
+    }
 
   }
 

@@ -104,7 +104,7 @@ function getApplicationSettingWithDB(db: sqlite.Database, settingKey: string): s
 }
 
 
-function getLicenceWithDB(db: sqlite.Database, licenceID: number, reqSession: Express.SessionData) {
+function getLicenceWithDB(db: sqlite.Database, licenceID: number, reqSession: Express.SessionData, includeOptions: llm.LotteryLicenceIncludeFilters) {
 
   const licenceObj: llm.LotteryLicence =
     db.prepare("select l.*," +
@@ -138,7 +138,7 @@ function getLicenceWithDB(db: sqlite.Database, licenceID: number, reqSession: Ex
   licenceObj.canUpdate = canUpdateObject(licenceObj, reqSession);
 
   // Ticket types
-  {
+  if (includeOptions && "includeTicketTypes" in includeOptions && includeOptions.includeTicketTypes) {
 
     const ticketTypesList = db.prepare("select t.ticketType," +
       " t.distributorLocationID," +
@@ -173,7 +173,7 @@ function getLicenceWithDB(db: sqlite.Database, licenceID: number, reqSession: Ex
   }
 
   // Licence fields
-  {
+  if (includeOptions && "includeFields" in includeOptions && includeOptions.includeFields) {
 
     const fieldList = db.prepare("select * from LotteryLicenceFields" +
       " where licenceID = ?")
@@ -184,7 +184,7 @@ function getLicenceWithDB(db: sqlite.Database, licenceID: number, reqSession: Ex
   }
 
   // Events
-  {
+  if (includeOptions && "includeEvents" in includeOptions && includeOptions.includeEvents) {
 
     const eventList = db.prepare("select eventDate from LotteryEvents" +
       " where licenceID = ?" +
@@ -204,7 +204,7 @@ function getLicenceWithDB(db: sqlite.Database, licenceID: number, reqSession: Ex
   }
 
   // Licence amendments
-  {
+  if (includeOptions && "includeAmendments" in includeOptions && includeOptions.includeAmendments) {
 
     const amendments = db.prepare("select *" +
       " from LotteryLicenceAmendments" +
@@ -226,7 +226,7 @@ function getLicenceWithDB(db: sqlite.Database, licenceID: number, reqSession: Ex
   }
 
   // Transactions
-  {
+  if (includeOptions && "includeTransactions" in includeOptions && includeOptions.includeTransactions) {
 
     const transactions = db.prepare("select * from LotteryLicenceTransactions" +
       " where licenceID = ?" +
@@ -1251,7 +1251,7 @@ export function deleteOrganizationRemark(organizationID: number, remarkIndex: nu
  * ORGANIZATION BANK RECORDS
  */
 
-export function getOrganizationBankRecords(organizationID: number) {
+export function getOrganizationBankRecords(organizationID: number, accountNumber: string, bankingYear: number) {
 
   const addCalculatedFieldsFn = function(ele: llm.OrganizationBankRecord) {
     ele.recordDateString = dateTimeFns.dateIntegerToString(ele.recordDate);
@@ -1263,14 +1263,15 @@ export function getOrganizationBankRecords(organizationID: number) {
 
   const rows: llm.OrganizationBankRecord[] =
     db.prepare("select recordIndex," +
-      " bankingYear, bankingMonth," +
-      " bankRecordType, accountNumber, recordDate, recordNote, recordIsNA," +
+      " bankingMonth, bankRecordType," +
+      " recordDate, recordNote, recordIsNA," +
       " recordCreate_userName, recordCreate_timeMillis, recordUpdate_userName, recordUpdate_timeMillis" +
       " from OrganizationBankRecords" +
       " where recordDelete_timeMillis is null" +
       " and organizationID = ?" +
-      " order by bankingYear, bankingMonth, accountNumber")
-      .all(organizationID);
+      " and accountNumber = ?" +
+      " and bankingYear = ?")
+      .all(organizationID, accountNumber, bankingYear);
 
   db.close();
 
@@ -1280,6 +1281,27 @@ export function getOrganizationBankRecords(organizationID: number) {
 
 }
 
+export function getOrganizationBankRecordStats(organizationID: number) {
+
+  const db = sqlite(dbPath, {
+    readonly: true
+  });
+
+  const rows = db.prepare("select accountNumber," +
+    " min(bankingYear) as bankingYearMin," +
+    " max(bankingYear) as bankingYearMax" +
+    " from OrganizationBankRecords" +
+    " where recordDelete_timeMillis is null" +
+    " and organizationID = ?" +
+    " group by accountNumber" +
+    " order by bankingYearMax desc, accountNumber")
+
+    .all(organizationID);
+
+  db.close();
+
+  return rows;
+}
 
 /*
  * LICENCES
@@ -1449,7 +1471,13 @@ export function getLicence(licenceID: number, reqSession: Express.SessionData): 
     readonly: true
   });
 
-  const licenceObj = getLicenceWithDB(db, licenceID, reqSession);
+  const licenceObj = getLicenceWithDB(db, licenceID, reqSession, {
+    includeTicketTypes: true,
+    includeFields: true,
+    includeEvents: true,
+    includeAmendments: true,
+    includeTransactions: true
+  });
 
   db.close();
 
@@ -1674,7 +1702,13 @@ export function createLicence(reqBody: any, reqSession: Express.SessionData) {
 
   // Calculate licence fee
 
-  const licenceObj = getLicenceWithDB(db, licenceID, reqSession);
+  const licenceObj = getLicenceWithDB(db, licenceID, reqSession, {
+    includeTicketTypes: true,
+    includeFields: true,
+    includeEvents: true,
+    includeAmendments: true,
+    includeTransactions: true
+  });
 
   const feeCalculation = configFns.getProperty("licences.feeCalculationFn")(licenceObj);
 
@@ -1695,13 +1729,19 @@ export function createLicence(reqBody: any, reqSession: Express.SessionData) {
 /**
  * @returns TRUE if successful
  */
-export function updateLicence(reqBody: any, reqSession: Express.SessionData) : boolean {
+export function updateLicence(reqBody: any, reqSession: Express.SessionData): boolean {
 
   // Check if can update
 
   const db = sqlite(dbPath);
 
-  const pastLicenceObj = getLicenceWithDB(db, reqBody.licenceID, reqSession);
+  const pastLicenceObj = getLicenceWithDB(db, reqBody.licenceID, reqSession, {
+    includeTicketTypes: true,
+    includeFields: true,
+    includeEvents: true,
+    includeAmendments: false,
+    includeTransactions: true
+  });
 
   if (!pastLicenceObj.canUpdate) {
 
@@ -2292,11 +2332,15 @@ export function deleteLicence(licenceID: number, reqSession: Express.SessionData
 
 export function getDistinctTermsConditions(organizationID: number) {
 
+  const addCalculatedFieldsFn = function(ele: llm.TermsConditionsStat) {
+    ele.startDateMaxString = dateTimeFns.dateIntegerToString(ele.startDateMax);
+  };
+
   const db = sqlite(dbPath, {
     readonly: true
   });
 
-  const rows = db.prepare("select termsConditions," +
+  const rows: llm.TermsConditionsStat[] = db.prepare("select termsConditions," +
     " count(licenceID) as termsConditionsCount," +
     " max(startDate) as startDateMax" +
     " from LotteryLicences l" +
@@ -2309,17 +2353,15 @@ export function getDistinctTermsConditions(organizationID: number) {
 
   db.close();
 
-  for (let rowIndex = 0; rowIndex < rows.length; rowIndex += 1) {
-
-    const termsConditionsObj = rows[rowIndex];
-    termsConditionsObj.startDateMaxString = dateTimeFns.dateIntegerToString(termsConditionsObj.startDateMax);
-
-  }
+  rows.forEach(addCalculatedFieldsFn);
 
   return rows;
 
 }
 
+/**
+ * @returns TRUE if successful
+ */
 export function pokeLicence(licenceID: number, reqSession: Express.SessionData) {
 
   const db = sqlite(dbPath);
@@ -2337,14 +2379,15 @@ export function pokeLicence(licenceID: number, reqSession: Express.SessionData) 
       licenceID
     );
 
-  const changeCount = info.changes;
-
   db.close();
 
-  return changeCount;
+  return info.changes > 0;
 
 }
 
+/**
+ * @returns TRUE if successful
+ */
 export function issueLicence(reqBody: any, reqSession: Express.SessionData) {
 
   const db = sqlite(dbPath);
@@ -2371,14 +2414,15 @@ export function issueLicence(reqBody: any, reqSession: Express.SessionData) {
       reqBody.licenceID
     );
 
-  const changeCount = info.changes;
-
   db.close();
 
-  return changeCount;
+  return info.changes > 0;
 
 }
 
+/**
+ * @returns TRUE if successful
+ */
 export function unissueLicence(licenceID: number, reqSession: Express.SessionData) {
 
   const db = sqlite(dbPath);
@@ -2416,7 +2460,7 @@ export function unissueLicence(licenceID: number, reqSession: Express.SessionDat
 
   db.close();
 
-  return changeCount;
+  return changeCount > 0;
 
 }
 
@@ -2498,13 +2542,19 @@ export function getLicenceTypeSummary(reqBody: any) {
  */
 
 /**
- * @returns The new transaction index
+ * @returns The new transactionIndex
  */
 export function addTransaction(reqBody: any, reqSession: Express.SessionData) {
 
   const db = sqlite(dbPath);
 
-  const licenceObj = getLicenceWithDB(db, reqBody.licenceID, reqSession);
+  const licenceObj = getLicenceWithDB(db, reqBody.licenceID, reqSession, {
+    includeTicketTypes: false,
+    includeFields: false,
+    includeEvents: false,
+    includeAmendments: false,
+    includeTransactions: false
+  });
 
   const row = db.prepare("select ifnull(max(transactionIndex), -1) as maxIndex" +
     " from LotteryLicenceTransactions" +
@@ -2579,11 +2629,20 @@ export function addTransaction(reqBody: any, reqSession: Express.SessionData) {
 
 }
 
+/**
+ * @returns TRUE if successful
+ */
 export function voidTransaction(licenceID: number, transactionIndex: number, reqSession: Express.SessionData) {
 
   const db = sqlite(dbPath);
 
-  const licenceObj = getLicenceWithDB(db, licenceID, reqSession);
+  const licenceObj = getLicenceWithDB(db, licenceID, reqSession, {
+    includeTicketTypes: false,
+    includeFields: false,
+    includeEvents: false,
+    includeAmendments: false,
+    includeTransactions: false
+  });
 
   const nowMillis = Date.now();
 
@@ -2617,7 +2676,7 @@ export function voidTransaction(licenceID: number, transactionIndex: number, req
 
   db.close();
 
-  return changeCount;
+  return changeCount > 0;
 
 }
 
@@ -2659,6 +2718,25 @@ export function getEventTableStats() {
 
 export function getEvents(year: number, month: number, reqSession: Express.SessionData) {
 
+  const addCalculatedFieldsFn = function(ele: llm.LotteryEvent) {
+
+    ele.recordType = "event";
+
+    ele.eventDateString = dateTimeFns.dateIntegerToString(ele.eventDate);
+
+    ele.startTimeString = dateTimeFns.timeIntegerToString(ele.startTime || 0);
+    ele.endTimeString = dateTimeFns.timeIntegerToString(ele.endTime || 0);
+
+    ele.locationDisplayName = (ele.locationName === "" ? ele.locationAddress1 : ele.locationName);
+
+    ele.canUpdate = canUpdateObject(ele, reqSession);
+
+    delete ele.locationName;
+    delete ele.locationAddress1;
+    delete ele.bank_name;
+    delete ele.costs_receipts;
+  };
+
   const db = sqlite(dbPath, {
     readonly: true
   });
@@ -2684,33 +2762,27 @@ export function getEvents(year: number, month: number, reqSession: Express.Sessi
 
   db.close();
 
-  for (let eventIndex = 0; eventIndex < rows.length; eventIndex += 1) {
-
-    const eventObj = rows[eventIndex];
-
-    eventObj.recordType = "event";
-
-    eventObj.eventDateString = dateTimeFns.dateIntegerToString(eventObj.eventDate);
-
-    eventObj.startTimeString = dateTimeFns.timeIntegerToString(eventObj.startTime || 0);
-    eventObj.endTimeString = dateTimeFns.timeIntegerToString(eventObj.endTime || 0);
-
-    eventObj.locationDisplayName = (eventObj.locationName === "" ? eventObj.locationAddress1 : eventObj.locationName);
-
-    eventObj.canUpdate = canUpdateObject(eventObj, reqSession);
-
-    delete eventObj.locationName;
-    delete eventObj.locationAddress1;
-    delete eventObj.bank_name;
-    delete eventObj.costs_receipts;
-
-  }
+  rows.forEach(addCalculatedFieldsFn);
 
   return rows;
 
 }
 
 export function getOutstandingEvents(reqBody: any, reqSession: Express.SessionData) {
+
+  const addCalculatedFieldsFn = function(ele: llm.LotteryEvent) {
+
+    ele.recordType = "event";
+
+    ele.eventDateString = dateTimeFns.dateIntegerToString(ele.eventDate);
+    ele.reportDateString = dateTimeFns.dateIntegerToString(ele.reportDate);
+
+    ele.licenceType = (configFns.getLicenceType(ele.licenceTypeKey) || {}).licenceType || "";
+
+    ele.bank_name_isOutstanding = (ele.bank_name === null || ele.bank_name === "");
+
+    ele.canUpdate = canUpdateObject(ele, reqSession);
+  };
 
   const db = sqlite(dbPath, {
     readonly: true
@@ -2753,22 +2825,7 @@ export function getOutstandingEvents(reqBody: any, reqSession: Express.SessionDa
 
   db.close();
 
-  for (let eventIndex = 0; eventIndex < rows.length; eventIndex += 1) {
-
-    const eventObj = rows[eventIndex];
-
-    eventObj.recordType = "event";
-
-    eventObj.eventDateString = dateTimeFns.dateIntegerToString(eventObj.eventDate);
-    eventObj.reportDateString = dateTimeFns.dateIntegerToString(eventObj.reportDate);
-
-    eventObj.licenceType = (configFns.getLicenceType(eventObj.licenceTypeKey) || {}).licenceType || "";
-
-    eventObj.bank_name_isOutstanding = (eventObj.bank_name === null || eventObj.bank_name === "");
-
-    eventObj.canUpdate = canUpdateObject(eventObj, reqSession);
-
-  }
+  rows.forEach(addCalculatedFieldsFn);
 
   return rows;
 
@@ -2872,7 +2929,10 @@ export function getEvent(licenceID: number, eventDate: number, reqSession: Expre
 
 }
 
-export function updateEvent(reqBody: any, reqSession: Express.SessionData) {
+/**
+ * @returns TRUE if successful
+ */
+export function updateEvent(reqBody: any, reqSession: Express.SessionData): boolean {
 
   const db = sqlite(dbPath);
 
@@ -2918,7 +2978,7 @@ export function updateEvent(reqBody: any, reqSession: Express.SessionData) {
   if (!changeCount) {
 
     db.close();
-    return changeCount;
+    return false;
 
   }
 
@@ -2952,10 +3012,13 @@ export function updateEvent(reqBody: any, reqSession: Express.SessionData) {
   // Purge cached stats
   eventTableStatsExpiryMillis = -1;
 
-  return changeCount;
+  return changeCount > 0;
 
 }
 
+/**
+ * @returns TRUE if successful
+ */
 export function deleteEvent(licenceID: number, eventDate: number, reqSession: Express.SessionData) {
 
   const db = sqlite(dbPath);
@@ -2982,10 +3045,13 @@ export function deleteEvent(licenceID: number, eventDate: number, reqSession: Ex
   // Purge cached stats
   eventTableStatsExpiryMillis = -1;
 
-  return changeCount;
+  return changeCount > 0;
 
 }
 
+/**
+ * @returns TRUE if successful
+ */
 export function pokeEvent(licenceID: number, eventDate: number, reqSession: Express.SessionData) {
 
   const db = sqlite(dbPath);
@@ -3005,11 +3071,9 @@ export function pokeEvent(licenceID: number, eventDate: number, reqSession: Expr
       eventDate
     );
 
-  const changeCount = info.changes;
-
   db.close();
 
-  return changeCount;
+  return info.changes > 0;
 
 }
 
@@ -3046,6 +3110,9 @@ export function getApplicationSetting(settingKey: string) {
 
 }
 
+/**
+ * @returns TRUE if successful
+ */
 export function updateApplicationSetting(settingKey: string, settingValue: string, reqSession: Express.SessionData) {
 
   const db = sqlite(dbPath);
@@ -3064,10 +3131,8 @@ export function updateApplicationSetting(settingKey: string, settingValue: strin
       settingKey
     );
 
-  const changeCount = info.changes;
-
   db.close();
 
-  return changeCount;
+  return info.changes > 0;
 
 }

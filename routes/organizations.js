@@ -101,6 +101,16 @@ router.post("/doDeleteRemark", function (req, res) {
         });
     }
 });
+router.post("/doGetBankRecords", function (req, res) {
+    const organizationID = req.body.organizationID;
+    const bankingYear = req.body.bankingYear;
+    const accountNumber = req.body.accountNumber;
+    res.json(licencesDB.getOrganizationBankRecords(organizationID, accountNumber, bankingYear));
+});
+router.post("/doGetBankRecordStats", function (req, res) {
+    const organizationID = req.body.organizationID;
+    res.json(licencesDB.getOrganizationBankRecordStats(organizationID));
+});
 router.get("/new", function (req, res) {
     if (req.session.user.userProperties.canCreate !== "true") {
         res.redirect("/organizations/?error=accessDenied");

@@ -5,6 +5,7 @@ export declare type Config = {
     admin?: Config_AdminDefaults;
     user?: Config_UserConfig;
     defaults?: Config_DefaultsConfig;
+    bankRecordTypes?: Config_BankRecordType[];
     licences?: Config_LicencesConfig;
     licenceTypes?: Config_LicenceType[];
     amendments?: Config_AmendmentConfig;
@@ -36,6 +37,10 @@ declare type Config_UserConfig = {
 declare type Config_DefaultsConfig = {
     city: string;
     province: string;
+};
+export declare type Config_BankRecordType = {
+    bankRecordType: "statement" | "cheques" | "receipts";
+    bankRecordTypeName: string;
 };
 declare type Config_LicencesConfig = {
     feeCalculationFn: Function;
@@ -199,6 +204,13 @@ export interface LotteryLicence extends Location, Record {
     licenceAmendments: LotteryLicenceAmendments[];
     events: LotteryEvent[];
 }
+export declare type LotteryLicenceIncludeFilters = {
+    includeTicketTypes: boolean;
+    includeFields: boolean;
+    includeEvents: boolean;
+    includeAmendments: boolean;
+    includeTransactions: boolean;
+};
 export interface LotteryLicenceTicketType extends Record {
     licenceID: number;
     ticketType: string;
@@ -236,6 +248,12 @@ export declare type LotteryEventStats = {
 };
 export declare type LotteryLicenceStats = {
     applicationYearMin: number;
+};
+export declare type TermsConditionsStat = {
+    termsConditions: string;
+    termsConditionsCount: number;
+    startDateMax: number;
+    startDateMaxString: string;
 };
 export declare type User = {
     userName: string;

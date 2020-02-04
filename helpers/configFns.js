@@ -26,6 +26,18 @@ const configFallbackValues = {
     },
     "defaults.city": "",
     "defaults.province": "",
+    "bankRecordTypes": [
+        {
+            bankRecordType: "statement",
+            bankRecordTypeName: "Bank Statement"
+        }, {
+            bankRecordType: "cheques",
+            bankRecordTypeName: "Cheques"
+        }, {
+            bankRecordType: "receipts",
+            bankRecordTypeName: "Receipts"
+        }
+    ],
     "licences.externalLicenceNumber.fieldLabel": "External Licence Number",
     "licences.externalLicenceNumber.newCalculation": "",
     "licences.externalReceiptNumber.fieldLabel": "Receipt Number",

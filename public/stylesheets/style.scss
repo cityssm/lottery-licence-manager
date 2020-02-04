@@ -71,7 +71,8 @@ html.is-fullwidth {
 
 fieldset:enabled .is-hidden-enabled,
 .has-status-view .is-hidden-status-view,
-.has-status-loading .is-hidden-status-loading {
+.has-status-loading .is-hidden-status-loading,
+.has-status-loaded .is-hidden-status-loaded {
   display: none;
 }
 

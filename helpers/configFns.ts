@@ -1,6 +1,6 @@
 "use strict";
 
-import { Config_LicenceType } from "../helpers/llmTypes";
+import { Config_BankRecordType, Config_LicenceType } from "../helpers/llmTypes";
 
 
 /*
@@ -50,6 +50,19 @@ const configFallbackValues = {
 
   "defaults.city": "",
   "defaults.province": "",
+
+  "bankRecordTypes": <Config_BankRecordType[]>[
+    {
+      bankRecordType: "statement",
+      bankRecordTypeName: "Bank Statement"
+    }, {
+      bankRecordType: "cheques",
+      bankRecordTypeName: "Cheques"
+    }, {
+      bankRecordType: "receipts",
+      bankRecordTypeName: "Receipts"
+    }
+  ],
 
   "licences.externalLicenceNumber.fieldLabel": "External Licence Number",
   "licences.externalLicenceNumber.newCalculation": "",

@@ -51,7 +51,7 @@ function getApplicationSettingWithDB(db, settingKey) {
     }
     return "";
 }
-function getLicenceWithDB(db, licenceID, reqSession) {
+function getLicenceWithDB(db, licenceID, reqSession, includeOptions) {
     const licenceObj = db.prepare("select l.*," +
         " lo.locationName, lo.locationAddress1" +
         " from LotteryLicences l" +
@@ -73,7 +73,7 @@ function getLicenceWithDB(db, licenceID, reqSession) {
     licenceObj.locationDisplayName =
         (licenceObj.locationName === "" ? licenceObj.locationAddress1 : licenceObj.locationName);
     licenceObj.canUpdate = canUpdateObject(licenceObj, reqSession);
-    {
+    if (includeOptions && "includeTicketTypes" in includeOptions && includeOptions.includeTicketTypes) {
         const ticketTypesList = db.prepare("select t.ticketType," +
             " t.distributorLocationID," +
             " d.locationName as distributorLocationName, d.locationAddress1 as distributorLocationAddress1," +
@@ -98,13 +98,13 @@ function getLicenceWithDB(db, licenceID, reqSession) {
         }
         licenceObj.licenceTicketTypes = ticketTypesList;
     }
-    {
+    if (includeOptions && "includeFields" in includeOptions && includeOptions.includeFields) {
         const fieldList = db.prepare("select * from LotteryLicenceFields" +
             " where licenceID = ?")
             .all(licenceID);
         licenceObj.licenceFields = fieldList;
     }
-    {
+    if (includeOptions && "includeEvents" in includeOptions && includeOptions.includeEvents) {
         const eventList = db.prepare("select eventDate from LotteryEvents" +
             " where licenceID = ?" +
             " and recordDelete_timeMillis is null" +
@@ -116,7 +116,7 @@ function getLicenceWithDB(db, licenceID, reqSession) {
         }
         licenceObj.events = eventList;
     }
-    {
+    if (includeOptions && "includeAmendments" in includeOptions && includeOptions.includeAmendments) {
         const amendments = db.prepare("select *" +
             " from LotteryLicenceAmendments" +
             " where licenceID = ?" +
@@ -130,7 +130,7 @@ function getLicenceWithDB(db, licenceID, reqSession) {
         }
         licenceObj.licenceAmendments = amendments;
     }
-    {
+    if (includeOptions && "includeTransactions" in includeOptions && includeOptions.includeTransactions) {
         const transactions = db.prepare("select * from LotteryLicenceTransactions" +
             " where licenceID = ?" +
             " and recordDelete_timeMillis is null" +
@@ -721,7 +721,7 @@ function deleteOrganizationRemark(organizationID, remarkIndex, reqSession) {
     return info.changes > 0;
 }
 exports.deleteOrganizationRemark = deleteOrganizationRemark;
-function getOrganizationBankRecords(organizationID) {
+function getOrganizationBankRecords(organizationID, accountNumber, bankingYear) {
     const addCalculatedFieldsFn = function (ele) {
         ele.recordDateString = dateTimeFns.dateIntegerToString(ele.recordDate);
     };
@@ -729,19 +729,37 @@ function getOrganizationBankRecords(organizationID) {
         readonly: true
     });
     const rows = db.prepare("select recordIndex," +
-        " bankingYear, bankingMonth," +
-        " bankRecordType, accountNumber, recordDate, recordNote, recordIsNA," +
+        " bankingMonth, bankRecordType," +
+        " recordDate, recordNote, recordIsNA," +
         " recordCreate_userName, recordCreate_timeMillis, recordUpdate_userName, recordUpdate_timeMillis" +
         " from OrganizationBankRecords" +
         " where recordDelete_timeMillis is null" +
         " and organizationID = ?" +
-        " order by bankingYear, bankingMonth, accountNumber")
-        .all(organizationID);
+        " and accountNumber = ?" +
+        " and bankingYear = ?")
+        .all(organizationID, accountNumber, bankingYear);
     db.close();
     rows.forEach(addCalculatedFieldsFn);
     return rows;
 }
 exports.getOrganizationBankRecords = getOrganizationBankRecords;
+function getOrganizationBankRecordStats(organizationID) {
+    const db = sqlite(dbPath, {
+        readonly: true
+    });
+    const rows = db.prepare("select accountNumber," +
+        " min(bankingYear) as bankingYearMin," +
+        " max(bankingYear) as bankingYearMax" +
+        " from OrganizationBankRecords" +
+        " where recordDelete_timeMillis is null" +
+        " and organizationID = ?" +
+        " group by accountNumber" +
+        " order by bankingYearMax desc, accountNumber")
+        .all(organizationID);
+    db.close();
+    return rows;
+}
+exports.getOrganizationBankRecordStats = getOrganizationBankRecordStats;
 let licenceTableStats = {
     applicationYearMin: 1970
 };
@@ -850,7 +868,13 @@ function getLicence(licenceID, reqSession) {
     const db = sqlite(dbPath, {
         readonly: true
     });
-    const licenceObj = getLicenceWithDB(db, licenceID, reqSession);
+    const licenceObj = getLicenceWithDB(db, licenceID, reqSession, {
+        includeTicketTypes: true,
+        includeFields: true,
+        includeEvents: true,
+        includeAmendments: true,
+        includeTransactions: true
+    });
     db.close();
     return licenceObj;
 }
@@ -955,7 +979,13 @@ function createLicence(reqBody, reqSession) {
                 .run(licenceID, dateTimeFns.dateStringToInteger(reqBody.eventDate[eventIndex]), reqSession.user.userName, nowMillis, reqSession.user.userName, nowMillis);
         }
     }
-    const licenceObj = getLicenceWithDB(db, licenceID, reqSession);
+    const licenceObj = getLicenceWithDB(db, licenceID, reqSession, {
+        includeTicketTypes: true,
+        includeFields: true,
+        includeEvents: true,
+        includeAmendments: true,
+        includeTransactions: true
+    });
     const feeCalculation = configFns.getProperty("licences.feeCalculationFn")(licenceObj);
     db.prepare("update LotteryLicences" +
         " set licenceFee = ?" +
@@ -968,7 +998,13 @@ function createLicence(reqBody, reqSession) {
 exports.createLicence = createLicence;
 function updateLicence(reqBody, reqSession) {
     const db = sqlite(dbPath);
-    const pastLicenceObj = getLicenceWithDB(db, reqBody.licenceID, reqSession);
+    const pastLicenceObj = getLicenceWithDB(db, reqBody.licenceID, reqSession, {
+        includeTicketTypes: true,
+        includeFields: true,
+        includeEvents: true,
+        includeAmendments: false,
+        includeTransactions: true
+    });
     if (!pastLicenceObj.canUpdate) {
         db.close();
         return false;
@@ -1249,6 +1285,9 @@ function deleteLicence(licenceID, reqSession) {
 }
 exports.deleteLicence = deleteLicence;
 function getDistinctTermsConditions(organizationID) {
+    const addCalculatedFieldsFn = function (ele) {
+        ele.startDateMaxString = dateTimeFns.dateIntegerToString(ele.startDateMax);
+    };
     const db = sqlite(dbPath, {
         readonly: true
     });
@@ -1263,10 +1302,7 @@ function getDistinctTermsConditions(organizationID) {
         " order by startDateMax desc")
         .all(organizationID);
     db.close();
-    for (let rowIndex = 0; rowIndex < rows.length; rowIndex += 1) {
-        const termsConditionsObj = rows[rowIndex];
-        termsConditionsObj.startDateMaxString = dateTimeFns.dateIntegerToString(termsConditionsObj.startDateMax);
-    }
+    rows.forEach(addCalculatedFieldsFn);
     return rows;
 }
 exports.getDistinctTermsConditions = getDistinctTermsConditions;
@@ -1279,9 +1315,8 @@ function pokeLicence(licenceID, reqSession) {
         " where licenceID = ?" +
         " and recordDelete_timeMillis is null")
         .run(reqSession.user.userName, nowMillis, licenceID);
-    const changeCount = info.changes;
     db.close();
-    return changeCount;
+    return info.changes > 0;
 }
 exports.pokeLicence = pokeLicence;
 function issueLicence(reqBody, reqSession) {
@@ -1299,9 +1334,8 @@ function issueLicence(reqBody, reqSession) {
         " and recordDelete_timeMillis is null" +
         " and issueDate is null")
         .run(issueDate, issueTime, reqSession.user.userName, nowDate.getTime(), reqBody.licenceID);
-    const changeCount = info.changes;
     db.close();
-    return changeCount;
+    return info.changes > 0;
 }
 exports.issueLicence = issueLicence;
 function unissueLicence(licenceID, reqSession) {
@@ -1321,7 +1355,7 @@ function unissueLicence(licenceID, reqSession) {
         addLicenceAmendmentWithDB(db, licenceID, "Unissue Licence", "", 1, reqSession);
     }
     db.close();
-    return changeCount;
+    return changeCount > 0;
 }
 exports.unissueLicence = unissueLicence;
 function getLicenceTypeSummary(reqBody) {
@@ -1373,7 +1407,13 @@ function getLicenceTypeSummary(reqBody) {
 exports.getLicenceTypeSummary = getLicenceTypeSummary;
 function addTransaction(reqBody, reqSession) {
     const db = sqlite(dbPath);
-    const licenceObj = getLicenceWithDB(db, reqBody.licenceID, reqSession);
+    const licenceObj = getLicenceWithDB(db, reqBody.licenceID, reqSession, {
+        includeTicketTypes: false,
+        includeFields: false,
+        includeEvents: false,
+        includeAmendments: false,
+        includeTransactions: false
+    });
     const row = db.prepare("select ifnull(max(transactionIndex), -1) as maxIndex" +
         " from LotteryLicenceTransactions" +
         " where licenceID = ?")
@@ -1411,7 +1451,13 @@ function addTransaction(reqBody, reqSession) {
 exports.addTransaction = addTransaction;
 function voidTransaction(licenceID, transactionIndex, reqSession) {
     const db = sqlite(dbPath);
-    const licenceObj = getLicenceWithDB(db, licenceID, reqSession);
+    const licenceObj = getLicenceWithDB(db, licenceID, reqSession, {
+        includeTicketTypes: false,
+        includeFields: false,
+        includeEvents: false,
+        includeAmendments: false,
+        includeTransactions: false
+    });
     const nowMillis = Date.now();
     const info = db.prepare("update LotteryLicenceTransactions" +
         " set recordDelete_userName = ?," +
@@ -1425,7 +1471,7 @@ function voidTransaction(licenceID, transactionIndex, reqSession) {
         addLicenceAmendmentWithDB(db, licenceID, "Transaction Voided", "", 1, reqSession);
     }
     db.close();
-    return changeCount;
+    return changeCount > 0;
 }
 exports.voidTransaction = voidTransaction;
 let eventTableStats = {
@@ -1451,6 +1497,18 @@ function getEventTableStats() {
 }
 exports.getEventTableStats = getEventTableStats;
 function getEvents(year, month, reqSession) {
+    const addCalculatedFieldsFn = function (ele) {
+        ele.recordType = "event";
+        ele.eventDateString = dateTimeFns.dateIntegerToString(ele.eventDate);
+        ele.startTimeString = dateTimeFns.timeIntegerToString(ele.startTime || 0);
+        ele.endTimeString = dateTimeFns.timeIntegerToString(ele.endTime || 0);
+        ele.locationDisplayName = (ele.locationName === "" ? ele.locationAddress1 : ele.locationName);
+        ele.canUpdate = canUpdateObject(ele, reqSession);
+        delete ele.locationName;
+        delete ele.locationAddress1;
+        delete ele.bank_name;
+        delete ele.costs_receipts;
+    };
     const db = sqlite(dbPath, {
         readonly: true
     });
@@ -1472,23 +1530,19 @@ function getEvents(year, month, reqSession) {
         " order by e.eventDate, l.startTime")
         .all(year, month, year, month);
     db.close();
-    for (let eventIndex = 0; eventIndex < rows.length; eventIndex += 1) {
-        const eventObj = rows[eventIndex];
-        eventObj.recordType = "event";
-        eventObj.eventDateString = dateTimeFns.dateIntegerToString(eventObj.eventDate);
-        eventObj.startTimeString = dateTimeFns.timeIntegerToString(eventObj.startTime || 0);
-        eventObj.endTimeString = dateTimeFns.timeIntegerToString(eventObj.endTime || 0);
-        eventObj.locationDisplayName = (eventObj.locationName === "" ? eventObj.locationAddress1 : eventObj.locationName);
-        eventObj.canUpdate = canUpdateObject(eventObj, reqSession);
-        delete eventObj.locationName;
-        delete eventObj.locationAddress1;
-        delete eventObj.bank_name;
-        delete eventObj.costs_receipts;
-    }
+    rows.forEach(addCalculatedFieldsFn);
     return rows;
 }
 exports.getEvents = getEvents;
 function getOutstandingEvents(reqBody, reqSession) {
+    const addCalculatedFieldsFn = function (ele) {
+        ele.recordType = "event";
+        ele.eventDateString = dateTimeFns.dateIntegerToString(ele.eventDate);
+        ele.reportDateString = dateTimeFns.dateIntegerToString(ele.reportDate);
+        ele.licenceType = (configFns.getLicenceType(ele.licenceTypeKey) || {}).licenceType || "";
+        ele.bank_name_isOutstanding = (ele.bank_name === null || ele.bank_name === "");
+        ele.canUpdate = canUpdateObject(ele, reqSession);
+    };
     const db = sqlite(dbPath, {
         readonly: true
     });
@@ -1518,15 +1572,7 @@ function getOutstandingEvents(reqBody, reqSession) {
     sql += " order by o.organizationName, o.organizationID, e.eventDate, l.licenceID";
     const rows = db.prepare(sql).all(sqlParams);
     db.close();
-    for (let eventIndex = 0; eventIndex < rows.length; eventIndex += 1) {
-        const eventObj = rows[eventIndex];
-        eventObj.recordType = "event";
-        eventObj.eventDateString = dateTimeFns.dateIntegerToString(eventObj.eventDate);
-        eventObj.reportDateString = dateTimeFns.dateIntegerToString(eventObj.reportDate);
-        eventObj.licenceType = (configFns.getLicenceType(eventObj.licenceTypeKey) || {}).licenceType || "";
-        eventObj.bank_name_isOutstanding = (eventObj.bank_name === null || eventObj.bank_name === "");
-        eventObj.canUpdate = canUpdateObject(eventObj, reqSession);
-    }
+    rows.forEach(addCalculatedFieldsFn);
     return rows;
 }
 exports.getOutstandingEvents = getOutstandingEvents;
@@ -1622,7 +1668,7 @@ function updateEvent(reqBody, reqSession) {
     const changeCount = info.changes;
     if (!changeCount) {
         db.close();
-        return changeCount;
+        return false;
     }
     db.prepare("delete from LotteryEventFields" +
         " where licenceID = ?" +
@@ -1641,7 +1687,7 @@ function updateEvent(reqBody, reqSession) {
     }
     db.close();
     eventTableStatsExpiryMillis = -1;
-    return changeCount;
+    return changeCount > 0;
 }
 exports.updateEvent = updateEvent;
 function deleteEvent(licenceID, eventDate, reqSession) {
@@ -1657,7 +1703,7 @@ function deleteEvent(licenceID, eventDate, reqSession) {
     const changeCount = info.changes;
     db.close();
     eventTableStatsExpiryMillis = -1;
-    return changeCount;
+    return changeCount > 0;
 }
 exports.deleteEvent = deleteEvent;
 function pokeEvent(licenceID, eventDate, reqSession) {
@@ -1670,9 +1716,8 @@ function pokeEvent(licenceID, eventDate, reqSession) {
         " and eventDate = ?" +
         " and recordDelete_timeMillis is null")
         .run(reqSession.user.userName, nowMillis, licenceID, eventDate);
-    const changeCount = info.changes;
     db.close();
-    return changeCount;
+    return info.changes > 0;
 }
 exports.pokeEvent = pokeEvent;
 function getApplicationSettings() {
@@ -1702,8 +1747,7 @@ function updateApplicationSetting(settingKey, settingValue, reqSession) {
         " recordUpdate_timeMillis = ?" +
         " where settingKey = ?")
         .run(settingValue, reqSession.user.userName, nowMillis, settingKey);
-    const changeCount = info.changes;
     db.close();
-    return changeCount;
+    return info.changes > 0;
 }
 exports.updateApplicationSetting = updateApplicationSetting;

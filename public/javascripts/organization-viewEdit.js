@@ -3,13 +3,6 @@
 (function() {
 
   /*
-   * Licences
-   */
-
-  llm.initializeTabs(document.getElementById("tabs--organization"));
-  llm.initializeTabs(document.getElementById("tabs--licences"));
-
-  /*
    * Remarks
    */
 
@@ -195,5 +188,164 @@
 
   }
 
+
+  /*
+   * Bank Records
+   */
+
+  let bankRecordsFiltersLoaded = false;
+
+  const bankRecordsBankingYearFilterEle = document.getElementById("bankRecordFilter--bankingYear");
+  const bankRecordsAccountNumberFilterEle = document.getElementById("bankRecordFilter--accountNumber");
+
+  const bankRecordsTableEle = document.getElementById("table--bankRecords");
+
+  const organizationID = bankRecordsTableEle.getAttribute("data-organization-id");
+
+  function clearBankRecordsTable() {
+
+    bankRecordsTableEle.classList.remove("has-status-loaded");
+    bankRecordsTableEle.classList.add("has-status-loading");
+
+    const bankRecordEles = bankRecordsTableEle.getElementsByClassName("is-bank-record-container");
+
+    for (let index = 0; index < bankRecordEles.length; index += 1) {
+
+      bankRecordEles[index].innerHTML = "<span class=\"icon\" data-tooltip=\"No Record Recorded\" aria-label=\"No Record Recorded\">" +
+        "<i class=\"fas fa-minus has-text-grey-lighter\" aria-hidden=\"true\"></i>" +
+        "</span>";
+
+      bankRecordEles[index].setAttribute("data-record-index", "");
+
+    }
+
+  }
+
+  function getBankRecords() {
+
+    clearBankRecordsTable();
+
+    llm.postJSON("/organizations/doGetBankRecords", {
+      organizationID: organizationID,
+      bankingYear: bankRecordsBankingYearFilterEle.value,
+      accountNumber: bankRecordsAccountNumberFilterEle.value
+    }, function(bankRecords) {
+
+      for (let recordIndex = 0; recordIndex < bankRecords.length; recordIndex += 1) {
+
+        const bankRecord = bankRecords[recordIndex];
+
+        const recordContainerEle = bankRecordsTableEle
+          .querySelector("[data-banking-month='" + bankRecord.bankingMonth + "']")
+          .querySelector("[data-bank-record-type='" + bankRecord.bankRecordType + "']");
+
+        if (!recordContainerEle) {
+
+          continue;
+
+        }
+
+        recordContainerEle.setAttribute("data-record-index", bankRecord.recordIndex);
+
+        if (bankRecord.recordIsNA) {
+
+          recordContainerEle.innerHTML = "<span class=\"icon\" data-tooltip=\"Not Applicable\" aria-label=\"Not Applicable\">" +
+            "<i class=\"fas fa-times has-text-grey\" aria-hidden=\"true\"></i>" +
+            "</span>";
+
+        } else {
+
+          recordContainerEle.innerHTML = "<span class=\"icon\" data-tooltip=\"Recorded " + bankRecord.recordDateString + "\" aria-label=\"Recorded " + bankRecord.recordDateString + "\">" +
+            "<i class=\"fas fa-check has-text-success\" aria-hidden=\"true\"></i>" +
+            "</span>";
+
+        }
+
+      }
+
+      bankRecordsTableEle.classList.remove("has-status-loading");
+      bankRecordsTableEle.classList.add("has-status-loaded");
+
+    });
+
+  }
+
+
+  function loadBankRecordFilters() {
+
+    llm.postJSON("/organizations/doGetBankRecordStats", {
+      organizationID: organizationID
+    }, function(bankRecordStats) {
+
+      const currentYear = new Date().getFullYear();
+
+      let bankingYearMin = currentYear - 1;
+
+      // Account Number Select
+
+      if (bankRecordStats.length === 0) {
+
+        bankRecordsAccountNumberFilterEle.innerHTML = "<option value=\"\">(No Accounts Recorded)</option>";
+
+      } else {
+
+        bankRecordsAccountNumberFilterEle.innerHTML = "";
+
+        for (let index = 0; index < bankRecordStats.length; index += 1) {
+
+          const bankRecordsStat = bankRecordStats[index];
+
+          bankingYearMin = Math.min(bankRecordsStat.bankingYearMin, bankingYearMin);
+
+          const accountNumber = llm.escapeHTML(bankRecordsStat.accountNumber);
+
+          bankRecordsAccountNumberFilterEle.insertAdjacentHTML(
+            "beforeend",
+            "<option value=\"" + accountNumber + "\">" +
+            accountNumber + " (From " + bankRecordsStat.bankingYearMin + " to " + bankRecordsStat.bankingYearMax + ")" +
+            "</option>"
+          );
+
+        }
+
+      }
+
+      // Banking Year Select
+
+      bankRecordsBankingYearFilterEle.innerHTML = "";
+
+      for (let year = currentYear; year >= bankingYearMin; year -= 1) {
+
+        bankRecordsBankingYearFilterEle.insertAdjacentHTML("beforeend", "<option value=\"" + year + "\">" +
+          year +
+          "</option>");
+
+      }
+
+      getBankRecords();
+
+    });
+
+  }
+
+  bankRecordsBankingYearFilterEle.addEventListener("change", getBankRecords);
+  bankRecordsAccountNumberFilterEle.addEventListener("change", getBankRecords);
+
+  /*
+   * Tabs
+   */
+
+  llm.initializeTabs(document.getElementById("tabs--organization"), {
+    onshown: function(tabContentEle) {
+
+      if (tabContentEle.id === "organizationTab--bankRecords" && !bankRecordsFiltersLoaded) {
+
+        bankRecordsFiltersLoaded = true;
+        loadBankRecordFilters();
+
+      }
+
+    }
+  });
 
 }());
