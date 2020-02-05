@@ -7,7 +7,7 @@
       <div class="level-right has-text-weight-normal is-hidden-print">
         <div class="field is-grouped justify-flex-end">
           <% if (user.userProperties.canCreate === "true") { %>
-            <button class="button is-small is-primary is-hidden-status-view" type="button">
+            <button class="button is-small is-primary is-hidden-status-view" id="is-add-bank-record-button" type="button">
               <span class="icon">
                 <i class="fas fa-plus" aria-hidden="true"></i>
               </span>
@@ -49,7 +49,7 @@
       </div>
     </div>
   </div>
-  <table class="table is-fullwidth is-striped is-hoverable has-status-loading" id="table--bankRecords" data-organization-id="<%= organization.organizationID %>">
+  <table class="table is-fullwidth is-striped is-hoverable is-fixed has-status-loading" id="table--bankRecords" data-organization-id="<%= organization.organizationID %>">
     <thead>
       <tr>
         <th>Month</th>
@@ -57,7 +57,9 @@
         const bankRecordTypes = configFns.getProperty("bankRecordTypes");
         for (let recordTypeIndex = 0; recordTypeIndex < bankRecordTypes.length; recordTypeIndex += 1) {
           %>
-          <th class="has-text-centered"><%= bankRecordTypes[recordTypeIndex].bankRecordTypeName %></th>
+          <th class="has-text-centered">
+            <%= bankRecordTypes[recordTypeIndex].bankRecordTypeName %>
+          </th>
           <%
         }
         %>
@@ -69,11 +71,16 @@
           <th><%= dateTimeFns.months[monthIndex] %></th>
           <% for (let recordTypeIndex = 0; recordTypeIndex < bankRecordTypes.length; recordTypeIndex += 1) { %>
             <td class="has-text-centered">
-              <span class="icon is-hidden-status-loaded">
-                <i class="fas fa-circle-notch fa-spin has-text-grey-lighter" aria-hidden="true"></i>
-              </span>
-              <span class="is-hidden-status-loading is-bank-record-container" data-bank-record-type="<%= bankRecordTypes[recordTypeIndex].bankRecordType %>">
-              </span>
+              <div class="is-hidden-status-loaded has-padding-10">
+                <span class="icon">
+                  <i class="fas fa-circle-notch fa-spin has-text-grey-lighter" aria-hidden="true"></i>
+                </span><br />
+                ...
+              </div>
+              <div class="is-hidden-status-loading">
+                <button class="button is-light is-fullwidth is-block has-height-auto is-noninteractive-status-view" data-bank-record-type="<%= bankRecordTypes[recordTypeIndex].bankRecordType %>" type="button">
+                </button>
+              </div>
             </td>
           <% } %>
         </tr>

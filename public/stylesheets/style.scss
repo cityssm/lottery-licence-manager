@@ -77,6 +77,10 @@ fieldset:enabled .is-hidden-enabled,
 }
 
 
+.has-status-view .is-noninteractive-status-view {
+  pointer-events: none;
+}
+
 
 
 .is-nowrap {
@@ -138,4 +142,14 @@ select.is-readonly {
   &.is-active {
     display: block;
   }
+}
+
+
+.has-height-auto {
+  height: auto;
+}
+
+
+.table.is-fixed {
+  table-layout: fixed;
 }

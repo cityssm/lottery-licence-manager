@@ -1,0 +1,91 @@
+<div class="modal">
+  <div class="modal-background"></div>
+  <div class="modal-card">
+    <header class="modal-card-head">
+      <h3 class="modal-card-title">Update a Bank Record</h3>
+      <button class="delete is-close-modal-button" aria-label="close" type="button"></button>
+    </header>
+    <form>
+      <section class="modal-card-body">
+        <input id="bankRecordEdit--organizationID" name="organizationID" type="hidden" value="" />
+        <input id="bankRecordEdit--recordIndex" name="recordIndex" type="hidden" value="" />
+
+        <div class="columns">
+          <div class="column">
+            <div class="field">
+              <label class="label" for="bankRecordEdit--accountNumber">Account Number</label>
+              <div class="control">
+                <input class="input" id="bankRecordEdit--accountNumber" name="accountNumber" maxlength="20" required />
+              </div>
+            </div>
+          </div>
+          <div class="column">
+            <div class="field">
+              <label class="label" for="bankRecordEdit--bankingYear">Banking Year</label>
+              <div class="control">
+                <input class="input" id="bankRecordEdit--bankingYear" name="bankingYear" type="number" step="1" required />
+              </div>
+            </div>
+          </div>
+          <div class="column">
+            <div class="field">
+              <label class="label" for="bankRecordEdit--bankingMonth">Banking Month</label>
+              <div class="control">
+                <input class="input" id="bankRecordEdit--bankingMonth" name="bankingMonth" type="number" step="1" min="1" max="12" required />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="columns">
+          <div class="column">
+            <div class="field">
+              <label class="label" for="bankRecordEdit--bankRecordType">Record Type</label>
+              <div class="control">
+                <div class="select is-fullwidth">
+                  <select id="bankRecordEdit--bankRecordType" name="bankRecordType" required></select>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="column is-4">
+            <div class="field">
+              <label class="label" for="bankRecordEdit--recordDateString">Record Date</label>
+              <div class="control">
+                <input class="input" id="bankRecordEdit--recordDateString" name="recordDateString" type="date" required />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="control">
+            <div class="b-checkbox is-info">
+              <input id="bankRecordEdit--recordIsNA" name="recordIsNA" type="checkbox" value="1" />
+              <label for="bankRecordEdit--recordIsNA">
+                Mark Record as Not Applicable
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="label" for="bankRecordEdit--recordNote">Optional Notes</label>
+          <div class="control">
+            <textarea class="textarea" id="bankRecordEdit--recordNote" name="recordNote"></textarea>
+          </div>
+        </div>
+
+      </section>
+      <footer class="modal-card-foot justify-right">
+        <button class="button is-close-modal-button" type="button">Cancel</button>
+        <button class="button is-success" type="submit">
+          <span class="icon">
+            <i class="fas fa-save" aria-hidden="true"></i>
+          </span>
+          <span>Save Record</span>
+        </button>
+      </footer>
+    </form>
+  </div>
+</div>

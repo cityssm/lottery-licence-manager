@@ -2,6 +2,8 @@
 
 (function() {
 
+  const canCreate = document.getElementsByTagName("main")[0].getAttribute("data-can-create") === "true";
+
   /*
    * Remarks
    */
@@ -10,7 +12,7 @@
 
   // Update remarks
 
-  if (document.getElementsByTagName("main")[0].getAttribute("data-can-create") === "true") {
+  if (canCreate) {
 
     const organizationID = remarksContainerEle.getAttribute("data-organization-id");
 
@@ -195,6 +197,8 @@
 
   let bankRecordsFiltersLoaded = false;
 
+  let bankRecordsCache = {};
+
   const bankRecordsBankingYearFilterEle = document.getElementById("bankRecordFilter--bankingYear");
   const bankRecordsAccountNumberFilterEle = document.getElementById("bankRecordFilter--accountNumber");
 
@@ -204,18 +208,26 @@
 
   function clearBankRecordsTable() {
 
+    bankRecordsCache = {};
+
     bankRecordsTableEle.classList.remove("has-status-loaded");
     bankRecordsTableEle.classList.add("has-status-loading");
 
-    const bankRecordEles = bankRecordsTableEle.getElementsByClassName("is-bank-record-container");
+    const buttonEles = bankRecordsTableEle.getElementsByTagName("button");
 
-    for (let index = 0; index < bankRecordEles.length; index += 1) {
+    for (let index = 0; index < buttonEles.length; index += 1) {
 
-      bankRecordEles[index].innerHTML = "<span class=\"icon\" data-tooltip=\"No Record Recorded\" aria-label=\"No Record Recorded\">" +
+      const buttonEle = buttonEles[index];
+
+      buttonEle.classList.remove("is-success");
+      buttonEle.classList.remove("is-info");
+
+      buttonEle.innerHTML = "<span class=\"icon\">" +
         "<i class=\"fas fa-minus has-text-grey-lighter\" aria-hidden=\"true\"></i>" +
-        "</span>";
+        "</span><br />" +
+        "<small>No Record Recorded</small>";
 
-      bankRecordEles[index].setAttribute("data-record-index", "");
+      buttonEle.setAttribute("data-record-index", "");
 
     }
 
@@ -235,29 +247,37 @@
 
         const bankRecord = bankRecords[recordIndex];
 
-        const recordContainerEle = bankRecordsTableEle
+        bankRecordsCache[bankRecord.recordIndex] = bankRecord;
+
+        const buttonEle = bankRecordsTableEle
           .querySelector("[data-banking-month='" + bankRecord.bankingMonth + "']")
           .querySelector("[data-bank-record-type='" + bankRecord.bankRecordType + "']");
 
-        if (!recordContainerEle) {
+        if (!buttonEle) {
 
           continue;
 
         }
 
-        recordContainerEle.setAttribute("data-record-index", bankRecord.recordIndex);
+        buttonEle.setAttribute("data-record-index", bankRecord.recordIndex);
 
         if (bankRecord.recordIsNA) {
 
-          recordContainerEle.innerHTML = "<span class=\"icon\" data-tooltip=\"Not Applicable\" aria-label=\"Not Applicable\">" +
-            "<i class=\"fas fa-times has-text-grey\" aria-hidden=\"true\"></i>" +
-            "</span>";
+          buttonEle.classList.add("is-info");
+
+          buttonEle.innerHTML =
+            "<i class=\"fas fa-times\" aria-hidden=\"true\"></i>" +
+            "<br />" +
+            "<small>Not Applicable</small>";
 
         } else {
 
-          recordContainerEle.innerHTML = "<span class=\"icon\" data-tooltip=\"Recorded " + bankRecord.recordDateString + "\" aria-label=\"Recorded " + bankRecord.recordDateString + "\">" +
-            "<i class=\"fas fa-check has-text-success\" aria-hidden=\"true\"></i>" +
-            "</span>";
+          buttonEle.classList.add("is-success");
+
+          buttonEle.innerHTML =
+            "<i class=\"fas fa-check\" aria-hidden=\"true\"></i>" +
+            "<br />" +
+            "<small>Recorded " + bankRecord.recordDateString + "</small>";
 
         }
 
@@ -269,7 +289,6 @@
     });
 
   }
-
 
   function loadBankRecordFilters() {
 
@@ -330,6 +349,195 @@
 
   bankRecordsBankingYearFilterEle.addEventListener("change", getBankRecords);
   bankRecordsAccountNumberFilterEle.addEventListener("change", getBankRecords);
+
+  if (canCreate) {
+
+    const openBankRecordEditModal = function(buttonEvent) {
+
+      let bankRecordEditCloseModalFn;
+      let isUpdate = false;
+
+      const submitBankRecordEditFn = function(formEvent) {
+
+        formEvent.preventDefault();
+
+        llm.postJSON(
+          "/organizations/" + (isUpdate ? "doEditBankRecord" : "doAddBankRecord"),
+          formEvent.currentTarget,
+          function(resultJSON) {
+
+            if (resultJSON.success) {
+
+              bankRecordEditCloseModalFn();
+
+              if (isUpdate) {
+
+                getBankRecords();
+
+              } else {
+
+                bankRecordsFiltersLoaded = false;
+                loadBankRecordFilters();
+
+              }
+
+            } else {
+
+              llm.alertModal("Record Not Saved", resultJSON.message, "OK", "danger");
+
+            }
+
+          }
+        );
+
+      };
+
+      // Get the button
+      const buttonEle = buttonEvent.currentTarget;
+
+      // Set defaults
+      let recordIndex = "";
+      const accountNumber = bankRecordsAccountNumberFilterEle.value;
+      let bankRecordType = "";
+      let recordIsNA = false;
+      let recordNote = "";
+
+      const dateObj = new Date();
+
+      const currentYear = dateObj.getFullYear();
+      const currentDateString = llm.dateToString(dateObj);
+
+      let recordDateString = currentDateString;
+
+      dateObj.setMonth(dateObj.getMonth() - 1);
+
+      let bankingYear = dateObj.getFullYear();
+      let bankingMonth = dateObj.getMonth() + 1;
+
+      let lockKeyFields = false;
+
+      // If it's one of the add buttons in the table, retrieve data
+      if (buttonEle.id !== "is-add-bank-record-button") {
+
+        lockKeyFields = true;
+
+        recordIndex = buttonEle.getAttribute("data-record-index");
+
+        bankingYear = bankRecordsBankingYearFilterEle.value;
+
+        // If no record exists, use default data
+        if (recordIndex === "") {
+
+          bankingMonth = buttonEle.closest("tr").getAttribute("data-banking-month");
+
+          bankRecordType = buttonEle.getAttribute("data-bank-record-type");
+
+        } else {
+
+          const recordObj = bankRecordsCache[parseInt(recordIndex)];
+
+          isUpdate = true;
+          bankingMonth = recordObj.bankingMonth;
+          bankRecordType = recordObj.bankRecordType;
+          recordIsNA = recordObj.recordIsNA;
+          recordDateString = recordObj.recordDateString;
+          recordNote = recordObj.recordNote;
+
+        }
+
+      }
+
+      llm.openHtmlModal("organization-bankRecordEdit", {
+
+        onshow: function() {
+
+          document.getElementById("bankRecordEdit--organizationID").value = organizationID;
+          document.getElementById("bankRecordEdit--recordIndex").value = recordIndex;
+
+          const accountNumberEle = document.getElementById("bankRecordEdit--accountNumber");
+          accountNumberEle.value = accountNumber;
+
+          const bankingYearEle = document.getElementById("bankRecordEdit--bankingYear");
+          bankingYearEle.value = bankingYear;
+          bankingYearEle.setAttribute("max", currentYear);
+
+          const bankingMonthEle = document.getElementById("bankRecordEdit--bankingMonth");
+          bankingMonthEle.value = bankingMonth;
+
+          const bankRecordTypeEle = document.getElementById("bankRecordEdit--bankRecordType");
+
+          for (let index = 0; index < llm.config_bankRecordTypes.length; index += 1) {
+
+            bankRecordTypeEle.insertAdjacentHTML(
+              "beforeend",
+              "<option value=\"" + llm.config_bankRecordTypes[index].bankRecordType + "\">" +
+              llm.config_bankRecordTypes[index].bankRecordTypeName +
+              "</option>"
+            );
+
+          }
+
+          if (bankRecordType === "") {
+
+            bankRecordTypeEle.insertAdjacentHTML(
+              "afterbegin",
+              "<option value=\"\">(Select One)</option>"
+            );
+
+          }
+
+          bankRecordTypeEle.value = bankRecordType;
+
+          const recordDateStringEle = document.getElementById("bankRecordEdit--recordDateString");
+
+          recordDateStringEle.value = recordDateString;
+          recordDateStringEle.setAttribute("max", currentDateString);
+
+          if (recordIsNA) {
+
+            document.getElementById("bankRecordEdit--recordIsNA").setAttribute("checked", "checked");
+
+          }
+
+          document.getElementById("bankRecordEdit--recordNote").value = recordNote;
+
+          if (lockKeyFields) {
+
+            accountNumberEle.setAttribute("readonly", "readonly");
+            bankingYearEle.setAttribute("readonly", "readonly");
+            bankingMonthEle.setAttribute("readonly", "readonly");
+            bankRecordTypeEle.setAttribute("readonly", "readonly");
+
+            accountNumberEle.classList.add("is-readonly");
+            bankingYearEle.classList.add("is-readonly");
+            bankingMonthEle.classList.add("is-readonly");
+            bankRecordTypeEle.classList.add("is-readonly");
+
+          }
+
+        },
+        onshown: function(modalEle, closeModalFn) {
+
+          bankRecordEditCloseModalFn = closeModalFn;
+          modalEle.getElementsByTagName("form")[0].addEventListener("submit", submitBankRecordEditFn);
+
+        }
+
+      });
+
+    };
+
+    const buttonEles = bankRecordsTableEle.getElementsByTagName("button");
+
+    for (let index = 0; index < buttonEles.length; index += 1) {
+
+      buttonEles[index].addEventListener("click", openBankRecordEditModal);
+
+    }
+
+    document.getElementById("is-add-bank-record-button").addEventListener("click", openBankRecordEditModal);
+
+  }
 
   /*
    * Tabs

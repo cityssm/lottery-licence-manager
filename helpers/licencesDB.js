@@ -760,6 +760,65 @@ function getOrganizationBankRecordStats(organizationID) {
     return rows;
 }
 exports.getOrganizationBankRecordStats = getOrganizationBankRecordStats;
+function addOrganizationBankRecord(reqBody, reqSession) {
+    const db = sqlite(dbPath);
+    const record = db.prepare("select recordIndex, recordDelete_timeMillis" +
+        " from OrganizationBankRecords" +
+        " where organizationID = ?" +
+        " and accountNumber = ?" +
+        " and bankingYear = ?" +
+        " and bankingMonth = ?" +
+        " and bankRecordType = ?")
+        .get(reqBody.organizationID, reqBody.accountNumber, reqBody.bankingYear, reqBody.bankingMonth, reqBody.bankRecordType);
+    if (record) {
+        if (record.recordDelete_timeMillis) {
+            const info = db.prepare("delete from OrganizationBankRecords" +
+                " where organizationID = ?" +
+                " and recordIndex = ?")
+                .run(reqBody.organizationID, record.recordIndex);
+            if (info.changes === 0) {
+                db.close();
+                return false;
+            }
+        }
+        else {
+            db.close();
+            return false;
+        }
+    }
+    const row = db.prepare("select ifnull(max(recordIndex), -1) as maxIndex" +
+        " from OrganizationBankRecords" +
+        " where organizationID = ?")
+        .get(reqBody.organizationID);
+    const newRecordIndex = row.maxIndex + 1;
+    const nowMillis = Date.now();
+    const info = db.prepare("insert into OrganizationBankRecords" +
+        " (organizationID, recordIndex," +
+        " accountNumber, bankingYear, bankingMonth, bankRecordType, recordIsNA, recordDate, recordNote," +
+        " recordCreate_userName, recordCreate_timeMillis, recordUpdate_userName, recordUpdate_timeMillis)" +
+        " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
+        .run(reqBody.organizationID, newRecordIndex, reqBody.accountNumber, reqBody.bankingYear, reqBody.bankingMonth, reqBody.bankRecordType, reqBody.recordIsNA || 0, dateTimeFns.dateStringToInteger(reqBody.recordDateString), reqBody.recordNote, reqSession.user.userName, nowMillis, reqSession.user.userName, nowMillis);
+    db.close();
+    return info.changes > 0;
+}
+exports.addOrganizationBankRecord = addOrganizationBankRecord;
+function updateOrganizationBankRecord(reqBody, reqSession) {
+    const db = sqlite(dbPath);
+    const nowMillis = Date.now();
+    const info = db.prepare("update OrganizationBankRecords" +
+        " set recordDate = ?," +
+        " recordIsNA = ?," +
+        " recordNote = ?," +
+        " recordUpdate_userName = ?," +
+        " recordUpdate_timeMillis = ?" +
+        " where organizationID = ?" +
+        " and recordIndex = ?" +
+        " and recordDelete_timeMillis is null")
+        .run(dateTimeFns.dateStringToInteger(reqBody.recordDateString), reqBody.recordIsNA || 0, reqBody.recordNote, reqSession.user.userName, nowMillis, reqBody.organizationID, reqBody.recordIndex);
+    db.close();
+    return info.changes > 0;
+}
+exports.updateOrganizationBankRecord = updateOrganizationBankRecord;
 let licenceTableStats = {
     applicationYearMin: 1970
 };

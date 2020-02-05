@@ -26,6 +26,8 @@ export declare function updateOrganizationRemark(reqBody: any, reqSession: Expre
 export declare function deleteOrganizationRemark(organizationID: number, remarkIndex: number, reqSession: Express.SessionData): boolean;
 export declare function getOrganizationBankRecords(organizationID: number, accountNumber: string, bankingYear: number): llm.OrganizationBankRecord[];
 export declare function getOrganizationBankRecordStats(organizationID: number): any[];
+export declare function addOrganizationBankRecord(reqBody: any, reqSession: Express.Session): boolean;
+export declare function updateOrganizationBankRecord(reqBody: any, reqSession: Express.Session): boolean;
 export declare function getLicenceTableStats(): llm.LotteryLicenceStats;
 export declare function getLicences(reqBodyOrParamsObj: any, includeOrganization: boolean, useLimit: boolean, reqSession: Express.SessionData): llm.LotteryLicence[];
 export declare function getLicence(licenceID: number, reqSession: Express.SessionData): llm.LotteryLicence;

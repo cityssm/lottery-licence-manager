@@ -458,6 +458,9 @@
 <script src="/javascripts/organization-edit.min.js"></script>
 
 <% if (!isCreate) { %>
+  <script>
+    llm.config_bankRecordTypes = <%- JSON.stringify(configFns.getProperty("bankRecordTypes")) %>;
+  </script>
   <script src="/javascripts/main-organizationRemarks.min.js"></script>
   <script src="/javascripts/organization-viewEdit.min.js"></script>
 <% } %>

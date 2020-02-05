@@ -111,6 +111,54 @@ router.post("/doGetBankRecordStats", function (req, res) {
     const organizationID = req.body.organizationID;
     res.json(licencesDB.getOrganizationBankRecordStats(organizationID));
 });
+router.post("/doAddBankRecord", function (req, res) {
+    if (req.session.user.userProperties.canCreate !== "true") {
+        res
+            .status(403)
+            .json({
+            success: false,
+            message: "Forbidden"
+        });
+        return;
+    }
+    const changeCount = licencesDB.addOrganizationBankRecord(req.body, req.session);
+    if (changeCount) {
+        res.json({
+            success: true,
+            message: "Record added successfully."
+        });
+    }
+    else {
+        res.json({
+            success: false,
+            message: "Please make sure that the record you are trying to create does not already exist."
+        });
+    }
+});
+router.post("/doEditBankRecord", function (req, res) {
+    if (req.session.user.userProperties.canCreate !== "true") {
+        res
+            .status(403)
+            .json({
+            success: false,
+            message: "Forbidden"
+        });
+        return;
+    }
+    const changeCount = licencesDB.updateOrganizationBankRecord(req.body, req.session);
+    if (changeCount) {
+        res.json({
+            success: true,
+            message: "Record updated successfully."
+        });
+    }
+    else {
+        res.json({
+            success: false,
+            message: "Please try again."
+        });
+    }
+});
 router.get("/new", function (req, res) {
     if (req.session.user.userProperties.canCreate !== "true") {
         res.redirect("/organizations/?error=accessDenied");
