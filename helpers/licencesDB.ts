@@ -1388,7 +1388,7 @@ export function addOrganizationBankRecord(reqBody: any, reqSession: Express.Sess
 
 }
 
-export function updateOrganizationBankRecord(reqBody: any, reqSession: Express.Session) {
+export function updateOrganizationBankRecord(reqBody: llm.OrganizationBankRecord, reqSession: Express.Session) {
 
   const db = sqlite(dbPath);
 
@@ -1411,6 +1411,31 @@ export function updateOrganizationBankRecord(reqBody: any, reqSession: Express.S
       nowMillis,
       reqBody.organizationID,
       reqBody.recordIndex
+    );
+
+  db.close();
+
+  return info.changes > 0;
+
+}
+
+export function deleteOrganizationBankRecord(organizationID: number, recordIndex: number, reqSession: Express.Session) {
+
+  const db = sqlite(dbPath);
+
+  const nowMillis = Date.now();
+
+  const info = db.prepare("update OrganizationBankRecords" +
+    " set recordDelete_userName = ?," +
+    " recordDelete_timeMillis = ?" +
+    " where organizationID = ?" +
+    " and recordIndex = ?" +
+    " and recordDelete_timeMillis is null")
+    .run(
+      reqSession.user.userName,
+      nowMillis,
+      organizationID,
+      recordIndex
     );
 
   db.close();
@@ -2505,7 +2530,7 @@ export function pokeLicence(licenceID: number, reqSession: Express.SessionData) 
 /**
  * @returns TRUE if successful
  */
-export function issueLicence(reqBody: any, reqSession: Express.SessionData) {
+export function issueLicence(licenceID: number, reqSession: Express.SessionData) {
 
   const db = sqlite(dbPath);
 
@@ -2528,7 +2553,7 @@ export function issueLicence(reqBody: any, reqSession: Express.SessionData) {
       issueTime,
       reqSession.user.userName,
       nowDate.getTime(),
-      reqBody.licenceID
+      licenceID
     );
 
   db.close();

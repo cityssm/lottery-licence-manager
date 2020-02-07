@@ -59,7 +59,7 @@ router.get([
     let externalLicenceNumber = "";
     const licenceNumberCalculationType = configFns.getProperty("licences.externalLicenceNumber.newCalculation");
     if (licenceNumberCalculationType === "range") {
-        externalLicenceNumber = licencesDB.getNextExternalLicenceNumberFromRange();
+        externalLicenceNumber = licencesDB.getNextExternalLicenceNumberFromRange().toString();
     }
     res.render("licence-edit", {
         headTitle: "Licence Create",
@@ -154,8 +154,8 @@ router.post("/doVoidTransaction", function (req, res) {
         });
         return;
     }
-    const changeCount = licencesDB.voidTransaction(req.body.licenceID, req.body.transactionIndex, req.session);
-    if (changeCount) {
+    const success = licencesDB.voidTransaction(req.body.licenceID, req.body.transactionIndex, req.session);
+    if (success) {
         res.json({
             success: true,
             message: "Transaction Voided Successfully"
@@ -178,8 +178,8 @@ router.post("/doIssueLicence", function (req, res) {
         });
         return;
     }
-    const changeCount = licencesDB.issueLicence(req.body, req.session);
-    if (changeCount) {
+    const success = licencesDB.issueLicence(req.body.licenceID, req.session);
+    if (success) {
         res.json({
             success: true,
             message: "Licence Issued Successfully"
@@ -202,8 +202,8 @@ router.post("/doUnissueLicence", function (req, res) {
         });
         return;
     }
-    const changeCount = licencesDB.unissueLicence(req.body.licenceID, req.session);
-    if (changeCount) {
+    const success = licencesDB.unissueLicence(req.body.licenceID, req.session);
+    if (success) {
         res.json({
             success: true,
             message: "Licence Unissued Successfully"

@@ -27,7 +27,8 @@ export declare function deleteOrganizationRemark(organizationID: number, remarkI
 export declare function getOrganizationBankRecords(organizationID: number, accountNumber: string, bankingYear: number): llm.OrganizationBankRecord[];
 export declare function getOrganizationBankRecordStats(organizationID: number): any[];
 export declare function addOrganizationBankRecord(reqBody: any, reqSession: Express.Session): boolean;
-export declare function updateOrganizationBankRecord(reqBody: any, reqSession: Express.Session): boolean;
+export declare function updateOrganizationBankRecord(reqBody: llm.OrganizationBankRecord, reqSession: Express.Session): boolean;
+export declare function deleteOrganizationBankRecord(organizationID: number, recordIndex: number, reqSession: Express.Session): boolean;
 export declare function getLicenceTableStats(): llm.LotteryLicenceStats;
 export declare function getLicences(reqBodyOrParamsObj: any, includeOrganization: boolean, useLimit: boolean, reqSession: Express.SessionData): llm.LotteryLicence[];
 export declare function getLicence(licenceID: number, reqSession: Express.SessionData): llm.LotteryLicence;
@@ -37,7 +38,7 @@ export declare function updateLicence(reqBody: any, reqSession: Express.SessionD
 export declare function deleteLicence(licenceID: number, reqSession: Express.SessionData): boolean;
 export declare function getDistinctTermsConditions(organizationID: number): llm.TermsConditionsStat[];
 export declare function pokeLicence(licenceID: number, reqSession: Express.SessionData): boolean;
-export declare function issueLicence(reqBody: any, reqSession: Express.SessionData): boolean;
+export declare function issueLicence(licenceID: number, reqSession: Express.SessionData): boolean;
 export declare function unissueLicence(licenceID: number, reqSession: Express.SessionData): boolean;
 export declare function getLicenceTypeSummary(reqBody: any): any[];
 export declare function addTransaction(reqBody: any, reqSession: Express.SessionData): number;

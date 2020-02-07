@@ -135,7 +135,7 @@ router.get([
 
   if (licenceNumberCalculationType === "range") {
 
-    externalLicenceNumber = licencesDB.getNextExternalLicenceNumberFromRange();
+    externalLicenceNumber = licencesDB.getNextExternalLicenceNumberFromRange().toString();
 
   }
 
@@ -278,9 +278,9 @@ router.post("/doVoidTransaction", function(req, res) {
 
   }
 
-  const changeCount = licencesDB.voidTransaction(req.body.licenceID, req.body.transactionIndex, req.session);
+  const success = licencesDB.voidTransaction(req.body.licenceID, req.body.transactionIndex, req.session);
 
-  if (changeCount) {
+  if (success) {
 
     res.json({
       success: true,
@@ -314,9 +314,9 @@ router.post("/doIssueLicence", function(req, res) {
 
   }
 
-  const changeCount = licencesDB.issueLicence(req.body, req.session);
+  const success = licencesDB.issueLicence(req.body.licenceID, req.session);
 
-  if (changeCount) {
+  if (success) {
 
     res.json({
       success: true,
@@ -349,9 +349,9 @@ router.post("/doUnissueLicence", function(req, res) {
 
   }
 
-  const changeCount = licencesDB.unissueLicence(req.body.licenceID, req.session);
+  const success = licencesDB.unissueLicence(req.body.licenceID, req.session);
 
-  if (changeCount) {
+  if (success) {
 
     res.json({
       success: true,

@@ -392,6 +392,36 @@
 
       };
 
+      const deleteBankRecordFn = function(deleteButtonEvent) {
+
+        deleteButtonEvent.preventDefault();
+
+        const recordIndex = deleteButtonEvent.currentTarget.getAttribute("data-record-index");
+
+        const deleteFn = function() {
+
+          llm.postJSON("/organizations/doDeleteBankRecord", {
+            organizationID: organizationID,
+            recordIndex: recordIndex
+          }, function() {
+
+            bankRecordEditCloseModalFn();
+            getBankRecords();
+
+          });
+
+        };
+
+        llm.confirmModal(
+          "Delete Bank Record?",
+          "Are you sure you want to delete this bank record?",
+          "Yes, Delete",
+          "warning",
+          deleteFn
+        );
+
+      };
+
       // Get the button
       const buttonEle = buttonEvent.currentTarget;
 
@@ -512,6 +542,18 @@
             bankingYearEle.classList.add("is-readonly");
             bankingMonthEle.classList.add("is-readonly");
             bankRecordTypeEle.classList.add("is-readonly");
+
+          }
+
+          if (isUpdate) {
+
+            const deleteButtonEle = document.getElementById("bankRecordEdit--deleteRecordButton");
+            deleteButtonEle.setAttribute("data-record-index", recordIndex);
+            deleteButtonEle.addEventListener("click", deleteBankRecordFn);
+
+          } else {
+
+            document.getElementById("bankRecordEdit--moreOptionsDropdown").remove();
 
           }
 

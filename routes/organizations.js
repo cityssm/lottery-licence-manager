@@ -61,8 +61,8 @@ router.post("/doEditRemark", function (req, res) {
         });
         return;
     }
-    const changeCount = licencesDB.updateOrganizationRemark(req.body, req.session);
-    if (changeCount) {
+    const success = licencesDB.updateOrganizationRemark(req.body, req.session);
+    if (success) {
         res.json({
             success: true,
             message: "Remark updated successfully."
@@ -87,8 +87,8 @@ router.post("/doDeleteRemark", function (req, res) {
     }
     const organizationID = req.body.organizationID;
     const remarkIndex = req.body.remarkIndex;
-    const changeCount = licencesDB.deleteOrganizationRemark(organizationID, remarkIndex, req.session);
-    if (changeCount) {
+    const success = licencesDB.deleteOrganizationRemark(organizationID, remarkIndex, req.session);
+    if (success) {
         res.json({
             success: true,
             message: "Remark deleted successfully."
@@ -121,8 +121,8 @@ router.post("/doAddBankRecord", function (req, res) {
         });
         return;
     }
-    const changeCount = licencesDB.addOrganizationBankRecord(req.body, req.session);
-    if (changeCount) {
+    const success = licencesDB.addOrganizationBankRecord(req.body, req.session);
+    if (success) {
         res.json({
             success: true,
             message: "Record added successfully."
@@ -145,8 +145,8 @@ router.post("/doEditBankRecord", function (req, res) {
         });
         return;
     }
-    const changeCount = licencesDB.updateOrganizationBankRecord(req.body, req.session);
-    if (changeCount) {
+    const success = licencesDB.updateOrganizationBankRecord(req.body, req.session);
+    if (success) {
         res.json({
             success: true,
             message: "Record updated successfully."
@@ -156,6 +156,30 @@ router.post("/doEditBankRecord", function (req, res) {
         res.json({
             success: false,
             message: "Please try again."
+        });
+    }
+});
+router.post("/doDeleteBankRecord", function (req, res) {
+    if (req.session.user.userProperties.canCreate !== "true") {
+        res
+            .status(403)
+            .json({
+            success: false,
+            message: "Forbidden"
+        });
+        return;
+    }
+    const success = licencesDB.deleteOrganizationBankRecord(req.body.organizationID, req.body.recordIndex, req.session);
+    if (success) {
+        res.json({
+            success: true,
+            message: "Organization updated successfully."
+        });
+    }
+    else {
+        res.json({
+            success: false,
+            message: "Record Not Saved"
         });
     }
 });
@@ -191,8 +215,8 @@ router.post("/doSave", function (req, res) {
         });
     }
     else {
-        const changeCount = licencesDB.updateOrganization(req.body, req.session);
-        if (changeCount) {
+        const success = licencesDB.updateOrganization(req.body, req.session);
+        if (success) {
             res.json({
                 success: true,
                 message: "Organization updated successfully."
@@ -216,8 +240,8 @@ router.post("/doDelete", function (req, res) {
         });
         return;
     }
-    const changeCount = licencesDB.deleteOrganization(req.body.organizationID, req.session);
-    if (changeCount) {
+    const success = licencesDB.deleteOrganization(req.body.organizationID, req.session);
+    if (success) {
         res.json({
             success: true,
             message: "Organization deleted successfully."
@@ -240,8 +264,8 @@ router.post("/doRestore", function (req, res) {
         });
         return;
     }
-    const changeCount = licencesDB.restoreOrganization(req.body.organizationID, req.session);
-    if (changeCount) {
+    const success = licencesDB.restoreOrganization(req.body.organizationID, req.session);
+    if (success) {
         res.json({
             success: true,
             message: "Organization restored successfully."

@@ -819,6 +819,20 @@ function updateOrganizationBankRecord(reqBody, reqSession) {
     return info.changes > 0;
 }
 exports.updateOrganizationBankRecord = updateOrganizationBankRecord;
+function deleteOrganizationBankRecord(organizationID, recordIndex, reqSession) {
+    const db = sqlite(dbPath);
+    const nowMillis = Date.now();
+    const info = db.prepare("update OrganizationBankRecords" +
+        " set recordDelete_userName = ?," +
+        " recordDelete_timeMillis = ?" +
+        " where organizationID = ?" +
+        " and recordIndex = ?" +
+        " and recordDelete_timeMillis is null")
+        .run(reqSession.user.userName, nowMillis, organizationID, recordIndex);
+    db.close();
+    return info.changes > 0;
+}
+exports.deleteOrganizationBankRecord = deleteOrganizationBankRecord;
 let licenceTableStats = {
     applicationYearMin: 1970
 };
@@ -1378,7 +1392,7 @@ function pokeLicence(licenceID, reqSession) {
     return info.changes > 0;
 }
 exports.pokeLicence = pokeLicence;
-function issueLicence(reqBody, reqSession) {
+function issueLicence(licenceID, reqSession) {
     const db = sqlite(dbPath);
     const nowDate = new Date();
     const issueDate = dateTimeFns.dateToInteger(nowDate);
@@ -1392,7 +1406,7 @@ function issueLicence(reqBody, reqSession) {
         " where licenceID = ?" +
         " and recordDelete_timeMillis is null" +
         " and issueDate is null")
-        .run(issueDate, issueTime, reqSession.user.userName, nowDate.getTime(), reqBody.licenceID);
+        .run(issueDate, issueTime, reqSession.user.userName, nowDate.getTime(), licenceID);
     db.close();
     return info.changes > 0;
 }

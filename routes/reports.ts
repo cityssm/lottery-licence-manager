@@ -41,44 +41,44 @@ router.all("/:reportName", function(req, res) {
       {
 
         sql = "select lo.locationID, lo.locationName," +
-        " lo.locationAddress1, lo.locationAddress2, lo.locationCity, lo.locationProvince," +
-        " l.licences_endDateMax, d.distributor_endDateMax, m.manufacturer_endDateMax" +
-        " from Locations lo" +
+          " lo.locationAddress1, lo.locationAddress2, lo.locationCity, lo.locationProvince," +
+          " l.licences_endDateMax, d.distributor_endDateMax, m.manufacturer_endDateMax" +
+          " from Locations lo" +
 
-        (" left join (" +
-          "select locationID, max(endDate) as licences_endDateMax" +
-          " from LotteryLicences" +
-          " where recordDelete_timeMillis is null" +
-          " group by locationID" +
-          ") l on lo.locationID = l.locationID") +
+          (" left join (" +
+            "select locationID, max(endDate) as licences_endDateMax" +
+            " from LotteryLicences" +
+            " where recordDelete_timeMillis is null" +
+            " group by locationID" +
+            ") l on lo.locationID = l.locationID") +
 
-        (" left join (" +
-          "select t.distributorLocationID," +
-          " max(l.endDate) as distributor_endDateMax" +
-          " from LotteryLicenceTicketTypes t" +
-          " left join LotteryLicences l on t.licenceID = l.licenceID" +
-          " where t.recordDelete_timeMillis is null" +
-          " group by t.distributorLocationID" +
-          ") d on lo.locationID = d.distributorLocationID") +
+          (" left join (" +
+            "select t.distributorLocationID," +
+            " max(l.endDate) as distributor_endDateMax" +
+            " from LotteryLicenceTicketTypes t" +
+            " left join LotteryLicences l on t.licenceID = l.licenceID" +
+            " where t.recordDelete_timeMillis is null" +
+            " group by t.distributorLocationID" +
+            ") d on lo.locationID = d.distributorLocationID") +
 
-        (" left join (" +
-          "select t.manufacturerLocationID, max(l.endDate) as manufacturer_endDateMax" +
-          " from LotteryLicenceTicketTypes t" +
-          " left join LotteryLicences l on t.licenceID = l.licenceID" +
-          " where t.recordDelete_timeMillis is null" +
-          " group by t.manufacturerLocationID" +
-          ") m on lo.locationID = m.manufacturerLocationID") +
+          (" left join (" +
+            "select t.manufacturerLocationID, max(l.endDate) as manufacturer_endDateMax" +
+            " from LotteryLicenceTicketTypes t" +
+            " left join LotteryLicences l on t.licenceID = l.licenceID" +
+            " where t.recordDelete_timeMillis is null" +
+            " group by t.manufacturerLocationID" +
+            ") m on lo.locationID = m.manufacturerLocationID") +
 
-        " where lo.recordDelete_timeMillis is null" +
+          " where lo.recordDelete_timeMillis is null" +
 
-        " group by lo.locationID, lo.locationName," +
-        " lo.locationAddress1, lo.locationAddress2, lo.locationCity, lo.locationProvince," +
-        " l.licences_endDateMax, d.distributor_endDateMax, m.manufacturer_endDateMax" +
+          " group by lo.locationID, lo.locationName," +
+          " lo.locationAddress1, lo.locationAddress2, lo.locationCity, lo.locationProvince," +
+          " l.licences_endDateMax, d.distributor_endDateMax, m.manufacturer_endDateMax" +
 
-        (" having max(" +
-          "ifnull(l.licences_endDateMax, 0)," +
-          " ifnull(d.distributor_endDateMax, 0)," +
-          " ifnull(m.manufacturer_endDateMax, 0)) <= ?");
+          (" having max(" +
+            "ifnull(l.licences_endDateMax, 0)," +
+            " ifnull(d.distributor_endDateMax, 0)," +
+            " ifnull(m.manufacturer_endDateMax, 0)) <= ?");
 
         const threeYearsAgo = new Date();
         threeYearsAgo.setFullYear(threeYearsAgo.getFullYear() - 3);
@@ -89,9 +89,9 @@ router.all("/:reportName", function(req, res) {
 
       }
 
-      /*
-       * Organizations
-       */
+    /*
+     * Organizations
+     */
 
     case "organizations-all":
 
@@ -135,9 +135,9 @@ router.all("/:reportName", function(req, res) {
 
       break;
 
-      /*
-       * Organization Representatives
-       */
+    /*
+     * Organization Representatives
+     */
 
     case "representatives-all":
 
@@ -158,9 +158,9 @@ router.all("/:reportName", function(req, res) {
 
       break;
 
-      /*
-       * Organization Remarks
-       */
+    /*
+     * Organization Remarks
+     */
 
     case "remarks-all":
 
@@ -181,9 +181,18 @@ router.all("/:reportName", function(req, res) {
 
       break;
 
-      /*
-       * Lottery Licences
-       */
+    /*
+     * Organization Bank Records
+     */
+
+    case "bankRecords-all":
+
+      sql = "select * from OrganizationBankRecords";
+      break;
+
+    /*
+     * Lottery Licences
+     */
 
     case "licences-all":
       sql = "select * from LotteryLicences";
@@ -250,9 +259,9 @@ router.all("/:reportName", function(req, res) {
 
       break;
 
-      /*
-       * Lottery Licence Ticket Types
-       */
+    /*
+     * Lottery Licence Ticket Types
+     */
 
     case "ticketTypes-all":
 
@@ -284,9 +293,9 @@ router.all("/:reportName", function(req, res) {
 
       break;
 
-      /*
-       * Lottery Licence Amendments
-       */
+    /*
+     * Lottery Licence Amendments
+     */
 
     case "amendments-all":
 
@@ -307,9 +316,9 @@ router.all("/:reportName", function(req, res) {
 
       break;
 
-      /*
-       * Lottery Licence Transactions
-       */
+    /*
+     * Lottery Licence Transactions
+     */
 
     case "transactions-all":
 
@@ -342,9 +351,9 @@ router.all("/:reportName", function(req, res) {
 
       break;
 
-      /*
-       * Lottery Events
-       */
+    /*
+     * Lottery Events
+     */
 
     case "events-all":
 

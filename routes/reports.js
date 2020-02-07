@@ -116,6 +116,9 @@ router.all("/:reportName", function (req, res) {
                 " and organizationID = ?";
             params = [req.query.organizationID];
             break;
+        case "bankRecords-all":
+            sql = "select * from OrganizationBankRecords";
+            break;
         case "licences-all":
             sql = "select * from LotteryLicences";
             break;
