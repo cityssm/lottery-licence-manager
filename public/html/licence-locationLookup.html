@@ -7,15 +7,15 @@
     </header>
     <section class="modal-card-body">
       <div class="tabs is-boxed">
-        <ul>
-          <li class="is-active">
-            <a href="#locationTab--lookup">
+        <ul role="tablist">
+          <li class="is-active" role="presentation">
+            <a id="locationTab--lookup" role="tab" href="#locationTabContent--lookup" aria-selected="true">
               <span class="icon"><i class="fas fa-search" aria-hidden="true"></i></span>
               <span>Existing Locations</span>
             </a>
           </li>
-          <li>
-            <a href="#locationTab--create">
+          <li role="presentation">
+            <a id="locationTab--create" role="tab" href="#locationTabContent--create">
               <span class="icon"><i class="fas fa-plus" aria-hidden="true"></i></span>
               <span>Create a Location</span>
             </a>
@@ -23,7 +23,7 @@
         </ul>
       </div>
       <div class="tab-container">
-        <div class="tab-content is-active" id="locationTab--lookup">
+        <div class="tab-content is-active" id="locationTabContent--lookup" role="tabpanel" aria-labelledby="locationTab--lookup">
           <label class="sr-only" for="locationLookup--searchStr">Filter Locations</label>
           <div class="control has-icons-left">
             <input class="input" id="locationLookup--searchStr" type="text" placeholder="Filter Locations" disabled />
@@ -38,7 +38,7 @@
             </p>
           </div>
         </div>
-        <div class="tab-content" id="locationTab--create">
+        <div class="tab-content" id="locationTabContent--create" role="tabpanel" aria-labelledby="locationTab--create">
           <form id="form--newLocation">
             <input name="locationIsDistributor" type="hidden" value="0" />
             <input name="locationIsManufacturer" type="hidden" value="0" />

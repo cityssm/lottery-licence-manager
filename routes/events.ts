@@ -13,8 +13,11 @@ import * as licencesDB from "../helpers/licencesDB";
 
 router.get("/", function(_req, res) {
 
+  const eventTableStats = licencesDB.getEventTableStats();
+
   res.render("event-search", {
-    headTitle: "Event Calendar"
+    headTitle: "Event Calendar",
+    eventTableStats: eventTableStats
   });
 
 });

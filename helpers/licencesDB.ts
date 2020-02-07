@@ -104,7 +104,7 @@ function getApplicationSettingWithDB(db: sqlite.Database, settingKey: string): s
 }
 
 
-function getLicenceWithDB(db: sqlite.Database, licenceID: number, reqSession: Express.SessionData, includeOptions: llm.LotteryLicenceIncludeFilters) {
+function getLicenceWithDB(db: sqlite.Database, licenceID: number, reqSession: Express.SessionData, includeOptions: llm.GetLotteryLicence_IncludeOptions) {
 
   const licenceObj: llm.LotteryLicence =
     db.prepare("select l.*," +
@@ -437,7 +437,7 @@ export function getLocation(locationID: number, reqSession: Express.SessionData)
 /**
  * @returns New locationID
  */
-export function createLocation(reqBody: any, reqSession: Express.SessionData) {
+export function createLocation(reqBody: llm.Location, reqSession: Express.SessionData) {
 
   const db = sqlite(dbPath);
 
@@ -472,7 +472,7 @@ export function createLocation(reqBody: any, reqSession: Express.SessionData) {
 /**
  * @returns TRUE if successful
  */
-export function updateLocation(reqBody: any, reqSession: Express.SessionData): boolean {
+export function updateLocation(reqBody: llm.Location, reqSession: Express.SessionData): boolean {
 
   const db = sqlite(dbPath);
 
@@ -772,7 +772,7 @@ export function getOrganization(organizationID: number, reqSession: Express.Sess
 /**
  * @returns New organizationID
  */
-export function createOrganization(reqBody: any, reqSession: Express.SessionData) {
+export function createOrganization(reqBody: llm.Organization, reqSession: Express.SessionData) {
 
   const db = sqlite(dbPath);
 
@@ -808,7 +808,7 @@ export function createOrganization(reqBody: any, reqSession: Express.SessionData
 /**
  * @returns TRUE if successful
  */
-export function updateOrganization(reqBody: any, reqSession: Express.SessionData): boolean {
+export function updateOrganization(reqBody: llm.Organization, reqSession: Express.SessionData): boolean {
 
   const db = sqlite(dbPath);
 
@@ -943,7 +943,7 @@ export function getInactiveOrganizations(inactiveYears: number) {
  * ORGANIZATION REPRESENTATIVES
  */
 
-export function addOrganizationRepresentative(organizationID: number, reqBody: any) {
+export function addOrganizationRepresentative(organizationID: number, reqBody: llm.OrganizationRepresentative) {
 
   const db = sqlite(dbPath);
 
@@ -992,7 +992,7 @@ export function addOrganizationRepresentative(organizationID: number, reqBody: a
 
 }
 
-export function updateOrganizationRepresentative(organizationID: number, reqBody: any) {
+export function updateOrganizationRepresentative(organizationID: number, reqBody: llm.OrganizationRepresentative) {
 
   const db = sqlite(dbPath);
 
@@ -1030,7 +1030,7 @@ export function updateOrganizationRepresentative(organizationID: number, reqBody
     representativePostalCode: reqBody.representativePostalCode,
     representativePhoneNumber: reqBody.representativePhoneNumber,
     representativeEmailAddress: reqBody.representativeEmailAddress,
-    isDefault: parseInt(reqBody.isDefault) > 0
+    isDefault: Number(reqBody.isDefault) > 0
   };
 
 }
@@ -1144,7 +1144,7 @@ export function getOrganizationRemark(organizationID: number, remarkIndex: numbe
 
 }
 
-export function addOrganizationRemark(reqBody: any, reqSession: Express.SessionData) {
+export function addOrganizationRemark(reqBody: llm.OrganizationRemark, reqSession: Express.SessionData) {
 
   const db = sqlite(dbPath);
 
@@ -1185,7 +1185,7 @@ export function addOrganizationRemark(reqBody: any, reqSession: Express.SessionD
 /**
  * @returns TRUE if successful
  */
-export function updateOrganizationRemark(reqBody: any, reqSession: Express.SessionData) {
+export function updateOrganizationRemark(reqBody: llm.OrganizationRemark, reqSession: Express.SessionData) {
 
   const db = sqlite(dbPath);
 
@@ -1303,7 +1303,7 @@ export function getOrganizationBankRecordStats(organizationID: number) {
   return rows;
 }
 
-export function addOrganizationBankRecord(reqBody: any, reqSession: Express.Session) {
+export function addOrganizationBankRecord(reqBody: llm.OrganizationBankRecord, reqSession: Express.Session) {
 
   // Check for a record with the same unique key
 
@@ -1479,10 +1479,10 @@ export function getLicenceTableStats() {
 
 }
 
-export function getLicences(reqBodyOrParamsObj: any, includeOrganization: boolean, useLimit: boolean, reqSession: Express.SessionData) {
+export function getLicences(reqBodyOrParamsObj: any, reqSession: Express.SessionData, includeOptions: llm.GetLotteryLicences_IncludeOptions) {
 
   if (reqBodyOrParamsObj.organizationName && reqBodyOrParamsObj.organizationName !== "") {
-    includeOrganization = true;
+    includeOptions.includeOrganization = true;
   }
 
   const addCalculatedFieldsFn = function(ele: llm.LotteryLicence) {
@@ -1512,7 +1512,7 @@ export function getLicences(reqBodyOrParamsObj: any, includeOrganization: boolea
   const sqlParams = [];
 
   let sql = "select l.licenceID, l.organizationID," +
-    (includeOrganization ?
+    (includeOptions.includeOrganization ?
       " o.organizationName," :
       "") +
     " l.applicationDate, l.licenceTypeKey," +
@@ -1523,7 +1523,7 @@ export function getLicences(reqBodyOrParamsObj: any, includeOrganization: boolea
     " l.recordCreate_userName, l.recordCreate_timeMillis, l.recordUpdate_userName, l.recordUpdate_timeMillis" +
     " from LotteryLicences l" +
     " left join Locations lo on l.locationID = lo.locationID" +
-    (includeOrganization ?
+    (includeOptions.includeOrganization ?
       " left join Organizations o on l.organizationID = o.organizationID" :
       ""
     ) +
@@ -1589,7 +1589,7 @@ export function getLicences(reqBodyOrParamsObj: any, includeOrganization: boolea
 
   sql += " order by l.endDate desc, l.startDate desc, l.licenceID";
 
-  if (useLimit) {
+  if (includeOptions.useLimit) {
 
     sql += " limit 100";
 
@@ -2844,7 +2844,8 @@ export function getEventTableStats() {
   });
 
   eventTableStats = db.prepare("select" +
-    " min(eventDate / 10000) as eventYearMin" +
+    " min(eventDate / 10000) as eventYearMin," +
+    " max(eventDate / 10000) as eventYearMax" +
     " from LotteryEvents" +
     " where recordDelete_timeMillis is null" +
     " and eventDate > 19700000")
@@ -2937,7 +2938,7 @@ export function getOutstandingEvents(reqBody: any, reqSession: Express.SessionDa
     " e.eventDate, e.reportDate," +
     " l.licenceTypeKey, l.licenceID, l.externalLicenceNumber," +
     " e.bank_name, e.bank_address, e.bank_accountNumber, e.bank_accountBalance," +
-    " e.costs_receipts, e.costs_netProceeds," +
+    " e.costs_receipts," +
     " e.recordUpdate_userName, e.recordUpdate_timeMillis" +
 
     " from LotteryEvents e" +
@@ -2950,7 +2951,6 @@ export function getOutstandingEvents(reqBody: any, reqSession: Express.SessionDa
       "e.reportDate is null or e.reportDate = 0" +
       " or e.bank_name is null or e.bank_name = ''" +
       " or e.costs_receipts is null or e.costs_receipts = 0" +
-      " or e.costs_netProceeds is null or e.costs_netProceeds = 0" +
       ")");
 
   if (reqBody.licenceTypeKey && reqBody.licenceTypeKey !== "") {

@@ -464,6 +464,7 @@ llm.initializeTabs = function(tabsListEle, callbackFns) {
   const isPanelTabs = tabsListEle.classList.contains("panel-tabs");
 
   const listItemEles = tabsListEle.getElementsByTagName(isPanelTabs ? "a" : "li");
+  const tabLinkEles = (isPanelTabs ? listItemEles : tabsListEle.getElementsByTagName("a"));
 
   function tabClickFn(clickEvent) {
 
@@ -475,11 +476,13 @@ llm.initializeTabs = function(tabsListEle, callbackFns) {
     for (let index = 0; index < listItemEles.length; index += 1) {
 
       listItemEles[index].classList.remove("is-active");
+      tabLinkEles[index].setAttribute("aria-selected", "false");
 
     }
 
     // Add is-active to the selected tab
     (isPanelTabs ? tabLinkEle : tabLinkEle.parentNode).classList.add("is-active");
+    tabLinkEle.setAttribute("aria-selected", "true");
 
     const tabContentEles = tabContentEle.parentNode.getElementsByClassName("tab-content");
 

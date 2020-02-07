@@ -31,7 +31,10 @@ router.get("/", function(_req, res) {
 
 router.post("/doSearch", function(req, res) {
 
-  res.json(licencesDB.getLicences(req.body, true, true, req.session));
+  res.json(licencesDB.getLicences(req.body, req.session, {
+    includeOrganization: true,
+    useLimit: true
+  }));
 
 });
 
@@ -45,7 +48,7 @@ router.get("/licenceTypes", function(_req, res) {
 
   // Get licence table stats
 
-  const licenceTableStats : any = licencesDB.getLicenceTableStats();
+  const licenceTableStats: any = licencesDB.getLicenceTableStats();
 
   // Set application dates
 
@@ -87,7 +90,10 @@ router.post("/doGetLicenceTypeSummary", function(req, res) {
 
 router.post("/doSearch", function(req, res) {
 
-  res.json(licencesDB.getLicences(req.body, true, true, req.session));
+  res.json(licencesDB.getLicences(req.body, req.session, {
+    includeOrganization: true,
+    useLimit: true
+  }));
 
 });
 

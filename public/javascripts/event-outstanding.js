@@ -83,22 +83,6 @@
 
           "</td>");
 
-        trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-centered\">" +
-
-          (outstandingEventObj.costs_netProceeds === null || outstandingEventObj.costs_netProceeds === 0 ?
-
-            "<span class=\"icon\" data-tooltip=\"Net Proceeds Amount Outstanding\">" +
-            "<i class=\"fas fa-times has-text-danger\" aria-hidden=\"true\"></i>" +
-            "</span>" +
-            "<span class=\"sr-only\">Net Proceeds Amount Outstanding</span>" :
-
-            "<span class=\"icon\" data-tooltip=\"Net Proceeds Amount Recorded\">" +
-            "<i class=\"fas fa-check has-text-success\" aria-hidden=\"true\"></i>" +
-            "</span>" +
-            "<span class=\"sr-only\">Net Proceeds Amount Recorded</span>") +
-
-          "</td>");
-
 
         tbodyEle.insertAdjacentElement("beforeend", trEle);
 

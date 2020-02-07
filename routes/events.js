@@ -4,8 +4,10 @@ const router = express.Router();
 const dateTimeFns = require("../helpers/dateTimeFns");
 const licencesDB = require("../helpers/licencesDB");
 router.get("/", function (_req, res) {
+    const eventTableStats = licencesDB.getEventTableStats();
     res.render("event-search", {
-        headTitle: "Event Calendar"
+        headTitle: "Event Calendar",
+        eventTableStats: eventTableStats
     });
 });
 router.post("/doSearch", function (req, res) {

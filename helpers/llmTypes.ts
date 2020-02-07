@@ -193,7 +193,7 @@ export type OrganizationRepresentative = {
   representativePostalCode: string,
   representativePhoneNumber: string,
   representativeEmailAddress: string,
-  isDefault: boolean
+  isDefault: boolean | string
 };
 
 export interface OrganizationRemark extends Record {
@@ -272,12 +272,17 @@ export interface LotteryLicence extends Location, Record {
   events: LotteryEvent[]
 };
 
-export type LotteryLicenceIncludeFilters = {
+export type GetLotteryLicence_IncludeOptions = {
   includeTicketTypes: boolean,
   includeFields: boolean,
   includeEvents: boolean,
   includeAmendments: boolean,
   includeTransactions: boolean
+};
+
+export type GetLotteryLicences_IncludeOptions = {
+  includeOrganization: boolean,
+  useLimit: boolean
 };
 
 export interface LotteryLicenceTicketType extends Record {

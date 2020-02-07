@@ -287,7 +287,10 @@ router.get("/:organizationID", function (req, res) {
     }
     const licences = licencesDB.getLicences({
         organizationID: organizationID
-    }, false, false, req.session) || [];
+    }, req.session, {
+        includeOrganization: false,
+        useLimit: false
+    }) || [];
     const remarks = licencesDB.getOrganizationRemarks(organizationID, req.session) || [];
     res.render("organization-view", {
         headTitle: organization.organizationName,
@@ -315,7 +318,10 @@ router.get("/:organizationID/edit", function (req, res) {
     }
     const licences = licencesDB.getLicences({
         organizationID: organizationID
-    }, false, false, req.session) || [];
+    }, req.session, {
+        includeOrganization: false,
+        useLimit: false
+    }) || [];
     const remarks = licencesDB.getOrganizationRemarks(organizationID, req.session) || [];
     res.render("organization-edit", {
         headTitle: "Organization Update",

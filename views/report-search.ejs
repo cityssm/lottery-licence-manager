@@ -18,41 +18,41 @@
 </div>
 
 <div class="tabs is-boxed" id="tabs--reports">
-  <ul>
-    <li class="is-active">
-      <a href="#tab--organizationReports">
+  <ul role="tablist">
+    <li class="is-active" role="presentation">
+      <a id="tab--organizationReports" role="tab" href="#tabContent--organizationReports" aria-selected="true">
         <span class="icon">
           <i class="fas fa-users" aria-hidden="true"></i>
         </span>
         <span>Organizations</span>
       </a>
     </li>
-    <li>
-      <a href="#tab--licenceReports">
+    <li role="presentation">
+      <a id="tab--licenceReports" role="tab" href="#tabContent--licenceReports">
         <span class="icon">
           <i class="fas fa-certificate" aria-hidden="true"></i>
         </span>
         <span>Licences</span>
       </a>
     </li>
-    <li>
-      <a href="#tab--transactionReports">
+    <li role="presentation">
+      <a id="tab--transactionReports" role="tab" href="#tabContent--transactionReports">
         <span class="icon">
           <i class="fas fa-dollar-sign" aria-hidden="true"></i>
         </span>
         <span>Transactions</span>
       </a>
     </li>
-    <li>
-      <a href="#tab--eventReports">
+    <li role="presentation">
+      <a id="tab--eventReports" role="tab" href="#tabContent--eventReports">
         <span class="icon">
           <i class="fas fa-calendar" aria-hidden="true"></i>
         </span>
         <span>Events</span>
       </a>
     </li>
-    <li>
-      <a href="#tab--locationReports">
+    <li role="presentation">
+      <a id="tab--locationReports" role="tab" href="#tabContent--locationReports">
         <span class="icon">
           <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
         </span>
@@ -63,7 +63,7 @@
 </div>
 
 <div class="tab-container">
-  <div class="tab-content is-active" id="tab--organizationReports">
+  <div class="tab-content is-active" id="tabContent--organizationReports" role="tabpanel" aria-labelledby="tab--organizationReports">
     <div class="columns">
       <div class="column">
         <div class="panel">
@@ -177,7 +177,7 @@
       </div>
     </div>
   </div>
-  <div class="tab-content" id="tab--licenceReports">
+  <div class="tab-content" id="tabContent--licenceReports" role="tabpanel" aria-labelledby="tab--licenceReports">
     <div class="columns">
       <div class="column">
         <div class="panel">
@@ -265,7 +265,7 @@
       </div>
     </div>
   </div>
-  <div class="tab-content" id="tab--transactionReports">
+  <div class="tab-content" id="tabContent--transactionReports" role="tabpanel" aria-labelledby="tab--transactionReports">
     <div class="columns">
       <div class="column">
         <div class="panel">
@@ -321,7 +321,7 @@
       </div>
     </div>
   </div>
-  <div class="tab-content" id="tab--eventReports">
+  <div class="tab-content" id="tabContent--eventReports" role="tabpanel" aria-labelledby="tab--eventReports">
     <div class="columns">
       <div class="column">
         <div class="panel">
@@ -407,7 +407,7 @@
       </div>
     </div>
   </div>
-  <div class="tab-content" id="tab--locationReports">
+  <div class="tab-content" id="tabContent--locationReports" role="tabpanel" aria-labelledby="tab--locationReports">
     <div class="columns">
       <div class="column">
         <div class="panel">

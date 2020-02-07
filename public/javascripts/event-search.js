@@ -1,10 +1,8 @@
-/* global config_licenceTypes */
-
 "use strict";
 
 (function() {
 
-  const licenceTypes = llm.arrayToObject(config_licenceTypes, "licenceTypeKey");
+  const licenceTypes = llm.arrayToObject(llm.config_licenceTypes, "licenceTypeKey");
 
   const filterMonthEle = document.getElementById("filter--month");
   const filterYearEle = document.getElementById("filter--year");

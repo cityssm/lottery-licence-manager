@@ -171,7 +171,7 @@ router.post("/doMerge", function(req, res) {
         success: false,
         message: "Forbidden"
       });
-      
+
     return;
 
   }
@@ -226,7 +226,10 @@ router.get("/:locationID", function(req, res) {
 
   const licences = licencesDB.getLicences({
     locationID: locationID
-  }, true, false, req.session);
+  }, req.session, {
+    includeOrganization: true,
+    useLimit: false
+  });
 
   res.render("location-view", {
     headTitle: location.locationDisplayName,
@@ -268,7 +271,10 @@ router.get("/:locationID/edit", function(req, res) {
 
   const licences = licencesDB.getLicences({
     locationID: locationID
-  }, true, false, req.session) || [];
+  }, req.session, {
+    includeOrganization: true,
+    useLimit: false
+  }) || [];
 
   res.render("location-edit", {
     headTitle: location.locationDisplayName,

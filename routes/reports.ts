@@ -190,6 +190,19 @@ router.all("/:reportName", function(req, res) {
       sql = "select * from OrganizationBankRecords";
       break;
 
+    case "bankRecords-byOrganization":
+
+      sql = "select organizationID, recordIndex, accountNumber, bankingYear, bankingMonth," +
+        " bankRecordType, recordIsNA, recordDate, recordNote," +
+        " recordCreate_userName, recordCreate_timeMillis, recordUpdate_userName, recordUpdate_timeMillis" +
+        " from OrganizationBankRecords" +
+        " where recordDelete_timeMillis is null" +
+        " and organizationID = ?";
+
+      params = [req.query.organizationID];
+
+      break;
+
     /*
      * Lottery Licences
      */

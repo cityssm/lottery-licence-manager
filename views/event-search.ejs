@@ -37,7 +37,9 @@
           %>
         </select>
       </div>
-      <input class="input is-inline has-width-100 has-text-centered" id="filter--year" type="number" min="1900" max="<%= currentDate.getFullYear() + 2 %>" step="1" value="<%= currentDate.getFullYear() %>" required />
+      <input class="input is-inline has-width-100 has-text-centered" id="filter--year" type="number"
+        min="<%= (eventTableStats ? eventTableStats.eventYearMin : "1970") %>"
+        max="<%= (eventTableStats ? eventTableStats.eventYearMax : currentDate.getFullYear() + 2) %>" step="1" value="<%= currentDate.getFullYear() %>" required />
       <button class="button" id="filter--next" data-tooltip="Next Month" type="button">
         <i class="fas fa-arrow-right" aria-hidden="true"></i>
         <span class="sr-only">Next Month</span>
@@ -51,7 +53,7 @@
 <%- include('_footerA'); -%>
 
 <script>
-  const config_licenceTypes = <%- JSON.stringify(configFns.getProperty("licenceTypes")) %>;
+  llm.config_licenceTypes = <%- JSON.stringify(configFns.getProperty("licenceTypes")) %>;
 </script>
 <script src="/javascripts/event-search.min.js"></script>
 

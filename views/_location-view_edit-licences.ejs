@@ -91,15 +91,15 @@
     }
   %>
 
-  <div class="panel-tabs" id="tabs--licences">
-    <a class="is-active" href="#tab--licences-active">Active Licences
+  <div class="panel-tabs" id="tabs--licences" role="tablist">
+    <a class="is-active" id="tab--licences-active" role="tab" href="#tabContent--licences-active">Active Licences
       <%- (count_active > 0 ? " <span class=\"tag is-info has-margin-left-5\">" + count_active + "</span>" : "") %></a>
-    <a href="#tab--licences-past">Past Licences
+    <a id="tab--licences-past" role="tab" href="#tabContent--licences-past">Past Licences
       <%- (count_past > 0 ? " <span class=\"tag has-margin-left-5\">" + count_past + "</span>" : "") %></a>
   </div>
 
   <div class="tab-container">
-    <div class="tab-content is-active" id="tab--licences-active">
+    <div class="tab-content is-active" id="tabContent--licences-active" role="tabpanel" aria-labelledby="tab--licences-active">
       <% if (rows_active === "") { %>
       <div class="panel-block is-block">
         <div class="message is-info">
@@ -120,7 +120,7 @@
       </table>
       <% } %>
     </div>
-    <div class="tab-content" id="tab--licences-past">
+    <div class="tab-content" id="tabContent--licences-past" role="tabpanel" aria-labelledby="tab--licences-past">
       <% if (rows_past === "") { %>
       <div class="panel-block is-block">
         <div class="message is-info">

@@ -594,7 +594,7 @@ function updateOrganizationRepresentative(organizationID, reqBody) {
         representativePostalCode: reqBody.representativePostalCode,
         representativePhoneNumber: reqBody.representativePhoneNumber,
         representativeEmailAddress: reqBody.representativeEmailAddress,
-        isDefault: parseInt(reqBody.isDefault) > 0
+        isDefault: Number(reqBody.isDefault) > 0
     };
 }
 exports.updateOrganizationRepresentative = updateOrganizationRepresentative;
@@ -854,9 +854,9 @@ function getLicenceTableStats() {
     return licenceTableStats;
 }
 exports.getLicenceTableStats = getLicenceTableStats;
-function getLicences(reqBodyOrParamsObj, includeOrganization, useLimit, reqSession) {
+function getLicences(reqBodyOrParamsObj, reqSession, includeOptions) {
     if (reqBodyOrParamsObj.organizationName && reqBodyOrParamsObj.organizationName !== "") {
-        includeOrganization = true;
+        includeOptions.includeOrganization = true;
     }
     const addCalculatedFieldsFn = function (ele) {
         ele.recordType = "licence";
@@ -875,7 +875,7 @@ function getLicences(reqBodyOrParamsObj, includeOrganization, useLimit, reqSessi
     });
     const sqlParams = [];
     let sql = "select l.licenceID, l.organizationID," +
-        (includeOrganization ?
+        (includeOptions.includeOrganization ?
             " o.organizationName," :
             "") +
         " l.applicationDate, l.licenceTypeKey," +
@@ -886,7 +886,7 @@ function getLicences(reqBodyOrParamsObj, includeOrganization, useLimit, reqSessi
         " l.recordCreate_userName, l.recordCreate_timeMillis, l.recordUpdate_userName, l.recordUpdate_timeMillis" +
         " from LotteryLicences l" +
         " left join Locations lo on l.locationID = lo.locationID" +
-        (includeOrganization ?
+        (includeOptions.includeOrganization ?
             " left join Organizations o on l.organizationID = o.organizationID" :
             "") +
         " where l.recordDelete_timeMillis is null";
@@ -927,7 +927,7 @@ function getLicences(reqBodyOrParamsObj, includeOrganization, useLimit, reqSessi
         sqlParams.push(reqBodyOrParamsObj.locationID);
     }
     sql += " order by l.endDate desc, l.startDate desc, l.licenceID";
-    if (useLimit) {
+    if (includeOptions.useLimit) {
         sql += " limit 100";
     }
     const rows = db.prepare(sql)
@@ -1559,7 +1559,8 @@ function getEventTableStats() {
         readonly: true
     });
     eventTableStats = db.prepare("select" +
-        " min(eventDate / 10000) as eventYearMin" +
+        " min(eventDate / 10000) as eventYearMin," +
+        " max(eventDate / 10000) as eventYearMax" +
         " from LotteryEvents" +
         " where recordDelete_timeMillis is null" +
         " and eventDate > 19700000")
@@ -1625,7 +1626,7 @@ function getOutstandingEvents(reqBody, reqSession) {
         " e.eventDate, e.reportDate," +
         " l.licenceTypeKey, l.licenceID, l.externalLicenceNumber," +
         " e.bank_name, e.bank_address, e.bank_accountNumber, e.bank_accountBalance," +
-        " e.costs_receipts, e.costs_netProceeds," +
+        " e.costs_receipts," +
         " e.recordUpdate_userName, e.recordUpdate_timeMillis" +
         " from LotteryEvents e" +
         " left join LotteryLicences l on e.licenceID = l.licenceID" +
@@ -1636,7 +1637,6 @@ function getOutstandingEvents(reqBody, reqSession) {
             "e.reportDate is null or e.reportDate = 0" +
             " or e.bank_name is null or e.bank_name = ''" +
             " or e.costs_receipts is null or e.costs_receipts = 0" +
-            " or e.costs_netProceeds is null or e.costs_netProceeds = 0" +
             ")");
     if (reqBody.licenceTypeKey && reqBody.licenceTypeKey !== "") {
         sql += " and l.licenceTypeKey = ?";

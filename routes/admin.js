@@ -26,9 +26,9 @@ router.post("/doSaveApplicationSetting", function (req, res) {
     }
     const settingKey = req.body.settingKey;
     const settingValue = req.body.settingValue;
-    const changeCount = licencesDB.updateApplicationSetting(settingKey, settingValue, req.session);
+    const success = licencesDB.updateApplicationSetting(settingKey, settingValue, req.session);
     res.json({
-        success: (changeCount === 1)
+        success: success
     });
 });
 router.get("/userManagement", function (req, res) {

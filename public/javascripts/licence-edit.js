@@ -420,15 +420,24 @@
 
           displayLimit -= 1;
 
-          const locationDisplayName = locationObj.locationName === "" ? locationObj.locationAddress1 : locationObj.locationName;
-
           const listItemEle = document.createElement("a");
           listItemEle.className = "list-item";
           listItemEle.setAttribute("data-location-id", locationObj.locationID);
-          listItemEle.setAttribute("data-location-display-name", locationDisplayName);
+          listItemEle.setAttribute("data-location-display-name", locationObj.locationDisplayName);
           listItemEle.setAttribute("href", "#");
-          listItemEle.innerHTML = locationDisplayName +
-            (locationObj.locationName === "" ? "" : "<br /><small>" + locationObj.locationAddress1 + "</small>");
+
+          listItemEle.innerHTML = "<div class=\"columns\">" +
+            "<div class=\"column is-narrow\">" +
+            "<i class=\"fas fa-map-marker-alt\" aria-hidden=\"true\"></i>" +
+            "</div>" +
+            "<div class=\"column\">" + llm.escapeHTML(locationObj.locationDisplayName) + "</div>" +
+
+            (locationObj.locationName === "" ?
+              "" :
+              "<div class=\"column\">" + llm.escapeHTML(locationObj.locationAddress1) + "</div>") +
+
+            "</div>";
+
           listItemEle.addEventListener("click", locationLookupFn_setLocationFromExisting);
           listEle.insertAdjacentElement("beforeend", listItemEle);
 
@@ -448,7 +457,7 @@
 
         onshow: function(modalEle) {
 
-          // existing locations
+          // Existing locations
 
           locationLookup_searchStrEle = document.getElementById("locationLookup--searchStr");
           locationLookup_searchStrEle.addEventListener("keyup", locationLookupFn_refreshResults);
@@ -463,7 +472,7 @@
 
           });
 
-          // new location
+          // New location
 
           llm.getDefaultConfigProperty("city", function(defaultCity) {
 
@@ -655,7 +664,7 @@
 
     const changeFn_licenceType = function(changeEvent) {
 
-      // ticket types
+      // Ticket types
 
       const hasTicketTypes = changeEvent.currentTarget.selectedOptions[0].getAttribute("data-has-ticket-types") === "true";
 
@@ -808,7 +817,7 @@
             eventDateString = document.getElementById(sourceEleID).value;
 
           } catch (e) {
-            // ignore
+            // Ignore
           }
 
         }
@@ -1145,7 +1154,18 @@
               listItemEle.className = "list-item";
               listItemEle.setAttribute("data-location-id", locationObj.locationID);
               listItemEle.setAttribute("data-location-display-name", locationObj.locationDisplayName);
-              listItemEle.innerText = locationObj.locationDisplayName;
+
+              listItemEle.innerHTML = "<div class=\"columns\">" +
+                "<div class=\"column is-narrow\">" +
+                "<i class=\"fas fa-map-marker-alt\" aria-hidden=\"true\"></i>" +
+                "</div>" +
+                "<div class=\"column\">" + llm.escapeHTML(locationObj.locationDisplayName) + "</div>" +
+
+                (locationObj.locationName === "" ?
+                  "" :
+                  "<div class=\"column\">" + llm.escapeHTML(locationObj.locationAddress1) + "</div>") +
+
+                "</div>";
 
               listItemEle.addEventListener("click", distributorLookup_updateDistributor);
 
@@ -1209,7 +1229,18 @@
               listItemEle.className = "list-item";
               listItemEle.setAttribute("data-location-id", locationObj.locationID);
               listItemEle.setAttribute("data-location-display-name", locationObj.locationDisplayName);
-              listItemEle.innerText = locationObj.locationDisplayName;
+
+              listItemEle.innerHTML = "<div class=\"columns\">" +
+                "<div class=\"column is-narrow\">" +
+                "<i class=\"fas fa-map-marker-alt\" aria-hidden=\"true\"></i>" +
+                "</div>" +
+                "<div class=\"column\">" + llm.escapeHTML(locationObj.locationDisplayName) + "</div>" +
+
+                (locationObj.locationName === "" ?
+                  "" :
+                  "<div class=\"column\">" + llm.escapeHTML(locationObj.locationAddress1) + "</div>") +
+
+                "</div>";
 
               listItemEle.addEventListener("click", manufacturerLookup_updateManufacturer);
 
@@ -1369,7 +1400,7 @@
         "<span>" + ticketType + "</span>" +
         "</td>");
 
-      // unit count
+      // Unit count
 
       const unitCount = obj.unitCount;
 
@@ -1378,7 +1409,7 @@
         "<span>" + unitCount + "</span>" +
         "</td>");
 
-      // value per deal
+      // Value per deal
 
       const valuePerDeal = obj.valuePerDeal;
       const totalValuePerDeal = (valuePerDeal * unitCount).toFixed(2);
@@ -1387,7 +1418,7 @@
         "<span data-tooltip=\"$" + valuePerDeal + " value per deal\">$ " + totalValuePerDeal + "</span>" +
         "</td>");
 
-      // prizes per deal
+      // Prizes per deal
 
       const prizesPerDeal = obj.prizesPerDeal;
       const totalPrizesPerDeal = (prizesPerDeal * unitCount).toFixed(2);
@@ -1397,7 +1428,7 @@
         "<span data-tooltip=\"$" + prizesPerDeal + " prizes per deal\">$ " + totalPrizesPerDeal + "</span>" +
         "</td>");
 
-      // amend/delete
+      // Amend / delete
 
       trEle.insertAdjacentHTML("beforeend", "<td class=\"is-hidden-print\">" +
         "<div class=\"field has-addons\">" +
@@ -1416,7 +1447,7 @@
       trEle.getElementsByClassName("is-amend-ticket-type-unit-count-button")[0].addEventListener("click", amendUnitCount_openModal);
       trEle.getElementsByClassName("is-delete-ticket-type-button")[0].addEventListener("click", deleteTicketType_openConfirm);
 
-      // licence fee
+      // Licence fee
 
       const licenceFee = obj.licenceFee;
 
@@ -1425,7 +1456,7 @@
         "<span>$ " + licenceFee + "</span>" +
         "</td>");
 
-      // distributor
+      // Distributor
 
       trEle.insertAdjacentHTML("beforeend", "<td>" +
         "<input name=\"ticketType_distributorLocationID\" type=\"hidden\" value=\"\" />" +
@@ -1441,7 +1472,7 @@
 
       trEle.getElementsByClassName("is-amend-ticket-type-distributor-button")[0].addEventListener("click", amendDistributor_openModal);
 
-      // manufacturer
+      // Manufacturer
 
       trEle.insertAdjacentHTML("beforeend", "<td>" +
         "<input name=\"ticketType_manufacturerLocationID\" type=\"hidden\" value=\"\" />" +
@@ -1457,7 +1488,7 @@
 
       trEle.getElementsByClassName("is-amend-ticket-type-manufacturer-button")[0].addEventListener("click", amendManufacturer_openModal);
 
-      // insert row
+      // Insert row
 
       ticketTypesPanelEle.getElementsByTagName("tbody")[0].insertAdjacentElement("afterbegin", trEle);
 

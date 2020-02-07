@@ -588,7 +588,7 @@
   llm.initializeTabs(document.getElementById("tabs--organization"), {
     onshown: function(tabContentEle) {
 
-      if (tabContentEle.id === "organizationTab--bankRecords" && !bankRecordsFiltersLoaded) {
+      if (tabContentEle.id === "organizationTabContent--bankRecords" && !bankRecordsFiltersLoaded) {
 
         bankRecordsFiltersLoaded = true;
         loadBankRecordFilters();

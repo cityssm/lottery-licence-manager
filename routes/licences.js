@@ -14,7 +14,10 @@ router.get("/", function (_req, res) {
     });
 });
 router.post("/doSearch", function (req, res) {
-    res.json(licencesDB.getLicences(req.body, true, true, req.session));
+    res.json(licencesDB.getLicences(req.body, req.session, {
+        includeOrganization: true,
+        useLimit: true
+    }));
 });
 router.get("/licenceTypes", function (_req, res) {
     const licenceTableStats = licencesDB.getLicenceTableStats();
@@ -37,7 +40,10 @@ router.post("/doGetLicenceTypeSummary", function (req, res) {
     res.json(licencesDB.getLicenceTypeSummary(req.body));
 });
 router.post("/doSearch", function (req, res) {
-    res.json(licencesDB.getLicences(req.body, true, true, req.session));
+    res.json(licencesDB.getLicences(req.body, req.session, {
+        includeOrganization: true,
+        useLimit: true
+    }));
 });
 router.get([
     "/new",

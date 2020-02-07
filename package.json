@@ -6,8 +6,8 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-free": "^5.12.0",
-    "bcrypt": "^3.0.7",
+    "@fortawesome/fontawesome-free": "^5.12.1",
+    "bcrypt": "^3.0.8",
     "better-sqlite3": "^5.4.3",
     "compression": "^1.7.4",
     "connect-sqlite3": "^0.9.11",
@@ -38,7 +38,7 @@
     "@types/morgan": "^1.7.37",
     "bulma": "^0.8.0",
     "bulma-divider": "^0.2.0",
-    "bulma-helpers": "^0.3.8",
+    "bulma-helpers": "^0.3.10",
     "bulma-switch": "^2.0.0",
     "bulma-tooltip": "^3.0.2",
     "github-markdown-css": "^3.0.1"

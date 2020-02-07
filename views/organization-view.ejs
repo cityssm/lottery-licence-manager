@@ -83,24 +83,36 @@
 </div>
 
 <div class="tabs is-boxed" id="tabs--organization">
-  <ul>
-    <li class="is-active">
-      <a href="#organizationTab--representatives">Representatives</a>
+  <ul role="tablist">
+    <li class="is-active" role="presentation">
+      <a id="organizationTab--representatives" role="tab" href="#organizationTabContent--representatives">
+        <span class="icon"><i class="fas fa-users" aria-hidden="true"></i></span>
+        <span>Representatives</span>
+      </a>
     </li>
-    <li>
-      <a href="#organizationTab--licences">Licences</a>
+    <li role="presentation">
+      <a id="organizationTab--licences" role="tab" href="#organizationTabContent--licences">
+        <span class="icon"><i class="fas fa-certificate" aria-hidden="true"></i></span>
+        <span>Licences</span>
+      </a>
     </li>
-    <li>
-      <a href="#organizationTab--remarks">Remarks</a>
+    <li role="presentation">
+      <a id="organizationTab--remarks" role="tab" href="#organizationTabContent--remarks">
+        <span class="icon"><i class="fas fa-comment" aria-hidden="true"></i></span>
+        <span>Remarks</span>
+      </a>
     </li>
-    <li>
-      <a href="#organizationTab--bankRecords">Bank Records</a>
+    <li role="presentation">
+      <a id="organizationTab--bankRecords" role="tab" href="#organizationTabContent--bankRecords">
+        <span class="icon"><i class="fas fa-file-invoice-dollar" aria-hidden="true"></i></span>
+        <span>Bank Records</span>
+      </a>
     </li>
   </ul>
 </div>
 
 <div class="has-status-view">
-  <div class="tab-content is-active" id="organizationTab--representatives">
+  <div class="tab-content is-active" id="organizationTabContent--representatives" role="tabpanel" aria-labelledby="organizationTab--representatives">
     <div class="panel">
       <div class="panel-heading">
         <div class="level">
@@ -178,13 +190,13 @@
       <% } %>
     </div>
   </div>
-  <div class="tab-content" id="organizationTab--licences">
+  <div class="tab-content" id="organizationTabContent--licences" role="tabpanel" aria-labelledby="organizationTab--licences">
     <%- include('_organization-view_edit-licences'); -%>
   </div>
-  <div class="tab-content" id="organizationTab--remarks">
+  <div class="tab-content" id="organizationTabContent--remarks" role="tabpanel" aria-labelledby="organizationTab--remarks">
     <%- include('_organization-view_edit-remarks'); -%>
   </div>
-  <div class="tab-content" id="organizationTab--bankRecords">
+  <div class="tab-content" id="organizationTabContent--bankRecords" role="tabpanel" aria-labelledby="organizationTab--bankRecords">
     <%- include('_organization-view_edit-bankRecords'); -%>
   </div>
 </div>

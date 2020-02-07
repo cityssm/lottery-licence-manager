@@ -91,11 +91,11 @@
       </div>
       <div class="columns">
         <div class="column is-full">
-          <input id="licence--organizationID" name="organizationID" type="hidden" value="<%= organization.organizationID %>" />
+          <input id="licence--organizationID" name="organizationID" type="hidden" value="<%= (organization ? organization.organizationID : "") %>" />
           <label class="label" for="licence--organizationName">Organization</label>
           <div class="field has-addons">
             <div class="control has-icons-left is-expanded">
-              <input class="input is-readonly" id="licence--organizationName" type="text" value="<%= organization.organizationName %>" readonly required />
+              <input class="input is-readonly" id="licence--organizationName" type="text" value="<%= (organization ? organization.organizationName : "") %>" readonly required />
               <span class="icon is-left">
                 <i class="fas fa-users" aria-hidden="true"></i>
               </span>
@@ -231,7 +231,7 @@
               <label class="label" for="licence--licenceTypeKey">Licence Type</label>
               <div class="control">
                 <div class="select is-fullwidth">
-                  <select class="is-readonly" id="licence--licenceTypeKey" name="licenceTypeKey" required <%= (isCreate ? "" : " readonly") %>>
+                  <select <%= (isCreate ? "" : "class=\"is-readonly\"") %> id="licence--licenceTypeKey" name="licenceTypeKey" required <%= (isCreate ? "" : " readonly") %>>
                     <option value="">(Select a Licence Type)</option>
                     <%
                       const licenceTypes = configFns.getProperty("licenceTypes");
@@ -876,10 +876,6 @@
 
 
 <%- include('_footerA'); -%>
-
-<script>
-  const config_licenceTypes = <%- JSON.stringify(configFns.getProperty("licenceTypes")) %>;
-</script>
 
 <script src="/javascripts/licence-edit.min.js"></script>
 
