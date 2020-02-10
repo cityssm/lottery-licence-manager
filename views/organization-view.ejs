@@ -12,7 +12,7 @@
   <div class="message is-danger">
     <div class="message-body">
       <p class="is-size-5 has-text-weight-bold">This organization has been deleted.</p>
-      <% if (user.userProperties.canUpdate === "true") { %>
+      <% if (user.userProperties.canUpdate) { %>
         <div class="columns">
           <div class="column">
             You have the option to restore this organization, and make it available for licences again.
@@ -204,7 +204,7 @@
 
 <%- include('_footerA'); -%>
 
-<% if (organization.recordDelete_timeMillis && user.userProperties.canUpdate === "true") { %>
+<% if (organization.recordDelete_timeMillis && user.userProperties.canUpdate) { %>
   <script src="/javascripts/organization-view.min.js"></script>
 <% } %>
 

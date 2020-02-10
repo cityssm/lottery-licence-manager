@@ -20,8 +20,8 @@ function getUser(userNameSubmitted, passwordPlain) {
             }
             if (adminPasswordPlain === passwordPlain) {
                 const userProperties = Object.assign({}, configFns.getProperty("user.defaultProperties"));
-                userProperties.isAdmin = "true";
-                userProperties.isDefaultAdmin = "true";
+                userProperties.isAdmin = true;
+                userProperties.isDefaultAdmin = true;
                 return {
                     userName: userNameSubmitted,
                     userProperties: userProperties
@@ -44,14 +44,24 @@ function getUser(userNameSubmitted, passwordPlain) {
         return null;
     }
     const userProperties = Object.assign({}, configFns.getProperty("user.defaultProperties"));
-    userProperties.isDefaultAdmin = "false";
+    userProperties.isDefaultAdmin = false;
     const userPropertyRows = db.prepare("select propertyName, propertyValue" +
         " from UserProperties" +
         " where userName = ?")
         .all(databaseUserName);
     for (let userPropertyIndex = 0; userPropertyIndex < userPropertyRows.length; userPropertyIndex += 1) {
-        userProperties[userPropertyRows[userPropertyIndex].propertyName] =
-            userPropertyRows[userPropertyIndex].propertyValue;
+        const propertyName = userPropertyRows[userPropertyIndex].propertyName;
+        const propertyValue = userPropertyRows[userPropertyIndex].propertyValue;
+        switch (propertyName) {
+            case "canCreate":
+            case "canUpdate":
+            case "isAdmin":
+                userProperties[propertyName] = (propertyValue === "true");
+                break;
+            default:
+                userProperties[propertyName] = propertyValue;
+                break;
+        }
     }
     db.close();
     return {

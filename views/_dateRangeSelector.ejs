@@ -2,7 +2,7 @@
   let uid = configFns.getUID();
 %>
 <div class="columns is-date-range-selector" data-field-key="<%= fieldKey %>" data-uid="<%= uid %>">
-  <div class="column">
+  <div class="column is-hidden-print">
     <div class="field" data-field="rangeType">
       <label class="label" for="rangeType--<%= uid %>"><%= fieldName %> Range Type</label>
       <div class="control">
@@ -19,7 +19,10 @@
   </div>
   <div class="column">
     <div class="field" data-field="range">
-      <label class="label" for="range--<%= uid %>">Range</label>
+      <label class="label" for="range--<%= uid %>">
+        <span class="is-hidden-screen"><%= fieldName %></span>
+        Range
+      </label>
       <div class="control">
         <div class="select is-fullwidth">
           <select class="is-readonly" id="range--<%= uid %>" readonly>
@@ -57,7 +60,7 @@
     <div class="field" data-field="start">
       <label class="label" for="start--<%= uid %>">Start Date</label>
       <div class="control">
-        <input class="input" id="start--<%= uid %>" name="<%= fieldKey %>StartString" type="date" value="<%= startValue %>" required />
+        <input class="input" id="start--<%= uid %>" name="<%= fieldKey %>StartString" type="date" value="<%= startValue %>" min="<%= yearMin %>-01-01" required />
       </div>
     </div>
   </div>
@@ -65,7 +68,7 @@
     <div class="field" data-field="end">
       <label class="label" for="end--<%= uid %>">End Date</label>
       <div class="control">
-        <input class="input" id="end--<%= uid %>" name="<%= fieldKey %>EndString" type="date" value="<%= endValue %>" required />
+        <input class="input" id="end--<%= uid %>" name="<%= fieldKey %>EndString" type="date" value="<%= endValue %>" min="<%= startValue %>" required />
       </div>
     </div>
   </div>

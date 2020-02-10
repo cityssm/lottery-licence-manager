@@ -37,9 +37,9 @@ export function getUser(userNameSubmitted: string, passwordPlain: string): User 
 
       if (adminPasswordPlain === passwordPlain) {
 
-        const userProperties = Object.assign({}, configFns.getProperty("user.defaultProperties"));
-        userProperties.isAdmin = "true";
-        userProperties.isDefaultAdmin = "true";
+        const userProperties : UserProperties = Object.assign({}, configFns.getProperty("user.defaultProperties"));
+        userProperties.isAdmin = true;
+        userProperties.isDefaultAdmin = true;
 
         return {
           userName: userNameSubmitted,
@@ -84,7 +84,7 @@ export function getUser(userNameSubmitted: string, passwordPlain: string): User 
   const userProperties: UserProperties =
     Object.assign({}, configFns.getProperty("user.defaultProperties"));
 
-  userProperties.isDefaultAdmin = "false";
+  userProperties.isDefaultAdmin = false;
 
   const userPropertyRows = db.prepare("select propertyName, propertyValue" +
     " from UserProperties" +
@@ -93,8 +93,23 @@ export function getUser(userNameSubmitted: string, passwordPlain: string): User 
 
   for (let userPropertyIndex = 0; userPropertyIndex < userPropertyRows.length; userPropertyIndex += 1) {
 
-    userProperties[userPropertyRows[userPropertyIndex].propertyName] =
-      userPropertyRows[userPropertyIndex].propertyValue;
+    const propertyName: string = userPropertyRows[userPropertyIndex].propertyName;
+    const propertyValue: string = userPropertyRows[userPropertyIndex].propertyValue;
+
+    switch (propertyName) {
+
+      case "canCreate":
+      case "canUpdate":
+      case "isAdmin":
+
+        userProperties[propertyName] = (propertyValue === "true");
+        break;
+
+      default:
+
+        userProperties[propertyName] = propertyValue;
+        break;
+    }
 
   }
 

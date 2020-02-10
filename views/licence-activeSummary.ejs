@@ -1,0 +1,45 @@
+<%- include('_header'); -%>
+
+<div class="columns is-block-print">
+  <div class="column is-3 is-hidden-print">
+    <%- include("_sideMenu-licences"); -%>
+  </div>
+  <div class="column is-block-print">
+    <nav class="breadcrumb">
+      <ul>
+        <li><a href="/dashboard">Home</a></li>
+        <li><a href="/licences">Licences</a></li>
+        <li class="is-active"><a href="#" aria-current="page">Active Licence Summary</a></li>
+      </ul>
+    </nav>
+
+    <h1 class="title is-1">
+      Active Licence Summary
+    </h1>
+
+
+    <form class="is-block-print" id="form--activeSummary">
+
+      <%- include('_dateRangeSelector', {
+        fieldKey: "startEndDate",
+        fieldName: "Active Date",
+        yearMin: startYearMin,
+        startValue: startDateStartString,
+        endValue: startDateEndString
+      }); -%>
+
+    </form>
+
+    <div class="has-margin-top-20" id="container--activeSummary"></div>
+
+  </div>
+</div>
+
+<%- include('_footerA'); -%>
+
+<script>
+  llm.config_licenceTypes = <%- JSON.stringify(configFns.getLicenceTypeKeyToNameObject()) %>;
+</script>
+<script src="/javascripts/licence-activeSummary.min.js"></script>
+
+<%- include('_footerB'); -%>

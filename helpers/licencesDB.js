@@ -5,6 +5,7 @@ const dbPath = "data/licences.db";
 const configFns = require("./configFns");
 const dateTimeFns = require("./dateTimeFns");
 function canUpdateObject(obj, reqSession) {
+    const userProperties = reqSession.user.userProperties;
     let canUpdate = false;
     if (!reqSession) {
         canUpdate = false;
@@ -12,10 +13,10 @@ function canUpdateObject(obj, reqSession) {
     else if (obj.recordDelete_timeMillis) {
         canUpdate = false;
     }
-    else if (reqSession.user.userProperties.canUpdate === "true") {
+    else if (userProperties.canUpdate) {
         canUpdate = true;
     }
-    else if (reqSession.user.userProperties.canCreate === "true" &&
+    else if (userProperties.canCreate &&
         (obj.recordCreate_userName === reqSession.user.userName ||
             obj.recordUpdate_userName === reqSession.user.userName) &&
         obj.recordUpdate_timeMillis + configFns.getProperty("user.createUpdateWindowMillis") > Date.now()) {
@@ -834,7 +835,9 @@ function deleteOrganizationBankRecord(organizationID, recordIndex, reqSession) {
 }
 exports.deleteOrganizationBankRecord = deleteOrganizationBankRecord;
 let licenceTableStats = {
-    applicationYearMin: 1970
+    applicationYearMin: 1990,
+    startYearMin: 1990,
+    endYearMax: new Date().getFullYear() + 1
 };
 let licenceTableStatsExpiryMillis = -1;
 function getLicenceTableStats() {
@@ -845,7 +848,9 @@ function getLicenceTableStats() {
         readonly: true
     });
     licenceTableStats = db.prepare("select" +
-        " min(applicationDate / 10000) as applicationYearMin" +
+        " min(applicationDate / 10000) as applicationYearMin," +
+        " min(startDate / 10000) as startYearMin," +
+        " max(endDate / 10000) as endYearMax" +
         " from LotteryLicences" +
         " where recordDelete_timeMillis is null")
         .get();
@@ -1478,6 +1483,45 @@ function getLicenceTypeSummary(reqBody) {
     return rows;
 }
 exports.getLicenceTypeSummary = getLicenceTypeSummary;
+function getActiveLicenceSummary(reqBody, reqSession) {
+    const addCalculatedFieldsFn = function (ele) {
+        ele.recordType = "licence";
+        ele.startDateString = dateTimeFns.dateIntegerToString(ele.startDate || 0);
+        ele.endDateString = dateTimeFns.dateIntegerToString(ele.endDate || 0);
+        ele.issueDateString = dateTimeFns.dateIntegerToString(ele.issueDate || 0);
+        ele.locationDisplayName =
+            (ele.locationName === "" ? ele.locationAddress1 : ele.locationName);
+        ele.canUpdate = canUpdateObject(ele, reqSession);
+    };
+    const db = sqlite(dbPath, {
+        readonly: true
+    });
+    const startEndDateStart = dateTimeFns.dateStringToInteger(reqBody.startEndDateStartString);
+    const startEndDateEnd = dateTimeFns.dateStringToInteger(reqBody.startEndDateEndString);
+    let sql = "select l.licenceID, l.externalLicenceNumber," +
+        " l.issueDate, l.startDate, l.endDate, l.licenceTypeKey," +
+        " o.organizationID, o.organizationName," +
+        " lo.locationID, lo.locationName, lo.locationAddress1," +
+        " l.recordCreate_userName, l.recordCreate_timeMillis, l.recordUpdate_userName, l.recordUpdate_timeMillis" +
+        " from LotteryLicences l" +
+        " left join Organizations o on l.organizationID = o.organizationID" +
+        " left join Locations lo on l.locationID = lo.locationID" +
+        " where l.recordDelete_timeMillis is null" +
+        " and l.issueDate is not null" +
+        " and (" +
+        "(l.startDate <= ? and l.endDate >= ?)" +
+        " or (l.startDate <= ? and l.endDate >= ?)" +
+        " or (l.startDate >= ? and l.endDate <= ?)" +
+        ")";
+    const sqlParams = [startEndDateStart, startEndDateStart,
+        startEndDateEnd, startEndDateEnd,
+        startEndDateStart, startEndDateEnd];
+    const rows = db.prepare(sql).all(sqlParams);
+    db.close();
+    rows.forEach(addCalculatedFieldsFn);
+    return rows;
+}
+exports.getActiveLicenceSummary = getActiveLicenceSummary;
 function addTransaction(reqBody, reqSession) {
     const db = sqlite(dbPath);
     const licenceObj = getLicenceWithDB(db, reqBody.licenceID, reqSession, {
@@ -1635,12 +1679,21 @@ function getOutstandingEvents(reqBody, reqSession) {
         " and l.recordDelete_timeMillis is null" +
         (" and (" +
             "e.reportDate is null or e.reportDate = 0" +
-            " or e.bank_name is null or e.bank_name = ''" +
-            " or e.costs_receipts is null or e.costs_receipts = 0" +
             ")");
     if (reqBody.licenceTypeKey && reqBody.licenceTypeKey !== "") {
         sql += " and l.licenceTypeKey = ?";
         sqlParams.push(reqBody.licenceTypeKey);
+    }
+    if (reqBody.eventDateType) {
+        const currentDate = dateTimeFns.dateToInteger(new Date());
+        if (reqBody.eventDateType === "past") {
+            sql += " and e.eventDate < ?";
+            sqlParams.push(currentDate);
+        }
+        else if (reqBody.eventDateType === "upcoming") {
+            sql += " and e.eventDate >= ?";
+            sqlParams.push(currentDate);
+        }
     }
     sql += " order by o.organizationName, o.organizationID, e.eventDate, l.licenceID";
     const rows = db.prepare(sql).all(sqlParams);

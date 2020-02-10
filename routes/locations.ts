@@ -30,7 +30,7 @@ router.post("/doGetLocations", function(req, res) {
 
 router.post("/doCreate", function(req, res) {
 
-  if (req.session.user.userProperties.canCreate !== "true") {
+  if (!req.session.user.userProperties.canCreate) {
 
     res
       .status(403)
@@ -56,7 +56,7 @@ router.post("/doCreate", function(req, res) {
 
 router.post("/doUpdate", function(req, res) {
 
-  if (req.session.user.userProperties.canCreate !== "true") {
+  if (!req.session.user.userProperties.canCreate) {
 
     res
       .status(403)
@@ -91,7 +91,7 @@ router.post("/doUpdate", function(req, res) {
 
 router.post("/doDelete", function(req, res) {
 
-  if (req.session.user.userProperties.canCreate !== "true") {
+  if (!req.session.user.userProperties.canCreate) {
 
     res
       .status(403)
@@ -127,7 +127,7 @@ router.post("/doDelete", function(req, res) {
 
 router.post("/doRestore", function(req, res) {
 
-  if (req.session.user.userProperties.canUpdate !== "true") {
+  if (!req.session.user.userProperties.canUpdate) {
 
     res
       .status(403)
@@ -163,7 +163,7 @@ router.post("/doRestore", function(req, res) {
 
 router.post("/doMerge", function(req, res) {
 
-  if (req.session.user.userProperties.isAdmin !== "true") {
+  if (!req.session.user.userProperties.isAdmin) {
 
     res
       .status(403)
@@ -190,7 +190,7 @@ router.post("/doMerge", function(req, res) {
 
 router.get("/new", function(req, res) {
 
-  if (req.session.user.userProperties.canCreate !== "true") {
+  if (!req.session.user.userProperties.canCreate) {
 
     res.redirect("/locations/?error=accessDenied-noCreate");
     return;
@@ -246,7 +246,7 @@ router.get("/:locationID/edit", function(req, res) {
 
   const locationID = parseInt(req.params.locationID);
 
-  if (req.session.user.userProperties.canCreate !== "true") {
+  if (!req.session.user.userProperties.canCreate) {
 
     res.redirect("/locations/" + locationID + "/?error=accessDenied-noCreate");
     return;

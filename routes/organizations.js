@@ -35,7 +35,7 @@ router.post("/doGetRemark", function (req, res) {
     res.json(licencesDB.getOrganizationRemark(organizationID, remarkIndex, req.session));
 });
 router.post("/doAddRemark", function (req, res) {
-    if (req.session.user.userProperties.canCreate !== "true") {
+    if (!req.session.user.userProperties.canCreate) {
         res
             .status(403)
             .json({
@@ -52,7 +52,7 @@ router.post("/doAddRemark", function (req, res) {
     });
 });
 router.post("/doEditRemark", function (req, res) {
-    if (req.session.user.userProperties.canCreate !== "true") {
+    if (!req.session.user.userProperties.canCreate) {
         res
             .status(403)
             .json({
@@ -76,7 +76,7 @@ router.post("/doEditRemark", function (req, res) {
     }
 });
 router.post("/doDeleteRemark", function (req, res) {
-    if (req.session.user.userProperties.canCreate !== "true") {
+    if (!req.session.user.userProperties.canCreate) {
         res
             .status(403)
             .json({
@@ -112,7 +112,7 @@ router.post("/doGetBankRecordStats", function (req, res) {
     res.json(licencesDB.getOrganizationBankRecordStats(organizationID));
 });
 router.post("/doAddBankRecord", function (req, res) {
-    if (req.session.user.userProperties.canCreate !== "true") {
+    if (!req.session.user.userProperties.canCreate) {
         res
             .status(403)
             .json({
@@ -136,7 +136,7 @@ router.post("/doAddBankRecord", function (req, res) {
     }
 });
 router.post("/doEditBankRecord", function (req, res) {
-    if (req.session.user.userProperties.canCreate !== "true") {
+    if (!req.session.user.userProperties.canCreate) {
         res
             .status(403)
             .json({
@@ -160,7 +160,7 @@ router.post("/doEditBankRecord", function (req, res) {
     }
 });
 router.post("/doDeleteBankRecord", function (req, res) {
-    if (req.session.user.userProperties.canCreate !== "true") {
+    if (!req.session.user.userProperties.canCreate) {
         res
             .status(403)
             .json({
@@ -184,7 +184,7 @@ router.post("/doDeleteBankRecord", function (req, res) {
     }
 });
 router.get("/new", function (req, res) {
-    if (req.session.user.userProperties.canCreate !== "true") {
+    if (!req.session.user.userProperties.canCreate) {
         res.redirect("/organizations/?error=accessDenied");
         return;
     }
@@ -198,7 +198,7 @@ router.get("/new", function (req, res) {
     });
 });
 router.post("/doSave", function (req, res) {
-    if (req.session.user.userProperties.canCreate !== "true") {
+    if (!req.session.user.userProperties.canCreate) {
         res
             .status(403)
             .json({
@@ -231,7 +231,7 @@ router.post("/doSave", function (req, res) {
     }
 });
 router.post("/doDelete", function (req, res) {
-    if (req.session.user.userProperties.canCreate !== "true") {
+    if (!req.session.user.userProperties.canCreate) {
         res
             .status(403)
             .json({
@@ -255,7 +255,7 @@ router.post("/doDelete", function (req, res) {
     }
 });
 router.post("/doRestore", function (req, res) {
-    if (req.session.user.userProperties.canUpdate !== "true") {
+    if (!req.session.user.userProperties.canUpdate) {
         res
             .status(403)
             .json({
@@ -303,7 +303,7 @@ router.get("/:organizationID", function (req, res) {
 });
 router.get("/:organizationID/edit", function (req, res) {
     const organizationID = parseInt(req.params.organizationID);
-    if (req.session.user.userProperties.canCreate !== "true") {
+    if (!req.session.user.userProperties.canCreate) {
         res.redirect("/organizations/" + organizationID + "/?error=accessDenied-noCreate");
         return;
     }
@@ -334,7 +334,7 @@ router.get("/:organizationID/edit", function (req, res) {
     });
 });
 router.post("/:organizationID/doAddOrganizationRepresentative", function (req, res) {
-    if (req.session.user.userProperties.canCreate !== "true") {
+    if (!req.session.user.userProperties.canCreate) {
         res
             .status(403)
             .json({
@@ -358,7 +358,7 @@ router.post("/:organizationID/doAddOrganizationRepresentative", function (req, r
     }
 });
 router.post("/:organizationID/doEditOrganizationRepresentative", function (req, res) {
-    if (req.session.user.userProperties.canCreate !== "true") {
+    if (!req.session.user.userProperties.canCreate) {
         res
             .status(403)
             .json({
@@ -382,7 +382,7 @@ router.post("/:organizationID/doEditOrganizationRepresentative", function (req, 
     }
 });
 router.post("/:organizationID/doDeleteOrganizationRepresentative", function (req, res) {
-    if (req.session.user.userProperties.canCreate !== "true") {
+    if (!req.session.user.userProperties.canCreate) {
         res
             .status(403)
             .json({
@@ -399,7 +399,7 @@ router.post("/:organizationID/doDeleteOrganizationRepresentative", function (req
     });
 });
 router.post("/:organizationID/doSetDefaultRepresentative", function (req, res) {
-    if (req.session.user.userProperties.canCreate !== "true") {
+    if (!req.session.user.userProperties.canCreate) {
         res
             .status(403)
             .json({

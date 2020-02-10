@@ -2,8 +2,6 @@
 
 (function() {
 
-  const licenceTypes = llm.arrayToObject(llm.config_licenceTypes, "licenceTypeKey");
-
   const filterMonthEle = document.getElementById("filter--month");
   const filterYearEle = document.getElementById("filter--year");
 
@@ -45,9 +43,8 @@
           for (let eventIndex = 0; eventIndex < eventList.length; eventIndex += 1) {
 
             const eventObj = eventList[eventIndex];
-            const licenceTypeObj = licenceTypes[eventObj.licenceTypeKey];
 
-            const licenceType = licenceTypeObj ? licenceTypeObj.licenceType : eventObj.licenceTypeKey;
+            const licenceType = llm.config_licenceTypes[eventObj.licenceTypeKey] || eventObj.licenceTypeKey;
 
             if (currentDate !== eventObj.eventDate) {
 

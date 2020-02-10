@@ -12,7 +12,7 @@
   <div class="message is-danger">
     <div class="message-body">
       <p class="is-size-5 has-text-weight-bold">This location has been deleted.</p>
-      <% if (user.userProperties.canUpdate === "true") { %>
+      <% if (user.userProperties.canUpdate) { %>
         <div class="has-text-right">
           <button class="button is-danger" id="is-location-restore-button" data-location-id="<%= location.locationID %>" type="button">
             <span class="icon">
@@ -79,7 +79,7 @@
 
 <%- include('_footerA'); -%>
 
-<% if (user.userProperties.canUpdate === "true") { %>
+<% if (user.userProperties.canUpdate) { %>
   <script src="/javascripts/location-view.min.js"></script>
 <% } %>
 

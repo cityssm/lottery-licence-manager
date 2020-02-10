@@ -4,7 +4,7 @@ const router = express.Router();
 const licencesDB = require("../helpers/licencesDB");
 const usersDB = require("../helpers/usersDB");
 router.get("/applicationSettings", function (req, res) {
-    if (req.session.user.userProperties.isAdmin !== "true") {
+    if (!req.session.user.userProperties.isAdmin) {
         res.redirect("/dashboard/?error=accessDenied");
         return;
     }
@@ -15,7 +15,7 @@ router.get("/applicationSettings", function (req, res) {
     });
 });
 router.post("/doSaveApplicationSetting", function (req, res) {
-    if (req.session.user.userProperties.isAdmin !== "true") {
+    if (!req.session.user.userProperties.isAdmin) {
         res
             .status(403)
             .json({
@@ -32,7 +32,7 @@ router.post("/doSaveApplicationSetting", function (req, res) {
     });
 });
 router.get("/userManagement", function (req, res) {
-    if (req.session.user.userProperties.isAdmin !== "true") {
+    if (!req.session.user.userProperties.isAdmin) {
         res.redirect("/dashboard/?error=accessDenied");
         return;
     }
@@ -43,7 +43,7 @@ router.get("/userManagement", function (req, res) {
     });
 });
 router.post("/doCreateUser", function (req, res) {
-    if (req.session.user.userProperties.isAdmin !== "true") {
+    if (!req.session.user.userProperties.isAdmin) {
         res
             .status(403)
             .json({
@@ -67,7 +67,7 @@ router.post("/doCreateUser", function (req, res) {
     }
 });
 router.post("/doUpdateUser", function (req, res) {
-    if (req.session.user.userProperties.isAdmin !== "true") {
+    if (!req.session.user.userProperties.isAdmin) {
         res
             .status(403)
             .json({
@@ -82,7 +82,7 @@ router.post("/doUpdateUser", function (req, res) {
     });
 });
 router.post("/doUpdateUserProperty", function (req, res) {
-    if (req.session.user.userProperties.isAdmin !== "true") {
+    if (!req.session.user.userProperties.isAdmin) {
         res
             .status(403)
             .json({
@@ -97,7 +97,7 @@ router.post("/doUpdateUserProperty", function (req, res) {
     });
 });
 router.post("/doResetPassword", function (req, res) {
-    if (req.session.user.userProperties.isAdmin !== "true") {
+    if (!req.session.user.userProperties.isAdmin) {
         res
             .status(403)
             .json({
@@ -113,7 +113,7 @@ router.post("/doResetPassword", function (req, res) {
     });
 });
 router.post("/doGetUserProperties", function (req, res) {
-    if (req.session.user.userProperties.isAdmin !== "true") {
+    if (!req.session.user.userProperties.isAdmin) {
         res
             .status(403)
             .json({

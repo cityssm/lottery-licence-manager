@@ -252,6 +252,8 @@ export declare type LotteryEventStats = {
 };
 export declare type LotteryLicenceStats = {
     applicationYearMin: number;
+    startYearMin: number;
+    endYearMax: number;
 };
 export declare type TermsConditionsStat = {
     termsConditions: string;
@@ -266,9 +268,9 @@ export declare type User = {
     userProperties?: UserProperties;
 };
 export declare type UserProperties = {
-    isDefaultAdmin: string;
-    canCreate: string;
-    canUpdate: string;
-    isAdmin: string;
+    isDefaultAdmin: boolean;
+    canCreate: boolean;
+    canUpdate: boolean;
+    isAdmin: boolean;
 };
 export {};

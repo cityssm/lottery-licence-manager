@@ -65,8 +65,8 @@
           stringFns.escapeHTML(licence.organizationName) +
           "</a>" +
           "</td>" +
-        "<td>" + licence.startDateString + "</td>" +
-        "<td>" + licence.endDateString + "</td>" +
+        "<td class=\"is-nowrap\">" + licence.startDateString + "</td>" +
+        "<td class=\"is-nowrap\">" + licence.endDateString + "</td>" +
         "<td class=\"is-nowrap has-text-right is-hidden-print\">" +
           (canEdit ?
             "<a class=\"button is-small\" href=\"/licences/" + licence.licenceID + "/edit\" data-tooltip=\"Edit Licence\"><span class=\"icon\"><i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i></span><span>Edit</span></a> " :

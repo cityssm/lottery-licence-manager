@@ -41,6 +41,7 @@ export declare function pokeLicence(licenceID: number, reqSession: Express.Sessi
 export declare function issueLicence(licenceID: number, reqSession: Express.SessionData): boolean;
 export declare function unissueLicence(licenceID: number, reqSession: Express.SessionData): boolean;
 export declare function getLicenceTypeSummary(reqBody: any): any[];
+export declare function getActiveLicenceSummary(reqBody: any, reqSession: Express.SessionData): llm.LotteryLicence[];
 export declare function addTransaction(reqBody: any, reqSession: Express.SessionData): number;
 export declare function voidTransaction(licenceID: number, transactionIndex: number, reqSession: Express.SessionData): boolean;
 export declare function getEventTableStats(): llm.LotteryEventStats;

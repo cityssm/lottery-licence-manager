@@ -84,6 +84,49 @@ router.post("/doGetLicenceTypeSummary", function(req, res) {
 
 
 /*
+ * Active Licence Summary
+ */
+
+
+router.get("/activeSummary", function(_req, res) {
+
+  // Get licence table stats
+
+  const licenceTableStats: any = licencesDB.getLicenceTableStats();
+
+  // Set start dates
+
+  const startDate = new Date();
+
+  startDate.setDate(1);
+
+  const startDateStartString = dateTimeFns.dateToString(startDate);
+
+  startDate.setMonth(startDate.getMonth() + 1);
+  startDate.setDate(0);
+
+  const startDateEndString = dateTimeFns.dateToString(startDate);
+
+  // Render
+
+  res.render("licence-activeSummary", {
+    headTitle: "Active Licence Summary",
+    pageContainerIsFullWidth: true,
+    startYearMin: (licenceTableStats.startYearMin || new Date().getFullYear()),
+    startDateStartString: startDateStartString,
+    startDateEndString: startDateEndString
+  });
+
+});
+
+router.post("/doGetActiveLicenceSummary", function(req, res) {
+
+  res.json(licencesDB.getActiveLicenceSummary(req.body, req.session));
+
+});
+
+
+/*
  * Licence View / Edit
  */
 
@@ -104,7 +147,7 @@ router.get([
 
   // Check permission
 
-  if (req.session.user.userProperties.canCreate !== "true") {
+  if (!req.session.user.userProperties.canCreate) {
 
     res.redirect("/licences/?error=accessDenied");
     return;
@@ -197,7 +240,7 @@ router.post("/doGetTicketTypes", function(req, res) {
 
 router.post("/doSave", function(req, res) {
 
-  if (req.session.user.userProperties.canCreate !== "true") {
+  if (!req.session.user.userProperties.canCreate) {
 
     res
       .status(403)
@@ -246,7 +289,7 @@ router.post("/doSave", function(req, res) {
 
 router.post("/doAddTransaction", function(req, res) {
 
-  if (req.session.user.userProperties.canCreate !== "true") {
+  if (!req.session.user.userProperties.canCreate) {
 
     res
       .status(403)
@@ -271,7 +314,7 @@ router.post("/doAddTransaction", function(req, res) {
 
 router.post("/doVoidTransaction", function(req, res) {
 
-  if (req.session.user.userProperties.canCreate !== "true") {
+  if (!req.session.user.userProperties.canCreate) {
 
     res
       .status(403)
@@ -307,7 +350,7 @@ router.post("/doVoidTransaction", function(req, res) {
 
 router.post("/doIssueLicence", function(req, res) {
 
-  if (req.session.user.userProperties.canCreate !== "true") {
+  if (!req.session.user.userProperties.canCreate) {
 
     res
       .status(403)
@@ -343,7 +386,7 @@ router.post("/doIssueLicence", function(req, res) {
 
 router.post("/doUnissueLicence", function(req, res) {
 
-  if (req.session.user.userProperties.canCreate !== "true") {
+  if (!req.session.user.userProperties.canCreate) {
 
     res
       .status(403)
@@ -378,7 +421,7 @@ router.post("/doUnissueLicence", function(req, res) {
 
 router.post("/doDelete", function(req, res) {
 
-  if (req.session.user.userProperties.canCreate !== "true") {
+  if (!req.session.user.userProperties.canCreate) {
 
     res
       .status(403)
@@ -451,7 +494,7 @@ router.get("/:licenceID/edit", function(req, res) {
 
   const licenceID = parseInt(req.params.licenceID);
 
-  if (req.session.user.userProperties.canCreate !== "true") {
+  if (!req.session.user.userProperties.canCreate) {
 
     res.redirect("/licences/" + licenceID + "/?error=accessDenied");
     return;
@@ -563,7 +606,7 @@ router.get("/:licenceID/poke", function(req, res) {
 
   const licenceID = parseInt(req.params.licenceID);
 
-  if (req.session.user.userProperties.isAdmin === "true") {
+  if (req.session.user.userProperties.isAdmin) {
 
     licencesDB.pokeLicence(licenceID, req.session);
 

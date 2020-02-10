@@ -6,7 +6,7 @@ const licencesDB = require("../helpers/licencesDB");
 router.get("/", function (_req, res) {
     const eventTableStats = licencesDB.getEventTableStats();
     res.render("event-search", {
-        headTitle: "Event Calendar",
+        headTitle: "Events By Month",
         eventTableStats: eventTableStats
     });
 });
@@ -44,7 +44,7 @@ router.post("/doGetFinancialSummary", function (req, res) {
     res.json(summary);
 });
 router.post("/doSave", function (req, res) {
-    if (req.session.user.userProperties.canUpdate !== "true") {
+    if (!req.session.user.userProperties.canUpdate) {
         res
             .status(403)
             .json({
@@ -68,7 +68,7 @@ router.post("/doSave", function (req, res) {
     }
 });
 router.post("/doDelete", function (req, res) {
-    if (req.session.user.userProperties.canUpdate !== "true") {
+    if (!req.session.user.userProperties.canUpdate) {
         res
             .status(403)
             .json({
@@ -119,7 +119,7 @@ router.get("/:licenceID/:eventDate", function (req, res) {
 router.get("/:licenceID/:eventDate/edit", function (req, res) {
     const licenceID = parseInt(req.params.licenceID);
     const eventDate = parseInt(req.params.eventDate);
-    if (req.session.user.userProperties.canUpdate !== "true") {
+    if (!req.session.user.userProperties.canUpdate) {
         res.redirect("/events/" + licenceID + "/" + eventDate + "/?error=accessDenied");
         return;
     }
@@ -144,7 +144,7 @@ router.get("/:licenceID/:eventDate/edit", function (req, res) {
 router.get("/:licenceID/:eventDate/poke", function (req, res) {
     const licenceID = parseInt(req.params.licenceID);
     const eventDate = parseInt(req.params.eventDate);
-    if (req.session.user.userProperties.isAdmin === "true") {
+    if (req.session.user.userProperties.isAdmin) {
         licencesDB.pokeEvent(licenceID, eventDate, req.session);
     }
     res.redirect("/events/" + licenceID + "/" + eventDate);

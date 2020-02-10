@@ -2,7 +2,7 @@
   <div class="panel-heading">
     Organizations
   </div>
-  <% if (user.userProperties.canCreate === "true") { %>
+  <% if (user.userProperties.canCreate) { %>
     <div class="panel-block">
       <a class="button is-primary is-fullwidth" href="/organizations/new">
         <span class="icon is-small">

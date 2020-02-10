@@ -95,5 +95,6 @@
   getOutstandingEvents();
 
   document.getElementById("filter--licenceTypeKey").addEventListener("change", getOutstandingEvents);
+  document.getElementById("filter--eventDateType").addEventListener("change", getOutstandingEvents);
 
 }());

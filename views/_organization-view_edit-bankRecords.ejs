@@ -6,7 +6,7 @@
       </div>
       <div class="level-right has-text-weight-normal is-hidden-print">
         <div class="field is-grouped justify-flex-end">
-          <% if (user.userProperties.canCreate === "true") { %>
+          <% if (user.userProperties.canCreate) { %>
             <div class="control">
               <button class="button is-small is-primary is-hidden-status-view" id="is-add-bank-record-button" type="button">
                 <span class="icon">

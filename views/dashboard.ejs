@@ -16,7 +16,7 @@
   <% } %>
 </div>
 
-<% if (user.userProperties.isDefaultAdmin === "true") { %>
+<% if (user.userProperties.isDefaultAdmin) { %>
   <div class="message is-danger">
     <p class="message-body">
       <strong>You are currently logged into the admin user account using credentials in your config.js file.</strong><br />
@@ -48,7 +48,7 @@
           </span>
           <span>Find</span>
         </a>
-        <% if (user.userProperties.canCreate === "true") { %>
+        <% if (user.userProperties.canCreate) { %>
           <a class="card-footer-item" href="/organizations/new">
             <span class="icon">
               <i class="fas fa-plus" aria-hidden="true"></i>
@@ -81,7 +81,7 @@
           </span>
           <span>Find</span>
         </a>
-        <% if (user.userProperties.canCreate === "true") { %>
+        <% if (user.userProperties.canCreate) { %>
           <a class="card-footer-item" href="/locations/new">
             <span class="icon">
               <i class="fas fa-plus" aria-hidden="true"></i>
@@ -116,7 +116,7 @@
           </span>
           <span>Find</span>
         </a>
-        <% if (user.userProperties.canCreate === "true") { %>
+        <% if (user.userProperties.canCreate) { %>
           <a class="card-footer-item" href="/licences/new">
             <span class="icon">
               <i class="fas fa-plus" aria-hidden="true"></i>
@@ -213,7 +213,7 @@
   </div>
 </div>
 
-<% if (user.userProperties.isAdmin === "true") { %>
+<% if (user.userProperties.isAdmin) { %>
   <h2 class="title is-3">Administrator Tools</h2>
 
   <div class="columns">

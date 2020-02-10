@@ -20,9 +20,9 @@ const configFallbackValues = {
     "admin.defaultPassword": "",
     "user.createUpdateWindowMillis": 60 * 60 * 1000,
     "user.defaultProperties": {
-        canCreate: "false",
-        canUpdate: "false",
-        isAdmin: "false"
+        canCreate: false,
+        canUpdate: false,
+        isAdmin: false
     },
     "defaults.city": "",
     "defaults.province": "",
@@ -72,6 +72,7 @@ function getProperty(propertyName) {
 }
 exports.getProperty = getProperty;
 const licenceTypeCache = {};
+let licenceTypeKeyNameObject = {};
 function getLicenceType(licenceTypeKey) {
     if (!licenceTypeCache[licenceTypeKey]) {
         licenceTypeCache[licenceTypeKey] =
@@ -82,6 +83,20 @@ function getLicenceType(licenceTypeKey) {
     return licenceTypeCache[licenceTypeKey];
 }
 exports.getLicenceType = getLicenceType;
+function getLicenceTypeKeyToNameObject() {
+    if (Object.keys(licenceTypeKeyNameObject).length === 0) {
+        let list = {};
+        getProperty("licenceTypes").forEach(function (ele) {
+            if (ele.isActive) {
+                list[ele.licenceTypeKey] = ele.licenceType;
+            }
+        });
+        licenceTypeKeyNameObject = list;
+    }
+    return licenceTypeKeyNameObject;
+}
+exports.getLicenceTypeKeyToNameObject = getLicenceTypeKeyToNameObject;
+;
 let uid = Date.now();
 function getUID() {
     const toReturn = uid;

@@ -334,7 +334,9 @@ export type LotteryEventStats = {
 };
 
 export type LotteryLicenceStats = {
-  applicationYearMin: number
+  applicationYearMin: number,
+  startYearMin: number,
+  endYearMax: number
 };
 
 export type TermsConditionsStat = {
@@ -358,8 +360,8 @@ export type User = {
 };
 
 export type UserProperties = {
-  isDefaultAdmin: string,
-  canCreate: string,
-  canUpdate: string,
-  isAdmin: string
+  isDefaultAdmin: boolean,
+  canCreate: boolean,
+  canUpdate: boolean,
+  isAdmin: boolean
 };

@@ -43,9 +43,9 @@ const configFallbackValues = {
 
   "user.createUpdateWindowMillis": 60 * 60 * 1000,
   "user.defaultProperties": {
-    canCreate: "false",
-    canUpdate: "false",
-    isAdmin: "false"
+    canCreate: false,
+    canUpdate: false,
+    isAdmin: false
   },
 
   "defaults.city": "",
@@ -123,6 +123,7 @@ export function getProperty(propertyName: string): any {
  */
 
 const licenceTypeCache = {};
+let licenceTypeKeyNameObject = {};
 
 export function getLicenceType(licenceTypeKey: string): Config_LicenceType {
 
@@ -140,6 +141,27 @@ export function getLicenceType(licenceTypeKey: string): Config_LicenceType {
   return licenceTypeCache[licenceTypeKey];
 
 }
+
+export function getLicenceTypeKeyToNameObject() {
+
+  if (Object.keys(licenceTypeKeyNameObject).length === 0) {
+
+    let list = {};
+
+    getProperty("licenceTypes").forEach(function(ele: Config_LicenceType) {
+
+      if (ele.isActive) {
+        list[ele.licenceTypeKey] = ele.licenceType;
+      }
+
+    });
+
+    licenceTypeKeyNameObject = list;
+  }
+
+  return licenceTypeKeyNameObject;
+
+};
 
 
 /*

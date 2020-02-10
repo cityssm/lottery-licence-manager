@@ -13,7 +13,7 @@
       Find a Location
     </h1>
   </div>
-  <% if (user.userProperties.canCreate === "true") { %>
+  <% if (user.userProperties.canCreate) { %>
     <div class="level-right has-text-right is-hidden-print">
       <a class="button is-primary" href="/locations/new">
         <span class="icon is-small">

@@ -30,6 +30,10 @@ html.is-fullwidth {
     left: 0;
     z-index: 5;
   }
+
+  .is-hidden-screen {
+    display: none !important;
+  }
 }
 
 @media screen and (min-width: 769px), print {

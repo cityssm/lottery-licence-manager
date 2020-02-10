@@ -93,14 +93,17 @@ llm.initializeDateRangeSelector = function(containerEle, changeFn) {
 
     }
 
+    let startDateString = "";
+    let endDateString = "";
+
     const range = rangeValue.split("-");
 
     if (range.length === 1) {
 
       // Year
 
-      startDateEle.value = range[0] + "-01-01";
-      endDateEle.value = range[0] + "-12-31";
+      startDateString = range[0] + "-01-01";
+      endDateString = range[0] + "-12-31";
 
     } else if (range[1] === "q") {
 
@@ -108,11 +111,11 @@ llm.initializeDateRangeSelector = function(containerEle, changeFn) {
 
       const jsQuarterStartMonth = (range[2] - 1) * 3;
 
-      startDateEle.value = range[0] + "-" + ("0" + (jsQuarterStartMonth + 1)).slice(-2) + "-01";
+      startDateString = range[0] + "-" + ("0" + (jsQuarterStartMonth + 1)).slice(-2) + "-01";
 
       const endDate = new Date(range[0], jsQuarterStartMonth + 3, 0);
 
-      endDateEle.value = range[0] + "-" + ("0" + (endDate.getMonth() + 1)).slice(-2) + "-" + endDate.getDate();
+      endDateString = range[0] + "-" + ("0" + (endDate.getMonth() + 1)).slice(-2) + "-" + endDate.getDate();
 
     } else {
 
@@ -120,13 +123,17 @@ llm.initializeDateRangeSelector = function(containerEle, changeFn) {
 
       const jsQuarterStartMonth = (range[1] - 1);
 
-      startDateEle.value = range[0] + "-" + ("0" + (jsQuarterStartMonth + 1)).slice(-2) + "-01";
+      startDateString = range[0] + "-" + ("0" + (jsQuarterStartMonth + 1)).slice(-2) + "-01";
 
       const endDate = new Date(range[0], jsQuarterStartMonth + 1, 0);
 
-      endDateEle.value = range[0] + "-" + ("0" + (endDate.getMonth() + 1)).slice(-2) + "-" + endDate.getDate();
+      endDateString = range[0] + "-" + ("0" + (endDate.getMonth() + 1)).slice(-2) + "-" + endDate.getDate();
 
     }
+
+    startDateEle.value = startDateString;
+    endDateEle.setAttribute("min", startDateString);
+    endDateEle.value = endDateString;
 
     if (changeFn) {
 
@@ -213,7 +220,13 @@ llm.initializeDateRangeSelector = function(containerEle, changeFn) {
 
   rangeSelectEle.addEventListener("change", setStartEndDatesFromRange);
 
-  startDateEle.addEventListener("change", changeFn);
+  startDateEle.addEventListener("change", function() {
+
+    endDateEle.setAttribute("min", startDateEle.value);
+    changeFn();
+
+  });
+
   endDateEle.addEventListener("change", changeFn);
 
 };
