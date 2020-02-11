@@ -5,7 +5,6 @@ const router = express.Router();
 
 import * as configFns from "../helpers/configFns";
 import * as dateTimeFns from "../helpers/dateTimeFns";
-import * as stringFns from "../helpers/stringFns";
 
 import * as licencesDB from "../helpers/licencesDB";
 
@@ -204,7 +203,6 @@ router.get("/new", function(req, res) {
       locationProvince: configFns.getProperty("defaults.province")
     },
     currentDateInteger: dateTimeFns.dateToInteger(new Date()),
-    stringFns: stringFns,
     isCreate: true
   });
 
@@ -228,15 +226,14 @@ router.get("/:locationID", function(req, res) {
     locationID: locationID
   }, req.session, {
     includeOrganization: true,
-    useLimit: false
-  });
+    limit: -1
+  }).licences;
 
   res.render("location-view", {
     headTitle: location.locationDisplayName,
     location: location,
     licences: licences,
-    currentDateInteger: dateTimeFns.dateToInteger(new Date()),
-    stringFns: stringFns
+    currentDateInteger: dateTimeFns.dateToInteger(new Date())
   });
 
 });
@@ -273,15 +270,14 @@ router.get("/:locationID/edit", function(req, res) {
     locationID: locationID
   }, req.session, {
     includeOrganization: true,
-    useLimit: false
-  }) || [];
+    limit: -1
+  }).licences;
 
   res.render("location-edit", {
     headTitle: location.locationDisplayName,
     location: location,
     licences: licences,
     currentDateInteger: dateTimeFns.dateToInteger(new Date()),
-    stringFns: stringFns,
     isCreate: false
   });
 

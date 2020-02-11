@@ -57,7 +57,10 @@
           <div class="field">
             <label class="label" for="organization--organizationProvince">Province</label>
             <div class="control">
-              <input class="input" id="organization--organizationProvince" name="organizationProvince" type="text" value="<%= organization.organizationProvince %>" maxlength="2" autocomplete="off" />
+              <input class="input" id="organization--organizationProvince" name="organizationProvince" type="text" value="<%= organization.organizationProvince %>" maxlength="2" autocomplete="off" list="organization--organizationProvince-datalist" />
+              <datalist id="organization--organizationProvince-datalist">
+                <option value="<%= configFns.getProperty("defaults.province") %>" />
+              </datalist>
             </div>
           </div>
         </div>

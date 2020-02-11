@@ -3,7 +3,6 @@ const express = require("express");
 const router = express.Router();
 const configFns = require("../helpers/configFns");
 const dateTimeFns = require("../helpers/dateTimeFns");
-const stringFns = require("../helpers/stringFns");
 const licencesDB = require("../helpers/licencesDB");
 router.get("/", function (_req, res) {
     res.render("organization-search", {
@@ -289,16 +288,15 @@ router.get("/:organizationID", function (req, res) {
         organizationID: organizationID
     }, req.session, {
         includeOrganization: false,
-        useLimit: false
-    }) || [];
+        limit: -1
+    }).licences || [];
     const remarks = licencesDB.getOrganizationRemarks(organizationID, req.session) || [];
     res.render("organization-view", {
         headTitle: organization.organizationName,
         organization: organization,
         licences: licences,
         remarks: remarks,
-        currentDateInteger: dateTimeFns.dateToInteger(new Date()),
-        stringFns: stringFns
+        currentDateInteger: dateTimeFns.dateToInteger(new Date())
     });
 });
 router.get("/:organizationID/edit", function (req, res) {
@@ -320,8 +318,8 @@ router.get("/:organizationID/edit", function (req, res) {
         organizationID: organizationID
     }, req.session, {
         includeOrganization: false,
-        useLimit: false
-    }) || [];
+        limit: -1
+    }).licences || [];
     const remarks = licencesDB.getOrganizationRemarks(organizationID, req.session) || [];
     res.render("organization-edit", {
         headTitle: "Organization Update",
@@ -329,8 +327,7 @@ router.get("/:organizationID/edit", function (req, res) {
         organization: organization,
         licences: licences,
         remarks: remarks,
-        currentDateInteger: dateTimeFns.dateToInteger(new Date()),
-        stringFns: stringFns
+        currentDateInteger: dateTimeFns.dateToInteger(new Date())
     });
 });
 router.post("/:organizationID/doAddOrganizationRepresentative", function (req, res) {

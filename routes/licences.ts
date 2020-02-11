@@ -33,7 +33,8 @@ router.post("/doSearch", function(req, res) {
 
   res.json(licencesDB.getLicences(req.body, req.session, {
     includeOrganization: true,
-    useLimit: true
+    limit: req.body.limit,
+    offset: req.body.offset
   }));
 
 });
@@ -130,15 +131,6 @@ router.post("/doGetActiveLicenceSummary", function(req, res) {
  * Licence View / Edit
  */
 
-
-router.post("/doSearch", function(req, res) {
-
-  res.json(licencesDB.getLicences(req.body, req.session, {
-    includeOrganization: true,
-    useLimit: true
-  }));
-
-});
 
 router.get([
   "/new",

@@ -21,6 +21,7 @@ const routerReports = require("./routes/reports");
 const routerAdmin = require("./routes/admin");
 const configFns = require("./helpers/configFns");
 const dateTimeFns = require("./helpers/dateTimeFns");
+const stringFns = require("./helpers/stringFns");
 const dbInit = require("./helpers/dbInit");
 dbInit.initUsersDB();
 dbInit.initLicencesDB();
@@ -69,6 +70,7 @@ app.use(function (req, res, next) {
     res.locals.user = req.session.user;
     res.locals.configFns = configFns;
     res.locals.dateTimeFns = dateTimeFns;
+    res.locals.stringFns = stringFns;
     next();
 });
 app.get("/", sessionChecker, function (_req, res) {

@@ -5,12 +5,19 @@
   let licenceType_keyToName = {};
 
   const formEle = document.getElementById("form--filters");
+
+  const limitEle = document.getElementById("filter--limit");
+  const offsetEle = document.getElementById("filter--offset");
+
   const searchResultsEle = document.getElementById("container--searchResults");
 
   const externalLicenceNumberLabel = searchResultsEle.getAttribute("data-external-licence-number-label");
 
 
   function doLicenceSearch() {
+
+    const currentLimit = parseInt(limitEle.value);
+    const currentOffset = parseInt(offsetEle.value);
 
     searchResultsEle.innerHTML = "<p class=\"has-text-centered has-text-grey-lighter\">" +
       "<i class=\"fas fa-3x fa-circle-notch fa-spin\" aria-hidden=\"true\"></i><br />" +
@@ -20,7 +27,9 @@
     llm.postJSON(
       "/licences/doSearch",
       formEle,
-      function(licenceList) {
+      function(licenceResults) {
+
+        const licenceList = licenceResults.licences;
 
         if (licenceList.length === 0) {
 
@@ -64,8 +73,19 @@
               "<td>" + (licenceType || licenceObj.licenceTypeKey) + "<br />" +
               "<small>" + llm.escapeHTML(licenceObj.licenceDetails) + "</small>" +
               "</td>" +
-              "<td>" + llm.escapeHTML(licenceObj.organizationName) + "</td>" +
-              "<td>" + llm.escapeHTML(licenceObj.locationDisplayName) + "</td>" +
+
+              ("<td>" +
+                "<a href=\"/organizations/" + licenceObj.organizationID + "\">" +
+                llm.escapeHTML(licenceObj.organizationName) +
+                "</a>" +
+                "</td>") +
+
+              ("<td>" +
+                "<a href=\"/locations/" + licenceObj.locationID + "\">" +
+                llm.escapeHTML(licenceObj.locationDisplayName) +
+                "</a>" +
+                (licenceObj.locationDisplayName === licenceObj.locationAddress1 ? "" : "<br /><small>" + llm.escapeHTML(licenceObj.locationAddress1) + "</small>") +
+                "</td>") +
 
               ("<td class=\"is-nowrap\">" +
                 "<span class=\"has-cursor-default has-tooltip-right\" data-tooltip=\"Start Date\">" +
@@ -98,6 +118,62 @@
 
           }
 
+          searchResultsEle.insertAdjacentHTML("beforeend", "<div class=\"level\">" +
+            "<div class=\"level-left has-text-weight-bold\">" +
+            "Displaying licences " +
+            (currentOffset + 1) +
+            " to " +
+            Math.min(currentLimit + currentOffset, licenceResults.count) +
+            " of " +
+            licenceResults.count +
+            "</div>" +
+            "</div>");
+
+          if (currentLimit < licenceResults.count) {
+
+            const paginationEle = document.createElement("nav");
+            paginationEle.className = "level-right";
+            paginationEle.setAttribute("role", "pagination");
+            paginationEle.setAttribute("aria-label", "pagination");
+
+            if (currentOffset > 0) {
+
+              const previousEle = document.createElement("a");
+              previousEle.className = "button";
+              previousEle.innerText = "Previous";
+              previousEle.addEventListener("click", function(clickEvent) {
+
+                clickEvent.preventDefault();
+                offsetEle.value = Math.max(0, currentOffset - currentLimit);
+                doLicenceSearch();
+
+              });
+
+              paginationEle.insertAdjacentElement("beforeend", previousEle);
+
+            }
+
+            if (currentLimit + currentOffset < licenceResults.count) {
+
+              const nextEle = document.createElement("a");
+              nextEle.className = "button has-margin-left-10";
+              nextEle.innerHTML = "<span>Next Licences</span><span class=\"icon\"><i class=\"fas fa-chevron-right\" aria-hidden=\"true\"></i></span>";
+              nextEle.addEventListener("click", function(clickEvent) {
+
+                clickEvent.preventDefault();
+                offsetEle.value = (currentOffset + currentLimit);
+                doLicenceSearch();
+
+              });
+
+              paginationEle.insertAdjacentElement("beforeend", nextEle);
+
+            }
+
+            searchResultsEle.getElementsByClassName("level")[0].insertAdjacentElement("beforeend", paginationEle);
+
+          }
+
         }
 
       }
@@ -105,6 +181,13 @@
 
   }
 
+
+  function resetOffsetAndDoLicenceSearch() {
+
+    offsetEle.value = 0;
+    doLicenceSearch();
+
+  }
 
   const licenceTypeOptionEles = document.getElementById("filter--licenceTypeKey").getElementsByTagName("option");
 
@@ -127,10 +210,10 @@
 
   for (let inputIndex = 0; inputIndex < inputEles.length; inputIndex += 1) {
 
-    inputEles[inputIndex].addEventListener("change", doLicenceSearch);
+    inputEles[inputIndex].addEventListener("change", resetOffsetAndDoLicenceSearch);
 
   }
 
-  doLicenceSearch();
+  resetOffsetAndDoLicenceSearch();
 
 }());

@@ -3,7 +3,6 @@ const express = require("express");
 const router = express.Router();
 const configFns = require("../helpers/configFns");
 const dateTimeFns = require("../helpers/dateTimeFns");
-const stringFns = require("../helpers/stringFns");
 const licencesDB = require("../helpers/licencesDB");
 router.get("/", function (_req, res) {
     res.render("location-search", {
@@ -132,7 +131,6 @@ router.get("/new", function (req, res) {
             locationProvince: configFns.getProperty("defaults.province")
         },
         currentDateInteger: dateTimeFns.dateToInteger(new Date()),
-        stringFns: stringFns,
         isCreate: true
     });
 });
@@ -147,14 +145,13 @@ router.get("/:locationID", function (req, res) {
         locationID: locationID
     }, req.session, {
         includeOrganization: true,
-        useLimit: false
-    });
+        limit: -1
+    }).licences;
     res.render("location-view", {
         headTitle: location.locationDisplayName,
         location: location,
         licences: licences,
-        currentDateInteger: dateTimeFns.dateToInteger(new Date()),
-        stringFns: stringFns
+        currentDateInteger: dateTimeFns.dateToInteger(new Date())
     });
 });
 router.get("/:locationID/edit", function (req, res) {
@@ -176,14 +173,13 @@ router.get("/:locationID/edit", function (req, res) {
         locationID: locationID
     }, req.session, {
         includeOrganization: true,
-        useLimit: false
-    }) || [];
+        limit: -1
+    }).licences;
     res.render("location-edit", {
         headTitle: location.locationDisplayName,
         location: location,
         licences: licences,
         currentDateInteger: dateTimeFns.dateToInteger(new Date()),
-        stringFns: stringFns,
         isCreate: false
     });
 });

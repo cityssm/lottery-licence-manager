@@ -65,6 +65,7 @@
           "<a href=\"/locations/" + licence.locationID + "\">" +
           stringFns.escapeHTML(licence.locationDisplayName) +
           "</a>" +
+          (licence.locationDisplayName === licence.locationAddress1 ? "" : "<br /><small>" + stringFns.escapeHTML(licence.locationAddress1) + "</small>") +
           "</td>" +
         "<td class=\"is-nowrap\">" + licence.startDateString + "</td>" +
         "<td class=\"is-nowrap\">" + licence.endDateString + "</td>" +

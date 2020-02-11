@@ -17,7 +17,6 @@ try {
 
   config = {};
 
-  // eslint-disable-next-line no-console
   console.log("No \"config.js\" found." +
     " To customize, create your own \"config.js\" in the \"data\" folder." +
     " See \"config-example.js\" or \"config-example-ontario.js\" to get started.");
@@ -162,20 +161,3 @@ export function getLicenceTypeKeyToNameObject() {
   return licenceTypeKeyNameObject;
 
 };
-
-
-/*
- * UID GENERATOR
- */
-
-let uid = Date.now();
-
-export function getUID() {
-
-  const toReturn = uid;
-
-  uid += 1;
-
-  return "uid" + toReturn.toString();
-
-}

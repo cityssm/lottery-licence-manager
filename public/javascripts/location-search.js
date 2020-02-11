@@ -168,18 +168,15 @@
 
         trEle.insertAdjacentHTML(
           "beforeend",
-          "<td class=\"is-hidden-print\">" +
-          "<div class=\"buttons justify-flex-end\">" +
+          "<td class=\"is-hidden-print has-text-right is-nowrap\">" +
 
           (locationObj.canUpdate ?
             `<a class="button is-small" href="/locations/${locationObj.locationID}/edit"><span class="icon"><i class="fas fa-pencil-alt" aria-hidden="true"></i></span> <span>Edit</span></a>` :
             "") +
 
           (canDeleteLocation ?
-            `<button class="button is-small is-danger is-delete-location-button" data-location-index="${locationIndex}"><span class="icon"><i class="fas fa-trash" aria-hidden="true"></i></span></button>` :
+            ` <button class="button is-small is-danger is-delete-location-button" data-location-index="${locationIndex}"><span class="icon"><i class="fas fa-trash" aria-hidden="true"></i></span></button>` :
             "") +
-
-          "</div>" +
 
           "</td>"
         );

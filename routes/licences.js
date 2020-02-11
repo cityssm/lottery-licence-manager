@@ -16,7 +16,8 @@ router.get("/", function (_req, res) {
 router.post("/doSearch", function (req, res) {
     res.json(licencesDB.getLicences(req.body, req.session, {
         includeOrganization: true,
-        useLimit: true
+        limit: req.body.limit,
+        offset: req.body.offset
     }));
 });
 router.get("/licenceTypes", function (_req, res) {
@@ -57,12 +58,6 @@ router.get("/activeSummary", function (_req, res) {
 });
 router.post("/doGetActiveLicenceSummary", function (req, res) {
     res.json(licencesDB.getActiveLicenceSummary(req.body, req.session));
-});
-router.post("/doSearch", function (req, res) {
-    res.json(licencesDB.getLicences(req.body, req.session, {
-        includeOrganization: true,
-        useLimit: true
-    }));
 });
 router.get([
     "/new",

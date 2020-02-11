@@ -282,7 +282,8 @@ export type GetLotteryLicence_IncludeOptions = {
 
 export type GetLotteryLicences_IncludeOptions = {
   includeOrganization: boolean,
-  useLimit: boolean
+  limit: number,
+  offset?: number
 };
 
 export interface LotteryLicenceTicketType extends Record {

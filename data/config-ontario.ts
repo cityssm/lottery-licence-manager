@@ -28,7 +28,7 @@ config.licences = {
 
     const message = (fee === licenceFeeMin ?
       "Base minimum licence fee." :
-      "3% of $" + licenceObj.totalPrizeValue);
+      "3% of $" + licenceObj.totalPrizeValue.toFixed(2));
 
     const licenceHasErrors = false;
 

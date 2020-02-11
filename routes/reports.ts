@@ -392,7 +392,7 @@ router.all("/:reportName", function(req, res) {
 
     case "events-pastUnreported":
 
-      sql = "select e.licenceID, e.eventDate," +
+      sql = "select e.licenceID, e.eventDate, e.reportDate," +
         " e.bank_name, e.bank_address, e.bank_accountNumber, e.bank_accountBalance," +
         " e.costs_receipts," +
         " l.externalLicenceNumber, l.licenceTypeKey, l.licenceDetails," +
@@ -409,7 +409,7 @@ router.all("/:reportName", function(req, res) {
         " where e.recordDelete_timeMillis is null" +
         " and l.recordDelete_timeMillis is null" +
         " and e.eventDate < ?" +
-        " and (e.bank_name is null or e.bank_name = '' or e.costs_receipts is null or e.costs_receipts = 0)";
+        " and (e.reportDate is null or e.reportDate = 0)";
 
       params = [dateTimeFns.dateToInteger(new Date())];
 

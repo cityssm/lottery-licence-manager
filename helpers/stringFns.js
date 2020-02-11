@@ -21,3 +21,10 @@ function rawToCSV(rowsColumnsObj) {
     return csv;
 }
 exports.rawToCSV = rawToCSV;
+let uid = Date.now();
+function getUID() {
+    const toReturn = uid;
+    uid += 1;
+    return "uid" + toReturn.toString();
+}
+exports.getUID = getUID;

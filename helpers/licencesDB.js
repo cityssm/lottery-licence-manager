@@ -879,6 +879,52 @@ function getLicences(reqBodyOrParamsObj, reqSession, includeOptions) {
         readonly: true
     });
     const sqlParams = [];
+    let sqlWhereClause = " where l.recordDelete_timeMillis is null";
+    if (reqBodyOrParamsObj.organizationID && reqBodyOrParamsObj.organizationID !== "") {
+        sqlWhereClause += " and l.organizationID = ?";
+        sqlParams.push(reqBodyOrParamsObj.organizationID);
+    }
+    if (reqBodyOrParamsObj.organizationName && reqBodyOrParamsObj.organizationName !== "") {
+        const organizationNamePieces = reqBodyOrParamsObj.organizationName.toLowerCase().split(" ");
+        for (let pieceIndex = 0; pieceIndex < organizationNamePieces.length; pieceIndex += 1) {
+            sqlWhereClause += " and instr(lower(o.organizationName), ?)";
+            sqlParams.push(organizationNamePieces[pieceIndex]);
+        }
+    }
+    if (reqBodyOrParamsObj.licenceTypeKey && reqBodyOrParamsObj.licenceTypeKey !== "") {
+        sqlWhereClause += " and l.licenceTypeKey = ?";
+        sqlParams.push(reqBodyOrParamsObj.licenceTypeKey);
+    }
+    if (reqBodyOrParamsObj.licenceStatus) {
+        if (reqBodyOrParamsObj.licenceStatus === "past") {
+            sqlWhereClause += " and l.endDate < ?";
+            sqlParams.push(dateTimeFns.dateToInteger(new Date()));
+        }
+        else if (reqBodyOrParamsObj.licenceStatus === "active") {
+            sqlWhereClause += " and l.endDate >= ?";
+            sqlParams.push(dateTimeFns.dateToInteger(new Date()));
+        }
+    }
+    if (reqBodyOrParamsObj.locationID) {
+        sqlWhereClause += " and (l.locationID = ?" +
+            " or l.licenceID in (" +
+            "select licenceID from LotteryLicenceTicketTypes" +
+            " where recordDelete_timeMillis is null and (distributorLocationID = ? or manufacturerLocationID = ?)" +
+            ")" +
+            ")";
+        sqlParams.push(reqBodyOrParamsObj.locationID);
+        sqlParams.push(reqBodyOrParamsObj.locationID);
+        sqlParams.push(reqBodyOrParamsObj.locationID);
+    }
+    let count = 0;
+    if (includeOptions.limit !== -1) {
+        count = db.prepare("select ifnull(count(*), 0) as cnt" +
+            " from LotteryLicences l" +
+            " left join Organizations o on l.organizationID = o.organizationID" +
+            sqlWhereClause)
+            .get(sqlParams)
+            .cnt;
+    }
     let sql = "select l.licenceID, l.organizationID," +
         (includeOptions.includeOrganization ?
             " o.organizationName," :
@@ -894,52 +940,19 @@ function getLicences(reqBodyOrParamsObj, reqSession, includeOptions) {
         (includeOptions.includeOrganization ?
             " left join Organizations o on l.organizationID = o.organizationID" :
             "") +
-        " where l.recordDelete_timeMillis is null";
-    if (reqBodyOrParamsObj.organizationID && reqBodyOrParamsObj.organizationID !== "") {
-        sql += " and l.organizationID = ?";
-        sqlParams.push(reqBodyOrParamsObj.organizationID);
-    }
-    if (reqBodyOrParamsObj.organizationName && reqBodyOrParamsObj.organizationName !== "") {
-        const organizationNamePieces = reqBodyOrParamsObj.organizationName.toLowerCase().split(" ");
-        for (let pieceIndex = 0; pieceIndex < organizationNamePieces.length; pieceIndex += 1) {
-            sql += " and instr(lower(o.organizationName), ?)";
-            sqlParams.push(organizationNamePieces[pieceIndex]);
-        }
-    }
-    if (reqBodyOrParamsObj.licenceTypeKey && reqBodyOrParamsObj.licenceTypeKey !== "") {
-        sql += " and l.licenceTypeKey = ?";
-        sqlParams.push(reqBodyOrParamsObj.licenceTypeKey);
-    }
-    if (reqBodyOrParamsObj.licenceStatus) {
-        if (reqBodyOrParamsObj.licenceStatus === "past") {
-            sql += " and l.endDate < ?";
-            sqlParams.push(dateTimeFns.dateToInteger(new Date()));
-        }
-        else if (reqBodyOrParamsObj.licenceStatus === "active") {
-            sql += " and l.endDate >= ?";
-            sqlParams.push(dateTimeFns.dateToInteger(new Date()));
-        }
-    }
-    if (reqBodyOrParamsObj.locationID) {
-        sql += " and (l.locationID = ?" +
-            " or licenceID in (" +
-            "select licenceID from LotteryLicenceTicketTypes" +
-            " where recordDelete_timeMillis is null and (distributorLocationID = ? or manufacturerLocationID = ?)" +
-            ")" +
-            ")";
-        sqlParams.push(reqBodyOrParamsObj.locationID);
-        sqlParams.push(reqBodyOrParamsObj.locationID);
-        sqlParams.push(reqBodyOrParamsObj.locationID);
-    }
-    sql += " order by l.endDate desc, l.startDate desc, l.licenceID";
-    if (includeOptions.useLimit) {
-        sql += " limit 100";
+        sqlWhereClause +
+        " order by l.endDate desc, l.startDate desc, l.licenceID";
+    if (includeOptions.limit !== -1) {
+        sql += " limit " + includeOptions.limit + " offset " + includeOptions.offset;
     }
     const rows = db.prepare(sql)
         .all(sqlParams);
     db.close();
     rows.forEach(addCalculatedFieldsFn);
-    return rows;
+    return {
+        count: (includeOptions.limit === -1 ? rows.length : count),
+        licences: rows
+    };
 }
 exports.getLicences = getLicences;
 function getLicence(licenceID, reqSession) {

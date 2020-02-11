@@ -31,6 +31,7 @@ import routerAdmin = require("./routes/admin");
 import { Config_HttpsConfig } from "./helpers/llmTypes";
 import * as configFns from "./helpers/configFns";
 import * as dateTimeFns from "./helpers/dateTimeFns";
+import * as stringFns from "./helpers/stringFns";
 
 
 /*
@@ -138,6 +139,7 @@ app.use(function(req, res, next) {
   res.locals.user = req.session.user;
   res.locals.configFns = configFns;
   res.locals.dateTimeFns = dateTimeFns;
+  res.locals.stringFns = stringFns;
 
   next();
 

@@ -17,6 +17,12 @@
       Outstanding Events Report
     </h1>
 
+    <div class="message is-info">
+      <p class="message-body">
+        This report includes those events that do not have a Report Date set.
+      </p>
+    </div>
+
     <form class="is-block-print" id="form--outstandingEvents">
       <table class="table is-fullwidth is-striped is-hoverable">
         <thead>
@@ -57,8 +63,8 @@
                   <div class="select is-small">
                     <select id="filter--eventDateType" name="eventDateType">
                       <option value="">(All)</option>
-                      <option value="past" selected>Past</option>
-                      <option value="upcoming">Upcoming</option>
+                      <option value="past" selected>Past Only</option>
+                      <option value="upcoming">Upcoming Only</option>
                     </select>
                   </div>
                   <div class="icon is-small is-left">

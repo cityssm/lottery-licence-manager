@@ -1,3 +1,4 @@
+*.db-journal
 *.min.js
 app.d.ts
 app.js

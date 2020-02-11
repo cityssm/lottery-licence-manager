@@ -20,7 +20,7 @@ config.licences.feeCalculationFn = function (licenceObj) {
     const fee = Math.max(licenceFeeMin, calculatedLicenceFee);
     let message = (fee === licenceFeeMin ?
         "Base minimum licence fee." :
-        "3% of $" + licenceObj.totalPrizeValue);
+        "3% of $" + licenceObj.totalPrizeValue.toFixed(2));
     let licenceHasErrors = false;
     if (licenceObj.licenceTypeKey === "RA") {
         const licenceFieldData = objectFns.fieldDataArrayToObject(licenceObj.licenceFields);

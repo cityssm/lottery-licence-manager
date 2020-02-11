@@ -50,7 +50,7 @@ config.licences.feeCalculationFn = function(licenceObj: llm.LotteryLicence) {
   const fee = Math.max(licenceFeeMin, calculatedLicenceFee);
   let message = (fee === licenceFeeMin ?
     "Base minimum licence fee." :
-    "3% of $" + licenceObj.totalPrizeValue);
+    "3% of $" + licenceObj.totalPrizeValue.toFixed(2));
   let licenceHasErrors = false;
 
   // Check the total prize value

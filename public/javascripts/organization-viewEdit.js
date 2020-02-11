@@ -62,6 +62,7 @@
               "<div class=\"column\">" +
               "<p class=\"has-newline-chars\">" + llm.escapeHTML(remark.remark) + "</p>" +
               "<p class=\"is-size-7\">" +
+              (remark.recordCreate_timeMillis === remark.recordUpdate_timeMillis ? "" : "<i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i> ") +
               remark.recordUpdate_userName + " - " + remark.remarkDateString + " " + remark.remarkTimeString +
               "</p>" +
               "</div>" +

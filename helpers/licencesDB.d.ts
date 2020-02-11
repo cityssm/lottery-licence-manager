@@ -30,7 +30,10 @@ export declare function addOrganizationBankRecord(reqBody: llm.OrganizationBankR
 export declare function updateOrganizationBankRecord(reqBody: llm.OrganizationBankRecord, reqSession: Express.Session): boolean;
 export declare function deleteOrganizationBankRecord(organizationID: number, recordIndex: number, reqSession: Express.Session): boolean;
 export declare function getLicenceTableStats(): llm.LotteryLicenceStats;
-export declare function getLicences(reqBodyOrParamsObj: any, reqSession: Express.SessionData, includeOptions: llm.GetLotteryLicences_IncludeOptions): llm.LotteryLicence[];
+export declare function getLicences(reqBodyOrParamsObj: any, reqSession: Express.SessionData, includeOptions: llm.GetLotteryLicences_IncludeOptions): {
+    count: number;
+    licences: llm.LotteryLicence[];
+};
 export declare function getLicence(licenceID: number, reqSession: Express.SessionData): llm.LotteryLicence;
 export declare function getNextExternalLicenceNumberFromRange(): number;
 export declare function createLicence(reqBody: any, reqSession: Express.SessionData): number;

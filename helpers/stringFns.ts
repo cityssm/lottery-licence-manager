@@ -33,3 +33,20 @@ export function rawToCSV(rowsColumnsObj: RawRowsColumnsReturn): string {
   return csv;
 
 }
+
+
+/*
+ * UID GENERATOR
+ */
+
+let uid = Date.now();
+
+export function getUID() {
+
+  const toReturn = uid;
+
+  uid += 1;
+
+  return "uid" + toReturn.toString();
+
+}

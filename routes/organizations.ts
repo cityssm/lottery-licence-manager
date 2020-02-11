@@ -5,7 +5,6 @@ const router = express.Router();
 
 import * as configFns from "../helpers/configFns";
 import * as dateTimeFns from "../helpers/dateTimeFns";
-import * as stringFns from "../helpers/stringFns";
 
 import * as licencesDB from "../helpers/licencesDB";
 
@@ -486,8 +485,8 @@ router.get("/:organizationID", function(req, res) {
     req.session,
     {
       includeOrganization: false,
-      useLimit: false
-    }) || [];
+      limit: -1
+    }).licences || [];
 
   const remarks = licencesDB.getOrganizationRemarks(organizationID, req.session) || [];
 
@@ -496,8 +495,7 @@ router.get("/:organizationID", function(req, res) {
     organization: organization,
     licences: licences,
     remarks: remarks,
-    currentDateInteger: dateTimeFns.dateToInteger(new Date()),
-    stringFns: stringFns
+    currentDateInteger: dateTimeFns.dateToInteger(new Date())
   });
 
 });
@@ -542,9 +540,9 @@ router.get("/:organizationID/edit", function(req, res) {
     req.session,
     {
       includeOrganization: false,
-      useLimit: false
+      limit: -1
     }
-  ) || [];
+  ).licences || [];
 
   const remarks = licencesDB.getOrganizationRemarks(organizationID, req.session) || [];
 
@@ -554,8 +552,7 @@ router.get("/:organizationID/edit", function(req, res) {
     organization: organization,
     licences: licences,
     remarks: remarks,
-    currentDateInteger: dateTimeFns.dateToInteger(new Date()),
-    stringFns: stringFns
+    currentDateInteger: dateTimeFns.dateToInteger(new Date())
   });
 
 });
