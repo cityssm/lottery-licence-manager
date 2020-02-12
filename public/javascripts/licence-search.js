@@ -48,7 +48,7 @@
             "<th>Licence</th>" +
             "<th>Organization Name</th>" +
             "<th>Location</th>" +
-            "<th>Dates</th>" +
+            "<th>Active Date Range</th>" +
             "<th class=\"is-hidden-print\"><span class=\"sr-only\">Options</span></th>" +
             "</tr></thead>" +
             "<tbody></tbody>" +

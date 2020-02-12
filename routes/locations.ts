@@ -20,9 +20,39 @@ router.get("/", function(_req, res) {
 
 router.post("/doGetLocations", function(req, res) {
 
-  const locations = licencesDB.getLocations(req.body, req.session);
+  const locations = licencesDB.getLocations(req.body, req.session, {
+    limit: -1
+  });
 
   res.json(locations);
+
+});
+
+
+// Cleanup
+
+
+router.get("/cleanup", function(req, res) {
+
+  if (!req.session.user.userProperties.canUpdate) {
+
+    res.redirect("/locations/?error=accessDenied");
+    return;
+
+  }
+
+  res.render("location-cleanup", {
+    headTitle: "Location Cleanup"
+  });
+
+
+});
+
+router.post("/doGetInactive", function(req, res) {
+
+  const inactiveYears = parseInt(req.body.inactiveYears);
+
+  res.json(licencesDB.getInactiveLocations(inactiveYears));
 
 });
 

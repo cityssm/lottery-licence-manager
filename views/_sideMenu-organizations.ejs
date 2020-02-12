@@ -18,10 +18,20 @@
     </span>
     Organization Search
   </a>
-  <a class="panel-block <%= (headTitle === "Organization Cleanup" ? " is-active" : "") %>" href="/organizations/cleanup">
-    <span class="panel-icon">
-      <i class="fas fa-broom" aria-hidden="true"></i>
-    </span>
-    Organization Cleanup
-  </a>
+  <% if (user.userProperties.canUpdate) { %>
+    <a class="panel-block <%= (headTitle === "Organization Cleanup" ? " is-active" : "") %>" href="/organizations/cleanup">
+      <span class="panel-icon">
+        <i class="fas fa-broom" aria-hidden="true"></i>
+      </span>
+      Organization Cleanup
+    </a>
+  <% } %>
+  <% if (user.userProperties.isAdmin) { %>
+    <a class="panel-block <%= (headTitle === "Organization Recovery" ? " is-active" : "") %>" href="/organizations/recovery">
+      <span class="panel-icon">
+        <i class="fas fa-trash-restore" aria-hidden="true"></i>
+      </span>
+      Organization Recovery
+    </a>
+  <% } %>
 </nav>

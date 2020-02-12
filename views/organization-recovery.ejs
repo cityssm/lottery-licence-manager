@@ -1,0 +1,54 @@
+<%- include('_header'); -%>
+
+<div class="columns">
+  <div class="column is-3 is-hidden-print">
+    <%- include("_sideMenu-organizations"); -%>
+  </div>
+  <div class="column">
+    <nav class="breadcrumb">
+      <ul>
+        <li><a href="/dashboard">Home</a></li>
+        <li><a href="/organizations">Organizations</a></li>
+        <li class="is-active"><a href="#" aria-current="page">Organization Recovery</a></li>
+      </ul>
+    </nav>
+
+    <h1 class="title is-1">
+      Organization Recovery
+    </h1>
+
+    <% if (organizations.length === 0) { %>
+      <div class="message is-info">
+        <p class="message-body">There are no deleted organizations available to recover.</p>
+      </div>
+    <% } else { %>
+      <table class="table is-fullwidth is-striped is-hoverable">
+        <thead>
+          <tr>
+            <th>Organization</th>
+            <th>Date Deleted</th>
+          </tr>
+        </thead>
+        <tbody>
+          <%
+            for (let index = 0; index < organizations.length; index += 1) {
+              const organization = organizations[index];
+          %>
+          <tr>
+            <td>
+              <a href="/organizations/<%= organization.organizationID %>"><%= organization.organizationName %></a>
+            </td>
+            <td><%= organization.recordDelete_dateString %></td>
+          </tr>
+          <%
+            }
+          %>
+        </tbody>
+      </table>
+    <% } %>
+  </div>
+</div>
+
+<%- include('_footerA'); -%>
+
+<%- include('_footerB'); -%>

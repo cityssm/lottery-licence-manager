@@ -180,7 +180,7 @@ function getRawRowsColumns(sql, params) {
     };
 }
 exports.getRawRowsColumns = getRawRowsColumns;
-function getLocations(reqBodyOrParamsObj, reqSession) {
+function getLocations(reqBodyOrParamsObj, reqSession, queryOptions) {
     const db = sqlite(dbPath, {
         readonly: true
     });
@@ -228,6 +228,9 @@ function getLocations(reqBodyOrParamsObj, reqSession) {
         " lo.locationAddress1, lo.locationAddress2, lo.locationCity, lo.locationProvince," +
         " lo.locationIsDistributor, lo.locationIsManufacturer" +
         " order by case when lo.locationName = '' then lo.locationAddress1 else lo.locationName end";
+    if (queryOptions.limit !== -1) {
+        sql += " limit " + queryOptions.limit + " offset " + queryOptions.offset;
+    }
     const rows = db.prepare(sql).all(sqlParams);
     db.close();
     for (let rowIndex = 0; rowIndex < rows.length; rowIndex += 1) {
@@ -369,7 +372,54 @@ function mergeLocations(targetLocationID, sourceLocationID, reqSession) {
     return true;
 }
 exports.mergeLocations = mergeLocations;
-function getOrganizations(reqBody, useLimit, reqSession) {
+function getInactiveLocations(inactiveYears) {
+    const cutoffDate = new Date();
+    cutoffDate.setFullYear(cutoffDate.getFullYear() - inactiveYears);
+    const cutoffDateInteger = dateTimeFns.dateToInteger(cutoffDate);
+    const db = sqlite(dbPath, {
+        readonly: true
+    });
+    const rows = db.prepare("select lo.locationID, lo.locationName, lo.locationAddress1," +
+        " lo.recordUpdate_timeMillis, lo.recordUpdate_userName," +
+        " l.licences_endDateMax, d.distributor_endDateMax, m.manufacturer_endDateMax" +
+        " from Locations lo" +
+        (" left join (" +
+            "select l.locationID, max(l.endDate) as licences_endDateMax from LotteryLicences l" +
+            " where l.recordDelete_timeMillis is null" +
+            " group by l.locationID" +
+            ") l on lo.locationID = l.locationID") +
+        (" left join (" +
+            "select tt.distributorLocationID, max(l.endDate) as distributor_endDateMax" +
+            " from LotteryLicenceTicketTypes tt" +
+            " left join LotteryLicences l on tt.licenceID = l.licenceID" +
+            " where l.recordDelete_timeMillis is null" +
+            " group by tt.distributorLocationID" +
+            ") d on lo.locationID = d.distributorLocationID") +
+        (" left join (" +
+            "select tt.manufacturerLocationID, max(l.endDate) as manufacturer_endDateMax" +
+            " from LotteryLicenceTicketTypes tt" +
+            " left join LotteryLicences l on tt.licenceID = l.licenceID" +
+            " where l.recordDelete_timeMillis is null" +
+            " group by tt.manufacturerLocationID" +
+            ") m on lo.locationID = m.manufacturerLocationID") +
+        " where lo.recordDelete_timeMillis is null" +
+        " and max(ifnull(l.licences_endDateMax, 0), ifnull(d.distributor_endDateMax, 0), ifnull(m.manufacturer_endDateMax, 0)) <= ?" +
+        " order by lo.locationName, lo.locationAddress1, lo.locationID")
+        .all(cutoffDateInteger);
+    db.close();
+    for (let rowIndex = 0; rowIndex < rows.length; rowIndex += 1) {
+        const locationObj = rows[rowIndex];
+        locationObj.locationDisplayName =
+            locationObj.locationName === "" ? locationObj.locationAddress1 : locationObj.locationName;
+        locationObj.recordUpdate_dateString = dateTimeFns.dateToString(new Date(locationObj.recordUpdate_timeMillis));
+        locationObj.licences_endDateMaxString = dateTimeFns.dateIntegerToString(locationObj.licences_endDateMax || 0);
+        locationObj.distributor_endDateMaxString = dateTimeFns.dateIntegerToString(locationObj.distributor_endDateMax || 0);
+        locationObj.manufacturer_endDateMaxString = dateTimeFns.dateIntegerToString(locationObj.manufacturer_endDateMax || 0);
+    }
+    return rows;
+}
+exports.getInactiveLocations = getInactiveLocations;
+function getOrganizations(reqBody, reqSession, includeOptions) {
     const addCalculatedFieldsFn = function (ele) {
         ele.recordType = "organization";
         ele.licences_endDateMaxString = dateTimeFns.dateIntegerToString(ele.licences_endDateMax || 0);
@@ -413,8 +463,8 @@ function getOrganizations(reqBody, useLimit, reqSession) {
         " r.representativeName," +
         " o.recordCreate_userName, o.recordCreate_timeMillis, o.recordUpdate_userName, o.recordUpdate_timeMillis" +
         " order by o.organizationName, o.organizationID";
-    if (useLimit) {
-        sql += " limit 100";
+    if (includeOptions.limit !== -1) {
+        sql += " limit " + includeOptions.limit + " offset " + includeOptions.offset;
     }
     const rows = db.prepare(sql).all(sqlParams);
     db.close();
@@ -513,7 +563,8 @@ function getInactiveOrganizations(inactiveYears) {
     const db = sqlite(dbPath, {
         readonly: true
     });
-    const rows = db.prepare("select o.organizationID, o.organizationName, l.licences_endDateMax" +
+    const rows = db.prepare("select o.organizationID, o.organizationName," +
+        " o.recordUpdate_timeMillis, o.recordUpdate_userName, l.licences_endDateMax" +
         " from Organizations o" +
         " left join (" +
         ("select l.organizationID, max(l.endDate) as licences_endDateMax from LotteryLicences l" +
@@ -527,11 +578,29 @@ function getInactiveOrganizations(inactiveYears) {
     db.close();
     for (let rowIndex = 0; rowIndex < rows.length; rowIndex += 1) {
         const organization = rows[rowIndex];
+        organization.recordUpdate_dateString = dateTimeFns.dateToString(new Date(organization.recordUpdate_timeMillis));
         organization.licences_endDateMaxString = dateTimeFns.dateIntegerToString(organization.licences_endDateMax || 0);
     }
     return rows;
 }
 exports.getInactiveOrganizations = getInactiveOrganizations;
+function getDeletedOrganizations() {
+    const addCalculatedFieldsFn = function (ele) {
+        ele.recordDelete_dateString = dateTimeFns.dateToString(new Date(ele.recordDelete_timeMillis));
+    };
+    const db = sqlite(dbPath, {
+        readonly: true
+    });
+    const organizations = db.prepare("select organizationID, organizationName, recordDelete_timeMillis, recordDelete_userName" +
+        " from Organizations" +
+        " where recordDelete_timeMillis is not null" +
+        " order by recordDelete_timeMillis desc")
+        .all();
+    db.close();
+    organizations.forEach(addCalculatedFieldsFn);
+    return organizations;
+}
+exports.getDeletedOrganizations = getDeletedOrganizations;
 function addOrganizationRepresentative(organizationID, reqBody) {
     const db = sqlite(dbPath);
     const row = db.prepare("select count(representativeIndex) as indexCount," +

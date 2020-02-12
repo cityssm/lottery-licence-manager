@@ -79,6 +79,7 @@
         "<tr>" +
         "<th>Organization</th>" +
         "<th class=\"has-text-centered\">Last Licence End Date</th>" +
+        "<th class=\"has-text-centered\">Last Updated</th>" +
         (canUpdate ? "<th><span class=\"sr-only\">Delete</span></th>" : "") +
         "</tr>" +
         "</thead>";
@@ -106,13 +107,17 @@
             "<span class=\"tag is-light is-danger\">No Licences</span>") +
           "</td>");
 
+        trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-centered\">" +
+          "<span data-tooltip=\"Updated by " + organizationObj.recordUpdate_userName + "\">" + organizationObj.recordUpdate_dateString + "</span>" +
+          "</td>");
+
         if (canUpdate) {
 
           trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right\">" +
             "<button class=\"button is-small is-danger\"" +
             " data-organization-id=\"" + organizationObj.organizationID + "\"" +
             " data-organization-name=\"" + safeOrganizationName + "\" type=\"button\">" +
-            "<span class=\"icon\"><i class=\"fas fa-trash-alt\"></i></span> <span>Delete</span>" +
+            "<span class=\"icon\"><i class=\"fas fa-trash-alt\" aria-hidden=\"true\"></i></span> <span>Delete</span>" +
             "</button>" +
             "</td>");
 

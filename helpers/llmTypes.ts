@@ -124,10 +124,14 @@ export type Record = {
 
   recordCreate_userName: string,
   recordCreate_timeMillis: number,
+
   recordUpdate_userName: string,
   recordUpdate_timeMillis: number,
+  recordUpdate_dateString: string,
+
   recordDelete_userName?: string,
   recordDelete_timeMillis?: number,
+  recordDelete_dateString?: string,
 
   canUpdate: boolean
 };
@@ -270,20 +274,6 @@ export interface LotteryLicence extends Location, Record {
   licenceAmendments: LotteryLicenceAmendments[],
 
   events: LotteryEvent[]
-};
-
-export type GetLotteryLicence_IncludeOptions = {
-  includeTicketTypes: boolean,
-  includeFields: boolean,
-  includeEvents: boolean,
-  includeAmendments: boolean,
-  includeTransactions: boolean
-};
-
-export type GetLotteryLicences_IncludeOptions = {
-  includeOrganization: boolean,
-  limit: number,
-  offset?: number
 };
 
 export interface LotteryLicenceTicketType extends Record {

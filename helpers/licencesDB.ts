@@ -106,7 +106,13 @@ function getApplicationSettingWithDB(db: sqlite.Database, settingKey: string): s
 }
 
 
-function getLicenceWithDB(db: sqlite.Database, licenceID: number, reqSession: Express.SessionData, includeOptions: llm.GetLotteryLicence_IncludeOptions) {
+function getLicenceWithDB(db: sqlite.Database, licenceID: number, reqSession: Express.SessionData, includeOptions: {
+  includeTicketTypes: boolean,
+  includeFields: boolean,
+  includeEvents: boolean,
+  includeAmendments: boolean,
+  includeTransactions: boolean
+}) {
 
   const licenceObj: llm.LotteryLicence =
     db.prepare("select l.*," +
@@ -322,7 +328,10 @@ export function getRawRowsColumns(sql: string, params: any[]): llm.RawRowsColumn
  * LOCATIONS
  */
 
-export function getLocations(reqBodyOrParamsObj: any, reqSession: Express.SessionData) {
+export function getLocations(reqBodyOrParamsObj: any, reqSession: Express.SessionData, queryOptions: {
+  limit: number,
+  offset?: number
+}) {
 
   const db = sqlite(dbPath, {
     readonly: true
@@ -384,6 +393,10 @@ export function getLocations(reqBodyOrParamsObj: any, reqSession: Express.Sessio
     " lo.locationAddress1, lo.locationAddress2, lo.locationCity, lo.locationProvince," +
     " lo.locationIsDistributor, lo.locationIsManufacturer" +
     " order by case when lo.locationName = '' then lo.locationAddress1 else lo.locationName end";
+
+  if (queryOptions.limit !== -1) {
+    sql += " limit " + queryOptions.limit + " offset " + queryOptions.offset;
+  }
 
   const rows: llm.Location[] =
     db.prepare(sql).all(sqlParams);
@@ -651,11 +664,79 @@ export function mergeLocations(targetLocationID: number, sourceLocationID: numbe
 }
 
 
+export function getInactiveLocations(inactiveYears: number) {
+
+  const cutoffDate = new Date();
+  cutoffDate.setFullYear(cutoffDate.getFullYear() - inactiveYears);
+
+  const cutoffDateInteger = dateTimeFns.dateToInteger(cutoffDate);
+
+  const db = sqlite(dbPath, {
+    readonly: true
+  });
+
+  const rows: llm.Location[] = db.prepare("select lo.locationID, lo.locationName, lo.locationAddress1," +
+    " lo.recordUpdate_timeMillis, lo.recordUpdate_userName," +
+    " l.licences_endDateMax, d.distributor_endDateMax, m.manufacturer_endDateMax" +
+    " from Locations lo" +
+
+    (" left join (" +
+      "select l.locationID, max(l.endDate) as licences_endDateMax from LotteryLicences l" +
+      " where l.recordDelete_timeMillis is null" +
+      " group by l.locationID" +
+      ") l on lo.locationID = l.locationID") +
+
+    (" left join (" +
+      "select tt.distributorLocationID, max(l.endDate) as distributor_endDateMax" +
+      " from LotteryLicenceTicketTypes tt" +
+      " left join LotteryLicences l on tt.licenceID = l.licenceID" +
+      " where l.recordDelete_timeMillis is null" +
+      " group by tt.distributorLocationID" +
+      ") d on lo.locationID = d.distributorLocationID") +
+
+    (" left join (" +
+      "select tt.manufacturerLocationID, max(l.endDate) as manufacturer_endDateMax" +
+      " from LotteryLicenceTicketTypes tt" +
+      " left join LotteryLicences l on tt.licenceID = l.licenceID" +
+      " where l.recordDelete_timeMillis is null" +
+      " group by tt.manufacturerLocationID" +
+      ") m on lo.locationID = m.manufacturerLocationID") +
+
+    " where lo.recordDelete_timeMillis is null" +
+
+    " and max(ifnull(l.licences_endDateMax, 0), ifnull(d.distributor_endDateMax, 0), ifnull(m.manufacturer_endDateMax, 0)) <= ?" +
+
+    " order by lo.locationName, lo.locationAddress1, lo.locationID")
+    .all(cutoffDateInteger);
+
+  db.close();
+
+  for (let rowIndex = 0; rowIndex < rows.length; rowIndex += 1) {
+
+    const locationObj = rows[rowIndex];
+
+    locationObj.locationDisplayName =
+      locationObj.locationName === "" ? locationObj.locationAddress1 : locationObj.locationName;
+
+    locationObj.recordUpdate_dateString = dateTimeFns.dateToString(new Date(locationObj.recordUpdate_timeMillis));
+
+    locationObj.licences_endDateMaxString = dateTimeFns.dateIntegerToString(locationObj.licences_endDateMax || 0);
+    locationObj.distributor_endDateMaxString = dateTimeFns.dateIntegerToString(locationObj.distributor_endDateMax || 0);
+    locationObj.manufacturer_endDateMaxString = dateTimeFns.dateIntegerToString(locationObj.manufacturer_endDateMax || 0);
+
+  }
+
+  return rows;
+}
+
 /*
  * ORGANIZATIONS
  */
 
-export function getOrganizations(reqBody: any, useLimit: boolean, reqSession: Express.SessionData) {
+export function getOrganizations(reqBody: any, reqSession: Express.SessionData, includeOptions: {
+  limit: number,
+  offset?: number
+}) {
 
   const addCalculatedFieldsFn = function(ele: llm.Organization) {
 
@@ -722,9 +803,9 @@ export function getOrganizations(reqBody: any, useLimit: boolean, reqSession: Ex
     " o.recordCreate_userName, o.recordCreate_timeMillis, o.recordUpdate_userName, o.recordUpdate_timeMillis" +
     " order by o.organizationName, o.organizationID";
 
-  if (useLimit) {
+  if (includeOptions.limit !== -1) {
 
-    sql += " limit 100";
+    sql += " limit " + includeOptions.limit + " offset " + includeOptions.offset;
 
   }
 
@@ -914,7 +995,8 @@ export function getInactiveOrganizations(inactiveYears: number) {
     readonly: true
   });
 
-  const rows: llm.Organization[] = db.prepare("select o.organizationID, o.organizationName, l.licences_endDateMax" +
+  const rows: llm.Organization[] = db.prepare("select o.organizationID, o.organizationName," +
+    " o.recordUpdate_timeMillis, o.recordUpdate_userName, l.licences_endDateMax" +
     " from Organizations o" +
     " left join (" +
     ("select l.organizationID, max(l.endDate) as licences_endDateMax from LotteryLicences l" +
@@ -932,6 +1014,7 @@ export function getInactiveOrganizations(inactiveYears: number) {
 
     const organization = rows[rowIndex];
 
+    organization.recordUpdate_dateString = dateTimeFns.dateToString(new Date(organization.recordUpdate_timeMillis));
     organization.licences_endDateMaxString = dateTimeFns.dateIntegerToString(organization.licences_endDateMax || 0);
 
   }
@@ -940,6 +1023,29 @@ export function getInactiveOrganizations(inactiveYears: number) {
 
 }
 
+export function getDeletedOrganizations() {
+
+  const addCalculatedFieldsFn = function(ele: llm.Organization) {
+    ele.recordDelete_dateString = dateTimeFns.dateToString(new Date(ele.recordDelete_timeMillis));
+  }
+
+  const db = sqlite(dbPath, {
+    readonly: true
+  });
+
+  const organizations: llm.Organization[] =
+    db.prepare("select organizationID, organizationName, recordDelete_timeMillis, recordDelete_userName" +
+      " from Organizations" +
+      " where recordDelete_timeMillis is not null" +
+      " order by recordDelete_timeMillis desc")
+      .all();
+
+  db.close();
+
+  organizations.forEach(addCalculatedFieldsFn);
+
+  return organizations;
+}
 
 /*
  * ORGANIZATION REPRESENTATIVES
@@ -1485,7 +1591,11 @@ export function getLicenceTableStats() {
 
 }
 
-export function getLicences(reqBodyOrParamsObj: any, reqSession: Express.SessionData, includeOptions: llm.GetLotteryLicences_IncludeOptions) {
+export function getLicences(reqBodyOrParamsObj: any, reqSession: Express.SessionData, includeOptions: {
+  includeOrganization: boolean,
+  limit: number,
+  offset?: number
+}) {
 
   if (reqBodyOrParamsObj.organizationName && reqBodyOrParamsObj.organizationName !== "") {
     includeOptions.includeOrganization = true;

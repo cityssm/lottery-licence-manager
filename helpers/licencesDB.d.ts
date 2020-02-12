@@ -1,20 +1,28 @@
 /// <reference types="express-session" />
 import * as llm from "./llmTypes";
 export declare function getRawRowsColumns(sql: string, params: any[]): llm.RawRowsColumnsReturn;
-export declare function getLocations(reqBodyOrParamsObj: any, reqSession: Express.SessionData): llm.Location[];
+export declare function getLocations(reqBodyOrParamsObj: any, reqSession: Express.SessionData, queryOptions: {
+    limit: number;
+    offset?: number;
+}): llm.Location[];
 export declare function getLocation(locationID: number, reqSession: Express.SessionData): llm.Location;
 export declare function createLocation(reqBody: llm.Location, reqSession: Express.SessionData): number;
 export declare function updateLocation(reqBody: llm.Location, reqSession: Express.SessionData): boolean;
 export declare function deleteLocation(locationID: number, reqSession: Express.SessionData): boolean;
 export declare function restoreLocation(locationID: number, reqSession: Express.SessionData): boolean;
 export declare function mergeLocations(targetLocationID: number, sourceLocationID: number, reqSession: Express.SessionData): boolean;
-export declare function getOrganizations(reqBody: any, useLimit: boolean, reqSession: Express.SessionData): llm.Organization[];
+export declare function getInactiveLocations(inactiveYears: number): llm.Location[];
+export declare function getOrganizations(reqBody: any, reqSession: Express.SessionData, includeOptions: {
+    limit: number;
+    offset?: number;
+}): llm.Organization[];
 export declare function getOrganization(organizationID: number, reqSession: Express.SessionData): llm.Organization;
 export declare function createOrganization(reqBody: llm.Organization, reqSession: Express.SessionData): number;
 export declare function updateOrganization(reqBody: llm.Organization, reqSession: Express.SessionData): boolean;
 export declare function deleteOrganization(organizationID: number, reqSession: Express.SessionData): boolean;
 export declare function restoreOrganization(organizationID: number, reqSession: Express.SessionData): boolean;
 export declare function getInactiveOrganizations(inactiveYears: number): llm.Organization[];
+export declare function getDeletedOrganizations(): llm.Organization[];
 export declare function addOrganizationRepresentative(organizationID: number, reqBody: llm.OrganizationRepresentative): llm.OrganizationRepresentative;
 export declare function updateOrganizationRepresentative(organizationID: number, reqBody: llm.OrganizationRepresentative): llm.OrganizationRepresentative;
 export declare function deleteOrganizationRepresentative(organizationID: number, representativeIndex: number): boolean;
@@ -30,7 +38,11 @@ export declare function addOrganizationBankRecord(reqBody: llm.OrganizationBankR
 export declare function updateOrganizationBankRecord(reqBody: llm.OrganizationBankRecord, reqSession: Express.Session): boolean;
 export declare function deleteOrganizationBankRecord(organizationID: number, recordIndex: number, reqSession: Express.Session): boolean;
 export declare function getLicenceTableStats(): llm.LotteryLicenceStats;
-export declare function getLicences(reqBodyOrParamsObj: any, reqSession: Express.SessionData, includeOptions: llm.GetLotteryLicences_IncludeOptions): {
+export declare function getLicences(reqBodyOrParamsObj: any, reqSession: Express.SessionData, includeOptions: {
+    includeOrganization: boolean;
+    limit: number;
+    offset?: number;
+}): {
     count: number;
     licences: llm.LotteryLicence[];
 };

@@ -49,7 +49,8 @@
     <%= location.locationAddress1 %><br />
     <%= location.locationAddress2 %>
     <%- (location.locationAddress2 === "" ? "" : "<br />") %>
-    <%= location.locationCity + ", " + location.locationProvince %><br />
+    <%= (location.locationCity === "" ? "" : location.locationCity + ", ") %>
+    <%= location.locationProvince %><br />
     <%= location.locationPostalCode %>
   </div>
   <div class="column">

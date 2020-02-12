@@ -53,7 +53,8 @@
       <%= organization.organizationAddress1 %><br />
       <%= organization.organizationAddress2 %>
       <%- (organization.organizationAddress2 === "" ? "" : "<br />") %>
-      <%= organization.organizationCity + ", " + organization.organizationProvince %><br />
+      <%= (organization.organizationCity === "" ? "" : organization.organizationCity + ", ") %>
+      <%= organization.organizationProvince %><br />
       <%= organization.organizationPostalCode %>
     </p>
   </div>

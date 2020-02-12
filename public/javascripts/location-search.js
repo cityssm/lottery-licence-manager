@@ -171,11 +171,15 @@
           "<td class=\"is-hidden-print has-text-right is-nowrap\">" +
 
           (locationObj.canUpdate ?
-            `<a class="button is-small" href="/locations/${locationObj.locationID}/edit"><span class="icon"><i class="fas fa-pencil-alt" aria-hidden="true"></i></span> <span>Edit</span></a>` :
+            "<a class=\"button is-small\" data-tooltip=\"Edit Location\" href=\"/locations/" + locationObj.locationID + "/edit\">" +
+            "<span class=\"icon\"><i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i></span> <span>Edit</span>" +
+            "</a>" :
             "") +
 
           (canDeleteLocation ?
-            ` <button class="button is-small is-danger is-delete-location-button" data-location-index="${locationIndex}"><span class="icon"><i class="fas fa-trash" aria-hidden="true"></i></span></button>` :
+            " <button class=\"button is-small is-danger is-delete-location-button\" data-tooltip=\"Delete Location\" data-location-index=\"" + locationIndex + "\" type=\"button\">" +
+            "<span class=\"icon\"><i class=\"fas fa-trash\" aria-hidden=\"true\"></i></span>" +
+            "</button>" :
             "") +
 
           "</td>"
@@ -256,10 +260,10 @@
 
   llm.postJSON("/locations/doGetLocations", null, function(locationsListResponse) {
 
-      locationsList = locationsListResponse;
-      filterLocations();
+    locationsList = locationsListResponse;
+    filterLocations();
 
-    });
+  });
 
 
   searchStrEle.addEventListener("keyup", filterLocations);

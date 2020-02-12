@@ -34,7 +34,8 @@
 
       changePasswordModalEles[0].getElementsByTagName("form")[0].reset();
       llm.showModal(changePasswordModalEles[0]);
-
+      document.getElementById("changePassword--oldPassword").focus();
+      
     });
 
 

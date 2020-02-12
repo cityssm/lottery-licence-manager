@@ -6,7 +6,7 @@
       <%= configFns.getProperty("application.applicationName") %>
     </h1>
   </div>
-  <% if (user.userProperties.isDefaultAdmin === "false") { %>
+  <% if (!user.userProperties.isDefaultAdmin) { %>
     <div class="level-right has-text-right">
       <button class="button is-change-password-button" type="button">
         <span class="icon"><i class="fas fa-key" aria-hidden="true"></i></span>
@@ -270,7 +270,7 @@
   </div>
 <% } %>
 
-<% if (user.userProperties.isDefaultAdmin === "false") { %>
+<% if (!user.userProperties.isDefaultAdmin) { %>
   <div class="modal is-change-password-modal">
     <div class="modal-background"></div>
     <div class="modal-card">
@@ -285,6 +285,11 @@
             <div class="control">
               <input class="input" id="changePassword--oldPassword" name="oldPassword" type="password" autocomplete="current-password" required />
             </div>
+          </div>
+          <div class="message is-info">
+            <p class="message-body">
+              Might I suggest <em><%= passwordSuggestion %></em> ?
+            </p>
           </div>
           <div class="field">
             <label class="label" for="changePassword--newPassword">New Password</label>

@@ -1,0 +1,29 @@
+<nav class="panel">
+  <div class="panel-heading">
+    Locations
+  </div>
+  <% if (user.userProperties.canCreate) { %>
+    <div class="panel-block">
+      <a class="button is-primary is-fullwidth" href="/locations/new">
+        <span class="icon is-small">
+          <i class="fas fa-plus" aria-hidden="true"></i>
+        </span>
+        <span>Create a New Location</span>
+      </a>
+    </div>
+  <% } %>
+  <a class="panel-block <%= (headTitle === "Locations" ? " is-active" : "") %>" href="/locations">
+    <span class="panel-icon">
+      <i class="fas fa-users" aria-hidden="true"></i>
+    </span>
+    Location Search
+  </a>
+  <% if (user.userProperties.canUpdate) { %>
+    <a class="panel-block <%= (headTitle === "Location Cleanup" ? " is-active" : "") %>" href="/locations/cleanup">
+      <span class="panel-icon">
+        <i class="fas fa-broom" aria-hidden="true"></i>
+      </span>
+      Location Cleanup
+    </a>
+  <% } %>
+</nav>

@@ -10,12 +10,21 @@ router.get("/", function (_req, res) {
     });
 });
 router.post("/doSearch", function (req, res) {
-    res.json(licencesDB.getOrganizations(req.body, true, req.session));
+    res.json(licencesDB.getOrganizations(req.body, req.session, {
+        limit: 100,
+        offset: 0
+    }));
 });
 router.all("/doGetAll", function (req, res) {
-    res.json(licencesDB.getOrganizations({}, false, req.session));
+    res.json(licencesDB.getOrganizations({}, req.session, {
+        limit: -1
+    }));
 });
-router.get("/cleanup", function (_req, res) {
+router.get("/cleanup", function (req, res) {
+    if (!req.session.user.userProperties.canUpdate) {
+        res.redirect("/organizations/?error=accessDenied");
+        return;
+    }
     res.render("organization-cleanup", {
         headTitle: "Organization Cleanup"
     });
@@ -23,6 +32,17 @@ router.get("/cleanup", function (_req, res) {
 router.post("/doGetInactive", function (req, res) {
     const inactiveYears = parseInt(req.body.inactiveYears);
     res.json(licencesDB.getInactiveOrganizations(inactiveYears));
+});
+router.get("/recovery", function (req, res) {
+    if (!req.session.user.userProperties.isAdmin) {
+        res.redirect("/organizations/?error=accessDenied");
+        return;
+    }
+    const organizations = licencesDB.getDeletedOrganizations();
+    res.render("organization-recovery", {
+        headTitle: "Organization Recovery",
+        organizations: organizations
+    });
 });
 router.post("/doGetRemarks", function (req, res) {
     const organizationID = req.body.organizationID;
