@@ -1,8 +1,8 @@
 <%
   let uid = stringFns.getUID();
 %>
-<div class="columns is-date-range-selector" data-field-key="<%= fieldKey %>" data-uid="<%= uid %>">
-  <div class="column is-hidden-print">
+<div class="columns is-multiline is-date-range-selector" data-field-key="<%= fieldKey %>" data-uid="<%= uid %>">
+  <div class="column is-one-quarter-desktop is-half-tablet">
     <div class="field" data-field="rangeType">
       <label class="label" for="rangeType--<%= uid %>"><%= fieldName %> Range Type</label>
       <div class="control">
@@ -17,7 +17,7 @@
       </div>
     </div>
   </div>
-  <div class="column">
+  <div class="column is-one-quarter-desktop is-half-tablet">
     <div class="field" data-field="range">
       <label class="label" for="range--<%= uid %>">
         <span class="is-hidden-screen"><%= fieldName %></span>
@@ -56,19 +56,25 @@
       </div>
     </div>
   </div>
-  <div class="column">
+  <div class="column is-one-quarter-desktop is-half-tablet">
     <div class="field" data-field="start">
       <label class="label" for="start--<%= uid %>">Start Date</label>
-      <div class="control">
+      <div class="control has-icons-left">
         <input class="input" id="start--<%= uid %>" name="<%= fieldKey %>StartString" type="date" value="<%= startValue %>" min="<%= yearMin %>-01-01" required />
+        <span class="icon is-small is-left">
+          <i class="fas fa-play" aria-hidden="true"></i>
+        </span>
       </div>
     </div>
   </div>
-  <div class="column">
+  <div class="column is-one-quarter-desktop is-half-tablet">
     <div class="field" data-field="end">
       <label class="label" for="end--<%= uid %>">End Date</label>
-      <div class="control">
+      <div class="control has-icons-left">
         <input class="input" id="end--<%= uid %>" name="<%= fieldKey %>EndString" type="date" value="<%= endValue %>" min="<%= startValue %>" required />
+        <span class="icon is-small is-left">
+          <i class="fas fa-stop" aria-hidden="true"></i>
+        </span>
       </div>
     </div>
   </div>

@@ -117,7 +117,7 @@
             "<button class=\"button is-small is-danger\"" +
             " data-organization-id=\"" + organizationObj.organizationID + "\"" +
             " data-organization-name=\"" + safeOrganizationName + "\" type=\"button\">" +
-            "<span class=\"icon\"><i class=\"fas fa-trash-alt\" aria-hidden=\"true\"></i></span> <span>Delete</span>" +
+            "<span class=\"icon\"><i class=\"fas fa-trash\" aria-hidden=\"true\"></i></span> <span>Delete</span>" +
             "</button>" +
             "</td>");
 

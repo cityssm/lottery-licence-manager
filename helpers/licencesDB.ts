@@ -1062,7 +1062,7 @@ export function addOrganizationRepresentative(organizationID: number, reqBody: l
     .get(organizationID);
 
   const newRepresentativeIndex = row.maxIndex + 1;
-  const newIsDefault = (row.indexCount === 0 ? true : false);
+  const newIsDefault = (row.indexCount === 0 ? 1 : 0);
 
   db.prepare("insert into OrganizationRepresentatives (" +
     "organizationID, representativeIndex," +
@@ -1095,7 +1095,7 @@ export function addOrganizationRepresentative(organizationID: number, reqBody: l
     representativePostalCode: reqBody.representativePostalCode,
     representativePhoneNumber: reqBody.representativePhoneNumber,
     representativeEmailAddress: reqBody.representativeEmailAddress,
-    isDefault: newIsDefault
+    isDefault: newIsDefault === 1
   };
 
 }

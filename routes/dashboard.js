@@ -1,13 +1,11 @@
 "use strict";
 const express = require("express");
 const router = express.Router();
-const freshPassword = require("fresh-password");
 const configFns = require("../helpers/configFns");
 const usersDB = require("../helpers/usersDB");
 router.get("/", function (_req, res) {
     res.render("dashboard", {
-        headTitle: "Dashboard",
-        passwordSuggestion: freshPassword.generate()
+        headTitle: "Dashboard"
     });
 });
 router.post("/doChangePassword", function (req, res) {

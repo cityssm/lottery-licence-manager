@@ -3,8 +3,6 @@
 import express = require("express");
 const router = express.Router();
 
-import freshPassword = require("fresh-password");
-
 import * as configFns from "../helpers/configFns";
 
 import * as usersDB from "../helpers/usersDB";
@@ -13,8 +11,7 @@ import * as usersDB from "../helpers/usersDB";
 router.get("/", function(_req, res) {
 
   res.render("dashboard", {
-    headTitle: "Dashboard",
-    passwordSuggestion: freshPassword.generate()
+    headTitle: "Dashboard"
   });
 
 });

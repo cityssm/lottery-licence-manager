@@ -58,7 +58,10 @@ llm.organizationRemarks = (function() {
       onshown: function(modalEle, closeModalFn) {
 
         document.getElementById("addRemark--organizationID").value = organizationID;
+        document.getElementById("addRemark--remark").focus();
+
         modalEle.getElementsByTagName("form")[0].addEventListener("submit", addFormFn);
+
         addRemarkCloseModalFn = closeModalFn;
 
       }
@@ -123,6 +126,7 @@ llm.organizationRemarks = (function() {
       onshown: function(modalEle, closeModalFn) {
 
         editRemarkCloseModalFn = closeModalFn;
+        document.getElementById("editRemark--remark").focus();
 
       }
     });

@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const sqlite = require("better-sqlite3");
 const dbPath = "data/users.db";
 const bcrypt = require("bcrypt");
-const freshPassword = require("fresh-password");
+const stringFns = require("./stringFns");
 const configFns = require("./configFns");
 function getUser(userNameSubmitted, passwordPlain) {
     const db = sqlite(dbPath);
@@ -134,7 +134,7 @@ function getUserProperties(userName) {
 }
 exports.getUserProperties = getUserProperties;
 function createUser(reqBody) {
-    const newPasswordPlain = freshPassword.generate();
+    const newPasswordPlain = stringFns.generatePassword();
     const hash = bcrypt.hashSync(reqBody.userName + "::" + newPasswordPlain, 10);
     const db = sqlite(dbPath);
     const row = db.prepare("select isActive" +
@@ -195,7 +195,7 @@ function updateUserProperty(reqBody) {
 }
 exports.updateUserProperty = updateUserProperty;
 function generateNewPassword(userName) {
-    const newPasswordPlain = freshPassword.generate();
+    const newPasswordPlain = stringFns.generatePassword();
     const hash = bcrypt.hashSync(userName + "::" + newPasswordPlain, 10);
     const db = sqlite(dbPath);
     db.prepare("update Users" +

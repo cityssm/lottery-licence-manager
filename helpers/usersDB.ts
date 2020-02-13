@@ -4,8 +4,8 @@ import sqlite = require("better-sqlite3");
 const dbPath = "data/users.db";
 
 import bcrypt = require("bcrypt");
-import freshPassword = require("fresh-password");
 
+import * as stringFns from "./stringFns";
 import * as configFns from "./configFns";
 import { User, UserProperties } from "./llmTypes";
 
@@ -217,7 +217,7 @@ export function getUserProperties(userName: string) {
 
 export function createUser(reqBody: any) {
 
-  const newPasswordPlain = freshPassword.generate();
+  const newPasswordPlain = stringFns.generatePassword();
   const hash = bcrypt.hashSync(reqBody.userName + "::" + newPasswordPlain, 10);
 
   const db = sqlite(dbPath);
@@ -315,7 +315,7 @@ export function updateUserProperty(reqBody: any) {
 
 export function generateNewPassword(userName: string) {
 
-  const newPasswordPlain: string = freshPassword.generate();
+  const newPasswordPlain: string = stringFns.generatePassword();
   const hash = bcrypt.hashSync(userName + "::" + newPasswordPlain, 10);
 
   const db = sqlite(dbPath);

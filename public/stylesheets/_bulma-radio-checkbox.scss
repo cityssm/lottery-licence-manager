@@ -74,9 +74,9 @@
     opacity: 0;
 
     &:focus + label::before {
-      outline: thin dotted;
-      outline: 5px auto -webkit-focus-ring-color;
-      outline-offset: -2px;
+      outline: solid;
+      outline-color: $input-focus-box-shadow-color;
+      outline-offset: 2px;
     }
 
     &:checked + label::after {

@@ -54,7 +54,7 @@
       let rowHTML = "<tr>" +
         "<td>" +
           "<a href=\"/licences/" + licence.licenceID + "\">" +
-          stringFns.escapeHTML(licence.externalLicenceNumber) + "<br />" +
+          stringFns.escapeHTML(licence.externalLicenceNumber || "(None)") + "<br />" +
           "<small>Licence #" + licence.licenceID + "</small>" +
           "</a>" +
           "</td>" +
@@ -65,8 +65,12 @@
           stringFns.escapeHTML(licence.organizationName) +
           "</a>" +
           "</td>" +
-        "<td class=\"is-nowrap\">" + licence.startDateString + "</td>" +
-        "<td class=\"is-nowrap\">" + licence.endDateString + "</td>" +
+        "<td class=\"is-nowrap\">" +
+          "<span class=\"icon\"><i class=\"fas fa-play\" aria-hidden=\"true\"></i></span> " + licence.startDateString +
+          "</td>" +
+        "<td class=\"is-nowrap\">" +
+          "<span class=\"icon\"><i class=\"fas fa-stop\" aria-hidden=\"true\"></i></span> " + licence.endDateString +
+          "</td>" +
         "<td class=\"is-nowrap has-text-right is-hidden-print\">" +
           (canEdit ?
             "<a class=\"button is-small\" href=\"/licences/" + licence.licenceID + "/edit\" data-tooltip=\"Edit Licence\"><span class=\"icon\"><i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i></span><span>Edit</span></a> " :

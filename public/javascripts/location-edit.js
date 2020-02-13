@@ -277,22 +277,26 @@
           locationFilterEle = document.getElementById("mergeLocation--locationFilter");
           locationFilterEle.addEventListener("keyup", filterLocationsFn);
 
+        },
+        onshown: function(modalEle, closeModalFn) {
+
+          closeMergeLocationModalFn = closeModalFn;
+
           llm.postJSON(
             "/locations/doGetLocations",
             null,
             function(responseJSON) {
 
               locationsList = responseJSON;
+              
               locationFilterEle.removeAttribute("disabled");
+              locationFilterEle.focus();
+
               filterLocationsFn();
 
             }
           );
 
-        },
-        onshown: function(modalEle, closeModalFn) {
-
-          closeMergeLocationModalFn = closeModalFn;
 
         }
 
@@ -323,6 +327,12 @@
   for (let inputIndex = 0; inputIndex < inputEles.length; inputIndex += 1) {
 
     inputEles[inputIndex].addEventListener("change", setUnsavedChanges);
+
+  }
+
+  if (isCreate) {
+
+    document.getElementById("location--locationName").focus();
 
   }
 

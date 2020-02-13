@@ -69,11 +69,11 @@
               (remark.canUpdate ?
                 "<div class=\"column is-narrow\">" +
                 "<div class=\"buttons is-right has-addons\">" +
-                "<button class=\"button is-small is-edit-remark-button\" data-remark-index=\"" + remark.remarkIndex + "\" type=\"button\">" +
+                "<button class=\"button is-small is-edit-remark-button\" data-remark-index=\"" + remark.remarkIndex + "\" data-tooltip=\"Edit Remark\" type=\"button\">" +
                 "<span class=\"icon is-small\"><i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i></span>" +
                 "<span>Edit</span>" +
                 "</button>" +
-                "<button class=\"button is-small has-text-danger is-delete-remark-button\" data-remark-index=\"" + remark.remarkIndex + "\" type=\"button\">" +
+                "<button class=\"button is-small has-text-danger is-delete-remark-button\" data-remark-index=\"" + remark.remarkIndex + "\" data-tooltip=\"Delete Remark\" type=\"button\">" +
                 "<i class=\"fas fa-trash\" aria-hidden=\"true\"></i>" +
                 "<span class=\"sr-only\">Delete</span>" +
                 "</button>" +
@@ -357,6 +357,7 @@
 
       let bankRecordEditCloseModalFn;
       let isUpdate = false;
+      let lockKeyFields = false;
 
       const submitBankRecordEditFn = function(formEvent) {
 
@@ -371,7 +372,7 @@
 
               bankRecordEditCloseModalFn();
 
-              if (isUpdate) {
+              if (isUpdate || lockKeyFields) {
 
                 getBankRecords();
 
@@ -444,8 +445,6 @@
 
       let bankingYear = dateObj.getFullYear();
       let bankingMonth = dateObj.getMonth() + 1;
-
-      let lockKeyFields = false;
 
       // If it's one of the add buttons in the table, retrieve data
       if (buttonEle.id !== "is-add-bank-record-button") {

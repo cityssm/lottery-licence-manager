@@ -21,19 +21,19 @@
       <div class="field">
         <label class="label" for="location--locationName">Location Name</label>
         <div class="control">
-          <input class="input" id="location--locationName" name="locationName" type="text" value="<%= location.locationName %>" maxlength="100" />
+          <input class="input" id="location--locationName" name="locationName" type="text" value="<%= location.locationName %>" maxlength="100" autocomplete="off" />
         </div>
         <p class="help">If the location does not have a common name, leave it blank.
       </div>
       <div class="field">
         <label class="label" for="location--locationAddress1">Address</label>
         <div class="control">
-          <input class="input" id="location--locationAddress1" name="locationAddress1" type="text" value="<%= location.locationAddress1 %>" maxlength="50" placeholder="Line 1" required />
+          <input class="input" id="location--locationAddress1" name="locationAddress1" type="text" value="<%= location.locationAddress1 %>" maxlength="50" placeholder="Line 1" autocomplete="off" required />
         </div>
       </div>
       <div class="field">
         <div class="control">
-          <input class="input" id="location--locationAddress2" name="locationAddress2" type="text" value="<%= location.locationAddress2 %>" maxlength="50" placeholder="Line 2" aria-label="Address Line 2" />
+          <input class="input" id="location--locationAddress2" name="locationAddress2" type="text" value="<%= location.locationAddress2 %>" maxlength="50" placeholder="Line 2" autocomplete="off" aria-label="Address Line 2" />
         </div>
       </div>
       <div class="columns">
@@ -57,7 +57,7 @@
       <div class="field">
         <label class="label" for="location--locationPostalCode">Postal Code</label>
         <div class="control">
-          <input class="input" id="location--locationPostalCode" name="locationPostalCode" type="text" value="<%= location.locationPostalCode %>" minlength="5" maxlength="7" required />
+          <input class="input" id="location--locationPostalCode" name="locationPostalCode" type="text" value="<%= location.locationPostalCode %>" minlength="5" maxlength="7" autocomplete="off" required />
         </div>
       </div>
     </div>
