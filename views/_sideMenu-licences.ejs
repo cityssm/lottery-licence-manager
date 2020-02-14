@@ -1,33 +1,46 @@
-<nav class="panel">
-  <div class="panel-heading">
+<aside class="menu">
+  <p class="menu-label">
     Licences
-  </div>
-  <% if (user.userProperties.canCreate) { %>
-    <div class="panel-block">
-      <a class="button is-primary is-fullwidth" href="/licences/new">
-        <span class="icon is-small">
-          <i class="fas fa-plus" aria-hidden="true"></i>
+  </p>
+  <ul class="menu-list">
+    <li>
+      <a class="<%= (headTitle === "Licences" ? "is-active" : "") %>" href="/licences">
+        <span class="icon">
+          <i class="fas fa-certificate" aria-hidden="true"></i>
         </span>
-        <span>Create a New Licence</span>
+        Licence Search
       </a>
-    </div>
-  <% } %>
-  <a class="panel-block <%= (headTitle === "Licences" ? " is-active" : "") %>" href="/licences">
-    <span class="panel-icon">
-      <i class="fas fa-certificate" aria-hidden="true"></i>
-    </span>
-    Licence Search
-  </a>
-  <a class="panel-block <%= (headTitle === "Licence Type Summary" ? " is-active" : "") %>" href="/licences/licenceTypes">
-    <span class="panel-icon">
-      <i class="fas fa-file" aria-hidden="true"></i>
-    </span>
-    Licence Type Summary
-  </a>
-  <a class="panel-block <%= (headTitle === "Active Licence Summary" ? " is-active" : "") %>" href="/licences/activeSummary">
-    <span class="panel-icon">
-      <i class="fas fa-file" aria-hidden="true"></i>
-    </span>
-    Active Licence Summary
-  </a>
-</nav>
+    </li>
+    <% if (user.userProperties.canCreate) { %>
+      <li>
+        <a href="/licences/new">
+          <span class="icon">
+            <i class="fas fa-plus" aria-hidden="true"></i>
+          </span>
+          Create a New Licence
+        </a>
+      </li>
+    <% } %>
+  </ul>
+  <p class="menu-label">
+    Reports
+  </p>
+  <ul class="menu-list">
+    <li>
+      <a class="<%= (headTitle === "Licence Type Summary" ? "is-active" : "") %>" href="/licences/licenceTypes">
+        <span class="icon">
+          <i class="fas fa-file" aria-hidden="true"></i>
+        </span>
+        Licence Type Summary
+      </a>
+    </li>
+    <li>
+      <a class="<%= (headTitle === "Active Licence Summary" ? "is-active" : "") %>" href="/licences/activeSummary">
+        <span class="icon">
+          <i class="fas fa-file" aria-hidden="true"></i>
+        </span>
+        Active Licence Summary
+      </a>
+    </li>
+  </ul>
+</aside>

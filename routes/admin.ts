@@ -207,4 +207,42 @@ router.post("/doGetUserProperties", function(req, res) {
 });
 
 
+router.post("/doDeleteUser", function(req, res) {
+
+  if (!req.session.user.userProperties.isAdmin) {
+
+    res
+      .status(403)
+      .json({
+        success: false,
+        message: "Forbidden"
+      });
+    return;
+
+  }
+
+  const userNameToDelete = req.body.userName;
+
+  if (userNameToDelete === req.session.user.userName) {
+
+    // You can't delete yourself!
+
+    res
+      .status(403)
+      .json({
+        success: false,
+        message: "Forbidden"
+      });
+    return;
+
+  }
+
+  const success = usersDB.inactivateUser(userNameToDelete);
+
+  res.json({
+    success: success
+  })
+
+});
+
 export = router;

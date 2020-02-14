@@ -118,7 +118,7 @@
 
           }
 
-          searchResultsEle.insertAdjacentHTML("beforeend", "<div class=\"level\">" +
+          searchResultsEle.insertAdjacentHTML("beforeend", "<div class=\"level is-block-print\">" +
             "<div class=\"level-left has-text-weight-bold\">" +
             "Displaying licences " +
             (currentOffset + 1) +
@@ -132,7 +132,7 @@
           if (currentLimit < licenceResults.count) {
 
             const paginationEle = document.createElement("nav");
-            paginationEle.className = "level-right";
+            paginationEle.className = "level-right is-hidden-print";
             paginationEle.setAttribute("role", "pagination");
             paginationEle.setAttribute("aria-label", "pagination");
 

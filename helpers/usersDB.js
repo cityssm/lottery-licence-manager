@@ -152,7 +152,10 @@ function createUser(reqBody) {
             " passwordHash = ?," +
             " isActive = 1" +
             " where userName = ?")
-            .run();
+            .run(reqBody.firstName, reqBody.lastName, hash, reqBody.userName);
+        db.prepare("delete from UserProperties" +
+            " where userName = ?")
+            .run(reqBody.userName);
     }
     else {
         db.prepare("insert into Users" +
@@ -206,3 +209,14 @@ function generateNewPassword(userName) {
     return newPasswordPlain;
 }
 exports.generateNewPassword = generateNewPassword;
+function inactivateUser(userName) {
+    const db = sqlite(dbPath);
+    const info = db.prepare("update Users" +
+        " set isActive = 0" +
+        " where userName = ?" +
+        " and isActive = 1")
+        .run(userName);
+    db.close();
+    return info.changes;
+}
+exports.inactivateUser = inactivateUser;

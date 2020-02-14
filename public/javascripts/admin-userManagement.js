@@ -6,7 +6,7 @@
    * Create user
    */
 
-  const createUserModalEle = document.getElementsByClassName("is-create-user-modal")[0];
+  const createUserModalEle = document.getElementById("is-create-user-modal");
 
   createUserModalEle.getElementsByTagName("form")[0].addEventListener("submit", function(formEvent) {
 
@@ -47,10 +47,55 @@
   const userContainerEle = document.getElementById("container--users");
 
   /*
+   * Delete users
+   */
+
+  function deleteUserFn(clickEvent) {
+
+    clickEvent.preventDefault();
+
+    const userNameToDelete = clickEvent.currentTarget.getAttribute("data-user-name");
+    const trEle = clickEvent.currentTarget.closest("tr");
+
+    const doDeleteFn = function() {
+
+      llm.postJSON("/admin/doDeleteUser", {
+        userName: userNameToDelete
+      }, function(resultJSON) {
+
+        if (resultJSON.success) {
+
+          trEle.remove();
+
+        }
+
+      });
+
+    };
+
+    llm.confirmModal(
+      "Delete User?",
+      "Are you sure you want to delete <em>" + llm.escapeHTML(userNameToDelete) + "</em>?<br />",
+      "Yes, Delete",
+      "warning",
+      doDeleteFn
+    );
+
+  }
+
+  const deleteUserButtonEles = userContainerEle.getElementsByClassName("is-delete-user-button");
+
+  for (let buttonIndex = 0; buttonIndex < deleteUserButtonEles.length; buttonIndex += 1) {
+
+    deleteUserButtonEles[buttonIndex].addEventListener("click", deleteUserFn);
+
+  }
+
+  /*
    * Update user
    */
 
-  const updateUserModalEle = document.getElementsByClassName("is-update-user-modal")[0];
+  const updateUserModalEle = document.getElementById("is-update-user-modal");
   const updateUserUserNameSpanEles = updateUserModalEle.getElementsByClassName("container--userName");
 
   llm.initializeTabs(updateUserModalEle.getElementsByClassName("tabs")[0].getElementsByTagName("ul")[0]);
@@ -198,7 +243,7 @@
 
   }
 
-  const updateUserButtonEles = userContainerEle.getElementsByTagName("a");
+  const updateUserButtonEles = userContainerEle.getElementsByClassName("is-update-user-button");
 
   for (let buttonIndex = 0; buttonIndex < updateUserButtonEles.length; buttonIndex += 1) {
 

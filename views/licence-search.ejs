@@ -1,10 +1,10 @@
 <%- include('_header'); -%>
 
-<div class="columns">
+<div class="columns is-block-print">
   <div class="column is-3 is-hidden-print">
     <%- include("_sideMenu-licences"); -%>
   </div>
-  <div class="column">
+  <div class="column is-block-print">
     <nav class="breadcrumb">
       <ul>
         <li><a href="/dashboard">Home</a></li>
@@ -78,7 +78,7 @@
       </div>
     </form>
 
-    <div class="has-margin-top-20" id="container--searchResults" data-external-licence-number-label="<%= configFns.getProperty("licences.externalLicenceNumber.fieldLabel") %>"></div>
+    <div class="has-margin-top-20 is-block-print" id="container--searchResults" data-external-licence-number-label="<%= configFns.getProperty("licences.externalLicenceNumber.fieldLabel") %>"></div>
   </div>
 </div>
 

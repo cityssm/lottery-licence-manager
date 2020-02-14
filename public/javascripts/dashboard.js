@@ -2,11 +2,11 @@
 
 (function() {
 
-  const changePasswordModalEles = document.getElementsByClassName("is-change-password-modal");
+  const changePasswordModalEle = document.getElementById("is-change-password-modal");
 
-  if (changePasswordModalEles.length > 0) {
+  if (changePasswordModalEle) {
 
-    changePasswordModalEles[0].getElementsByTagName("form")[0].addEventListener("submit", function(formEvent) {
+    changePasswordModalEle.getElementsByTagName("form")[0].addEventListener("submit", function(formEvent) {
 
       formEvent.preventDefault();
 
@@ -19,7 +19,7 @@
 
           if (responseJSON.success) {
 
-            llm.hideModal(changePasswordModalEles[0]);
+            llm.hideModal(changePasswordModalEle);
             llm.alertModal("Password Updated Successfully", "", "OK", "success");
 
           }
@@ -32,14 +32,32 @@
 
     document.getElementsByClassName("is-change-password-button")[0].addEventListener("click", function() {
 
-      changePasswordModalEles[0].getElementsByTagName("form")[0].reset();
-      llm.showModal(changePasswordModalEles[0]);
+      changePasswordModalEle.getElementsByTagName("form")[0].reset();
+      llm.showModal(changePasswordModalEle);
       document.getElementById("changePassword--oldPassword").focus();
-      
+
     });
 
+    const toggleVisibilityFn = function(buttonEvent) {
 
-    const cancelButtonEles = changePasswordModalEles[0].getElementsByClassName("is-cancel-button");
+      const inputEle = buttonEvent.currentTarget.closest(".field").getElementsByClassName("input")[0];
+
+      inputEle.setAttribute(
+        "type",
+        inputEle.getAttribute("type") === "text" ? "password" : "text"
+      );
+
+    };
+
+    const toggleVisibilityButtonEles = changePasswordModalEle.getElementsByClassName("is-toggle-visibility-button");
+
+    for (let buttonIndex = 0; buttonIndex < toggleVisibilityButtonEles.length; buttonIndex += 1) {
+
+      toggleVisibilityButtonEles[buttonIndex].addEventListener("click", toggleVisibilityFn);
+
+    }
+
+    const cancelButtonEles = changePasswordModalEle.getElementsByClassName("is-cancel-button");
 
     for (let buttonIndex = 0; buttonIndex < cancelButtonEles.length; buttonIndex += 1) {
 

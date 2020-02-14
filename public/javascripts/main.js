@@ -474,10 +474,11 @@ llm.initializeTabs = function(tabsListEle, callbackFns) {
 
   }
 
-  const isPanelTabs = tabsListEle.classList.contains("panel-tabs");
+  const isPanelOrMenuListTabs = tabsListEle.classList.contains("panel-tabs") || tabsListEle.classList.contains("menu-list");
 
-  const listItemEles = tabsListEle.getElementsByTagName(isPanelTabs ? "a" : "li");
-  const tabLinkEles = (isPanelTabs ? listItemEles : tabsListEle.getElementsByTagName("a"));
+
+  const listItemEles = tabsListEle.getElementsByTagName(isPanelOrMenuListTabs ? "a" : "li");
+  const tabLinkEles = (isPanelOrMenuListTabs ? listItemEles : tabsListEle.getElementsByTagName("a"));
 
   function tabClickFn(clickEvent) {
 
@@ -494,7 +495,7 @@ llm.initializeTabs = function(tabsListEle, callbackFns) {
     }
 
     // Add is-active to the selected tab
-    (isPanelTabs ? tabLinkEle : tabLinkEle.parentNode).classList.add("is-active");
+    (isPanelOrMenuListTabs ? tabLinkEle : tabLinkEle.parentNode).classList.add("is-active");
     tabLinkEle.setAttribute("aria-selected", "true");
 
     const tabContentEles = tabContentEle.parentNode.getElementsByClassName("tab-content");
@@ -517,7 +518,7 @@ llm.initializeTabs = function(tabsListEle, callbackFns) {
 
   for (let index = 0; index < listItemEles.length; index += 1) {
 
-    (isPanelTabs ?
+    (isPanelOrMenuListTabs ?
       listItemEles[index] :
       listItemEles[index].getElementsByTagName("a")[0]).addEventListener("click", tabClickFn);
 

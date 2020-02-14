@@ -1,29 +1,40 @@
-<nav class="panel">
-  <div class="panel-heading">
+<aside class="menu">
+  <p class="menu-label">
     Locations
-  </div>
-  <% if (user.userProperties.canCreate) { %>
-    <div class="panel-block">
-      <a class="button is-primary is-fullwidth" href="/locations/new">
-        <span class="icon is-small">
-          <i class="fas fa-plus" aria-hidden="true"></i>
+  </p>
+  <ul class="menu-list">
+    <li>
+      <a class="<%= (headTitle === "Locations" ? "is-active" : "") %>" href="/locations">
+        <span class="icon">
+          <i class="fas fa-users" aria-hidden="true"></i>
         </span>
-        <span>Create a New Location</span>
+        Location Search
       </a>
-    </div>
-  <% } %>
-  <a class="panel-block <%= (headTitle === "Locations" ? " is-active" : "") %>" href="/locations">
-    <span class="panel-icon">
-      <i class="fas fa-users" aria-hidden="true"></i>
-    </span>
-    Location Search
-  </a>
+    </li>
+    <% if (user.userProperties.canCreate) { %>
+      <li>
+        <a href="/locations/new">
+          <span class="icon">
+            <i class="fas fa-plus" aria-hidden="true"></i>
+          </span>
+          Create a New Location
+        </a>
+      </li>
+    <% } %>
+  </ul>
   <% if (user.userProperties.canUpdate) { %>
-    <a class="panel-block <%= (headTitle === "Location Cleanup" ? " is-active" : "") %>" href="/locations/cleanup">
-      <span class="panel-icon">
-        <i class="fas fa-broom" aria-hidden="true"></i>
-      </span>
-      Location Cleanup
-    </a>
+    <p class="menu-label">
+      Reports
+    </p>
+    <ul class="menu-list">
+      <li>
+        <a class="<%= (headTitle === "Location Cleanup" ? "is-active" : "") %>" href="/locations/cleanup">
+          <span class="icon">
+            <i class="fas fa-broom" aria-hidden="true"></i>
+          </span>
+          Location Cleanup
+        </a>
+      </li>
+    </ul>
   <% } %>
-</nav>
+</aside>

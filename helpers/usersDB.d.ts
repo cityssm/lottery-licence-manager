@@ -10,3 +10,4 @@ export declare function createUser(reqBody: any): string | false;
 export declare function updateUser(reqBody: any): number;
 export declare function updateUserProperty(reqBody: any): number;
 export declare function generateNewPassword(userName: string): string;
+export declare function inactivateUser(userName: string): number;

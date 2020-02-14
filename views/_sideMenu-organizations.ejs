@@ -1,37 +1,50 @@
-<nav class="panel">
-  <div class="panel-heading">
+<aside class="menu">
+  <p class="menu-label">
     Organizations
-  </div>
-  <% if (user.userProperties.canCreate) { %>
-    <div class="panel-block">
-      <a class="button is-primary is-fullwidth" href="/organizations/new">
-        <span class="icon is-small">
-          <i class="fas fa-plus" aria-hidden="true"></i>
+  </p>
+  <ul class="menu-list">
+    <li>
+      <a class="<%= (headTitle === "Organizations" ? "is-active" : "") %>" href="/organizations">
+        <span class="icon">
+          <i class="fas fa-users" aria-hidden="true"></i>
         </span>
-        <span>Create a New Organization</span>
+        Organization Search
       </a>
-    </div>
-  <% } %>
-  <a class="panel-block <%= (headTitle === "Organizations" ? " is-active" : "") %>" href="/organizations">
-    <span class="panel-icon">
-      <i class="fas fa-users" aria-hidden="true"></i>
-    </span>
-    Organization Search
-  </a>
+    </li>
+    <% if (user.userProperties.canCreate) { %>
+      <li>
+        <a href="/organizations/new">
+          <span class="icon">
+            <i class="fas fa-plus" aria-hidden="true"></i>
+          </span>
+          Create a New Organization
+        </a>
+      </li>
+    <% } %>
+  </ul>
   <% if (user.userProperties.canUpdate) { %>
-    <a class="panel-block <%= (headTitle === "Organization Cleanup" ? " is-active" : "") %>" href="/organizations/cleanup">
-      <span class="panel-icon">
-        <i class="fas fa-broom" aria-hidden="true"></i>
-      </span>
-      Organization Cleanup
-    </a>
+    <p class="menu-label">
+      Reports
+    </p>
+    <ul class="menu-list">
+      <li>
+        <a class="<%= (headTitle === "Organization Cleanup" ? "is-active" : "") %>" href="/organizations/cleanup">
+          <span class="icon">
+            <i class="fas fa-broom" aria-hidden="true"></i>
+          </span>
+          Organization Cleanup
+        </a>
+      </li>
+      <% if (user.userProperties.isAdmin) { %>
+        <li>
+          <a class="<%= (headTitle === "Organization Recovery" ? "is-active" : "") %>" href="/organizations/recovery">
+            <span class="icon">
+              <i class="fas fa-trash-restore" aria-hidden="true"></i>
+            </span>
+            Organization Recovery
+          </a>
+        </li>
+      <% } %>
+    </ul>
   <% } %>
-  <% if (user.userProperties.isAdmin) { %>
-    <a class="panel-block <%= (headTitle === "Organization Recovery" ? " is-active" : "") %>" href="/organizations/recovery">
-      <span class="panel-icon">
-        <i class="fas fa-trash-restore" aria-hidden="true"></i>
-      </span>
-      Organization Recovery
-    </a>
-  <% } %>
-</nav>
+</aside>

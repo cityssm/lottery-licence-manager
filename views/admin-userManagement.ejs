@@ -10,7 +10,7 @@
         <li><a href="/dashboard">Home</a></li>
         <li class="is-active">
           <a href="#" aria-current="page">
-            <span class="icon"><i class="fas fa-cog" aria-hidden="true"></i></span>
+            <span class="icon is-small"><i class="fas fa-cog" aria-hidden="true"></i></span>
             <span>User Management</span>
           </a>
         </li>
@@ -25,38 +25,63 @@
       </div>
       <div class="level-right has-text-right is-hidden-print">
         <button class="button is-primary" id="is-create-user-button" type="button">
-          <span class="icon">
+          <span class="icon is-small">
             <i class="fas fa-plus" aria-hidden="true"></i>
           </span>
           <span>Create a User</span>
         </button>
       </div>
     </div>
-    <div class="panel" id="container--users">
-      <%
-      for (let userIndex = 0; userIndex < users.length; userIndex += 1) {
-        const userObj = users[userIndex];
-        %>
-        <a class="panel-block is-block" data-user-name="<%= userObj.userName %>" data-first-name="<%= userObj.firstName %>" data-last-name="<%= userObj.lastName %>">
-          <div class="columns">
-            <div class="column is-narrow">
-              <i class="fas fa-user" aria-hidden="true"></i>
-            </div>
-            <div class="column">
-              <span data-tooltip="User Name"><%= userObj.userName %></span>
-            </div>
-            <div class="column"><%= userObj.firstName %></div>
-            <div class="column"><%= userObj.lastName %></div>
-          </div>
-        </a>
+
+    <table class="table is-striped is-hoverable is-fullwidth">
+      <thead>
+        <tr>
+          <th>User Name</th>
+          <th>Last Name</th>
+          <th>First Name</th>
+          <th><span class="sr-only">Options</span></th>
+        </tr>
+      </thead>
+      <tbody id="container--users">
         <%
-      }
-      %>
-    </div>
+          for (let userIndex = 0; userIndex < users.length; userIndex += 1) {
+            const userObj = users[userIndex];
+        %>
+          <tr>
+            <td>
+              <a class="is-update-user-button" data-user-name="<%= userObj.userName %>" data-first-name="<%= userObj.firstName %>" data-last-name="<%= userObj.lastName %>">
+                <%= userObj.userName %>
+              </a>
+            </td>
+            <td>
+              <%= userObj.firstName %>
+            </td>
+            <td>
+              <%= userObj.lastName %>
+            </td>
+            <td class="has-text-right">
+              <% if (userObj.userName === user.userName) { %>
+                <span class="tag is-primary">
+                  <span class="icon is-small"><i class="fas fa-lock" aria-hidden="true"></i></span>
+                  <span>Current Account</span>
+                </span>
+              <% } else { %>
+                <button class="button is-danger is-small is-delete-user-button" data-user-name="<%=userObj.userName %>" type="button">
+                  <span class="icon"><i class="fas fa-trash" aria-hidden="true"></i></span>
+                  <span>Delete</span>
+                </button>
+              <% } %>
+            </td>
+          </tr>
+        <%
+          }
+        %>
+      </tbody>
+    </table>
   </div>
 </div>
 
-<div class="modal is-create-user-modal">
+<div class="modal" id="is-create-user-modal">
   <div class="modal-background"></div>
   <form>
     <div class="modal-card">
@@ -101,7 +126,7 @@
   </form>
 </div>
 
-<div class="modal is-update-user-modal">
+<div class="modal" id="is-update-user-modal">
   <div class="modal-background"></div>
     <div class="modal-card">
       <header class="modal-card-head">

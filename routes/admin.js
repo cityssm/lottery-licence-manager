@@ -125,4 +125,29 @@ router.post("/doGetUserProperties", function (req, res) {
     const userProperties = usersDB.getUserProperties(req.body.userName);
     res.json(userProperties);
 });
+router.post("/doDeleteUser", function (req, res) {
+    if (!req.session.user.userProperties.isAdmin) {
+        res
+            .status(403)
+            .json({
+            success: false,
+            message: "Forbidden"
+        });
+        return;
+    }
+    const userNameToDelete = req.body.userName;
+    if (userNameToDelete === req.session.user.userName) {
+        res
+            .status(403)
+            .json({
+            success: false,
+            message: "Forbidden"
+        });
+        return;
+    }
+    const success = usersDB.inactivateUser(userNameToDelete);
+    res.json({
+        success: success
+    });
+});
 module.exports = router;

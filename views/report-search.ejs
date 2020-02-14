@@ -1,480 +1,499 @@
 <%- include('_header'); -%>
 
-<nav class="breadcrumb">
-  <ul>
-    <li><a href="/dashboard">Home</a></li>
-    <li class="is-active"><a href="#" aria-current="page">Reports</a></li>
-  </ul>
-</nav>
-
-<h1 class="title is-1">
-  Find a Report
-</h1>
-
-<div class="message is-info">
-  <p class="message-body">
-    Note that more export options are available when viewing individual records.
-  </p>
-</div>
-
-<div class="tabs is-boxed" id="tabs--reports">
-  <ul role="tablist">
-    <li class="is-active" role="presentation">
-      <a id="tab--organizationReports" role="tab" href="#tabContent--organizationReports" aria-selected="true">
-        <span class="icon">
-          <i class="fas fa-users" aria-hidden="true"></i>
-        </span>
-        <span>Organizations</span>
-      </a>
-    </li>
-    <li role="presentation">
-      <a id="tab--licenceReports" role="tab" href="#tabContent--licenceReports">
-        <span class="icon">
-          <i class="fas fa-certificate" aria-hidden="true"></i>
-        </span>
-        <span>Licences</span>
-      </a>
-    </li>
-    <li role="presentation">
-      <a id="tab--transactionReports" role="tab" href="#tabContent--transactionReports">
-        <span class="icon">
-          <i class="fas fa-dollar-sign" aria-hidden="true"></i>
-        </span>
-        <span>Transactions</span>
-      </a>
-    </li>
-    <li role="presentation">
-      <a id="tab--eventReports" role="tab" href="#tabContent--eventReports">
-        <span class="icon">
-          <i class="fas fa-calendar" aria-hidden="true"></i>
-        </span>
-        <span>Events</span>
-      </a>
-    </li>
-    <li role="presentation">
-      <a id="tab--locationReports" role="tab" href="#tabContent--locationReports">
-        <span class="icon">
-          <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
-        </span>
-        <span>Locations</span>
-      </a>
-    </li>
-  </ul>
-</div>
-
-<div class="tab-container">
-  <div class="tab-content is-active" id="tabContent--organizationReports" role="tabpanel" aria-labelledby="tab--organizationReports">
-    <div class="columns">
-      <div class="column">
-        <div class="panel">
-          <a class="panel-block align-items-flex-start" href="/reports/organizations-withDefaultRepresentatives" target="_blank" download>
-            <div class="has-text-centered has-margin-10">
-              <span class="icon has-text-info">
-                <i class="fas fa-2x fa-file " aria-hidden="true"></i>
-              </span><br />
-              <span class="tag is-info">CSV</span>
-            </div>
-            <div>
-              <h3 class="title is-5 is-marginless">Full Organization List with Default Representatives</h3>
-              <p>
-                Includes all active organizations eligible for new licences and their current default representatives.
-                Can be used for creating mail merges.
-              </p>
-            </div>
+<div class="columns">
+  <div class="column is-3 is-hidden-print">
+    <aside class="menu">
+      <p class="menu-label">
+        Reports
+      </p>
+      <ul class="menu-list" id="tabs--reports" role="tablist">
+        <li role="presentation">
+          <a class="is-active" id="tab--organizationReports" role="tab" href="#tabContent--organizationReports" aria-selected="true">
+            <span class="icon">
+              <i class="fas fa-users" aria-hidden="true"></i>
+            </span>
+            Organizations
           </a>
-          <a class="panel-block align-items-flex-start" href="/reports/organizations-ineligible" target="_blank" download>
-            <div class="has-text-centered has-margin-10">
-              <span class="icon has-text-info">
-                <i class="fas fa-2x fa-file " aria-hidden="true"></i>
-              </span><br />
-              <span class="tag is-info">CSV</span>
-            </div>
-            <div>
-              <h3 class="title is-5 is-marginless">Organizations Ineligible for New Licences</h3>
-              <p>
-                Includes all organizations that have been marked as ineligible for new licences, yet are still active in the system.
-              </p>
-            </div>
+        </li>
+        <li role="presentation">
+          <a id="tab--licenceReports" role="tab" href="#tabContent--licenceReports">
+            <span class="icon">
+              <i class="fas fa-certificate" aria-hidden="true"></i>
+            </span>
+            Licences
           </a>
-          <a class="panel-block align-items-flex-start" href="/reports/organizations-deleted" target="_blank" download>
-            <div class="has-text-centered has-margin-10">
-              <span class="icon has-text-info">
-                <i class="fas fa-2x fa-file " aria-hidden="true"></i>
-              </span><br />
-              <span class="tag is-info">CSV</span>
-            </div>
-            <div>
-              <h3 class="title is-5 is-marginless">Deleted Organization List</h3>
-              <p>
-                Includes all organizations that have been deleted <em>but are still recoverable</em>.
-              </p>
-            </div>
+        </li>
+        <li role="presentation">
+          <a id="tab--transactionReports" role="tab" href="#tabContent--transactionReports">
+            <span class="icon">
+              <i class="fas fa-dollar-sign" aria-hidden="true"></i>
+            </span>
+            Transactions
           </a>
-        </div>
-      </div>
-      <div class="column">
-        <div class="panel">
-          <a class="panel-block align-items-flex-start" href="/reports/organizations-all" target="_blank" download>
-            <div class="has-text-centered has-margin-10">
-              <span class="icon has-text-info">
-                <i class="fas fa-2x fa-table" aria-hidden="true"></i>
-              </span><br />
-              <span class="tag is-info">CSV</span>
-            </div>
-            <div>
-              <h3 class="title is-5 is-marginless">Full Organization Table</h3>
-              <p>
-                All the data in the Organizations table unfiltered.
-              </p>
-              <p class="is-size-7 is-italic">
-                Includes deleted records that have not been fully purged.
-              </p>
-            </div>
+        </li>
+        <li role="presentation">
+          <a id="tab--eventReports" role="tab" href="#tabContent--eventReports">
+            <span class="icon">
+              <i class="fas fa-calendar" aria-hidden="true"></i>
+            </span>
+            Events
           </a>
-          <a class="panel-block align-items-flex-start" href="/reports/representatives-all" target="_blank" download>
-            <div class="has-text-centered has-margin-10">
-              <span class="icon has-text-info">
-                <i class="fas fa-2x fa-table" aria-hidden="true"></i>
-              </span><br />
-              <span class="tag is-info">CSV</span>
-            </div>
-            <div>
-              <h3 class="title is-5 is-marginless">Full Representatives Table</h3>
-              <p>
-                All the data in the OrganizationRepresentatives table unfiltered.
-              </p>
-            </div>
+        </li>
+        <li role="presentation">
+          <a id="tab--locationReports" role="tab" href="#tabContent--locationReports">
+            <span class="icon">
+              <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
+            </span>
+            Locations
           </a>
-          <a class="panel-block align-items-flex-start" href="/reports/remarks-all" target="_blank" download>
-            <div class="has-text-centered has-margin-10">
-              <span class="icon has-text-info">
-                <i class="fas fa-2x fa-table" aria-hidden="true"></i>
-              </span><br />
-              <span class="tag is-info">CSV</span>
-            </div>
-            <div>
-              <h3 class="title is-5 is-marginless">Full Remarks Table</h3>
-              <p>
-                All the data in the OrganizationRemarks table unfiltered.
-              </p>
-              <p class="is-size-7 is-italic">
-                Includes deleted records that have not been fully purged.
-              </p>
-            </div>
-          </a>
-          <a class="panel-block align-items-flex-start" href="/reports/bankRecords-all" target="_blank" download>
-            <div class="has-text-centered has-margin-10">
-              <span class="icon has-text-info">
-                <i class="fas fa-2x fa-table" aria-hidden="true"></i>
-              </span><br />
-              <span class="tag is-info">CSV</span>
-            </div>
-            <div>
-              <h3 class="title is-5 is-marginless">Full Bank Records Table</h3>
-              <p>
-                All the data in the OrganizationBankRecords table unfiltered.
-              </p>
-              <p class="is-size-7 is-italic">
-                Includes deleted records that have not been fully purged.
-              </p>
-            </div>
-          </a>
-        </div>
-      </div>
+        </li>
+      </ul>
+    </aside>
+    <div class="message is-info has-margin-top-10">
+      <p class="message-body">
+        Note that more export options are available when viewing individual records.
+      </p>
     </div>
   </div>
-  <div class="tab-content" id="tabContent--licenceReports" role="tabpanel" aria-labelledby="tab--licenceReports">
-    <div class="columns">
-      <div class="column">
-        <div class="panel">
-          <a class="panel-block align-items-flex-start" href="/reports/licences-notIssued" target="_blank" download>
-            <div class="has-text-centered has-margin-10">
-              <span class="icon has-text-info">
-                <i class="fas fa-2x fa-file" aria-hidden="true"></i>
-              </span><br />
-              <span class="tag is-info">CSV</span>
-            </div>
-            <div>
-              <h3 class="title is-5 is-marginless">Licences Not Issued</h3>
-              <p>
-                All licences in the system that have not been issued.
-              </p>
-            </div>
-          </a>
-        </div>
-      </div>
-      <div class="column">
-        <div class="panel">
-          <a class="panel-block align-items-flex-start" href="/licences/licenceTypes">
-            <div class="has-text-centered has-margin-10">
-              <span class="icon has-text-info">
-                <i class="fas fa-2x fa-desktop" aria-hidden="true"></i>
-              </span><br />
-              <span class="tag is-info">Page</span>
-            </div>
-            <div>
-              <h3 class="title is-5 is-marginless">Licence Type Summary Report</h3>
-              <p>
-                An interactive report of licences over a time range,
-                summarized by count, total value, and total licence fee.
-              </p>
-            </div>
-          </a>
-          <a class="panel-block align-items-flex-start" href="/licences/activeSummary">
-            <div class="has-text-centered has-margin-10">
-              <span class="icon has-text-info">
-                <i class="fas fa-2x fa-desktop" aria-hidden="true"></i>
-              </span><br />
-              <span class="tag is-info">Page</span>
-            </div>
-            <div>
-              <h3 class="title is-5 is-marginless">Active Licence Summary Report</h3>
-              <p>
-                An interactive report of licences active over a given time range.
-              </p>
-            </div>
-          </a>
-        </div>
-        <div class="panel">
-          <a class="panel-block align-items-flex-start" href="/reports/licences-all" target="_blank" download>
-            <div class="has-text-centered has-margin-10">
-              <span class="icon has-text-info">
-                <i class="fas fa-2x fa-table" aria-hidden="true"></i>
-              </span><br />
-              <span class="tag is-info">CSV</span>
-            </div>
-            <div>
-              <h3 class="title is-5 is-marginless">Full Licences Table</h3>
-              <p>
-                All the data from the LotteryLicences table unfiltered.
-              </p>
-              <p class="is-size-7 is-italic">
-                Includes deleted records that have not been fully purged.
-              </p>
-            </div>
-            </a>
-          <a class="panel-block align-items-flex-start" href="/reports/amendments-all" target="_blank" download>
-            <div class="has-text-centered has-margin-10">
-              <span class="icon has-text-info">
-                <i class="fas fa-2x fa-table" aria-hidden="true"></i>
-              </span><br />
-              <span class="tag is-info">CSV</span>
-            </div>
-            <div>
-              <h3 class="title is-5 is-marginless">Full Amendments Table</h3>
-              <p>
-                All the data from the LotteryLicenceAmendments table unfiltered.
-              </p>
-              <p class="is-size-7 is-italic">
-                Includes deleted records that have not been fully purged.
-              </p>
-            </div>
-          </a>
-          <a class="panel-block align-items-flex-start" href="/reports/ticketTypes-all" target="_blank" download>
-            <div class="has-text-centered has-margin-10">
-              <span class="icon has-text-info">
-                <i class="fas fa-2x fa-table" aria-hidden="true"></i>
-              </span><br />
-              <span class="tag is-info">CSV</span>
-            </div>
-            <div>
-              <h3 class="title is-5 is-marginless">Full Ticket Types Table</h3>
-              <p>
-                All the data from the LotteryLicenceTicketTypes table unfiltered.
-              </p>
-              <p class="is-size-7 is-italic">
-                Includes deleted records that have not been fully purged.
-              </p>
-            </div>
-          </a>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="tab-content" id="tabContent--transactionReports" role="tabpanel" aria-labelledby="tab--transactionReports">
-    <div class="columns">
-      <div class="column">
-        <div class="panel">
-          <div class="panel-block align-items-flex-start">
-            <div class="has-text-centered has-margin-10">
-              <span class="icon has-text-info">
-                <i class="fas fa-2x fa-file" aria-hidden="true"></i>
-              </span><br />
-              <span class="tag is-info">CSV</span>
-            </div>
-            <div>
-              <h3 class="title is-5 is-marginless">Transactions by Date</h3>
-              <p>
-                All transactions occurring on a selected date.
-              </p>
-              <form action="/reports/transactions-byTransactionDate" method="get">
-                <div class="field has-addons has-margin-top-5">
-                  <div class="control is-expanded has-icons-left" data-tooltip="Transaction Date">
-                    <input class="input" name="transactionDate" type="date" value="<%= todayDateString %>" required />
-                    <span class="icon is-left">
-                      <i class="fas fa-calendar" aria-hidden="true"></i>
-                    </span>
-                  </div>
-                  <div class="control">
-                    <button class="button is-info" type="submit">
-                      Export
-                    </button>
-                  </div>
+  <div class="column">
+
+    <nav class="breadcrumb">
+      <ul>
+        <li><a href="/dashboard">Home</a></li>
+        <li class="is-active"><a href="#" aria-current="page">Reports</a></li>
+      </ul>
+    </nav>
+
+    <div class="tab-container">
+      <div class="tab-content is-active" id="tabContent--organizationReports" role="tabpanel" aria-labelledby="tab--organizationReports">
+        <h1 class="title is-1">
+          Organization Reports
+        </h1>
+        <div class="columns">
+          <div class="column">
+            <div class="panel">
+              <a class="panel-block align-items-flex-start" href="/reports/organizations-withDefaultRepresentatives" target="_blank" download>
+                <div class="has-text-centered has-margin-10">
+                  <span class="icon has-text-info">
+                    <i class="fas fa-2x fa-file " aria-hidden="true"></i>
+                  </span><br />
+                  <span class="tag is-info">CSV</span>
                 </div>
-              </form>
+                <div>
+                  <h3 class="title is-5 is-marginless">Full Organization List with Default Representatives</h3>
+                  <p>
+                    Includes all active organizations eligible for new licences and their current default representatives.
+                    Can be used for creating mail merges.
+                  </p>
+                </div>
+              </a>
+              <a class="panel-block align-items-flex-start" href="/reports/organizations-ineligible" target="_blank" download>
+                <div class="has-text-centered has-margin-10">
+                  <span class="icon has-text-info">
+                    <i class="fas fa-2x fa-file " aria-hidden="true"></i>
+                  </span><br />
+                  <span class="tag is-info">CSV</span>
+                </div>
+                <div>
+                  <h3 class="title is-5 is-marginless">Organizations Ineligible for New Licences</h3>
+                  <p>
+                    Includes all organizations that have been marked as ineligible for new licences, yet are still active in the system.
+                  </p>
+                </div>
+              </a>
+              <a class="panel-block align-items-flex-start" href="/reports/organizations-deleted" target="_blank" download>
+                <div class="has-text-centered has-margin-10">
+                  <span class="icon has-text-info">
+                    <i class="fas fa-2x fa-file " aria-hidden="true"></i>
+                  </span><br />
+                  <span class="tag is-info">CSV</span>
+                </div>
+                <div>
+                  <h3 class="title is-5 is-marginless">Deleted Organization List</h3>
+                  <p>
+                    Includes all organizations that have been deleted <em>but are still recoverable</em>.
+                  </p>
+                </div>
+              </a>
+            </div>
+          </div>
+          <div class="column">
+            <div class="panel">
+              <a class="panel-block align-items-flex-start" href="/reports/organizations-all" target="_blank" download>
+                <div class="has-text-centered has-margin-10">
+                  <span class="icon has-text-info">
+                    <i class="fas fa-2x fa-table" aria-hidden="true"></i>
+                  </span><br />
+                  <span class="tag is-info">CSV</span>
+                </div>
+                <div>
+                  <h3 class="title is-5 is-marginless">Full Organization Table</h3>
+                  <p>
+                    All the data in the Organizations table unfiltered.
+                  </p>
+                  <p class="is-size-7 is-italic">
+                    Includes deleted records that have not been fully purged.
+                  </p>
+                </div>
+              </a>
+              <a class="panel-block align-items-flex-start" href="/reports/representatives-all" target="_blank" download>
+                <div class="has-text-centered has-margin-10">
+                  <span class="icon has-text-info">
+                    <i class="fas fa-2x fa-table" aria-hidden="true"></i>
+                  </span><br />
+                  <span class="tag is-info">CSV</span>
+                </div>
+                <div>
+                  <h3 class="title is-5 is-marginless">Full Representatives Table</h3>
+                  <p>
+                    All the data in the OrganizationRepresentatives table unfiltered.
+                  </p>
+                </div>
+              </a>
+              <a class="panel-block align-items-flex-start" href="/reports/remarks-all" target="_blank" download>
+                <div class="has-text-centered has-margin-10">
+                  <span class="icon has-text-info">
+                    <i class="fas fa-2x fa-table" aria-hidden="true"></i>
+                  </span><br />
+                  <span class="tag is-info">CSV</span>
+                </div>
+                <div>
+                  <h3 class="title is-5 is-marginless">Full Remarks Table</h3>
+                  <p>
+                    All the data in the OrganizationRemarks table unfiltered.
+                  </p>
+                  <p class="is-size-7 is-italic">
+                    Includes deleted records that have not been fully purged.
+                  </p>
+                </div>
+              </a>
+              <a class="panel-block align-items-flex-start" href="/reports/bankRecords-all" target="_blank" download>
+                <div class="has-text-centered has-margin-10">
+                  <span class="icon has-text-info">
+                    <i class="fas fa-2x fa-table" aria-hidden="true"></i>
+                  </span><br />
+                  <span class="tag is-info">CSV</span>
+                </div>
+                <div>
+                  <h3 class="title is-5 is-marginless">Full Bank Records Table</h3>
+                  <p>
+                    All the data in the OrganizationBankRecords table unfiltered.
+                  </p>
+                  <p class="is-size-7 is-italic">
+                    Includes deleted records that have not been fully purged.
+                  </p>
+                </div>
+              </a>
             </div>
           </div>
         </div>
       </div>
-      <div class="column">
-        <div class="panel">
-          <a class="panel-block align-items-flex-start" href="/reports/transactions-all" target="_blank" download>
-            <div class="has-text-centered has-margin-10">
-              <span class="icon has-text-info">
-                <i class="fas fa-2x fa-table" aria-hidden="true"></i>
-              </span><br />
-              <span class="tag is-info">CSV</span>
+      <div class="tab-content" id="tabContent--licenceReports" role="tabpanel" aria-labelledby="tab--licenceReports">
+        <h1 class="title is-1">
+          Licence Reports
+        </h1>
+        <div class="columns">
+          <div class="column">
+            <div class="panel">
+              <a class="panel-block align-items-flex-start" href="/reports/licences-notIssued" target="_blank" download>
+                <div class="has-text-centered has-margin-10">
+                  <span class="icon has-text-info">
+                    <i class="fas fa-2x fa-file" aria-hidden="true"></i>
+                  </span><br />
+                  <span class="tag is-info">CSV</span>
+                </div>
+                <div>
+                  <h3 class="title is-5 is-marginless">Licences Not Issued</h3>
+                  <p>
+                    All licences in the system that have not been issued.
+                  </p>
+                </div>
+              </a>
             </div>
-            <div>
-              <h3 class="title is-5 is-marginless">Full Transactions Table</h3>
-              <p>
-                All the data from the LotteryLicenceTransactions table unfiltered.
-              </p>
-              <p class="is-size-7 is-italic">
-                Includes deleted records that have not been fully purged.
-              </p>
+          </div>
+          <div class="column">
+            <div class="panel">
+              <a class="panel-block align-items-flex-start" href="/licences/licenceTypes">
+                <div class="has-text-centered has-margin-10">
+                  <span class="icon has-text-info">
+                    <i class="fas fa-2x fa-desktop" aria-hidden="true"></i>
+                  </span><br />
+                  <span class="tag is-info">Page</span>
+                </div>
+                <div>
+                  <h3 class="title is-5 is-marginless">Licence Type Summary Report</h3>
+                  <p>
+                    An interactive report of licences over a time range,
+                    summarized by count, total value, and total licence fee.
+                  </p>
+                </div>
+              </a>
+              <a class="panel-block align-items-flex-start" href="/licences/activeSummary">
+                <div class="has-text-centered has-margin-10">
+                  <span class="icon has-text-info">
+                    <i class="fas fa-2x fa-desktop" aria-hidden="true"></i>
+                  </span><br />
+                  <span class="tag is-info">Page</span>
+                </div>
+                <div>
+                  <h3 class="title is-5 is-marginless">Active Licence Summary Report</h3>
+                  <p>
+                    An interactive report of licences active over a given time range.
+                  </p>
+                </div>
+              </a>
             </div>
-          </a>
+            <div class="panel">
+              <a class="panel-block align-items-flex-start" href="/reports/licences-all" target="_blank" download>
+                <div class="has-text-centered has-margin-10">
+                  <span class="icon has-text-info">
+                    <i class="fas fa-2x fa-table" aria-hidden="true"></i>
+                  </span><br />
+                  <span class="tag is-info">CSV</span>
+                </div>
+                <div>
+                  <h3 class="title is-5 is-marginless">Full Licences Table</h3>
+                  <p>
+                    All the data from the LotteryLicences table unfiltered.
+                  </p>
+                  <p class="is-size-7 is-italic">
+                    Includes deleted records that have not been fully purged.
+                  </p>
+                </div>
+                </a>
+              <a class="panel-block align-items-flex-start" href="/reports/amendments-all" target="_blank" download>
+                <div class="has-text-centered has-margin-10">
+                  <span class="icon has-text-info">
+                    <i class="fas fa-2x fa-table" aria-hidden="true"></i>
+                  </span><br />
+                  <span class="tag is-info">CSV</span>
+                </div>
+                <div>
+                  <h3 class="title is-5 is-marginless">Full Amendments Table</h3>
+                  <p>
+                    All the data from the LotteryLicenceAmendments table unfiltered.
+                  </p>
+                  <p class="is-size-7 is-italic">
+                    Includes deleted records that have not been fully purged.
+                  </p>
+                </div>
+              </a>
+              <a class="panel-block align-items-flex-start" href="/reports/ticketTypes-all" target="_blank" download>
+                <div class="has-text-centered has-margin-10">
+                  <span class="icon has-text-info">
+                    <i class="fas fa-2x fa-table" aria-hidden="true"></i>
+                  </span><br />
+                  <span class="tag is-info">CSV</span>
+                </div>
+                <div>
+                  <h3 class="title is-5 is-marginless">Full Ticket Types Table</h3>
+                  <p>
+                    All the data from the LotteryLicenceTicketTypes table unfiltered.
+                  </p>
+                  <p class="is-size-7 is-italic">
+                    Includes deleted records that have not been fully purged.
+                  </p>
+                </div>
+              </a>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
-  <div class="tab-content" id="tabContent--eventReports" role="tabpanel" aria-labelledby="tab--eventReports">
-    <div class="columns">
-      <div class="column">
-        <div class="panel">
-          <a class="panel-block align-items-flex-start" href="/reports/events-upcoming" target="_blank" download>
-            <div class="has-text-centered has-margin-10">
-              <span class="icon has-text-info">
-                <i class="fas fa-2x fa-file " aria-hidden="true"></i>
-              </span><br />
-              <span class="tag is-info">CSV</span>
+      <div class="tab-content" id="tabContent--transactionReports" role="tabpanel" aria-labelledby="tab--transactionReports">
+        <h1 class="title is-1">
+          Transaction Reports
+        </h1>
+        <div class="columns">
+          <div class="column">
+            <div class="panel">
+              <div class="panel-block align-items-flex-start">
+                <div class="has-text-centered has-margin-10">
+                  <span class="icon has-text-info">
+                    <i class="fas fa-2x fa-file" aria-hidden="true"></i>
+                  </span><br />
+                  <span class="tag is-info">CSV</span>
+                </div>
+                <div>
+                  <h3 class="title is-5 is-marginless">Transactions by Date</h3>
+                  <p>
+                    All transactions occurring on a selected date.
+                  </p>
+                  <form action="/reports/transactions-byTransactionDate" method="get">
+                    <div class="field has-addons has-margin-top-5">
+                      <div class="control is-expanded has-icons-left" data-tooltip="Transaction Date">
+                        <input class="input" name="transactionDate" type="date" value="<%= todayDateString %>" required />
+                        <span class="icon is-left">
+                          <i class="fas fa-calendar" aria-hidden="true"></i>
+                        </span>
+                      </div>
+                      <div class="control">
+                        <button class="button is-info" type="submit">
+                          Export
+                        </button>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
             </div>
-            <div>
-              <h3 class="title is-5 is-marginless">Upcoming Events</h3>
-              <p>
-                All events scheduled for today or in the future.
-              </p>
+          </div>
+          <div class="column">
+            <div class="panel">
+              <a class="panel-block align-items-flex-start" href="/reports/transactions-all" target="_blank" download>
+                <div class="has-text-centered has-margin-10">
+                  <span class="icon has-text-info">
+                    <i class="fas fa-2x fa-table" aria-hidden="true"></i>
+                  </span><br />
+                  <span class="tag is-info">CSV</span>
+                </div>
+                <div>
+                  <h3 class="title is-5 is-marginless">Full Transactions Table</h3>
+                  <p>
+                    All the data from the LotteryLicenceTransactions table unfiltered.
+                  </p>
+                  <p class="is-size-7 is-italic">
+                    Includes deleted records that have not been fully purged.
+                  </p>
+                </div>
+              </a>
             </div>
-          </a>
-          <a class="panel-block align-items-flex-start" href="/reports/events-pastUnreported" target="_blank" download>
-            <div class="has-text-centered has-margin-10">
-              <span class="icon has-text-info">
-                <i class="fas fa-2x fa-file " aria-hidden="true"></i>
-              </span><br />
-              <span class="tag is-info">CSV</span>
-            </div>
-            <div>
-              <h3 class="title is-5 is-marginless">Past Events that are Unreported</h3>
-              <p>
-                Events that are in the past, but do not have a recorded report date.
-              </p>
-            </div>
-          </a>
+          </div>
         </div>
       </div>
-      <div class="column">
-        <div class="panel">
-          <a class="panel-block align-items-flex-start" href="/events/outstanding">
-            <div class="has-text-centered has-margin-10">
-              <span class="icon has-text-info">
-                <i class="fas fa-2x fa-desktop" aria-hidden="true"></i>
-              </span><br />
-              <span class="tag is-info">Page</span>
+      <div class="tab-content" id="tabContent--eventReports" role="tabpanel" aria-labelledby="tab--eventReports">
+        <h1 class="title is-1">
+          Lottery Event Reports
+        </h1>
+        <div class="columns">
+          <div class="column">
+            <div class="panel">
+              <a class="panel-block align-items-flex-start" href="/reports/events-upcoming" target="_blank" download>
+                <div class="has-text-centered has-margin-10">
+                  <span class="icon has-text-info">
+                    <i class="fas fa-2x fa-file " aria-hidden="true"></i>
+                  </span><br />
+                  <span class="tag is-info">CSV</span>
+                </div>
+                <div>
+                  <h3 class="title is-5 is-marginless">Upcoming Events</h3>
+                  <p>
+                    All events scheduled for today or in the future.
+                  </p>
+                </div>
+              </a>
+              <a class="panel-block align-items-flex-start" href="/reports/events-pastUnreported" target="_blank" download>
+                <div class="has-text-centered has-margin-10">
+                  <span class="icon has-text-info">
+                    <i class="fas fa-2x fa-file " aria-hidden="true"></i>
+                  </span><br />
+                  <span class="tag is-info">CSV</span>
+                </div>
+                <div>
+                  <h3 class="title is-5 is-marginless">Past Events that are Unreported</h3>
+                  <p>
+                    Events that are in the past, but do not have a recorded report date.
+                  </p>
+                </div>
+              </a>
             </div>
-            <div>
-              <h3 class="title is-5 is-marginless">Outstanding Events Report</h3>
-              <p>
-                An interactive report of events with outstanding fiscal information.
-              </p>
+          </div>
+          <div class="column">
+            <div class="panel">
+              <a class="panel-block align-items-flex-start" href="/events/outstanding">
+                <div class="has-text-centered has-margin-10">
+                  <span class="icon has-text-info">
+                    <i class="fas fa-2x fa-desktop" aria-hidden="true"></i>
+                  </span><br />
+                  <span class="tag is-info">Page</span>
+                </div>
+                <div>
+                  <h3 class="title is-5 is-marginless">Outstanding Events Report</h3>
+                  <p>
+                    An interactive report of events with outstanding fiscal information.
+                  </p>
+                </div>
+              </a>
+              <a class="panel-block align-items-flex-start" href="/events/financials">
+                <div class="has-text-centered has-margin-10">
+                  <span class="icon has-text-info">
+                    <i class="fas fa-2x fa-desktop" aria-hidden="true"></i>
+                  </span><br />
+                  <span class="tag is-info">Page</span>
+                </div>
+                <div>
+                  <h3 class="title is-5 is-marginless">Event Financial Summary Report</h3>
+                  <p>
+                    An interactive report summarizing event financials by licence type.
+                  </p>
+                </div>
+              </a>
             </div>
-          </a>
-          <a class="panel-block align-items-flex-start" href="/events/financials">
-            <div class="has-text-centered has-margin-10">
-              <span class="icon has-text-info">
-                <i class="fas fa-2x fa-desktop" aria-hidden="true"></i>
-              </span><br />
-              <span class="tag is-info">Page</span>
+            <div class="panel">
+              <a class="panel-block align-items-flex-start" href="/reports/events-all" target="_blank" download>
+                <div class="has-text-centered has-margin-10">
+                  <span class="icon has-text-info">
+                    <i class="fas fa-2x fa-table" aria-hidden="true"></i>
+                  </span><br />
+                  <span class="tag is-info">CSV</span>
+                </div>
+                <div>
+                  <h3 class="title is-5 is-marginless">Full Events Table</h3>
+                  <p>
+                    All the data from the LotteryEvents table unfiltered.
+                  </p>
+                  <p class="is-size-7 is-italic">
+                    Includes deleted records that have not been fully purged.
+                  </p>
+                </div>
+              </a>
             </div>
-            <div>
-              <h3 class="title is-5 is-marginless">Event Financial Summary Report</h3>
-              <p>
-                An interactive report summarizing event financials by licence type.
-              </p>
-            </div>
-          </a>
-        </div>
-        <div class="panel">
-          <a class="panel-block align-items-flex-start" href="/reports/events-all" target="_blank" download>
-            <div class="has-text-centered has-margin-10">
-              <span class="icon has-text-info">
-                <i class="fas fa-2x fa-table" aria-hidden="true"></i>
-              </span><br />
-              <span class="tag is-info">CSV</span>
-            </div>
-            <div>
-              <h3 class="title is-5 is-marginless">Full Events Table</h3>
-              <p>
-                All the data from the LotteryEvents table unfiltered.
-              </p>
-              <p class="is-size-7 is-italic">
-                Includes deleted records that have not been fully purged.
-              </p>
-            </div>
-          </a>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
-  <div class="tab-content" id="tabContent--locationReports" role="tabpanel" aria-labelledby="tab--locationReports">
-    <div class="columns">
-      <div class="column">
-        <div class="panel">
-          <a class="panel-block align-items-flex-start" href="/reports/locations-unused" target="_blank" download>
-            <div class="has-text-centered has-margin-10">
-              <span class="icon has-text-info">
-                <i class="fas fa-2x fa-file " aria-hidden="true"></i>
-              </span><br />
-              <span class="tag is-info">CSV</span>
+      <div class="tab-content" id="tabContent--locationReports" role="tabpanel" aria-labelledby="tab--locationReports">
+        <h1 class="title is-1">
+          Location Reports
+        </h1>
+        <div class="columns">
+          <div class="column">
+            <div class="panel">
+              <a class="panel-block align-items-flex-start" href="/reports/locations-unused" target="_blank" download>
+                <div class="has-text-centered has-margin-10">
+                  <span class="icon has-text-info">
+                    <i class="fas fa-2x fa-file " aria-hidden="true"></i>
+                  </span><br />
+                  <span class="tag is-info">CSV</span>
+                </div>
+                <div>
+                  <h3 class="title is-5 is-marginless">Unused Location List</h3>
+                  <p>
+                    Includes all locations that have not been used in the past three years.
+                  </p>
+                </div>
+              </a>
             </div>
-            <div>
-              <h3 class="title is-5 is-marginless">Unused Location List</h3>
-              <p>
-                Includes all locations that have not been used in the past three years.
-              </p>
+          </div>
+          <div class="column">
+            <div class="panel">
+              <a class="panel-block align-items-flex-start" href="/reports/locations-all" target="_blank" download>
+                <div class="has-text-centered has-margin-10">
+                  <span class="icon has-text-info">
+                    <i class="fas fa-2x fa-table" aria-hidden="true"></i>
+                  </span><br />
+                  <span class="tag is-info">CSV</span>
+                </div>
+                <div>
+                  <h3 class="title is-5 is-marginless">Full Locations Table</h3>
+                  <p>
+                    All the data from the Locations table unfiltered.
+                  </p>
+                  <p class="is-size-7 is-italic">
+                    Includes deleted records that have not been fully purged.
+                  </p>
+                </div>
+              </a>
             </div>
-          </a>
-        </div>
-      </div>
-      <div class="column">
-        <div class="panel">
-          <a class="panel-block align-items-flex-start" href="/reports/locations-all" target="_blank" download>
-            <div class="has-text-centered has-margin-10">
-              <span class="icon has-text-info">
-                <i class="fas fa-2x fa-table" aria-hidden="true"></i>
-              </span><br />
-              <span class="tag is-info">CSV</span>
-            </div>
-            <div>
-              <h3 class="title is-5 is-marginless">Full Locations Table</h3>
-              <p>
-                All the data from the Locations table unfiltered.
-              </p>
-              <p class="is-size-7 is-italic">
-                Includes deleted records that have not been fully purged.
-              </p>
-            </div>
-          </a>
+          </div>
         </div>
       </div>
     </div>

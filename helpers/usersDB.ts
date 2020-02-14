@@ -37,7 +37,7 @@ export function getUser(userNameSubmitted: string, passwordPlain: string): User 
 
       if (adminPasswordPlain === passwordPlain) {
 
-        const userProperties : UserProperties = Object.assign({}, configFns.getProperty("user.defaultProperties"));
+        const userProperties: UserProperties = Object.assign({}, configFns.getProperty("user.defaultProperties"));
         userProperties.isAdmin = true;
         userProperties.isDefaultAdmin = true;
 
@@ -242,7 +242,11 @@ export function createUser(reqBody: any) {
       " passwordHash = ?," +
       " isActive = 1" +
       " where userName = ?")
-      .run();
+      .run(reqBody.firstName, reqBody.lastName, hash, reqBody.userName);
+
+    db.prepare("delete from UserProperties" +
+      " where userName = ?")
+      .run(reqBody.userName);
 
   } else {
 
@@ -328,5 +332,21 @@ export function generateNewPassword(userName: string) {
   db.close();
 
   return newPasswordPlain;
+
+}
+
+export function inactivateUser(userName: string) {
+
+  const db = sqlite(dbPath);
+
+  const info = db.prepare("update Users" +
+    " set isActive = 0" +
+    " where userName = ?" +
+    " and isActive = 1")
+    .run(userName);
+
+  db.close();
+
+  return info.changes;
 
 }
