@@ -43,7 +43,6 @@
 
   });
 
-
   document.getElementById("is-delete-event-button").addEventListener("click", function(clickEvent) {
 
     clickEvent.preventDefault();
@@ -103,5 +102,95 @@
     }
 
   }
+
+
+  // Bank Info Lookup
+
+
+  document.getElementById("is-bank-information-lookup-button").addEventListener("click", function(clickEvent) {
+
+    clickEvent.preventDefault();
+
+    let bankInfoCloseModalFn;
+    let savedBankInfoList;
+
+    const setPastBankInformation = function(bankInfoClickEvent) {
+
+      bankInfoClickEvent.preventDefault();
+
+      const listIndex = parseInt(bankInfoClickEvent.currentTarget.getAttribute("data-list-index"));
+
+      const record = savedBankInfoList[listIndex];
+
+      document.getElementById("event--bank_name").value = record.bank_name;
+      document.getElementById("event--bank_address").value = record.bank_address;
+      document.getElementById("event--bank_accountNumber").value = record.bank_accountNumber;
+
+      setUnsavedChanges();
+
+      bankInfoCloseModalFn();
+
+    };
+
+    const getPastBankInformation = function() {
+
+      const containerEle = document.getElementById("container--bankInformationLookup");
+
+      llm.postJSON("/events/doGetPastBankInformation", {
+        licenceID: licenceID
+      }, function(bankInfoList) {
+
+        savedBankInfoList = bankInfoList;
+
+        const listEle = document.createElement("div");
+        listEle.className = "list is-hoverable has-margin-bottom-10";
+
+        for (let index = 0; index < bankInfoList.length; index += 1) {
+
+          const record = bankInfoList[index];
+
+          const listItemEle = document.createElement("a");
+
+          listItemEle.className = "list-item";
+          listItemEle.setAttribute("data-list-index", index);
+
+          listItemEle.innerHTML = "<div class=\"columns\">" +
+            "<div class=\"column\">" + llm.escapeHTML(record.bank_name) + "</div>" +
+            "<div class=\"column\">" + llm.escapeHTML(record.bank_address) + "</div>" +
+            "<div class=\"column\">" + llm.escapeHTML(record.bank_accountNumber) + "</div>" +
+            "</div>" +
+            "<div class=\"has-text-right\">" +
+            "<span class=\"tag is-info\" data-tooltip=\"Last Used Event Date\">" +
+            record.eventDateMaxString +
+            "</span>" +
+            "</div>";
+
+          listItemEle.addEventListener("click", setPastBankInformation);
+
+          listEle.insertAdjacentElement("beforeend", listItemEle);
+
+        }
+
+        llm.clearElement(containerEle);
+
+        containerEle.insertAdjacentElement("beforeend", listEle);
+
+      });
+
+    };
+
+    llm.openHtmlModal("event-bankInformationLookup", {
+
+      onshow: getPastBankInformation,
+
+      onshown: function(modalEle, closeModalFn) {
+
+        bankInfoCloseModalFn = closeModalFn;
+
+      }
+    });
+
+  });
+
 
 }());

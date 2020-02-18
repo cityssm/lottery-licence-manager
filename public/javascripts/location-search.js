@@ -2,229 +2,251 @@
 
 (function() {
 
-  const searchStrEle = document.getElementById("filter--locationNameAddress");
-  const locationIsDistributorEle = document.getElementById("filter--locationIsDistributor");
-  const locationIsManufacturerEle = document.getElementById("filter--locationIsManufacturer");
+  const formEle = document.getElementById("form--searchFilters");
+
+  const limitEle = document.getElementById("filter--limit");
+  const offsetEle = document.getElementById("filter--offset");
 
   const searchResultsEle = document.getElementById("container--searchResults");
 
   const canCreate = document.getElementsByTagName("main")[0].getAttribute("data-can-create") === "true";
 
-  let locationsList = [];
 
-  let clickFn_deleteLocation;
+  let displayedLocationList = [];
 
 
-  function filterLocations() {
+  let deleteLocationClickFn;
 
-    if (locationsList.length === 0) {
 
-      searchResultsEle.innerHTML = "<div class=\"message is-info\">" +
-        "<div class=\"message-body\">" +
-        "<strong>There are no locations on record.</strong>" +
-        "</div>" +
-        "</div>";
+  function renderLocationTrEle(locationObj, locationIndex) {
 
-      return;
+    const trEle = document.createElement("tr");
+    trEle.innerHTML = "<td></td>";
 
-    }
+    const locationDisplayNameLinkEle = document.createElement("a");
 
-    let displayLimit = 50;
+    locationDisplayNameLinkEle.innerText = locationObj.locationDisplayName;
+    locationDisplayNameLinkEle.href = "/locations/" + locationObj.locationID;
+    trEle.getElementsByTagName("td")[0].insertAdjacentElement("beforeend", locationDisplayNameLinkEle);
 
-    const locationIsDistributorValue = locationIsDistributorEle.value;
-    const locationIsManufacturerValue = locationIsManufacturerEle.value;
+    // Address
 
-    searchResultsEle.innerHTML = "<table class=\"table is-fullwidth is-striped is-hoverable\">" +
-      "<thead><tr>" +
-      "<th>Location</th>" +
-      "<th>Address</th>" +
-      "<th class=\"has-text-centered\">Licences</th>" +
-      "<th class=\"has-text-centered\">Distributor</th>" +
-      "<th class=\"has-text-centered\">Manufacturer</th>" +
-      (canCreate ? "<th class=\"is-hidden-print\"><span class=\"sr-only\">Options</span></th>" : "") +
-      "</tr></thead>" +
-      "<tbody></tbody>" +
-      "</table>";
+    const addressTdEle = document.createElement("td");
 
-    const tbodyEle = searchResultsEle.getElementsByTagName("tbody")[0];
+    addressTdEle.innerHTML = llm.escapeHTML(locationObj.locationAddress1) +
+      (locationObj.locationAddress2 === "" ?
+        "" :
+        "<br /><small>" + llm.escapeHTML(locationObj.locationAddress2) + "</small>") +
+      (locationObj.locationCity === "" ?
+        "" :
+        "<br /><small>" + llm.escapeHTML(locationObj.locationCity) + ", " + locationObj.locationProvince + "</small>");
 
-    for (let locationIndex = 0; locationIndex < locationsList.length; locationIndex += 1) {
+    trEle.insertAdjacentElement("beforeend", addressTdEle);
 
-      const locationObj = locationsList[locationIndex];
 
-      let doDisplay = true;
+    trEle.insertAdjacentHTML(
+      "beforeend",
+      "<td class=\"has-text-centered\">" +
+      (locationObj.licences_endDateMaxString === "" ?
+        "<span class=\"has-text-grey\">Not Used</span>" :
+        locationObj.licences_endDateMaxString) +
+      "</td>"
+    );
 
-      if (locationIsDistributorValue !== "") {
 
-        if (parseInt(locationIsDistributorValue) !== locationObj.locationIsDistributor) {
+    trEle.insertAdjacentHTML(
+      "beforeend",
+      "<td class=\"has-text-centered\">" +
+      (locationObj.locationIsDistributor ?
+        "<span data-tooltip=\"Distributor\">" +
+        "<span class=\"tag is-success\">Yes</span><br />" +
+        (locationObj.distributor_endDateMaxString === "" ? "<span class=\"has-text-grey\">Never Used</span>" : locationObj.distributor_endDateMaxString) +
+        "</span>" :
+        "<span class=\"sr-only\">No</span>"
+      ) +
+      "</td>"
+    );
 
-          doDisplay = false;
-          continue;
 
-        }
+    trEle.insertAdjacentHTML(
+      "beforeend",
+      "<td class=\"has-text-centered\">" +
+      (locationObj.locationIsManufacturer ?
+        "<span data-tooltip=\"Manufacturer\">" +
+        "<span class=\"tag is-success\">Yes</span><br />" +
+        (locationObj.manufacturer_endDateMaxString === "" ? "<span class=\"has-text-grey\">Never Used</span>" : locationObj.manufacturer_endDateMaxString) +
+        "</span>" :
+        "<span class=\"sr-only\">No</span>"
+      ) +
+      "</td>"
+    );
 
-      }
 
-      if (locationIsManufacturerValue !== "") {
+    if (canCreate) {
 
-        if (parseInt(locationIsManufacturerValue) !== locationObj.locationIsManufacturer) {
-
-          doDisplay = false;
-          continue;
-
-        }
-
-      }
-
-      const searchStrSplit = searchStrEle.value
-        .trim()
-        .toLowerCase()
-        .split(" ");
-
-      for (let searchStrIndex = 0; searchStrIndex < searchStrSplit.length; searchStrIndex += 1) {
-
-        const searchStrPiece = searchStrSplit[searchStrIndex];
-
-        if (locationObj.locationName.toLowerCase().indexOf(searchStrPiece) === -1 &&
-          locationObj.locationAddress1.toLowerCase().indexOf(searchStrPiece) === -1 &&
-          locationObj.locationAddress2.toLowerCase().indexOf(searchStrPiece) === -1 &&
-          locationObj.locationCity.toLowerCase().indexOf(searchStrPiece) === -1) {
-
-          doDisplay = false;
-          break;
-
-        }
-
-      }
-
-      if (!doDisplay) {
-
-        continue;
-
-      }
-
-      displayLimit -= 1;
-
-      const trEle = document.createElement("tr");
-      trEle.innerHTML = "<td></td>";
-
-      const locationDisplayNameLinkEle = document.createElement("a");
-
-      locationDisplayNameLinkEle.innerText = locationObj.locationDisplayName;
-      locationDisplayNameLinkEle.href = "/locations/" + locationObj.locationID;
-      trEle.getElementsByTagName("td")[0].insertAdjacentElement("beforeend", locationDisplayNameLinkEle);
-
-      // Address
-
-      const addressTdEle = document.createElement("td");
-      addressTdEle.innerHTML = llm.escapeHTML(locationObj.locationAddress1) +
-        (locationObj.locationAddress2 === "" ? "" : "<br /><small>" + llm.escapeHTML(locationObj.locationAddress2) + "</small>") +
-        (locationObj.locationCity === "" ? "" : "<br /><small>" + llm.escapeHTML(locationObj.locationCity) + ", " + locationObj.locationProvince + "</small>");
-
-      trEle.insertAdjacentElement("beforeend", addressTdEle);
-
+      const canDeleteLocation = locationObj.canUpdate && locationObj.licences_count === 0 && locationObj.distributor_count === 0 && locationObj.manufacturer_count === 0;
 
       trEle.insertAdjacentHTML(
         "beforeend",
-        "<td class=\"has-text-centered\">" +
-        (locationObj.licences_endDateMaxString === "" ?
-          "<span class=\"has-text-grey\">Not Used</span>" :
-          locationObj.licences_endDateMaxString) +
+        "<td class=\"is-hidden-print has-text-right is-nowrap\">" +
+
+        (locationObj.canUpdate ?
+          "<a class=\"button is-small\" data-tooltip=\"Edit Location\" href=\"/locations/" + locationObj.locationID + "/edit\">" +
+          "<span class=\"icon\"><i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i></span> <span>Edit</span>" +
+          "</a>" :
+          "") +
+
+        (canDeleteLocation ?
+          " <button class=\"button is-small is-danger is-delete-location-button\" data-tooltip=\"Delete Location\" data-location-index=\"" + locationIndex + "\" type=\"button\">" +
+          "<span class=\"icon\"><i class=\"fas fa-trash\" aria-hidden=\"true\"></i></span>" +
+          "</button>" :
+          "") +
+
         "</td>"
       );
 
+      if (canDeleteLocation) {
 
-      trEle.insertAdjacentHTML(
-        "beforeend",
-        "<td class=\"has-text-centered\">" +
-        (locationObj.locationIsDistributor ?
-          "<span data-tooltip=\"Distributor\">" +
-          "<span class=\"tag is-success\">Yes</span><br />" +
-          (locationObj.distributor_endDateMaxString === "" ? "<span class=\"has-text-grey\">Never Used</span>" : locationObj.distributor_endDateMaxString) +
-          "</span>" :
-          "<span class=\"sr-only\">No</span>"
-        ) +
-        "</td>"
-      );
-
-
-      trEle.insertAdjacentHTML(
-        "beforeend",
-        "<td class=\"has-text-centered\">" +
-        (locationObj.locationIsManufacturer ?
-          "<span data-tooltip=\"Manufacturer\">" +
-          "<span class=\"tag is-success\">Yes</span><br />" +
-          (locationObj.manufacturer_endDateMaxString === "" ? "<span class=\"has-text-grey\">Never Used</span>" : locationObj.manufacturer_endDateMaxString) +
-          "</span>" :
-          "<span class=\"sr-only\">No</span>"
-        ) +
-        "</td>"
-      );
-
-
-      if (canCreate) {
-
-        const canDeleteLocation = locationObj.canUpdate && locationObj.licences_count === 0 && locationObj.distributor_count === 0 && locationObj.manufacturer_count === 0;
-
-        trEle.insertAdjacentHTML(
-          "beforeend",
-          "<td class=\"is-hidden-print has-text-right is-nowrap\">" +
-
-          (locationObj.canUpdate ?
-            "<a class=\"button is-small\" data-tooltip=\"Edit Location\" href=\"/locations/" + locationObj.locationID + "/edit\">" +
-            "<span class=\"icon\"><i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i></span> <span>Edit</span>" +
-            "</a>" :
-            "") +
-
-          (canDeleteLocation ?
-            " <button class=\"button is-small is-danger is-delete-location-button\" data-tooltip=\"Delete Location\" data-location-index=\"" + locationIndex + "\" type=\"button\">" +
-            "<span class=\"icon\"><i class=\"fas fa-trash\" aria-hidden=\"true\"></i></span>" +
-            "</button>" :
-            "") +
-
-          "</td>"
-        );
-
-        if (canDeleteLocation) {
-
-          trEle.getElementsByClassName("is-delete-location-button")[0].addEventListener("click", clickFn_deleteLocation);
-
-        }
-
-      }
-
-
-      tbodyEle.insertAdjacentElement("beforeend", trEle);
-
-
-      if (displayLimit === 0) {
-
-        break;
+        trEle.getElementsByClassName("is-delete-location-button")[0].addEventListener("click", deleteLocationClickFn);
 
       }
 
     }
 
-    if (displayLimit === 0) {
-
-      searchResultsEle.insertAdjacentHTML(
-        "beforeend",
-        "<div class=\"message is-warning\">" +
-        "<p class=\"message-body\">Display Limit Reached</p>" +
-        "</div>"
-      );
-
-    }
+    return trEle;
 
   }
 
 
-  clickFn_deleteLocation = function(clickEvent) {
+  function getLocations() {
+
+    const currentLimit = parseInt(limitEle.value);
+    const currentOffset = parseInt(offsetEle.value);
+
+    displayedLocationList = [];
+
+    searchResultsEle.innerHTML = "<p class=\"has-text-centered has-text-grey-lighter\">" +
+      "<i class=\"fas fa-3x fa-circle-notch fa-spin\" aria-hidden=\"true\"></i><br />" +
+      "<em>Loading locations...</em>" +
+      "</p>";
+
+    llm.postJSON(
+      "/locations/doGetLocations",
+      formEle,
+      function(locationResults) {
+
+        displayedLocationList = locationResults.locations;
+
+        if (displayedLocationList.length === 0) {
+
+          searchResultsEle.innerHTML = "<div class=\"message is-info\">" +
+            "<div class=\"message-body\">" +
+            "<strong>Your search returned no results.</strong><br />" +
+            "Please try expanding your search criteria." +
+            "</div>" +
+            "</div>";
+
+          return;
+
+        }
+
+        searchResultsEle.innerHTML = "<table class=\"table is-fullwidth is-striped is-hoverable\">" +
+          "<thead><tr>" +
+          "<th>Location</th>" +
+          "<th>Address</th>" +
+          "<th class=\"has-text-centered\">Licences</th>" +
+          "<th class=\"has-text-centered\">Distributor</th>" +
+          "<th class=\"has-text-centered\">Manufacturer</th>" +
+          (canCreate ? "<th class=\"is-hidden-print\"><span class=\"sr-only\">Options</span></th>" : "") +
+          "</tr></thead>" +
+          "<tbody></tbody>" +
+          "</table>";
+
+        const tbodyEle = searchResultsEle.getElementsByTagName("tbody")[0];
+
+        for (let locationIndex = 0; locationIndex < displayedLocationList.length; locationIndex += 1) {
+
+          const locationTrEle = renderLocationTrEle(displayedLocationList[locationIndex], locationIndex);
+          tbodyEle.insertAdjacentElement("beforeend", locationTrEle);
+
+        }
+
+        searchResultsEle.insertAdjacentHTML("beforeend", "<div class=\"level is-block-print\">" +
+          "<div class=\"level-left has-text-weight-bold\">" +
+          "Displaying locations " +
+          (currentOffset + 1) +
+          " to " +
+          Math.min(currentLimit + currentOffset, locationResults.count) +
+          " of " +
+          locationResults.count +
+          "</div>" +
+          "</div>");
+
+        if (currentLimit < locationResults.count) {
+
+          const paginationEle = document.createElement("nav");
+          paginationEle.className = "level-right is-hidden-print";
+          paginationEle.setAttribute("role", "pagination");
+          paginationEle.setAttribute("aria-label", "pagination");
+
+          if (currentOffset > 0) {
+
+            const previousEle = document.createElement("a");
+            previousEle.className = "button";
+            previousEle.innerText = "Previous";
+            previousEle.addEventListener("click", function(clickEvent) {
+
+              clickEvent.preventDefault();
+              offsetEle.value = Math.max(0, currentOffset - currentLimit);
+              getLocations();
+
+            });
+
+            paginationEle.insertAdjacentElement("beforeend", previousEle);
+
+          }
+
+          if (currentLimit + currentOffset < locationResults.count) {
+
+            const nextEle = document.createElement("a");
+            nextEle.className = "button has-margin-left-10";
+            nextEle.innerHTML = "<span>Next Locations</span><span class=\"icon\"><i class=\"fas fa-chevron-right\" aria-hidden=\"true\"></i></span>";
+            nextEle.addEventListener("click", function(clickEvent) {
+
+              clickEvent.preventDefault();
+              offsetEle.value = (currentOffset + currentLimit);
+              getLocations();
+
+            });
+
+            paginationEle.insertAdjacentElement("beforeend", nextEle);
+
+          }
+
+          searchResultsEle.getElementsByClassName("level")[0].insertAdjacentElement("beforeend", paginationEle);
+
+        }
+
+      }
+    );
+
+  }
+
+
+  function resetOffsetAndGetLocations() {
+
+    offsetEle.value = 0;
+    getLocations();
+
+  }
+
+
+  deleteLocationClickFn = function(clickEvent) {
 
     clickEvent.preventDefault();
 
     const locationIndex = parseInt(clickEvent.currentTarget.getAttribute("data-location-index"));
-    const locationObj = locationsList[locationIndex];
+    const locationObj = displayedLocationList[locationIndex];
 
     const deleteFn = function() {
 
@@ -236,8 +258,7 @@
 
           if (responseJSON.success) {
 
-            locationsList.splice(locationIndex, 1);
-            filterLocations();
+            getLocations();
 
           }
 
@@ -258,16 +279,18 @@
   };
 
 
-  llm.postJSON("/locations/doGetLocations", null, function(locationsListResponse) {
+  formEle.addEventListener("submit", function(formEvent) {
 
-    locationsList = locationsListResponse;
-    filterLocations();
+    formEvent.preventDefault();
 
   });
 
 
-  searchStrEle.addEventListener("keyup", filterLocations);
-  locationIsDistributorEle.addEventListener("change", filterLocations);
-  locationIsManufacturerEle.addEventListener("change", filterLocations);
+  document.getElementById("filter--locationNameAddress").addEventListener("change", resetOffsetAndGetLocations);
+  document.getElementById("filter--locationIsDistributor").addEventListener("change", resetOffsetAndGetLocations);
+  document.getElementById("filter--locationIsManufacturer").addEventListener("change", resetOffsetAndGetLocations);
+
+
+  resetOffsetAndGetLocations();
 
 }());

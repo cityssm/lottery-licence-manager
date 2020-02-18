@@ -17,27 +17,29 @@
       <small>Event <%= event.eventDateString %></small>
     </h1>
   </div>
-  <div class="level-right is-hidden-print">
-    <div class="field has-addons justify-flex-end has-margin-left-10">
-      <div class="control">
-        <label class="button is-small is-static" for="eventNav--eventDate">Switch Dates</label>
-      </div>
-      <div class="control has-icons-left">
-        <div class="select is-small">
-          <select id="eventNav--eventDate" data-licence-id="<%= licence.licenceID %>" data-is-edit="true">
-            <% for (let index = 0; index < licence.events.length; index += 1) { %>
-              <option value="<%= licence.events[index].eventDate %>" <%= (event.eventDate === licence.events[index].eventDate ? " selected" : "") %>>
-                <%= licence.events[index].eventDateString %>
-              </option>
-            <% } %>
-          </select>
+  <% if (licence.events.length > 1) { %>
+    <div class="level-right is-hidden-print">
+      <div class="field has-addons justify-flex-end has-margin-left-10">
+        <div class="control">
+          <label class="button is-small is-static" for="eventNav--eventDate">Switch Dates</label>
         </div>
-        <div class="icon is-left">
-          <i class="fas fa-calendar" aria-hidden="true"></i>
+        <div class="control has-icons-left">
+          <div class="select is-small">
+            <select id="eventNav--eventDate" data-licence-id="<%= licence.licenceID %>" data-is-edit="true">
+              <% for (let index = 0; index < licence.events.length; index += 1) { %>
+                <option value="<%= licence.events[index].eventDate %>" <%= (event.eventDate === licence.events[index].eventDate ? " selected" : "") %>>
+                  <%= licence.events[index].eventDateString %>
+                </option>
+              <% } %>
+            </select>
+          </div>
+          <div class="icon is-left">
+            <i class="fas fa-calendar" aria-hidden="true"></i>
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  <% } %>
 </div>
 
 <div class="columns is-block-print">
@@ -62,19 +64,31 @@
       </div>
 
       <div class="panel">
-        <h2 class="panel-heading">Bank Information</h2>
+        <div class="panel-heading">
+          <div class="level">
+            <h2 class="level-left has-text-weight-bold">Bank Information</h2>
+            <div class="level-right">
+              <button class="button is-small" id="is-bank-information-lookup-button" type="button">
+                <span class="icon">
+                  <i class="fas fa-search" aria-hidden="true"></i>
+                </span>
+                <span>Lookup Past Bank Information</span>
+              </button>
+            </div>
+          </div>
+        </div>
         <div class="panel-block is-block">
           <div class="field">
             <label class="label" for="event--bank_name">Name</label>
             <div class="control">
-              <input class="input" id="event--bank_name" name="bank_name" type="text" maxlength="50" value="<%= event.bank_name %>" />
+              <input class="input" id="event--bank_name" name="bank_name" type="text" maxlength="50" value="<%= event.bank_name %>" autocomplete="off" />
             </div>
           </div>
 
           <div class="field">
             <label class="label" for="event--bank_address">Address</label>
             <div class="control">
-              <input class="input" id="event--bank_address" name="bank_address" type="text" maxlength="50" value="<%= event.bank_address %>" />
+              <input class="input" id="event--bank_address" name="bank_address" type="text" maxlength="50" value="<%= event.bank_address %>" autocomplete="off" />
             </div>
           </div>
 
@@ -83,7 +97,7 @@
               <div class="field">
                 <label class="label" for="event--bank_accountNumber">Account Number</label>
                 <div class="control">
-                  <input class="input" id="event--bank_accountNumber" name="bank_accountNumber" type="text" maxlength="20" value="<%= event.bank_accountNumber %>" />
+                  <input class="input" id="event--bank_accountNumber" name="bank_accountNumber" type="text" maxlength="20" value="<%= event.bank_accountNumber %>" autocomplete="off" />
                 </div>
               </div>
             </div>
@@ -314,7 +328,10 @@
 
 <%- include('_footerA'); -%>
 
-<script src="/javascripts/event-viewEdit.min.js"></script>
+<% if (licence.events.length > 1) { %>
+  <script src="/javascripts/event-viewEdit.min.js"></script>
+<% } %>
+
 <script src="/javascripts/event-edit.min.js"></script>
 
 <%- include('_footerB'); -%>

@@ -43,6 +43,10 @@ router.post("/doGetFinancialSummary", function (req, res) {
     const summary = licencesDB.getEventFinancialSummary(req.body);
     res.json(summary);
 });
+router.post("/doGetPastBankInformation", function (req, res) {
+    const bankInfoList = licencesDB.getPastEventBankingInformation(req.body.licenceID);
+    res.json(bankInfoList);
+});
 router.post("/doSave", function (req, res) {
     if (!req.session.user.userProperties.canUpdate) {
         res

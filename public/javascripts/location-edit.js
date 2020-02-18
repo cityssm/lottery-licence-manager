@@ -284,11 +284,13 @@
 
           llm.postJSON(
             "/locations/doGetLocations",
-            null,
+            {
+              limit: -1
+            },
             function(responseJSON) {
 
-              locationsList = responseJSON;
-              
+              locationsList = responseJSON.locations;
+
               locationFilterEle.removeAttribute("disabled");
               locationFilterEle.focus();
 

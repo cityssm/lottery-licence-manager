@@ -338,9 +338,9 @@
       llm.postJSON(
         "/locations/doGetLocations",
         null,
-        function(locationListRes) {
+        function(locationResults) {
 
-          locationList = locationListRes;
+          locationList = locationResults.locations;
           callbackFn();
 
         }
@@ -664,9 +664,17 @@
 
     const changeFn_licenceType = function(changeEvent) {
 
+      const optionEle = changeEvent.currentTarget.selectedOptions[0];
+
+      // Total prize value
+
+       const totalPrizeValueMax = optionEle.getAttribute("data-total-prize-value-max");
+
+      document.getElementById("licence--totalPrizeValue").setAttribute("max", totalPrizeValueMax);
+
       // Ticket types
 
-      const hasTicketTypes = changeEvent.currentTarget.selectedOptions[0].getAttribute("data-has-ticket-types") === "true";
+      const hasTicketTypes = optionEle.getAttribute("data-has-ticket-types") === "true";
 
       const totalPrizeValueEle = document.getElementById("licence--totalPrizeValue");
 
@@ -690,7 +698,7 @@
 
       }
 
-      // fields
+      // Fields
 
       const licenceTypeKey = changeEvent.currentTarget.value;
 

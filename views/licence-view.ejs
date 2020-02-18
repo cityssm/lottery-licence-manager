@@ -28,7 +28,7 @@
       <% } %>
       <% if (licence.issueDate) { %>
         <div class="control">
-          <a class="button is-link" href="/licences/<%= licence.licenceID %>/print" target="_blank" download>
+          <a class="button is-link" href="/licences/<%= licence.licenceID %>/print" download>
             <span class="icon is-small">
               <i class="fas fa-print" aria-hidden="true"></i>
             </span>
@@ -164,7 +164,7 @@
           <h2 class="has-text-weight-bold">Ticket Types</h2>
         </div>
         <div class="level-right has-text-weight-normal has-text-right is-hidden-print">
-          <a class="button is-small" data-tooltip="Export Ticket Types" href="/reports/ticketTypes-byLicence?licenceID=<%= licence.licenceID %>" target="_blank" download>
+          <a class="button is-small" data-tooltip="Export Ticket Types" href="/reports/ticketTypes-byLicence?licenceID=<%= licence.licenceID %>" download>
             <span class="icon"><i class="fas fa-file-download" aria-hidden="true"></i></span>
             <span>Export Ticket Types</span>
           </a>
@@ -268,7 +268,7 @@
             <h2 class="has-text-weight-bold">Event Dates</h2>
           </div>
           <div class="level-right has-text-weight-normal has-text-right is-hidden-print">
-            <a class="button is-small" href="/reports/events-byLicence?licenceID=<%= licence.licenceID %>" target="_blank" download>
+            <a class="button is-small" href="/reports/events-byLicence?licenceID=<%= licence.licenceID %>" download>
               <span class="icon is-small">
                 <i class="fas fa-file-download" aria-hidden="true"></i>
               </span>
@@ -373,7 +373,7 @@
         <h2 class="has-text-weight-bold">Transactions</h2>
       </div>
       <div class="level-right has-text-weight-normal has-text-right is-hidden-print">
-        <a class="button is-small" data-tooltip="Export Transactions" href="/reports/transactions-byLicence?licenceID=<%= licence.licenceID %>" target="_blank" download>
+        <a class="button is-small" data-tooltip="Export Transactions" href="/reports/transactions-byLicence?licenceID=<%= licence.licenceID %>" download>
           <span class="icon"><i class="fas fa-file-download" aria-hidden="true"></i></span>
           <span>Export Transactions</span>
         </a>

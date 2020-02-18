@@ -7,7 +7,7 @@
       <div class="level-right has-text-weight-normal is-hidden-print">
         <div class="field is-grouped justify-flex-end">
           <div class="control">
-            <a class="button is-small" href="/reports/licences-byLocation?locationID=<%= location.locationID %>" target="_blank" download>
+            <a class="button is-small" href="/reports/licences-byLocation?locationID=<%= location.locationID %>" download>
               <span class="icon is-small">
                 <i class="fas fa-file-download" aria-hidden="true"></i>
               </span>
@@ -76,7 +76,7 @@
             "<a class=\"button is-small\" href=\"/licences/" + licence.licenceID + "/edit\" data-tooltip=\"Edit Licence\"><span class=\"icon\"><i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i></span><span>Edit</span></a> " :
             "") +
           (licence.issueDate ?
-            "<a class=\"button is-small\" href=\"/licences/" + licence.licenceID + "/print\" data-tooltip=\"Print Licence\" target=\"_blank\">" +
+            "<a class=\"button is-small\" href=\"/licences/" + licence.licenceID + "/print\" data-tooltip=\"Print Licence\">" +
             "<i class=\"fas fa-print\" aria-hidden=\"true\"></i>" +
             "<span class=\"sr-only\">Print Licence</span>" +
             "</a>" :

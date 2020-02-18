@@ -1,10 +1,16 @@
 /// <reference types="express-session" />
 import * as llm from "./llmTypes";
 export declare function getRawRowsColumns(sql: string, params: any[]): llm.RawRowsColumnsReturn;
-export declare function getLocations(reqBodyOrParamsObj: any, reqSession: Express.SessionData, queryOptions: {
+export declare function getLocations(reqSession: Express.SessionData, queryOptions: {
     limit: number;
     offset?: number;
-}): llm.Location[];
+    locationNameAddress: string;
+    locationIsDistributor: number;
+    locationIsManufacturer: number;
+}): {
+    count: number;
+    locations: llm.Location[];
+};
 export declare function getLocation(locationID: number, reqSession: Express.SessionData): llm.Location;
 export declare function createLocation(reqBody: llm.Location, reqSession: Express.SessionData): number;
 export declare function updateLocation(reqBody: llm.Location, reqSession: Express.SessionData): boolean;
@@ -64,6 +70,7 @@ export declare function getEvents(year: number, month: number, reqSession: Expre
 export declare function getOutstandingEvents(reqBody: any, reqSession: Express.SessionData): llm.LotteryEvent[];
 export declare function getEventFinancialSummary(reqBody: any): any[];
 export declare function getEvent(licenceID: number, eventDate: number, reqSession: Express.SessionData): llm.LotteryEvent;
+export declare function getPastEventBankingInformation(licenceID: number): any[];
 export declare function updateEvent(reqBody: any, reqSession: Express.SessionData): boolean;
 export declare function deleteEvent(licenceID: number, eventDate: number, reqSession: Express.SessionData): boolean;
 export declare function pokeEvent(licenceID: number, eventDate: number, reqSession: Express.SessionData): boolean;

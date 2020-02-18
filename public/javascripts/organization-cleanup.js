@@ -95,8 +95,8 @@
         const safeOrganizationName = llm.escapeHTML(organizationObj.organizationName);
 
         trEle.insertAdjacentHTML("beforeend", "<td>" +
-          "<a data-tooltip=\"View Organization (Opens in New Window)\"" +
-          " href=\"/organizations/" + organizationObj.organizationID + "\" target=\"_blank\">" +
+          "<a data-tooltip=\"View Organization\"" +
+          " href=\"/organizations/" + organizationObj.organizationID + "\">" +
           safeOrganizationName +
           "</a>" +
           "</td>");

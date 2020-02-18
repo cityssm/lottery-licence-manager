@@ -93,8 +93,8 @@
         const safeLocationDisplayName = llm.escapeHTML(locationObj.locationDisplayName);
 
         trEle.insertAdjacentHTML("beforeend", "<td>" +
-          "<a data-tooltip=\"View Location (Opens in New Window)\"" +
-          " href=\"/locations/" + locationObj.locationID + "\" target=\"_blank\">" +
+          "<a data-tooltip=\"View Location\"" +
+          " href=\"/locations/" + locationObj.locationID + "\">" +
           safeLocationDisplayName +
           "</a>" +
           (locationObj.locationDisplayName === locationObj.locationAddress1 ? "" : "<br /><small>" + llm.escapeHTML(locationObj.locationAddress1) + "</small>") +

@@ -49,6 +49,7 @@ config.licenceTypes = [
   {
     licenceTypeKey: "BA",
     licenceType: "Bazaar",
+    totalPrizeValueMax: 5500,
     isActive: true,
     licenceFields: [
 
@@ -83,6 +84,7 @@ config.licenceTypes = [
     licenceTypeKey: "BI",
     licenceType: "Bingo",
     isActive: true,
+    totalPrizeValueMax: 5500,
     eventFields: [
 
       {
@@ -145,6 +147,7 @@ config.licenceTypes = [
   {
     licenceTypeKey: "NV",
     licenceType: "Nevada",
+    totalPrizeValueMax: 300000,
     isActive: true,
     ticketTypes: nevadaTicketTypes,
     eventFields: [
@@ -231,6 +234,7 @@ config.licenceTypes = [
   {
     licenceTypeKey: "RA",
     licenceType: "Raffle",
+    totalPrizeValueMax: 50000,
     isActive: true,
     licenceFields: [
 

@@ -20,8 +20,12 @@ router.get("/", function(_req, res) {
 
 router.post("/doGetLocations", function(req, res) {
 
-  const locations = licencesDB.getLocations(req.body, req.session, {
-    limit: -1
+  const locations = licencesDB.getLocations(req.session, {
+    limit: req.body.limit || -1,
+    offset: req.body.offset || 0,
+    locationNameAddress: req.body.locationNameAddress,
+    locationIsDistributor: ("locationIsDistributor" in req.body && req.body.locationIsDistributor !== "" ? parseInt(req.body.locationIsDistributor) : -1),
+    locationIsManufacturer: ("locationIsManufacturer" in req.body && req.body.locationIsManufacturer !== "" ? parseInt(req.body.locationIsManufacturer) : -1)
   });
 
   res.json(locations);

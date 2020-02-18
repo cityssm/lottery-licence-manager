@@ -58,6 +58,7 @@ declare type Config_ExternalReceiptNumber = {
 export declare type Config_LicenceType = {
     licenceTypeKey: string;
     licenceType: string;
+    totalPrizeValueMax: number;
     isActive: boolean;
     licenceFields?: Config_LicenceField[];
     eventFields?: Config_EventField[];

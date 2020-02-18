@@ -106,7 +106,7 @@ function getApplicationSettingWithDB(db: sqlite.Database, settingKey: string): s
 }
 
 
-function getLicenceWithDB(db: sqlite.Database, licenceID: number, reqSession: Express.SessionData, includeOptions: {
+function getLicenceWithDB(db: sqlite.Database, licenceID: number, reqSession: Express.SessionData, queryOptions: {
   includeTicketTypes: boolean,
   includeFields: boolean,
   includeEvents: boolean,
@@ -145,8 +145,11 @@ function getLicenceWithDB(db: sqlite.Database, licenceID: number, reqSession: Ex
 
   licenceObj.canUpdate = canUpdateObject(licenceObj, reqSession);
 
-  // Ticket types
-  if (includeOptions && "includeTicketTypes" in includeOptions && includeOptions.includeTicketTypes) {
+  /*
+   * Ticket types
+   */
+
+  if (queryOptions && "includeTicketTypes" in queryOptions && queryOptions.includeTicketTypes) {
 
     const ticketTypesList = db.prepare("select t.ticketType," +
       " t.distributorLocationID," +
@@ -180,8 +183,11 @@ function getLicenceWithDB(db: sqlite.Database, licenceID: number, reqSession: Ex
 
   }
 
-  // Licence fields
-  if (includeOptions && "includeFields" in includeOptions && includeOptions.includeFields) {
+  /*
+   * Licence fields
+   */
+
+  if (queryOptions && "includeFields" in queryOptions && queryOptions.includeFields) {
 
     const fieldList = db.prepare("select * from LotteryLicenceFields" +
       " where licenceID = ?")
@@ -191,8 +197,11 @@ function getLicenceWithDB(db: sqlite.Database, licenceID: number, reqSession: Ex
 
   }
 
-  // Events
-  if (includeOptions && "includeEvents" in includeOptions && includeOptions.includeEvents) {
+  /*
+   * Events
+   */
+
+  if (queryOptions && "includeEvents" in queryOptions && queryOptions.includeEvents) {
 
     const eventList = db.prepare("select eventDate from LotteryEvents" +
       " where licenceID = ?" +
@@ -211,8 +220,11 @@ function getLicenceWithDB(db: sqlite.Database, licenceID: number, reqSession: Ex
 
   }
 
-  // Licence amendments
-  if (includeOptions && "includeAmendments" in includeOptions && includeOptions.includeAmendments) {
+  /*
+   * Licence amendments
+   */
+
+  if (queryOptions && "includeAmendments" in queryOptions && queryOptions.includeAmendments) {
 
     const amendments = db.prepare("select *" +
       " from LotteryLicenceAmendments" +
@@ -233,8 +245,11 @@ function getLicenceWithDB(db: sqlite.Database, licenceID: number, reqSession: Ex
 
   }
 
-  // Transactions
-  if (includeOptions && "includeTransactions" in includeOptions && includeOptions.includeTransactions) {
+  /*
+   * Transactions
+   */
+
+  if (queryOptions && "includeTransactions" in queryOptions && queryOptions.includeTransactions) {
 
     const transactions = db.prepare("select * from LotteryLicenceTransactions" +
       " where licenceID = ?" +
@@ -328,16 +343,78 @@ export function getRawRowsColumns(sql: string, params: any[]): llm.RawRowsColumn
  * LOCATIONS
  */
 
-export function getLocations(reqBodyOrParamsObj: any, reqSession: Express.SessionData, queryOptions: {
+export function getLocations(reqSession: Express.SessionData, queryOptions: {
   limit: number,
-  offset?: number
+  offset?: number,
+  locationNameAddress: string,
+  locationIsDistributor: number,
+  locationIsManufacturer: number
 }) {
+
+  const addCalculatedFieldsFn = function(ele: llm.Location) {
+
+    ele.recordType = "location";
+
+    ele.locationDisplayName =
+      ele.locationName === "" ? ele.locationAddress1 : ele.locationName;
+
+    ele.licences_endDateMaxString = dateTimeFns.dateIntegerToString(ele.licences_endDateMax);
+    ele.distributor_endDateMaxString = dateTimeFns.dateIntegerToString(ele.distributor_endDateMax);
+    ele.manufacturer_endDateMaxString = dateTimeFns.dateIntegerToString(ele.manufacturer_endDateMax);
+
+    ele.canUpdate = canUpdateObject(ele, reqSession);
+  }
 
   const db = sqlite(dbPath, {
     readonly: true
   });
 
+  // build where clause
+
   const sqlParams = [];
+
+  let sqlWhereClause = " where lo.recordDelete_timeMillis is null";
+
+  if (queryOptions.locationNameAddress && queryOptions.locationNameAddress !== "") {
+
+    const locationNameAddressSplit = queryOptions.locationNameAddress.toLowerCase().split(" ");
+
+    for (let index = 0; index < locationNameAddressSplit.length; index += 1) {
+
+      sqlWhereClause += " and (instr(lower(lo.locationName), ?) or instr(lower(lo.locationAddress1),?))"
+      sqlParams.push(locationNameAddressSplit[index]);
+      sqlParams.push(locationNameAddressSplit[index]);
+
+    }
+
+  }
+
+  if ("locationIsDistributor" in queryOptions && queryOptions.locationIsDistributor !== -1) {
+
+    sqlWhereClause += " and lo.locationIsDistributor = ?";
+    sqlParams.push(queryOptions.locationIsDistributor);
+
+  }
+
+  if ("locationIsManufacturer" in queryOptions && queryOptions.locationIsManufacturer !== -1) {
+
+    sqlWhereClause += " and lo.locationIsManufacturer = ?";
+    sqlParams.push(queryOptions.locationIsManufacturer);
+
+  }
+
+  // if limit is used, get the count
+
+  let count = 0;
+
+  if (queryOptions.limit !== -1) {
+
+    count = db.prepare("select ifnull(count(*), 0) as cnt" +
+      " from Locations lo" +
+      sqlWhereClause)
+      .get(sqlParams)
+      .cnt;
+  }
 
   let sql = "select lo.locationID, lo.locationName," +
     " lo.locationAddress1, lo.locationAddress2, lo.locationCity, lo.locationProvince," +
@@ -373,23 +450,9 @@ export function getLocations(reqBodyOrParamsObj: any, reqSession: Express.Sessio
       " group by t.manufacturerLocationID" +
       ") m on lo.locationID = m.manufacturerLocationID") +
 
-    " where lo.recordDelete_timeMillis is null";
+    sqlWhereClause +
 
-  if (reqBodyOrParamsObj.locationIsDistributor && reqBodyOrParamsObj.locationIsDistributor !== "") {
-
-    sql += " and lo.locationIsDistributor = ?";
-    sqlParams.push(reqBodyOrParamsObj.locationIsDistributor);
-
-  }
-
-  if (reqBodyOrParamsObj.locationIsManufacturer && reqBodyOrParamsObj.locationIsManufacturer !== "") {
-
-    sql += " and lo.locationIsManufacturer = ?";
-    sqlParams.push(reqBodyOrParamsObj.locationIsManufacturer);
-
-  }
-
-  sql += " group by lo.locationID, lo.locationName," +
+    " group by lo.locationID, lo.locationName," +
     " lo.locationAddress1, lo.locationAddress2, lo.locationCity, lo.locationProvince," +
     " lo.locationIsDistributor, lo.locationIsManufacturer" +
     " order by case when lo.locationName = '' then lo.locationAddress1 else lo.locationName end";
@@ -403,24 +466,12 @@ export function getLocations(reqBodyOrParamsObj: any, reqSession: Express.Sessio
 
   db.close();
 
-  for (let rowIndex = 0; rowIndex < rows.length; rowIndex += 1) {
+  rows.forEach(addCalculatedFieldsFn);
 
-    const locationObj = rows[rowIndex];
-
-    locationObj.recordType = "location";
-
-    locationObj.locationDisplayName =
-      locationObj.locationName === "" ? locationObj.locationAddress1 : locationObj.locationName;
-
-    locationObj.licences_endDateMaxString = dateTimeFns.dateIntegerToString(locationObj.licences_endDateMax);
-    locationObj.distributor_endDateMaxString = dateTimeFns.dateIntegerToString(locationObj.distributor_endDateMax);
-    locationObj.manufacturer_endDateMaxString = dateTimeFns.dateIntegerToString(locationObj.manufacturer_endDateMax);
-
-    locationObj.canUpdate = canUpdateObject(locationObj, reqSession);
-
-  }
-
-  return rows;
+  return {
+    count: (queryOptions.limit === -1 ? rows.length : count),
+    locations: rows
+  };
 
 }
 
@@ -3276,6 +3327,45 @@ export function getEvent(licenceID: number, eventDate: number, reqSession: Expre
   db.close();
 
   return eventObj;
+
+}
+
+export function getPastEventBankingInformation(licenceID: number) {
+
+  const addCalculatedFieldsFn = function(ele) {
+    ele.eventDateMaxString = dateTimeFns.dateIntegerToString(ele.eventDateMax);
+  };
+
+  const db = sqlite(dbPath, {
+    readonly: true
+  });
+
+  const organizationID = db.prepare("select organizationID from LotteryLicences" +
+    " where licenceID = ?")
+    .get(licenceID)
+    .organizationID;
+
+  const cutoffDateInteger = dateTimeFns.dateToInteger(new Date()) - 50000;
+
+  const bankInfoList = db.prepare("select bank_name, bank_address, bank_accountNumber," +
+    " max(eventDate) as eventDateMax" +
+    " from LotteryEvents" +
+    " where licenceID in (select licenceID from LotteryLicences where organizationID = ? and recordDelete_timeMillis is null)" +
+    " and licenceID <> ?" +
+    " and eventDate >= ?" +
+    " and recordDelete_timeMillis is null" +
+    " and bank_name is not null and bank_name <> ''" +
+    " and bank_address is not null and bank_address <> ''" +
+    " and bank_accountNumber is not null and bank_accountNumber <> ''" +
+    " group by bank_name, bank_address, bank_accountNumber" +
+    " order by max(eventDate) desc")
+    .all(organizationID, licenceID, cutoffDateInteger);
+
+  db.close();
+
+  bankInfoList.forEach(addCalculatedFieldsFn);
+
+  return bankInfoList;
 
 }
 

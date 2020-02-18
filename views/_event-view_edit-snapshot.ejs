@@ -7,7 +7,7 @@
       <div class="column is-6">
         <p>
           <strong>Licence ID</strong><br />
-          <a class="has-tooltip-right" data-tooltip="View Licence (In a New Window)" href="/licences/<%= licence.licenceID %>" target="_blank">
+          <a class="has-tooltip-right" data-tooltip="View Licence" href="/licences/<%= licence.licenceID %>">
             <%= licence.licenceID %>
           </a>
         </p>
@@ -23,7 +23,7 @@
       <div class="column">
         <p>
           <strong>Organization</strong><br />
-          <a class="has-tooltip-right <%= (organization.isEligibleForLicences ? "" : " has-text-danger") %>" data-tooltip="View Organization (In a New Window)" href="/organizations/<%= organization.organizationID %>" target="_blank">
+          <a class="has-tooltip-right <%= (organization.isEligibleForLicences ? "" : " has-text-danger") %>" data-tooltip="View Organization" href="/organizations/<%= organization.organizationID %>">
             <%= organization.organizationName %>
           </a>
         </p>
@@ -33,7 +33,7 @@
       <div class="column">
         <p>
           <strong>Location</strong><br />
-          <a class="has-tooltip-right" data-tooltip="View Location (In a New Window)" href="/locations/<%= licence.locationID %>" target="_blank">
+          <a class="has-tooltip-right" data-tooltip="View Location" href="/locations/<%= licence.locationID %>">
             <%= licence.locationDisplayName %>
           </a>
         </p>

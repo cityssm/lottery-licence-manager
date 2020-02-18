@@ -28,25 +28,27 @@
           <span>Edit this Event</span>
         </a>
       <% } %>
-      <div class="field has-addons has-margin-left-20">
-        <div class="control">
-          <label class="button is-small is-static" for="eventNav--eventDate">Switch Dates</label>
-        </div>
-        <div class="control has-icons-left">
-          <div class="select is-small">
-            <select id="eventNav--eventDate" data-licence-id="<%= licence.licenceID %>" data-is-edit="false">
-              <% for (let index = 0; index < licence.events.length; index += 1) { %>
-                <option value="<%= licence.events[index].eventDate %>" <%= (event.eventDate === licence.events[index].eventDate ? " selected" : "") %>>
-                  <%= licence.events[index].eventDateString %>
-                </option>
-              <% } %>
-            </select>
+      <% if (licence.events.length > 1) { %>
+        <div class="field has-addons has-margin-left-20">
+          <div class="control">
+            <label class="button is-small is-static" for="eventNav--eventDate">Switch Dates</label>
           </div>
-          <div class="icon is-left">
-            <i class="fas fa-calendar" aria-hidden="true"></i>
+          <div class="control has-icons-left">
+            <div class="select is-small">
+              <select id="eventNav--eventDate" data-licence-id="<%= licence.licenceID %>" data-is-edit="false">
+                <% for (let index = 0; index < licence.events.length; index += 1) { %>
+                  <option value="<%= licence.events[index].eventDate %>" <%= (event.eventDate === licence.events[index].eventDate ? " selected" : "") %>>
+                    <%= licence.events[index].eventDateString %>
+                  </option>
+                <% } %>
+              </select>
+            </div>
+            <div class="icon is-left">
+              <i class="fas fa-calendar" aria-hidden="true"></i>
+            </div>
           </div>
         </div>
-      </div>
+      <% } %>
     </div>
   </div>
 </div>
@@ -247,6 +249,8 @@
 
 <%- include('_footerA'); -%>
 
-<script src="/javascripts/event-viewEdit.min.js"></script>
+<% if (licence.events.length > 1) { %>
+  <script src="/javascripts/event-viewEdit.min.js"></script>
+<% } %>
 
 <%- include('_footerB'); -%>

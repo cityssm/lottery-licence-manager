@@ -16,53 +16,58 @@
       Find a Location
     </h1>
 
-    <div class="columns">
-      <div class="column">
-        <div class="field">
-          <label class="label" for="filter--locationNameAddress">Location Name or Address</label>
-          <div class="control has-icons-left">
-            <input class="input" id="filter--locationNameAddress" type="text" />
-            <span class="icon is-small is-left">
-              <i class="fas fa-filter" aria-hidden="true"></i>
-            </span>
-          </div>
-        </div>
-      </div>
-      <div class="column">
-        <div class="field">
-          <label class="label" for="filter--locationIsDistributor">Distributor Status</label>
-          <div class="control has-icons-left">
-            <div class="select is-fullwidth">
-              <select id="filter--locationIsDistributor">
-                <option value="">(Unfiltered)</option>
-                <option value="1">Show Only Distributors</option>
-                <option value="0">Hide Distributors</option>
-              </select>
+    <form id="form--searchFilters">
+      <input id="filter--limit" name="limit" type="hidden" value="50" />
+      <input id="filter--offset" name="offset" type="hidden" value="0" />
+
+      <div class="columns">
+        <div class="column">
+          <div class="field">
+            <label class="label" for="filter--locationNameAddress">Location Name or Address</label>
+            <div class="control has-icons-left">
+              <input class="input" id="filter--locationNameAddress" name="locationNameAddress" type="text" />
+              <span class="icon is-small is-left">
+                <i class="fas fa-filter" aria-hidden="true"></i>
+              </span>
             </div>
-            <span class="icon is-small is-left">
-              <i class="fas fa-filter" aria-hidden="true"></i>
-            </span>
           </div>
         </div>
-      </div>
-      <div class="column">
-        <div class="field">
-          <label class="label" for="filter--locationIsManufacturer">Manufacturer Status</label>
-          <div class="control has-icons-left">
-            <div class="select is-fullwidth">
-              <select id="filter--locationIsManufacturer">
-                <option value="">(Unfiltered)</option>
-                <option value="1">Show Only Manufacturers</option>
-                <option value="0">Hide Manufacturers</option>
-              </select>
+        <div class="column">
+          <div class="field">
+            <label class="label" for="filter--locationIsDistributor">Distributor Status</label>
+            <div class="control has-icons-left">
+              <div class="select is-fullwidth">
+                <select id="filter--locationIsDistributor" name="locationIsDistributor">
+                  <option value="">(Unfiltered)</option>
+                  <option value="1">Show Only Distributors</option>
+                  <option value="0">Hide Distributors</option>
+                </select>
+              </div>
+              <span class="icon is-small is-left">
+                <i class="fas fa-filter" aria-hidden="true"></i>
+              </span>
             </div>
-            <span class="icon is-small is-left">
-              <i class="fas fa-filter" aria-hidden="true"></i>
-            </span>
+          </div>
+        </div>
+        <div class="column">
+          <div class="field">
+            <label class="label" for="filter--locationIsManufacturer">Manufacturer Status</label>
+            <div class="control has-icons-left">
+              <div class="select is-fullwidth">
+                <select id="filter--locationIsManufacturer" name="locationIsManufacturer">
+                  <option value="">(Unfiltered)</option>
+                  <option value="1">Show Only Manufacturers</option>
+                  <option value="0">Hide Manufacturers</option>
+                </select>
+              </div>
+              <span class="icon is-small is-left">
+                <i class="fas fa-filter" aria-hidden="true"></i>
+              </span>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </form>
 
     <div class="has-margin-top-20" id="container--searchResults">
       <p class="has-text-centered has-text-grey-lighter">
