@@ -44,7 +44,11 @@
             <td>
               <a class="has-text-danger" href="/organizations/<%= organization.organizationID %>"><%= organization.organizationName %></a>
             </td>
-            <td><%= organization.recordDelete_dateString %></td>
+            <td>
+              <span data-tooltip="Deleted by <%= organization.recordDelete_userName %>">
+                <%= organization.recordDelete_dateString %>
+              </span>
+            </td>
           </tr>
           <%
             }

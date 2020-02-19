@@ -115,6 +115,7 @@
 
           trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right\">" +
             "<button class=\"button is-small is-danger\"" +
+            " data-tooltip=\"Delete Organization\"" +
             " data-organization-id=\"" + organizationObj.organizationID + "\"" +
             " data-organization-name=\"" + safeOrganizationName + "\" type=\"button\">" +
             "<span class=\"icon\"><i class=\"fas fa-trash\" aria-hidden=\"true\"></i></span> <span>Delete</span>" +

@@ -67,7 +67,7 @@
 
           trEle.innerHTML =
             "<td>" +
-            "<a href=\"/licences/" + licenceObj.licenceID + "\">" +
+            "<a data-tooltip=\"View Licence\" href=\"/licences/" + licenceObj.licenceID + "\">" +
             llm.escapeHTML(licenceObj.externalLicenceNumber) + "<br />" +
             "<small>Licence #" + licenceObj.licenceID + "</small>" +
             "</a>" +
@@ -77,13 +77,13 @@
             "</td>" +
 
             ("<td>" +
-              "<a href=\"/organizations/" + licenceObj.organizationID + "\">" +
+              "<a data-tooltip=\"View Organization\" href=\"/organizations/" + licenceObj.organizationID + "\">" +
               llm.escapeHTML(licenceObj.organizationName) +
               "</a>" +
               "</td>") +
 
             ("<td>" +
-              "<a href=\"/locations/" + licenceObj.locationID + "\">" +
+              "<a data-tooltip=\"View Location\" href=\"/locations/" + licenceObj.locationID + "\">" +
               llm.escapeHTML(licenceObj.locationDisplayName) +
               "</a>" +
               (licenceObj.locationDisplayName === licenceObj.locationAddress1 ? "" : "<br /><small>" + llm.escapeHTML(licenceObj.locationAddress1) + "</small>") +

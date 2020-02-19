@@ -60,6 +60,10 @@
             organizationNameLinkEle.className = "has-text-danger";
             organizationNameLinkEle.setAttribute("data-tooltip", "Not Eligible for New Licences");
 
+          } else {
+
+            organizationNameLinkEle.setAttribute("data-tooltip", "View Organization");
+
           }
 
           organizationNameLinkEle.innerText = organizationObj.organizationName;

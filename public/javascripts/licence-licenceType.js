@@ -69,7 +69,7 @@
         trEle.insertAdjacentHTML(
           "beforeend",
           "<td>" +
-          "<a href=\"/licences/" + licenceObj.licenceID + "\">" +
+          "<a data-tooltip=\"View Licence\" href=\"/licences/" + licenceObj.licenceID + "\">" +
           llm.escapeHTML(licenceObj.externalLicenceNumber) + "<br />" +
           "<small>Licence #" + licenceObj.licenceID + "</small>" +
           "</a>" +
