@@ -90,6 +90,8 @@ export function initLicencesDB() {
       " organizationProvince varchar(2)," +
       " organizationPostalCode varchar(7)," +
 
+      " fiscalStartDate integer," +
+      " fiscalEndDate integer," +
       " isEligibleForLicences bit not null default 1," +
       " organizationNote text not null default ''," +
 

@@ -58,6 +58,8 @@ function initLicencesDB() {
             " organizationCity varchar(20)," +
             " organizationProvince varchar(2)," +
             " organizationPostalCode varchar(7)," +
+            " fiscalStartDate integer," +
+            " fiscalEndDate integer," +
             " isEligibleForLicences bit not null default 1," +
             " organizationNote text not null default ''," +
             " recordCreate_userName varchar(30) not null," +

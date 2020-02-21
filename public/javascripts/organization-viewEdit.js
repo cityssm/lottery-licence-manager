@@ -269,7 +269,12 @@
           buttonEle.innerHTML =
             "<i class=\"fas fa-times\" aria-hidden=\"true\"></i>" +
             "<br />" +
-            "<small>Not Applicable</small>";
+            "<small>Not Applicable</small>" +
+            (bankRecord.recordNote === "" ?
+              "" :
+              " <span class=\"has-margin-left-5\" data-tooltip=\"" + llm.escapeHTML(bankRecord.recordNote) + "\">" +
+              "<i class=\"fas fa-sticky-note\" aria-hidden=\"true\"></i>" +
+              "</span>");
 
         } else {
 
@@ -278,7 +283,12 @@
           buttonEle.innerHTML =
             "<i class=\"fas fa-check\" aria-hidden=\"true\"></i>" +
             "<br />" +
-            "<small>Recorded " + bankRecord.recordDateString + "</small>";
+            "<small>Recorded " + bankRecord.recordDateString + "</small>" +
+            (bankRecord.recordNote === "" ?
+              "" :
+              " <span class=\"has-margin-left-5\" data-tooltip=\"" + llm.escapeHTML(bankRecord.recordNote) + "\">" +
+              "<i class=\"fas fa-sticky-note\" aria-hidden=\"true\"></i>" +
+              "</span>");
 
         }
 

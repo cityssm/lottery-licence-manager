@@ -59,6 +59,12 @@
     </p>
   </div>
   <div class="column is-4">
+    <% if (organization.fiscalStartDate !== 0) { %>
+      <p class="has-margin-bottom-10">
+        <strong>Fiscal Year</strong><br />
+        <%= organization.fiscalStartDateString %> to <%= organization.fiscalEndDateString %>
+      </p>
+    <% } %>
     <% if (organization.isEligibleForLicences) { %>
       <div class="message is-success">
         <p class="message-body">

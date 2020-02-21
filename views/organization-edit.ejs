@@ -75,7 +75,25 @@
       </div>
     </div>
     <% if (!isCreate) { %>
-      <div class="column is-4">
+      <div class="column is-5">
+        <div class="columns">
+          <div class="column">
+            <div class="field">
+              <label class="label" for="organization--fiscalStartDateString">Fiscal Year Start</label>
+              <div class="control">
+                <input class="input" id="organization--fiscalStartDateString" name="fiscalStartDateString" type="date" value="<%= organization.fiscalStartDateString %>" />
+              </div>
+            </div>
+          </div>
+          <div class="column">
+            <div class="field">
+              <label class="label" for="organization--fiscalEndDateString">Fiscal Year End</label>
+              <div class="control">
+                <input class="input" id="organization--fiscalEndDateString" name="fiscalEndDateString" type="date" value="<%= organization.fiscalEndDateString %>" />
+              </div>
+            </div>
+          </div>
+        </div>
         <div class="field">
           <label class="label" for="organization--isEligibleForLicences">New Licence Eligibility</label>
           <div class="control">

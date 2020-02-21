@@ -127,6 +127,10 @@ export interface Organization extends Record {
     organizationCity: string;
     organizationProvince: string;
     organizationPostalCode: string;
+    fiscalStartDate: number;
+    fiscalStartDateString: string;
+    fiscalEndDate: number;
+    fiscalEndDateString: string;
     isEligibleForLicences: boolean;
     organizationNote: string;
     canUpdate: boolean;

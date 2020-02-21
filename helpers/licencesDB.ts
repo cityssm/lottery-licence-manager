@@ -885,6 +885,9 @@ export function getOrganization(organizationID: number, reqSession: Express.Sess
 
     organizationObj.recordType = "organization";
 
+    organizationObj.fiscalStartDateString = dateTimeFns.dateIntegerToString(organizationObj.fiscalStartDate);
+    organizationObj.fiscalEndDateString = dateTimeFns.dateIntegerToString(organizationObj.fiscalEndDate);
+
     organizationObj.canUpdate = canUpdateObject(organizationObj, reqSession);
 
     const representativesList: llm.OrganizationRepresentative[] =
@@ -955,6 +958,8 @@ export function updateOrganization(reqBody: llm.Organization, reqSession: Expres
     " organizationCity = ?," +
     " organizationProvince = ?," +
     " organizationPostalCode = ?," +
+    " fiscalStartDate = ?," +
+    " fiscalEndDate = ?," +
     " isEligibleForLicences = ?," +
     " organizationNote = ?," +
     " recordUpdate_userName = ?," +
@@ -968,6 +973,8 @@ export function updateOrganization(reqBody: llm.Organization, reqSession: Expres
       reqBody.organizationCity,
       reqBody.organizationProvince,
       reqBody.organizationPostalCode,
+      dateTimeFns.dateStringToInteger(reqBody.fiscalStartDateString),
+      dateTimeFns.dateStringToInteger(reqBody.fiscalEndDateString),
       reqBody.isEligibleForLicences,
       reqBody.organizationNote,
       reqSession.user.userName,

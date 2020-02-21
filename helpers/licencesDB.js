@@ -501,6 +501,8 @@ function getOrganization(organizationID, reqSession) {
         .get(organizationID);
     if (organizationObj) {
         organizationObj.recordType = "organization";
+        organizationObj.fiscalStartDateString = dateTimeFns.dateIntegerToString(organizationObj.fiscalStartDate);
+        organizationObj.fiscalEndDateString = dateTimeFns.dateIntegerToString(organizationObj.fiscalEndDate);
         organizationObj.canUpdate = canUpdateObject(organizationObj, reqSession);
         const representativesList = db.prepare("select * from OrganizationRepresentatives" +
             " where organizationID = ?" +
@@ -537,13 +539,15 @@ function updateOrganization(reqBody, reqSession) {
         " organizationCity = ?," +
         " organizationProvince = ?," +
         " organizationPostalCode = ?," +
+        " fiscalStartDate = ?," +
+        " fiscalEndDate = ?," +
         " isEligibleForLicences = ?," +
         " organizationNote = ?," +
         " recordUpdate_userName = ?," +
         " recordUpdate_timeMillis = ?" +
         " where organizationID = ?" +
         " and recordDelete_timeMillis is null")
-        .run(reqBody.organizationName, reqBody.organizationAddress1, reqBody.organizationAddress2, reqBody.organizationCity, reqBody.organizationProvince, reqBody.organizationPostalCode, reqBody.isEligibleForLicences, reqBody.organizationNote, reqSession.user.userName, nowMillis, reqBody.organizationID);
+        .run(reqBody.organizationName, reqBody.organizationAddress1, reqBody.organizationAddress2, reqBody.organizationCity, reqBody.organizationProvince, reqBody.organizationPostalCode, dateTimeFns.dateStringToInteger(reqBody.fiscalStartDateString), dateTimeFns.dateStringToInteger(reqBody.fiscalEndDateString), reqBody.isEligibleForLicences, reqBody.organizationNote, reqSession.user.userName, nowMillis, reqBody.organizationID);
     db.close();
     return info.changes > 0;
 }

@@ -1,7 +1,3 @@
-/* global require, module */
-
-"use strict";
-
 import * as llm from "../helpers/llmTypes";
 import { ticketTypes as nevadaTicketTypes } from "./_agco-approvedBreakOpenTicketTypes";
 
