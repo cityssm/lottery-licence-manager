@@ -381,7 +381,7 @@ export function getLocations(reqSession: Express.SessionData, queryOptions: {
 
     for (let index = 0; index < locationNameAddressSplit.length; index += 1) {
 
-      sqlWhereClause += " and (instr(lower(lo.locationName), ?) or instr(lower(lo.locationAddress1),?))"
+      sqlWhereClause += " and (instr(lower(lo.locationName), ?) or instr(lower(lo.locationAddress1),?))";
       sqlParams.push(locationNameAddressSplit[index]);
       sqlParams.push(locationNameAddressSplit[index]);
 
