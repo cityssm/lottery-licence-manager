@@ -5,7 +5,7 @@
 
     * {
       box-sizing: border-box;
-      font-size: 12pt;
+      font-size: 16px;
     }
 
     html {
@@ -13,7 +13,7 @@
     }
 
     .page {
-      margin: 0.25in 0.5in;
+      margin: 20px 40px;
     }
 
     table {
@@ -62,32 +62,36 @@
     }
 
 
-    .is-7pt {
-      font-size: 7pt;
+    .is-6pt {
+      font-size: 8px;
     }
 
-    .is-8pt {
-      font-size: 8pt;
+    .is-9pt {
+      font-size: 12px;
     }
 
     .is-12pt {
-      font-size: 12pt;
+      font-size: 16px;
     }
 
-    .is-16pt {
-      font-size: 16pt;
+    .is-15pt {
+      font-size: 20px;
     }
 
-    .is-20pt {
-      font-size: 20pt;
+    .is-18pt {
+      font-size: 24px;
+    }
+
+    .is-21pt {
+      font-size: 28px;
     }
 
     .is-24pt {
-      font-size: 24pt;
+      font-size: 32px;
     }
 
-    .is-28pt {
-      font-size: 28pt;
+    .is-27pt {
+      font-size: 36pt;
     }
 
 
@@ -180,12 +184,12 @@
             alcools et des jeux de<br />
             l'Ontario
           </td>
-          <td class="has-padding-right-10 is-28pt has-text-weight-bold">
+          <td class="has-padding-right-10 is-24pt has-text-weight-bold">
             Lottery Licence<br />
             Licence de loterie
           </td>
           <td class="has-text-right">
-            <span class="has-text-weight-bold is-20pt">M</span>
+            <span class="has-text-weight-bold is-21pt">M</span>
             <span class="has-text-red is-24pt"><%= licence.externalLicenceNumber %></span>
           </td>
         </tr>
@@ -286,17 +290,17 @@
       </table>
     </div>
 
-    <table>
+    <table class="has-margin-top-10 has-margin-bottom-10">
       <tbody>
         <tr>
           <td class="has-padding-bottom-5 has-padding-right-10">
             Total value of all prizes in any lottery conducted under this<br />
-            licence not to exceed $ <%= licence.totalPrizeValue %> in cash,<br />
+            licence not to exceed $ <%= licence.totalPrizeValue.toFixed(2) %> in cash,<br />
             or merchandise or articles at equivalent market value.
           </td>
           <td class="has-padding-bottom-5">
             La valeur totale des prix d'une loterie organisée en vertu de<br />
-            la présente licence ne doit pas excéder <%= licence.totalPrizeValue %> $<br />
+            la présente licence ne doit pas excéder <%= licence.totalPrizeValue.toFixed(2) %> $<br />
             en espèces ou valeur équivalente en nature.
           </td>
         </tr>
@@ -404,7 +408,7 @@
     <table class="is-fullwidth">
       <tbody>
         <tr>
-          <td class="is-one-third is-7pt has-text-nowrap">
+          <td class="is-one-third is-6pt has-text-nowrap">
             6006 (2012/01) &copy; Queen's Printer for Ontario, 2012
           </td>
           <td class="is-one-third is-12pt has-text-nowrap has-text-centered has-text-weight-bold">
