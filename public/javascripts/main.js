@@ -623,6 +623,10 @@ llm.initializeTabs = function(tabsListEle, callbackFns) {
 
   };
 
+}());
+
+
+(function() {
 
   /*
    * NAV BLOCKER
@@ -660,6 +664,41 @@ llm.initializeTabs = function(tabsListEle, callbackFns) {
 
   };
 
+}());
+
+
+// SIDE MENU INIT
+
+(function() {
+
+  const collapseButtonEle = document.getElementById("is-sidemenu-collapse-button");
+  const collapseSidemenuEle = document.getElementById("is-sidemenu-collapsed");
+
+  const expandButtonEle = document.getElementById("is-sidemenu-expand-button");
+  const expandSidemenuEle = document.getElementById("is-sidemenu-expanded");
+
+  if (collapseButtonEle && collapseSidemenuEle && expandButtonEle && expandSidemenuEle) {
+
+    collapseButtonEle.addEventListener("click", function() {
+
+      expandSidemenuEle.classList.add("is-hidden");
+      collapseSidemenuEle.classList.remove("is-hidden");
+
+    });
+
+    expandButtonEle.addEventListener("click", function() {
+
+      collapseSidemenuEle.classList.add("is-hidden");
+      expandSidemenuEle.classList.remove("is-hidden");
+
+    });
+
+  }
+
+}());
+
+
+(function() {
 
   /*
    * NAVBAR TOGGLE

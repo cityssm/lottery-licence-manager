@@ -1689,6 +1689,19 @@ export function getLicences(reqBodyOrParamsObj: any, reqSession: Express.Session
 
   let sqlWhereClause = " where l.recordDelete_timeMillis is null";
 
+  if (reqBodyOrParamsObj.externalLicenceNumber && reqBodyOrParamsObj.externalLicenceNumber !== "") {
+
+    const externalLicenceNumberPieces = reqBodyOrParamsObj.externalLicenceNumber.toLowerCase().split(" ");
+
+    for (let pieceIndex = 0; pieceIndex < externalLicenceNumberPieces.length; pieceIndex += 1) {
+
+      sqlWhereClause += " and instr(lower(l.externalLicenceNumber), ?)";
+      sqlParams.push(externalLicenceNumberPieces[pieceIndex]);
+
+    }
+
+  }
+
   if (reqBodyOrParamsObj.organizationID && reqBodyOrParamsObj.organizationID !== "") {
 
     sqlWhereClause += " and l.organizationID = ?";
