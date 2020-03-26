@@ -5,7 +5,7 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-free": "^5.12.1",
+    "@fortawesome/fontawesome-free": "^5.13.0",
     "bcrypt": "^4.0.1",
     "better-sqlite3": "^6.0.1",
     "compression": "^1.7.4",
@@ -19,8 +19,8 @@
     "fresh-password": "^1.0.0",
     "html-pdf": "^2.2.0",
     "http-errors": "^1.7.3",
-    "marked": "^0.8.0",
-    "morgan": "~1.9.1"
+    "marked": "^0.8.2",
+    "morgan": "^1.10.0"
   },
   "devDependencies": {
     "@types/bcrypt": "^3.0.0",
@@ -29,13 +29,13 @@
     "@types/cookie-parser": "^1.4.2",
     "@types/ejs": "^3.0.1",
     "@types/express": "^4.17.3",
-    "@types/express-serve-static-core": "^4.17.2",
+    "@types/express-serve-static-core": "^4.17.3",
     "@types/express-session": "^1.17.0",
     "@types/html-pdf": "^2.2.0",
     "@types/http-errors": "^1.6.3",
     "@types/marked": "^0.7.3",
     "@types/morgan": "^1.9.0",
-    "bulma": "^0.8.0",
+    "bulma": "^0.8.1",
     "bulma-divider": "^0.2.0",
     "bulma-helpers": "^0.3.10",
     "bulma-switch": "^2.0.0",
