@@ -82,7 +82,12 @@
             "</td>"
           );
 
-          trEle.insertAdjacentHTML("beforeend", "<td>" + organizationObj.representativeName + "</td>");
+          trEle.insertAdjacentHTML(
+            "beforeend",
+            "<td>" +
+            (organizationObj.representativeName || "<span class=\"has-text-grey\">(No Representatives)</span>") +
+            "</td>"
+          );
 
           if (canCreate) {
 
