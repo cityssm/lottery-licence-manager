@@ -5,7 +5,7 @@
 
     * {
       box-sizing: border-box;
-      font-size: 10pt;
+      font-size: 12pt;
     }
 
     html {
@@ -14,6 +14,10 @@
 
     .page {
       margin: 0.25in 0.5in;
+    }
+
+    table {
+      width: 100%;
     }
 
     table td {
@@ -82,6 +86,10 @@
       font-size: 24pt;
     }
 
+    .is-28pt {
+      font-size: 28pt;
+    }
+
 
     .has-newline-chars {
       white-space: pre-wrap;
@@ -139,6 +147,10 @@
       min-height: 150px;
     }
 
+    .has-min-height-250 {
+      min-height: 250px;
+    }
+
     .has-vertical-align-top {
       vertical-align: top;
     }
@@ -156,25 +168,25 @@
       <tbody>
         <tr>
           <td class="has-padding-right-10">
-            <img src="/images/ontarioCoatOfArms.svg" alt="" style="height:55px" />
+            <img src="/images/ontarioCoatOfArms.svg" alt="" style="height:60px" />
           </td>
-          <td class="has-padding-right-10 is-8pt">
+          <td class="has-padding-right-10 is-9pt">
             Alcohol and<br />
             Gaming Commission<br />
             of Ontario
           </td>
-          <td class="has-padding-right-10 is-8pt">
+          <td class="has-padding-right-10 is-9pt">
             Commission des<br />
             alcools et des jeux de<br />
             l'Ontario
           </td>
-          <td class="has-padding-right-10 is-24pt has-text-weight-bold">
+          <td class="has-padding-right-10 is-28pt has-text-weight-bold">
             Lottery Licence<br />
             Licence de loterie
           </td>
           <td class="has-text-right">
-            <span class="has-text-weight-bold is-16pt">M</span>
-            <span class="has-text-red is-20pt"><%= licence.externalLicenceNumber %></span>
+            <span class="has-text-weight-bold is-20pt">M</span>
+            <span class="has-text-red is-24pt"><%= licence.externalLicenceNumber %></span>
           </td>
         </tr>
       </tbody>
@@ -309,7 +321,10 @@
       <div class="has-text-weight-bold">
         Special Terms and Conditions/Modalités spéciales
       </div>
-      <div class="field has-min-height-100">
+      <div class="field has-min-height-250">
+        <% if (licence.licenceDetails !== "") { %>
+          <div class="has-newline-chars has-margin-bottom-10"><%= licence.licenceDetails %></div>
+        <% } %>
         <div class="has-newline-chars"><%= licence.termsConditions %></div>
         <% if (licence.licenceTicketTypes.length > 0) { %>
           <div class="has-margin-top-10">
