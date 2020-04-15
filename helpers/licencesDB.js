@@ -45,7 +45,7 @@ function canUpdateObject(obj, reqSession) {
 function getApplicationSettingWithDB(db, settingKey) {
     const row = db.prepare("select settingValue" +
         " from ApplicationSettings" +
-        " where SettingKey = ?")
+        " where settingKey = ?")
         .get(settingKey);
     if (row) {
         return row.settingValue || "";
@@ -1074,7 +1074,8 @@ function getNextExternalLicenceNumberFromRange() {
     const db = sqlite(dbPath, {
         readonly: true
     });
-    const rangeStart = parseInt(getApplicationSettingWithDB(db, "licences.externalLicenceNumber.range.start") || "-1");
+    const rangeStartFromConfig = getApplicationSettingWithDB(db, "licences.externalLicenceNumber.range.start");
+    const rangeStart = (rangeStartFromConfig === "" ? -1 : parseInt(rangeStartFromConfig));
     const rangeEnd = parseInt(getApplicationSettingWithDB(db, "licences.externalLicenceNumber.range.end") || "0");
     const row = db.prepare("select max(externalLicenceNumberInteger) as maxExternalLicenceNumberInteger" +
         " from LotteryLicences" +

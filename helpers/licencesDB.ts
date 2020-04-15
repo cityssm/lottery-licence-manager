@@ -92,7 +92,7 @@ function getApplicationSettingWithDB(db: sqlite.Database, settingKey: string): s
 
   const row = db.prepare("select settingValue" +
     " from ApplicationSettings" +
-    " where SettingKey = ?")
+    " where settingKey = ?")
     .get(settingKey);
 
   if (row) {
@@ -1840,7 +1840,9 @@ export function getNextExternalLicenceNumberFromRange() {
     readonly: true
   });
 
-  const rangeStart = parseInt(getApplicationSettingWithDB(db, "licences.externalLicenceNumber.range.start") || "-1");
+  const rangeStartFromConfig = getApplicationSettingWithDB(db, "licences.externalLicenceNumber.range.start");
+
+  const rangeStart = (rangeStartFromConfig === "" ? -1 : parseInt(rangeStartFromConfig));
 
   const rangeEnd = parseInt(getApplicationSettingWithDB(db, "licences.externalLicenceNumber.range.end") || "0");
 

@@ -7,42 +7,42 @@
     </header>
     <form>
       <section class="modal-card-body">
-          <input id="editRemark--organizationID" name="organizationID" type="hidden" />
-          <input id="editRemark--remarkIndex" name="remarkIndex" type="hidden" />
+        <input id="editRemark--organizationID" name="organizationID" type="hidden" />
+        <input id="editRemark--remarkIndex" name="remarkIndex" type="hidden" />
 
-          <div class="field">
-            <label class="label" for="editRemark--remark">Remark</label>
+        <div class="field">
+          <label class="label" for="editRemark--remark">Remark</label>
+          <div class="control">
+            <textarea class="textarea" id="editRemark--remark" name="remark" placeholder="Loading..."></textarea>
+          </div>
+        </div>
+
+        <div class="columns">
+          <div class="column">
+            <label class="label" for="editRemark--remarkDateString">Date</label>
             <div class="control">
-              <textarea class="textarea" id="editRemark--remark" name="remark" placeholder="Loading..."></textarea>
+              <input class="input" id="editRemark--remarkDateString" name="remarkDateString" type="date" required />
             </div>
           </div>
-
-          <div class="columns">
-            <div class="column">
-              <label class="label" for="editRemark--remarkDateString">Date</label>
-              <div class="control">
-                <input class="input" id="editRemark--remarkDateString" name="remarkDateString" type="date" required />
-              </div>
-            </div>
-            <div class="column">
-              <label class="label" for="editRemark--remarkTimeString">Time</label>
-              <div class="control">
-                <input class="input" id="editRemark--remarkTimeString" name="remarkTimeString" type="time" required />
-              </div>
-            </div>
-            <div class="column">
-              <div class="field">
-                <p class="control">
-                  <div class="b-checkbox is-primary">
-                    <input id="editRemark--isImportant" name="isImportant" type="checkbox" />
-                    <label for="editRemark--isImportant">
-                      Mark as Important
-                    </label>
-                  </div>
-                </p>
-              </div>
+          <div class="column">
+            <label class="label" for="editRemark--remarkTimeString">Time</label>
+            <div class="control">
+              <input class="input" id="editRemark--remarkTimeString" name="remarkTimeString" type="time" required />
             </div>
           </div>
+          <div class="column">
+            <div class="field">
+              <p class="control">
+                <div class="b-checkbox is-primary">
+                  <input id="editRemark--isImportant" name="isImportant" type="checkbox" />
+                  <label for="editRemark--isImportant">
+                    Mark as Important
+                  </label>
+                </div>
+              </p>
+            </div>
+          </div>
+        </div>
       </section>
       <footer class="modal-card-foot justify-flex-end">
         <button class="button is-close-modal-button" type="button">Cancel</button>
