@@ -65,7 +65,7 @@
           <label class="label" for="licence--externalLicenceNumber"><%= configFns.getProperty("licences.externalLicenceNumber.fieldLabel") %></label>
           <div class="field has-addons">
             <div class="control is-expanded">
-              <input class="input <%= (licenceNumberIsReadOnly ? " is-readonly" : "") %>" id="licence--externalLicenceNumber" name="externalLicenceNumber" type="text" value="<%= licence.externalLicenceNumber %>" maxlength="20" readonly />
+              <input class="input <%= (licenceNumberIsReadOnly ? " is-readonly" : "") %>" id="licence--externalLicenceNumber" name="externalLicenceNumber" type="text" value="<%= licence.externalLicenceNumber %>" maxlength="20" <%= (licenceNumberIsReadOnly ? " readonly" : "") %> />
             </div>
             <% if (licenceNumberIsReadOnly) { %>
               <div class="control">
