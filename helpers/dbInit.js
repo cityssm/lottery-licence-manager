@@ -58,6 +58,7 @@ function initLicencesDB() {
             " organizationCity varchar(20)," +
             " organizationProvince varchar(2)," +
             " organizationPostalCode varchar(7)," +
+            " trustAccountNumber varchar(20)," +
             " fiscalStartDate integer," +
             " fiscalEndDate integer," +
             " isEligibleForLicences bit not null default 1," +

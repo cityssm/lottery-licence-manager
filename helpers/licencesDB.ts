@@ -958,6 +958,7 @@ export function updateOrganization(reqBody: llm.Organization, reqSession: Expres
     " organizationCity = ?," +
     " organizationProvince = ?," +
     " organizationPostalCode = ?," +
+    " trustAccountNumber = ?," +
     " fiscalStartDate = ?," +
     " fiscalEndDate = ?," +
     " isEligibleForLicences = ?," +
@@ -973,6 +974,7 @@ export function updateOrganization(reqBody: llm.Organization, reqSession: Expres
       reqBody.organizationCity,
       reqBody.organizationProvince,
       reqBody.organizationPostalCode,
+      reqBody.trustAccountNumber,
       dateTimeFns.dateStringToInteger(reqBody.fiscalStartDateString),
       dateTimeFns.dateStringToInteger(reqBody.fiscalEndDateString),
       reqBody.isEligibleForLicences,

@@ -127,6 +127,7 @@ export interface Organization extends Record {
     organizationCity: string;
     organizationProvince: string;
     organizationPostalCode: string;
+    trustAccountNumber: string;
     fiscalStartDate: number;
     fiscalStartDateString: string;
     fiscalEndDate: number;

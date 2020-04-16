@@ -539,6 +539,7 @@ function updateOrganization(reqBody, reqSession) {
         " organizationCity = ?," +
         " organizationProvince = ?," +
         " organizationPostalCode = ?," +
+        " trustAccountNumber = ?," +
         " fiscalStartDate = ?," +
         " fiscalEndDate = ?," +
         " isEligibleForLicences = ?," +
@@ -547,7 +548,7 @@ function updateOrganization(reqBody, reqSession) {
         " recordUpdate_timeMillis = ?" +
         " where organizationID = ?" +
         " and recordDelete_timeMillis is null")
-        .run(reqBody.organizationName, reqBody.organizationAddress1, reqBody.organizationAddress2, reqBody.organizationCity, reqBody.organizationProvince, reqBody.organizationPostalCode, dateTimeFns.dateStringToInteger(reqBody.fiscalStartDateString), dateTimeFns.dateStringToInteger(reqBody.fiscalEndDateString), reqBody.isEligibleForLicences, reqBody.organizationNote, reqSession.user.userName, nowMillis, reqBody.organizationID);
+        .run(reqBody.organizationName, reqBody.organizationAddress1, reqBody.organizationAddress2, reqBody.organizationCity, reqBody.organizationProvince, reqBody.organizationPostalCode, reqBody.trustAccountNumber, dateTimeFns.dateStringToInteger(reqBody.fiscalStartDateString), dateTimeFns.dateStringToInteger(reqBody.fiscalEndDateString), reqBody.isEligibleForLicences, reqBody.organizationNote, reqSession.user.userName, nowMillis, reqBody.organizationID);
     db.close();
     return info.changes > 0;
 }

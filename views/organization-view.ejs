@@ -58,13 +58,31 @@
       <%= organization.organizationPostalCode %>
     </p>
   </div>
-  <div class="column is-4">
-    <% if (organization.fiscalStartDate !== 0) { %>
-      <p class="has-margin-bottom-10">
-        <strong>Fiscal Year</strong><br />
-        <%= organization.fiscalStartDateString %> to <%= organization.fiscalEndDateString %>
-      </p>
-    <% } %>
+  <div class="column">
+
+    <div class="columns">
+      <div class="column">
+        <p>
+          <strong>Trust Account Number</strong><br />
+          <% if (organization.trustAccountNumber === null || organization.trustAccountNumber === "") { %>
+            <span class="has-text-grey">(Not Recorded)</span>
+          <% } else { %>
+            <%= organization.trustAccountNumber %>
+          <% } %>
+        </p>
+      </div>
+      <div class="column">
+        <p>
+          <strong>Fiscal Year</strong><br />
+          <% if (organization.fiscalStartDate === 0) { %>
+            <span class="has-text-grey">(Not Recorded)</span>
+          <% } else { %>
+            <%= organization.fiscalStartDateString %> to <%= organization.fiscalEndDateString %>
+          <% } %>
+          </p>
+      </div>
+    </div>
+
     <% if (organization.isEligibleForLicences) { %>
       <div class="message is-success">
         <p class="message-body">

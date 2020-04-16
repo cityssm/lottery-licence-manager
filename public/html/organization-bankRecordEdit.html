@@ -5,8 +5,8 @@
       <h3 class="modal-card-title">Update a Bank Record</h3>
       <button class="delete is-close-modal-button" aria-label="close" type="button"></button>
     </header>
-    <form>
-      <section class="modal-card-body">
+    <section class="modal-card-body">
+      <form id="form--bankRecordEdit">
         <input id="bankRecordEdit--organizationID" name="organizationID" type="hidden" value="" />
         <input id="bankRecordEdit--recordIndex" name="recordIndex" type="hidden" value="" />
 
@@ -15,7 +15,7 @@
             <div class="field">
               <label class="label" for="bankRecordEdit--accountNumber">Account Number</label>
               <div class="control">
-                <input class="input" id="bankRecordEdit--accountNumber" name="accountNumber" maxlength="20" required />
+                <input class="input" id="bankRecordEdit--accountNumber" name="accountNumber" maxlength="20" autocomplete="off" required />
               </div>
             </div>
           </div>
@@ -23,7 +23,7 @@
             <div class="field">
               <label class="label" for="bankRecordEdit--bankingYear">Banking Year</label>
               <div class="control">
-                <input class="input" id="bankRecordEdit--bankingYear" name="bankingYear" type="number" step="1" required />
+                <input class="input" id="bankRecordEdit--bankingYear" name="bankingYear" type="number" step="1" required onwheel="return false" />
               </div>
             </div>
           </div>
@@ -31,7 +31,7 @@
             <div class="field">
               <label class="label" for="bankRecordEdit--bankingMonth">Banking Month</label>
               <div class="control">
-                <input class="input" id="bankRecordEdit--bankingMonth" name="bankingMonth" type="number" step="1" min="1" max="12" required />
+                <input class="input" id="bankRecordEdit--bankingMonth" name="bankingMonth" type="number" step="1" min="1" max="12" required onwheel="return false" />
               </div>
             </div>
           </div>
@@ -69,39 +69,38 @@
           </div>
         </div>
 
-        <div class="field">
+        <div class="field has-margin-bottom-10">
           <label class="label" for="bankRecordEdit--recordNote">Optional Notes</label>
           <div class="control">
             <textarea class="textarea" id="bankRecordEdit--recordNote" name="recordNote"></textarea>
           </div>
         </div>
-
-      </section>
-      <footer class="modal-card-foot justify-right">
-        <button class="button is-close-modal-button" type="button">Cancel</button>
-        <button class="button is-success" type="submit">
-          <span class="icon">
-            <i class="fas fa-save" aria-hidden="true"></i>
-          </span>
-          <span>Save Record</span>
-        </button>
-        <div class="dropdown is-hoverable is-right is-up" id="bankRecordEdit--moreOptionsDropdown">
-          <div class="dropdown-trigger">
-            <button class="button" type="button" aria-haspopup="true">
-              <i class="fas fa-angle-up" aria-hidden="true"></i>
-              <span class="sr-only">More Options</span>
-            </button>
-          </div>
-          <div class="dropdown-menu" role="menu">
-            <div class="dropdown-content">
-              <a class="dropdown-item" id="bankRecordEdit--deleteRecordButton" href="#">
-                <span class="icon"><i class="fas fa-trash has-text-danger" aria-hidden="true"></i></span>
-                <span>Delete Record</span>
-              </a>
-            </div>
+      </form>
+    </section>
+    <footer class="modal-card-foot justify-right">
+      <button class="button is-close-modal-button" type="button">Cancel</button>
+      <button class="button is-success" type="submit" form="form--bankRecordEdit">
+        <span class="icon">
+          <i class="fas fa-save" aria-hidden="true"></i>
+        </span>
+        <span>Save Record</span>
+      </button>
+      <div class="dropdown is-hoverable is-right is-up" id="bankRecordEdit--moreOptionsDropdown">
+        <div class="dropdown-trigger">
+          <button class="button" type="button" aria-haspopup="true">
+            <i class="fas fa-angle-up" aria-hidden="true"></i>
+            <span class="sr-only">More Options</span>
+          </button>
+        </div>
+        <div class="dropdown-menu" role="menu">
+          <div class="dropdown-content">
+            <a class="dropdown-item" id="bankRecordEdit--deleteRecordButton" href="#">
+              <span class="icon"><i class="fas fa-trash has-text-danger" aria-hidden="true"></i></span>
+              <span>Delete Record</span>
+            </a>
           </div>
         </div>
-      </footer>
-    </form>
+      </div>
+    </footer>
   </div>
 </div>

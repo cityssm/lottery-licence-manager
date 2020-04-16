@@ -76,6 +76,12 @@
     </div>
     <% if (!isCreate) { %>
       <div class="column is-5">
+        <div class="field">
+          <label class="label" for="organization--trustAccountNumber">Trust Account Number</label>
+          <div class="control">
+            <input class="input" id="organization--trustAccountNumber" name="trustAccountNumber" type="text" value="<%= organization.trustAccountNumber %>" maxlength="20" />
+          </div>
+        </div>
         <div class="columns">
           <div class="column">
             <div class="field">

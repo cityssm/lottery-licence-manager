@@ -5,8 +5,8 @@
       <p class="modal-card-title">Edit a Remark</p>
       <button class="delete is-close-modal-button" aria-label="close"></button>
     </header>
-    <form>
-      <section class="modal-card-body">
+    <section class="modal-card-body">
+      <form id="form--editRemark">
         <input id="editRemark--organizationID" name="organizationID" type="hidden" />
         <input id="editRemark--remarkIndex" name="remarkIndex" type="hidden" />
 
@@ -43,11 +43,11 @@
             </div>
           </div>
         </div>
-      </section>
-      <footer class="modal-card-foot justify-flex-end">
-        <button class="button is-close-modal-button" type="button">Cancel</button>
-        <button class="button is-success" type="submit">Edit Remark</button>
-      </footer>
-    </form>
+      </form>
+    </section>
+    <footer class="modal-card-foot justify-flex-end">
+      <button class="button is-close-modal-button" type="button">Cancel</button>
+      <button class="button is-success" type="submit" form="form--editRemark">Edit Remark</button>
+    </footer>
   </div>
 </div>
