@@ -209,6 +209,7 @@ router.get("/new", function (req, res) {
     }
     res.render("organization-edit", {
         headTitle: "Organization Create",
+        isViewOnly: false,
         isCreate: true,
         organization: {
             organizationCity: configFns.getProperty("defaults.city"),
@@ -313,6 +314,7 @@ router.get("/:organizationID", function (req, res) {
     const remarks = licencesDB.getOrganizationRemarks(organizationID, req.session) || [];
     res.render("organization-view", {
         headTitle: organization.organizationName,
+        isViewOnly: true,
         organization: organization,
         licences: licences,
         remarks: remarks,
@@ -343,6 +345,7 @@ router.get("/:organizationID/edit", function (req, res) {
     const remarks = licencesDB.getOrganizationRemarks(organizationID, req.session) || [];
     res.render("organization-edit", {
         headTitle: "Organization Update",
+        isViewOnly: false,
         isCreate: false,
         organization: organization,
         licences: licences,

@@ -85,14 +85,17 @@
      * Representatives
      */
 
-    const representativeTbodyEle = document.getElementsByClassName("is-representative-table")[0].getElementsByTagName("tbody")[0];
+    const representativeTbodyEle =
+      document.getElementsByClassName("is-representative-table")[0].getElementsByTagName("tbody")[0];
 
     const showNoRepresentativesWarning = function() {
 
       if (representativeTbodyEle.getElementsByTagName("tr").length === 0) {
 
         representativeTbodyEle.innerHTML = "<tr class=\"has-background-warning is-empty-warning\">" +
-          "<td class=\"has-text-centered\" colspan=\"6\"><strong>There are no representatives associated with this organization.</strong></td>" +
+          "<td class=\"has-text-centered\" colspan=\"6\">" +
+          "<strong>There are no representatives associated with this organization.</strong>" +
+          "</td>" +
           "</tr>";
 
       }

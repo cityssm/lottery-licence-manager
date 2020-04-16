@@ -214,7 +214,7 @@
     bankRecordsTableEle.classList.remove("has-status-loaded");
     bankRecordsTableEle.classList.add("has-status-loading");
 
-    const buttonEles = bankRecordsTableEle.getElementsByTagName("button");
+    const buttonEles = bankRecordsTableEle.getElementsByClassName("is-bank-record-button");
 
     for (let index = 0; index < buttonEles.length; index += 1) {
 
@@ -238,11 +238,7 @@
 
     clearBankRecordsTable();
 
-    llm.postJSON("/organizations/doGetBankRecords", {
-      organizationID: organizationID,
-      bankingYear: bankRecordsBankingYearFilterEle.value,
-      accountNumber: bankRecordsAccountNumberFilterEle.value
-    }, function(bankRecords) {
+    const processRecordsFn = function(bankRecords) {
 
       for (let recordIndex = 0; recordIndex < bankRecords.length; recordIndex += 1) {
 
@@ -297,7 +293,21 @@
       bankRecordsTableEle.classList.remove("has-status-loading");
       bankRecordsTableEle.classList.add("has-status-loaded");
 
-    });
+    };
+
+    if (bankRecordsAccountNumberFilterEle.value === "") {
+
+      processRecordsFn([]);
+
+    } else {
+
+      llm.postJSON("/organizations/doGetBankRecords", {
+        organizationID: organizationID,
+        bankingYear: bankRecordsBankingYearFilterEle.value,
+        accountNumber: bankRecordsAccountNumberFilterEle.value
+      }, processRecordsFn);
+
+    }
 
   }
 
@@ -368,6 +378,7 @@
       let bankRecordEditCloseModalFn;
       let isUpdate = false;
       let lockKeyFields = false;
+      let accountNumberIsBlank = true;
 
       const submitBankRecordEditFn = function(formEvent) {
 
@@ -382,7 +393,7 @@
 
               bankRecordEditCloseModalFn();
 
-              if (isUpdate || lockKeyFields) {
+              if (isUpdate || (lockKeyFields && !accountNumberIsBlank)) {
 
                 getBankRecords();
 
@@ -439,7 +450,10 @@
 
       // Set defaults
       let recordIndex = "";
+
       const accountNumber = bankRecordsAccountNumberFilterEle.value;
+      accountNumberIsBlank = (accountNumber === "");
+
       let bankRecordType = "";
       let recordIsNA = false;
       let recordNote = "";
@@ -543,14 +557,20 @@
 
           if (lockKeyFields) {
 
-            accountNumberEle.setAttribute("readonly", "readonly");
-            bankingYearEle.setAttribute("readonly", "readonly");
-            bankingMonthEle.setAttribute("readonly", "readonly");
-            bankRecordTypeEle.setAttribute("readonly", "readonly");
+            if (!accountNumberIsBlank) {
 
-            accountNumberEle.classList.add("is-readonly");
+              accountNumberEle.setAttribute("readonly", "readonly");
+              accountNumberEle.classList.add("is-readonly");
+
+            }
+
+            bankingYearEle.setAttribute("readonly", "readonly");
             bankingYearEle.classList.add("is-readonly");
+
+            bankingMonthEle.setAttribute("readonly", "readonly");
             bankingMonthEle.classList.add("is-readonly");
+
+            bankRecordTypeEle.setAttribute("readonly", "readonly");
             bankRecordTypeEle.classList.add("is-readonly");
 
           }

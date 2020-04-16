@@ -88,8 +88,16 @@
                 ...
               </div>
               <div class="is-hidden-status-loading">
-                <button class="button is-light is-fullwidth is-block has-height-auto is-noninteractive-status-view" data-bank-record-type="<%= bankRecordTypes[recordTypeIndex].bankRecordType %>" type="button">
-                </button>
+                <% if (isViewOnly) { %>
+                  <div class="button is-bank-record-button is-light is-fullwidth is-block has-height-auto has-cursor-default"
+                    data-bank-record-type="<%= bankRecordTypes[recordTypeIndex].bankRecordType %>">
+                  </div>
+                <% } else { %>
+                  <button class="button is-bank-record-button is-light is-fullwidth is-block has-height-auto"
+                    data-bank-record-type="<%= bankRecordTypes[recordTypeIndex].bankRecordType %>"
+                    type="button">
+                  </button>
+                <% } %>
               </div>
             </td>
           <% } %>
