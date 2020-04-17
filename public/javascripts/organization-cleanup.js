@@ -26,12 +26,12 @@
 
         if (responseJSON.success) {
 
-          llm.alertModal(responseJSON.message, "", "OK", "success");
+          cityssm.alertModal(responseJSON.message, "", "OK", "success");
           buttonEle.closest("tr").remove();
 
         } else {
 
-          llm.alertModal(responseJSON.message, "", "OK", "danger");
+          cityssm.alertModal(responseJSON.message, "", "OK", "danger");
 
         }
 
@@ -39,7 +39,7 @@
 
     };
 
-    llm.confirmModal(
+    cityssm.confirmModal(
       "Delete Organization?",
       "Are you sure you want delete " + organizationName + "?",
       "Yes, Delete",

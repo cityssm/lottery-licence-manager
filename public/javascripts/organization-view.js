@@ -35,7 +35,7 @@
 
         const organizationName = buttonEle.getAttribute("data-organization-name");
 
-        llm.confirmModal(
+        cityssm.confirmModal(
           "Restore " + organizationName + "?",
           "Are you sure you want to restore this organization?",
           "Yes, Restore",

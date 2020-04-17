@@ -149,7 +149,7 @@ llm.organizationRemarks = (function() {
 
     if (doConfirm) {
 
-      llm.confirmModal(
+      cityssm.confirmModal(
         "Delete Remark?",
         "Are you sure you want to delete this remark?",
         "Yes, Delete",

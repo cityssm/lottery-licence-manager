@@ -5,7 +5,7 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
-    "@cityssm/bulma-webapp-js": "^0.0.1",
+    "@cityssm/bulma-webapp-js": "^0.1.0",
     "@fortawesome/fontawesome-free": "^5.13.0",
     "bcrypt": "^4.0.1",
     "better-sqlite3": "^6.0.1",

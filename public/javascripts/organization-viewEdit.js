@@ -406,7 +406,7 @@
 
             } else {
 
-              llm.alertModal("Record Not Saved", resultJSON.message, "OK", "danger");
+              cityssm.alertModal("Record Not Saved", resultJSON.message, "OK", "danger");
 
             }
 
@@ -435,7 +435,7 @@
 
         };
 
-        llm.confirmModal(
+        cityssm.confirmModal(
           "Delete Bank Record?",
           "Are you sure you want to delete this bank record?",
           "Yes, Delete",

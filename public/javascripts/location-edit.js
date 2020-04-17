@@ -37,7 +37,7 @@
 
           formMessageEle.innerHTML = "";
 
-          llm.alertModal(
+          cityssm.alertModal(
             responseJSON.message, "", "OK",
             responseJSON.success ? "success" : "danger"
           );
@@ -75,7 +75,7 @@
 
       clickEvent.preventDefault();
 
-      llm.confirmModal(
+      cityssm.confirmModal(
         "Delete Location?",
         ("Are you sure you want to delete this location?<br />" +
           "Note that any active licences associated with this location will remain active."),
@@ -99,7 +99,7 @@
 
       if (hasUnsavedChanges) {
 
-        llm.alertModal(
+        cityssm.alertModal(
           "Unsaved Changes",
           "You must save all unsaved changes before merging this location record.",
           "OK",
@@ -140,7 +140,7 @@
 
             } else {
 
-              llm.alertModal("Merge Not Completed", "Please try again.", "OK", "danger");
+              cityssm.alertModal("Merge Not Completed", "Please try again.", "OK", "danger");
 
             }
 
@@ -158,7 +158,7 @@
 
         closeMergeLocationModalFn();
 
-        llm.confirmModal(
+        cityssm.confirmModal(
           "Confirm Merge",
           "Are you sure you want to update all licences associated with" +
           " <em>" + locationDisplayName_source + ", #" + locationID_source + "</em>" +

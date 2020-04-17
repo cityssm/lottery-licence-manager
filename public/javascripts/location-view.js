@@ -24,7 +24,7 @@
 
     restoreButtonEle.addEventListener("click", function() {
 
-      llm.confirmModal(
+      cityssm.confirmModal(
         "Restore Location?",
         "Are you sure you want to restore this location, and make it available for use again?",
         "Yes, Restore",

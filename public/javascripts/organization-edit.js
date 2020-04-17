@@ -34,7 +34,7 @@
 
           formMessageEle.innerHTML = "";
 
-          llm.alertModal(
+          cityssm.alertModal(
             responseJSON.message, "", "OK",
             responseJSON.success ? "success" : "danger"
           );
@@ -70,7 +70,7 @@
 
     formEle.getElementsByClassName("is-delete-button")[0].addEventListener("click", function() {
 
-      llm.confirmModal(
+      cityssm.confirmModal(
         "Delete Organization?",
         ("Are you sure you want to delete this organization?<br />" +
           "Note that any active licences issued to this organization will remain active."),
@@ -145,7 +145,7 @@
 
       const representativeName = trEle.getAttribute("data-representative-name");
 
-      llm.confirmModal(
+      cityssm.confirmModal(
         "Delete a Representative?",
         "<p>Are you sure you want to delete the representative \"" + representativeName + "\"?</p>",
         "Yes, Delete",

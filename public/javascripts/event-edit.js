@@ -31,7 +31,7 @@
 
         formMessageEle.innerHTML = "";
 
-        llm.alertModal(
+        cityssm.alertModal(
           responseJSON.message,
           "",
           "OK",
@@ -47,7 +47,7 @@
 
     clickEvent.preventDefault();
 
-    llm.confirmModal(
+    cityssm.confirmModal(
       "Delete Event?",
       "Are you sure you want to delete this event?",
       "Yes, Delete",

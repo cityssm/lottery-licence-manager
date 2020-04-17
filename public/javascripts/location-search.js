@@ -268,7 +268,7 @@
     };
 
 
-    llm.confirmModal(
+    cityssm.confirmModal(
       "Delete Location",
       `Are you sure you want to delete ${cityssm.escapeHTML(locationObj.locationDisplayName)}?`,
       "Yes, Delete",

@@ -28,7 +28,7 @@
 
     if (eventDateInputEles.length === 0) {
 
-      llm.alertModal("Event Date Error", "Please ensure there is at least one event date.", "OK", "warning");
+      cityssm.alertModal("Event Date Error", "Please ensure there is at least one event date.", "OK", "warning");
       return;
 
     }
@@ -58,7 +58,7 @@
 
         formMessageEle.innerHTML = "";
 
-        llm.alertModal(
+        cityssm.alertModal(
           responseJSON.message, "", "OK",
           responseJSON.success ? "success" : "danger"
         );
@@ -83,7 +83,7 @@
 
       clickEvent.preventDefault();
 
-      llm.confirmModal(
+      cityssm.confirmModal(
         "Delete Licence?",
         "Are you sure you want to delete this licence and all events associated with it?",
         "Yes, Delete",
@@ -571,7 +571,7 @@
 
       if (organizationID === "") {
 
-        llm.alertModal(
+        cityssm.alertModal(
           "No Organization Selected",
           "An organization must be selected before the previously used terms and conditions can be retrieved.",
           "OK",
@@ -1030,7 +1030,7 @@
 
       };
 
-      llm.confirmModal(
+      cityssm.confirmModal(
         "Delete Ticket Type?",
         "Are you sure you want to remove the " + ticketType + " ticket type for this licence?",
         "Yes, Delete",
@@ -1339,7 +1339,7 @@
         if (!ticketTypes || ticketTypes.length === 0) {
 
           addTicketType_closeModalFn();
-          llm.alertModal("No ticket types available", "", "OK", "danger");
+          cityssm.alertModal("No ticket types available", "", "OK", "danger");
           return;
 
         }
@@ -1663,7 +1663,7 @@
 
         if (hasUnsavedChanges) {
 
-          llm.alertModal(
+          cityssm.alertModal(
             "Unsaved Changes",
             "Please save all unsaved changes before issuing this licence.",
             "OK",
@@ -1697,7 +1697,7 @@
         const reverseTransactionAmount =
           (voidTransactionButtonEle.getAttribute("data-transaction-amount") * -1).toFixed(2);
 
-        llm.confirmModal(
+        cityssm.confirmModal(
           "Void Transaction?",
           "<strong>Are you sure you want to void this transaction?</strong><br />" +
           "If the history of this transaction should be maintained," +
@@ -1745,7 +1745,7 @@
 
         };
 
-        llm.confirmModal(
+        cityssm.confirmModal(
           "Unissue Licence?",
           "Are you sure you want to unissue this lottery licence?",
           "Yes, Unissue",
@@ -1780,7 +1780,7 @@
 
         if (hasUnsavedChanges) {
 
-          llm.alertModal(
+          cityssm.alertModal(
             "Unsaved Changes",
             "Please save all unsaved changes before issuing this licence.",
             "OK",
@@ -1789,7 +1789,7 @@
 
         } else {
 
-          llm.confirmModal(
+          cityssm.confirmModal(
             "Issue Licence?",
             "Are you sure you want to issue this lottery licence?",
             "Yes, Issue",

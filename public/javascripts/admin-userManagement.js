@@ -73,7 +73,7 @@
 
     };
 
-    llm.confirmModal(
+    cityssm.confirmModal(
       "Delete User?",
       "Are you sure you want to delete <em>" + cityssm.escapeHTML(userNameToDelete) + "</em>?<br />",
       "Yes, Delete",
