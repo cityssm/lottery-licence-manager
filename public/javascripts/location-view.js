@@ -8,7 +8,7 @@
 
     const restoreFn = function() {
 
-      llm.postJSON("/locations/doRestore", {
+      cityssm.postJSON("/locations/doRestore", {
         locationID: restoreButtonEle.getAttribute("data-location-id")
       }, function(responseJSON) {
 

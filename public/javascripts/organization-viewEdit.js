@@ -36,7 +36,7 @@
 
       llm.organizationRemarks.getRemarksByOrganizationID(organizationID, function(remarkList) {
 
-        llm.clearElement(remarksContainerEle);
+        cityssm.clearElement(remarksContainerEle);
 
         if (remarkList.length === 0) {
 
@@ -60,7 +60,7 @@
                 "<i class=\"far fa-fw fa-comment\" aria-hidden=\"true\"></i>") +
               "</div>" +
               "<div class=\"column\">" +
-              "<p class=\"has-newline-chars\">" + llm.escapeHTML(remark.remark) + "</p>" +
+              "<p class=\"has-newline-chars\">" + cityssm.escapeHTML(remark.remark) + "</p>" +
               "<p class=\"is-size-7\">" +
               (remark.recordCreate_timeMillis === remark.recordUpdate_timeMillis ? "" : "<i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i> ") +
               remark.recordUpdate_userName + " - " + remark.remarkDateString + " " + remark.remarkTimeString +
@@ -268,7 +268,7 @@
             "<small>Not Applicable</small>" +
             (bankRecord.recordNote === "" ?
               "" :
-              " <span class=\"has-margin-left-5\" data-tooltip=\"" + llm.escapeHTML(bankRecord.recordNote) + "\">" +
+              " <span class=\"has-margin-left-5\" data-tooltip=\"" + cityssm.escapeHTML(bankRecord.recordNote) + "\">" +
               "<i class=\"fas fa-sticky-note\" aria-hidden=\"true\"></i>" +
               "</span>");
 
@@ -282,7 +282,7 @@
             "<small>Recorded " + bankRecord.recordDateString + "</small>" +
             (bankRecord.recordNote === "" ?
               "" :
-              " <span class=\"has-margin-left-5\" data-tooltip=\"" + llm.escapeHTML(bankRecord.recordNote) + "\">" +
+              " <span class=\"has-margin-left-5\" data-tooltip=\"" + cityssm.escapeHTML(bankRecord.recordNote) + "\">" +
               "<i class=\"fas fa-sticky-note\" aria-hidden=\"true\"></i>" +
               "</span>");
 
@@ -301,7 +301,7 @@
 
     } else {
 
-      llm.postJSON("/organizations/doGetBankRecords", {
+      cityssm.postJSON("/organizations/doGetBankRecords", {
         organizationID: organizationID,
         bankingYear: bankRecordsBankingYearFilterEle.value,
         accountNumber: bankRecordsAccountNumberFilterEle.value
@@ -313,7 +313,7 @@
 
   function loadBankRecordFilters() {
 
-    llm.postJSON("/organizations/doGetBankRecordStats", {
+    cityssm.postJSON("/organizations/doGetBankRecordStats", {
       organizationID: organizationID
     }, function(bankRecordStats) {
 
@@ -337,7 +337,7 @@
 
           bankingYearMin = Math.min(bankRecordsStat.bankingYearMin, bankingYearMin);
 
-          const accountNumber = llm.escapeHTML(bankRecordsStat.accountNumber);
+          const accountNumber = cityssm.escapeHTML(bankRecordsStat.accountNumber);
 
           bankRecordsAccountNumberFilterEle.insertAdjacentHTML(
             "beforeend",
@@ -384,7 +384,7 @@
 
         formEvent.preventDefault();
 
-        llm.postJSON(
+        cityssm.postJSON(
           "/organizations/" + (isUpdate ? "doEditBankRecord" : "doAddBankRecord"),
           formEvent.currentTarget,
           function(resultJSON) {
@@ -423,7 +423,7 @@
 
         const deleteFn = function() {
 
-          llm.postJSON("/organizations/doDeleteBankRecord", {
+          cityssm.postJSON("/organizations/doDeleteBankRecord", {
             organizationID: organizationID,
             recordIndex: recordIndex
           }, function() {
@@ -461,7 +461,7 @@
       const dateObj = new Date();
 
       const currentYear = dateObj.getFullYear();
-      const currentDateString = llm.dateToString(dateObj);
+      const currentDateString = cityssm.dateToString(dateObj);
 
       let recordDateString = currentDateString;
 
@@ -501,7 +501,7 @@
 
       }
 
-      llm.openHtmlModal("organization-bankRecordEdit", {
+      cityssm.openHtmlModal("organization-bankRecordEdit", {
 
         onshow: function() {
 

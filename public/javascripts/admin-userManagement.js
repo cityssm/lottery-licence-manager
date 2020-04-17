@@ -12,7 +12,7 @@
 
     formEvent.preventDefault();
 
-    llm.postJSON(
+    cityssm.postJSON(
       "/admin/doCreateUser",
       formEvent.currentTarget,
       function(responseJSON) {
@@ -30,7 +30,7 @@
 
   document.getElementById("is-create-user-button").addEventListener("click", function() {
 
-    llm.showModal(createUserModalEle);
+    cityssm.showModal(createUserModalEle);
 
   });
 
@@ -38,7 +38,7 @@
 
   for (let buttonIndex = 0; buttonIndex < cancelButtonEles.length; buttonIndex += 1) {
 
-    cancelButtonEles[buttonIndex].addEventListener("click", llm.hideModal);
+    cancelButtonEles[buttonIndex].addEventListener("click", cityssm.hideModal);
 
   }
 
@@ -59,7 +59,7 @@
 
     const doDeleteFn = function() {
 
-      llm.postJSON("/admin/doDeleteUser", {
+      cityssm.postJSON("/admin/doDeleteUser", {
         userName: userNameToDelete
       }, function(resultJSON) {
 
@@ -75,7 +75,7 @@
 
     llm.confirmModal(
       "Delete User?",
-      "Are you sure you want to delete <em>" + llm.escapeHTML(userNameToDelete) + "</em>?<br />",
+      "Are you sure you want to delete <em>" + cityssm.escapeHTML(userNameToDelete) + "</em>?<br />",
       "Yes, Delete",
       "warning",
       doDeleteFn
@@ -106,7 +106,7 @@
 
     const formEle = formEvent.currentTarget;
 
-    llm.postJSON(
+    cityssm.postJSON(
       "/admin/doUpdateUserProperty",
       formEle,
       function(responseJSON) {
@@ -172,9 +172,9 @@
 
     const userPropertiesContainerEle = document.getElementById("container--userProperties");
 
-    llm.clearElement(userPropertiesContainerEle);
+    cityssm.clearElement(userPropertiesContainerEle);
 
-    llm.postJSON(
+    cityssm.postJSON(
       "/admin/doGetUserProperties", {
         userName: userName
       },
@@ -206,7 +206,7 @@
                 "<div class=\"control is-expanded\">" +
                 ("<input class=\"input is-primary\"" +
                   " id=\"userProperties--propertyValue-" + propertyIndex + "\" name=\"propertyValue\"" +
-                  " type=\"text\" value=\"" + llm.escapeHTML(propertyValue) + "\"" +
+                  " type=\"text\" value=\"" + cityssm.escapeHTML(propertyValue) + "\"" +
                   " placeholder=\"(Use Default)\" />") +
                 "</div>" +
                 "<div class=\"control\">" +
@@ -239,7 +239,7 @@
       .closest(".message")
       .setAttribute("hidden", "hidden");
 
-    llm.showModal(updateUserModalEle);
+    cityssm.showModal(updateUserModalEle);
 
   }
 
@@ -255,7 +255,7 @@
 
   for (let buttonIndex = 0; buttonIndex < cancelButtonEles.length; buttonIndex += 1) {
 
-    cancelButtonEles[buttonIndex].addEventListener("click", llm.hideModal);
+    cancelButtonEles[buttonIndex].addEventListener("click", cityssm.hideModal);
 
   }
 
@@ -266,7 +266,7 @@
 
       formEvent.preventDefault();
 
-      llm.postJSON(
+      cityssm.postJSON(
         "/admin/doUpdateUser",
         formEvent.currentTarget,
         function(responseJSON) {
@@ -289,7 +289,7 @@
 
       formEvent.preventDefault();
 
-      llm.postJSON(
+      cityssm.postJSON(
         "/admin/doResetPassword",
         formEvent.currentTarget,
         function(responseJSON) {

@@ -17,14 +17,14 @@
 
     formMessageEle.innerHTML = "Saving... <i class=\"fas fa-circle-notch fa-spin\" aria-hidden=\"true\"></i>";
 
-    llm.postJSON(
+    cityssm.postJSON(
       "/events/doSave",
       formEle,
       function(responseJSON) {
 
         if (responseJSON.success) {
 
-          llm.disableNavBlocker();
+          cityssm.disableNavBlocker();
           eventDateNavEle.removeAttribute("disabled");
 
         }
@@ -54,7 +54,7 @@
       "danger",
       function() {
 
-        llm.postJSON(
+        cityssm.postJSON(
           "/events/doDelete", {
             licenceID: licenceID,
             eventDate: eventDate
@@ -63,7 +63,7 @@
 
             if (responseJSON.success) {
 
-              llm.disableNavBlocker();
+              cityssm.disableNavBlocker();
               window.location.href = "/licences/" + licenceID;
 
             }
@@ -81,7 +81,7 @@
 
   function setUnsavedChanges() {
 
-    llm.enableNavBlocker();
+    cityssm.enableNavBlocker();
     eventDateNavEle.setAttribute("disabled", "disabled");
 
     formMessageEle.innerHTML = "<span class=\"tag is-light is-info is-medium\">" +
@@ -136,7 +136,7 @@
 
       const containerEle = document.getElementById("container--bankInformationLookup");
 
-      llm.postJSON("/events/doGetPastBankInformation", {
+      cityssm.postJSON("/events/doGetPastBankInformation", {
         licenceID: licenceID
       }, function(bankInfoList) {
 
@@ -155,9 +155,9 @@
           listItemEle.setAttribute("data-list-index", index);
 
           listItemEle.innerHTML = "<div class=\"columns\">" +
-            "<div class=\"column\">" + llm.escapeHTML(record.bank_name) + "</div>" +
-            "<div class=\"column\">" + llm.escapeHTML(record.bank_address) + "</div>" +
-            "<div class=\"column\">" + llm.escapeHTML(record.bank_accountNumber) + "</div>" +
+            "<div class=\"column\">" + cityssm.escapeHTML(record.bank_name) + "</div>" +
+            "<div class=\"column\">" + cityssm.escapeHTML(record.bank_address) + "</div>" +
+            "<div class=\"column\">" + cityssm.escapeHTML(record.bank_accountNumber) + "</div>" +
             "</div>" +
             "<div class=\"has-text-right\">" +
             "<span class=\"tag is-info\" data-tooltip=\"Last Used Event Date\">" +
@@ -171,7 +171,7 @@
 
         }
 
-        llm.clearElement(containerEle);
+        cityssm.clearElement(containerEle);
 
         containerEle.insertAdjacentElement("beforeend", listEle);
 
@@ -179,7 +179,7 @@
 
     };
 
-    llm.openHtmlModal("event-bankInformationLookup", {
+    cityssm.openHtmlModal("event-bankInformationLookup", {
 
       onshow: getPastBankInformation,
 

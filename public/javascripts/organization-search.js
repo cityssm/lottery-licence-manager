@@ -15,7 +15,7 @@
       "<em>Loading organizations...</em>" +
       "</p>";
 
-    llm.postJSON(
+    cityssm.postJSON(
       "/organizations/doSearch",
       formEle,
       function(organizationsList) {
@@ -75,7 +75,7 @@
             "<td class=\"has-text-right\">" +
             (organizationObj.organizationNote === "" ?
               "" :
-              "<span class=\"tag has-cursor-default is-info is-light\" data-tooltip=\"" + llm.escapeHTML(organizationObj.organizationNote.length > 30 ? organizationObj.organizationNote.substring(0, 27) + "..." : organizationObj.organizationNote) + "\">" +
+              "<span class=\"tag has-cursor-default is-info is-light\" data-tooltip=\"" + cityssm.escapeHTML(organizationObj.organizationNote.length > 30 ? organizationObj.organizationNote.substring(0, 27) + "..." : organizationObj.organizationNote) + "\">" +
               "<i class=\"fas fa-sticky-note has-margin-right-5\" aria-hidden=\"true\"></i> Note" +
               "</span>"
             ) +

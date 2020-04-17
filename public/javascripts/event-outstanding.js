@@ -7,9 +7,9 @@
 
   function getOutstandingEvents() {
 
-    llm.clearElement(tbodyEle);
+    cityssm.clearElement(tbodyEle);
 
-    llm.postJSON("/events/doGetOutstandingEvents", formEle, function(outstandingEvents) {
+    cityssm.postJSON("/events/doGetOutstandingEvents", formEle, function(outstandingEvents) {
 
       let currentOrganizationID = -1;
 
@@ -23,7 +23,7 @@
 
           tbodyEle.insertAdjacentHTML("beforeend", "<tr>" +
             "<th class=\"has-background-grey-lighter\" colspan=\"9\">" +
-            "<h2 class=\"title is-4\">" + llm.escapeHTML(outstandingEventObj.organizationName) + "</h2>" +
+            "<h2 class=\"title is-4\">" + cityssm.escapeHTML(outstandingEventObj.organizationName) + "</h2>" +
             "</th>" +
             "</tr>");
 
@@ -38,7 +38,7 @@
           "</a>" +
           "</td>");
 
-        trEle.insertAdjacentHTML("beforeend", "<td>" + llm.escapeHTML(outstandingEventObj.licenceType) + "</td>");
+        trEle.insertAdjacentHTML("beforeend", "<td>" + cityssm.escapeHTML(outstandingEventObj.licenceType) + "</td>");
 
         trEle.insertAdjacentHTML("beforeend", "<td>" +
           "<a href=\"/events/" + outstandingEventObj.licenceID + "/" + outstandingEventObj.eventDate + "\" data-tooltip=\"View Event\" target=\"_blank\">" +

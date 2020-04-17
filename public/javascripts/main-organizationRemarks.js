@@ -4,7 +4,7 @@ llm.organizationRemarks = (function() {
 
   function getRemarksByOrganizationID(organizationID, callbackFn) {
 
-    llm.postJSON(
+    cityssm.postJSON(
       "/organizations/doGetRemarks", {
         organizationID: organizationID
       },
@@ -15,7 +15,7 @@ llm.organizationRemarks = (function() {
 
   function getRemarkByID(organizationID, remarkIndex, callbackFn) {
 
-    llm.postJSON(
+    cityssm.postJSON(
       "/organizations/doGetRemark", {
         organizationID: organizationID,
         remarkIndex: remarkIndex
@@ -28,7 +28,7 @@ llm.organizationRemarks = (function() {
 
   function doAddRemark(formEle, callbackFn) {
 
-    llm.postJSON("/organizations/doAddRemark", formEle, callbackFn);
+    cityssm.postJSON("/organizations/doAddRemark", formEle, callbackFn);
 
   }
 
@@ -54,7 +54,7 @@ llm.organizationRemarks = (function() {
 
     };
 
-    llm.openHtmlModal("remarkAdd", {
+    cityssm.openHtmlModal("remarkAdd", {
       onshown: function(modalEle, closeModalFn) {
 
         document.getElementById("addRemark--organizationID").value = organizationID;
@@ -71,7 +71,7 @@ llm.organizationRemarks = (function() {
 
   function doEditRemark(formEle, callbackFn) {
 
-    llm.postJSON("/organizations/doEditRemark", formEle, callbackFn);
+    cityssm.postJSON("/organizations/doEditRemark", formEle, callbackFn);
 
   }
 
@@ -97,7 +97,7 @@ llm.organizationRemarks = (function() {
 
     };
 
-    llm.openHtmlModal("remarkEdit", {
+    cityssm.openHtmlModal("remarkEdit", {
       onshow: function(modalEle) {
 
         document.getElementById("editRemark--organizationID").value = organizationID;
@@ -135,7 +135,7 @@ llm.organizationRemarks = (function() {
 
   function doDeleteRemark(organiztionID, remarkIndex, callbackFn) {
 
-    llm.postJSON(
+    cityssm.postJSON(
       "/organizations/doDeleteRemark", {
         organizationID: organiztionID,
         remarkIndex: remarkIndex

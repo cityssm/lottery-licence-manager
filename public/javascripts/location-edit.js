@@ -17,7 +17,7 @@
 
     formMessageEle.innerHTML = "Saving... <i class=\"fas fa-circle-notch fa-spin\" aria-hidden=\"true\"></i>";
 
-    llm.postJSON(
+    cityssm.postJSON(
       (isCreate ? "/locations/doCreate" : "/locations/doUpdate"),
       formEle,
       function(responseJSON) {
@@ -25,7 +25,7 @@
         if (responseJSON.success) {
 
           hasUnsavedChanges = false;
-          llm.disableNavBlocker();
+          cityssm.disableNavBlocker();
 
         }
 
@@ -54,7 +54,7 @@
 
     const deleteLocationFn = function() {
 
-      llm.postJSON(
+      cityssm.postJSON(
         "/locations/doDelete", {
           locationID: locationID
         },
@@ -127,7 +127,7 @@
 
       const doMerge = function() {
 
-        llm.postJSON(
+        cityssm.postJSON(
           "/locations/doMerge", {
             targetLocationID: locationID,
             sourceLocationID: locationID_source
@@ -220,9 +220,9 @@
           listItemEle.innerHTML = "<div class=\"level is-marginless\">" +
             ("<div class=\"level-left\">" +
               "<div>" +
-              llm.escapeHTML(locationObj.locationDisplayName) + "<br />" +
+              cityssm.escapeHTML(locationObj.locationDisplayName) + "<br />" +
               "<small>" +
-              llm.escapeHTML(locationObj.locationAddress1) +
+              cityssm.escapeHTML(locationObj.locationAddress1) +
               "</small>" +
               "</div>" +
               "</div>") +
@@ -252,12 +252,12 @@
 
         }
 
-        llm.clearElement(sourceLocationsContainerEle);
+        cityssm.clearElement(sourceLocationsContainerEle);
         sourceLocationsContainerEle.insertAdjacentElement("beforeend", listEle);
 
       };
 
-      llm.openHtmlModal("locationMerge", {
+      cityssm.openHtmlModal("locationMerge", {
         onshow: function(modalEle) {
 
           // Location name - target
@@ -282,7 +282,7 @@
 
           closeMergeLocationModalFn = closeModalFn;
 
-          llm.postJSON(
+          cityssm.postJSON(
             "/locations/doGetLocations",
             {
               limit: -1
@@ -315,7 +315,7 @@
 
     hasUnsavedChanges = true;
 
-    llm.enableNavBlocker();
+    cityssm.enableNavBlocker();
 
     formMessageEle.innerHTML = "<span class=\"tag is-light is-info is-medium\">" +
       "<span class=\"icon\"><i class=\"fas fa-exclamation-triangle\" aria-hidden=\"true\"></i></span>" +

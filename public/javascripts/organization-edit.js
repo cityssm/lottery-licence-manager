@@ -15,14 +15,14 @@
 
     formMessageEle.innerHTML = "Saving... <i class=\"fas fa-circle-notch fa-spin\" aria-hidden=\"true\"></i>";
 
-    llm.postJSON(
+    cityssm.postJSON(
       "/organizations/doSave",
       formEle,
       function(responseJSON) {
 
         if (responseJSON.success) {
 
-          llm.disableNavBlocker();
+          cityssm.disableNavBlocker();
 
         }
 
@@ -51,7 +51,7 @@
 
     const deleteOrganizationFn = function() {
 
-      llm.postJSON(
+      cityssm.postJSON(
         "/organizations/doDelete", {
           organizationID: organizationID
         },
@@ -110,7 +110,7 @@
 
       const defaultRepresentativeIndex = changeEvent.currentTarget.value;
 
-      llm.postJSON(
+      cityssm.postJSON(
         "/organizations/" + organizationID + "/doSetDefaultRepresentative", {
           isDefaultRepresentativeIndex: defaultRepresentativeIndex
         },
@@ -152,7 +152,7 @@
         "danger",
         function() {
 
-          llm.postJSON(
+          cityssm.postJSON(
             "/organizations/" + organizationID + "/doDeleteOrganizationRepresentative", {
               representativeIndex: trEle.getAttribute("data-representative-index")
             },
@@ -230,7 +230,7 @@
       document.getElementById("editOrganizationRepresentative--isDefault").value =
         document.getElementById("representative-isDefault--" + representativeIndex).checked ? "1" : "0";
 
-      llm.showModal(editRepresentativeModalEle);
+      cityssm.showModal(editRepresentativeModalEle);
 
     };
 
@@ -318,7 +318,7 @@
 
     for (let buttonIndex = 0; buttonIndex < cancelButtonEles.length; buttonIndex += 1) {
 
-      cancelButtonEles[buttonIndex].addEventListener("click", llm.hideModal);
+      cancelButtonEles[buttonIndex].addEventListener("click", cityssm.hideModal);
 
     }
 
@@ -326,7 +326,7 @@
 
       formEvent.preventDefault();
 
-      llm.postJSON(
+      cityssm.postJSON(
         "/organizations/" + organizationID + "/doEditOrganizationRepresentative",
         formEvent.currentTarget,
         function(responseJSON) {
@@ -339,7 +339,7 @@
             // Create row
 
             insertRepresentativeRowFn(responseJSON.organizationRepresentative);
-            llm.hideModal(editRepresentativeModalEle);
+            cityssm.hideModal(editRepresentativeModalEle);
 
           }
 
@@ -357,7 +357,7 @@
     document.getElementsByClassName("is-add-representative-button")[0].addEventListener("click", function() {
 
       addRepresentativeFormEle.reset();
-      llm.showModal(addRepresentativeModalEle);
+      cityssm.showModal(addRepresentativeModalEle);
       document.getElementById("addOrganizationRepresentative--representativeName").focus();
 
     });
@@ -367,7 +367,7 @@
 
     for (let buttonIndex = 0; buttonIndex < cancelButtonEles.length; buttonIndex += 1) {
 
-      cancelButtonEles[buttonIndex].addEventListener("click", llm.hideModal);
+      cancelButtonEles[buttonIndex].addEventListener("click", cityssm.hideModal);
 
     }
 
@@ -375,7 +375,7 @@
 
       formEvent.preventDefault();
 
-      llm.postJSON(
+      cityssm.postJSON(
         "/organizations/" + organizationID + "/doAddOrganizationRepresentative",
         formEvent.currentTarget,
         function(responseJSON) {
@@ -394,7 +394,7 @@
             // Create row
 
             insertRepresentativeRowFn(responseJSON.organizationRepresentative);
-            llm.hideModal(addRepresentativeModalEle);
+            cityssm.hideModal(addRepresentativeModalEle);
 
           }
 
@@ -432,7 +432,7 @@
 
   function setUnsavedChanges() {
 
-    llm.enableNavBlocker();
+    cityssm.enableNavBlocker();
 
     formMessageEle.innerHTML = "<span class=\"tag is-light is-info is-medium\">" +
       "<span class=\"icon\"><i class=\"fas fa-exclamation-triangle\" aria-hidden=\"true\"></i></span>" +

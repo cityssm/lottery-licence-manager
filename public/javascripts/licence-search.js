@@ -24,7 +24,7 @@
       "<em>Loading licences...</em>" +
       "</p>";
 
-    llm.postJSON(
+    cityssm.postJSON(
       "/licences/doSearch",
       formEle,
       function(licenceResults) {
@@ -68,25 +68,25 @@
           trEle.innerHTML =
             "<td>" +
             "<a data-tooltip=\"View Licence\" href=\"/licences/" + licenceObj.licenceID + "\">" +
-            llm.escapeHTML(licenceObj.externalLicenceNumber) + "<br />" +
+            cityssm.escapeHTML(licenceObj.externalLicenceNumber) + "<br />" +
             "<small>Licence #" + licenceObj.licenceID + "</small>" +
             "</a>" +
             "</td>" +
             "<td>" + (licenceType || licenceObj.licenceTypeKey) + "<br />" +
-            "<small>" + llm.escapeHTML(licenceObj.licenceDetails) + "</small>" +
+            "<small>" + cityssm.escapeHTML(licenceObj.licenceDetails) + "</small>" +
             "</td>" +
 
             ("<td>" +
               "<a data-tooltip=\"View Organization\" href=\"/organizations/" + licenceObj.organizationID + "\">" +
-              llm.escapeHTML(licenceObj.organizationName) +
+              cityssm.escapeHTML(licenceObj.organizationName) +
               "</a>" +
               "</td>") +
 
             ("<td>" +
               "<a data-tooltip=\"View Location\" href=\"/locations/" + licenceObj.locationID + "\">" +
-              llm.escapeHTML(licenceObj.locationDisplayName) +
+              cityssm.escapeHTML(licenceObj.locationDisplayName) +
               "</a>" +
-              (licenceObj.locationDisplayName === licenceObj.locationAddress1 ? "" : "<br /><small>" + llm.escapeHTML(licenceObj.locationAddress1) + "</small>") +
+              (licenceObj.locationDisplayName === licenceObj.locationAddress1 ? "" : "<br /><small>" + cityssm.escapeHTML(licenceObj.locationAddress1) + "</small>") +
               "</td>") +
 
             ("<td class=\"is-nowrap\">" +

@@ -12,13 +12,13 @@
   function confirmDeleteLocationFn(clickEvent) {
 
     const buttonEle = clickEvent.currentTarget;
-    const locationDisplayName = llm.escapeHTML(buttonEle.getAttribute("data-location-display-name"));
+    const locationDisplayName = cityssm.escapeHTML(buttonEle.getAttribute("data-location-display-name"));
 
     const deleteFn = function() {
 
       const locationID = buttonEle.getAttribute("data-location-id");
 
-      llm.postJSON("/locations/doDelete", {
+      cityssm.postJSON("/locations/doDelete", {
         locationID: locationID
       }, function(responseJSON) {
 
@@ -54,7 +54,7 @@
       "<em>Loading locations...</em>" +
       "</p>";
 
-    llm.postJSON("/locations/doGetInactive", {
+    cityssm.postJSON("/locations/doGetInactive", {
       inactiveYears: inactiveYearsFilterEle.value
     }, function(inactiveList) {
 
@@ -90,14 +90,14 @@
 
         const trEle = document.createElement("tr");
 
-        const safeLocationDisplayName = llm.escapeHTML(locationObj.locationDisplayName);
+        const safeLocationDisplayName = cityssm.escapeHTML(locationObj.locationDisplayName);
 
         trEle.insertAdjacentHTML("beforeend", "<td>" +
           "<a data-tooltip=\"View Location\"" +
           " href=\"/locations/" + locationObj.locationID + "\">" +
           safeLocationDisplayName +
           "</a>" +
-          (locationObj.locationDisplayName === locationObj.locationAddress1 ? "" : "<br /><small>" + llm.escapeHTML(locationObj.locationAddress1) + "</small>") +
+          (locationObj.locationDisplayName === locationObj.locationAddress1 ? "" : "<br /><small>" + cityssm.escapeHTML(locationObj.locationAddress1) + "</small>") +
           "</td>");
 
         let dateMax = locationObj.licences_endDateMax;
@@ -148,7 +148,7 @@
 
       tableEle.insertAdjacentElement("beforeend", tbodyEle);
 
-      llm.clearElement(searchResultsEle);
+      cityssm.clearElement(searchResultsEle);
 
       searchResultsEle.insertAdjacentElement("beforeend", tableEle);
 

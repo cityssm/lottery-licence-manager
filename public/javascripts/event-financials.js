@@ -13,7 +13,7 @@
     tableEle.classList.remove("has-status-view");
     tableEle.classList.add("has-status-loading");
 
-    llm.postJSON("/events/doGetFinancialSummary", formEle, function(summary) {
+    cityssm.postJSON("/events/doGetFinancialSummary", formEle, function(summary) {
 
       // Hide all rows
 

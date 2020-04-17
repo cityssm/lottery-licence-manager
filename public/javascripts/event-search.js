@@ -18,7 +18,7 @@
     const monthValue = filterMonthEle.value;
     const monthName = filterMonthEle.options[filterMonthEle.selectedIndex].text;
 
-    llm.postJSON(
+    cityssm.postJSON(
       "/events/doSearch", {
         year: yearValue,
         month: monthValue
@@ -70,19 +70,19 @@
               "<div class=\"columns\">" +
               ("<div class=\"column is-1\">" +
                 "<a href=\"" + eventURL + "\">" +
-                llm.escapeHTML(eventObj.externalLicenceNumber) + "<br />" +
+                cityssm.escapeHTML(eventObj.externalLicenceNumber) + "<br />" +
                 "<small>Licence #" + eventObj.licenceID + "</small>" +
                 "</a>" +
                 "</div>") +
               ("<div class=\"column\">" +
-                llm.escapeHTML(eventObj.organizationName) +
+                cityssm.escapeHTML(eventObj.organizationName) +
                 "</div>") +
               ("<div class=\"column\">" +
                 licenceType + "<br />" +
-                "<small>" + llm.escapeHTML(eventObj.licenceDetails) + "</small>" +
+                "<small>" + cityssm.escapeHTML(eventObj.licenceDetails) + "</small>" +
                 "</div>") +
               ("<div class=\"column\">" +
-                llm.escapeHTML(eventObj.locationDisplayName) + "<br />" +
+                cityssm.escapeHTML(eventObj.locationDisplayName) + "<br />" +
                 "<small>" + eventObj.startTimeString +
                 (eventObj.startTimeString === eventObj.endTimeString ? "" : " to " + eventObj.endTimeString) +
                 "</small>" +

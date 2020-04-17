@@ -1,4 +1,5 @@
 env:
   browser: true
 globals:
+  cityssm: false
   llm: false

@@ -33,13 +33,13 @@
 
     const addressTdEle = document.createElement("td");
 
-    addressTdEle.innerHTML = llm.escapeHTML(locationObj.locationAddress1) +
+    addressTdEle.innerHTML = cityssm.escapeHTML(locationObj.locationAddress1) +
       (locationObj.locationAddress2 === "" ?
         "" :
-        "<br /><small>" + llm.escapeHTML(locationObj.locationAddress2) + "</small>") +
+        "<br /><small>" + cityssm.escapeHTML(locationObj.locationAddress2) + "</small>") +
       (locationObj.locationCity === "" ?
         "" :
-        "<br /><small>" + llm.escapeHTML(locationObj.locationCity) + ", " + locationObj.locationProvince + "</small>");
+        "<br /><small>" + cityssm.escapeHTML(locationObj.locationCity) + ", " + locationObj.locationProvince + "</small>");
 
     trEle.insertAdjacentElement("beforeend", addressTdEle);
 
@@ -130,7 +130,7 @@
       "<em>Loading locations...</em>" +
       "</p>";
 
-    llm.postJSON(
+    cityssm.postJSON(
       "/locations/doGetLocations",
       formEle,
       function(locationResults) {
@@ -250,7 +250,7 @@
 
     const deleteFn = function() {
 
-      llm.postJSON(
+      cityssm.postJSON(
         "/locations/doDelete", {
           locationID: locationObj.locationID
         },
@@ -270,7 +270,7 @@
 
     llm.confirmModal(
       "Delete Location",
-      `Are you sure you want to delete ${llm.escapeHTML(locationObj.locationDisplayName)}?`,
+      `Are you sure you want to delete ${cityssm.escapeHTML(locationObj.locationDisplayName)}?`,
       "Yes, Delete",
       "warning",
       deleteFn

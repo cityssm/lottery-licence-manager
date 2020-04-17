@@ -37,11 +37,11 @@
 
     formMessageEle.innerHTML = "Saving... <i class=\"fas fa-circle-notch fa-spin\" aria-hidden=\"true\"></i>";
 
-    llm.postJSON("/licences/doSave", formEle, function(responseJSON) {
+    cityssm.postJSON("/licences/doSave", formEle, function(responseJSON) {
 
       if (responseJSON.success) {
 
-        llm.disableNavBlocker();
+        cityssm.disableNavBlocker();
         hasUnsavedChanges = false;
 
       }
@@ -90,7 +90,7 @@
         "danger",
         function() {
 
-          llm.postJSON(
+          cityssm.postJSON(
             "/licences/doDelete", {
               licenceID: licenceID
             },
@@ -98,7 +98,7 @@
 
               if (responseJSON.success) {
 
-                llm.disableNavBlocker();
+                cityssm.disableNavBlocker();
                 window.location.href = "/licences";
 
               }
@@ -124,7 +124,7 @@
 
   function setUnsavedChanges(changeEvent) {
 
-    llm.enableNavBlocker();
+    cityssm.enableNavBlocker();
 
     hasUnsavedChanges = true;
 
@@ -264,7 +264,7 @@
 
       }
 
-      llm.clearElement(organizationLookupResultsEle);
+      cityssm.clearElement(organizationLookupResultsEle);
 
       organizationLookupResultsEle.insertAdjacentElement("beforeend", listEle);
 
@@ -272,7 +272,7 @@
 
     const organizationLookupFn_openModal = function() {
 
-      llm.openHtmlModal("licence-organizationLookup", {
+      cityssm.openHtmlModal("licence-organizationLookup", {
 
         onshow: function() {
 
@@ -283,7 +283,7 @@
 
           if (organizationList.length === 0) {
 
-            llm.postJSON(
+            cityssm.postJSON(
               "/organizations/doGetAll",
               null,
               function(organizationListRes) {
@@ -335,7 +335,7 @@
 
     if (locationList.length === 0) {
 
-      llm.postJSON(
+      cityssm.postJSON(
         "/locations/doGetLocations",
         null,
         function(locationResults) {
@@ -430,11 +430,11 @@
             "<div class=\"column is-narrow\">" +
             "<i class=\"fas fa-map-marker-alt\" aria-hidden=\"true\"></i>" +
             "</div>" +
-            "<div class=\"column\">" + llm.escapeHTML(locationObj.locationDisplayName) + "</div>" +
+            "<div class=\"column\">" + cityssm.escapeHTML(locationObj.locationDisplayName) + "</div>" +
 
             (locationObj.locationName === "" ?
               "" :
-              "<div class=\"column\">" + llm.escapeHTML(locationObj.locationAddress1) + "</div>") +
+              "<div class=\"column\">" + cityssm.escapeHTML(locationObj.locationAddress1) + "</div>") +
 
             "</div>";
 
@@ -445,7 +445,7 @@
 
       }
 
-      llm.clearElement(locationLookup_resultsEle);
+      cityssm.clearElement(locationLookup_resultsEle);
 
       locationLookup_resultsEle.insertAdjacentElement("beforeend", listEle);
 
@@ -453,7 +453,7 @@
 
     const locationLookupFn_openModal = function() {
 
-      llm.openHtmlModal("licence-locationLookup", {
+      cityssm.openHtmlModal("licence-locationLookup", {
 
         onshow: function(modalEle) {
 
@@ -498,7 +498,7 @@
 
             formEvent.preventDefault();
 
-            llm.postJSON(
+            cityssm.postJSON(
               "/locations/doCreate",
               formEvent.currentTarget,
               function(responseJSON) {
@@ -556,7 +556,7 @@
 
       document.getElementById("licence--termsConditions").value = termsConditionsList[termsConditionsIndex].termsConditions;
 
-      llm.hideModal(termsConditionsLookupModalEle);
+      cityssm.hideModal(termsConditionsLookupModalEle);
 
       setUnsavedChanges();
 
@@ -565,7 +565,7 @@
     document.getElementById("is-termsConditions-lookup-button").addEventListener("click", function() {
 
       termsConditionsList = [];
-      llm.clearElement(termsConditionsLookupResultsEle);
+      cityssm.clearElement(termsConditionsLookupResultsEle);
 
       const organizationID = document.getElementById("licence--organizationID").value;
 
@@ -587,7 +587,7 @@
         "Loading previously used terms and conditions..." +
         "</p>";
 
-      llm.postJSON(
+      cityssm.postJSON(
         "/licences/doGetDistinctTermsConditions", {
           organizationID: organizationID
         },
@@ -615,7 +615,7 @@
               listItemEle.setAttribute("data-terms-conditions-index", termsConditionsIndex);
 
               listItemEle.innerHTML = "<p class=\"has-newline-chars\">" +
-                llm.escapeHTML(termsConditionsObj.termsConditions) +
+                cityssm.escapeHTML(termsConditionsObj.termsConditions) +
                 "</p>" +
                 "<p class=\"has-text-right\">" +
                 (termsConditionsObj.termsConditionsCount > 1 ?
@@ -628,7 +628,7 @@
 
             }
 
-            llm.clearElement(termsConditionsLookupResultsEle);
+            cityssm.clearElement(termsConditionsLookupResultsEle);
 
             termsConditionsLookupResultsEle.insertAdjacentElement("beforeend", listEle);
 
@@ -637,7 +637,7 @@
         }
       );
 
-      llm.showModal(termsConditionsLookupModalEle);
+      cityssm.showModal(termsConditionsLookupModalEle);
 
     });
 
@@ -645,7 +645,7 @@
 
     for (let buttonIndex = 0; buttonIndex < cancelButtonEles.length; buttonIndex += 1) {
 
-      cancelButtonEles[buttonIndex].addEventListener("click", llm.hideModal);
+      cancelButtonEles[buttonIndex].addEventListener("click", cityssm.hideModal);
 
     }
 
@@ -690,8 +690,8 @@
         const ticketTypesPanelEle = document.getElementById("is-ticket-types-panel");
 
         ticketTypesPanelEle.classList.add("is-hidden");
-        llm.clearElement(ticketTypesPanelEle.getElementsByTagName("tbody")[0]);
-        llm.clearElement(ticketTypesPanelEle.getElementsByTagName("tfoot")[0]);
+        cityssm.clearElement(ticketTypesPanelEle.getElementsByTagName("tbody")[0]);
+        cityssm.clearElement(ticketTypesPanelEle.getElementsByTagName("tfoot")[0]);
 
         totalPrizeValueEle.removeAttribute("readonly");
         totalPrizeValueEle.classList.remove("is-readonly");
@@ -887,14 +887,14 @@
 
       }
 
-      llm.hideModal(eventCalculator_modalEle);
+      cityssm.hideModal(eventCalculator_modalEle);
 
     });
 
 
     document.getElementById("is-event-calculator-button").addEventListener("click", function() {
 
-      llm.showModal(eventCalculator_modalEle);
+      cityssm.showModal(eventCalculator_modalEle);
 
     });
 
@@ -902,7 +902,7 @@
 
     for (let buttonIndex = 0; buttonIndex < cancelButtonEles.length; buttonIndex += 1) {
 
-      cancelButtonEles[buttonIndex].addEventListener("click", llm.hideModal);
+      cancelButtonEles[buttonIndex].addEventListener("click", cityssm.hideModal);
 
     }
 
@@ -937,7 +937,7 @@
 
       } else {
 
-        llm.postJSON(
+        cityssm.postJSON(
           "/licences/doGetTicketTypes", {
             licenceTypeKey: licenceTypeKey
           },
@@ -1088,7 +1088,7 @@
 
       };
 
-      llm.openHtmlModal("licence-ticketTypeUnitAmend", {
+      cityssm.openHtmlModal("licence-ticketTypeUnitAmend", {
         onshow: function(modalEle) {
 
           document.getElementById("amendUnit_ticketType").value = ticketType;
@@ -1138,7 +1138,7 @@
 
       };
 
-      llm.openHtmlModal("licence-distributorLookup", {
+      cityssm.openHtmlModal("licence-distributorLookup", {
 
         onshow: function() {
 
@@ -1167,11 +1167,11 @@
                 "<div class=\"column is-narrow\">" +
                 "<i class=\"fas fa-map-marker-alt\" aria-hidden=\"true\"></i>" +
                 "</div>" +
-                "<div class=\"column\">" + llm.escapeHTML(locationObj.locationDisplayName) + "</div>" +
+                "<div class=\"column\">" + cityssm.escapeHTML(locationObj.locationDisplayName) + "</div>" +
 
                 (locationObj.locationName === "" ?
                   "" :
-                  "<div class=\"column\">" + llm.escapeHTML(locationObj.locationAddress1) + "</div>") +
+                  "<div class=\"column\">" + cityssm.escapeHTML(locationObj.locationAddress1) + "</div>") +
 
                 "</div>";
 
@@ -1182,7 +1182,7 @@
             }
 
             const lookupContainerEle = document.getElementById("container--distributorLookup");
-            llm.clearElement(lookupContainerEle);
+            cityssm.clearElement(lookupContainerEle);
             lookupContainerEle.insertAdjacentElement("beforeend", listEle);
 
           });
@@ -1214,7 +1214,7 @@
 
       };
 
-      llm.openHtmlModal("licence-manufacturerLookup", {
+      cityssm.openHtmlModal("licence-manufacturerLookup", {
 
         onshow: function() {
 
@@ -1242,11 +1242,11 @@
                 "<div class=\"column is-narrow\">" +
                 "<i class=\"fas fa-map-marker-alt\" aria-hidden=\"true\"></i>" +
                 "</div>" +
-                "<div class=\"column\">" + llm.escapeHTML(locationObj.locationDisplayName) + "</div>" +
+                "<div class=\"column\">" + cityssm.escapeHTML(locationObj.locationDisplayName) + "</div>" +
 
                 (locationObj.locationName === "" ?
                   "" :
-                  "<div class=\"column\">" + llm.escapeHTML(locationObj.locationAddress1) + "</div>") +
+                  "<div class=\"column\">" + cityssm.escapeHTML(locationObj.locationAddress1) + "</div>") +
 
                 "</div>";
 
@@ -1257,7 +1257,7 @@
             }
 
             const lookupContainerEle = document.getElementById("container--manufacturerLookup");
-            llm.clearElement(lookupContainerEle);
+            cityssm.clearElement(lookupContainerEle);
             lookupContainerEle.insertAdjacentElement("beforeend", listEle);
 
           });
@@ -1372,7 +1372,7 @@
 
       };
 
-      llm.openHtmlModal("licence-ticketTypeAdd", {
+      cityssm.openHtmlModal("licence-ticketTypeAdd", {
 
         onshow: function(modalEle) {
 
@@ -1589,7 +1589,7 @@
 
         }
 
-        llm.postJSON(
+        cityssm.postJSON(
           "/licences/doAddTransaction",
           addTransactionFormEle,
           function(responseJSON) {
@@ -1605,7 +1605,7 @@
 
       };
 
-      llm.openHtmlModal("licence-transactionAdd", {
+      cityssm.openHtmlModal("licence-transactionAdd", {
 
         onshow: function(modalEle) {
 
@@ -1676,7 +1676,7 @@
 
         const voidFn = function() {
 
-          llm.postJSON(
+          cityssm.postJSON(
             "/licences/doVoidTransaction", {
               licenceID: licenceID,
               transactionIndex: voidTransactionButtonEle.getAttribute("data-transaction-index")
@@ -1728,7 +1728,7 @@
 
         const unissueFn = function() {
 
-          llm.postJSON(
+          cityssm.postJSON(
             "/licences/doUnissueLicence", {
               licenceID: licenceID
             },
@@ -1761,7 +1761,7 @@
 
         const issueFn = function() {
 
-          llm.postJSON(
+          cityssm.postJSON(
             "/licences/doIssueLicence", {
               licenceID: licenceID
             },

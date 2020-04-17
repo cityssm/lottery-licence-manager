@@ -14,7 +14,7 @@
 
       const restoreFn = function() {
 
-        llm.postJSON(
+        cityssm.postJSON(
           "/organizations/doRestore", {
             organizationID: organizationID
           },

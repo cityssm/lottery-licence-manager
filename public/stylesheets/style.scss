@@ -1,8 +1,4 @@
-@import '../../node_modules/bulma/bulma';
-@import '../../node_modules/bulma-helpers/bulma-helpers';
-@import '../../node_modules/bulma-divider/src/sass/index';
-@import '../../node_modules/bulma-switch/src/sass/index';
-@import '../../node_modules/bulma-tooltip/src/sass/index';
+@import '@cityssm/bulma-webapp-css/cityssm';
 @import 'bulma-radio-checkbox';
 
 
@@ -20,8 +16,8 @@ html.is-fullwidth {
 
 @media screen {
 
-  .has-min-page-height {
-    min-height: 100vh;
+  #is-site-layout {
+    min-height: calc(100vh - 20px);
   }
 
   .is-fixed-bottom {
@@ -35,7 +31,7 @@ html.is-fullwidth {
   .is-hidden-screen {
     display: none !important;
   }
-  
+
 }
 
 @media screen and (min-width: 769px), print {
@@ -158,4 +154,14 @@ select.is-readonly {
 
 .table.is-fixed {
   table-layout: fixed;
+}
+
+
+#is-login-page {
+  overflow: auto;
+
+  body > .columns {
+    min-height: 100vh;
+
+  }
 }

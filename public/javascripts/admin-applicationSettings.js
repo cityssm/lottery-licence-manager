@@ -28,7 +28,7 @@
 
     messageEle.innerHTML = "Saving... <i class=\"fas fa-circle-notch fa-spin\" aria-hidden=\"true\"></i>";
 
-    llm.postJSON(
+    cityssm.postJSON(
       "/admin/doSaveApplicationSetting",
       formEle,
       function(responseJSON) {

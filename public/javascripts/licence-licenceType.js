@@ -9,16 +9,16 @@
 
   function getLicenceTypeSummary() {
 
-    llm.clearElement(containerEle);
+    cityssm.clearElement(containerEle);
 
     containerEle.innerHTML = "<p class=\"has-text-centered has-text-grey-lighter\">" +
       "<i class=\"fas fa-3x fa-circle-notch fa-spin\" aria-hidden=\"true\"></i><br />" +
       "<em>Loading report...</em>" +
       "</p>";
 
-    llm.postJSON("/licences/doGetLicenceTypeSummary", formEle, function(licenceList) {
+    cityssm.postJSON("/licences/doGetLicenceTypeSummary", formEle, function(licenceList) {
 
-      llm.clearElement(containerEle);
+      cityssm.clearElement(containerEle);
 
       if (licenceList.length === 0) {
 
@@ -70,7 +70,7 @@
           "beforeend",
           "<td>" +
           "<a data-tooltip=\"View Licence\" href=\"/licences/" + licenceObj.licenceID + "\">" +
-          llm.escapeHTML(licenceObj.externalLicenceNumber) + "<br />" +
+          cityssm.escapeHTML(licenceObj.externalLicenceNumber) + "<br />" +
           "<small>Licence #" + licenceObj.licenceID + "</small>" +
           "</a>" +
           "</td>"
@@ -78,12 +78,12 @@
 
         trEle.insertAdjacentHTML(
           "beforeend",
-          "<td>" + llm.escapeHTML(licenceObj.organizationName) + "</td>"
+          "<td>" + cityssm.escapeHTML(licenceObj.organizationName) + "</td>"
         );
 
         trEle.insertAdjacentHTML(
           "beforeend",
-          "<td>" + llm.escapeHTML(licenceObj.locationDisplayName) + "</td>"
+          "<td>" + cityssm.escapeHTML(licenceObj.locationDisplayName) + "</td>"
         );
 
         trEle.insertAdjacentHTML(

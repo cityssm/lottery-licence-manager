@@ -1,50 +1,52 @@
-<aside class="menu">
-  <p class="menu-label">
-    Organizations
-  </p>
-  <ul class="menu-list">
-    <li>
-      <a class="<%= (headTitle === "Organizations" ? "is-active" : "") %>" href="/organizations">
-        <span class="icon">
-          <i class="fas fa-users" aria-hidden="true"></i>
-        </span>
-        Organization Search
-      </a>
-    </li>
-    <% if (user.userProperties.canCreate) { %>
-      <li>
-        <a href="/organizations/new">
-          <span class="icon">
-            <i class="fas fa-plus" aria-hidden="true"></i>
-          </span>
-          Create a New Organization
-        </a>
-      </li>
-    <% } %>
-  </ul>
-  <% if (user.userProperties.canUpdate) { %>
+<div class="column is-3 is-hidden-print has-background-white-bis" id="is-sidemenu-expanded">
+  <aside class="menu">
     <p class="menu-label">
-      Reports
+      Organizations
     </p>
     <ul class="menu-list">
       <li>
-        <a class="<%= (headTitle === "Organization Cleanup" ? "is-active" : "") %>" href="/organizations/cleanup">
+        <a class="<%= (headTitle === "Organizations" ? "is-active" : "") %>" href="/organizations">
           <span class="icon">
-            <i class="fas fa-broom" aria-hidden="true"></i>
+            <i class="fas fa-users" aria-hidden="true"></i>
           </span>
-          Organization Cleanup
+          Organization Search
         </a>
       </li>
-      <% if (user.userProperties.isAdmin) { %>
+      <% if (user.userProperties.canCreate) { %>
         <li>
-          <a class="<%= (headTitle === "Organization Recovery" ? "is-active" : "") %>" href="/organizations/recovery">
+          <a href="/organizations/new">
             <span class="icon">
-              <i class="fas fa-trash-restore" aria-hidden="true"></i>
+              <i class="fas fa-plus" aria-hidden="true"></i>
             </span>
-            Organization Recovery
+            Create a New Organization
           </a>
         </li>
       <% } %>
     </ul>
-  <% } %>
-</aside>
+    <% if (user.userProperties.canUpdate) { %>
+      <p class="menu-label">
+        Reports
+      </p>
+      <ul class="menu-list">
+        <li>
+          <a class="<%= (headTitle === "Organization Cleanup" ? "is-active" : "") %>" href="/organizations/cleanup">
+            <span class="icon">
+              <i class="fas fa-broom" aria-hidden="true"></i>
+            </span>
+            Organization Cleanup
+          </a>
+        </li>
+        <% if (user.userProperties.isAdmin) { %>
+          <li>
+            <a class="<%= (headTitle === "Organization Recovery" ? "is-active" : "") %>" href="/organizations/recovery">
+              <span class="icon">
+                <i class="fas fa-trash-restore" aria-hidden="true"></i>
+              </span>
+              Organization Recovery
+            </a>
+          </li>
+        <% } %>
+      </ul>
+    <% } %>
+  </aside>
+</div>

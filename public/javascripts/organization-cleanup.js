@@ -14,13 +14,13 @@
   function confirmDeleteOrganizationFn(clickEvent) {
 
     const buttonEle = clickEvent.currentTarget;
-    const organizationName = llm.escapeHTML(buttonEle.getAttribute("data-organization-name"));
+    const organizationName = cityssm.escapeHTML(buttonEle.getAttribute("data-organization-name"));
 
     const deleteFn = function() {
 
       const organizationID = buttonEle.getAttribute("data-organization-id");
 
-      llm.postJSON("/organizations/doDelete", {
+      cityssm.postJSON("/organizations/doDelete", {
         organizationID: organizationID
       }, function(responseJSON) {
 
@@ -56,7 +56,7 @@
       "<em>Loading organizations...</em>" +
       "</p>";
 
-    llm.postJSON("/organizations/doGetInactive", {
+    cityssm.postJSON("/organizations/doGetInactive", {
       inactiveYears: inactiveYearsFilterEle.value
     }, function(inactiveList) {
 
@@ -92,7 +92,7 @@
 
         const trEle = document.createElement("tr");
 
-        const safeOrganizationName = llm.escapeHTML(organizationObj.organizationName);
+        const safeOrganizationName = cityssm.escapeHTML(organizationObj.organizationName);
 
         trEle.insertAdjacentHTML("beforeend", "<td>" +
           "<a data-tooltip=\"View Organization\"" +
@@ -132,7 +132,7 @@
 
       tableEle.insertAdjacentElement("beforeend", tbodyEle);
 
-      llm.clearElement(searchResultsEle);
+      cityssm.clearElement(searchResultsEle);
 
       searchResultsEle.insertAdjacentElement("beforeend", tableEle);
 
