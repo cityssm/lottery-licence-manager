@@ -1,231 +1,235 @@
 <%- include('_header'); -%>
 
-<nav class="breadcrumb">
-  <ul>
-    <li><a href="/dashboard">Home</a></li>
-    <li><a href="/organizations">Organizations</a></li>
-    <li class="is-active"><a href="#" aria-current="page"><%= organization.organizationName %></a></li>
-  </ul>
-</nav>
+<div class="columns is-variable is-4-mobile is-4-tablet is-block-print" id="is-site-layout">
+  <%- include("_sideMenu-organizations"); -%>
+  <div class="column">
+    <nav class="breadcrumb">
+      <ul>
+        <li><a href="/dashboard">Home</a></li>
+        <li><a href="/organizations">Organizations</a></li>
+        <li class="is-active"><a href="#" aria-current="page"><%= organization.organizationName %></a></li>
+      </ul>
+    </nav>
 
-<% if (organization.recordDelete_timeMillis) { %>
-  <div class="message is-danger">
-    <div class="message-body">
-      <p class="is-size-5 has-text-weight-bold">This organization has been deleted.</p>
-      <% if (user.userProperties.canUpdate) { %>
-        <div class="columns">
-          <div class="column">
-            You have the option to restore this organization, and make it available for licences again.
-          </div>
-          <div class="column is-narrow">
-            <button class="button is-danger is-restore-organization-button" data-organization-id="<%= organization.organizationID %>" data-organization-name="<%= organization.organizationName %>" type="button">
-              <span class="icon"><i class="fas fa-trash-restore" aria-hidden="true"></i></span>
-              <span>Restore Organization</span>
-            </button>
-          </div>
+    <% if (organization.recordDelete_timeMillis) { %>
+      <div class="message is-danger">
+        <div class="message-body">
+          <p class="is-size-5 has-text-weight-bold">This organization has been deleted.</p>
+          <% if (user.userProperties.canUpdate) { %>
+            <div class="columns">
+              <div class="column">
+                You have the option to restore this organization, and make it available for licences again.
+              </div>
+              <div class="column is-narrow">
+                <button class="button is-danger is-restore-organization-button" data-organization-id="<%= organization.organizationID %>" data-organization-name="<%= organization.organizationName %>" type="button">
+                  <span class="icon"><i class="fas fa-trash-restore" aria-hidden="true"></i></span>
+                  <span>Restore Organization</span>
+                </button>
+              </div>
+            </div>
+          <% } %>
         </div>
-      <% } %>
-    </div>
-  </div>
-<% } %>
-
-<div class="level">
-  <div class="level-left has-flex-shrink-1">
-    <h1 class="title is-1">
-      <%= organization.organizationName %>
-    </h1>
-  </div>
-  <div class="level-right has-text-right is-hidden-print">
-    <% if (organization.canUpdate) { %>
-      <a class="button is-link" href="/organizations/<%= organization.organizationID %>/edit">
-        <span class="icon is-small">
-          <i class="fas fa-pencil-alt" aria-hidden="true"></i>
-        </span>
-        <span>Edit this Organization</span>
-      </a>
+      </div>
     <% } %>
-  </div>
-</div>
 
-<div class="columns">
-  <div class="column">
-    <p>
-      <%= organization.organizationAddress1 %><br />
-      <%= organization.organizationAddress2 %>
-      <%- (organization.organizationAddress2 === "" ? "" : "<br />") %>
-      <%= (organization.organizationCity === "" ? "" : organization.organizationCity + ", ") %>
-      <%= organization.organizationProvince %><br />
-      <%= organization.organizationPostalCode %>
-    </p>
-  </div>
-  <div class="column">
+    <div class="level">
+      <div class="level-left has-flex-shrink-1">
+        <h1 class="title is-1">
+          <%= organization.organizationName %>
+        </h1>
+      </div>
+      <div class="level-right has-text-right is-hidden-print">
+        <% if (organization.canUpdate) { %>
+          <a class="button is-link" href="/organizations/<%= organization.organizationID %>/edit">
+            <span class="icon is-small">
+              <i class="fas fa-pencil-alt" aria-hidden="true"></i>
+            </span>
+            <span>Edit this Organization</span>
+          </a>
+        <% } %>
+      </div>
+    </div>
 
     <div class="columns">
       <div class="column">
         <p>
-          <strong>Trust Account Number</strong><br />
-          <% if (organization.trustAccountNumber === null || organization.trustAccountNumber === "") { %>
-            <span class="has-text-grey">(Not Recorded)</span>
-          <% } else { %>
-            <%= organization.trustAccountNumber %>
-          <% } %>
+          <%= organization.organizationAddress1 %><br />
+          <%= organization.organizationAddress2 %>
+          <%- (organization.organizationAddress2 === "" ? "" : "<br />") %>
+          <%= (organization.organizationCity === "" ? "" : organization.organizationCity + ", ") %>
+          <%= organization.organizationProvince %><br />
+          <%= organization.organizationPostalCode %>
         </p>
       </div>
       <div class="column">
-        <p>
-          <strong>Fiscal Year</strong><br />
-          <% if (organization.fiscalStartDate === 0) { %>
-            <span class="has-text-grey">(Not Recorded)</span>
-          <% } else { %>
-            <%= organization.fiscalStartDateString %> to <%= organization.fiscalEndDateString %>
-          <% } %>
+
+        <div class="columns">
+          <div class="column">
+            <p>
+              <strong>Trust Account Number</strong><br />
+              <% if (organization.trustAccountNumber === null || organization.trustAccountNumber === "") { %>
+                <span class="has-text-grey">(Not Recorded)</span>
+              <% } else { %>
+                <%= organization.trustAccountNumber %>
+              <% } %>
+            </p>
+          </div>
+          <div class="column">
+            <p>
+              <strong>Fiscal Year</strong><br />
+              <% if (organization.fiscalStartDate === 0) { %>
+                <span class="has-text-grey">(Not Recorded)</span>
+              <% } else { %>
+                <%= organization.fiscalStartDateString %> to <%= organization.fiscalEndDateString %>
+              <% } %>
+              </p>
+          </div>
+        </div>
+
+        <% if (organization.isEligibleForLicences) { %>
+          <div class="message is-success">
+            <p class="message-body">
+              <i class="fas fa-check has-margin-right-10" aria-hidden="true"></i>
+              Eligible for New Licences
+            </p>
+          </div>
+        <% } else { %>
+          <div class="message is-danger">
+            <p class="message-body">
+              <i class="fas fa-times has-margin-right-10" aria-hidden="true"></i>
+              <strong>Not Eligible for New Licences</strong>
+            </p>
+          </div>
+        <% } %>
+        <% if (organization.organizationNote && organization.organizationNote !== "") { %>
+          <p class="has-margin-top-10">
+            <strong>Notes</strong><br />
+            <span class="has-newline-chars"><%= organization.organizationNote %></span>
           </p>
+        <% } %>
       </div>
     </div>
 
-    <% if (organization.isEligibleForLicences) { %>
-      <div class="message is-success">
-        <p class="message-body">
-          <i class="fas fa-check has-margin-right-10" aria-hidden="true"></i>
-          Eligible for New Licences
-        </p>
-      </div>
-    <% } else { %>
-      <div class="message is-danger">
-        <p class="message-body">
-          <i class="fas fa-times has-margin-right-10" aria-hidden="true"></i>
-          <strong>Not Eligible for New Licences</strong>
-        </p>
-      </div>
-    <% } %>
-    <% if (organization.organizationNote && organization.organizationNote !== "") { %>
-      <p class="has-margin-top-10">
-        <strong>Notes</strong><br />
-        <span class="has-newline-chars"><%= organization.organizationNote %></span>
-      </p>
-    <% } %>
-  </div>
-</div>
+    <div class="tabs is-boxed" id="tabs--organization">
+      <ul role="tablist">
+        <li class="is-active" role="presentation">
+          <a id="organizationTab--representatives" role="tab" href="#organizationTabContent--representatives">
+            <span class="icon"><i class="fas fa-users" aria-hidden="true"></i></span>
+            <span>Representatives</span>
+          </a>
+        </li>
+        <li role="presentation">
+          <a id="organizationTab--licences" role="tab" href="#organizationTabContent--licences">
+            <span class="icon"><i class="fas fa-certificate" aria-hidden="true"></i></span>
+            <span>Licences</span>
+          </a>
+        </li>
+        <li role="presentation">
+          <a id="organizationTab--remarks" role="tab" href="#organizationTabContent--remarks">
+            <span class="icon"><i class="fas fa-comment" aria-hidden="true"></i></span>
+            <span>Remarks</span>
+          </a>
+        </li>
+        <li role="presentation">
+          <a id="organizationTab--bankRecords" role="tab" href="#organizationTabContent--bankRecords">
+            <span class="icon"><i class="fas fa-file-invoice-dollar" aria-hidden="true"></i></span>
+            <span>Bank Records</span>
+          </a>
+        </li>
+      </ul>
+    </div>
 
-<div class="tabs is-boxed" id="tabs--organization">
-  <ul role="tablist">
-    <li class="is-active" role="presentation">
-      <a id="organizationTab--representatives" role="tab" href="#organizationTabContent--representatives">
-        <span class="icon"><i class="fas fa-users" aria-hidden="true"></i></span>
-        <span>Representatives</span>
-      </a>
-    </li>
-    <li role="presentation">
-      <a id="organizationTab--licences" role="tab" href="#organizationTabContent--licences">
-        <span class="icon"><i class="fas fa-certificate" aria-hidden="true"></i></span>
-        <span>Licences</span>
-      </a>
-    </li>
-    <li role="presentation">
-      <a id="organizationTab--remarks" role="tab" href="#organizationTabContent--remarks">
-        <span class="icon"><i class="fas fa-comment" aria-hidden="true"></i></span>
-        <span>Remarks</span>
-      </a>
-    </li>
-    <li role="presentation">
-      <a id="organizationTab--bankRecords" role="tab" href="#organizationTabContent--bankRecords">
-        <span class="icon"><i class="fas fa-file-invoice-dollar" aria-hidden="true"></i></span>
-        <span>Bank Records</span>
-      </a>
-    </li>
-  </ul>
-</div>
-
-<div class="has-status-view">
-  <div class="tab-content is-active" id="organizationTabContent--representatives" role="tabpanel" aria-labelledby="organizationTab--representatives">
-    <div class="panel">
-      <div class="panel-heading">
-        <div class="level">
-          <div class="level-left">
-            <h2 class="has-text-weight-bold">Organization Representatives</h2>
-          </div>
-          <div class="level-right has-text-weight-normal has-text-right is-hidden-print">
-            <a class="button is-small" href="/reports/representatives-byOrganization?organizationID=<%= organization.organizationID %>" download>
-              <span class="icon is-small">
-                <i class="fas fa-file-download" aria-hidden="true"></i>
-              </span>
-              <span>Export Representatives</span>
-            </a>
-          </div>
-        </div>
-      </div>
-
-      <% if (organization.organizationRepresentatives.length === 0) { %>
-        <div class="panel-block is-block">
-          <div class="message is-warning">
-            <div class="message-body">
-              There are no representatives associated with this organization.
+    <div class="has-status-view">
+      <div class="tab-content is-active" id="organizationTabContent--representatives" role="tabpanel" aria-labelledby="organizationTab--representatives">
+        <div class="panel">
+          <div class="panel-heading">
+            <div class="level">
+              <div class="level-left">
+                <h2 class="has-text-weight-bold">Organization Representatives</h2>
+              </div>
+              <div class="level-right has-text-weight-normal has-text-right is-hidden-print">
+                <a class="button is-small" href="/reports/representatives-byOrganization?organizationID=<%= organization.organizationID %>" download>
+                  <span class="icon is-small">
+                    <i class="fas fa-file-download" aria-hidden="true"></i>
+                  </span>
+                  <span>Export Representatives</span>
+                </a>
+              </div>
             </div>
           </div>
-        </div>
-      <% } else { %>
 
-        <table class="table is-fullwidth is-striped is-hoverable is-representative-table">
-          <thead>
-            <tr>
-              <th class="has-width-50">Default</th>
-              <th>Name</th>
-              <th>Address</th>
-              <th>Phone Number</th>
-              <th>Email Address</th>
-            </tr>
-          </thead>
-          <tbody>
-            <%
-              for (let index = 0; index < organization.organizationRepresentatives.length; index += 1) {
-                const representativeObj = organization.organizationRepresentatives[index];
-            %>
-              <tr data-representative-index="<%= representativeObj.representativeIndex %>">
-                <td>
-                  <% if (representativeObj.isDefault === 1) { %>
-                    <span class="has-cursor-default" data-tooltip="Default Representative"><i class="far fa-lg fa-fw fa-dot-circle has-text-info" aria-hidden="true"></i></span>
-                    <span class="sr-only">Default Representative</span>
-                  <% } else { %>
-                    <i class="far fa-lg fa-fw fa-circle has-text-grey-lighter" aria-hidden="true"></i>
-                  <% } %>
-                </td>
-                <td>
-                  <%= representativeObj.representativeName %><br />
-                  <small><%= representativeObj.representativeTitle %></small>
-                </td>
-                <td>
-                  <%= representativeObj.representativeAddress1 %><br />
-                  <small>
-                    <%= representativeObj.representativeAddress2 %>
-                    <%- (representativeObj.representativeAddress2 === "" ? "" : "<br />") %>
-                    <%= representativeObj.representativeCity %>, <%= representativeObj.representativeProvince %><br />
-                    <%= representativeObj.representativePostalCode %>
-                  </small>
-                </td>
-                <td>
-                  <%= representativeObj.representativePhoneNumber %>
-                </td>
-                <td>
-                  <%= representativeObj.representativeEmailAddress %>
-                </td>
-              </tr>
-            <% } %>
-          </tbody>
-        </table>
-      <% } %>
+          <% if (organization.organizationRepresentatives.length === 0) { %>
+            <div class="panel-block is-block">
+              <div class="message is-warning">
+                <div class="message-body">
+                  There are no representatives associated with this organization.
+                </div>
+              </div>
+            </div>
+          <% } else { %>
+
+            <table class="table is-fullwidth is-striped is-hoverable is-representative-table">
+              <thead>
+                <tr>
+                  <th class="has-width-50">Default</th>
+                  <th>Name</th>
+                  <th>Address</th>
+                  <th>Phone Number</th>
+                  <th>Email Address</th>
+                </tr>
+              </thead>
+              <tbody>
+                <%
+                  for (let index = 0; index < organization.organizationRepresentatives.length; index += 1) {
+                    const representativeObj = organization.organizationRepresentatives[index];
+                %>
+                  <tr data-representative-index="<%= representativeObj.representativeIndex %>">
+                    <td>
+                      <% if (representativeObj.isDefault === 1) { %>
+                        <span class="has-cursor-default" data-tooltip="Default Representative"><i class="far fa-lg fa-fw fa-dot-circle has-text-info" aria-hidden="true"></i></span>
+                        <span class="sr-only">Default Representative</span>
+                      <% } else { %>
+                        <i class="far fa-lg fa-fw fa-circle has-text-grey-lighter" aria-hidden="true"></i>
+                      <% } %>
+                    </td>
+                    <td>
+                      <%= representativeObj.representativeName %><br />
+                      <small><%= representativeObj.representativeTitle %></small>
+                    </td>
+                    <td>
+                      <%= representativeObj.representativeAddress1 %><br />
+                      <small>
+                        <%= representativeObj.representativeAddress2 %>
+                        <%- (representativeObj.representativeAddress2 === "" ? "" : "<br />") %>
+                        <%= representativeObj.representativeCity %>, <%= representativeObj.representativeProvince %><br />
+                        <%= representativeObj.representativePostalCode %>
+                      </small>
+                    </td>
+                    <td>
+                      <%= representativeObj.representativePhoneNumber %>
+                    </td>
+                    <td>
+                      <%= representativeObj.representativeEmailAddress %>
+                    </td>
+                  </tr>
+                <% } %>
+              </tbody>
+            </table>
+          <% } %>
+        </div>
+      </div>
+      <div class="tab-content" id="organizationTabContent--licences" role="tabpanel" aria-labelledby="organizationTab--licences">
+        <%- include('_organization-view_edit-licences'); -%>
+      </div>
+      <div class="tab-content" id="organizationTabContent--remarks" role="tabpanel" aria-labelledby="organizationTab--remarks">
+        <%- include('_organization-view_edit-remarks'); -%>
+      </div>
+      <div class="tab-content" id="organizationTabContent--bankRecords" role="tabpanel" aria-labelledby="organizationTab--bankRecords">
+        <%- include('_organization-view_edit-bankRecords'); -%>
+      </div>
     </div>
   </div>
-  <div class="tab-content" id="organizationTabContent--licences" role="tabpanel" aria-labelledby="organizationTab--licences">
-    <%- include('_organization-view_edit-licences'); -%>
-  </div>
-  <div class="tab-content" id="organizationTabContent--remarks" role="tabpanel" aria-labelledby="organizationTab--remarks">
-    <%- include('_organization-view_edit-remarks'); -%>
-  </div>
-  <div class="tab-content" id="organizationTabContent--bankRecords" role="tabpanel" aria-labelledby="organizationTab--bankRecords">
-    <%- include('_organization-view_edit-bankRecords'); -%>
-  </div>
 </div>
-
 
 <%- include('_footerA'); -%>
 

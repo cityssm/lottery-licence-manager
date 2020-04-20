@@ -1,40 +1,52 @@
-<aside class="menu">
-  <p class="menu-label">
-    Locations
-  </p>
-  <ul class="menu-list">
-    <li>
-      <a class="<%= (headTitle === "Locations" ? "is-active" : "") %>" href="/locations">
-        <span class="icon">
-          <i class="fas fa-users" aria-hidden="true"></i>
-        </span>
-        Location Search
-      </a>
-    </li>
-    <% if (user.userProperties.canCreate) { %>
-      <li>
-        <a href="/locations/new">
-          <span class="icon">
-            <i class="fas fa-plus" aria-hidden="true"></i>
-          </span>
-          Create a New Location
-        </a>
-      </li>
-    <% } %>
-  </ul>
-  <% if (user.userProperties.canUpdate) { %>
+<div class="column is-3 is-hidden-print has-background-white-bis" id="cityssm-theme--sidemenu-expanded">
+  <aside class="menu">
     <p class="menu-label">
-      Reports
+      Locations
     </p>
     <ul class="menu-list">
       <li>
-        <a class="<%= (headTitle === "Location Cleanup" ? "is-active" : "") %>" href="/locations/cleanup">
+        <a class="<%= (headTitle === "Locations" ? "is-active" : "") %>" href="/locations">
           <span class="icon">
-            <i class="fas fa-broom" aria-hidden="true"></i>
+            <i class="fas fa-users" aria-hidden="true"></i>
           </span>
-          Location Cleanup
+          Location Search
         </a>
       </li>
+      <% if (user.userProperties.canCreate) { %>
+        <li>
+          <a href="/locations/new">
+            <span class="icon">
+              <i class="fas fa-plus" aria-hidden="true"></i>
+            </span>
+            Create a New Location
+          </a>
+        </li>
+      <% } %>
     </ul>
-  <% } %>
-</aside>
+    <% if (user.userProperties.canUpdate) { %>
+      <p class="menu-label">
+        Reports
+      </p>
+      <ul class="menu-list">
+        <li>
+          <a class="<%= (headTitle === "Location Cleanup" ? "is-active" : "") %>" href="/locations/cleanup">
+            <span class="icon">
+              <i class="fas fa-broom" aria-hidden="true"></i>
+            </span>
+            Location Cleanup
+          </a>
+        </li>
+      </ul>
+    <% } %>
+  </aside>
+  <button class="button is-light is-fullwidth has-margin-top-20" id="cityssm-theme--sidemenu-collapse-button">
+    <span class="icon is-small"><i class="fas fa-angle-double-left" aria-hidden="true"></i></span>
+    <span>Hide Side Menu</span>
+  </button>
+</div>
+<div class="column is-narrow is-hidden-print is-hidden" id="cityssm-theme--sidemenu-collapsed">
+  <button class="button is-light has-tooltip-right" id="cityssm-theme--sidemenu-expand-button" data-tooltip="Expand Side Menu">
+    <i class="fas fa-angle-double-right" aria-hidden="true"></i>
+    <span class="sr-only">Expand Side Menu</span>
+  </button>
+</div>

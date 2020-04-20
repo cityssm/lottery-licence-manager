@@ -35,7 +35,7 @@
 
         searchResultsEle.innerHTML = "<table class=\"table is-fullwidth is-striped is-hoverable\">" +
           "<thead><tr>" +
-          "<th colspan=\"2\">Organization</th>" +
+          "<th colspan=\"2\">Organization Name</th>" +
           "<th>Default Representative</th>" +
           (canCreate ? "<th class=\"is-hidden-print\"><span class=\"sr-only\">Organization Options</span></th>" : "") +
           "<th>Licences</th>" +

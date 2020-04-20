@@ -470,10 +470,13 @@ function getOrganizations(reqBody, reqSession, includeOptions) {
         }
     }
     if (reqBody.representativeName && reqBody.representativeName !== "") {
-        sql += " and o.organizationID in (" +
-            "select organizationID from OrganizationRepresentatives where instr(lower(representativeName), ?)" +
-            ")";
-        sqlParams.push(reqBody.representativeName.toLowerCase());
+        const representativeNamePieces = reqBody.representativeName.toLowerCase().split(" ");
+        for (let pieceIndex = 0; pieceIndex < representativeNamePieces.length; pieceIndex += 1) {
+            sql += " and o.organizationID in (" +
+                "select organizationID from OrganizationRepresentatives where instr(lower(representativeName), ?)" +
+                ")";
+            sqlParams.push(representativeNamePieces[pieceIndex]);
+        }
     }
     if (reqBody.isEligibleForLicences && reqBody.isEligibleForLicences !== "") {
         sql += " and o.isEligibleForLicences = ?";

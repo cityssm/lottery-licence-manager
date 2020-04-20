@@ -4,6 +4,11 @@
 
 ## User Documentation
 
+[Organizations](organizations.md)<br />
+What are organizations?
+How do I search organization records?
+How do I maintain organization records?
+
 ## Administrator Documentation
 
 [Getting Started](admin-gettingStarted.md)<br />

@@ -2,74 +2,10 @@
 @import 'bulma-radio-checkbox';
 
 
-html.is-fullwidth {
-
-  .navbar > .container,
-  main.container,
-  .footer > .container {
-    max-width: none;
-    padding-right: 15px;
-    padding-left: 15px;
-  }
-}
-
-
-@media screen {
-
-  #is-site-layout {
-    min-height: calc(100vh - 20px);
-  }
-
-  .is-fixed-bottom {
-    position: fixed;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    z-index: 5;
-  }
-
-  .is-hidden-screen {
-    display: none !important;
-  }
-
-}
-
-@media screen and (min-width: 769px), print {
-  .has-desktop-max-width-700 {
-    max-width: 700px;
-  }
-}
-
-@media print {
-
-  .is-hidden-print,
-  nav.breadcrumb {
-    display: none !important;
-  }
-
-  .is-block-print {
-    display: block !important;
-  }
-
-  .is-full-print {
-    flex: none;
-    width: 100% !important;
-  }
-
-  html.has-navbar-fixed-top {
-    padding-top: 0;
-  }
-
-  .is-static-print {
-    position: static !important;
-  }
-
-}
-
-
 /*
  * Status containers
  */
+
 
 fieldset:enabled .is-hidden-enabled,
 .has-status-view .is-hidden-status-view,
@@ -84,52 +20,14 @@ fieldset:enabled .is-hidden-enabled,
 }
 
 
-
-.is-nowrap {
-  white-space: nowrap;
-}
-
 // to fix page titles inside level components
 // set on .level-left
 .has-flex-shrink-1 {
   flex-shrink: 1;
 }
 
-.has-newline-chars {
-  white-space: pre-wrap;
-}
-
 .has-border-radius-3 {
   border-radius: 3px;
-}
-
-
-/*
- * Form elements
- */
-
-.textarea {
-  resize: vertical;
-}
-
-.input[type='number'] {
-  -moz-appearance: textfield;
-
-  &::-webkit-inner-spin-button,
-  &::-webkit-outer-spin-button {
-    margin: 0;
-    -webkit-appearance: none;
-  }
-}
-
-
-.is-readonly {
-  cursor: not-allowed !important;
-  background-color: $light !important;
-}
-
-select.is-readonly {
-  pointer-events: none;
 }
 
 
@@ -144,16 +42,6 @@ select.is-readonly {
   &.is-active {
     display: block;
   }
-}
-
-
-.has-height-auto {
-  height: auto;
-}
-
-
-.table.is-fixed {
-  table-layout: fixed;
 }
 
 
