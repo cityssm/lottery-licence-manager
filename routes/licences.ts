@@ -5,10 +5,11 @@ const router = express.Router();
 
 import path = require("path");
 import ejs = require("ejs");
-import pdf = require("html-pdf");
+// import pdf = require("html-pdf");
+import convertHTMLToPDF = require("pdf-puppeteer");
 
+import dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
 import * as configFns from "../helpers/configFns";
-import * as dateTimeFns from "../helpers/dateTimeFns";
 
 import * as licencesDB from "../helpers/licencesDB";
 import { Organization } from "../helpers/llmTypes";
@@ -559,31 +560,20 @@ router.get("/:licenceID/print", function(req, res, next) {
 
       }
 
-      const pdfOptions: pdf.CreateOptions =
-      {
+      convertHTMLToPDF(ejsData, function(pdf) {
+
+        res.setHeader(
+          "Content-Disposition",
+          "attachment; filename=licence-" + licenceID + "-" + licence.recordUpdate_timeMillis + ".pdf"
+        );
+        res.setHeader("Content-Type", "application/pdf");
+
+        res.send(pdf);
+
+      }, {
         format: "Letter",
-        base: "http://localhost:" + configFns.getProperty("application.httpPort"),
-        phantomArgs: ["--local-url-access=false"]
-      };
-
-      pdf.create(ejsData, pdfOptions).toStream(function(pdfErr, pdfStream) {
-
-        if (pdfErr) {
-
-          res.send(pdfErr);
-
-        } else {
-
-          res.setHeader(
-            "Content-Disposition",
-            "attachment; filename=licence-" + licenceID + "-" + licence.recordUpdate_timeMillis + ".pdf"
-          );
-          res.setHeader("Content-Type", "application/pdf");
-
-          pdfStream.pipe(res);
-
-        }
-
+        printBackground: true,
+        preferCSSPageSize: true
       });
 
       return null;

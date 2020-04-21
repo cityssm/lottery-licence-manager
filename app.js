@@ -20,7 +20,7 @@ const routerEvents = require("./routes/events");
 const routerReports = require("./routes/reports");
 const routerAdmin = require("./routes/admin");
 const configFns = require("./helpers/configFns");
-const dateTimeFns = require("./helpers/dateTimeFns");
+const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
 const stringFns = require("./helpers/stringFns");
 const dbInit = require("./helpers/dbInit");
 dbInit.initUsersDB();

@@ -1,7 +1,7 @@
 "use strict";
 const express = require("express");
 const router = express.Router();
-const dateTimeFns = require("../helpers/dateTimeFns");
+const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
 const licencesDB = require("../helpers/licencesDB");
 router.get("/", function (_req, res) {
     const eventTableStats = licencesDB.getEventTableStats();

@@ -1,11 +1,12 @@
 <html>
 <head>
+  <meta charset="utf-8" />
   <style>
     /* base styles */
 
     * {
       box-sizing: border-box;
-      font-size: 17px;
+      font-size: 10pt;
     }
 
     html {
@@ -13,7 +14,7 @@
     }
 
     .page {
-      margin: 20px 40px;
+      margin: 20px 30px;
     }
 
     table {
@@ -63,31 +64,31 @@
 
 
     .is-6pt {
-      font-size: 8px;
+      font-size: 6pt;
     }
 
     .is-9pt {
-      font-size: 12px;
+      font-size: 9pt;
     }
 
     .is-12pt {
-      font-size: 16px;
+      font-size: 12pt;
     }
 
     .is-15pt {
-      font-size: 20px;
+      font-size: 15pt;
     }
 
     .is-18pt {
-      font-size: 24px;
+      font-size: 18pt;
     }
 
     .is-21pt {
-      font-size: 28px;
+      font-size: 21pt;
     }
 
     .is-24pt {
-      font-size: 32px;
+      font-size: 24pt;
     }
 
 
@@ -135,21 +136,6 @@
       width: 66.66%;
     }
 
-    .has-min-height-50 {
-      min-height: 50px;
-    }
-
-    .has-min-height-100 {
-      min-height: 100px;
-    }
-
-    .has-min-height-150 {
-      min-height: 150px;
-    }
-
-    .has-min-height-250 {
-      min-height: 250px;
-    }
 
     .has-vertical-align-top {
       vertical-align: top;
@@ -168,7 +154,7 @@
       <tbody>
         <tr>
           <td class="has-padding-right-10">
-            <img src="/images/ontarioCoatOfArms.svg" alt="" style="height:60px" />
+            <img src="http://localhost:<%= configFns.getProperty("application.httpPort") %>/images/ontarioCoatOfArms.svg" alt="" style="height:60px" />
           </td>
           <td class="has-padding-right-10 is-9pt">
             Alcohol and<br />
@@ -180,7 +166,7 @@
             alcools et des jeux de<br />
             l'Ontario
           </td>
-          <td class="has-padding-right-10 is-24pt has-text-weight-bold">
+          <td class="has-padding-right-10 has-text-weight-bold" style="font-size:22pt">
             Lottery Licence<br />
             Licence de loterie
           </td>
@@ -198,7 +184,7 @@
         Address (no. of street, name of street, suite no., city/town, province, postal code)<br />
         Adresse (n° de rue, nom de rue, bureau, ville, province, code postal)
       </div>
-      <div class="field" style="min-height:100px">
+      <div class="field" style="min-height:90px">
         <%= organization.organizationName %><br />
         <%= organization.organizationAddress1 %><br />
         <%= organization.organizationAddress2 %>
@@ -269,17 +255,17 @@
           </tr>
           <tr>
             <td class="has-padding-right-10 is-two-thirds">
-              <div class="field has-min-height-150">
+              <div class="field" style="min-height:100px">
                 <% for (let eventIndex = 0; eventIndex < licence.events.length; eventIndex += 1) { %>
                   <%= (eventIndex === 0 ? "" : ", ") + licence.events[eventIndex].eventDateString.replace(/-/g, "/"); %>
                 <% } %>
               </div>
             </td>
             <td class="has-vertical-align-top is-one-sixth has-padding-right-10">
-              <div class="field has-min-height-150"><%= licence.startTimeString %></div>
+              <div class="field" style="min-height:100px"><%= licence.startTimeString %></div>
             </td>
             <td class="has-vertical-align-top is-one-sixth">
-              <div class="field has-min-height-150"><%= licence.endTimeString %></div>
+              <div class="field" style="min-height:100px"><%= licence.endTimeString %></div>
             </td>
           </tr>
         </tbody>
@@ -321,7 +307,7 @@
       <div class="has-text-weight-bold">
         Special Terms and Conditions/Modalités spéciales
       </div>
-      <div class="field has-min-height-250">
+      <div class="field" style="min-height:140px">
         <% if (licence.licenceDetails !== "") { %>
           <div class="has-newline-chars has-margin-bottom-10"><%= licence.licenceDetails %></div>
         <% } %>

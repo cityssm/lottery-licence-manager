@@ -3,7 +3,7 @@ const express = require("express");
 const router = express.Router();
 const licencesDB = require("../helpers/licencesDB");
 const stringFns_1 = require("../helpers/stringFns");
-const dateTimeFns = require("../helpers/dateTimeFns");
+const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
 router.get("/", function (_req, res) {
     const rightNow = new Date();
     res.render("report-search", {

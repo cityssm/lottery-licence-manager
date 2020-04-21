@@ -30,7 +30,7 @@ import routerAdmin = require("./routes/admin");
 
 import { Config_HttpsConfig } from "./helpers/llmTypes";
 import * as configFns from "./helpers/configFns";
-import * as dateTimeFns from "./helpers/dateTimeFns";
+import dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
 import * as stringFns from "./helpers/stringFns";
 
 

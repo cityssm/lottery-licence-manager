@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const sqlite = require("better-sqlite3");
 const dbPath = "data/licences.db";
 const configFns = require("./configFns");
-const dateTimeFns = require("./dateTimeFns");
+const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
 function canUpdateObject(obj, reqSession) {
     const userProperties = reqSession.user.userProperties;
     let canUpdate = false;

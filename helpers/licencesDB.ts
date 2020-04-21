@@ -5,7 +5,7 @@ const dbPath = "data/licences.db";
 
 import * as llm from "./llmTypes";
 import * as configFns from "./configFns";
-import * as dateTimeFns from "./dateTimeFns";
+import dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
 
 
 /*

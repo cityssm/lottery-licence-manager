@@ -3,7 +3,7 @@
 import express = require("express");
 const router = express.Router();
 
-import * as dateTimeFns from "../helpers/dateTimeFns";
+import dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
 
 import * as licencesDB from "../helpers/licencesDB";
 

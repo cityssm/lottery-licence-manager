@@ -2,7 +2,7 @@
 const express = require("express");
 const router = express.Router();
 const configFns = require("../helpers/configFns");
-const dateTimeFns = require("../helpers/dateTimeFns");
+const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
 const licencesDB = require("../helpers/licencesDB");
 router.get("/", function (_req, res) {
     res.render("organization-search", {
