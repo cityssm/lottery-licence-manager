@@ -25,8 +25,19 @@
 
       <div class="columns">
         <div class="column">
+          <div class="level has-margin-bottom-10">
+            <div class="level-left">
+              <label class="label" for="organization--organizationName">
+                Organization Name
+              </label>
+            </div>
+            <% if (isCreate) { %>
+              <div class="level-right">
+                <span class="is-size-7 has-text-danger">* Required</span>
+              </div>
+            <% } %>
+          </div>
           <div class="field">
-            <label class="label" for="organization--organizationName">Organization Name</label>
             <div class="control">
               <input class="input" id="organization--organizationName" name="organizationName" type="text" value="<%= organization.organizationName %>" maxlength="100" autocomplete="off" <%= (isCreate ? " autofocus " : "") %> required />
             </div>
@@ -45,7 +56,7 @@
           </div>
 
           <div class="columns">
-            <div class="column">
+            <div class="column is-5">
               <div class="field">
                 <label class="label" for="organization--organizationCity">City</label>
                 <div class="control">
@@ -67,7 +78,7 @@
                 </div>
               </div>
             </div>
-            <div class="column is-3">
+            <div class="column">
               <div class="field">
                 <label class="label" for="organization--organizationPostalCode">Postal Code</label>
                 <div class="control">
@@ -77,61 +88,59 @@
             </div>
           </div>
         </div>
-        <% if (!isCreate) { %>
           <div class="column is-5">
-            <div class="field">
-              <label class="label" for="organization--trustAccountNumber">Trust Account Number</label>
-              <div class="control">
-                <input class="input" id="organization--trustAccountNumber" name="trustAccountNumber" type="text" value="<%= organization.trustAccountNumber %>" maxlength="20" />
+            <% if (isCreate){ %>
+              <div class="message is-info">
+                <div class="message-body">
+                  Additional organization options, like the ability to add representatives,
+                  will be available after the organization is created.
+                </div>
               </div>
-            </div>
-            <div class="columns">
-              <div class="column">
-                <div class="field">
-                  <label class="label" for="organization--fiscalStartDateString">Fiscal Year Start</label>
-                  <div class="control">
-                    <input class="input" id="organization--fiscalStartDateString" name="fiscalStartDateString" type="date" value="<%= organization.fiscalStartDateString %>" />
+            <% } else { %>
+              <div class="field">
+                <label class="label" for="organization--trustAccountNumber">Trust Account Number</label>
+                <div class="control">
+                  <input class="input" id="organization--trustAccountNumber" name="trustAccountNumber" type="text" value="<%= organization.trustAccountNumber %>" maxlength="20" />
+                </div>
+              </div>
+              <div class="columns">
+                <div class="column">
+                  <div class="field">
+                    <label class="label" for="organization--fiscalStartDateString">Fiscal Year Start</label>
+                    <div class="control">
+                      <input class="input" id="organization--fiscalStartDateString" name="fiscalStartDateString" type="date" value="<%= organization.fiscalStartDateString %>" />
+                    </div>
+                  </div>
+                </div>
+                <div class="column">
+                  <div class="field">
+                    <label class="label" for="organization--fiscalEndDateString">Fiscal Year End</label>
+                    <div class="control">
+                      <input class="input" id="organization--fiscalEndDateString" name="fiscalEndDateString" type="date" value="<%= organization.fiscalEndDateString %>" />
+                    </div>
                   </div>
                 </div>
               </div>
-              <div class="column">
-                <div class="field">
-                  <label class="label" for="organization--fiscalEndDateString">Fiscal Year End</label>
-                  <div class="control">
-                    <input class="input" id="organization--fiscalEndDateString" name="fiscalEndDateString" type="date" value="<%= organization.fiscalEndDateString %>" />
+              <div class="field">
+                <label class="label" for="organization--isEligibleForLicences">New Licence Eligibility</label>
+                <div class="control">
+                  <div class="select is-fullwidth">
+                    <select id="organization--isEligibleForLicences" name="isEligibleForLicences">
+                      <option value="1" <%= (organization.isEligibleForLicences ? " selected": "") %>>Eligible for New Licences</option>
+                      <option value="0" <%= (organization.isEligibleForLicences ? "": " selected") %>>Not Eligible</option>
+                    </select>
                   </div>
                 </div>
               </div>
-            </div>
-            <div class="field">
-              <label class="label" for="organization--isEligibleForLicences">New Licence Eligibility</label>
-              <div class="control">
-                <div class="select is-fullwidth">
-                  <select id="organization--isEligibleForLicences" name="isEligibleForLicences">
-                    <option value="1" <%= (organization.isEligibleForLicences ? " selected": "") %>>Eligible for New Licences</option>
-                    <option value="0" <%= (organization.isEligibleForLicences ? "": " selected") %>>Not Eligible</option>
-                  </select>
+              <div class="field">
+                <label class="label" for="organization--organizationNote">Notes</label>
+                <div class="control">
+                  <textarea class="textarea" id="organization--organizationNote" name="organizationNote"><%= organization.organizationNote %></textarea>
                 </div>
               </div>
-            </div>
-            <div class="field">
-              <label class="label" for="organization--organizationNote">Notes</label>
-              <div class="control">
-                <textarea class="textarea" id="organization--organizationNote" name="organizationNote"><%= organization.organizationNote %></textarea>
-              </div>
-            </div>
+            <% } %>
           </div>
-        <% } %>
       </div>
-
-      <% if (isCreate) { %>
-        <div class="message is-info">
-          <div class="message-body">
-            Additional organization options, like the ability to add representatives,
-            will be available after the organization is created.
-          </div>
-        </div>
-      <% } %>
 
       <div class="is-fixed-bottom has-padding-10 has-background-grey-light is-hidden-print">
         <div class="level">
