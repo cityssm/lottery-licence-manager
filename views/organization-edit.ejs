@@ -25,22 +25,18 @@
 
       <div class="columns">
         <div class="column">
-          <div class="level has-margin-bottom-10">
-            <div class="level-left">
-              <label class="label" for="organization--organizationName">
-                Organization Name
-              </label>
-            </div>
-            <% if (isCreate) { %>
-              <div class="level-right">
-                <span class="is-size-7 has-text-danger">* Required</span>
-              </div>
-            <% } %>
-          </div>
           <div class="field">
+            <label class="label" for="organization--organizationName">
+              Organization Name
+            </label>
             <div class="control">
               <input class="input" id="organization--organizationName" name="organizationName" type="text" value="<%= organization.organizationName %>" maxlength="100" autocomplete="off" <%= (isCreate ? " autofocus " : "") %> required />
             </div>
+            <% if (isCreate) { %>
+              <div class="help is-danger">
+                Organization Name is required.
+              </div>
+              <% } %>
           </div>
 
           <div class="field">

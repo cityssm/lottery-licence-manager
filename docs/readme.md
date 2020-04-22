@@ -2,12 +2,20 @@
 
 **Thank you for taking the time to read the documentation.**
 
+[Live Documentation Site on GitHub](https://cityssm.github.io/lottery-licence-manager/)
+
+
 ## User Documentation
 
 [Organizations](organizations.md)<br />
 What are organizations?
 How do I search organization records?
 How do I maintain organization records?
+
+[Lottery Licences](licences.md)<br />
+How do I search lottery licence records?
+How do I maintain lottery licences?
+
 
 ## Administrator Documentation
 

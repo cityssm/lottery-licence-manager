@@ -79,6 +79,7 @@
         "<tr>" +
         "<th>Organization</th>" +
         "<th class=\"has-text-centered\">Last Licence End Date</th>" +
+        "<th class=\"has-text-centered\">Created</th>" +
         "<th class=\"has-text-centered\">Last Updated</th>" +
         (canUpdate ? "<th><span class=\"sr-only\">Delete</span></th>" : "") +
         "</tr>" +
@@ -94,22 +95,27 @@
 
         const safeOrganizationName = cityssm.escapeHTML(organizationObj.organizationName);
 
-        trEle.insertAdjacentHTML("beforeend", "<td>" +
-          "<a data-tooltip=\"View Organization\"" +
-          " href=\"/organizations/" + organizationObj.organizationID + "\">" +
-          safeOrganizationName +
-          "</a>" +
-          "</td>");
-
-        trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-centered\">" +
-          (organizationObj.licences_endDateMax ?
-            organizationObj.licences_endDateMaxString :
-            "<span class=\"tag is-light is-danger\">No Licences</span>") +
-          "</td>");
-
-        trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-centered\">" +
-          "<span data-tooltip=\"Updated by " + organizationObj.recordUpdate_userName + "\">" + organizationObj.recordUpdate_dateString + "</span>" +
-          "</td>");
+        trEle.innerHTML = ("<td>" +
+            "<a data-tooltip=\"View Organization\"" +
+            " href=\"/organizations/" + organizationObj.organizationID + "\">" +
+            safeOrganizationName +
+            "</a>" +
+            "</td>") +
+          ("<td class=\"has-text-centered\">" +
+            (organizationObj.licences_endDateMax ?
+              organizationObj.licences_endDateMaxString :
+              "<span class=\"tag is-light is-danger\">No Licences</span>") +
+            "</td>") +
+          ("<td class=\"has-text-centered\">" +
+            "<span data-tooltip=\"Created by " + organizationObj.recordCreate_userName + "\">" +
+            organizationObj.recordCreate_dateString +
+            "</span>" +
+            "</td>") +
+          ("<td class=\"has-text-centered\">" +
+            "<span data-tooltip=\"Updated by " + organizationObj.recordUpdate_userName + "\">" +
+            organizationObj.recordUpdate_dateString +
+            "</span>" +
+            "</td>");
 
         if (canUpdate) {
 
@@ -126,15 +132,15 @@
 
         }
 
-        tbodyEle.insertAdjacentElement("beforeend", trEle);
+        tbodyEle.appendChild(trEle);
 
       }
 
-      tableEle.insertAdjacentElement("beforeend", tbodyEle);
+      tableEle.appendChild(tbodyEle);
 
       cityssm.clearElement(searchResultsEle);
 
-      searchResultsEle.insertAdjacentElement("beforeend", tableEle);
+      searchResultsEle.appendChild(tableEle);
 
     });
 

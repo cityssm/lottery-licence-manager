@@ -1063,7 +1063,9 @@ export function getInactiveOrganizations(inactiveYears: number) {
   });
 
   const rows: llm.Organization[] = db.prepare("select o.organizationID, o.organizationName," +
-    " o.recordUpdate_timeMillis, o.recordUpdate_userName, l.licences_endDateMax" +
+    " o.recordCreate_timeMillis, o.recordCreate_userName," +
+    " o.recordUpdate_timeMillis, o.recordUpdate_userName," +
+    " l.licences_endDateMax" +
     " from Organizations o" +
     " left join (" +
     ("select l.organizationID, max(l.endDate) as licences_endDateMax from LotteryLicences l" +
@@ -1081,6 +1083,7 @@ export function getInactiveOrganizations(inactiveYears: number) {
 
     const organization = rows[rowIndex];
 
+    organization.recordCreate_dateString = dateTimeFns.dateToString(new Date(organization.recordCreate_timeMillis));
     organization.recordUpdate_dateString = dateTimeFns.dateToString(new Date(organization.recordUpdate_timeMillis));
     organization.licences_endDateMaxString = dateTimeFns.dateIntegerToString(organization.licences_endDateMax || 0);
 
@@ -1104,7 +1107,7 @@ export function getDeletedOrganizations() {
     db.prepare("select organizationID, organizationName, recordDelete_timeMillis, recordDelete_userName" +
       " from Organizations" +
       " where recordDelete_timeMillis is not null" +
-      " order by recordDelete_timeMillis desc")
+      " order by organizationName, recordDelete_timeMillis desc")
       .all();
 
   db.close();

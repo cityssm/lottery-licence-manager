@@ -14,49 +14,51 @@
       Find an Organization
     </h1>
 
-    <form id="form--filters">
-      <div class="columns">
-        <div class="column">
-          <div class="field">
-            <label class="label" for="filter--organizationName">Organization Name</label>
-            <div class="control has-icons-left">
-              <input class="input" id="filter--organizationName" name="organizationName" type="text" />
-              <span class="icon is-small is-left">
-                <i class="fas fa-filter" aria-hidden="true"></i>
-              </span>
-            </div>
-          </div>
-        </div>
-        <div class="column">
-          <div class="field">
-            <label class="label" for="filter--representativeName">Representative Name</label>
-            <div class="control has-icons-left">
-              <input class="input" id="filter--representativeName" name="representativeName" type="text" />
-              <span class="icon is-small is-left">
-                <i class="fas fa-filter" aria-hidden="true"></i>
-              </span>
-            </div>
-          </div>
-        </div>
-        <div class="column">
-          <div class="field">
-            <label class="label" for="filter--isEligibleForLicences">Eligibility</label>
-            <div class="control has-icons-left">
-              <div class="select is-fullwidth">
-                <select id="filter--isEligibleForLicences" name="isEligibleForLicences">
-                  <option value="">(All Statuses)</option>
-                  <option value="1" selected>Eligible for New Licences</option>
-                  <option value="0">Not Eligible</option>
-                </select>
+    <div class="box">
+      <form id="form--filters">
+        <div class="columns">
+          <div class="column">
+            <div class="field">
+              <label class="label" for="filter--organizationName">Organization Name</label>
+              <div class="control has-icons-left">
+                <input class="input" id="filter--organizationName" name="organizationName" type="text" />
+                <span class="icon is-small is-left">
+                  <i class="fas fa-filter" aria-hidden="true"></i>
+                </span>
               </div>
-              <span class="icon is-small is-left">
-                <i class="fas fa-filter" aria-hidden="true"></i>
-              </span>
+            </div>
+          </div>
+          <div class="column">
+            <div class="field">
+              <label class="label" for="filter--representativeName">Representative Name</label>
+              <div class="control has-icons-left">
+                <input class="input" id="filter--representativeName" name="representativeName" type="text" />
+                <span class="icon is-small is-left">
+                  <i class="fas fa-filter" aria-hidden="true"></i>
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="column">
+            <div class="field">
+              <label class="label" for="filter--isEligibleForLicences">Eligibility</label>
+              <div class="control has-icons-left">
+                <div class="select is-fullwidth">
+                  <select id="filter--isEligibleForLicences" name="isEligibleForLicences">
+                    <option value="">(All Statuses)</option>
+                    <option value="1" selected>Eligible for New Licences</option>
+                    <option value="0">Not Eligible</option>
+                  </select>
+                </div>
+                <span class="icon is-small is-left">
+                  <i class="fas fa-filter" aria-hidden="true"></i>
+                </span>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </form>
+      </form>
+    </div>
 
     <div class="has-margin-top-20" id="container--searchResults"></div>
   </div>

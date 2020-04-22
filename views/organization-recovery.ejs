@@ -30,7 +30,7 @@
         <thead>
           <tr>
             <th>Organization</th>
-            <th>Date Deleted</th>
+            <th class="has-text-centered">Date Deleted</th>
           </tr>
         </thead>
         <tbody>
@@ -40,9 +40,11 @@
           %>
           <tr>
             <td>
-              <a class="has-text-danger" href="/organizations/<%= organization.organizationID %>"><%= organization.organizationName %></a>
+              <a class="has-text-danger" href="/organizations/<%= organization.organizationID %>">
+                <%= organization.organizationName %>
+              </a>
             </td>
-            <td>
+            <td class="has-text-centered">
               <span data-tooltip="Deleted by <%= organization.recordDelete_userName %>">
                 <%= organization.recordDelete_dateString %>
               </span>

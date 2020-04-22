@@ -15,17 +15,19 @@
       Financial Summary Report
     </h1>
 
-    <form id="form--financialSummary">
-      <%- include('_dateRangeSelector', {
-        fieldKey: "eventDate",
-        fieldName: "Event Date",
-        yearMin: eventYearMin,
-        startValue: eventDateStartString,
-        endValue: eventDateEndString
-      }); -%>
-    </form>
+    <div class="box">
+      <form id="form--financialSummary">
+        <%- include('_dateRangeSelector', {
+          fieldKey: "eventDate",
+          fieldName: "Event Date",
+          yearMin: eventYearMin,
+          startValue: eventDateStartString,
+          endValue: eventDateEndString
+        }); -%>
+      </form>
+    </div>
 
-    <table class="table is-fullwidth is-striped is-hoverable has-margin-top-20 has-status-loading" id="table--financialSummary">
+    <table class="table is-fullwidth is-striped is-hoverable has-status-loading" id="table--financialSummary">
       <thead>
         <tr>
           <th>Licence Type</th>

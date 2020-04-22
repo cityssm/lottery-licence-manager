@@ -42,12 +42,12 @@ to trigger the refresh.
 Search results are displayed below the filters in a table,
 and include the following columns.
 
-- Organization Name, linked to the organization record
-- Organization Note Indicator, if applicable
-- Default Representative
-- Organization Edit Link (depending on user permissions)
-- Active Licences or Last Active Licence Date
-- New Licence Link
+- Organization Name, linked to the organization record.
+- Organization Note Indicator, if applicable.
+- Default Representative.
+- Organization Edit Link, depending on user permissions.
+- Active Licences or Last Active Licence Date.
+- New Licence Link.
 
 
 ## Create a New Organization Record
@@ -131,3 +131,26 @@ Records can also be created using the teal "Add a Bank Record" button.
 
 A complete history of bank records for the organization can be exported as a CSV document
 using the "Export Bank Records" button.
+
+
+## Cleanup Inactive Organizations
+
+![Organization Cleanup](images/organization-cleanup.png)
+
+The Organization Cleanup page helps draw attention to organizations that may be able to be
+removed from the system. It lists organizations with no recent licence activity.
+Organizations can be reviewed by clicking on their names, or quickly removed with
+the corresponding red "Delete" button.
+
+
+## Recover Deleted Organizations
+
+![Organization Recovery](images/organization-recovery.png)
+
+The Organization Recovery page lists organizations that have been deleted,
+along with the date they were deleted.  Organizations can be reviewed and restored.
+
+
+## Related Documentation
+
+- [Lottery Licences](licences.md)

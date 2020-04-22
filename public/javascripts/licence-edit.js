@@ -13,6 +13,12 @@
   const isCreate = licenceID === "";
   const isIssued = formEle.getAttribute("data-licence-is-issued") === "true";
 
+  const refreshInputTypes = [
+    "number",
+    "date",
+    "time"
+  ];
+
   let doRefreshAfterSave = false;
   let hasUnsavedChanges = false;
 
@@ -140,8 +146,7 @@
 
     }
 
-    if (changeEvent &&
-      (changeEvent.currentTarget.type === "number" || changeEvent.currentTarget.type === "date" || changeEvent.currentTarget.type === "time")) {
+    if (changeEvent && refreshInputTypes.includes(changeEvent.currentTarget.type)) {
 
       setDoRefreshAfterSave();
 
@@ -201,8 +206,11 @@
 
       const organizationEle = clickEvent.currentTarget;
 
-      document.getElementById("licence--organizationID").value = organizationEle.getAttribute("data-organization-id");
-      document.getElementById("licence--organizationName").value = organizationEle.getAttribute("data-organization-name");
+      document.getElementById("licence--organizationID").value =
+        organizationEle.getAttribute("data-organization-id");
+
+      document.getElementById("licence--organizationName").value =
+        organizationEle.getAttribute("data-organization-name");
 
       organizationLookupCloseModalFn();
 
@@ -256,9 +264,14 @@
           listItemEle.setAttribute("data-organization-id", organizationObj.organizationID);
           listItemEle.setAttribute("data-organization-name", organizationObj.organizationName);
           listItemEle.setAttribute("href", "#");
-          listItemEle.innerText = organizationObj.organizationName;
+          listItemEle.innerHTML = organizationObj.organizationName + "<br />" +
+            "<span class=\"is-size-7\">" +
+            "<span class=\"icon\"><i class=\"fas fa-user\" aria-hidden=\"true\"></i></span> " +
+            organizationObj.representativeName +
+            "</span>";
           listItemEle.addEventListener("click", organizationLookupFn_setOrganization);
-          listEle.insertAdjacentElement("beforeend", listItemEle);
+
+          listEle.appendChild(listItemEle);
 
         }
 
@@ -312,6 +325,12 @@
 
           organizationLookupCloseModalFn = closeModalFn;
           organizationLookupSearchStrEle.focus();
+
+        },
+
+        onremoved: function() {
+
+          document.getElementById("is-organization-lookup-button").focus();
 
         }
 
@@ -525,6 +544,12 @@
           locationLookup_closeModalFn = closeModalFn;
           locationLookup_searchStrEle.focus();
 
+        },
+
+        onremoved: function() {
+
+          document.getElementById("is-location-lookup-button").focus();
+
         }
 
       });
@@ -554,9 +579,12 @@
 
       const termsConditionsIndex = parseInt(clickEvent.currentTarget.getAttribute("data-terms-conditions-index"));
 
-      document.getElementById("licence--termsConditions").value = termsConditionsList[termsConditionsIndex].termsConditions;
+      const termsConditionsEle = document.getElementById("licence--termsConditions");
+      termsConditionsEle.value = termsConditionsList[termsConditionsIndex].termsConditions;
 
       cityssm.hideModal(termsConditionsLookupModalEle);
+
+      termsConditionsEle.focus();
 
       setUnsavedChanges();
 
@@ -668,7 +696,7 @@
 
       // Total prize value
 
-       const totalPrizeValueMax = optionEle.getAttribute("data-total-prize-value-max");
+      const totalPrizeValueMax = optionEle.getAttribute("data-total-prize-value-max");
 
       document.getElementById("licence--totalPrizeValue").setAttribute("max", totalPrizeValueMax);
 
@@ -1452,8 +1480,11 @@
         "</div>" +
         "</td>");
 
-      trEle.getElementsByClassName("is-amend-ticket-type-unit-count-button")[0].addEventListener("click", amendUnitCount_openModal);
-      trEle.getElementsByClassName("is-delete-ticket-type-button")[0].addEventListener("click", deleteTicketType_openConfirm);
+      trEle.getElementsByClassName("is-amend-ticket-type-unit-count-button")[0]
+        .addEventListener("click", amendUnitCount_openModal);
+
+      trEle.getElementsByClassName("is-delete-ticket-type-button")[0]
+        .addEventListener("click", deleteTicketType_openConfirm);
 
       // Licence fee
 
@@ -1478,7 +1509,8 @@
         "</button>" +
         "</td>");
 
-      trEle.getElementsByClassName("is-amend-ticket-type-distributor-button")[0].addEventListener("click", amendDistributor_openModal);
+      trEle.getElementsByClassName("is-amend-ticket-type-distributor-button")[0]
+        .addEventListener("click", amendDistributor_openModal);
 
       // Manufacturer
 
@@ -1494,7 +1526,8 @@
         "</button>" +
         "</td>");
 
-      trEle.getElementsByClassName("is-amend-ticket-type-manufacturer-button")[0].addEventListener("click", amendManufacturer_openModal);
+      trEle.getElementsByClassName("is-amend-ticket-type-manufacturer-button")[0]
+        .addEventListener("click", amendManufacturer_openModal);
 
       // Insert row
 
@@ -1529,7 +1562,8 @@
 
       }
 
-      const amendDistributorButtonEles = ticketTypesPanelEle.getElementsByClassName("is-amend-ticket-type-distributor-button");
+      const amendDistributorButtonEles =
+        ticketTypesPanelEle.getElementsByClassName("is-amend-ticket-type-distributor-button");
 
       for (let buttonIndex = 0; buttonIndex < amendDistributorButtonEles.length; buttonIndex += 1) {
 
@@ -1537,7 +1571,8 @@
 
       }
 
-      const amendManufacturerButtonEles = ticketTypesPanelEle.getElementsByClassName("is-amend-ticket-type-manufacturer-button");
+      const amendManufacturerButtonEles =
+        ticketTypesPanelEle.getElementsByClassName("is-amend-ticket-type-manufacturer-button");
 
       for (let buttonIndex = 0; buttonIndex < amendManufacturerButtonEles.length; buttonIndex += 1) {
 

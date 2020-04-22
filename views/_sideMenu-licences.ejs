@@ -1,24 +1,24 @@
 <div class="column is-3 is-hidden-print has-background-white-bis" id="cityssm-theme--sidemenu-expanded">
   <aside class="menu">
     <p class="menu-label">
-      Licences
+      Lottery Licences
     </p>
     <ul class="menu-list">
       <li>
-        <a class="<%= (headTitle === "Licences" ? "is-active" : "") %>" href="/licences">
+        <a class="<%= (headTitle === "Lottery Licences" ? "is-active" : "") %>" href="/licences">
           <span class="icon">
             <i class="fas fa-certificate" aria-hidden="true"></i>
           </span>
-          Licence Search
+          Lottery Licence Search
         </a>
       </li>
       <% if (user.userProperties.canCreate) { %>
         <li>
-          <a href="/licences/new">
+          <a class="<%= (headTitle === "Licence Create" ? "is-active" : "") %>" href="/licences/new">
             <span class="icon">
               <i class="fas fa-plus" aria-hidden="true"></i>
             </span>
-            Create a New Licence
+            Create a New Lottery Licence
           </a>
         </li>
       <% } %>
@@ -41,6 +41,19 @@
             <i class="fas fa-file" aria-hidden="true"></i>
           </span>
           Active Licence Summary
+        </a>
+      </li>
+    </ul>
+    <p class="menu-label">
+      Help
+    </p>
+    <ul class="menu-list">
+      <li>
+        <a href="/docs/licences.md" target="_blank">
+          <span class="icon">
+            <i class="fas fa-question-circle" aria-hidden="true"></i>
+          </span>
+          Lottery Licence Documentation
         </a>
       </li>
     </ul>

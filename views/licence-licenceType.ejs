@@ -6,7 +6,7 @@
     <nav class="breadcrumb">
       <ul>
         <li><a href="/dashboard">Home</a></li>
-        <li><a href="/licences">Licences</a></li>
+        <li><a href="/licences">Lottery Licences</a></li>
         <li class="is-active"><a href="#" aria-current="page">Licence Type Summary</a></li>
       </ul>
     </nav>
@@ -15,50 +15,51 @@
       Licence Type Summary
     </h1>
 
+    <div class="box">
+      <form class="is-block-print" id="form--licenceTypes">
 
-    <form class="is-block-print" id="form--licenceTypes">
+        <%- include('_dateRangeSelector', {
+          fieldKey: "applicationDate",
+          fieldName: "Application Date",
+          yearMin: applicationYearMin,
+          startValue: applicationDateStartString,
+          endValue: applicationDateEndString
+        }); -%>
 
-      <%- include('_dateRangeSelector', {
-        fieldKey: "applicationDate",
-        fieldName: "Application Date",
-        yearMin: applicationYearMin,
-        startValue: applicationDateStartString,
-        endValue: applicationDateEndString
-      }); -%>
-
-      <div class="columns">
-        <div class="column">
-          <div class="field">
-            <label class="label" for="filter--licenceTypeKey">Licence Type</label>
-            <div class="control has-icons-left">
-              <div class="select is-fullwidth">
-                <select id="filter--licenceTypeKey" name="licenceTypeKey">
-                  <option value="">(All)</option>
-                  <%
-                    const licenceTypes = configFns.getProperty("licenceTypes");
-                    for (let index = 0; index < licenceTypes.length; index += 1) {
-                      if (!licenceTypes[index].isActive) {
-                        continue;
+        <div class="columns">
+          <div class="column">
+            <div class="field">
+              <label class="label" for="filter--licenceTypeKey">Licence Type</label>
+              <div class="control has-icons-left">
+                <div class="select is-fullwidth">
+                  <select id="filter--licenceTypeKey" name="licenceTypeKey">
+                    <option value="">(All)</option>
+                    <%
+                      const licenceTypes = configFns.getProperty("licenceTypes");
+                      for (let index = 0; index < licenceTypes.length; index += 1) {
+                        if (!licenceTypes[index].isActive) {
+                          continue;
+                        }
+                    %>
+                      <option value="<%= licenceTypes[index].licenceTypeKey %>">
+                        <%= licenceTypes[index].licenceType %>
+                      </option>
+                    <%
                       }
-                  %>
-                    <option value="<%= licenceTypes[index].licenceTypeKey %>">
-                      <%= licenceTypes[index].licenceType %>
-                    </option>
-                  <%
-                    }
-                  %>
-                </select>
-              </div>
-              <div class="icon is-small is-left">
-                <i class="fas fa-filter" aria-hidden="true"></i>
+                    %>
+                  </select>
+                </div>
+                <div class="icon is-small is-left">
+                  <i class="fas fa-filter" aria-hidden="true"></i>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </form>
+      </form>
+    </div>
 
-    <div class="has-margin-top-20" id="container--licenceTypes"></div>
+    <div id="container--licenceTypes"></div>
 
   </div>
 </div>

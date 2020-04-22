@@ -23,8 +23,7 @@ import { Organization } from "../helpers/llmTypes";
 router.get("/", function(_req, res) {
 
   res.render("licence-search", {
-    headTitle: "Licences",
-    pageContainerIsFullWidth: true
+    headTitle: "Lottery Licences"
   });
 
 });
@@ -70,7 +69,6 @@ router.get("/licenceTypes", function(_req, res) {
 
   res.render("licence-licenceType", {
     headTitle: "Licence Type Summary",
-    pageContainerIsFullWidth: true,
     applicationYearMin: (licenceTableStats.applicationYearMin || new Date().getFullYear()),
     applicationDateStartString: applicationDateStartString,
     applicationDateEndString: applicationDateEndString
@@ -113,7 +111,6 @@ router.get("/activeSummary", function(_req, res) {
 
   res.render("licence-activeSummary", {
     headTitle: "Active Licence Summary",
-    pageContainerIsFullWidth: true,
     startYearMin: (licenceTableStats.startYearMin || new Date().getFullYear()),
     startDateStartString: startDateStartString,
     startDateEndString: startDateEndString

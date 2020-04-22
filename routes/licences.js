@@ -9,8 +9,7 @@ const configFns = require("../helpers/configFns");
 const licencesDB = require("../helpers/licencesDB");
 router.get("/", function (_req, res) {
     res.render("licence-search", {
-        headTitle: "Licences",
-        pageContainerIsFullWidth: true
+        headTitle: "Lottery Licences"
     });
 });
 router.post("/doSearch", function (req, res) {
@@ -31,7 +30,6 @@ router.get("/licenceTypes", function (_req, res) {
     const applicationDateEndString = dateTimeFns.dateToString(applicationDate);
     res.render("licence-licenceType", {
         headTitle: "Licence Type Summary",
-        pageContainerIsFullWidth: true,
         applicationYearMin: (licenceTableStats.applicationYearMin || new Date().getFullYear()),
         applicationDateStartString: applicationDateStartString,
         applicationDateEndString: applicationDateEndString
@@ -50,7 +48,6 @@ router.get("/activeSummary", function (_req, res) {
     const startDateEndString = dateTimeFns.dateToString(startDate);
     res.render("licence-activeSummary", {
         headTitle: "Active Licence Summary",
-        pageContainerIsFullWidth: true,
         startYearMin: (licenceTableStats.startYearMin || new Date().getFullYear()),
         startDateStartString: startDateStartString,
         startDateEndString: startDateEndString

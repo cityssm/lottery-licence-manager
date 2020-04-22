@@ -91,6 +91,7 @@ export declare type Record = {
     recordType: "location" | "organization" | "remark" | "bankRecord" | "licence" | "event";
     recordCreate_userName: string;
     recordCreate_timeMillis: number;
+    recordCreate_dateString: string;
     recordUpdate_userName: string;
     recordUpdate_timeMillis: number;
     recordUpdate_dateString: string;

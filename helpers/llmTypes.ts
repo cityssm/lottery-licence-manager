@@ -125,6 +125,7 @@ export type Record = {
 
   recordCreate_userName: string,
   recordCreate_timeMillis: number,
+  recordCreate_dateString: string,
 
   recordUpdate_userName: string,
   recordUpdate_timeMillis: number,
@@ -176,7 +177,7 @@ export interface Organization extends Record {
   organizationPostalCode: string,
 
   trustAccountNumber: string,
-  
+
   fiscalStartDate: number,
   fiscalStartDateString: string,
   fiscalEndDate: number,

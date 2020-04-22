@@ -7,6 +7,9 @@
       <ul>
         <li><a href="/dashboard">Home</a></li>
         <li><a href="/organizations">Organizations</a></li>
+        <% if (organization.recordDelete_timeMillis) { %>
+          <li><a href="/organizations/recovery">Organization Recovery</a></li>
+        <% } %>
         <li class="is-active"><a href="#" aria-current="page"><%= organization.organizationName %></a></li>
       </ul>
     </nav>

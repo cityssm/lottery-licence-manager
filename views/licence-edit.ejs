@@ -1,879 +1,883 @@
 <%- include('_header'); -%>
 
-<nav class="breadcrumb">
-  <ul>
-    <li><a href="/dashboard">Home</a></li>
-    <li><a href="/licences">Licences</a></li>
-    <% if (isCreate) { %>
-      <li class="is-active"><a href="#" aria-current="page">New Licence</a></li>
-    <% } else { %>
-      <li><a href="/licences/<%= licence.licenceID %>">Licence #<%= licence.licenceID %></a></li>
-      <li class="is-active"><a href="#" aria-current="page">Update</a></li>
-    <% } %>
-  </ul>
-</nav>
-
-<div class="level">
-  <div class="level-left">
-    <h1 class="title is-1">
-      <%= (isCreate ? "Create a New Licence" : "Update an Existing Licence") %>
-    </h1>
-  </div>
-  <div class="level-right has-text-right is-hidden-print">
-    <% if (licence.issueDate) { %>
-      <a class="button is-link" href="/licences/<%= licence.licenceID %>/print" download>
-        <span class="icon is-small">
-          <i class="fas fa-print" aria-hidden="true"></i>
-        </span>
-        <span>Print Licence</span>
-      </a>
-    <% } else if (!isCreate) { %>
-      <button class="button is-success" id="is-issue-licence-button">
-        <span class="icon is-small">
-          <i class="fas fa-stamp" aria-hidden="true"></i>
-        </span>
-        <span>Issue Licence</span>
-      </button>
-    <% } %>
-  </div>
-</div>
-
-<form id="form--licence" data-licence-is-issued="<%= (licence.issueDate ? "true" : "false") %>">
-
-  <div class="columns is-block-print">
-    <div class="column">
-
-      <div class="columns">
-        <div class="column">
-          <div class="field">
-            <label class="label" for="licence--licenceID">Licence ID</label>
-            <div class="control has-icons-left">
-              <input class="input is-readonly" id="licence--licenceID" name="licenceID" type="text" value="<%= licence.licenceID %>" placeholder="(New Licence Number)" readonly required />
-              <span class="icon is-left">
-                <i class="fas fa-key" aria-hidden="true"></i>
-              </span>
-            </div>
-          </div>
-        </div>
-        <%
-          let licenceNumberIsReadOnly = true;
-          if (isCreate && configFns.getProperty("licences.externalLicenceNumber.newCalculation") === "") {
-            licenceNumberIsReadOnly = false;
-          }
-        %>
-        <div class="column">
-          <label class="label" for="licence--externalLicenceNumber"><%= configFns.getProperty("licences.externalLicenceNumber.fieldLabel") %></label>
-          <div class="field has-addons">
-            <div class="control is-expanded">
-              <input class="input <%= (licenceNumberIsReadOnly ? " is-readonly" : "") %>" id="licence--externalLicenceNumber" name="externalLicenceNumber" type="text" value="<%= licence.externalLicenceNumber %>" maxlength="20" <%= (licenceNumberIsReadOnly ? " readonly" : "") %> />
-            </div>
-            <% if (licenceNumberIsReadOnly) { %>
-              <div class="control">
-                <button class="button" id="is-external-licence-number-unlock-button" data-tooltip="Unlock Field" type="button">
-                  <i class="fas fa-unlock" aria-hidden="true"></i>
-                  <span class="sr-only">Unlock Field</span>
-                </button>
-              </div>
-            <% } %>
-          </div>
-        </div>
-        <div class="column">
-          <div class="field">
-            <label class="label" for="licence--applicationDateString">Application Date</label>
-            <div class="control has-icons-left">
-              <input class="input" id="licence--applicationDateString" name="applicationDateString" type="date" value="<%= licence.applicationDateString %>" max="<%= dateTimeFns.dateToString(new Date()) %>" required />
-              <span class="icon is-left">
-                <i class="fas fa-calendar" aria-hidden="true"></i>
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="columns">
-        <div class="column is-full">
-          <input id="licence--organizationID" name="organizationID" type="hidden" value="<%= (organization ? organization.organizationID : "") %>" />
-          <label class="label" for="licence--organizationName">Organization</label>
-          <div class="field has-addons">
-            <div class="control has-icons-left is-expanded">
-              <input class="input is-readonly" id="licence--organizationName" type="text" value="<%= (organization ? organization.organizationName : "") %>" readonly required />
-              <span class="icon is-left">
-                <i class="fas fa-users" aria-hidden="true"></i>
-              </span>
-            </div>
-            <div class="control">
-              <button class="button" id="is-organization-lookup-button" data-tooltip="Lookup Organization" type="button">
-                <span class="icon"><i class="fas fa-search" aria-hidden="true"></i></span>
-                <span>Lookup</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="columns">
-        <div class="column is-one-third">
-          <div class="field">
-            <label class="label" for="licence--municipality">Municipality</label>
-            <div class="control has-icons-left">
-              <input class="input" id="licence--municipality" name="municipality" type="text" value="<%= licence.municipality %>" maxlength="100" />
-              <span class="icon is-left">
-                <i class="fas fa-city" aria-hidden="true"></i>
-              </span>
-            </div>
-          </div>
-        </div>
-        <div class="column is-two-thirds">
-          <input id="licence--locationID" name="locationID" type="hidden" value="<%= licence.locationID %>" />
-          <label class="label" for="licence--locationDisplayName">Location</label>
-          <div class="field has-addons">
-            <div class="control has-icons-left is-expanded">
-              <input class="input is-readonly" id="licence--locationDisplayName" type="text" value="<%= licence.locationDisplayName %>" maxlength="100" readonly required />
-              <span class="icon is-left">
-                <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
-              </span>
-            </div>
-            <div class="control">
-              <button class="button" id="is-location-lookup-button" data-tooltip="Lookup Location" type="button">
-                <span class="icon"><i class="fas fa-search" aria-hidden="true"></i></span>
-                <span>Lookup</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="columns">
-        <div class="column is-3">
-          <div class="field">
-            <label class="label" for="licence--startDateString">Start Date</label>
-            <div class="control has-icons-left">
-              <input class="input" id="licence--startDateString" name="startDateString" type="date" value="<%= licence.startDateString %>" min="<%= licence.applicationDateString %>" required />
-              <span class="icon is-left">
-                <i class="fas fa-play" aria-hidden="true"></i>
-              </span>
-            </div>
-          </div>
-        </div>
-        <div class="column is-3">
-          <div class="field">
-            <label class="label" for="licence--endDateString">End Date</label>
-            <div class="control has-icons-left">
-              <input class="input" id="licence--endDateString" name="endDateString" type="date" value="<%= licence.endDateString %>" min="<%= licence.startDateString %>" required />
-              <span class="icon is-left">
-                <i class="fas fa-stop" aria-hidden="true"></i>
-              </span>
-            </div>
-          </div>
-        </div>
-        <div class="column is-3">
-          <div class="field">
-            <label class="label" for="licence--startTimeString">Start Time</label>
-            <div class="control has-icons-left">
-              <input class="input" id="licence--startTimeString" name="startTimeString" type="time" value="<%= licence.startTimeString %>" step="300" required />
-              <span class="icon is-left">
-                <i class="fas fa-play" aria-hidden="true"></i>
-              </span>
-            </div>
-          </div>
-        </div>
-        <div class="column is-3">
-          <div class="field">
-            <label class="label" for="licence--endTimeString">End Time</label>
-            <div class="control has-icons-left">
-              <input class="input" id="licence--endTimeString" name="endTimeString" type="time" value="<%= licence.endTimeString %>" step="300" required />
-              <span class="icon is-left">
-                <i class="fas fa-stop" aria-hidden="true"></i>
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="columns">
-        <div class="column is-half">
-          <div class="field">
-            <label class="label" for="licence--licenceDetails">Licence Details</label>
-            <div class="control">
-              <textarea class="textarea" id="licence--licenceDetails" name="licenceDetails" rows="5"><%= licence.licenceDetails.trim() %></textarea>
-            </div>
-          </div>
-        </div>
-
-        <div class="column is-half">
-          <div class="field">
-            <label class="label" for="licence--termsConditions">Terms and Conditions</label>
-            <div class="control">
-              <textarea class="textarea" id="licence--termsConditions" name="termsConditions" rows="5"><%= licence.termsConditions.trim() %></textarea>
-            </div>
-          </div>
-          <div class="has-text-right is-hidden-print">
-            <button class="button is-small" id="is-termsConditions-lookup-button" type="button">
-              <span class="icon">
-                <i class="fas fa-search" aria-hidden="true"></i>
-              </span>
-              <span>Lookup Past Terms</span>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <%
-        const licenceType = (isCreate ? {} : configFns.getLicenceType(licence.licenceTypeKey));
-
-        let ticketTypesIsHidden = true;
-
-        if (!isCreate && ((licenceType && licenceType.ticketTypes && licenceType.ticketTypes.length) || licence.licenceTicketTypes.length > 0)) {
-          ticketTypesIsHidden = false;
-        }
-      %>
-
-      <div class="columns">
-        <div class="column is-half">
-          <div class="field">
-            <% if (isCreate) { %>
-              <label class="label" for="licence--licenceTypeKey">Licence Type</label>
-              <div class="control">
-                <div class="select is-fullwidth">
-                  <select <%= (isCreate ? "" : "class=\"is-readonly\"") %> id="licence--licenceTypeKey" name="licenceTypeKey" required <%= (isCreate ? "" : " readonly") %>>
-                    <option value="">(Select a Licence Type)</option>
-                    <%
-                      const licenceTypes = configFns.getProperty("licenceTypes");
-
-                      for (let licenceTypeIndex = 0; licenceTypeIndex < licenceTypes.length; licenceTypeIndex += 1) {
-                        const licenceTypeOption = licenceTypes[licenceTypeIndex];
-
-                        if (!licenceTypeOption.isActive) {
-                          continue;
-                        }
-                    %>
-                      <option value="<%= licenceTypeOption.licenceTypeKey %>" data-total-prize-value-max="<%= licenceTypeOption.totalPrizeValueMax %>" data-has-ticket-types="<%= (licenceTypeOption.ticketTypes && licenceTypeOption.ticketTypes.length > 0 ? "true": "false") %>">
-                        <%= licenceTypeOption.licenceType %>
-                      </option>
-                    <%
-                      }
-                    %>
-                  </select>
-                </div>
-              </div>
-            <% } else { %>
-              <input id="licence--licenceTypeKey" name="licenceTypeKey" type="hidden" value="<%= licence.licenceTypeKey %>" />
-              <label class="label" for="licence--licenceType">Licence Type</label>
-              <div class="control">
-                <input class="input is-readonly" id="licence--licenceType" value="<%= (licenceType ? licenceType.licenceType : licence.licenceTypeKey) %>" readonly />
-              </div>
-            <% } %>
-          </div>
-        </div>
-        <div class="column is-half">
-          <div class="field">
-            <label class="label" for="licence--totalPrizeValue">Total Prize Value</label>
-            <div class="control has-icons-left">
-              <input class="input <%= (ticketTypesIsHidden ? "" : " is-readonly") %>" id="licence--totalPrizeValue" name="totalPrizeValue" type="number" value="<%= licence.totalPrizeValue %>" min="0.00" max="<%= (licenceType ? licenceType.totalPrizeValueMax : "") %>" step="0.01" required <%= (ticketTypesIsHidden ? "" : " readonly ") %> onwheel="return false;" />
-              <span class="icon is-left">
-                <i class="fas fa-dollar-sign" aria-hidden="true"></i>
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-    <% if (!isCreate && licence.licenceAmendments.length > 0) { %>
-      <div class="column is-3 is-full-print">
-        <%- include('_licence-view_edit-amendments'); -%>
-      </div>
-    <% } %>
-  </div>
-
-  <%
-    if (isCreate || !ticketTypesIsHidden) {
-  %>
-
-  <div class="panel <%= (ticketTypesIsHidden ? " is-hidden" : "") %>" id="is-ticket-types-panel">
-    <div class="panel-heading">
-      <div class="level">
-        <div class="level-left">
-          <h2 class="has-text-weight-bold">Ticket Types</h2>
-        </div>
-        <div class="level-right is-hidden-print">
-          <div class="buttons justify-flex-end">
-            <button class="button is-small" id="is-add-ticket-type-button" type="button" aria-haspopup="true">
-              <span class="icon">
-                <i class="fas fa-plus" aria-hidden="true"></i>
-              </span>
-              <span>Add</span>
-            </button>
-            <a class="button is-small" data-tooltip="Export Ticket Types" href="/reports/ticketTypes-byLicence?licenceID=<%= licence.licenceID %>" download>
-              <i class="fas fa-file-download" aria-hidden="true"></i>
-              <span class="sr-only">Export Ticket Types</span>
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
-    <table class="table is-fullwidth">
-      <thead>
-        <tr>
-          <th>Type</th>
-          <th class="has-text-right">Units</th>
-          <th class="has-text-right">Value</th>
-          <th class="has-text-right">Prizes</th>
-          <th class="is-hidden-print">
-            <span class="sr-only">Amend Units</span>
-          </th>
-          <th class="has-text-right">Licence Fee</th>
-          <th>Distributor</th>
-          <th class="is-hidden-print">
-            <span class="sr-only">Distributor Options</span>
-          </th>
-          <th>Manufacturer</th>
-          <th class="is-hidden-print">
-            <span class="sr-only">Manufacturer Options</span>
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <%
-          for (let ticketTypeIndex = 0; ticketTypeIndex < licence.licenceTicketTypes.length; ticketTypeIndex += 1) {
-            const licenceTicketTypeObj = licence.licenceTicketTypes[ticketTypeIndex];
-            const ticketType = (licenceType && licenceType.ticketTypes ? licenceType.ticketTypes.find(ele => ele.ticketType === licenceTicketTypeObj.ticketType) : null);
-        %>
-            <tr data-ticket-type="<%= licenceTicketTypeObj.ticketType %>">
-              <td>
-                <input name="ticketType_ticketType" type="hidden" value="<%= licenceTicketTypeObj.ticketType %>" />
-                <span><%= licenceTicketTypeObj.ticketType %></span>
-              </td>
-              <td class="has-text-right">
-                <input name="ticketType_unitCount" type="hidden" value="<%= licenceTicketTypeObj.unitCount %>" />
-                <span><%= licenceTicketTypeObj.unitCount %></span>
-              </td>
-              <td class="has-text-right is-nowrap">
-                <%
-                  let ticketValue = (ticketType ? (ticketType.ticketPrice * ticketType.ticketCount) : 0);
-                  let totalValue = (ticketValue * licenceTicketTypeObj.unitCount).toFixed(2);
-                %>
-                <input class="is-total-value-per-deal" type="hidden" value="<%= totalValue %>" />
-                <span data-tooltip="$<%= ticketValue %> value per deal">$ <%= totalValue %></span>
-              </td>
-              <td class="has-text-right is-nowrap">
-                <%
-                  let prizesPerDeal = (ticketType ? ticketType.prizesPerDeal : 0);
-                  let totalPrizesPerDeal = (prizesPerDeal * licenceTicketTypeObj.unitCount).toFixed(2);
-                %>
-                <input class="is-total-prizes-per-deal" type="hidden" value="<%= totalPrizesPerDeal %>" />
-                <span data-tooltip="$<%= prizesPerDeal.toFixed(2) %> prizes per deal">$ <%= totalPrizesPerDeal %></span>
-              </td>
-              <td class="is-hidden-print">
-                <div class="field has-addons">
-                  <div class="control">
-                    <button class="button is-small is-amend-ticket-type-unit-count-button" data-tooltip="Amend Units" type="button">Amend</button>
-                  </div>
-                  <div class="control">
-                    <button class="button is-small is-danger is-delete-ticket-type-button" data-tooltip="Delete Ticket Type" type="button">
-                      <i class="fas fa-trash" aria-hidden="true"></i>
-                      <span class="sr-only">Delete</span>
-                    </button>
-                  </div>
-                </div>
-              </td>
-              <td class="has-text-right is-nowrap">
-                <input class="is-licence-fee" name="ticketType_licenceFee" type="hidden" value="<%= licenceTicketTypeObj.licenceFee.toFixed(2) %>" />
-                <span><%= "$ " + licenceTicketTypeObj.licenceFee.toFixed(2) %></span>
-              </td>
-              <td>
-                <input name="ticketType_distributorLocationID" type="hidden" value="<%= licenceTicketTypeObj.distributorLocationID %>" />
-                <span>
-                  <% if (licenceTicketTypeObj.distributorLocationID === null) { %>
-                    <span class="has-text-grey">(Not Set)</span>
-                  <% } else { %>
-                    <%= licenceTicketTypeObj.distributorLocationDisplayName %>
-                  <% } %>
-                </span>
-              </td>
-              <td class="has-text-right is-hidden-print">
-                <button class="button is-small is-amend-ticket-type-distributor-button" data-tooltip="Change Distributor" type="button">
-                  <i class="fas fa-pencil-alt" aria-hidden="true"></i>
-                  <span class="sr-only">Change Distributor</span>
-                </button>
-              </td>
-              <td>
-                <input name="ticketType_manufacturerLocationID" type="hidden" value="<%= licenceTicketTypeObj.manufacturerLocationID %>" />
-                <span>
-                  <% if (licenceTicketTypeObj.manufacturerLocationID === null) { %>
-                    <span class="has-text-grey">(Not Set)</span>
-                  <% } else { %>
-                    <%= licenceTicketTypeObj.manufacturerLocationDisplayName %>
-                  <% } %>
-                </span>
-              </td>
-              <td class="has-text-right is-hidden-print">
-                <button class="button is-small is-amend-ticket-type-manufacturer-button" data-tooltip="Change Manufacturer" type="button">
-                  <i class="fas fa-pencil-alt" aria-hidden="true"></i>
-                  <span class="sr-only">Change Manufacturer</span>
-                </button>
-              </td>
-            </tr>
+<div class="columns is-variable is-4-mobile is-4-tablet is-block-print" id="is-site-layout">
+  <%- include("_sideMenu-licences"); -%>
+  <div class="column is-block-print">
+    <nav class="breadcrumb">
+      <ul>
+        <li><a href="/dashboard">Home</a></li>
+        <li><a href="/licences">Lottery Licences</a></li>
+        <% if (isCreate) { %>
+          <li class="is-active"><a href="#" aria-current="page">New Licence</a></li>
+        <% } else { %>
+          <li><a href="/licences/<%= licence.licenceID %>">Licence #<%= licence.licenceID %></a></li>
+          <li class="is-active"><a href="#" aria-current="page">Update</a></li>
         <% } %>
-      </tbody>
-      <tfoot></tfoot>
-    </table>
-  </div>
+      </ul>
+    </nav>
 
-  <%
-    }
-  %>
+    <div class="level">
+      <div class="level-left">
+        <h1 class="title is-1">
+          <%= (isCreate ? "Create a New Lottery Licence" : "Update an Existing Lottery Licence") %>
+        </h1>
+      </div>
+      <div class="level-right has-text-right is-hidden-print">
+        <% if (licence.issueDate) { %>
+          <a class="button is-link" href="/licences/<%= licence.licenceID %>/print" download>
+            <span class="icon is-small">
+              <i class="fas fa-print" aria-hidden="true"></i>
+            </span>
+            <span>Print Licence</span>
+          </a>
+        <% } else if (!isCreate) { %>
+          <button class="button is-success" id="is-issue-licence-button">
+            <span class="icon is-small">
+              <i class="fas fa-stamp" aria-hidden="true"></i>
+            </span>
+            <span>Issue Licence</span>
+          </button>
+        <% } %>
+      </div>
+    </div>
 
-  <div class="columns">
-    <div class="column is-half">
+    <form id="form--licence" data-licence-is-issued="<%= (licence.issueDate ? "true" : "false") %>">
 
-      <div class="panel">
-        <div class="panel-heading">
-          <div class="level">
-            <div class="level-left">
-              <h2 class="has-text-weight-bold">Event Dates</h2>
-            </div>
-            <div class="level-right is-hidden-print">
-              <div>
-                <div class="dropdown is-hoverable">
-                  <div class="dropdown-trigger">
-                    <button class="button is-small" type="button" aria-haspopup="true">
-                      <span>Add</span>
-                      <span class="icon">
-                        <i class="fas fa-angle-down" aria-hidden="true"></i>
-                      </span>
-                    </button>
-                  </div>
-                  <div class="dropdown-menu has-text-weight-normal" role="menu">
-                    <div class="dropdown-content">
-                      <a class="dropdown-item is-add-event-button" data-source="licence--startDateString" href="#">
-                        <span class="icon"><i class="fas fa-fw fa-play" aria-hidden="true"></i></span>
-                        <span>Licence Start Date</span>
-                      </a>
-                      <a class="dropdown-item is-add-event-button" data-source="licence--endDateString" href="#">
-                        <span class="icon"><i class="fas fa-fw fa-stop" aria-hidden="true"></i></span>
-                        <span>Licence End Date</span>
-                      </a>
-                      <a class="dropdown-item is-add-event-button" href="#">
-                        <span class="icon"><i class="fas fa-fw fa-calendar-day" aria-hidden="true"></i></span>
-                        <span>New Event Date</span>
-                      </a>
-                    </div>
-                  </div>
-                </div>
-                <button class="button is-small" id="is-event-calculator-button" type="button">
-                  <span class="icon"><i class="fas fa-calculator" aria-hidden="true"></i></span>
-                  <span>Event Calculator</span>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div id="container--events">
-          <%
-            for (let eventIndex = 0; eventIndex < licence.events.length; eventIndex += 1) {
-              const eventObj = licence.events[eventIndex];
-          %>
-            <div class="panel-block is-block">
-              <div class="field has-addons">
-                <div class="control is-expanded has-icons-left">
-                  <input class="input is-small" type="date" value="<%= eventObj.eventDateString %>" min="<%= licence.startDateString %>" max="<%= licence.endDateString %>" required readonly />
+      <div class="columns is-block-print">
+        <div class="column">
+
+          <div class="columns">
+            <div class="column">
+              <div class="field">
+                <label class="label" for="licence--licenceID">Licence ID</label>
+                <div class="control has-icons-left">
+                  <input class="input is-readonly" id="licence--licenceID" name="licenceID" type="text" value="<%= licence.licenceID %>" placeholder="(New Licence Number)" readonly required />
                   <span class="icon is-left">
-                    <i class="fas fa-calendar" aria-hidden="true"></i>
+                    <i class="fas fa-key" aria-hidden="true"></i>
                   </span>
                 </div>
-                <div class="control">
-                  <a class="button is-small" href="/events/<%= licence.licenceID %>/<%= eventObj.eventDate %>">
-                    <i class="fas fa-eye" aria-hidden="true"></i>
-                    <span class="sr-only">View</span>
-                  </a>
+              </div>
+            </div>
+            <%
+              let licenceNumberIsReadOnly = true;
+              if (isCreate && configFns.getProperty("licences.externalLicenceNumber.newCalculation") === "") {
+                licenceNumberIsReadOnly = false;
+              }
+            %>
+            <div class="column">
+              <label class="label" for="licence--externalLicenceNumber"><%= configFns.getProperty("licences.externalLicenceNumber.fieldLabel") %></label>
+              <div class="field has-addons">
+                <div class="control is-expanded">
+                  <input class="input <%= (licenceNumberIsReadOnly ? " is-readonly" : "") %>" id="licence--externalLicenceNumber" name="externalLicenceNumber" type="text" value="<%= licence.externalLicenceNumber %>" maxlength="20" autocomplete="false" <%= (licenceNumberIsReadOnly ? " readonly" : "") %> />
                 </div>
-                <% if (user.userProperties.canUpdate) { %>
+                <% if (licenceNumberIsReadOnly) { %>
                   <div class="control">
-                    <a class="button is-small" href="/events/<%= licence.licenceID %>/<%= eventObj.eventDate %>/edit">
-                      <span class="icon"><i class="fas fa-pencil-alt" aria-hidden="true"></i></span>
-                      <span>Edit</span>
-                    </a>
+                    <button class="button" id="is-external-licence-number-unlock-button" data-tooltip="Unlock Field" type="button">
+                      <i class="fas fa-unlock" aria-hidden="true"></i>
+                      <span class="sr-only">Unlock Field</span>
+                    </button>
                   </div>
                 <% } %>
               </div>
             </div>
-          <%
-            }
-          %>
-        </div>
-        <div class="panel-block is-hidden-print">
-          <button class="button is-small is-fullwidth is-add-event-button" type="button">
-            <span class="icon"><i class="fas fa-plus" aria-hidden="true"></i></span>
-            <span>Add an Event Date</span>
-          </button>
-        </div>
-      </div>
-    </div>
-    <div class="column is-half">
-      <%
-        const licenceTypes = configFns.getProperty("licenceTypes");
-        for (let licenceTypeIndex = 0; licenceTypeIndex < licenceTypes.length; licenceTypeIndex += 1) {
-          const licenceTypeOption = licenceTypes[licenceTypeIndex];
-
-          if (!isCreate && licence.licenceTypeKey !== licenceTypeOption.licenceTypeKey) {
-            continue;
-          }
-      %>
-        <fieldset class="container-licenceTypeFields <%= (licence.licenceTypeKey === licenceTypeOption.licenceTypeKey ? "" : " is-hidden") %>" id="container-licenceTypeFields--<%= licenceTypeOption.licenceTypeKey %>" <%= (licence.licenceTypeKey === licenceTypeOption.licenceTypeKey ? "" : " disabled") %>>
-          <div class="panel">
-            <legend class="panel-heading">
-              <h2 class="has-text-weight-bold">Additional <%= licenceTypeOption.licenceType %> Fields</h2>
-            </legend>
-            <%
-              const licenceFields = licenceTypeOption.licenceFields || [];
-              let fieldKeys = "";
-
-              for (let fieldIndex = 0; fieldIndex < licenceFields.length; fieldIndex += 1) {
-                const licenceField = licenceFields[fieldIndex];
-
-                const inputName = licenceTypeOption.licenceTypeKey + "-" + licenceField.fieldKey;
-
-                let fieldValue = "";
-
-                if (!isCreate) {
-                  for (let savedFieldIndex = 0; savedFieldIndex < licence.licenceFields.length; savedFieldIndex += 1) {
-                    if (licence.licenceFields[savedFieldIndex].fieldKey === inputName) {
-                      licence.licenceFields[savedFieldIndex].isDisplayed = true;
-                      fieldValue = licence.licenceFields[savedFieldIndex].fieldValue;
-                      break;
-                    }
-                  }
-                }
-
-                if (!licenceField.isActive && fieldValue === "") {
-                  continue;
-                }
-
-                fieldKeys += "," + inputName;
-
-                const inputAttributes = licenceField.inputAttributes || {};
-
-                if (!inputAttributes.type) {
-                  inputAttributes.type = "text";
-                }
-
-                let inputAttributesString = "";
-
-                for (let attributeName in inputAttributes) {
-                  inputAttributesString += " " + attributeName + "=\"" + inputAttributes[attributeName] + "\"";
-                }
-            %>
-              <div class="panel-block is-block">
-                <div class="field">
-                  <label class="label" for="licence--<%= inputName %>"><%= licenceField.fieldLabel || licenceField.fieldKey %></label>
-                  <div class="control">
-                    <input class="input" id="licence--<%= inputName %>" name="<%= inputName %>" value="<%= fieldValue %>" <%- inputAttributesString %> />
-                  </div>
+            <div class="column">
+              <div class="field">
+                <label class="label" for="licence--applicationDateString">Application Date</label>
+                <div class="control has-icons-left">
+                  <input class="input" id="licence--applicationDateString" name="applicationDateString" type="date" value="<%= licence.applicationDateString %>" max="<%= dateTimeFns.dateToString(new Date()) %>" required />
+                  <span class="icon is-left">
+                    <i class="fas fa-calendar" aria-hidden="true"></i>
+                  </span>
                 </div>
               </div>
-            <%
-              }
+            </div>
+          </div>
+          <div class="columns">
+            <div class="column is-full">
+              <input id="licence--organizationID" name="organizationID" type="hidden" value="<%= (organization ? organization.organizationID : "") %>" />
+              <label class="label" for="licence--organizationName">Organization</label>
+              <div class="field has-addons">
+                <div class="control has-icons-left is-expanded">
+                  <input class="input is-readonly" id="licence--organizationName" type="text" value="<%= (organization ? organization.organizationName : "") %>" readonly required />
+                  <span class="icon is-left">
+                    <i class="fas fa-users" aria-hidden="true"></i>
+                  </span>
+                </div>
+                <div class="control">
+                  <button class="button" id="is-organization-lookup-button" data-tooltip="Lookup Organization" type="button">
+                    <span class="icon"><i class="fas fa-search" aria-hidden="true"></i></span>
+                    <span>Lookup</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="columns">
+            <div class="column is-one-third">
+              <div class="field">
+                <label class="label" for="licence--municipality">Municipality</label>
+                <div class="control has-icons-left">
+                  <input class="input" id="licence--municipality" name="municipality" type="text" value="<%= licence.municipality %>" maxlength="100" />
+                  <span class="icon is-left">
+                    <i class="fas fa-city" aria-hidden="true"></i>
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="column is-two-thirds">
+              <input id="licence--locationID" name="locationID" type="hidden" value="<%= licence.locationID %>" />
+              <label class="label" for="licence--locationDisplayName">Location</label>
+              <div class="field has-addons">
+                <div class="control has-icons-left is-expanded">
+                  <input class="input is-readonly" id="licence--locationDisplayName" type="text" value="<%= licence.locationDisplayName %>" maxlength="100" readonly required />
+                  <span class="icon is-left">
+                    <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
+                  </span>
+                </div>
+                <div class="control">
+                  <button class="button" id="is-location-lookup-button" data-tooltip="Lookup Location" type="button">
+                    <span class="icon"><i class="fas fa-search" aria-hidden="true"></i></span>
+                    <span>Lookup</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="columns">
+            <div class="column is-3">
+              <div class="field">
+                <label class="label" for="licence--startDateString">Start Date</label>
+                <div class="control has-icons-left">
+                  <input class="input" id="licence--startDateString" name="startDateString" type="date" value="<%= licence.startDateString %>" min="<%= licence.applicationDateString %>" required />
+                  <span class="icon is-left">
+                    <i class="fas fa-play" aria-hidden="true"></i>
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="column is-3">
+              <div class="field">
+                <label class="label" for="licence--endDateString">End Date</label>
+                <div class="control has-icons-left">
+                  <input class="input" id="licence--endDateString" name="endDateString" type="date" value="<%= licence.endDateString %>" min="<%= licence.startDateString %>" required />
+                  <span class="icon is-left">
+                    <i class="fas fa-stop" aria-hidden="true"></i>
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="column is-3">
+              <div class="field">
+                <label class="label" for="licence--startTimeString">Start Time</label>
+                <div class="control has-icons-left">
+                  <input class="input" id="licence--startTimeString" name="startTimeString" type="time" value="<%= licence.startTimeString %>" step="300" required />
+                  <span class="icon is-left">
+                    <i class="fas fa-play" aria-hidden="true"></i>
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="column is-3">
+              <div class="field">
+                <label class="label" for="licence--endTimeString">End Time</label>
+                <div class="control has-icons-left">
+                  <input class="input" id="licence--endTimeString" name="endTimeString" type="time" value="<%= licence.endTimeString %>" step="300" required />
+                  <span class="icon is-left">
+                    <i class="fas fa-stop" aria-hidden="true"></i>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="columns">
+            <div class="column is-half">
+              <div class="field">
+                <label class="label" for="licence--licenceDetails">Licence Details</label>
+                <div class="control">
+                  <textarea class="textarea" id="licence--licenceDetails" name="licenceDetails" rows="5"><%= licence.licenceDetails.trim() %></textarea>
+                </div>
+              </div>
+            </div>
 
-              if (!isCreate) {
-                for (let savedFieldIndex = 0; savedFieldIndex < licence.licenceFields.length; savedFieldIndex += 1) {
-                  const savedField = licence.licenceFields[savedFieldIndex];
-                  if (!savedField.isDisplayed) {
-                    fieldKeys += "," + savedField.fieldKey;
-            %>
-                  <div class="panel-block is-block">
-                    <div class="field">
-                      <label class="label" for="licence--<%= savedField.fieldKey %>-<%= licenceTypeOption.licenceTypeKey %>"><%= savedField.fieldKey %></label>
-                      <div class="control">
-                        <input class="input" id="licence--<%= savedField.fieldKey %>-<%= licenceTypeOption.licenceTypeKey %>" name="<%= savedField.fieldKey %>" type="text" value="<%= savedField.fieldValue %>" />
-                      </div>
+            <div class="column is-half">
+              <div class="field">
+                <label class="label" for="licence--termsConditions">Terms and Conditions</label>
+                <div class="control">
+                  <textarea class="textarea" id="licence--termsConditions" name="termsConditions" rows="5"><%= licence.termsConditions.trim() %></textarea>
+                </div>
+              </div>
+              <div class="has-text-right is-hidden-print">
+                <button class="button is-small" id="is-termsConditions-lookup-button" type="button">
+                  <span class="icon">
+                    <i class="fas fa-search" aria-hidden="true"></i>
+                  </span>
+                  <span>Lookup Past Terms</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <%
+            const licenceType = (isCreate ? {} : configFns.getLicenceType(licence.licenceTypeKey));
+
+            let ticketTypesIsHidden = true;
+
+            if (!isCreate && ((licenceType && licenceType.ticketTypes && licenceType.ticketTypes.length) || licence.licenceTicketTypes.length > 0)) {
+              ticketTypesIsHidden = false;
+            }
+          %>
+
+          <div class="columns">
+            <div class="column is-half">
+              <div class="field">
+                <% if (isCreate) { %>
+                  <label class="label" for="licence--licenceTypeKey">Licence Type</label>
+                  <div class="control">
+                    <div class="select is-fullwidth">
+                      <select <%= (isCreate ? "" : "class=\"is-readonly\"") %> id="licence--licenceTypeKey" name="licenceTypeKey" required <%= (isCreate ? "" : " readonly") %>>
+                        <option value="">(Select a Licence Type)</option>
+                        <%
+                          const licenceTypes = configFns.getProperty("licenceTypes");
+
+                          for (let licenceTypeIndex = 0; licenceTypeIndex < licenceTypes.length; licenceTypeIndex += 1) {
+                            const licenceTypeOption = licenceTypes[licenceTypeIndex];
+
+                            if (!licenceTypeOption.isActive) {
+                              continue;
+                            }
+                        %>
+                          <option value="<%= licenceTypeOption.licenceTypeKey %>" data-total-prize-value-max="<%= licenceTypeOption.totalPrizeValueMax %>" data-has-ticket-types="<%= (licenceTypeOption.ticketTypes && licenceTypeOption.ticketTypes.length > 0 ? "true": "false") %>">
+                            <%= licenceTypeOption.licenceType %>
+                          </option>
+                        <%
+                          }
+                        %>
+                      </select>
                     </div>
                   </div>
-            <%
-                  }
-                }
-              }
-            %>
-          </div>
-          <input name="fieldKeys" type="hidden" value="<%= fieldKeys %>" />
-        </fieldset>
-      <%
-        }
-      %>
-    </div>
-  </div>
-
-  <% if (isCreate) { %>
-    <div class="message is-info">
-      <div class="message-body">
-        Once created, an ID will be generated for the licence that can be associated with any necessary payments.
-      </div>
-    </div>
-  <% } %>
-
-  <%
-    if (!isCreate) {
-
-      const hasLicenceFeeDiscrepancy = (licence.licenceFee !== parseFloat(feeCalculation.fee));
-  %>
-  <div class="columns">
-    <div class="column is-one-quarter">
-      <div class="panel">
-        <div class="panel-heading">
-          <h2 class="has-text-weight-bold">Licence Fee</h2>
-        </div>
-        <div class="panel-block is-block">
-          <div class="field">
-            <label class="label" for="licence--licenceFee">Licence Fee</label>
-            <div class="control has-icons-left">
-              <input class="input has-text-right is-readonly <%= (hasLicenceFeeDiscrepancy ? " is-danger" : "")%>" id="licence--licenceFee" name="licenceFee" type="text" value="<%= licence.licenceFee.toFixed(2) %>" />
-              <span class="icon is-small is-left">
-                <i class="fas fa-dollar-sign" aria-hidden="true"></i>
-              </span>
-            </div>
-            <% if (hasLicenceFeeDiscrepancy) { %>
-              <p class="help is-danger">
-                The licence fee recorded on this licence record
-                does not match the current licence fee calculation.
-              </p>
-            <% } else { %>
-              <p class="help has-text-right"><%= feeCalculation.message %></p>
-            <% } %>
-          </div>
-        </div>
-        <% if (hasLicenceFeeDiscrepancy) { %>
-          <div class="panel-block is-block">
-            <div class="columns">
-              <div class="column">
-                <strong>Licence Fee Expected</strong>
-              </div>
-              <div class="column is-narrow">
-                <strong>$ <%= feeCalculation.fee %></strong>
+                <% } else { %>
+                  <input id="licence--licenceTypeKey" name="licenceTypeKey" type="hidden" value="<%= licence.licenceTypeKey %>" />
+                  <label class="label" for="licence--licenceType">Licence Type</label>
+                  <div class="control">
+                    <input class="input is-readonly" id="licence--licenceType" value="<%= (licenceType ? licenceType.licenceType : licence.licenceTypeKey) %>" readonly />
+                  </div>
+                <% } %>
               </div>
             </div>
-            <p class="has-text-right is-size-7"><%= feeCalculation.message %></p>
-            <button class="button is-small is-fullwidth has-margin-top-10 is-primary is-hidden-print" id="is-update-expected-licence-fee-button" data-licence-fee-expected="<%= feeCalculation.fee %>" type="button">
-              Update Licence Fee
-            </button>
+            <div class="column is-half">
+              <div class="field">
+                <label class="label" for="licence--totalPrizeValue">Total Prize Value</label>
+                <div class="control has-icons-left">
+                  <input class="input <%= (ticketTypesIsHidden ? "" : " is-readonly") %>" id="licence--totalPrizeValue" name="totalPrizeValue" type="number" value="<%= licence.totalPrizeValue %>" min="0.00" max="<%= (licenceType ? licenceType.totalPrizeValueMax : "") %>" step="0.01" required <%= (ticketTypesIsHidden ? "" : " readonly ") %> onwheel="return false;" />
+                  <span class="icon is-left">
+                    <i class="fas fa-dollar-sign" aria-hidden="true"></i>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <% if (!isCreate && licence.licenceAmendments.length > 0) { %>
+          <div class="column is-3 is-full-print">
+            <%- include('_licence-view_edit-amendments'); -%>
           </div>
         <% } %>
       </div>
-    </div>
-    <div class="column">
-      <div class="panel">
+
+      <%
+        if (isCreate || !ticketTypesIsHidden) {
+      %>
+
+      <div class="panel <%= (ticketTypesIsHidden ? " is-hidden" : "") %>" id="is-ticket-types-panel">
         <div class="panel-heading">
           <div class="level">
             <div class="level-left">
-              <h2 class="has-text-weight-bold">Transactions</h2>
+              <h2 class="has-text-weight-bold">Ticket Types</h2>
             </div>
-            <div class="level-right has-text-weight-normal has-text-right is-hidden-print">
-              <div class="buttons">
-                <button class="button is-small" id="is-add-transaction-button" type="button">
-                  <span class="icon is-small">
+            <div class="level-right is-hidden-print">
+              <div class="buttons justify-flex-end">
+                <button class="button is-small" id="is-add-ticket-type-button" type="button" aria-haspopup="true">
+                  <span class="icon">
                     <i class="fas fa-plus" aria-hidden="true"></i>
                   </span>
-                  <span>Add a Transaction</span>
+                  <span>Add</span>
                 </button>
-                <a class="button is-small" data-tooltip="Export Transactions" href="/reports/transactions-byLicence?licenceID=<%= licence.licenceID %>" download>
+                <a class="button is-small" data-tooltip="Export Ticket Types" href="/reports/ticketTypes-byLicence?licenceID=<%= licence.licenceID %>" download>
                   <i class="fas fa-file-download" aria-hidden="true"></i>
-                  <span class="sr-only">Export Transactions</span>
+                  <span class="sr-only">Export Ticket Types</span>
                 </a>
               </div>
             </div>
           </div>
         </div>
-        <div class="panel-block is-block is-hidden" id="is-disabled-transaction-message">
-          <div class="message is-warning">
-            <p class="message-body">
-              <strong>Changes have been made to the licence which may affect the licence fee.</strong><br />
-              Please save the licence changes to re-enable transaction changes.
-            </p>
-          </div>
-        </div>
-        <% if (licence.licenceTransactions.length === 0) { %>
-          <div class="panel-block is-block">
-            <div class="message is-warning">
-              <p class="message-body">
-                No transactions have been recorded for this licence.
-              </p>
-            </div>
-          </div>
-        <% } else { %>
-          <table class="table is-fullwidth">
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th><span class="sr-only">Transaction Type</span></th>
-                <th class="has-text-right">Amount</th>
-                <th><span class="sr-only">Options</span></th>
-                <th><%= configFns.getProperty("licences.externalReceiptNumber.fieldLabel") %></th>
-                <th>Note</th>
-              </tr>
-            </thead>
-            <tbody>
-              <%
-                let transactionTotal = 0;
-
-                for (let index = 0; index < licence.licenceTransactions.length; index += 1) {
-                  const transactionObj = licence.licenceTransactions[index];
-
-                  transactionTotal += transactionObj.transactionAmount;
-              %>
-              <tr>
-                <td><%= transactionObj.transactionDateString %></td>
-                <td class="has-text-right">
-                  <% if (transactionObj.transactionAmount < 0) { %>
-                    <span class="tag is-warning">Refund</span>
-                  <% } %>
-                </td>
-                <td class="has-text-right">
-                  $ <%= transactionObj.transactionAmount.toFixed(2) %>
-                </td>
-                <td>
-                  <% if (index === licence.licenceTransactions.length - 1) { %>
-                    <button class="button is-small is-danger" id="is-void-transaction-button" data-transaction-index="<%= transactionObj.transactionIndex %>" data-transaction-amount="<%= transactionObj.transactionAmount %>" data-tooltip="Void Transaction" type="button">
-                      <i class="fas fa-trash" aria-hidden="true"></i>
-                      <span class="sr-only">Void Transaction</span>
-                    </button>
-                  <% } %>
-                </td>
-                <td><%= transactionObj.externalReceiptNumber %></td>
-                <td class="has-newline-chars"><%= transactionObj.transactionNote %></td>
-              </tr>
-              <%
-                }
-              %>
-            </tbody>
-            <tfoot>
-              <tr>
-                <td></td>
-                <td></td>
-                <td class="has-text-right has-text-weight-bold">
-                  $ <span id="licence--transactionTotal"><%= transactionTotal.toFixed(2) %></span>
-                  <% if (licence.licenceFee.toFixed(2) !== transactionTotal.toFixed(2)) { %>
-                    <br />
-                    <span class="is-size-7 has-text-danger">
-                      $ <%= (licence.licenceFee - transactionTotal).toFixed(2) %> discrepancy
+        <table class="table is-fullwidth">
+          <thead>
+            <tr>
+              <th>Type</th>
+              <th class="has-text-right">Units</th>
+              <th class="has-text-right">Value</th>
+              <th class="has-text-right">Prizes</th>
+              <th class="is-hidden-print">
+                <span class="sr-only">Amend Units</span>
+              </th>
+              <th class="has-text-right">Licence Fee</th>
+              <th>Distributor</th>
+              <th class="is-hidden-print">
+                <span class="sr-only">Distributor Options</span>
+              </th>
+              <th>Manufacturer</th>
+              <th class="is-hidden-print">
+                <span class="sr-only">Manufacturer Options</span>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <%
+              for (let ticketTypeIndex = 0; ticketTypeIndex < licence.licenceTicketTypes.length; ticketTypeIndex += 1) {
+                const licenceTicketTypeObj = licence.licenceTicketTypes[ticketTypeIndex];
+                const ticketType = (licenceType && licenceType.ticketTypes ? licenceType.ticketTypes.find(ele => ele.ticketType === licenceTicketTypeObj.ticketType) : null);
+            %>
+                <tr data-ticket-type="<%= licenceTicketTypeObj.ticketType %>">
+                  <td>
+                    <input name="ticketType_ticketType" type="hidden" value="<%= licenceTicketTypeObj.ticketType %>" />
+                    <span><%= licenceTicketTypeObj.ticketType %></span>
+                  </td>
+                  <td class="has-text-right">
+                    <input name="ticketType_unitCount" type="hidden" value="<%= licenceTicketTypeObj.unitCount %>" />
+                    <span><%= licenceTicketTypeObj.unitCount %></span>
+                  </td>
+                  <td class="has-text-right is-nowrap">
+                    <%
+                      let ticketValue = (ticketType ? (ticketType.ticketPrice * ticketType.ticketCount) : 0);
+                      let totalValue = (ticketValue * licenceTicketTypeObj.unitCount).toFixed(2);
+                    %>
+                    <input class="is-total-value-per-deal" type="hidden" value="<%= totalValue %>" />
+                    <span data-tooltip="$<%= ticketValue %> value per deal">$ <%= totalValue %></span>
+                  </td>
+                  <td class="has-text-right is-nowrap">
+                    <%
+                      let prizesPerDeal = (ticketType ? ticketType.prizesPerDeal : 0);
+                      let totalPrizesPerDeal = (prizesPerDeal * licenceTicketTypeObj.unitCount).toFixed(2);
+                    %>
+                    <input class="is-total-prizes-per-deal" type="hidden" value="<%= totalPrizesPerDeal %>" />
+                    <span data-tooltip="$<%= prizesPerDeal.toFixed(2) %> prizes per deal">$ <%= totalPrizesPerDeal %></span>
+                  </td>
+                  <td class="is-hidden-print">
+                    <div class="field has-addons">
+                      <div class="control">
+                        <button class="button is-small is-amend-ticket-type-unit-count-button" data-tooltip="Amend Units" type="button">Amend</button>
+                      </div>
+                      <div class="control">
+                        <button class="button is-small is-danger is-delete-ticket-type-button" data-tooltip="Delete Ticket Type" type="button">
+                          <i class="fas fa-trash" aria-hidden="true"></i>
+                          <span class="sr-only">Delete</span>
+                        </button>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="has-text-right is-nowrap">
+                    <input class="is-licence-fee" name="ticketType_licenceFee" type="hidden" value="<%= licenceTicketTypeObj.licenceFee.toFixed(2) %>" />
+                    <span><%= "$ " + licenceTicketTypeObj.licenceFee.toFixed(2) %></span>
+                  </td>
+                  <td>
+                    <input name="ticketType_distributorLocationID" type="hidden" value="<%= licenceTicketTypeObj.distributorLocationID %>" />
+                    <span>
+                      <% if (licenceTicketTypeObj.distributorLocationID === null) { %>
+                        <span class="has-text-grey">(Not Set)</span>
+                      <% } else { %>
+                        <%= licenceTicketTypeObj.distributorLocationDisplayName %>
+                      <% } %>
                     </span>
-                  <% } %>
-                </td>
-                <td></td>
-                <td></td>
-                <td></td>
-              </tr>
-            </tfoot>
-          </table>
-        <% } %>
+                  </td>
+                  <td class="has-text-right is-hidden-print">
+                    <button class="button is-small is-amend-ticket-type-distributor-button" data-tooltip="Change Distributor" type="button">
+                      <i class="fas fa-pencil-alt" aria-hidden="true"></i>
+                      <span class="sr-only">Change Distributor</span>
+                    </button>
+                  </td>
+                  <td>
+                    <input name="ticketType_manufacturerLocationID" type="hidden" value="<%= licenceTicketTypeObj.manufacturerLocationID %>" />
+                    <span>
+                      <% if (licenceTicketTypeObj.manufacturerLocationID === null) { %>
+                        <span class="has-text-grey">(Not Set)</span>
+                      <% } else { %>
+                        <%= licenceTicketTypeObj.manufacturerLocationDisplayName %>
+                      <% } %>
+                    </span>
+                  </td>
+                  <td class="has-text-right is-hidden-print">
+                    <button class="button is-small is-amend-ticket-type-manufacturer-button" data-tooltip="Change Manufacturer" type="button">
+                      <i class="fas fa-pencil-alt" aria-hidden="true"></i>
+                      <span class="sr-only">Change Manufacturer</span>
+                    </button>
+                  </td>
+                </tr>
+            <% } %>
+          </tbody>
+          <tfoot></tfoot>
+        </table>
       </div>
-    </div>
-  </div>
-  <%
-    }
-  %>
 
-  <div class="is-fixed-bottom has-padding-10 has-background-grey-light is-hidden-print">
-    <div class="level">
-      <div class="level-left">
-        <div class="tags">
-          <% if (!isCreate && !licence.issueDate) { %>
-            <span class="tag is-medium is-warning is-light">Licence Not Issued</span>
-          <% } %>
-          <span id="container--form-message"></span>
-        </div>
-      </div>
-      <div class="level-right">
-        <div class="buttons justify-flex-end">
-          <% if (isCreate) { %>
-            <a class="button" href="/licences">
-              Cancel
-            </a>
-          <% } %>
-          <button class="button is-success" type="submit">
-            <span class="icon">
-              <i class="fas fa-save" aria-hidden="true"></i>
-            </span>
-            <span><%= (isCreate ? "Create New Licence and Continue" : "Update Licence") %></span>
-          </button>
-          <% if (!isCreate) { %>
-            <div class="dropdown is-hoverable is-right is-up">
-              <div class="dropdown-trigger">
-                <button class="button" type="button" aria-haspopup="true">
-                  <span>Options</span>
-                  <span class="icon">
-                    <i class="fas fa-angle-up" aria-hidden="true"></i>
-                  </span>
-                </button>
-              </div>
-              <div class="dropdown-menu" role="menu">
-                <div class="dropdown-content">
-                  <a class="dropdown-item" id="is-delete-licence-button" href="#">
-                    <span class="icon"><i class="fas fa-trash has-text-danger" aria-hidden="true"></i></span>
-                    <span>Delete Licence</span>
-                  </a>
-                  <% if (licence.issueDate) { %>
-                    <a class="dropdown-item" id="is-unissue-licence-button" href="#">
-                      <span class="icon"><i class="fas fa-ban has-text-danger" aria-hidden="true"></i></span>
-                      <span>Unissue Licence</span>
-                    </a>
-                  <% } %>
+      <%
+        }
+      %>
+
+      <div class="columns">
+        <div class="column is-half">
+
+          <div class="panel">
+            <div class="panel-heading">
+              <div class="level">
+                <div class="level-left">
+                  <h2 class="has-text-weight-bold">Event Dates</h2>
+                </div>
+                <div class="level-right is-hidden-print">
+                  <div>
+                    <div class="dropdown is-hoverable">
+                      <div class="dropdown-trigger">
+                        <button class="button is-small" type="button" aria-haspopup="true">
+                          <span>Add</span>
+                          <span class="icon">
+                            <i class="fas fa-angle-down" aria-hidden="true"></i>
+                          </span>
+                        </button>
+                      </div>
+                      <div class="dropdown-menu has-text-weight-normal" role="menu">
+                        <div class="dropdown-content">
+                          <a class="dropdown-item is-add-event-button" data-source="licence--startDateString" href="#">
+                            <span class="icon"><i class="fas fa-fw fa-play" aria-hidden="true"></i></span>
+                            <span>Licence Start Date</span>
+                          </a>
+                          <a class="dropdown-item is-add-event-button" data-source="licence--endDateString" href="#">
+                            <span class="icon"><i class="fas fa-fw fa-stop" aria-hidden="true"></i></span>
+                            <span>Licence End Date</span>
+                          </a>
+                          <a class="dropdown-item is-add-event-button" href="#">
+                            <span class="icon"><i class="fas fa-fw fa-calendar-day" aria-hidden="true"></i></span>
+                            <span>New Event Date</span>
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                    <button class="button is-small" id="is-event-calculator-button" type="button">
+                      <span class="icon"><i class="fas fa-calculator" aria-hidden="true"></i></span>
+                      <span>Event Calculator</span>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
-          <% } %>
+            <div id="container--events">
+              <%
+                for (let eventIndex = 0; eventIndex < licence.events.length; eventIndex += 1) {
+                  const eventObj = licence.events[eventIndex];
+              %>
+                <div class="panel-block is-block">
+                  <div class="field has-addons">
+                    <div class="control is-expanded has-icons-left">
+                      <input class="input is-small" type="date" value="<%= eventObj.eventDateString %>" min="<%= licence.startDateString %>" max="<%= licence.endDateString %>" required readonly />
+                      <span class="icon is-left">
+                        <i class="fas fa-calendar" aria-hidden="true"></i>
+                      </span>
+                    </div>
+                    <div class="control">
+                      <a class="button is-small" href="/events/<%= licence.licenceID %>/<%= eventObj.eventDate %>">
+                        <i class="fas fa-eye" aria-hidden="true"></i>
+                        <span class="sr-only">View</span>
+                      </a>
+                    </div>
+                    <% if (user.userProperties.canUpdate) { %>
+                      <div class="control">
+                        <a class="button is-small" href="/events/<%= licence.licenceID %>/<%= eventObj.eventDate %>/edit">
+                          <span class="icon"><i class="fas fa-pencil-alt" aria-hidden="true"></i></span>
+                          <span>Edit</span>
+                        </a>
+                      </div>
+                    <% } %>
+                  </div>
+                </div>
+              <%
+                }
+              %>
+            </div>
+            <div class="panel-block is-hidden-print">
+              <button class="button is-small is-fullwidth is-add-event-button" type="button">
+                <span class="icon"><i class="fas fa-plus" aria-hidden="true"></i></span>
+                <span>Add an Event Date</span>
+              </button>
+            </div>
+          </div>
         </div>
+        <div class="column is-half">
+          <%
+            const licenceTypes = configFns.getProperty("licenceTypes");
+            for (let licenceTypeIndex = 0; licenceTypeIndex < licenceTypes.length; licenceTypeIndex += 1) {
+              const licenceTypeOption = licenceTypes[licenceTypeIndex];
+
+              if (!isCreate && licence.licenceTypeKey !== licenceTypeOption.licenceTypeKey) {
+                continue;
+              }
+          %>
+            <fieldset class="container-licenceTypeFields <%= (licence.licenceTypeKey === licenceTypeOption.licenceTypeKey ? "" : " is-hidden") %>" id="container-licenceTypeFields--<%= licenceTypeOption.licenceTypeKey %>" <%= (licence.licenceTypeKey === licenceTypeOption.licenceTypeKey ? "" : " disabled") %>>
+              <div class="panel">
+                <legend class="panel-heading">
+                  <h2 class="has-text-weight-bold">Additional <%= licenceTypeOption.licenceType %> Fields</h2>
+                </legend>
+                <%
+                  const licenceFields = licenceTypeOption.licenceFields || [];
+                  let fieldKeys = "";
+
+                  for (let fieldIndex = 0; fieldIndex < licenceFields.length; fieldIndex += 1) {
+                    const licenceField = licenceFields[fieldIndex];
+
+                    const inputName = licenceTypeOption.licenceTypeKey + "-" + licenceField.fieldKey;
+
+                    let fieldValue = "";
+
+                    if (!isCreate) {
+                      for (let savedFieldIndex = 0; savedFieldIndex < licence.licenceFields.length; savedFieldIndex += 1) {
+                        if (licence.licenceFields[savedFieldIndex].fieldKey === inputName) {
+                          licence.licenceFields[savedFieldIndex].isDisplayed = true;
+                          fieldValue = licence.licenceFields[savedFieldIndex].fieldValue;
+                          break;
+                        }
+                      }
+                    }
+
+                    if (!licenceField.isActive && fieldValue === "") {
+                      continue;
+                    }
+
+                    fieldKeys += "," + inputName;
+
+                    const inputAttributes = licenceField.inputAttributes || {};
+
+                    if (!inputAttributes.type) {
+                      inputAttributes.type = "text";
+                    }
+
+                    let inputAttributesString = "";
+
+                    for (let attributeName in inputAttributes) {
+                      inputAttributesString += " " + attributeName + "=\"" + inputAttributes[attributeName] + "\"";
+                    }
+                %>
+                  <div class="panel-block is-block">
+                    <div class="field">
+                      <label class="label" for="licence--<%= inputName %>"><%= licenceField.fieldLabel || licenceField.fieldKey %></label>
+                      <div class="control">
+                        <input class="input" id="licence--<%= inputName %>" name="<%= inputName %>" value="<%= fieldValue %>" <%- inputAttributesString %> />
+                      </div>
+                    </div>
+                  </div>
+                <%
+                  }
+
+                  if (!isCreate) {
+                    for (let savedFieldIndex = 0; savedFieldIndex < licence.licenceFields.length; savedFieldIndex += 1) {
+                      const savedField = licence.licenceFields[savedFieldIndex];
+                      if (!savedField.isDisplayed) {
+                        fieldKeys += "," + savedField.fieldKey;
+                %>
+                      <div class="panel-block is-block">
+                        <div class="field">
+                          <label class="label" for="licence--<%= savedField.fieldKey %>-<%= licenceTypeOption.licenceTypeKey %>"><%= savedField.fieldKey %></label>
+                          <div class="control">
+                            <input class="input" id="licence--<%= savedField.fieldKey %>-<%= licenceTypeOption.licenceTypeKey %>" name="<%= savedField.fieldKey %>" type="text" value="<%= savedField.fieldValue %>" />
+                          </div>
+                        </div>
+                      </div>
+                <%
+                      }
+                    }
+                  }
+                %>
+              </div>
+              <input name="fieldKeys" type="hidden" value="<%= fieldKeys %>" />
+            </fieldset>
+          <%
+            }
+          %>
+        </div>
+      </div>
+
+      <% if (isCreate) { %>
+        <div class="message is-info">
+          <div class="message-body">
+            Once created, an ID will be generated for the licence that can be associated with any necessary payments.
+          </div>
+        </div>
+      <% } %>
+
+      <%
+        if (!isCreate) {
+
+          const hasLicenceFeeDiscrepancy = (licence.licenceFee !== parseFloat(feeCalculation.fee));
+      %>
+      <div class="columns">
+        <div class="column is-one-quarter">
+          <div class="panel">
+            <div class="panel-heading">
+              <h2 class="has-text-weight-bold">Licence Fee</h2>
+            </div>
+            <div class="panel-block is-block">
+              <div class="field">
+                <label class="label" for="licence--licenceFee">Licence Fee</label>
+                <div class="control has-icons-left">
+                  <input class="input has-text-right is-readonly <%= (hasLicenceFeeDiscrepancy ? " is-danger" : "")%>" id="licence--licenceFee" name="licenceFee" type="text" value="<%= licence.licenceFee.toFixed(2) %>" />
+                  <span class="icon is-small is-left">
+                    <i class="fas fa-dollar-sign" aria-hidden="true"></i>
+                  </span>
+                </div>
+                <% if (hasLicenceFeeDiscrepancy) { %>
+                  <p class="help is-danger">
+                    The licence fee recorded on this licence record
+                    does not match the current licence fee calculation.
+                  </p>
+                <% } else { %>
+                  <p class="help has-text-right"><%= feeCalculation.message %></p>
+                <% } %>
+              </div>
+            </div>
+            <% if (hasLicenceFeeDiscrepancy) { %>
+              <div class="panel-block is-block">
+                <div class="columns">
+                  <div class="column">
+                    <strong>Licence Fee Expected</strong>
+                  </div>
+                  <div class="column is-narrow">
+                    <strong>$ <%= feeCalculation.fee %></strong>
+                  </div>
+                </div>
+                <p class="has-text-right is-size-7"><%= feeCalculation.message %></p>
+                <button class="button is-small is-fullwidth has-margin-top-10 is-primary is-hidden-print" id="is-update-expected-licence-fee-button" data-licence-fee-expected="<%= feeCalculation.fee %>" type="button">
+                  Update Licence Fee
+                </button>
+              </div>
+            <% } %>
+          </div>
+        </div>
+        <div class="column">
+          <div class="panel">
+            <div class="panel-heading">
+              <div class="level">
+                <div class="level-left">
+                  <h2 class="has-text-weight-bold">Transactions</h2>
+                </div>
+                <div class="level-right has-text-weight-normal has-text-right is-hidden-print">
+                  <div class="buttons">
+                    <button class="button is-small" id="is-add-transaction-button" type="button">
+                      <span class="icon is-small">
+                        <i class="fas fa-plus" aria-hidden="true"></i>
+                      </span>
+                      <span>Add a Transaction</span>
+                    </button>
+                    <a class="button is-small" data-tooltip="Export Transactions" href="/reports/transactions-byLicence?licenceID=<%= licence.licenceID %>" download>
+                      <i class="fas fa-file-download" aria-hidden="true"></i>
+                      <span class="sr-only">Export Transactions</span>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="panel-block is-block is-hidden" id="is-disabled-transaction-message">
+              <div class="message is-warning">
+                <p class="message-body">
+                  <strong>Changes have been made to the licence which may affect the licence fee.</strong><br />
+                  Please save the licence changes to re-enable transaction changes.
+                </p>
+              </div>
+            </div>
+            <% if (licence.licenceTransactions.length === 0) { %>
+              <div class="panel-block is-block">
+                <div class="message is-warning">
+                  <p class="message-body">
+                    No transactions have been recorded for this licence.
+                  </p>
+                </div>
+              </div>
+            <% } else { %>
+              <table class="table is-fullwidth">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th><span class="sr-only">Transaction Type</span></th>
+                    <th class="has-text-right">Amount</th>
+                    <th><span class="sr-only">Options</span></th>
+                    <th><%= configFns.getProperty("licences.externalReceiptNumber.fieldLabel") %></th>
+                    <th>Note</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <%
+                    let transactionTotal = 0;
+
+                    for (let index = 0; index < licence.licenceTransactions.length; index += 1) {
+                      const transactionObj = licence.licenceTransactions[index];
+
+                      transactionTotal += transactionObj.transactionAmount;
+                  %>
+                  <tr>
+                    <td><%= transactionObj.transactionDateString %></td>
+                    <td class="has-text-right">
+                      <% if (transactionObj.transactionAmount < 0) { %>
+                        <span class="tag is-warning">Refund</span>
+                      <% } %>
+                    </td>
+                    <td class="has-text-right">
+                      $ <%= transactionObj.transactionAmount.toFixed(2) %>
+                    </td>
+                    <td>
+                      <% if (index === licence.licenceTransactions.length - 1) { %>
+                        <button class="button is-small is-danger" id="is-void-transaction-button" data-transaction-index="<%= transactionObj.transactionIndex %>" data-transaction-amount="<%= transactionObj.transactionAmount %>" data-tooltip="Void Transaction" type="button">
+                          <i class="fas fa-trash" aria-hidden="true"></i>
+                          <span class="sr-only">Void Transaction</span>
+                        </button>
+                      <% } %>
+                    </td>
+                    <td><%= transactionObj.externalReceiptNumber %></td>
+                    <td class="has-newline-chars"><%= transactionObj.transactionNote %></td>
+                  </tr>
+                  <%
+                    }
+                  %>
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <td></td>
+                    <td></td>
+                    <td class="has-text-right has-text-weight-bold">
+                      $ <span id="licence--transactionTotal"><%= transactionTotal.toFixed(2) %></span>
+                      <% if (licence.licenceFee.toFixed(2) !== transactionTotal.toFixed(2)) { %>
+                        <br />
+                        <span class="is-size-7 has-text-danger">
+                          $ <%= (licence.licenceFee - transactionTotal).toFixed(2) %> discrepancy
+                        </span>
+                      <% } %>
+                    </td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                </tfoot>
+              </table>
+            <% } %>
+          </div>
+        </div>
+      </div>
+      <%
+        }
+      %>
+
+      <div class="is-fixed-bottom has-padding-10 has-background-grey-light is-hidden-print">
+        <div class="level">
+          <div class="level-left">
+            <div class="tags">
+              <% if (!isCreate && !licence.issueDate) { %>
+                <span class="tag is-medium is-warning is-light">Licence Not Issued</span>
+              <% } %>
+              <span id="container--form-message"></span>
+            </div>
+          </div>
+          <div class="level-right">
+            <div class="buttons justify-flex-end">
+              <% if (isCreate) { %>
+                <a class="button" href="/licences">
+                  Cancel
+                </a>
+              <% } %>
+              <button class="button is-success" type="submit">
+                <span class="icon">
+                  <i class="fas fa-save" aria-hidden="true"></i>
+                </span>
+                <span><%= (isCreate ? "Create New Licence and Continue" : "Update Licence") %></span>
+              </button>
+              <% if (!isCreate) { %>
+                <div class="dropdown is-hoverable is-right is-up">
+                  <div class="dropdown-trigger">
+                    <button class="button" type="button" aria-haspopup="true">
+                      <span>Options</span>
+                      <span class="icon">
+                        <i class="fas fa-angle-up" aria-hidden="true"></i>
+                      </span>
+                    </button>
+                  </div>
+                  <div class="dropdown-menu" role="menu">
+                    <div class="dropdown-content">
+                      <a class="dropdown-item" id="is-delete-licence-button" href="#">
+                        <span class="icon"><i class="fas fa-trash has-text-danger" aria-hidden="true"></i></span>
+                        <span>Delete Licence</span>
+                      </a>
+                      <% if (licence.issueDate) { %>
+                        <a class="dropdown-item" id="is-unissue-licence-button" href="#">
+                          <span class="icon"><i class="fas fa-ban has-text-danger" aria-hidden="true"></i></span>
+                          <span>Unissue Licence</span>
+                        </a>
+                      <% } %>
+                    </div>
+                  </div>
+                </div>
+              <% } %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+
+
+    <div class="modal" id="is-termsConditions-lookup-modal">
+      <div class="modal-background"></div>
+      <div class="modal-card">
+        <header class="modal-card-head">
+          <h3 class="modal-card-title">Select Previously Used Terms and Conditions</h3>
+          <button class="delete is-close-modal-button" aria-label="close" type="button"></button>
+        </header>
+        <section class="modal-card-body">
+          <div id="container--termsConditionsPrevious"></div>
+        </section>
+        <footer class="modal-card-foot justify-right">
+          <button class="button is-close-modal-button" type="button">Cancel</button>
+        </footer>
+      </div>
+    </div>
+
+
+    <div class="modal" id="is-event-calculator-modal">
+      <div class="modal-background"></div>
+      <div class="modal-card">
+        <header class="modal-card-head">
+          <h3 class="modal-card-title">Calculate Events</h3>
+          <button class="delete is-close-modal-button" aria-label="close" type="button"></button>
+        </header>
+        <section class="modal-card-body">
+          <div class="columns">
+            <div class="column">
+              <div class="field">
+                <label class="label" for="eventCalc--eventCount">Number of Events</label>
+                <div class="control">
+                  <input class="input has-text-right" id="eventCalc--eventCount" type="number" min="1" max="366" step="1" value="1" />
+                </div>
+              </div>
+            </div>
+            <div class="column">
+              <div class="field">
+                <label class="label" for="eventCalc--dayInterval">Interval</label>
+                <div class="control">
+                  <input class="input has-text-right" id="eventCalc--dayInterval" type="number" min="1" max="90" step="1" value="7" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <footer class="modal-card-foot justify-right">
+          <button class="button is-close-modal-button" type="button">Cancel</button>
+          <button class="button is-success is-calculate-events-button" type="button">Calculate and Add</button>
+        </footer>
       </div>
     </div>
   </div>
-</form>
-
-
-<div class="modal" id="is-termsConditions-lookup-modal">
-  <div class="modal-background"></div>
-  <div class="modal-card">
-    <header class="modal-card-head">
-      <h3 class="modal-card-title">Select Previously Used Terms and Conditions</h3>
-      <button class="delete is-close-modal-button" aria-label="close" type="button"></button>
-    </header>
-    <section class="modal-card-body">
-      <div id="container--termsConditionsPrevious"></div>
-    </section>
-    <footer class="modal-card-foot justify-right">
-      <button class="button is-close-modal-button" type="button">Cancel</button>
-    </footer>
-  </div>
 </div>
-
-
-<div class="modal" id="is-event-calculator-modal">
-  <div class="modal-background"></div>
-  <div class="modal-card">
-    <header class="modal-card-head">
-      <h3 class="modal-card-title">Calculate Events</h3>
-      <button class="delete is-close-modal-button" aria-label="close" type="button"></button>
-    </header>
-    <section class="modal-card-body">
-      <div class="columns">
-        <div class="column">
-          <div class="field">
-            <label class="label" for="eventCalc--eventCount">Number of Events</label>
-            <div class="control">
-              <input class="input has-text-right" id="eventCalc--eventCount" type="number" min="1" max="366" step="1" value="1" />
-            </div>
-          </div>
-        </div>
-        <div class="column">
-          <div class="field">
-            <label class="label" for="eventCalc--dayInterval">Interval</label>
-            <div class="control">
-              <input class="input has-text-right" id="eventCalc--dayInterval" type="number" min="1" max="90" step="1" value="7" />
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-    <footer class="modal-card-foot justify-right">
-      <button class="button is-close-modal-button" type="button">Cancel</button>
-      <button class="button is-success is-calculate-events-button" type="button">Calculate and Add</button>
-    </footer>
-  </div>
-</div>
-
 
 <%- include('_footerA'); -%>
 

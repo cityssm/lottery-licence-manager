@@ -6,7 +6,7 @@
     <nav class="breadcrumb">
       <ul>
         <li><a href="/dashboard">Home</a></li>
-        <li><a href="/licences">Licences</a></li>
+        <li><a href="/licences">Lottery Licences</a></li>
         <li class="is-active"><a href="#" aria-current="page">Active Licence Summary</a></li>
       </ul>
     </nav>
@@ -15,20 +15,21 @@
       Active Licence Summary
     </h1>
 
+    <div class="box">
+      <form class="is-block-print" id="form--activeSummary">
 
-    <form class="is-block-print" id="form--activeSummary">
+        <%- include('_dateRangeSelector', {
+          fieldKey: "startEndDate",
+          fieldName: "Active Date",
+          yearMin: startYearMin,
+          startValue: startDateStartString,
+          endValue: startDateEndString
+        }); -%>
 
-      <%- include('_dateRangeSelector', {
-        fieldKey: "startEndDate",
-        fieldName: "Active Date",
-        yearMin: startYearMin,
-        startValue: startDateStartString,
-        endValue: startDateEndString
-      }); -%>
+      </form>
+    </div>
 
-    </form>
-
-    <div class="has-margin-top-20" id="container--activeSummary"></div>
+    <div id="container--activeSummary"></div>
 
   </div>
 </div>
