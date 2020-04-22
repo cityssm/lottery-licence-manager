@@ -17,6 +17,7 @@ const configFallbackValues = {
     "session.cookieName": "lottery-licence-manager-user-sid",
     "session.secret": "cityssm/lottery-licence-manager",
     "session.maxAgeMillis": 60 * 60 * 1000,
+    "session.doKeepAlive": false,
     "admin.defaultPassword": "",
     "user.createUpdateWindowMillis": 60 * 60 * 1000,
     "user.defaultProperties": {
@@ -71,6 +72,9 @@ function getProperty(propertyName) {
     return currentObj;
 }
 exports.getProperty = getProperty;
+exports.keepAliveMillis = getProperty("session.doKeepAlive") ?
+    Math.max(getProperty("session.maxAgeMillis") / 2, getProperty("session.maxAgeMillis") - (10 * 60 * 1000)) :
+    0;
 const licenceTypeCache = {};
 let licenceTypeKeyNameObject = {};
 function getLicenceType(licenceTypeKey) {

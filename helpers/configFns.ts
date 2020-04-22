@@ -37,6 +37,7 @@ const configFallbackValues = {
   "session.cookieName": "lottery-licence-manager-user-sid",
   "session.secret": "cityssm/lottery-licence-manager",
   "session.maxAgeMillis": 60 * 60 * 1000,
+  "session.doKeepAlive": false,
 
   "admin.defaultPassword": "",
 
@@ -115,6 +116,14 @@ export function getProperty(propertyName: string): any {
   return currentObj;
 
 }
+
+export const keepAliveMillis =
+  getProperty("session.doKeepAlive") ?
+    Math.max(
+      getProperty("session.maxAgeMillis") / 2,
+      getProperty("session.maxAgeMillis") - (10 * 60 * 1000)
+    ) :
+    0;
 
 
 /*

@@ -18,6 +18,11 @@ config.application = {
 };
 
 
+config.session = {
+  doKeepAlive: true
+};
+
+
 /*
  * DEFAULT VALUES
  */

@@ -5,6 +5,9 @@ const config = require("./config-ontario");
 config.application = {
     applicationName: "SSM Lottery Licence Manager"
 };
+config.session = {
+    doKeepAlive: true
+};
 config.defaults.city = "Sault Ste. Marie";
 config.licences.externalLicenceNumber = {
     fieldLabel: "Municipal Licence Number",
