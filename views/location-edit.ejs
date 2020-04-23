@@ -1,148 +1,157 @@
 <%- include('_header'); -%>
 
-<nav class="breadcrumb">
-  <ul>
-    <li><a href="/dashboard">Home</a></li>
-    <li><a href="/locations">Locations</a></li>
-    <li><a href="/locations/<%= location.locationID %>"><%= headTitle %></a></li>
-    <li class="is-active"><a href="#" aria-current="page">Update</a></li>
-  </ul>
-</nav>
+<div class="columns is-variable is-4-mobile is-4-tablet is-block-print" id="is-site-layout">
+  <%- include("_sideMenu-locations"); -%>
+  <div class="column">
+    <nav class="breadcrumb">
+      <ul>
+        <li><a href="/dashboard">Home</a></li>
+        <li><a href="/locations">Locations</a></li>
+        <% if (isCreate) { %>
+          <li class="is-active"><a href="#" aria-current="page">New Location</a></li>
+        <% } else { %>
+          <li><a href="/locations/<%= location.locationID %>"><%= headTitle %></a></li>
+          <li class="is-active"><a href="#" aria-current="page">Update</a></li>
+        <% } %>
+      </ul>
+    </nav>
 
-<h1 class="title is-1">
-  <%= (isCreate ? "Create a New Location" : "Update a Location") %>
-</h1>
+    <h1 class="title is-1">
+      <%= (isCreate ? "Create a New Location" : "Update a Location") %>
+    </h1>
 
-<form class="has-margin-bottom-20" id="form--location">
-  <input id="location--locationID" name="locationID" type="hidden" value="<%= location.locationID %>" />
+    <form class="has-margin-bottom-20" id="form--location">
+      <input id="location--locationID" name="locationID" type="hidden" value="<%= location.locationID %>" />
 
-  <div class="columns">
-    <div class="column is-8">
-      <div class="field">
-        <label class="label" for="location--locationName">Location Name</label>
-        <div class="control">
-          <input class="input" id="location--locationName" name="locationName" type="text" value="<%= location.locationName %>" maxlength="100" autocomplete="off" />
-        </div>
-        <p class="help">If the location does not have a common name, leave it blank.
-      </div>
-      <div class="field">
-        <label class="label" for="location--locationAddress1">Address</label>
-        <div class="control">
-          <input class="input" id="location--locationAddress1" name="locationAddress1" type="text" value="<%= location.locationAddress1 %>" maxlength="50" placeholder="Line 1" autocomplete="off" required />
-        </div>
-      </div>
-      <div class="field">
-        <div class="control">
-          <input class="input" id="location--locationAddress2" name="locationAddress2" type="text" value="<%= location.locationAddress2 %>" maxlength="50" placeholder="Line 2" autocomplete="off" aria-label="Address Line 2" />
-        </div>
-      </div>
       <div class="columns">
         <div class="column is-8">
           <div class="field">
-            <label class="label" for="location--locationCity">City</label>
+            <label class="label" for="location--locationName">Location Name</label>
             <div class="control">
-              <input class="input" id="location--locationCity" name="locationCity" type="text" value="<%= location.locationCity %>" maxlength="20" required />
+              <input class="input" id="location--locationName" name="locationName" type="text" value="<%= location.locationName %>" maxlength="100" autocomplete="off" />
+            </div>
+            <p class="help">If the location does not have a common name, leave it blank.</p>
+          </div>
+          <div class="field">
+            <label class="label" for="location--locationAddress1">Address</label>
+            <div class="control">
+              <input class="input" id="location--locationAddress1" name="locationAddress1" type="text" value="<%= location.locationAddress1 %>" maxlength="50" placeholder="Line 1" autocomplete="off" required />
+            </div>
+          </div>
+          <div class="field">
+            <div class="control">
+              <input class="input" id="location--locationAddress2" name="locationAddress2" type="text" value="<%= location.locationAddress2 %>" maxlength="50" placeholder="Line 2" autocomplete="off" aria-label="Address Line 2" />
+            </div>
+          </div>
+          <div class="columns">
+            <div class="column is-8">
+              <div class="field">
+                <label class="label" for="location--locationCity">City</label>
+                <div class="control">
+                  <input class="input" id="location--locationCity" name="locationCity" type="text" value="<%= location.locationCity %>" maxlength="20" required />
+                </div>
+              </div>
+            </div>
+            <div class="column">
+              <div class="field">
+                <label class="label" for="location--locationProvince">Province</label>
+                <div class="control">
+                  <input class="input" id="location--locationProvince" name="locationProvince" type="text" value="<%= location.locationProvince %>" maxlength="2" required />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="field">
+            <label class="label" for="location--locationPostalCode">Postal Code</label>
+            <div class="control">
+              <input class="input" id="location--locationPostalCode" name="locationPostalCode" type="text" value="<%= location.locationPostalCode %>" minlength="5" maxlength="7" autocomplete="off" required />
             </div>
           </div>
         </div>
         <div class="column">
-          <div class="field">
-            <label class="label" for="location--locationProvince">Province</label>
-            <div class="control">
-              <input class="input" id="location--locationProvince" name="locationProvince" type="text" value="<%= location.locationProvince %>" maxlength="2" required />
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="field">
-        <label class="label" for="location--locationPostalCode">Postal Code</label>
-        <div class="control">
-          <input class="input" id="location--locationPostalCode" name="locationPostalCode" type="text" value="<%= location.locationPostalCode %>" minlength="5" maxlength="7" autocomplete="off" required />
-        </div>
-      </div>
-    </div>
-    <div class="column">
-      <fieldset>
-        <legend class="is-size-5 has-margin-bottom-10">Location Attributes</legend>
-        <div class="field">
-          <div class="control">
-            <div class="b-checkbox is-primary">
-              <input id="location--locationIsDistributor" name="locationIsDistributor" type="checkbox" <%= (location.locationIsDistributor ? " checked" : "") %> />
-              <label for="location--locationIsDistributor">
-                Location is a Ticket Distributor
-              </label>
-            </div>
-          </div>
-        </div>
-        <div class="field">
-          <div class="control">
-            <div class="b-checkbox is-primary">
-              <input id="location--locationIsManufacturer" name="locationIsManufacturer" type="checkbox" <%= (location.locationIsManufacturer ? " checked" : "") %> />
-              <label for="location--locationIsManufacturer">
-                Location is a Ticket Manufacturer
-              </label>
-            </div>
-          </div>
-        </div>
-      </fieldset>
-    </div>
-  </div>
-
-  <div class="fixed-container is-fixed-bottom has-padding-10 has-background-grey-light is-hidden-print">
-    <div class="level">
-      <div class="level-left" id="container--form-message"></div>
-      <div class="level-right">
-        <div class="buttons">
-          <% if (isCreate) { %>
-            <a class="button" href="/locations">
-              Cancel
-            </a>
-          <% } %>
-
-          <button class="button is-success" type="submit">
-            <span class="icon">
-              <i class="fas fa-save" aria-hidden="true"></i>
-            </span>
-            <span>
-              <%= (isCreate ? "Create New Location and Continue" : "Update Location") %>
-            </span>
-          </button>
-
-          <% if (!isCreate) { %>
-            <div class="dropdown is-hoverable is-right is-up">
-              <div class="dropdown-trigger">
-                <button class="button" type="button" aria-haspopup="true">
-                  <span>Options</span>
-                  <span class="icon">
-                    <i class="fas fa-angle-up" aria-hidden="true"></i>
-                  </span>
-                </button>
-              </div>
-              <div class="dropdown-menu" role="menu">
-                <div class="dropdown-content">
-                  <% if (user.userProperties.isAdmin) { %>
-                    <a class="dropdown-item is-merge-button" href="#">
-                      <span class="icon"><i class="fas fa-fw fa-compress-alt has-text-danger" aria-hidden="true"></i></span>
-                      <span>Merge with Another Location</span>
-                    </a>
-                  <% } %>
-                  <a class="dropdown-item is-delete-button" href="#">
-                    <span class="icon"><i class="fas fa-fw fa-trash has-text-danger" aria-hidden="true"></i></span>
-                    <span>Delete Location</span>
-                  </a>
+          <fieldset>
+            <legend class="is-size-5 has-margin-bottom-10">Location Attributes</legend>
+            <div class="field">
+              <div class="control">
+                <div class="b-checkbox is-primary">
+                  <input id="location--locationIsDistributor" name="locationIsDistributor" type="checkbox" <%= (location.locationIsDistributor ? " checked" : "") %> />
+                  <label for="location--locationIsDistributor">
+                    Location is a Ticket Distributor
+                  </label>
                 </div>
               </div>
             </div>
-          <% } %>
+            <div class="field">
+              <div class="control">
+                <div class="b-checkbox is-primary">
+                  <input id="location--locationIsManufacturer" name="locationIsManufacturer" type="checkbox" <%= (location.locationIsManufacturer ? " checked" : "") %> />
+                  <label for="location--locationIsManufacturer">
+                    Location is a Ticket Manufacturer
+                  </label>
+                </div>
+              </div>
+            </div>
+          </fieldset>
         </div>
       </div>
-    </div>
-  </div>
-</form>
 
-<% if (!isCreate) { %>
-  <%- include('_location-view_edit-licences'); -%>
-<% } %>
+      <div class="fixed-container is-fixed-bottom has-padding-10 has-background-grey-light is-hidden-print">
+        <div class="level">
+          <div class="level-left" id="container--form-message"></div>
+          <div class="level-right">
+            <div class="buttons">
+              <% if (isCreate) { %>
+                <a class="button" href="/locations">
+                  Cancel
+                </a>
+              <% } %>
+
+              <button class="button is-success" type="submit">
+                <span class="icon">
+                  <i class="fas fa-save" aria-hidden="true"></i>
+                </span>
+                <span>
+                  <%= (isCreate ? "Create New Location and Continue" : "Update Location") %>
+                </span>
+              </button>
+
+              <% if (!isCreate) { %>
+                <div class="dropdown is-hoverable is-right is-up">
+                  <div class="dropdown-trigger">
+                    <button class="button" type="button" aria-haspopup="true">
+                      <span>Options</span>
+                      <span class="icon">
+                        <i class="fas fa-angle-up" aria-hidden="true"></i>
+                      </span>
+                    </button>
+                  </div>
+                  <div class="dropdown-menu" role="menu">
+                    <div class="dropdown-content">
+                      <% if (user.userProperties.isAdmin) { %>
+                        <a class="dropdown-item is-merge-button" href="#">
+                          <span class="icon"><i class="fas fa-fw fa-compress-alt has-text-danger" aria-hidden="true"></i></span>
+                          <span>Merge with Another Location</span>
+                        </a>
+                      <% } %>
+                      <a class="dropdown-item is-delete-button" href="#">
+                        <span class="icon"><i class="fas fa-fw fa-trash has-text-danger" aria-hidden="true"></i></span>
+                        <span>Delete Location</span>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              <% } %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+
+    <% if (!isCreate) { %>
+      <%- include('_location-view_edit-licences'); -%>
+    <% } %>
+  </div>
+</div>
 
 <%- include('_footerA'); -%>
 

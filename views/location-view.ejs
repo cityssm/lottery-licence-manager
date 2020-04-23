@@ -1,82 +1,82 @@
 <%- include('_header'); -%>
 
-<nav class="breadcrumb">
-  <ul>
-    <li><a href="/dashboard">Home</a></li>
-    <li><a href="/locations">Locations</a></li>
-    <li class="is-active"><a href="#" aria-current="page"><%= location.locationDisplayName %></a></li>
-  </ul>
-</nav>
+<div class="columns is-variable is-4-mobile is-4-tablet is-block-print" id="is-site-layout">
+  <%- include("_sideMenu-locations"); -%>
+  <div class="column">
+    <nav class="breadcrumb">
+      <ul>
+        <li><a href="/dashboard">Home</a></li>
+        <li><a href="/locations">Locations</a></li>
+        <li class="is-active"><a href="#" aria-current="page"><%= location.locationDisplayName %></a></li>
+      </ul>
+    </nav>
 
-<% if (location.recordDelete_timeMillis) { %>
-  <div class="message is-danger">
-    <div class="message-body">
-      <p class="is-size-5 has-text-weight-bold">This location has been deleted.</p>
-      <% if (user.userProperties.canUpdate) { %>
-        <div class="has-text-right">
-          <button class="button is-danger" id="is-location-restore-button" data-location-id="<%= location.locationID %>" type="button">
-            <span class="icon">
-              <i class="fas fa-trash-restore" aria-hidden="true"></i>
-            </span>
-            <span>Restore Location</span>
-          </button>
+    <% if (location.recordDelete_timeMillis) { %>
+      <div class="message is-danger">
+        <div class="message-body">
+          <p class="is-size-5 has-text-weight-bold">This location has been deleted.</p>
+          <% if (user.userProperties.canUpdate) { %>
+            <div class="has-text-right">
+              <button class="button is-danger" id="is-location-restore-button" data-location-id="<%= location.locationID %>" type="button">
+                <span class="icon">
+                  <i class="fas fa-trash-restore" aria-hidden="true"></i>
+                </span>
+                <span>Restore Location</span>
+              </button>
+            </div>
+          <% } %>
         </div>
-      <% } %>
-    </div>
-  </div>
-<% } %>
+      </div>
+    <% } %>
 
-<div class="level">
-  <div class="level-left">
     <h1 class="title is-1">
       <%= location.locationDisplayName %>
     </h1>
-  </div>
-  <div class="level-right has-text-right is-hidden-print">
+
     <% if (location.canUpdate) { %>
-      <a class="button is-link" href="/locations/<%= location.locationID %>/edit">
-        <span class="icon is-small">
+      <div class="fixed-container is-fixed-bottom-right has-margin-20 has-text-right is-hidden-print">
+        <a class="button is-circle is-primary has-tooltip-left" data-tooltip="Edit this Location" href="/locations/<%= location.locationID %>/edit">
           <i class="fas fa-pencil-alt" aria-hidden="true"></i>
-        </span>
-        <span>Edit this Location</span>
-      </a>
+          <span class="sr-only">Edit this Location</span>
+        </a>
+      </div>
     <% } %>
+
+    <div class="columns">
+      <div class="column is-8">
+        <%= location.locationAddress1 %><br />
+        <%= location.locationAddress2 %>
+        <%- (location.locationAddress2 === "" ? "" : "<br />") %>
+        <%= (location.locationCity === "" ? "" : location.locationCity + ", ") %>
+        <%= location.locationProvince %><br />
+        <%= location.locationPostalCode %>
+      </div>
+      <div class="column">
+        <% if (location.locationIsDistributor || location.locationIsManufacturer) { %>
+          <h2 class="is-size-5 has-margin-bottom-10">Location Attributes</h2>
+          <% if (location.locationIsDistributor) { %>
+            <p class="has-margin-bottom-10">
+              <span class="icon has-text-white has-background-primary has-border-radius-3">
+                <i class="fas fa-check" aria-hidden="true"></i>
+              </span>
+              Location is a Ticket Distributor
+            </p>
+          <% } %>
+          <% if (location.locationIsManufacturer) { %>
+            <p>
+              <span class="icon has-text-white has-background-primary has-border-radius-3">
+                <i class="fas fa-check" aria-hidden="true"></i>
+              </span>
+              Location is a Ticket Manufacturer
+            </p>
+          <% } %>
+        <% } %>
+      </div>
+    </div>
+
+    <%- include('_location-view_edit-licences'); -%>
   </div>
 </div>
-
-<div class="columns">
-  <div class="column is-8">
-    <%= location.locationAddress1 %><br />
-    <%= location.locationAddress2 %>
-    <%- (location.locationAddress2 === "" ? "" : "<br />") %>
-    <%= (location.locationCity === "" ? "" : location.locationCity + ", ") %>
-    <%= location.locationProvince %><br />
-    <%= location.locationPostalCode %>
-  </div>
-  <div class="column">
-    <% if (location.locationIsDistributor || location.locationIsManufacturer) { %>
-      <h2 class="is-size-5 has-margin-bottom-10">Location Attributes</h2>
-      <% if (location.locationIsDistributor) { %>
-        <p class="has-margin-bottom-10">
-          <span class="icon has-text-white has-background-primary has-border-radius-3">
-            <i class="fas fa-check" aria-hidden="true"></i>
-          </span>
-          Location is a Ticket Distributor
-        </p>
-      <% } %>
-      <% if (location.locationIsManufacturer) { %>
-        <p>
-          <span class="icon has-text-white has-background-primary has-border-radius-3">
-            <i class="fas fa-check" aria-hidden="true"></i>
-          </span>
-          Location is a Ticket Manufacturer
-        </p>
-      <% } %>
-    <% } %>
-  </div>
-</div>
-
-<%- include('_location-view_edit-licences'); -%>
 
 <%- include('_footerA'); -%>
 

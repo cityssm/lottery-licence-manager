@@ -23,14 +23,6 @@
       </div>
       <div class="level-right is-hidden-print">
         <div class="field is-grouped align-items-center justify-flex-end">
-          <% if (event.canUpdate) { %>
-            <a class="button is-link" href="/events/<%= licence.licenceID %>/<%= event.eventDate %>/edit">
-              <span class="icon is-small">
-                <i class="fas fa-pencil-alt" aria-hidden="true"></i>
-              </span>
-              <span>Edit this Event</span>
-            </a>
-          <% } %>
           <% if (licence.events.length > 1) { %>
             <div class="field has-addons has-margin-left-20">
               <div class="control">
@@ -55,6 +47,15 @@
         </div>
       </div>
     </div>
+
+    <% if (event.canUpdate) { %>
+      <div class="fixed-container is-fixed-bottom-right has-margin-20 has-text-right is-hidden-print">
+        <a class="button is-circle is-primary has-tooltip-left" data-tooltip="Edit this Event" href="/events/<%= licence.licenceID %>/<%= event.eventDate %>/edit">
+          <i class="fas fa-pencil-alt" aria-hidden="true"></i>
+          <span class="sr-only">Edit this Event</span>
+        </a>
+      </div>
+    <% } %>
 
     <div class="columns">
       <div class="column is-6">

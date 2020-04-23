@@ -58,7 +58,7 @@ export type Config_BankRecordType = {
 }
 
 type Config_LicencesConfig = {
-  feeCalculationFn: Function,
+  feeCalculationFn: (licenceObj: LotteryLicence) => {fee: string | number, message: string, licenceHasErrors: boolean},
   printTemplate: string,
   externalLicenceNumber?: Config_ExternalLicenceNumber,
   externalReceiptNumber?: Config_ExternalReceiptNumber
@@ -66,7 +66,7 @@ type Config_LicencesConfig = {
 
 type Config_ExternalLicenceNumber = {
   fieldLabel: string,
-  newCalculation?: string
+  newCalculation?: "" | "range"
 };
 
 type Config_ExternalReceiptNumber = {

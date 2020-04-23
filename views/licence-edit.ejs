@@ -17,12 +17,12 @@
     </nav>
 
     <div class="level">
-      <div class="level-left">
+      <div class="level-left has-flex-shrink-1">
         <h1 class="title is-1">
           <%= (isCreate ? "Create a New Lottery Licence" : "Update an Existing Lottery Licence") %>
         </h1>
       </div>
-      <div class="level-right has-text-right is-hidden-print">
+      <div class="level-right has-text-right has-margin-left-20 is-hidden-print">
         <% if (licence.issueDate) { %>
           <a class="button is-link" href="/licences/<%= licence.licenceID %>/print" download>
             <span class="icon is-small">
@@ -502,7 +502,7 @@
               %>
             </div>
             <div class="panel-block is-hidden-print">
-              <button class="button is-small is-fullwidth is-add-event-button" type="button">
+              <button class="button is-small is-fullwidth is-add-event-button" data-source="licence--endDateString" type="button">
                 <span class="icon"><i class="fas fa-plus" aria-hidden="true"></i></span>
                 <span>Add an Event Date</span>
               </button>
@@ -775,7 +775,7 @@
           <div class="level-left">
             <div class="tags">
               <% if (!isCreate && !licence.issueDate) { %>
-                <span class="tag is-medium is-warning is-light">Licence Not Issued</span>
+                <span class="tag is-medium is-warning is-light" id="is-not-issued-tag">Licence Not Issued</span>
               <% } %>
               <span id="container--form-message"></span>
             </div>
@@ -824,58 +824,56 @@
         </div>
       </div>
     </form>
+  </div>
+</div>
 
+<div class="modal" id="is-termsConditions-lookup-modal">
+  <div class="modal-background"></div>
+  <div class="modal-card">
+    <header class="modal-card-head">
+      <h3 class="modal-card-title">Select Previously Used Terms and Conditions</h3>
+      <button class="delete is-close-modal-button" aria-label="close" type="button"></button>
+    </header>
+    <section class="modal-card-body">
+      <div id="container--termsConditionsPrevious"></div>
+    </section>
+    <footer class="modal-card-foot justify-right">
+      <button class="button is-close-modal-button" type="button">Cancel</button>
+    </footer>
+  </div>
+</div>
 
-    <div class="modal" id="is-termsConditions-lookup-modal">
-      <div class="modal-background"></div>
-      <div class="modal-card">
-        <header class="modal-card-head">
-          <h3 class="modal-card-title">Select Previously Used Terms and Conditions</h3>
-          <button class="delete is-close-modal-button" aria-label="close" type="button"></button>
-        </header>
-        <section class="modal-card-body">
-          <div id="container--termsConditionsPrevious"></div>
-        </section>
-        <footer class="modal-card-foot justify-right">
-          <button class="button is-close-modal-button" type="button">Cancel</button>
-        </footer>
-      </div>
-    </div>
-
-
-    <div class="modal" id="is-event-calculator-modal">
-      <div class="modal-background"></div>
-      <div class="modal-card">
-        <header class="modal-card-head">
-          <h3 class="modal-card-title">Calculate Events</h3>
-          <button class="delete is-close-modal-button" aria-label="close" type="button"></button>
-        </header>
-        <section class="modal-card-body">
-          <div class="columns">
-            <div class="column">
-              <div class="field">
-                <label class="label" for="eventCalc--eventCount">Number of Events</label>
-                <div class="control">
-                  <input class="input has-text-right" id="eventCalc--eventCount" type="number" min="1" max="366" step="1" value="1" />
-                </div>
-              </div>
-            </div>
-            <div class="column">
-              <div class="field">
-                <label class="label" for="eventCalc--dayInterval">Interval</label>
-                <div class="control">
-                  <input class="input has-text-right" id="eventCalc--dayInterval" type="number" min="1" max="90" step="1" value="7" />
-                </div>
-              </div>
+<div class="modal" id="is-event-calculator-modal">
+  <div class="modal-background"></div>
+  <div class="modal-card">
+    <header class="modal-card-head">
+      <h3 class="modal-card-title">Calculate Events</h3>
+      <button class="delete is-close-modal-button" aria-label="close" type="button"></button>
+    </header>
+    <section class="modal-card-body">
+      <div class="columns">
+        <div class="column">
+          <div class="field">
+            <label class="label" for="eventCalc--eventCount">Number of Events</label>
+            <div class="control">
+              <input class="input has-text-right" id="eventCalc--eventCount" type="number" min="1" max="366" step="1" value="1" required onwheel="return false" />
             </div>
           </div>
-        </section>
-        <footer class="modal-card-foot justify-right">
-          <button class="button is-close-modal-button" type="button">Cancel</button>
-          <button class="button is-success is-calculate-events-button" type="button">Calculate and Add</button>
-        </footer>
+        </div>
+        <div class="column">
+          <div class="field">
+            <label class="label" for="eventCalc--dayInterval">Interval</label>
+            <div class="control">
+              <input class="input has-text-right" id="eventCalc--dayInterval" type="number" min="1" max="90" step="1" value="7" required onwheel="return false" />
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
+    </section>
+    <footer class="modal-card-foot justify-right">
+      <button class="button is-close-modal-button" type="button">Cancel</button>
+      <button class="button is-success is-calculate-events-button" type="button">Calculate and Add</button>
+    </footer>
   </div>
 </div>
 

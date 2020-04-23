@@ -2199,7 +2199,7 @@ export function updateLicence(reqBody: any, reqSession: Express.SessionData): bo
 
       const amendment = (
         (pastLicenceObj.startDate !== startDate_now ?
-          `Start Date: ${pastLicenceObj.startDate} -> ${startDate_now}` + "\n " :
+          `Start Date: ${pastLicenceObj.startDate} -> ${startDate_now}` + "\n" :
           "") +
         (pastLicenceObj.endDate !== endDate_now ?
           `End Date: ${pastLicenceObj.endDate} -> ${endDate_now}` + "\n" :

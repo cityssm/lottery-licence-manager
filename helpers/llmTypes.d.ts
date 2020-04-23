@@ -44,14 +44,18 @@ export declare type Config_BankRecordType = {
     bankRecordTypeName: string;
 };
 declare type Config_LicencesConfig = {
-    feeCalculationFn: Function;
+    feeCalculationFn: (licenceObj: LotteryLicence) => {
+        fee: string | number;
+        message: string;
+        licenceHasErrors: boolean;
+    };
     printTemplate: string;
     externalLicenceNumber?: Config_ExternalLicenceNumber;
     externalReceiptNumber?: Config_ExternalReceiptNumber;
 };
 declare type Config_ExternalLicenceNumber = {
     fieldLabel: string;
-    newCalculation?: string;
+    newCalculation?: "" | "range";
 };
 declare type Config_ExternalReceiptNumber = {
     fieldLabel: string;

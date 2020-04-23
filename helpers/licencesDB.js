@@ -1253,7 +1253,7 @@ function updateLicence(reqBody, reqSession) {
                 pastLicenceObj.startTime !== startTime_now ||
                 pastLicenceObj.endTime !== endTime_now)) {
             const amendment = ((pastLicenceObj.startDate !== startDate_now ?
-                `Start Date: ${pastLicenceObj.startDate} -> ${startDate_now}` + "\n " :
+                `Start Date: ${pastLicenceObj.startDate} -> ${startDate_now}` + "\n" :
                 "") +
                 (pastLicenceObj.endDate !== endDate_now ?
                     `End Date: ${pastLicenceObj.endDate} -> ${endDate_now}` + "\n" :

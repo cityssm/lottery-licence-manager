@@ -1792,7 +1792,7 @@
 
     } else {
 
-      document.getElementById("is-issue-licence-button").addEventListener("click", function() {
+      const issueLicenceFn = function() {
 
         const issueFn = function() {
 
@@ -1834,7 +1834,10 @@
 
         }
 
-      });
+      };
+
+      document.getElementById("is-issue-licence-button").addEventListener("click", issueLicenceFn);
+      document.getElementById("is-not-issued-tag").addEventListener("dblclick", issueLicenceFn);
 
     }
 

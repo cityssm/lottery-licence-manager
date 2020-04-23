@@ -14,7 +14,7 @@
       </li>
       <% if (user.userProperties.canCreate) { %>
         <li>
-          <a href="/locations/new">
+          <a class="<%= (headTitle === "Create a New Location" ? "is-active" : "") %>" href="/locations/new">
             <span class="icon">
               <i class="fas fa-plus" aria-hidden="true"></i>
             </span>
