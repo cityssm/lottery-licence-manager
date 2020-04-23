@@ -1,6 +1,6 @@
 {
   "name": "lottery-licence-manager",
-  "version": "0.0.0",
+  "version": "0.7.0-dev",
   "scripts": {
     "start": "node ./bin/www"
   },
@@ -25,7 +25,7 @@
     "pdf-puppeteer": "^1.1.10"
   },
   "devDependencies": {
-    "@cityssm/bulma-webapp-css": "^0.0.4",
+    "@cityssm/bulma-webapp-css": "0.0.5",
     "@types/bcrypt": "^3.0.0",
     "@types/better-sqlite3": "^5.4.0",
     "@types/compression": "^1.7.0",
