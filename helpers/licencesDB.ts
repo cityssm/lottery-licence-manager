@@ -203,7 +203,10 @@ function getLicenceWithDB(db: sqlite.Database, licenceID: number, reqSession: Ex
 
   if (queryOptions && "includeEvents" in queryOptions && queryOptions.includeEvents) {
 
-    const eventList = db.prepare("select eventDate from LotteryEvents" +
+    const eventList = db.prepare("select eventDate," +
+      " costs_receipts, costs_admin, costs_prizesAwarded," +
+      " costs_charitableDonations, costs_netProceeds, costs_amountDonated" +
+      " from LotteryEvents" +
       " where licenceID = ?" +
       " and recordDelete_timeMillis is null" +
       " order by eventDate")

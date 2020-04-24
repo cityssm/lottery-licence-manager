@@ -90,3 +90,4 @@ automatically tracked as amendments.
 ## Related Documentation
 
 - [Organizations](organizations.md)
+- [Lottery Events](events.md)

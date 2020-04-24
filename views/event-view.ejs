@@ -8,57 +8,93 @@
         <li><a href="/dashboard">Home</a></li>
         <li><a href="/events">Events</a></li>
         <li class="is-active"><a href="#" aria-current="page">
-          Events for Licence #<%= event.licenceID %>
-        </a></li>
+            Events for Licence #
+            <%= event.licenceID %>
+          </a></li>
       </ul>
     </nav>
 
     <div class="level">
       <div class="level-left">
         <h1 class="title is-1">
-          Licence #<%=event.licenceID %>
+          Licence #
+          <%=event.licenceID %>
           <br class="is-hidden-print" />
-          <small>Event <%= event.eventDateString %></small>
+          <small>Event
+            <%= event.eventDateString %></small>
         </h1>
       </div>
+      <%
+        let hasOtherEvents = false;
+
+        let costs_receipts_otherSum = 0;
+        let costs_admin_otherSum = 0;
+        let costs_prizesAwarded_otherSum = 0;
+        let costs_charitableDonations_otherSum = 0;
+        let costs_netProceeds_otherSum = 0;
+        let costs_amountDonated_otherSum = 0;
+
+        if (licence.events.length > 1) {
+
+          hasOtherEvents = true;
+
+      %>
       <div class="level-right is-hidden-print">
         <div class="field is-grouped align-items-center justify-flex-end">
-          <% if (licence.events.length > 1) { %>
-            <div class="field has-addons has-margin-left-20">
-              <div class="control">
-                <label class="button is-small is-static" for="eventNav--eventDate">Switch Dates</label>
+          <div class="field has-addons has-margin-left-20">
+            <div class="control">
+              <label class="button is-small is-static" for="eventNav--eventDate">Switch Dates</label>
+            </div>
+            <div class="control has-icons-left">
+              <div class="select is-small">
+                <select id="eventNav--eventDate" data-licence-id="<%= licence.licenceID %>" data-is-edit="false">
+                  <%
+                      for (let index = 0; index < licence.events.length; index += 1) {
+
+                        const otherEventObj = licence.events[index];
+
+                        if (event.eventDateString !== otherEventObj.eventDateString) {
+
+                          costs_receipts_otherSum += (otherEventObj.costs_receipts || 0);
+                          costs_admin_otherSum += (otherEventObj.costs_admin || 0);
+                          costs_prizesAwarded_otherSum += (otherEventObj.costs_prizesAwarded || 0);
+                          costs_charitableDonations_otherSum += (otherEventObj.costs_charitableDonations || 0);
+                          costs_netProceeds_otherSum   += (otherEventObj.costs_netProceeds || 0);
+                          costs_amountDonated_otherSum += (otherEventObj.costs_amountDonated || 0);
+                        }
+
+                    %>
+                  <option value="<%= otherEventObj.eventDate %>" <%=(event.eventDate===otherEventObj.eventDate ? " selected" : "" ) %>>
+                    <%= otherEventObj.eventDateString %>
+                  </option>
+                  <%
+                      }
+                    %>
+                </select>
               </div>
-              <div class="control has-icons-left">
-                <div class="select is-small">
-                  <select id="eventNav--eventDate" data-licence-id="<%= licence.licenceID %>" data-is-edit="false">
-                    <% for (let index = 0; index < licence.events.length; index += 1) { %>
-                      <option value="<%= licence.events[index].eventDate %>" <%= (event.eventDate === licence.events[index].eventDate ? " selected" : "") %>>
-                        <%= licence.events[index].eventDateString %>
-                      </option>
-                    <% } %>
-                  </select>
-                </div>
-                <div class="icon is-left">
-                  <i class="fas fa-calendar" aria-hidden="true"></i>
-                </div>
+              <div class="icon is-left">
+                <i class="fas fa-calendar" aria-hidden="true"></i>
               </div>
             </div>
-          <% } %>
+          </div>
         </div>
       </div>
+      <%
+        }
+      %>
     </div>
 
     <% if (event.canUpdate) { %>
-      <div class="fixed-container is-fixed-bottom-right has-margin-20 has-text-right is-hidden-print">
-        <a class="button is-circle is-primary has-tooltip-left" data-tooltip="Edit this Event" href="/events/<%= licence.licenceID %>/<%= event.eventDate %>/edit">
-          <i class="fas fa-pencil-alt" aria-hidden="true"></i>
-          <span class="sr-only">Edit this Event</span>
-        </a>
-      </div>
+    <div class="fixed-container is-fixed-bottom-right has-margin-20 has-text-right is-hidden-print">
+      <a class="button is-circle is-primary has-tooltip-left" data-tooltip="Edit this Event" href="/events/<%= licence.licenceID %>/<%= event.eventDate %>/edit">
+        <i class="fas fa-pencil-alt" aria-hidden="true"></i>
+        <span class="sr-only">Edit this Event</span>
+      </a>
+    </div>
     <% } %>
 
     <div class="columns">
-      <div class="column is-6">
+      <div class="column is-5">
         <%- include('_event-view_edit-snapshot'); -%>
       </div>
       <div class="column">
@@ -103,85 +139,120 @@
           </div>
         </div>
         <div class="panel">
-          <h2 class="panel-heading">Costs</h2>
-          <%
-            let hasCosts = false;
-            if (event.costs_receipts) {
-              hasCosts = true;
-          %>
-            <div class="panel-block">
-              <p>
-                <strong>Receipts</strong><br />
-                $ <%= event.costs_receipts.toFixed(2) %>
-              </p>
-            </div>
-          <%
-            }
-            if (event.costs_admin) {
-              hasCosts = true;
-          %>
-            <div class="panel-block">
-              <p>
-                <strong>Administration</strong><br />
-                $ <%= event.costs_admin.toFixed(2) %>
-              </p>
-            </div>
-          <%
-            }
-            if (event.costs_prizesAwarded) {
-              hasCosts = true;
-          %>
-            <div class="panel-block">
-              <p>
-                <strong>Prizes Awarded</strong><br />
-                $ <%= event.costs_prizesAwarded.toFixed(2) %>
-              </p>
-            </div>
-          <%
-            }
-            if (event.costs_charitableDonations) {
-              hasCosts = true;
-          %>
-            <div class="panel-block">
-              <p>
-                <strong>Charitable Donations</strong><br />
-                $ <%= event.costs_charitableDonations.toFixed(2) %>
-              </p>
-            </div>
-          <%
-            }
-            if (event.costs_netProceeds) {
-              hasCosts = true;
-          %>
-            <div class="panel-block">
-              <p>
-                <strong>Net Proceeds</strong><br />
-                $ <%= event.costs_netProceeds.toFixed(2) %>
-              </p>
-            </div>
-          <%
-            }
-            if (event.costs_amountDonated) {
-                hasCosts = true;
-          %>
-            <div class="panel-block">
-              <p>
-                <strong>Prize Amount Donated</strong><br />
-                $ <%= event.costs_amountDonated.toFixed(2) %>
-              </p>
-            </div>
-          <%
-            }
-            if (!hasCosts) {
-          %>
-            <div class="panel-block is-block">
-              <div class="message is-info">
-                <p class="message-body">
-                  No costs have been reported for this event.
-                </p>
-              </div>
-            </div>
-          <% } %>
+          <h2 class="panel-heading">Cost Breakdown</h2>
+          <table class="table is-fullwidth is-striped is-hoverable">
+            <thead>
+              <tr>
+                <th colspan="2"></th>
+                <th class="has-text-right is-vcentered">
+                  <%= event.eventDateString %><br />
+                  Event
+                </th>
+                <th class="is-vcentered"><i class="fas fa-plus" aria-hidden="true"></i></th>
+                <th class="has-text-right is-vcentered">
+                  Other
+                  <%= licence.events.length - 1 %>
+                  <%= licence.events.length === 2 ? "Event" : "Events" %>
+                </th>
+                <th class="is-vcentered"><i class="fas fa-equals" aria-hidden="true"></i></th>
+                <th class="has-text-right is-vcentered">
+                  Licence<br />
+                  Total
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th colspan="2">Receipts</th>
+                <td class="has-text-right">
+                  $<%= event.costs_receipts.toFixed(2) %>
+                </td>
+                <td class="has-text-grey-lighter"><i class="fas fa-plus" aria-hidden="true"></i></td>
+                <td class="has-text-right">
+                  $<%= costs_receipts_otherSum.toFixed(2) %>
+                </td>
+                <td class="has-text-grey-lighter"><i class="fas fa-equals" aria-hidden="true"></i></td>
+                <td class="has-text-right">
+                  $<%= (event.costs_receipts + costs_receipts_otherSum).toFixed(2) %>
+                </td>
+              </tr>
+              <tr>
+                <td><i class="fas fa-minus" aria-hidden="true"></i></td>
+                <th>Administration</th>
+                <td class="has-text-right">
+                  $<%= event.costs_admin.toFixed(2) %>
+                </td>
+                <td class="has-text-grey-lighter"><i class="fas fa-plus" aria-hidden="true"></i></td>
+                <td class="has-text-right">
+                  $<%= costs_admin_otherSum.toFixed(2) %>
+                </td>
+                <td class="has-text-grey-lighter"><i class="fas fa-equals" aria-hidden="true"></i></td>
+                <td class="has-text-right">
+                  $<%= (event.costs_admin + costs_admin_otherSum).toFixed(2) %>
+                </td>
+              </tr>
+              <tr>
+                <td><i class="fas fa-minus" aria-hidden="true"></i></td>
+                <th>Prizes Awarded</th>
+                <td class="has-text-right">
+                  $<%= event.costs_prizesAwarded.toFixed(2) %>
+                </td>
+                <td class="has-text-grey-lighter"><i class="fas fa-plus" aria-hidden="true"></i></td>
+                <td class="has-text-right">
+                  $<%= costs_prizesAwarded_otherSum.toFixed(2) %>
+                </td>
+                <td class="has-text-grey-lighter"><i class="fas fa-equals" aria-hidden="true"></i></td>
+                <td class="has-text-right">
+                  $<%= (event.costs_prizesAwarded + costs_prizesAwarded_otherSum).toFixed(2) %>
+                </td>
+              </tr>
+              <tr>
+                <td><i class="fas fa-minus" aria-hidden="true"></i></td>
+                <th>Charitable Donations</th>
+                <td class="has-text-right">
+                  $<%= event.costs_charitableDonations.toFixed(2) %>
+                </td>
+                <td class="has-text-grey-lighter"><i class="fas fa-plus" aria-hidden="true"></i></td>
+                <td class="has-text-right"">
+                  $<%= costs_charitableDonations_otherSum.toFixed(2) %>
+                </td>
+                <td class="has-text-grey-lighter"><i class="fas fa-equals" aria-hidden="true"></i></td>
+                <td class="has-text-right">
+                  $<%= (event.costs_charitableDonations + costs_charitableDonations_otherSum).toFixed(2) %>
+                </td>
+              </tr>
+              <tr>
+                <th class="has-border-top-width-3"><i class="fas fa-equals" aria-hidden="true"></i></th>
+                <th class="has-border-top-width-3">Net Proceeds</th>
+                <td class="has-border-top-width-3 has-text-right">
+                  <%- stringFns.formatDollarsAsHTML(event.costs_netProceeds) %>
+                </td>
+                <td class="has-border-top-width-3 has-text-grey-lighter"><i class="fas fa-plus" aria-hidden="true"></i></td>
+                <td class="has-border-top-width-3 has-text-right">
+                  <%- stringFns.formatDollarsAsHTML(costs_netProceeds_otherSum) %>
+                </td>
+                <td class="has-border-top-width-3 has-text-grey-lighter"><i class="fas fa-equals" aria-hidden="true"></i></td>
+                <td class="has-border-top-width-3 has-text-right">
+                  <%- stringFns.formatDollarsAsHTML(event.costs_netProceeds + costs_netProceeds_otherSum) %>
+                </td>
+              </tr>
+              <tr>
+                <td></td>
+                <th>Amount Donated</th>
+                <td class="has-text-right">
+                  $<%= event.costs_amountDonated.toFixed(2) %>
+                </td>
+                <td class="has-text-grey-lighter"><i class="fas fa-plus" aria-hidden="true"></i></td>
+                <td class="has-text-right">
+                  $<%= costs_amountDonated_otherSum.toFixed(2) %>
+                </td>
+                <td class="has-text-grey-lighter"><i class="fas fa-equals" aria-hidden="true"></i></td>
+                <td class="has-text-right">
+                  $<%= (event.costs_amountDonated + costs_amountDonated_otherSum).toFixed(2) %>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
         <%
           const licenceType = configFns.getLicenceType(licence.licenceTypeKey);
@@ -224,12 +295,13 @@
                 inputAttributesString += " " + attributeName + "=\"" + inputAttributes[attributeName] + "\"";
               }
           %>
-            <div class="panel-block">
-              <p>
-                <strong><%= eventField.fieldLabel || eventField.fieldKey %></strong><br />
-                <%= fieldValue %>
-              </p>
-            </div>
+          <div class="panel-block">
+            <p>
+              <strong>
+                <%= eventField.fieldLabel || eventField.fieldKey %></strong><br />
+              <%= fieldValue %>
+            </p>
+          </div>
           <%
             }
 
@@ -237,12 +309,13 @@
               const savedField = event.eventFields[savedFieldIndex];
               if (!savedField.isDisplayed) {
           %>
-            <div class="panel-block">
-              <p>
-                <strong><%= savedField.fieldKey %></strong><br />
-                <%= savedField.fieldValue %>
-              </p>
-            </div>
+          <div class="panel-block">
+            <p>
+              <strong>
+                <%= savedField.fieldKey %></strong><br />
+              <%= savedField.fieldValue %>
+            </p>
+          </div>
           <%
               }
             }
@@ -256,7 +329,7 @@
 <%- include('_footerA'); -%>
 
 <% if (licence.events.length > 1) { %>
-  <script src="/javascripts/event-viewEdit.min.js"></script>
+<script src="/javascripts/event-viewEdit.min.js"></script>
 <% } %>
 
 <%- include('_footerB'); -%>

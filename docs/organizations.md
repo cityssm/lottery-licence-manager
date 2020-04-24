@@ -154,3 +154,4 @@ along with the date they were deleted.  Organizations can be reviewed and restor
 ## Related Documentation
 
 - [Lottery Licences](licences.md)
+- [Lottery Events](events.md)

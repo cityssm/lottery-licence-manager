@@ -8,6 +8,16 @@ const badWords = require("../node_modules/fresh-password/lib/words/bad.json");
 const convertArrayToCSV = require("convert-array-to-csv").convertArrayToCSV;
 
 
+export function formatDollarsAsHTML(dollarAmt: number) {
+
+  if (dollarAmt < 0) {
+    return "<span class=\"has-text-danger\">($" + (dollarAmt * -1).toFixed(2) + ")</span>";
+  } else {
+    return "$" + dollarAmt.toFixed(2);
+  }
+}
+
+
 export function escapeHTML(str: string): string {
 
   return String(str)
