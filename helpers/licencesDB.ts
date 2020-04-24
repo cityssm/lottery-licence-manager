@@ -205,7 +205,7 @@ function getLicenceWithDB(db: sqlite.Database, licenceID: number, reqSession: Ex
 
     const eventList = db.prepare("select eventDate," +
       " costs_receipts, costs_admin, costs_prizesAwarded," +
-      " costs_netProceeds, costs_amountDonated" +
+      " costs_amountDonated" +
       " from LotteryEvents" +
       " where licenceID = ?" +
       " and recordDelete_timeMillis is null" +
@@ -216,6 +216,10 @@ function getLicenceWithDB(db: sqlite.Database, licenceID: number, reqSession: Ex
 
       const eventObj = eventList[index];
       eventObj.eventDateString = dateTimeFns.dateIntegerToString(eventObj.eventDate);
+
+      eventObj.costs_netProceeds = (eventObj.costs_receipts || 0)
+        - (eventObj.costs_admin || 0)
+        - (eventObj.costs_prizesAwarded || 0);
 
     }
 
@@ -3283,14 +3287,13 @@ export function getEventFinancialSummary(reqBody: any) {
     " sum(costs_receiptsSum) as costs_receiptsSum," +
     " sum(costs_adminSum) as costs_adminSum," +
     " sum(costs_prizesAwardedSum) as costs_prizesAwardedSum," +
-    " sum(costs_netProceedsSum) as costs_netProceedsSum," +
+    " sum(costs_receiptsSum - costs_adminSum - costs_prizesAwardedSum) as costs_netProceedsSum," +
     " sum(costs_amountDonatedSum) as costs_amountDonatedSum" +
     " from (" +
     "select l.licenceID, l.licenceTypeKey, l.licenceFee," +
     " sum(ifnull(e.costs_receipts, 0)) as costs_receiptsSum," +
     " sum(ifnull(e.costs_admin,0)) as costs_adminSum," +
     " sum(ifnull(e.costs_prizesAwarded,0)) as costs_prizesAwardedSum," +
-    " sum(ifnull(e.costs_netProceeds,0)) as costs_netProceedsSum," +
     " sum(ifnull(e.costs_amountDonated,0)) as costs_amountDonatedSum" +
     " from LotteryLicences l" +
     " left join LotteryEvents e on l.licenceID = e.licenceID and e.recordDelete_timeMillis is null" +
@@ -3347,6 +3350,10 @@ export function getEvent(licenceID: number, eventDate: number, reqSession: Expre
 
     eventObj.startTimeString = dateTimeFns.timeIntegerToString(eventObj.startTime || 0);
     eventObj.endTimeString = dateTimeFns.timeIntegerToString(eventObj.endTime || 0);
+
+    eventObj.costs_netProceeds = (eventObj.costs_receipts || 0)
+      - (eventObj.costs_admin || 0)
+      - (eventObj.costs_prizesAwarded || 0);
 
     eventObj.canUpdate = canUpdateObject(eventObj, reqSession);
 
@@ -3422,7 +3429,6 @@ export function updateEvent(reqBody: any, reqSession: Express.SessionData): bool
     " costs_receipts = ?," +
     " costs_admin = ?," +
     " costs_prizesAwarded = ?," +
-    " costs_netProceeds = ?," +
     " costs_amountDonated = ?," +
     " recordUpdate_userName = ?," +
     " recordUpdate_timeMillis = ?" +
@@ -3438,7 +3444,6 @@ export function updateEvent(reqBody: any, reqSession: Express.SessionData): bool
       reqBody.costs_receipts,
       reqBody.costs_admin,
       reqBody.costs_prizesAwarded,
-      reqBody.costs_netProceeds,
       reqBody.costs_amountDonated,
       reqSession.user.userName,
       nowMillis,

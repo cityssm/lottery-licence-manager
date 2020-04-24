@@ -193,4 +193,29 @@
   });
 
 
+  // Net Proceeds Calculation
+
+  const costs_receipts_ele = document.getElementById("event--costs_receipts");
+  const costs_admin_ele = document.getElementById("event--costs_admin");
+  const costs_prizesAwarded_ele = document.getElementById("event--costs_prizesAwarded");
+
+  const costs_netProceeds_ele = document.getElementById("event--costs_netProceeds");
+  const costs_amountDonated_ele = document.getElementById("event--costs_amountDonated");
+
+  function refreshNetProceeds() {
+
+    const netProceeds = ((costs_receipts_ele.value || 0) -
+      (costs_admin_ele.value || 0) -
+      (costs_prizesAwarded_ele.value || 0)).toFixed(2);
+
+    costs_netProceeds_ele.value = netProceeds;
+    costs_amountDonated_ele.setAttribute("max", netProceeds);
+
+  }
+
+  costs_receipts_ele.addEventListener("keyup", refreshNetProceeds);
+  costs_admin_ele.addEventListener("keyup", refreshNetProceeds);
+  costs_prizesAwarded_ele.addEventListener("keyup", refreshNetProceeds);
+
+
 }());

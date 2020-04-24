@@ -108,7 +108,7 @@ function getLicenceWithDB(db, licenceID, reqSession, queryOptions) {
     if (queryOptions && "includeEvents" in queryOptions && queryOptions.includeEvents) {
         const eventList = db.prepare("select eventDate," +
             " costs_receipts, costs_admin, costs_prizesAwarded," +
-            " costs_netProceeds, costs_amountDonated" +
+            " costs_amountDonated" +
             " from LotteryEvents" +
             " where licenceID = ?" +
             " and recordDelete_timeMillis is null" +
@@ -117,6 +117,9 @@ function getLicenceWithDB(db, licenceID, reqSession, queryOptions) {
         for (let index = 0; index < eventList.length; index += 1) {
             const eventObj = eventList[index];
             eventObj.eventDateString = dateTimeFns.dateIntegerToString(eventObj.eventDate);
+            eventObj.costs_netProceeds = (eventObj.costs_receipts || 0)
+                - (eventObj.costs_admin || 0)
+                - (eventObj.costs_prizesAwarded || 0);
         }
         licenceObj.events = eventList;
     }
@@ -1837,14 +1840,13 @@ function getEventFinancialSummary(reqBody) {
         " sum(costs_receiptsSum) as costs_receiptsSum," +
         " sum(costs_adminSum) as costs_adminSum," +
         " sum(costs_prizesAwardedSum) as costs_prizesAwardedSum," +
-        " sum(costs_netProceedsSum) as costs_netProceedsSum," +
+        " sum(costs_receiptsSum - costs_adminSum - costs_prizesAwardedSum) as costs_netProceedsSum," +
         " sum(costs_amountDonatedSum) as costs_amountDonatedSum" +
         " from (" +
         "select l.licenceID, l.licenceTypeKey, l.licenceFee," +
         " sum(ifnull(e.costs_receipts, 0)) as costs_receiptsSum," +
         " sum(ifnull(e.costs_admin,0)) as costs_adminSum," +
         " sum(ifnull(e.costs_prizesAwarded,0)) as costs_prizesAwardedSum," +
-        " sum(ifnull(e.costs_netProceeds,0)) as costs_netProceedsSum," +
         " sum(ifnull(e.costs_amountDonated,0)) as costs_amountDonatedSum" +
         " from LotteryLicences l" +
         " left join LotteryEvents e on l.licenceID = e.licenceID and e.recordDelete_timeMillis is null" +
@@ -1881,6 +1883,9 @@ function getEvent(licenceID, eventDate, reqSession) {
         eventObj.reportDateString = dateTimeFns.dateIntegerToString(eventObj.reportDate);
         eventObj.startTimeString = dateTimeFns.timeIntegerToString(eventObj.startTime || 0);
         eventObj.endTimeString = dateTimeFns.timeIntegerToString(eventObj.endTime || 0);
+        eventObj.costs_netProceeds = (eventObj.costs_receipts || 0)
+            - (eventObj.costs_admin || 0)
+            - (eventObj.costs_prizesAwarded || 0);
         eventObj.canUpdate = canUpdateObject(eventObj, reqSession);
         const rows = db.prepare("select fieldKey, fieldValue" +
             " from LotteryEventFields" +
@@ -1934,14 +1939,13 @@ function updateEvent(reqBody, reqSession) {
         " costs_receipts = ?," +
         " costs_admin = ?," +
         " costs_prizesAwarded = ?," +
-        " costs_netProceeds = ?," +
         " costs_amountDonated = ?," +
         " recordUpdate_userName = ?," +
         " recordUpdate_timeMillis = ?" +
         " where licenceID = ?" +
         " and eventDate = ?" +
         " and recordDelete_timeMillis is null")
-        .run(dateTimeFns.dateStringToInteger(reqBody.reportDateString), reqBody.bank_name, reqBody.bank_address, reqBody.bank_accountNumber, reqBody.bank_accountBalance, reqBody.costs_receipts, reqBody.costs_admin, reqBody.costs_prizesAwarded, reqBody.costs_netProceeds, reqBody.costs_amountDonated, reqSession.user.userName, nowMillis, reqBody.licenceID, reqBody.eventDate);
+        .run(dateTimeFns.dateStringToInteger(reqBody.reportDateString), reqBody.bank_name, reqBody.bank_address, reqBody.bank_accountNumber, reqBody.bank_accountBalance, reqBody.costs_receipts, reqBody.costs_admin, reqBody.costs_prizesAwarded, reqBody.costs_amountDonated, reqSession.user.userName, nowMillis, reqBody.licenceID, reqBody.eventDate);
     const changeCount = info.changes;
     if (!changeCount) {
         db.close();
