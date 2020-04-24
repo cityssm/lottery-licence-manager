@@ -221,7 +221,6 @@ function initLicencesDB() {
             " costs_receipts decimal(10, 2)," +
             " costs_admin decimal(10, 2)," +
             " costs_prizesAwarded decimal(10, 2)," +
-            " costs_charitableDonations decimal(10, 2)," +
             " costs_netProceeds decimal(10, 2)," +
             " costs_amountDonated decimal(10, 2)," +
             " recordCreate_userName varchar(30) not null," +

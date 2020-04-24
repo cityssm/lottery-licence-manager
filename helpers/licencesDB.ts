@@ -205,7 +205,7 @@ function getLicenceWithDB(db: sqlite.Database, licenceID: number, reqSession: Ex
 
     const eventList = db.prepare("select eventDate," +
       " costs_receipts, costs_admin, costs_prizesAwarded," +
-      " costs_charitableDonations, costs_netProceeds, costs_amountDonated" +
+      " costs_netProceeds, costs_amountDonated" +
       " from LotteryEvents" +
       " where licenceID = ?" +
       " and recordDelete_timeMillis is null" +
@@ -3283,7 +3283,6 @@ export function getEventFinancialSummary(reqBody: any) {
     " sum(costs_receiptsSum) as costs_receiptsSum," +
     " sum(costs_adminSum) as costs_adminSum," +
     " sum(costs_prizesAwardedSum) as costs_prizesAwardedSum," +
-    " sum(costs_charitableDonationsSum) as costs_charitableDonationsSum," +
     " sum(costs_netProceedsSum) as costs_netProceedsSum," +
     " sum(costs_amountDonatedSum) as costs_amountDonatedSum" +
     " from (" +
@@ -3291,7 +3290,6 @@ export function getEventFinancialSummary(reqBody: any) {
     " sum(ifnull(e.costs_receipts, 0)) as costs_receiptsSum," +
     " sum(ifnull(e.costs_admin,0)) as costs_adminSum," +
     " sum(ifnull(e.costs_prizesAwarded,0)) as costs_prizesAwardedSum," +
-    " sum(ifnull(e.costs_charitableDonations,0)) as costs_charitableDonationsSum," +
     " sum(ifnull(e.costs_netProceeds,0)) as costs_netProceedsSum," +
     " sum(ifnull(e.costs_amountDonated,0)) as costs_amountDonatedSum" +
     " from LotteryLicences l" +
@@ -3424,7 +3422,6 @@ export function updateEvent(reqBody: any, reqSession: Express.SessionData): bool
     " costs_receipts = ?," +
     " costs_admin = ?," +
     " costs_prizesAwarded = ?," +
-    " costs_charitableDonations = ?," +
     " costs_netProceeds = ?," +
     " costs_amountDonated = ?," +
     " recordUpdate_userName = ?," +
@@ -3441,7 +3438,6 @@ export function updateEvent(reqBody: any, reqSession: Express.SessionData): bool
       reqBody.costs_receipts,
       reqBody.costs_admin,
       reqBody.costs_prizesAwarded,
-      reqBody.costs_charitableDonations,
       reqBody.costs_netProceeds,
       reqBody.costs_amountDonated,
       reqSession.user.userName,

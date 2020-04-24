@@ -319,7 +319,6 @@ export interface LotteryEvent extends LotteryLicence {
   costs_receipts: number,
   costs_admin: number,
   costs_prizesAwarded: number,
-  costs_charitableDonations: number,
   costs_netProceeds: number,
   costs_amountDonated: number,
 

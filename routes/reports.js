@@ -279,7 +279,7 @@ router.all("/:reportName", function (req, res) {
                 " lo.locationName, lo.locationAddress1, l.licenceDetails, l.licenceTypeKey," +
                 " l.totalPrizeValue, l.licenceFee," +
                 " e.bank_name, e.bank_address, e.bank_accountNumber, e.bank_accountBalance," +
-                " e.costs_receipts, e.costs_admin, e.costs_prizesAwarded, e.costs_charitableDonations, e.costs_netProceeds," +
+                " e.costs_receipts, e.costs_admin, e.costs_prizesAwarded, e.costs_netProceeds," +
                 " e.costs_amountDonated" +
                 " from LotteryEvents e" +
                 " left join LotteryLicences l on e.licenceID = l.licenceID" +

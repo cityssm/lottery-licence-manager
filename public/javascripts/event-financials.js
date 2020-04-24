@@ -29,7 +29,6 @@
       let costs_receiptsSum = 0.0;
       let costs_adminSum = 0.0;
       let costs_prizesAwardedSum = 0.0;
-      let costs_charitableDonationsSum = 0.0;
       let costs_netProceedsSum = 0.0;
       let costs_amountDonatedSum = 0.0;
       let licenceFeeSum = 0.0;
@@ -54,10 +53,6 @@
         trEle.querySelector("[data-field='costs_prizesAwardedSum']").innerText =
           "$ " + licenceTypeSummaryObj.costs_prizesAwardedSum.toFixed(2);
         costs_prizesAwardedSum += licenceTypeSummaryObj.costs_prizesAwardedSum;
-
-        trEle.querySelector("[data-field='costs_charitableDonationsSum']").innerText =
-          "$ " + licenceTypeSummaryObj.costs_charitableDonationsSum.toFixed(2);
-        costs_charitableDonationsSum += licenceTypeSummaryObj.costs_charitableDonationsSum;
 
         trEle.querySelector("[data-field='costs_netProceedsSum']").innerText =
           "$ " + licenceTypeSummaryObj.costs_netProceedsSum.toFixed(2);
@@ -85,9 +80,6 @@
 
       tfootEle.querySelector("[data-field='costs_prizesAwardedSum']").innerText =
         "$ " + costs_prizesAwardedSum.toFixed(2);
-
-      tfootEle.querySelector("[data-field='costs_charitableDonationsSum']").innerText =
-        "$ " + costs_charitableDonationsSum.toFixed(2);
 
       tfootEle.querySelector("[data-field='costs_netProceedsSum']").innerText =
         "$ " + costs_netProceedsSum.toFixed(2);

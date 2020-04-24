@@ -30,7 +30,6 @@
         let costs_receipts_otherSum = 0;
         let costs_admin_otherSum = 0;
         let costs_prizesAwarded_otherSum = 0;
-        let costs_charitableDonations_otherSum = 0;
         let costs_netProceeds_otherSum = 0;
         let costs_amountDonated_otherSum = 0;
 
@@ -58,7 +57,6 @@
                           costs_receipts_otherSum += (otherEventObj.costs_receipts || 0);
                           costs_admin_otherSum += (otherEventObj.costs_admin || 0);
                           costs_prizesAwarded_otherSum += (otherEventObj.costs_prizesAwarded || 0);
-                          costs_charitableDonations_otherSum += (otherEventObj.costs_charitableDonations || 0);
                           costs_netProceeds_otherSum   += (otherEventObj.costs_netProceeds || 0);
                           costs_amountDonated_otherSum += (otherEventObj.costs_amountDonated || 0);
                         }
@@ -204,21 +202,6 @@
                 <td class="has-text-grey-lighter"><i class="fas fa-equals" aria-hidden="true"></i></td>
                 <td class="has-text-right">
                   $<%= (event.costs_prizesAwarded + costs_prizesAwarded_otherSum).toFixed(2) %>
-                </td>
-              </tr>
-              <tr>
-                <td><i class="fas fa-minus" aria-hidden="true"></i></td>
-                <th>Charitable Donations</th>
-                <td class="has-text-right">
-                  $<%= event.costs_charitableDonations.toFixed(2) %>
-                </td>
-                <td class="has-text-grey-lighter"><i class="fas fa-plus" aria-hidden="true"></i></td>
-                <td class="has-text-right"">
-                  $<%= costs_charitableDonations_otherSum.toFixed(2) %>
-                </td>
-                <td class="has-text-grey-lighter"><i class="fas fa-equals" aria-hidden="true"></i></td>
-                <td class="has-text-right">
-                  $<%= (event.costs_charitableDonations + costs_charitableDonations_otherSum).toFixed(2) %>
                 </td>
               </tr>
               <tr>
