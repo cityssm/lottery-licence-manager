@@ -163,6 +163,10 @@ app.use("/events", sessionChecker, routerEvents);
 app.use("/reports", sessionChecker, routerReports);
 app.use("/admin", sessionChecker, routerAdmin);
 
+app.all("/keepAlive", function(_req, res) {
+  res.json(true);
+});
+
 app.use("/login", routerLogin);
 
 app.get("/logout", function(req, res) {
