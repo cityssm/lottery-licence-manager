@@ -13,6 +13,13 @@ router.get("/", function (_req, res) {
 router.post("/doSearch", function (req, res) {
     res.json(licencesDB.getEvents(req.body.year, req.body.month, req.session));
 });
+router.get("/recent", function (req, res) {
+    const records = licencesDB.getRecentlyUpdateEvents(req.session);
+    res.render("event-recent", {
+        headTitle: "Recently Updated Events",
+        records: records
+    });
+});
 router.get("/outstanding", function (_req, res) {
     res.render("event-outstanding", {
         headTitle: "Outstanding Events"

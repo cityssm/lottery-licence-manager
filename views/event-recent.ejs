@@ -1,0 +1,91 @@
+<%- include('_header'); -%>
+
+<div class="columns is-variable is-4-mobile is-4-tablet is-block-print" id="is-site-layout">
+  <%- include("_sideMenu-events"); -%>
+  <div class="column is-block-print is-full-print">
+    <nav class="breadcrumb">
+      <ul>
+        <li><a href="/dashboard">Home</a></li>
+        <li><a href="/events">Events</a></li>
+        <li class="is-active"><a href="#" aria-current="page">Recently Updated Events</a></li>
+      </ul>
+    </nav>
+
+    <h1 class="title is-1">
+      Recently Updated Events
+    </h1>
+
+    <% if (records.length === 0) { %>
+      <div class="message is-info">
+        <p class="message-body">
+          There are no recently updated events.
+        </p>
+      </div>
+    <% } else { %>
+      <table class="table is-fullwidth is-striped is-hoverable">
+        <thead>
+          <tr>
+            <th>Update Time</th>
+            <th>User</th>
+            <th>Licence</th>
+            <th>Event Date</th>
+            <th>Organization</th>
+            <th>Licence Description</th>
+            <th class="has-text-centered">Event Is Reported</th>
+          </tr>
+        </thead>
+        <tbody>
+          <%
+            let currentDateString = "";
+
+            for (let index = 0; index < records.length; index += 1) {
+
+              const record = records[index];
+
+              if (currentDateString !== record.recordUpdate_dateString) {
+                currentDateString = record.recordUpdate_dateString
+          %>
+                <tr>
+                  <td colspan="7"><strong><%= currentDateString %></strong></td>
+                </tr>
+          <%
+              }
+
+              const licenceType = configFns.getLicenceType(record.licenceTypeKey);
+          %>
+            <tr>
+              <td><%= record.recordUpdate_timeString %></td>
+              <td class="has-border-right-width-1"><%= record.recordUpdate_userName %></td>
+              <td>
+                <a href="/events/<%=record.licenceID %>/<%= record.eventDate %>">
+                  <%= record.externalLicenceNumber %><br />
+                  <small>Licence #<%= record.licenceID %></small>
+                </a>
+              </td>
+              <td>
+                <%= record.eventDateString %>
+              </td>
+              <td><%= record.organizationName %></td>
+              <td class="has-border-right-width-1">
+                <%= (licenceType ? licenceType.licenceType : record.licenceTypeKey) %><br />
+                <small><%= record.licenceDetails %></small>
+              </td>
+              <td class="has-text-centered">
+                <% if (record.reportDate) { %>
+                    <i class="fas fa-check" aria-hidden="true"></i><br />
+                    <span class="is-size-7"><%= record.reportDateString %></span>
+                  </span>
+                <% } else { %>
+                  <span class="is-size-7 has-text-grey-lighter">Not Reported</span>
+                <% } %>
+              </td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+    <% } %>
+  </div>
+</div>
+
+<%- include('_footerA'); -%>
+<%- include('_footerB'); -%>

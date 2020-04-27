@@ -185,7 +185,7 @@
               <tr>
                 <th colspan="2">Receipts</th>
                 <td class="has-text-right">
-                  $<%= event.costs_receipts.toFixed(2) %>
+                  $<%= (event.costs_receipts || 0).toFixed(2) %>
                 </td>
                 <td class="has-text-grey-lighter"><i class="fas fa-plus" aria-hidden="true"></i></td>
                 <td class="has-text-right">
@@ -200,7 +200,7 @@
                 <td><i class="fas fa-minus" aria-hidden="true"></i></td>
                 <th>Administration</th>
                 <td class="has-text-right">
-                  $<%= event.costs_admin.toFixed(2) %>
+                  $<%= (event.costs_admin || 0).toFixed(2) %>
                 </td>
                 <td class="has-text-grey-lighter"><i class="fas fa-plus" aria-hidden="true"></i></td>
                 <td class="has-text-right">
@@ -215,7 +215,7 @@
                 <td><i class="fas fa-minus" aria-hidden="true"></i></td>
                 <th>Prizes Awarded</th>
                 <td class="has-text-right">
-                  $<%= event.costs_prizesAwarded.toFixed(2) %>
+                  $<%= (event.costs_prizesAwarded || 0).toFixed(2) %>
                 </td>
                 <td class="has-text-grey-lighter"><i class="fas fa-plus" aria-hidden="true"></i></td>
                 <td class="has-text-right">
@@ -245,7 +245,7 @@
                 <td></td>
                 <th>Amount Donated</th>
                 <td class="has-text-right">
-                  $<%= event.costs_amountDonated.toFixed(2) %>
+                  $<%= (event.costs_amountDonated || 0).toFixed(2) %>
                 </td>
                 <td class="has-text-grey-lighter"><i class="fas fa-plus" aria-hidden="true"></i></td>
                 <td class="has-text-right">

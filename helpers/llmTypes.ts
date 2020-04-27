@@ -132,6 +132,7 @@ export type Record = {
   recordUpdate_userName: string,
   recordUpdate_timeMillis: number,
   recordUpdate_dateString: string,
+  recordUpdate_timeString: string,
 
   recordDelete_userName?: string,
   recordDelete_timeMillis?: number,

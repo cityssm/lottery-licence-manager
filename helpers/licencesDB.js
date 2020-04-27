@@ -1779,6 +1779,37 @@ function getEvents(year, month, reqSession) {
     return rows;
 }
 exports.getEvents = getEvents;
+function getRecentlyUpdateEvents(reqSession) {
+    const addCalculatedFieldsFn = function (ele) {
+        ele.recordType = "event";
+        ele.eventDateString = dateTimeFns.dateIntegerToString(ele.eventDate);
+        ele.reportDateString = dateTimeFns.dateIntegerToString(ele.reportDate);
+        ele.recordUpdate_dateString = dateTimeFns.dateToString(new Date(ele.recordUpdate_timeMillis));
+        ele.recordUpdate_timeString = dateTimeFns.dateToTimeString(new Date(ele.recordUpdate_timeMillis));
+        ele.canUpdate = canUpdateObject(ele, reqSession);
+    };
+    const db = sqlite(dbPath, {
+        readonly: true
+    });
+    const rows = db.prepare("select e.eventDate, e.reportDate," +
+        " l.licenceID, l.externalLicenceNumber, l.licenceTypeKey, l.licenceDetails," +
+        " o.organizationName," +
+        " e.recordCreate_userName, e.recordCreate_timeMillis, e.recordUpdate_userName, e.recordUpdate_timeMillis" +
+        " from LotteryEvents e" +
+        " left join LotteryLicences l on e.licenceID = l.licenceID" +
+        " left join Locations lo on l.locationID = lo.locationID" +
+        " left join Organizations o on l.organizationID = o.organizationID" +
+        " where e.recordDelete_timeMillis is null" +
+        " and l.recordDelete_timeMillis is null" +
+        " and o.recordDelete_timeMillis is null" +
+        " order by e.recordUpdate_timeMillis desc" +
+        " limit 100")
+        .all();
+    db.close();
+    rows.forEach(addCalculatedFieldsFn);
+    return rows;
+}
+exports.getRecentlyUpdateEvents = getRecentlyUpdateEvents;
 function getOutstandingEvents(reqBody, reqSession) {
     const addCalculatedFieldsFn = function (ele) {
         ele.recordType = "event";

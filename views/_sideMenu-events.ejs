@@ -18,6 +18,14 @@
     </p>
     <ul class="menu-list">
       <li>
+        <a class="<%= (headTitle === "Recently Updated Events" ? "is-active" : "") %>" href="/events/recent">
+          <span class="icon">
+            <i class="fas fa-scroll" aria-hidden="true"></i>
+          </span>
+          Recently Updated Events
+        </a>
+      </li>
+      <li>
         <a class="<%= (headTitle === "Outstanding Events" ? "is-active" : "") %>" href="/events/outstanding">
           <span class="icon">
             <i class="fas fa-file" aria-hidden="true"></i>

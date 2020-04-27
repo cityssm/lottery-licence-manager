@@ -29,6 +29,21 @@ router.post("/doSearch", function(req, res) {
 });
 
 /*
+ * Recently Updated Events
+ */
+
+router.get("/recent", function(req, res) {
+
+  const records = licencesDB.getRecentlyUpdateEvents(req.session);
+
+  res.render("event-recent", {
+    headTitle: "Recently Updated Events",
+    records: records
+  });
+
+});
+
+/*
  * Outstanding Events Report
  */
 
@@ -39,7 +54,6 @@ router.get("/outstanding", function(_req, res) {
   });
 
 });
-
 
 router.post("/doGetOutstandingEvents", function(req, res) {
 

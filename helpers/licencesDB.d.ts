@@ -67,6 +67,7 @@ export declare function addTransaction(reqBody: any, reqSession: Express.Session
 export declare function voidTransaction(licenceID: number, transactionIndex: number, reqSession: Express.SessionData): boolean;
 export declare function getEventTableStats(): llm.LotteryEventStats;
 export declare function getEvents(year: number, month: number, reqSession: Express.SessionData): llm.LotteryEvent[];
+export declare function getRecentlyUpdateEvents(reqSession: Express.SessionData): llm.LotteryEvent[];
 export declare function getOutstandingEvents(reqBody: any, reqSession: Express.SessionData): llm.LotteryEvent[];
 export declare function getEventFinancialSummary(reqBody: any): any[];
 export declare function getEvent(licenceID: number, eventDate: number, reqSession: Express.SessionData): llm.LotteryEvent;
