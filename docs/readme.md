@@ -16,6 +16,11 @@ How do I maintain organization records?
 How do I search lottery licence records?
 How do I maintain lottery licences?
 
+[Lottery Events](events.md)<br />
+What are lottery events?
+How do I find lottery event records?
+How do I report on lottery events?
+
 
 ## Administrator Documentation
 
