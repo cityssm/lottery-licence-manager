@@ -54,8 +54,9 @@ declare type Config_LicencesConfig = {
     externalReceiptNumber?: Config_ExternalReceiptNumber;
 };
 declare type Config_ExternalLicenceNumber = {
-    fieldLabel: string;
+    fieldLabel?: string;
     newCalculation?: "" | "range";
+    isPreferredID?: boolean;
 };
 declare type Config_ExternalReceiptNumber = {
     fieldLabel: string;

@@ -3,25 +3,33 @@
 <div class="columns is-variable is-4-mobile is-4-tablet is-block-print" id="is-site-layout">
   <%- include("_sideMenu-events"); -%>
   <div class="column is-block-print is-full-print">
-    <nav class="breadcrumb">
-      <ul>
-        <li><a href="/dashboard">Home</a></li>
-        <li><a href="/events">Events</a></li>
-        <li class="is-active"><a href="#" aria-current="page">
-          Events for Licence #<%= event.licenceID %>
-        </a></li>
-      </ul>
-    </nav>
 
-    <div class="level">
-      <div class="level-left">
-        <h1 class="title is-1">
-          Licence #<%=event.licenceID %><br />
-          <small>Event <%= event.eventDateString %></small>
-        </h1>
+    <div class="columns">
+      <div class="column">
+        <nav class="breadcrumb">
+          <ul>
+            <li><a href="/dashboard">Home</a></li>
+            <li><a href="/events">Events</a></li>
+            <li>
+              <a href="/licences/<%= event.licenceID %>">
+                <% if (configFns.getProperty("licences.externalLicenceNumber.isPreferredID")) { %>
+                  Licence <%= licence.externalLicenceNumber %>
+                <% } else { %>
+                  Licence #<%= event.licenceID %>
+                <% } %>
+              </a>
+            </li>
+            <li><a href="/events/<%= event.licenceID %>/<%= event.eventDate %>">
+               Event <%= event.eventDateString %>
+            </a></li>
+            <li class="is-active"><a href="#" aria-current="page">
+              Update
+            </a></li>
+          </ul>
+        </nav>
       </div>
       <% if (licence.events.length > 1) { %>
-        <div class="level-right is-hidden-print">
+        <div class="column is-narrow is-hidden-print">
           <div class="field has-addons justify-flex-end has-margin-left-10">
             <div class="control">
               <label class="button is-small is-static" for="eventNav--eventDate">Switch Dates</label>
@@ -45,8 +53,26 @@
       <% } %>
     </div>
 
-    <div class="columns is-block-print">
+    <div class="columns">
+      <div class="column is-5">
+        <h1 class="title is-1">
+          <% if (configFns.getProperty("licences.externalLicenceNumber.isPreferredID")) { %>
+            Licence <%= licence.externalLicenceNumber %>
+          <% } else { %>
+            Licence #<%= event.licenceID %>
+          <% } %>
+          <br />
+        </h1>
+      </div>
       <div class="column">
+        <h1 class="title is-1">
+          Event <%= event.eventDateString %>
+        </h1>
+      </div>
+    </div>
+
+    <div class="columns is-desktop">
+      <div class="column is-5-desktop">
         <%- include('_event-view_edit-snapshot'); -%>
       </div>
       <div class="column">
@@ -60,7 +86,7 @@
               <div class="field">
                 <label class="label" for="event--reportDateString">Report Date</label>
                 <div class="control">
-                  <input class="input" id="event--reportDateString" name="reportDateString" type="date" value="<%= event.reportDateString %>" />
+                  <input class="input" id="event--reportDateString" name="reportDateString" type="date" value="<%= event.reportDateString %>" min="<%= event.eventDateString %>" max="<%= dateTimeFns.dateToString(new Date()) %>" />
                 </div>
               </div>
             </div>

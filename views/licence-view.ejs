@@ -7,14 +7,26 @@
       <ul>
         <li><a href="/dashboard">Home</a></li>
         <li><a href="/licences">Lottery Licences</a></li>
-        <li class="is-active"><a href="#" aria-current="page">Licence #<%= licence.licenceID %></a></li>
+        <li class="is-active">
+          <a href="#" aria-current="page">
+            <% if (configFns.getProperty("licences.externalLicenceNumber.isPreferredID")) { %>
+              Licence <%= licence.externalLicenceNumber %>
+            <% } else { %>
+              Licence #<%= licence.licenceID %>
+            <% } %>
+          </a>
+        </li>
       </ul>
     </nav>
 
     <div class="level">
       <div class="level-left">
         <h1 class="title is-1">
-          Licence #<%= licence.licenceID %>
+          <% if (configFns.getProperty("licences.externalLicenceNumber.isPreferredID")) { %>
+            Licence <%= licence.externalLicenceNumber %>
+          <% } else { %>
+            Licence #<%= licence.licenceID %>
+          <% } %>
         </h1>
       </div>
       <% if (licence.issueDate) { %>

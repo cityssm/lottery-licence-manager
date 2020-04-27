@@ -9,10 +9,7 @@ config.session = {
     doKeepAlive: true
 };
 config.defaults.city = "Sault Ste. Marie";
-config.licences.externalLicenceNumber = {
-    fieldLabel: "Municipal Licence Number",
-    newCalculation: "range"
-};
+config.licences.externalLicenceNumber.newCalculation = "range";
 config.licences.externalReceiptNumber = {
     fieldLabel: "GP Receipt Number"
 };

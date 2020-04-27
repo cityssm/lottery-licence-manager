@@ -34,10 +34,7 @@ config.defaults.city = "Sault Ste. Marie";
  * LICENCE SETTINGS
  */
 
-config.licences.externalLicenceNumber = {
-  fieldLabel: "Municipal Licence Number",
-  newCalculation: "range"
-};
+config.licences.externalLicenceNumber.newCalculation = "range";
 
 
 config.licences.externalReceiptNumber = {

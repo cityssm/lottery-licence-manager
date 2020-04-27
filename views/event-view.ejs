@@ -3,26 +3,29 @@
 <div class="columns is-variable is-4-mobile is-4-tablet is-block-print" id="is-site-layout">
   <%- include("_sideMenu-events"); -%>
   <div class="column is-block-print is-full-print">
-    <nav class="breadcrumb">
-      <ul>
-        <li><a href="/dashboard">Home</a></li>
-        <li><a href="/events">Events</a></li>
-        <li class="is-active"><a href="#" aria-current="page">
-            Events for Licence #
-            <%= event.licenceID %>
-          </a></li>
-      </ul>
-    </nav>
 
-    <div class="level">
-      <div class="level-left">
-        <h1 class="title is-1">
-          Licence #
-          <%=event.licenceID %>
-          <br class="is-hidden-print" />
-          <small>Event
-            <%= event.eventDateString %></small>
-        </h1>
+    <div class="columns">
+      <div class="column">
+        <nav class="breadcrumb">
+          <ul>
+            <li><a href="/dashboard">Home</a></li>
+            <li><a href="/events">Events</a></li>
+            <li>
+              <a href="/licences/<%= event.licenceID %>">
+                <% if (configFns.getProperty("licences.externalLicenceNumber.isPreferredID")) { %>
+                  Licence <%= licence.externalLicenceNumber %>
+                <% } else { %>
+                  Licence #<%= event.licenceID %>
+                <% } %>
+              </a>
+            </li>
+            <li class="is-active">
+              <a href="#" aria-current="page">
+                Event <%= event.eventDateString %>
+              </a>
+            </li>
+          </ul>
+        </nav>
       </div>
       <%
         let hasOtherEvents = false;
@@ -38,7 +41,7 @@
           hasOtherEvents = true;
 
       %>
-      <div class="level-right is-hidden-print">
+      <div class="column is-narrow is-hidden-print">
         <div class="field is-grouped align-items-center justify-flex-end">
           <div class="field has-addons has-margin-left-20">
             <div class="control">
@@ -82,17 +85,36 @@
       %>
     </div>
 
-    <% if (event.canUpdate) { %>
-    <div class="fixed-container is-fixed-bottom-right has-margin-20 has-text-right is-hidden-print">
-      <a class="button is-circle is-primary has-tooltip-left" data-tooltip="Edit this Event" href="/events/<%= licence.licenceID %>/<%= event.eventDate %>/edit">
-        <i class="fas fa-pencil-alt" aria-hidden="true"></i>
-        <span class="sr-only">Edit this Event</span>
-      </a>
-    </div>
-    <% } %>
-
     <div class="columns">
       <div class="column is-5">
+        <h1 class="title is-1">
+          <a class="has-tooltip-right" data-tooltip="View Licence" href="/licences/<%= event.licenceID %>">
+            <% if (configFns.getProperty("licences.externalLicenceNumber.isPreferredID")) { %>
+              Licence <%= licence.externalLicenceNumber %>
+            <% } else { %>
+              Licence #<%= event.licenceID %>
+            <% } %>
+          </a>
+        </h1>
+      </div>
+      <div class="column">
+        <h1 class="title is-1">
+          Event <%= event.eventDateString %>
+        </h1>
+      </div>
+    </div>
+
+    <% if (event.canUpdate) { %>
+      <div class="fixed-container is-fixed-bottom-right has-margin-20 has-text-right is-hidden-print">
+        <a class="button is-circle is-primary has-tooltip-left" data-tooltip="Edit this Event" href="/events/<%= licence.licenceID %>/<%= event.eventDate %>/edit">
+          <i class="fas fa-pencil-alt" aria-hidden="true"></i>
+          <span class="sr-only">Edit this Event</span>
+        </a>
+      </div>
+    <% } %>
+
+    <div class="columns is-desktop">
+      <div class="column is-5-desktop">
         <%- include('_event-view_edit-snapshot'); -%>
       </div>
       <div class="column">

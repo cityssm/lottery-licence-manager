@@ -66,6 +66,7 @@ const configFallbackValues = {
 
   "licences.externalLicenceNumber.fieldLabel": "External Licence Number",
   "licences.externalLicenceNumber.newCalculation": "",
+  "licences.externalLicenceNumber.isPreferredID": false,
 
   "licences.externalReceiptNumber.fieldLabel": "Receipt Number",
 

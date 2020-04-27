@@ -21,7 +21,11 @@ config.licences = {
             licenceHasErrors: licenceHasErrors
         };
     },
-    printTemplate: "licence-print-agco.ejs"
+    printTemplate: "licence-print-agco.ejs",
+    externalLicenceNumber: {
+        fieldLabel: "Municipal Licence Number",
+        isPreferredID: true
+    }
 };
 config.licenceTypes = [
     {

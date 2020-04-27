@@ -4,22 +4,6 @@
   </h2>
   <div class="panel-block is-block">
     <div class="columns">
-      <div class="column is-6">
-        <p>
-          <strong>Licence ID</strong><br />
-          <a class="has-tooltip-right" data-tooltip="View Licence" href="/licences/<%= licence.licenceID %>">
-            <%= licence.licenceID %>
-          </a>
-        </p>
-      </div>
-      <div class="column is-6">
-        <p>
-          <strong><%= configFns.getProperty("licences.externalLicenceNumber.fieldLabel") %></strong><br />
-          <%= licence.externalLicenceNumber %>
-        </p>
-      </div>
-    </div>
-    <div class="columns">
       <div class="column">
         <p>
           <strong>Organization</strong><br />
@@ -83,7 +67,7 @@
       <div class="column">
         <p>
           <strong>Total Prize Value</strong><br />
-          $ <%= (licence.totalPrizeValue || 0).toFixed(2) %>
+          $<%= (licence.totalPrizeValue || 0).toFixed(2) %>
         </p>
       </div>
     </div>
@@ -91,7 +75,7 @@
       <div class="column">
         <p>
           <strong>Licence Fee</strong><br />
-          $ <%= licence.licenceFee.toFixed(2) %>
+          $<%= licence.licenceFee.toFixed(2) %>
         </p>
       </div>
       <div class="column">

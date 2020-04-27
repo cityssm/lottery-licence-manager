@@ -65,8 +65,9 @@ type Config_LicencesConfig = {
 };
 
 type Config_ExternalLicenceNumber = {
-  fieldLabel: string,
-  newCalculation?: "" | "range"
+  fieldLabel?: string,
+  newCalculation?: "" | "range",
+  isPreferredID?: boolean
 };
 
 type Config_ExternalReceiptNumber = {

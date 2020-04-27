@@ -82,7 +82,12 @@
   function setUnsavedChanges() {
 
     cityssm.enableNavBlocker();
-    eventDateNavEle.setAttribute("disabled", "disabled");
+
+    if (eventDateNavEle) {
+
+      eventDateNavEle.setAttribute("disabled", "disabled");
+      
+    }
 
     formMessageEle.innerHTML = "<span class=\"tag is-light is-info is-medium\">" +
       "<span class=\"icon\"><i class=\"fas fa-exclamation-triangle\" aria-hidden=\"true\"></i></span>" +
