@@ -75,6 +75,12 @@ export declare function getPastEventBankingInformation(licenceID: number): any[]
 export declare function updateEvent(reqBody: any, reqSession: Express.SessionData): boolean;
 export declare function deleteEvent(licenceID: number, eventDate: number, reqSession: Express.SessionData): boolean;
 export declare function pokeEvent(licenceID: number, eventDate: number, reqSession: Express.SessionData): boolean;
+export declare function getLicenceActivityByDateRange(startDate: number, endDate: number, reqBody: any): {
+    startDateString: string;
+    endDateString: string;
+    licences: any;
+    events: any;
+};
 export declare function getApplicationSettings(): any[];
 export declare function getApplicationSetting(settingKey: string): string;
 export declare function updateApplicationSetting(settingKey: string, settingValue: string, reqSession: Express.SessionData): boolean;

@@ -29,6 +29,36 @@ router.post("/doSearch", function(req, res) {
 });
 
 /*
+ * Events by Week
+ */
+
+router.get("/byWeek", function(_req, res) {
+
+  res.render("event-byWeek", {
+    headTitle: "Events By Week"
+  });
+
+});
+
+router.post("/doGetEventsByWeek", function(req, res) {
+
+  const dateWithinWeek = dateTimeFns.dateStringToDate(req.body.eventDate);
+
+  dateWithinWeek.setDate(dateWithinWeek.getDate() - dateWithinWeek.getDay());
+
+  const startDateInteger = dateTimeFns.dateToInteger(dateWithinWeek);
+
+  dateWithinWeek.setDate(dateWithinWeek.getDate() + 6);
+
+  const endDateInteger = dateTimeFns.dateToInteger(dateWithinWeek);
+
+  const activity = licencesDB.getLicenceActivityByDateRange(startDateInteger, endDateInteger, req.body);
+
+  res.json(activity);
+
+});
+
+/*
  * Recently Updated Events
  */
 

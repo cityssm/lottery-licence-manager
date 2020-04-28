@@ -37,7 +37,9 @@
       </div>
       <input class="input is-inline has-width-100 has-text-centered" id="filter--year" type="number"
         min="<%= (eventTableStats ? eventTableStats.eventYearMin : "1970") %>"
-        max="<%= (eventTableStats ? eventTableStats.eventYearMax : currentDate.getFullYear() + 2) %>" step="1" value="<%= currentDate.getFullYear() %>" required />
+        max="<%= (eventTableStats ? eventTableStats.eventYearMax : currentDate.getFullYear() + 2) %>"
+        step="1" value="<%= currentDate.getFullYear() %>" required
+        onwheel="return false" />
       <button class="button" id="filter--next" data-tooltip="Next Month" type="button">
         <i class="fas fa-arrow-right" aria-hidden="true"></i>
         <span class="sr-only">Next Month</span>

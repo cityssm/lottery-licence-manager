@@ -13,6 +13,20 @@ router.get("/", function (_req, res) {
 router.post("/doSearch", function (req, res) {
     res.json(licencesDB.getEvents(req.body.year, req.body.month, req.session));
 });
+router.get("/byWeek", function (_req, res) {
+    res.render("event-byWeek", {
+        headTitle: "Events By Week"
+    });
+});
+router.post("/doGetEventsByWeek", function (req, res) {
+    const dateWithinWeek = dateTimeFns.dateStringToDate(req.body.eventDate);
+    dateWithinWeek.setDate(dateWithinWeek.getDate() - dateWithinWeek.getDay());
+    const startDateInteger = dateTimeFns.dateToInteger(dateWithinWeek);
+    dateWithinWeek.setDate(dateWithinWeek.getDate() + 6);
+    const endDateInteger = dateTimeFns.dateToInteger(dateWithinWeek);
+    const activity = licencesDB.getLicenceActivityByDateRange(startDateInteger, endDateInteger, req.body);
+    res.json(activity);
+});
 router.get("/recent", function (req, res) {
     const records = licencesDB.getRecentlyUpdateEvents(req.session);
     res.render("event-recent", {

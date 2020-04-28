@@ -1,0 +1,34 @@
+<%- include('_header'); -%>
+
+<div class="columns is-variable is-4-mobile is-4-tablet is-block-print" id="is-site-layout">
+  <%- include("_sideMenu-events"); -%>
+  <div class="column">
+    <nav class="breadcrumb">
+      <ul>
+        <li><a href="/dashboard">Home</a></li>
+        <li><a href="/events">Events</a></li>
+        <li class="is-active"><a href="#" aria-current="page">Events By Week</a></li>
+      </ul>
+    </nav>
+
+    <h1 class="title is-1">
+      Events By Week
+    </h1>
+
+    <div class="box">
+      <input class="input" id="filter--eventDate" type="date" value="<%= dateTimeFns.dateToString(new Date()) %>" required />
+    </div>
+
+    <div id="container--events"></div>
+  </div>
+</div>
+
+<%- include('_footerA'); -%>
+
+<script>
+  llm.config_days = <%- JSON.stringify(dateTimeFns.days) %>;
+  llm.config_licenceTypes = <%- JSON.stringify(configFns.getLicenceTypeKeyToNameObject()) %>;
+</script>
+<script src="/javascripts/event-byWeek.min.js"></script>
+
+<%- include('_footerB'); -%>

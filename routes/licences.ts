@@ -471,8 +471,13 @@ router.get("/:licenceID", function(req, res) {
 
   const organization = licencesDB.getOrganization(licence.organizationID, req.session);
 
+  const headTitle =
+    configFns.getProperty("licences.externalLicenceNumber.isPreferredID") ?
+      "Licence " + licence.externalLicenceNumber :
+      "Licence #" + licenceID;
+
   res.render("licence-view", {
-    headTitle: "Licence #" + licenceID,
+    headTitle: headTitle,
     licence: licence,
     organization: organization
   });
@@ -568,10 +573,10 @@ router.get("/:licenceID/print", function(req, res, next) {
         res.send(pdf);
 
       }, {
-        format: "Letter",
-        printBackground: true,
-        preferCSSPageSize: true
-      });
+          format: "Letter",
+          printBackground: true,
+          preferCSSPageSize: true
+        });
 
       return null;
 

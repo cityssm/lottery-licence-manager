@@ -114,18 +114,33 @@
           <a id="organizationTab--representatives" role="tab" href="#organizationTabContent--representatives">
             <span class="icon"><i class="fas fa-users" aria-hidden="true"></i></span>
             <span>Representatives</span>
+            <% if (organization.organizationRepresentatives.length > 0) { %>
+              <span class="tag is-info is-rounded has-margin-left-10">
+                <%= organization.organizationRepresentatives.length %>
+              </span>
+            <% } %>
           </a>
         </li>
         <li role="presentation">
           <a id="organizationTab--licences" role="tab" href="#organizationTabContent--licences">
             <span class="icon"><i class="fas fa-certificate" aria-hidden="true"></i></span>
             <span>Licences</span>
+            <% if (licences.length > 0) { %>
+              <span class="tag is-info is-rounded has-margin-left-10">
+                <%= licences.length %>
+              </span>
+            <% } %>
           </a>
         </li>
         <li role="presentation">
           <a id="organizationTab--remarks" role="tab" href="#organizationTabContent--remarks">
             <span class="icon"><i class="fas fa-comment" aria-hidden="true"></i></span>
             <span>Remarks</span>
+            <% if (remarks.length > 0) { %>
+              <span class="tag is-info is-rounded has-margin-left-10">
+                <%= remarks.length %>
+              </span>
+            <% } %>
           </a>
         </li>
         <li role="presentation">

@@ -273,8 +273,11 @@ router.get("/:licenceID", function (req, res) {
         return;
     }
     const organization = licencesDB.getOrganization(licence.organizationID, req.session);
+    const headTitle = configFns.getProperty("licences.externalLicenceNumber.isPreferredID") ?
+        "Licence " + licence.externalLicenceNumber :
+        "Licence #" + licenceID;
     res.render("licence-view", {
-        headTitle: "Licence #" + licenceID,
+        headTitle: headTitle,
         licence: licence,
         organization: organization
     });
