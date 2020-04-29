@@ -16,7 +16,26 @@
     </h1>
 
     <div class="box">
-      <input class="input" id="filter--eventDate" type="date" value="<%= dateTimeFns.dateToString(new Date()) %>" required />
+      <div class="columns">
+        <div class="column">
+          <div class="field">
+            <label class="label" for="filter--eventDate">Event Date</label>
+            <div class="control">
+              <input class="input" id="filter--eventDate" type="date" value="<%= dateTimeFns.dateToString(new Date()) %>" required />
+            </div>
+          </div>
+        </div>
+        <div class="column align-self-flex-end">
+          <div class="field has-margin-bottom-10">
+            <div class="control">
+              <div class="b-checkbox is-primary">
+                <input id="filter--showLicences" type="checkbox" />
+                <label for="filter--showLicences">Show Active Licences</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div id="container--events"></div>

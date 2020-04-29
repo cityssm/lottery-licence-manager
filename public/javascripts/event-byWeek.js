@@ -2,7 +2,10 @@
 
 (function() {
 
+  const currentDateString = cityssm.dateToString(new Date());
+
   const eventDateFilterEle = document.getElementById("filter--eventDate");
+  const showLicencesCheckboxEle = document.getElementById("filter--showLicences");
   const eventContainerEle = document.getElementById("container--events");
 
   const dayNames = llm.config_days;
@@ -38,7 +41,7 @@
       }
 
       const tableEle = document.createElement("table");
-      tableEle.className = "table is-fixed is-fullwidth";
+      tableEle.className = "table is-fixed is-fullwidth is-bordered";
 
       // Construct header
 
@@ -48,9 +51,14 @@
 
       for (let weekDayIndex = 0; weekDayIndex <= 6; weekDayIndex += 1) {
 
-        headerTheadHTML += "<th class=\"has-text-centered\">" +
+        const headerDateString = cityssm.dateToString(headerDate);
+
+        headerTheadHTML += "<th class=\"has-text-centered" +
+          (headerDateString === currentDateString ?
+            " has-background-primary has-text-white" :
+            " has-background-white-ter") + "\">" +
           dayNames[weekDayIndex] + "<br />" +
-          cityssm.dateToString(headerDate) +
+          headerDateString +
           "</th>";
 
         headerDate.setDate(headerDate.getDate() + 1);
@@ -64,6 +72,13 @@
       // Construct licences tbody
 
       const licenceTbodyEle = document.createElement("tbody");
+      licenceTbodyEle.id = "tbody--licences";
+
+      if (!showLicencesCheckboxEle.checked) {
+
+        licenceTbodyEle.className = "is-hidden";
+
+      }
 
       for (let licenceIndex = 0; licenceIndex < responseJSON.licences.length; licenceIndex += 1) {
 
@@ -111,7 +126,7 @@
         licenceTbodyEle.insertAdjacentHTML("beforeend", "<tr>" +
           leftSideFiller +
           "<td colspan=\"" + licenceColspan + "\">" +
-          "<a class=\"button has-text-left is-small is-block has-height-auto is-wrap is-link is-light\"" +
+          "<a class=\"button has-text-left is-small is-block has-height-auto is-wrap is-primary is-light\"" +
           " data-tooltip=\"View Licence\"" +
           " href=\"/licences/" + licenceRecord.licenceID + "\">" +
 
@@ -166,6 +181,87 @@
 
       // Construct events tbody
 
+      const eventTdEles = [
+        document.createElement("td"),
+        document.createElement("td"),
+        document.createElement("td"),
+        document.createElement("td"),
+        document.createElement("td"),
+        document.createElement("td"),
+        document.createElement("td")
+      ];
+
+      for (let eventIndex = 0; eventIndex < responseJSON.events.length; eventIndex += 1) {
+
+        const eventRecord = responseJSON.events[eventIndex];
+
+        const licenceType = licenceTypes[eventRecord.licenceTypeKey];
+
+        const tdIndex = cityssm.dateStringToDate(eventRecord.eventDateString).getDay();
+
+        eventTdEles[tdIndex].insertAdjacentHTML(
+          "beforeend",
+          "<a class=\"button has-margin-bottom-5 has-text-left is-small is-block has-height-auto is-wrap is-link is-light\"" +
+          " data-tooltip=\"View Event\"" +
+          " href=\"/events/" + eventRecord.licenceID + "/" + eventRecord.eventDate + "\">" +
+
+          ("<div class=\"columns has-margin-bottom-0 is-variable is-1\">" +
+            "<div class=\"column has-padding-bottom-5 is-narrow\">" +
+            "<i class=\"fas fa-fw fa-clock\" aria-hidden=\"true\"></i>" +
+            "</div>" +
+            "<div class=\"column has-padding-bottom-5\">" +
+            eventRecord.startTimeString +
+            "</div>" +
+            "</div>") +
+
+          ("<div class=\"columns has-margin-bottom-0 is-variable is-1\">" +
+            "<div class=\"column has-padding-bottom-5 is-narrow\">" +
+            "<i class=\"fas fa-fw fa-certificate\" aria-hidden=\"true\"></i>" +
+            "</div>" +
+            "<div class=\"column has-padding-bottom-5 has-text-weight-semibold\">" +
+            eventRecord.externalLicenceNumber + "<br />" +
+            (licenceType ? licenceType : eventRecord.licenceTypeKey) +
+            "</div>" +
+            "</div>") +
+
+          ("<div class=\"columns has-margin-bottom-0 is-variable is-1\">" +
+            "<div class=\"column has-padding-bottom-5 is-narrow\">" +
+            "<i class=\"fas fa-fw fa-map-marker-alt\" aria-hidden=\"true\"></i>" +
+            "</div>" +
+            "<div class=\"column has-padding-bottom-5\">" +
+            (eventRecord.locationName === "" ? eventRecord.locationAddress1 : eventRecord.locationName) +
+            "</div>" +
+            "</div>") +
+
+          ("<div class=\"columns has-margin-bottom-0 is-variable is-1\">" +
+            "<div class=\"column has-padding-bottom-5 is-narrow\">" +
+            "<i class=\"fas fa-fw fa-users\" aria-hidden=\"true\"></i>" +
+            "</div>" +
+            "<div class=\"column has-padding-bottom-5\">" +
+            eventRecord.organizationName +
+            "</div>" +
+            "</div>") +
+
+          "</a>"
+        );
+
+      }
+
+      const eventTrEle = document.createElement("tr");
+
+      for (let tdIndex = 0; tdIndex < eventTdEles.length; tdIndex += 1) {
+
+        eventTrEle.appendChild(eventTdEles[tdIndex]);
+
+      }
+
+      const eventTbodyEle = document.createElement("tbody");
+      eventTbodyEle.appendChild(eventTrEle);
+
+      tableEle.appendChild(eventTbodyEle);
+
+      // Display table
+
       eventContainerEle.appendChild(tableEle);
 
     });
@@ -175,5 +271,19 @@
   eventDateFilterEle.addEventListener("change", refreshEvents);
 
   refreshEvents();
+
+  showLicencesCheckboxEle.addEventListener("change", function() {
+
+    if (showLicencesCheckboxEle.checked) {
+
+      document.getElementById("tbody--licences").classList.remove("is-hidden");
+
+    } else {
+
+      document.getElementById("tbody--licences").classList.add("is-hidden");
+
+    }
+
+  });
 
 }());
