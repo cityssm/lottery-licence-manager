@@ -5,13 +5,13 @@
       <h3 class="modal-card-title">Add a Transaction</h3>
       <button class="delete is-close-modal-button" aria-label="close" type="button"></button>
     </header>
-    <form>
-      <section class="modal-card-body">
+    <section class="modal-card-body">
+      <form id="form--transactionAdd">
         <div class="columns">
           <div class="column">
             <p>
               <strong>Licence Fee</strong><br />
-              $ <span id="transactionAdd--licenceFee"></span>
+              $<span id="transactionAdd--licenceFee"></span>
             </p>
           </div>
           <div class="column is-narrow align-self-flex-end">
@@ -20,7 +20,7 @@
           <div class="column">
             <p>
               <strong>Transaction Total</strong><br />
-              $ <span id="transactionAdd--transactionTotal"></span>
+              $<span id="transactionAdd--transactionTotal"></span>
             </p>
           </div>
           <div class="column is-narrow align-self-flex-end">
@@ -29,7 +29,7 @@
           <div class="column">
             <p>
               <strong>Discrepancy</strong><br />
-              $ <span id="transactionAdd--discrepancy"></span>
+              $<span id="transactionAdd--discrepancy"></span>
             </p>
           </div>
         </div>
@@ -58,18 +58,18 @@
             </div>
           </div>
         </div>
-        <div class="field">
+        <div class="field has-margin-bottom-20">
           <label class="label" for="transactionAdd--transactionNote">Notes</label>
           <div class="control">
             <textarea class="textarea" id="transactionAdd--transactionNote" name="transactionNote"></textarea>
           </div>
         </div>
-      </section>
-      <footer class="modal-card-foot justify-right">
-        <button class="button is-close-modal-button" type="button">Cancel</button>
-        <button class="button is-success is-hidden" id="is-add-transaction-issue-licence-button" type="button">Add Transaction and Issue Licence</button>
-        <button class="button is-success" type="submit">Add Transaction</button>
-      </footer>
-    </form>
+      </form>
+    </section>
+    <footer class="modal-card-foot justify-right">
+      <button class="button is-close-modal-button" type="button">Cancel</button>
+      <button class="button is-success is-hidden" id="is-add-transaction-issue-licence-button" type="button">Add Transaction and Issue Licence</button>
+      <button class="button is-success" type="submit" form="form--transactionAdd">Add Transaction</button>
+    </footer>
   </div>
 </div>

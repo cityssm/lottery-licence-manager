@@ -26,10 +26,12 @@ function canUpdateObject(obj, reqSession) {
         return canUpdate;
     }
     if (canUpdate) {
-        const currentDateInteger = dateTimeFns.dateToInteger(new Date());
         switch (obj.recordType) {
             case "licence":
-                if (obj.endDate < currentDateInteger) {
+                const lockDate = new Date();
+                lockDate.setMonth(lockDate.getMonth() - 1);
+                const lockDateInteger = dateTimeFns.dateToInteger(lockDate);
+                if (obj.endDate < lockDateInteger) {
                     canUpdate = false;
                 }
                 break;
@@ -143,12 +145,15 @@ function getLicenceWithDB(db, licenceID, reqSession, queryOptions) {
             " and recordDelete_timeMillis is null" +
             " order by transactionDate, transactionTime, transactionIndex")
             .all(licenceID);
+        let licenceTransactionTotal = 0;
         for (let index = 0; index < transactions.length; index += 1) {
             const amendmentObj = transactions[index];
             amendmentObj.transactionDateString = dateTimeFns.dateIntegerToString(amendmentObj.transactionDate);
             amendmentObj.transactionTimeString = dateTimeFns.timeIntegerToString(amendmentObj.transactionTime);
+            licenceTransactionTotal += amendmentObj.transactionAmount;
         }
         licenceObj.licenceTransactions = transactions;
+        licenceObj.licenceTransactionTotal = licenceTransactionTotal;
     }
     return licenceObj;
 }

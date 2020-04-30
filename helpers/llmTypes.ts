@@ -283,8 +283,10 @@ export interface LotteryLicence extends Location, Record {
 
   licenceTicketTypes: LotteryLicenceTicketType[]
   licenceFields: FieldData[],
-  licenceTransactions: LotteryLicenceTransaction[],
   licenceAmendments: LotteryLicenceAmendments[],
+
+  licenceTransactionTotal: number,
+  licenceTransactions: LotteryLicenceTransaction[],
 
   events: LotteryEvent[]
 };

@@ -56,13 +56,17 @@ function canUpdateObject(obj: llm.Record, reqSession: Express.SessionData) {
 
   if (canUpdate) {
 
-    const currentDateInteger = dateTimeFns.dateToInteger(new Date());
 
     switch (obj.recordType) {
 
       case "licence":
 
-        if ((<llm.LotteryLicence>obj).endDate < currentDateInteger) {
+        const lockDate = new Date();
+        lockDate.setMonth(lockDate.getMonth() - 1);
+
+        const lockDateInteger = dateTimeFns.dateToInteger(lockDate);
+
+        if ((<llm.LotteryLicence>obj).endDate < lockDateInteger) {
 
           canUpdate = false;
 
@@ -264,15 +268,19 @@ function getLicenceWithDB(db: sqlite.Database, licenceID: number, reqSession: Ex
       " order by transactionDate, transactionTime, transactionIndex")
       .all(licenceID);
 
+    let licenceTransactionTotal = 0;
+
     for (let index = 0; index < transactions.length; index += 1) {
 
       const amendmentObj = transactions[index];
       amendmentObj.transactionDateString = dateTimeFns.dateIntegerToString(amendmentObj.transactionDate);
       amendmentObj.transactionTimeString = dateTimeFns.timeIntegerToString(amendmentObj.transactionTime);
 
+      licenceTransactionTotal += amendmentObj.transactionAmount;
     }
 
     licenceObj.licenceTransactions = transactions;
+    licenceObj.licenceTransactionTotal = licenceTransactionTotal;
 
   }
 

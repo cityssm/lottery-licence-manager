@@ -25,7 +25,12 @@
         if (responseJSON.success) {
 
           cityssm.disableNavBlocker();
-          eventDateNavEle.removeAttribute("disabled");
+
+          if (eventDateNavEle) {
+
+            eventDateNavEle.removeAttribute("disabled");
+            
+          }
 
         }
 
@@ -86,7 +91,7 @@
     if (eventDateNavEle) {
 
       eventDateNavEle.setAttribute("disabled", "disabled");
-      
+
     }
 
     formMessageEle.innerHTML = "<span class=\"tag is-light is-info is-medium\">" +

@@ -425,7 +425,7 @@
             <tr>
               <td><%= transactionObj.transactionDateString %></td>
               <td class="has-text-right">
-                $ <%= transactionObj.transactionAmount.toFixed(2) %>
+                $<%= transactionObj.transactionAmount.toFixed(2) %>
               </td>
               <td><%= transactionObj.externalReceiptNumber %></td>
               <td class="has-newline-chars"><%= transactionObj.transactionNote %></td>
@@ -442,7 +442,7 @@
                 <% if (licence.licenceFee !== transactionTotal) { %>
                   <br />
                   <span class="is-size-7 has-text-danger">
-                    $ <%= (licence.licenceFee - transactionTotal).toFixed(2) %> discrepancy
+                    $<%= (licence.licenceFee - transactionTotal).toFixed(2) %> discrepancy
                   </span>
                 <% } %>
               </td>

@@ -17,6 +17,7 @@
     }
 
     return "$" + dollarAmt.toFixed(2);
+
   }
 
   function getFinancialSummary() {
@@ -56,7 +57,7 @@
         licenceCount += licenceTypeSummaryObj.licenceCount;
 
         trEle.querySelector("[data-field='eventCount']").innerHTML =
-          (licenceTypeSummaryObj.reportDateCount === licenceTypeSummaryObj.eventCount ? "" : "<span class=\"has-text-danger\">") +
+          (licenceTypeSummaryObj.reportDateCount === licenceTypeSummaryObj.eventCount ? "" : "<span class=\"has-text-danger\" data-tooltip=\"Events Unreported\">") +
           licenceTypeSummaryObj.reportDateCount + "/" + licenceTypeSummaryObj.eventCount +
           (licenceTypeSummaryObj.reportDateCount === licenceTypeSummaryObj.eventCount ? "" : "</span>");
 
@@ -95,7 +96,7 @@
       tfootEle.querySelector("[data-field='licenceCount']").innerText = licenceCount;
 
       tfootEle.querySelector("[data-field='eventCount']").innerHTML =
-        (reportDateCount === eventCount ? "" : "<span class=\"has-text-danger\">") +
+        (reportDateCount === eventCount ? "" : "<span class=\"has-text-danger\" data-tooltip=\"Events Unreported\">") +
         reportDateCount + "/" + eventCount +
         (reportDateCount === eventCount ? "" : "</span>");
 

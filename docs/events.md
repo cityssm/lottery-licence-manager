@@ -22,6 +22,11 @@ Some suggestions, based on Sault Ste. Marie's requirements:
 Lottery events are created on the lottery licence itself.
 
 
+## View and Update a Lottery Event
+
+![Event Edit](images/event-edit.png)
+
+
 ## Related Documentation
 
 - [Organizations](organizations.md)
