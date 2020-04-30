@@ -3328,6 +3328,8 @@ export function getEventFinancialSummary(reqBody: any) {
 
   let sql = "select licenceTypeKey," +
     " count(licenceID) as licenceCount," +
+    " sum(eventCount) as eventCount," +
+    " sum(reportDateCount) as reportDateCount," +
     " sum(ifnull(licenceFee, 0)) as licenceFeeSum," +
     " sum(costs_receiptsSum) as costs_receiptsSum," +
     " sum(costs_adminSum) as costs_adminSum," +
@@ -3336,6 +3338,8 @@ export function getEventFinancialSummary(reqBody: any) {
     " sum(costs_amountDonatedSum) as costs_amountDonatedSum" +
     " from (" +
     "select l.licenceID, l.licenceTypeKey, l.licenceFee," +
+    " count(*) as eventCount," +
+    " sum(case when (e.reportDate is null or e.reportDate = 0) then 0 else 1 end) as reportDateCount," +
     " sum(ifnull(e.costs_receipts, 0)) as costs_receiptsSum," +
     " sum(ifnull(e.costs_admin,0)) as costs_adminSum," +
     " sum(ifnull(e.costs_prizesAwarded,0)) as costs_prizesAwardedSum," +
@@ -3346,7 +3350,7 @@ export function getEventFinancialSummary(reqBody: any) {
 
   if (reqBody.eventDateStartString && reqBody.eventDateStartString !== "") {
 
-    sql += " and (e.eventDate is null or e.eventDate >= ?)";
+    sql += " and e.eventDate >= ?";
 
     sqlParams.push(dateTimeFns.dateStringToInteger(reqBody.eventDateStartString));
 
@@ -3354,7 +3358,7 @@ export function getEventFinancialSummary(reqBody: any) {
 
   if (reqBody.eventDateEndString && reqBody.eventDateEndString !== "") {
 
-    sql += " and (e.eventDate is null or e.eventDate <= ?)";
+    sql += " and e.eventDate <= ?";
 
     sqlParams.push(dateTimeFns.dateStringToInteger(reqBody.eventDateEndString));
 
