@@ -6,12 +6,12 @@ const licencesDB = require("../helpers/licencesDB");
 router.get("/", function (_req, res) {
     const eventTableStats = licencesDB.getEventTableStats();
     res.render("event-search", {
-        headTitle: "Events By Month",
+        headTitle: "Lottery Events",
         eventTableStats: eventTableStats
     });
 });
 router.post("/doSearch", function (req, res) {
-    res.json(licencesDB.getEvents(req.body.year, req.body.month, req.session));
+    res.json(licencesDB.getEvents(req.body, req.session));
 });
 router.get("/byWeek", function (_req, res) {
     res.render("event-byWeek", {

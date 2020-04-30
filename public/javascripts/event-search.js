@@ -2,7 +2,8 @@
 
 (function() {
 
-  const filterMonthEle = document.getElementById("filter--month");
+  const filterExternalLicenceNumberEle = document.getElementById("filter--externalLicenceNumber");
+  const filterLicenceTypeKeyEle = document.getElementById("filter--licenceTypeKey");
   const filterYearEle = document.getElementById("filter--year");
 
   const resultsEle = document.getElementById("container--events");
@@ -14,14 +15,11 @@
       "<em>Loading events..." +
       "</p>";
 
-    const yearValue = filterYearEle.value;
-    const monthValue = filterMonthEle.value;
-    const monthName = filterMonthEle.options[filterMonthEle.selectedIndex].text;
-
     cityssm.postJSON(
       "/events/doSearch", {
-        year: yearValue,
-        month: monthValue
+        externalLicenceNumber: filterExternalLicenceNumberEle.value,
+        licenceTypeKey: filterLicenceTypeKeyEle.value,
+        eventYear: filterYearEle.value
       },
       function(eventList) {
 
@@ -29,122 +27,90 @@
 
           resultsEle.innerHTML = "<div class=\"message is-info\">" +
             "<div class=\"message-body\">" +
-            "There are no lottery events scheduled in " + monthName + " " + yearValue + "." +
+            "Your search returned no results." +
             "</div>" +
             "</div>";
 
-        } else {
+          return;
 
-          resultsEle.innerHTML = "";
+        }
 
-          let currentDate = 0;
-          let currentDateListEle;
+        const tbodyEle = document.createElement("tbody");
 
-          for (let eventIndex = 0; eventIndex < eventList.length; eventIndex += 1) {
+        for (let eventIndex = 0; eventIndex < eventList.length; eventIndex += 1) {
 
-            const eventObj = eventList[eventIndex];
+          const eventObj = eventList[eventIndex];
 
-            const licenceType = llm.config_licenceTypes[eventObj.licenceTypeKey] || eventObj.licenceTypeKey;
+          const licenceType = llm.config_licenceTypes[eventObj.licenceTypeKey] || eventObj.licenceTypeKey;
 
-            if (currentDate !== eventObj.eventDate) {
+          const eventURL = "/events/" + eventObj.licenceID + "/" + eventObj.eventDate;
 
-              if (currentDate !== 0) {
+          const trEle = document.createElement("tr");
 
-                resultsEle.insertAdjacentElement("beforeend", currentDateListEle);
-
-              }
-
-              currentDate = eventObj.eventDate;
-              resultsEle.insertAdjacentHTML(
-                "beforeend",
-                "<h2 class=\"title is-4\">" + eventObj.eventDateString + "</h2>"
-              );
-              currentDateListEle = document.createElement("ul");
-              currentDateListEle.className = "list";
-
-            }
-
-            const eventURL = "/events/" + eventObj.licenceID + "/" + eventObj.eventDate;
-
-            currentDateListEle.insertAdjacentHTML("beforeend", "<li class=\"list-item\">" +
-              "<div class=\"columns\">" +
-              ("<div class=\"column is-1\">" +
-                "<a href=\"" + eventURL + "\">" +
-                cityssm.escapeHTML(eventObj.externalLicenceNumber) + "<br />" +
-                "<small>Licence #" + eventObj.licenceID + "</small>" +
-                "</a>" +
-                "</div>") +
-              ("<div class=\"column\">" +
-                cityssm.escapeHTML(eventObj.organizationName) +
-                "</div>") +
-              ("<div class=\"column\">" +
-                licenceType + "<br />" +
-                "<small>" + cityssm.escapeHTML(eventObj.licenceDetails) + "</small>" +
-                "</div>") +
-              ("<div class=\"column\">" +
-                cityssm.escapeHTML(eventObj.locationDisplayName) + "<br />" +
-                "<small>" + eventObj.startTimeString +
-                (eventObj.startTimeString === eventObj.endTimeString ? "" : " to " + eventObj.endTimeString) +
-                "</small>" +
-                "</div>") +
-              "<div class=\"column is-1-desktop is-hidden-print has-text-right\">" +
+          trEle.innerHTML =
+            ("<td>" +
+              "<a href=\"" + eventURL + "\">" +
+              eventObj.eventDateString +
+              "</a>" +
+              "</td>") +
+            ("<td>" +
+              cityssm.escapeHTML(eventObj.externalLicenceNumber) + "<br />" +
+              "<small>Licence #" + eventObj.licenceID + "</small>" +
+              "</td>") +
+            ("<td>" +
+              cityssm.escapeHTML(eventObj.organizationName) +
+              "</td>") +
+            ("<td>" +
+              licenceType + "<br />" +
+              "<small>" + cityssm.escapeHTML(eventObj.licenceDetails) + "</small>" +
+              "</td>") +
+            ("<td>" +
+              cityssm.escapeHTML(eventObj.locationDisplayName) + "<br />" +
+              "<small>" + eventObj.startTimeString +
+              (eventObj.startTimeString === eventObj.endTimeString ? "" : " to " + eventObj.endTimeString) +
+              "</small>" +
+              "</td>") +
+            ("<td class=\"is-hidden-print has-text-right\">" +
               (eventObj.canUpdate ?
                 "<a class=\"button is-small\" href=\"" + eventURL + "/edit\">" +
                 "<span class=\"icon\"><i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i></span>" +
                 "<span>Edit</span>" +
                 "</a>" : "") +
-              "</div>" +
-              "</div>" +
-              "</li>");
+              "</td>");
 
-          }
-
-          resultsEle.insertAdjacentElement("beforeend", currentDateListEle);
+          tbodyEle.appendChild(trEle);
 
         }
 
+        cityssm.clearElement(resultsEle);
+
+        const tableEle = document.createElement("table");
+        tableEle.className = "table is-fullwidth is-striped is-hoverable";
+
+        tableEle.innerHTML = "<thead>" +
+          "<tr>" +
+          "<th>Event Date</th>" +
+          "<th>Licence</th>" +
+          "<th>Organization</th>" +
+          "<th>Licence Type</th>" +
+          "<th>Location</th>" +
+          "<th></th>" +
+          "</tr>" +
+          "</thead>";
+
+        tableEle.appendChild(tbodyEle);
+
+        resultsEle.appendChild(tableEle);
+
       }
+
     );
 
   }
 
-  document.getElementById("filter--previous").addEventListener("click", function() {
-
-    if (filterMonthEle.value === "1") {
-
-      filterMonthEle.value = "12";
-      filterYearEle.value = parseInt(filterYearEle.value) - 1;
-
-    } else {
-
-      filterMonthEle.value = parseInt(filterMonthEle.value) - 1;
-
-    }
-
-    getEvents();
-
-  });
-
-  document.getElementById("filter--next").addEventListener("click", function() {
-
-    if (filterMonthEle.value === "12") {
-
-      filterMonthEle.value = "1";
-      filterYearEle.value = parseInt(filterYearEle.value) + 1;
-
-    } else {
-
-      filterMonthEle.value = parseInt(filterMonthEle.value) + 1;
-
-    }
-
-    getEvents();
-
-  });
-
-  filterMonthEle.addEventListener("change", getEvents);
+  filterExternalLicenceNumberEle.addEventListener("change", getEvents);
+  filterLicenceTypeKeyEle.addEventListener("change", getEvents);
   filterYearEle.addEventListener("change", getEvents);
-
 
   getEvents();
 

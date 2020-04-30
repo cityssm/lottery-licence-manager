@@ -1746,7 +1746,7 @@ function getEventTableStats() {
     return eventTableStats;
 }
 exports.getEventTableStats = getEventTableStats;
-function getEvents(year, month, reqSession) {
+function getEvents(reqBody, reqSession) {
     const addCalculatedFieldsFn = function (ele) {
         ele.recordType = "event";
         ele.eventDateString = dateTimeFns.dateIntegerToString(ele.eventDate);
@@ -1762,7 +1762,8 @@ function getEvents(year, month, reqSession) {
     const db = sqlite(dbPath, {
         readonly: true
     });
-    const rows = db.prepare("select e.eventDate, e.bank_name, e.costs_receipts," +
+    const sqlParams = [reqBody.eventYear, reqBody.eventYear];
+    let sql = "select e.eventDate, e.bank_name, e.costs_receipts," +
         " l.licenceID, l.externalLicenceNumber, l.licenceTypeKey, l.licenceDetails," +
         " lo.locationName, lo.locationAddress1," +
         " l.startTime, l.endTime," +
@@ -1774,11 +1775,19 @@ function getEvents(year, month, reqSession) {
         " left join Organizations o on l.organizationID = o.organizationID" +
         " where e.recordDelete_timeMillis is null" +
         " and l.recordDelete_timeMillis is null" +
-        " and o.recordDelete_timeMillis is null" +
-        " and e.eventDate > ((? * 10000) + (? * 100))" +
-        " and e.eventDate < ((? * 10000) + (? * 100) + 99)" +
-        " order by e.eventDate, l.startTime")
-        .all(year, month, year, month);
+        " and e.eventDate > (? * 10000)" +
+        " and e.eventDate < (? * 10000) + 9999";
+    if (reqBody.externalLicenceNumber !== "") {
+        sql += " and instr(lower(l.externalLicenceNumber), ?) > 0";
+        sqlParams.push(reqBody.externalLicenceNumber);
+    }
+    if (reqBody.licenceTypeKey !== "") {
+        sql += " and l.licenceTypeKey = ?";
+        sqlParams.push(reqBody.licenceTypeKey);
+    }
+    sql += " order by e.eventDate, l.startTime";
+    const rows = db.prepare(sql)
+        .all(sqlParams);
     db.close();
     rows.forEach(addCalculatedFieldsFn);
     return rows;

@@ -3152,7 +3152,7 @@ export function getEventTableStats() {
 
 }
 
-export function getEvents(year: number, month: number, reqSession: Express.SessionData) {
+export function getEvents(reqBody: any, reqSession: Express.SessionData) {
 
   const addCalculatedFieldsFn = function(ele: llm.LotteryEvent) {
 
@@ -3177,24 +3177,42 @@ export function getEvents(year: number, month: number, reqSession: Express.Sessi
     readonly: true
   });
 
+  const sqlParams = [reqBody.eventYear, reqBody.eventYear];
+
+  let sql = "select e.eventDate, e.bank_name, e.costs_receipts," +
+    " l.licenceID, l.externalLicenceNumber, l.licenceTypeKey, l.licenceDetails," +
+    " lo.locationName, lo.locationAddress1," +
+    " l.startTime, l.endTime," +
+    " o.organizationName," +
+    " e.recordCreate_userName, e.recordCreate_timeMillis, e.recordUpdate_userName, e.recordUpdate_timeMillis" +
+    " from LotteryEvents e" +
+    " left join LotteryLicences l on e.licenceID = l.licenceID" +
+    " left join Locations lo on l.locationID = lo.locationID" +
+    " left join Organizations o on l.organizationID = o.organizationID" +
+    " where e.recordDelete_timeMillis is null" +
+    " and l.recordDelete_timeMillis is null" +
+    " and e.eventDate > (? * 10000)" +
+    " and e.eventDate < (? * 10000) + 9999";
+
+  if (reqBody.externalLicenceNumber !== "") {
+
+    sql += " and instr(lower(l.externalLicenceNumber), ?) > 0";
+    sqlParams.push(reqBody.externalLicenceNumber);
+
+  }
+
+  if (reqBody.licenceTypeKey !== "") {
+
+    sql += " and l.licenceTypeKey = ?";
+    sqlParams.push(reqBody.licenceTypeKey);
+
+  }
+
+  sql += " order by e.eventDate, l.startTime"
+
   const rows: llm.LotteryEvent[] =
-    db.prepare("select e.eventDate, e.bank_name, e.costs_receipts," +
-      " l.licenceID, l.externalLicenceNumber, l.licenceTypeKey, l.licenceDetails," +
-      " lo.locationName, lo.locationAddress1," +
-      " l.startTime, l.endTime," +
-      " o.organizationName," +
-      " e.recordCreate_userName, e.recordCreate_timeMillis, e.recordUpdate_userName, e.recordUpdate_timeMillis" +
-      " from LotteryEvents e" +
-      " left join LotteryLicences l on e.licenceID = l.licenceID" +
-      " left join Locations lo on l.locationID = lo.locationID" +
-      " left join Organizations o on l.organizationID = o.organizationID" +
-      " where e.recordDelete_timeMillis is null" +
-      " and l.recordDelete_timeMillis is null" +
-      " and o.recordDelete_timeMillis is null" +
-      " and e.eventDate > ((? * 10000) + (? * 100))" +
-      " and e.eventDate < ((? * 10000) + (? * 100) + 99)" +
-      " order by e.eventDate, l.startTime")
-      .all(year, month, year, month);
+    db.prepare(sql)
+      .all(sqlParams);
 
   db.close();
 

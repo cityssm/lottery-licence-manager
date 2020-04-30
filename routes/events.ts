@@ -16,7 +16,7 @@ router.get("/", function(_req, res) {
   const eventTableStats = licencesDB.getEventTableStats();
 
   res.render("event-search", {
-    headTitle: "Events By Month",
+    headTitle: "Lottery Events",
     eventTableStats: eventTableStats
   });
 
@@ -24,7 +24,7 @@ router.get("/", function(_req, res) {
 
 router.post("/doSearch", function(req, res) {
 
-  res.json(licencesDB.getEvents(req.body.year, req.body.month, req.session));
+  res.json(licencesDB.getEvents(req.body, req.session));
 
 });
 

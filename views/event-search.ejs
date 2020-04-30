@@ -6,44 +6,65 @@
     <nav class="breadcrumb">
       <ul>
         <li><a href="/dashboard">Home</a></li>
-        <li class="is-active"><a href="#" aria-current="page">Events</a></li>
+        <li class="is-active"><a href="#" aria-current="page">Lottery Events</a></li>
       </ul>
     </nav>
 
     <h1 class="title is-1">
-      Events By Month
+      Find a Lottery Event
     </h1>
 
-    <div class="has-text-centered has-margin-bottom-20">
-      <button class="button" id="filter--previous" data-tooltip="Previous Month" type="button">
-        <i class="fas fa-arrow-left" aria-hidden="true"></i>
-        <span class="sr-only">Previous Month</span>
-      </button>
-      <div class="select">
-        <select id="filter--month">
-          <%
-            const currentDate = new Date();
-            const currentMonth = currentDate.getMonth();
-            const months = dateTimeFns.months;
-            for (let index = 0; index < months.length; index += 1) {
-          %>
-            <option value="<%= (index + 1) %>" <%= (currentMonth === index ? " selected" : "") %>>
-              <%= months[index] %>
-            </option>
-          <%
-            }
-          %>
-        </select>
+    <div class="box">
+      <div class="columns">
+        <div class="column">
+          <div class="field">
+            <label class="label" for="filter--externalLicenceNumber"><%= configFns.getProperty("licences.externalLicenceNumber.fieldLabel") %></label>
+            <div class="control">
+              <input class="input" id="filter--externalLicenceNumber" type="text" />
+            </div>
+          </div>
+        </div>
+        <div class="column">
+          <div class="field">
+            <label class="label" for="filter--licenceTypeKey">Licence Type</label>
+            <div class="control">
+              <div class="select is-fullwidth">
+                <select id="filter--licenceTypeKey">
+                  <option value="">(All Types)</option>
+                  <%
+                    const licenceTypes = configFns.getProperty("licenceTypes");
+                    for (let licenceTypeIndex = 0; licenceTypeIndex < licenceTypes.length; licenceTypeIndex += 1) {
+                  %>
+                    <option value="<%= licenceTypes[licenceTypeIndex].licenceTypeKey %>">
+                      <%= licenceTypes[licenceTypeIndex].licenceType %>
+                    </option>
+                  <% } %>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="column">
+          <div class="field">
+            <label class="label" for="filter--year">Event Year</label>
+            <div class="control">
+              <div class="select is-fullwidth">
+                <select id="filter--year" required>
+                  <%
+                    const currentYear = new Date().getFullYear();
+                    const startYear = currentYear + 2;
+                    for (let year = startYear; year >= (eventTableStats ? eventTableStats.eventYearMin : 1970); year -= 1) {
+                  %>
+                    <option value="<%= year %>" <%= (year === currentYear ? " selected" : "") %>>
+                      <%= year %>
+                    </option>
+                  <% } %>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-      <input class="input is-inline has-width-100 has-text-centered" id="filter--year" type="number"
-        min="<%= (eventTableStats ? eventTableStats.eventYearMin : "1970") %>"
-        max="<%= (eventTableStats ? eventTableStats.eventYearMax : currentDate.getFullYear() + 2) %>"
-        step="1" value="<%= currentDate.getFullYear() %>" required
-        onwheel="return false" />
-      <button class="button" id="filter--next" data-tooltip="Next Month" type="button">
-        <i class="fas fa-arrow-right" aria-hidden="true"></i>
-        <span class="sr-only">Next Month</span>
-      </button>
     </div>
 
     <div id="container--events"></div>
