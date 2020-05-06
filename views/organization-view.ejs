@@ -6,7 +6,10 @@
     <nav class="breadcrumb">
       <ul>
         <li><a href="/dashboard">Home</a></li>
-        <li><a href="/organizations">Organizations</a></li>
+        <li><a href="/organizations">
+          <span class="icon is-small"><i class="fas fa-users" aria-hidden="true"></i></span>
+          <span>Organizations</span>
+        </a></li>
         <% if (organization.recordDelete_timeMillis) { %>
           <li><a href="/organizations/recovery">Organization Recovery</a></li>
         <% } %>

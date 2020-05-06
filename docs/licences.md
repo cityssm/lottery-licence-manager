@@ -87,6 +87,27 @@ Once a licence has been issued, further changes to the licence can be
 automatically tracked as amendments.
 
 
+## Admins Only!!!  Updating a Locked Licence
+
+This option is currently only available to users with admin access.
+
+To preserve the integrity of older records, licence records become locked
+after they have have ended and after they have not been changed for a period of time.
+
+To unlock locked licence records, administrators should visit the licence record they wish to update,
+then add `/poke` to the end of the URL.
+
+For example, if the licence URL looks like this:
+
+    http://llm.local:3000/licences/123
+
+Append `/poke` to the end, like this:
+
+    http://llm.local:3000/licences/123/poke
+
+After the page refreshes, the licence record should have the option to edit.
+
+
 ## Related Documentation
 
 - [Organizations](organizations.md)

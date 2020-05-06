@@ -9,7 +9,10 @@
         <nav class="breadcrumb">
           <ul>
             <li><a href="/dashboard">Home</a></li>
-            <li><a href="/events">Lottery Events</a></li>
+            <li><a href="/events">
+              <span class="icon is-small"><i class="fas fa-calendar" aria-hidden="true"></i></span>
+              <span>Lottery Events</span>
+            </a></li>
             <li>
               <a href="/licences/<%= event.licenceID %>">
                 <% if (configFns.getProperty("licences.externalLicenceNumber.isPreferredID")) { %>
@@ -275,81 +278,81 @@
             </tbody>
           </table>
         </div>
+      </div>
+    </div>
 
-        <div class="columns">
-          <div class="column">
-            <%- include('_event-view_edit-licenceFields'); -%>
-          </div>
-          <div class="column">
-            <%
-              const licenceType = configFns.getLicenceType(licence.licenceTypeKey);
-            %>
-            <div class="panel">
-              <h2 class="panel-heading">
-                Event Fields
-              </h2>
-              <%
-                const eventFields = licenceType.eventFields || [];
+    <div class="columns is-desktop">
+      <div class="column is-5-desktop">
+        <%- include('_event-view_edit-licenceFields'); -%>
+      </div>
+      <div class="column">
+        <%
+          const licenceType = configFns.getLicenceType(licence.licenceTypeKey);
+        %>
+        <div class="panel">
+          <h2 class="panel-heading">
+            Event Fields
+          </h2>
+          <%
+            const eventFields = licenceType.eventFields || [];
 
-                for (let fieldIndex = 0; fieldIndex < eventFields.length; fieldIndex += 1) {
-                  const eventField = eventFields[fieldIndex];
+            for (let fieldIndex = 0; fieldIndex < eventFields.length; fieldIndex += 1) {
+              const eventField = eventFields[fieldIndex];
 
-                  const inputName = licenceType.licenceTypeKey + "-" + eventField.fieldKey;
+              const inputName = licenceType.licenceTypeKey + "-" + eventField.fieldKey;
 
-                  let fieldValue = "";
+              let fieldValue = "";
 
-                  for (let savedFieldIndex = 0; savedFieldIndex < event.eventFields.length; savedFieldIndex += 1) {
-                    if (event.eventFields[savedFieldIndex].fieldKey === inputName) {
-                      event.eventFields[savedFieldIndex].isDisplayed = true;
-                      fieldValue = event.eventFields[savedFieldIndex].fieldValue;
-                      break;
-                    }
-                  }
-
-                  if (fieldValue === "") {
-                    continue;
-                  }
-
-                  const inputAttributes = eventField.inputAttributes || {};
-
-                  if (!inputAttributes.type) {
-                    inputAttributes.type = "text";
-                  }
-
-                  let inputAttributesString = "";
-
-                  for (let attributeName in inputAttributes) {
-                    inputAttributesString += " " + attributeName + "=\"" + inputAttributes[attributeName] + "\"";
-                  }
-              %>
-              <div class="panel-block">
-                <p>
-                  <strong>
-                    <%= eventField.fieldLabel || eventField.fieldKey %>
-                  </strong><br />
-                  <%= fieldValue %>
-                </p>
-              </div>
-              <%
+              for (let savedFieldIndex = 0; savedFieldIndex < event.eventFields.length; savedFieldIndex += 1) {
+                if (event.eventFields[savedFieldIndex].fieldKey === inputName) {
+                  event.eventFields[savedFieldIndex].isDisplayed = true;
+                  fieldValue = event.eventFields[savedFieldIndex].fieldValue;
+                  break;
                 }
+              }
 
-                for (let savedFieldIndex = 0; savedFieldIndex < event.eventFields.length; savedFieldIndex += 1) {
-                  const savedField = event.eventFields[savedFieldIndex];
-                  if (!savedField.isDisplayed) {
-              %>
-              <div class="panel-block">
-                <p>
-                  <strong>
-                    <%= savedField.fieldKey %></strong><br />
-                  <%= savedField.fieldValue %>
-                </p>
-              </div>
-              <%
-                  }
-                }
-              %>
-            </div>
+              if (fieldValue === "") {
+                continue;
+              }
+
+              const inputAttributes = eventField.inputAttributes || {};
+
+              if (!inputAttributes.type) {
+                inputAttributes.type = "text";
+              }
+
+              let inputAttributesString = "";
+
+              for (let attributeName in inputAttributes) {
+                inputAttributesString += " " + attributeName + "=\"" + inputAttributes[attributeName] + "\"";
+              }
+          %>
+          <div class="panel-block">
+            <p>
+              <strong>
+                <%= eventField.fieldLabel || eventField.fieldKey %>
+              </strong><br />
+              <%= fieldValue %>
+            </p>
           </div>
+          <%
+            }
+
+            for (let savedFieldIndex = 0; savedFieldIndex < event.eventFields.length; savedFieldIndex += 1) {
+              const savedField = event.eventFields[savedFieldIndex];
+              if (!savedField.isDisplayed) {
+          %>
+          <div class="panel-block">
+            <p>
+              <strong>
+                <%= savedField.fieldKey %></strong><br />
+              <%= savedField.fieldValue %>
+            </p>
+          </div>
+          <%
+              }
+            }
+          %>
         </div>
       </div>
     </div>

@@ -6,7 +6,10 @@
     <nav class="breadcrumb">
       <ul>
         <li><a href="/dashboard">Home</a></li>
-        <li><a href="/licences">Lottery Licences</a></li>
+        <li><a href="/licences">
+          <span class="icon is-small"><i class="fas fa-certificate" aria-hidden="true"></i></span>
+          <span>Lottery Licences</span>
+        </a></li>
         <% if (isCreate) { %>
           <li class="is-active"><a href="#" aria-current="page">New Licence</a></li>
         <% } else { %>

@@ -24,7 +24,35 @@ Lottery events are created on the lottery licence itself.
 
 ## View and Update a Lottery Event
 
+*Note that events are created from the licence edit view.*
+
 ![Event Edit](images/event-edit.png)
+
+Event records include banking information, a cost breakdown,
+and custom fields that vary by the type of licence.
+
+Event records are considered *reported* when the Report Date field is populated.
+
+
+## Admins Only!!!  Updating a Locked Event
+
+This option is currently only available to users with admin access.
+
+To preserve the integrity of older records, event records become locked
+after they have been reported and after they have not been changed for a period of time.
+
+To unlock locked event records, administrators should visit the event record they wish to update,
+then add `/poke` to the end of the URL.
+
+For example, if the event URL looks like this:
+
+    http://llm.local:3000/events/123/20200425
+
+Append `/poke` to the end, like this:
+
+    http://llm.local:3000/events/123/20200425/poke
+
+After the page refreshes, the event record should have the option to edit.
 
 
 ## Related Documentation
