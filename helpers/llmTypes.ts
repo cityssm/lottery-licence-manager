@@ -58,7 +58,7 @@ export type Config_BankRecordType = {
 }
 
 type Config_LicencesConfig = {
-  feeCalculationFn: (licenceObj: LotteryLicence) => {fee: string | number, message: string, licenceHasErrors: boolean},
+  feeCalculationFn: (licenceObj: LotteryLicence) => { fee: string | number, message: string, licenceHasErrors: boolean },
   printTemplate: string,
   externalLicenceNumber?: Config_ExternalLicenceNumber,
   externalReceiptNumber?: Config_ExternalReceiptNumber
@@ -79,18 +79,32 @@ export type Config_LicenceType = {
   licenceType: string,
   totalPrizeValueMax: number,
   isActive: boolean,
-  licenceFields?: Config_LicenceField[],
-  eventFields?: Config_EventField[],
+  licenceFields: Config_LicenceField[],
+  eventFields: Config_EventField[],
   ticketTypes?: Config_TicketType[]
 };
 
 type Config_LicenceField = {
-
+  fieldKey: string,
+  fieldLabel: string,
+  isActive: boolean,
+  isShownOnEvent: boolean,
+  inputAttributes: Config_FieldInputAttributes
 };
 
 type Config_EventField = {
-
+  fieldKey: string,
+  fieldLabel: string,
+  isActive: boolean,
+  inputAttributes: Config_FieldInputAttributes
 };
+
+type Config_FieldInputAttributes = {
+  type: "number" | "text",
+  min?: number,
+  max?: number,
+  step?: number
+}
 
 export type Config_TicketType = {
   ticketType: string,

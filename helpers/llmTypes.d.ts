@@ -66,12 +66,29 @@ export declare type Config_LicenceType = {
     licenceType: string;
     totalPrizeValueMax: number;
     isActive: boolean;
-    licenceFields?: Config_LicenceField[];
-    eventFields?: Config_EventField[];
+    licenceFields: Config_LicenceField[];
+    eventFields: Config_EventField[];
     ticketTypes?: Config_TicketType[];
 };
-declare type Config_LicenceField = {};
-declare type Config_EventField = {};
+declare type Config_LicenceField = {
+    fieldKey: string;
+    fieldLabel: string;
+    isActive: boolean;
+    isShownOnEvent: boolean;
+    inputAttributes: Config_FieldInputAttributes;
+};
+declare type Config_EventField = {
+    fieldKey: string;
+    fieldLabel: string;
+    isActive: boolean;
+    inputAttributes: Config_FieldInputAttributes;
+};
+declare type Config_FieldInputAttributes = {
+    type: "number" | "text";
+    min?: number;
+    max?: number;
+    step?: number;
+};
 export declare type Config_TicketType = {
     ticketType: string;
     ticketPrice: number;

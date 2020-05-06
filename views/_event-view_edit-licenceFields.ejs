@@ -1,0 +1,39 @@
+<%
+  const licenceType = configFns.getLicenceType(licence.licenceTypeKey);
+%>
+<div class="panel">
+  <h2 class="panel-heading">
+    <%= (licenceType ? licenceType.licenceType : licence.licenceTypeKey) %> Licence Fields
+  </h2>
+  <%
+    let hasFields = false;
+
+    let licenceFieldValueMap = {};
+
+    for (let fieldIndex = 0; fieldIndex < licence.licenceFields.length; fieldIndex += 1) {
+
+      const licenceField = licence.licenceFields[fieldIndex];
+      licenceFieldValueMap[licenceField.fieldKey] = licenceField.fieldValue;
+    }
+
+    for (let configIndex = 0; configIndex < licenceType.licenceFields.length; configIndex += 1) {
+
+      const licenceFieldConfig = licenceType.licenceFields[configIndex];
+
+      if (!licenceFieldConfig.isShownOnEvent) {
+        continue;
+      }
+
+      let licenceFieldValue = licenceFieldValueMap[licence.licenceTypeKey + "-" + licenceFieldConfig.fieldKey] || "";
+
+  %>
+      <div class="panel-block">
+        <p>
+          <strong><%= licenceFieldConfig.fieldLabel %></strong><br />
+          <%= (licenceFieldValue && licenceFieldValue.trim() !== "" ? licenceFieldValue : "<span class=\"has-text-grey\">(Not Set)</span>") %>
+        </p>
+      </div>
+  <%
+    }
+  %>
+</div>
