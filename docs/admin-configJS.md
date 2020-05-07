@@ -5,6 +5,8 @@
 The `data/config.js` file is used to customize your application.
 On first install, the file does not exist.  You can create one from scratch,
 or get started by using the `data/config-example.js` file as a template.
+You can also import configuration from another file, like `data/config-ontario.js`,
+then override the settings you want.
 
 ```javascript
 let config = {};
@@ -14,65 +16,97 @@ let config = {};
 module.exports = config;
 ```
 
+---
+
 
 ## `config.application = {};`
 
-Property Name | Description | Default Value
-------------- | ----------- | -------------
-`applicationName` | Make the application your own by changing the name. | `"Lottery Licence System"`
-`logoURL` | The path to a custom logo.  Square-shaped images work best. | `"/images/bingoBalls.png"`
-`httpPort` | The listening port for HTTP. | `3000`
+Property Name     | Type   | Description                                                 | Default Value
+----------------- | ------ | ----------------------------------------------------------- | --------------------------
+`applicationName` | string | Make the application your own by changing the name.         | `"Lottery Licence System"`
+`logoURL`         | string | The path to a custom logo.  Square-shaped images work best. | `"/images/bingoBalls.png"`
+`httpPort`        | number | The listening port for HTTP.                                | `3000`
+`https`           | object | The HTTPS configuration.                                    | *(Described below)*
 
 
 ### `config.application.https = {};`
 
-Property Name | Description | Default Value
-------------- | ----------- | -------------
-`port` | The listening port for HTTPS. | `null`
-`keyPath` | The path to the key file. | `null`
-`certPath` | The path to the certificate file. | `null`
-`passphrase` | The secret passphrase for the certificate. | `null`
+Property Name | Type   | Description                                | Default Value
+------------- | ------ | ------------------------------------------ | -------------
+`port`        | number | The listening port for HTTPS.              | `null`
+`keyPath`     | string | The path to the key file.                  | `null`
+`certPath`    | string | The path to the certificate file.          | `null`
+`passphrase`  | string | The secret passphrase for the certificate. | `null`
 
+---
 
 ## `config.session = {};`
 
-Property Name | Description | Default Value
-------------- | ----------- | -------------
-`cookieName` | The name of the session cookie. | `"lottery-licence-manager-user-sid"`
-`secret` | The secret used to sign the session cookie. | `"cityssm/lottery-licence-manager"`
-`maxAgeMillis` | The session timeout in milliseconds. | `3600000`
+Property Name  | Type    | Description                                 | Default Value
+-------------- | ------- | ------------------------------------------- | -------------
+`cookieName`   | string  | The name of the session cookie.             | `"lottery-licence-manager-user-sid"`
+`secret`       | string  | The secret used to sign the session cookie. | `"cityssm/lottery-licence-manager"`
+`maxAgeMillis` | number  | The session timeout in milliseconds.        | `3600000`
+`doKeepAlive`  | boolean | When `true`, the browser will ping the web application to keep the session active. | `false`
 
+---
+
+## `config.admin = {};`
+
+*Note that this property can be used to activate an admin user,
+that can then be used to create a proper admin user in the `users.db`.
+It should not be used on an ongoing basis.*
+
+Property Name     | Type   | Description                              | Default Value
+----------------- | ------ | ---------------------------------------- | -------------
+`defaultPassword` | string | A default password for the *admin* user. | `null`
+
+---
+
+## `config.user = {};`
+
+Property Name              | Type   | Description | Default Value
+-------------------------- | -------| ----------- | -------------
+`createUpdateWindowMillis` | number | The amount of time a *create only* user can update a record before it is restricted to full update users. | `3600000`
+`defaultProperties`        | object | The default properties for a new user. | `{ canCreate: false, canUpdate: false, isAdmin: false }`
+
+---
 
 ## `config.defaults = {};`
 
-Property Name | Description | Default Value
-------------- | ----------- | -------------
-`city` | The default city, used when creating new locations and organizations. | `""`
-`province` | The default province, used when creating new locations and organizations. | `""`
+Property Name | Type   | Description                                                               | Default Value
+------------- | ------ | ------------------------------------------------------------------------- | -------------
+`city`        | string | The default city, used when creating new locations and organizations.     | `""`
+`province`    | string | The default province, used when creating new locations and organizations. | `""`
 
+---
 
 ## `config.licences = {};`
 
-Property Name | Description | Default Value
-------------- | ----------- | -------------
-`feeCalculationFn` | A function that returns an object, calculating the licence fee for a given licence. | `function(licenceObject) { return { fee: 10, message: "Using base licence fee.", licenceHasErrors: false }; }`
-`printTemplate` | The name of the ejs file that generates the licence print out. | `"licence-print"`
+Property Name           | Type     | Description | Default Value
+----------------------- | -------- | ----------- | -------------
+`feeCalculationFn`      | function | A function that returns an object, calculating the licence fee for a given licence. | `function(licenceObject) { return { fee: 10, message: "Using base licence fee.", licenceHasErrors: false }; }`
+`printTemplate`         | string   | The name of the ejs file that generates the licence print out. | `"licence-print"`
+`externalLicenceNumber` | object   | The external licence number configuration. | *(Described below)*
+`externalReceiptNumber` | object   | The external receipt number configuration. | *(Described below)*
 
 
 ### `config.licences.externalLicenceNumber = {};`
 
-Property Name | Description | Default Value
-------------- | ----------- | -------------
-`fieldLabel` | The label to describe the customizable licence number. | `"External Licence Number"`
-`newCalculation` | An option to automatically calculate the new externalLicenceNumber value.  Set to `"range"` to use the calculation. | `""`
+Property Name    | Type    | Description | Default Value
+---------------- | ------- | ----------- | -------------
+`fieldLabel`     | string  | The label to describe the customizable licence number. | `"External Licence Number"`
+`newCalculation` | string  | An option to automatically calculate the new externalLicenceNumber value.  Set to `"range"` to use the calculation. | `""`
+`isPreferredID`  | boolean | When true, the external licence number will be more prominently shown. | `false`
 
 
 ### `config.licences.externalReceiptNumber = {};`
 
-Property Name | Description | Default Value
-------------- | ----------- | -------------
-`fieldLabel` | The label to describe the customizable receipt number. | `"Receipt Number"`
+Property Name | Type   | Description                                            | Default Value
+------------- | ------ | ------------------------------------------------------ | ------------------
+`fieldLabel`  | string | The label to describe the customizable receipt number. | `"Receipt Number"`
 
+---
 
 ## `config.licenceTypes = [licenceTypeA, licenceTypeB, ...];`
 
@@ -81,56 +115,59 @@ An array of licence type configuration objects.
 
 ### `licenceType = {};`
 
-Property Name | Description | Sample Value
-------------- | ----------- | ------------
-`licenceTypeKey` | The two-character key for the licence type. | `"NV"`
-`licenceType` | The human readable name of the licence type. | `"Nevada"`
-`isActive` | Whether or not the licence type is available for new licences. | `true`
-`ticketTypes` | An optional array of ticket type objects if ticket types must be tracked. | (Described below)
-`licenceFields` | An optional array of fields that are filled out alongside the licence. | (Described below)
-`eventFields` | An optional array of fields that are filled out alongside each licence event. | (Described below)
+Property Name        | Type    | Description                                                    | Sample Value
+-------------------- | ------- | -------------------------------------------------------------- | ------------
+`licenceTypeKey`     | string  | The two-character key for the licence type.                    | `"NV"`
+`licenceType`        | string  | The human readable name of the licence type.                   | `"Nevada"`
+`totalPrizeValueMax` | number  | The maximum prize value permitted for the licence type.        | `5000`
+`isActive`           | boolean | Whether or not the licence type is available for new licences. | `true`
+`ticketTypes`        | array   | An optional array of ticket type objects if ticket types must be tracked.     | *(Described below)*
+`licenceFields`      | array   | An optional array of fields that are filled out alongside the licence.        | *(Described below)*
+`eventFields`        | array   | An optional array of fields that are filled out alongside each licence event. | *(Described below)*
 
 
 #### `ticketTypes = [ticketTypeA, ticketTypeB, ...];`
 
-Property Name | Description | Sample Value
-------------- | ----------- | ------------
-`ticketType` | The one-to-five character ticket type key. | `"BN26"`
-`ticketPrice` | The price of a single ticket. | `1`
-`ticketCount` | The total number of tickets in a single unit. | `16800`
-`prizesPerDeal` | The total amount of prizes. | `11440`
-`feePerUnit` | The licence fee per unit. | `343.2`
+Property Name   | Type   | Description                                   | Sample Value
+--------------- | ------ | --------------------------------------------- | ------------
+`ticketType`    | string | The one-to-five character ticket type key.    | `"BN26"`
+`ticketPrice`   | number | The price of a single ticket.                 | `1`
+`ticketCount`   | number | The total number of tickets in a single unit. | `16800`
+`prizesPerDeal` | number | The total amount of prizes.                   | `11440`
+`feePerUnit`    | number | The licence fee per unit.                     | `343.2`
 
 
 #### `licenceFields = [licenceFieldA, licenceFieldB, ...];`
 
-Property Name | Description | Sample Value
-------------- | ----------- | ------------
-`fieldKey` | The one-to-twenty character field key. | `"units"`
-`fieldLabel` | The visible label for the field. | `"Total Number of Units"`
-`isActive` | Whether or not the field should be available on new licences. | `true`
-`inputAttributes` | An object containing HTML attributes for the field's input element. | `{ type: "number", min: 1, max: 10000, step: 1 }`
+Property Name     | Type    | Description                            | Sample Value
+----------------- | ------- | -------------------------------------- | ------------
+`fieldKey`        | string  | The one-to-twenty character field key. | `"units"`
+`fieldLabel`      | string  | The visible label for the field.       | `"Total Number of Units"`
+`isShownOnEvent`  | boolean | Whether or not the field should be shown on the event view.         | `true`
+`isActive`        | boolean | Whether or not the field should be available on new licences.       | `true`
+`inputAttributes` | object  | An object containing HTML attributes for the field's input element. | `{ type: "number", min: 1, max: 10000, step: 1 }`
 
 
 #### `eventFields = [eventFieldA, eventFieldB, ...];`
 
-Property Name | Description | Sample Value
-------------- | ----------- | ------------
-`fieldKey` | The one-to-twenty character field key. | `"distributorCommission"`
-`fieldLabel` | The visible label for the field. | `"Distributor Commission"`
-`isActive` | Whether or not the field should be available on new licences. | `true`
-`inputAttributes` | An object containing HTML attributes for the field's input element. | `{ type: "number", min: 0, max: 10000.00, step: 0.01 }`
+Property Name     | Type    | Description                            | Sample Value
+----------------- | ------- | -------------------------------------- | ------------
+`fieldKey`        | string  | The one-to-twenty character field key. | `"distributorCommission"`
+`fieldLabel`      | string  | The visible label for the field.       | `"Distributor Commission"`
+`isActive`        | boolean | Whether or not the field should be available on new licences.       | `true`
+`inputAttributes` | object  | An object containing HTML attributes for the field's input element. | `{ type: "number", min: 0, max: 10000.00, step: 0.01 }`
 
+---
 
 ## `config.amendments = {};`
 
-Property Name | Description | Default Value
-------------- | ----------- | -------------
-`displayCount` | The number of amendments to display in the licence views. | `5`
-`trackLicenceFeeUpdate` | Whether or not to create an amendment record when a licence fee is changed. | `true`
-`trackDateTimeUpdate` | Whether or not to create an amendment record when the date or time range for a licence is changed. | `true`
-`trackOrganizationUpdate` | Whether or not to create an amendment record when the organization associated with a licence is changed. | `true`
-`trackLocationUpdate` | Whether or not to create an amendment record when the location associated with a licence is changed. | `true`
-`trackTicketTypeNew` | Whether or not to create an amendment record when a new ticket type is added to a licence. | `true`
-`trackTicketTypeUpdate` | Whether or not to create an amendment record when the number of units associated with a licence ticket type is changed. | `true`
-`trackTicketTypeDelete` | Whether or not to create an amendment record when a ticket type is removed from a licence. | `true`
+Property Name             | Type    | Description | Default Value
+------------------------- | ------- | ----------- | -------------
+`displayCount`            | number  | The number of amendments to display in the licence views. | `5`
+`trackLicenceFeeUpdate`   | boolean | Whether or not to create an amendment record when a licence fee is changed. | `true`
+`trackDateTimeUpdate`     | boolean | Whether or not to create an amendment record when the date or time range for a licence is changed. | `true`
+`trackOrganizationUpdate` | boolean | Whether or not to create an amendment record when the organization associated with a licence is changed. | `true`
+`trackLocationUpdate`     | boolean | Whether or not to create an amendment record when the location associated with a licence is changed. | `true`
+`trackTicketTypeNew`      | boolean | Whether or not to create an amendment record when a new ticket type is added to a licence. | `true`
+`trackTicketTypeUpdate`   | boolean | Whether or not to create an amendment record when the number of units associated with a licence ticket type is changed. | `true`
+`trackTicketTypeDelete`   | boolean | Whether or not to create an amendment record when a ticket type is removed from a licence. | `true`

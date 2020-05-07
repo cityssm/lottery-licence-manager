@@ -33,7 +33,11 @@ declare type Config_AdminDefaults = {
 };
 declare type Config_UserConfig = {
     createUpdateWindowMillis: number;
-    defaultProperties: object;
+    defaultProperties: {
+        canCreate: boolean;
+        canUpdate: boolean;
+        isAdmin: boolean;
+    };
 };
 declare type Config_DefaultsConfig = {
     city: string;

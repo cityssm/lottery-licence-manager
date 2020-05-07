@@ -44,7 +44,11 @@ type Config_AdminDefaults = {
 
 type Config_UserConfig = {
   createUpdateWindowMillis: number,
-  defaultProperties: object
+  defaultProperties: {
+    canCreate: boolean,
+    canUpdate: boolean,
+    isAdmin: boolean
+  }
 };
 
 type Config_DefaultsConfig = {
