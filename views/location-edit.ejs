@@ -31,7 +31,7 @@
           <div class="field">
             <label class="label" for="location--locationName">Location Name</label>
             <div class="control">
-              <input class="input" id="location--locationName" name="locationName" type="text" value="<%= location.locationName %>" maxlength="100" autocomplete="off" />
+              <input class="input" id="location--locationName" name="locationName" type="text" value="<%= location.locationName %>" maxlength="100" autocomplete="off" <%= (location.locationIsManufacturer || location.locationIsDistributor ? " required" : "") %> />
             </div>
             <p class="help">If the location does not have a common name, leave it blank.</p>
           </div>
@@ -67,7 +67,7 @@
           <div class="field">
             <label class="label" for="location--locationPostalCode">Postal Code</label>
             <div class="control">
-              <input class="input" id="location--locationPostalCode" name="locationPostalCode" type="text" value="<%= location.locationPostalCode %>" minlength="5" maxlength="7" autocomplete="off" required />
+              <input class="input" id="location--locationPostalCode" name="locationPostalCode" type="text" value="<%= location.locationPostalCode %>" minlength="5" maxlength="7" autocomplete="off" />
             </div>
           </div>
         </div>
@@ -77,9 +77,9 @@
             <div class="field">
               <div class="control">
                 <div class="b-checkbox is-primary">
-                  <input id="location--locationIsDistributor" name="locationIsDistributor" type="checkbox" <%= (location.locationIsDistributor ? " checked" : "") %> />
-                  <label for="location--locationIsDistributor">
-                    Location is a Ticket Distributor
+                  <input id="location--locationIsManufacturer" name="locationIsManufacturer" type="checkbox" <%= (location.locationIsManufacturer ? " checked" : "") %> />
+                  <label for="location--locationIsManufacturer">
+                    Location is a Ticket Manufacturer
                   </label>
                 </div>
               </div>
@@ -87,9 +87,9 @@
             <div class="field">
               <div class="control">
                 <div class="b-checkbox is-primary">
-                  <input id="location--locationIsManufacturer" name="locationIsManufacturer" type="checkbox" <%= (location.locationIsManufacturer ? " checked" : "") %> />
-                  <label for="location--locationIsManufacturer">
-                    Location is a Ticket Manufacturer
+                  <input id="location--locationIsDistributor" name="locationIsDistributor" type="checkbox" <%= (location.locationIsDistributor ? " checked" : "") %> />
+                  <label for="location--locationIsDistributor">
+                    Location is a Ticket Distributor
                   </label>
                 </div>
               </div>

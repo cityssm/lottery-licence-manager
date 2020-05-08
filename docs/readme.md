@@ -21,6 +21,12 @@ What are lottery events?
 How do I find lottery event records?
 How do I report on lottery events?
 
+[Locations](locations.md)<br />
+What are location records?
+What are they used for?
+How do I find location records?
+How do I maintain location records?
+
 
 ## Administrator Documentation
 

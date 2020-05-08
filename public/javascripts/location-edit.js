@@ -283,8 +283,7 @@
           closeMergeLocationModalFn = closeModalFn;
 
           cityssm.postJSON(
-            "/locations/doGetLocations",
-            {
+            "/locations/doGetLocations", {
               limit: -1
             },
             function(responseJSON) {
@@ -332,10 +331,34 @@
 
   }
 
+  const locationNameEle = document.getElementById("location--locationName");
+
   if (isCreate) {
 
-    document.getElementById("location--locationName").focus();
+    locationNameEle.focus();
 
   }
+
+  // Location Name is required for manufacturers and distributors
+
+  const locationIsDistributorCheckboxEle = document.getElementById("location--locationIsDistributor");
+  const locationIsManufacturerCheckboxEle = document.getElementById("location--locationIsManufacturer");
+
+  function setLocationNameRequired() {
+
+    if (locationIsDistributorCheckboxEle.checked || locationIsManufacturerCheckboxEle.checked) {
+
+      locationNameEle.setAttribute("required", "required");
+
+    } else {
+
+      locationNameEle.removeAttribute("required");
+
+    }
+
+  }
+
+  locationIsDistributorCheckboxEle.addEventListener("change", setLocationNameRequired);
+  locationIsManufacturerCheckboxEle.addEventListener("change", setLocationNameRequired);
 
 }());

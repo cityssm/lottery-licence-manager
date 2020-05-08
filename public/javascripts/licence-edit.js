@@ -1468,15 +1468,19 @@
 
       trEle.insertAdjacentHTML("beforeend", "<td class=\"is-hidden-print\">" +
         "<div class=\"field has-addons\">" +
-        "<div class=\"control\">" +
-        "<button class=\"button is-small is-amend-ticket-type-unit-count-button\" data-tooltip=\"Amend Units\" type=\"button\">Amend</button>" +
-        "</div>" +
-        "<div class=\"control\">" +
-        "<button class=\"button is-small is-danger is-delete-ticket-type-button\" data-tooltip=\"Delete Ticket Type\" type=\"button\">" +
-        "<i class=\"fas fa-trash\" aria-hidden=\"true\"></i>" +
-        "<span class=\"sr-only\">Delete</span>" +
-        "</button>" +
-        "</div>" +
+        ("<div class=\"control\">" +
+          "<button class=\"button is-small is-amend-ticket-type-unit-count-button\"" +
+          " data-tooltip=\"Amend Units\" type=\"button\">" +
+          "Amend" +
+          "</button>" +
+          "</div>") +
+        ("<div class=\"control\">" +
+          "<button class=\"button is-small is-danger is-delete-ticket-type-button\"" +
+          " data-tooltip=\"Delete Ticket Type\" type=\"button\">" +
+          "<i class=\"fas fa-trash\" aria-hidden=\"true\"></i>" +
+          "<span class=\"sr-only\">Delete</span>" +
+          "</button>" +
+          "</div>") +
         "</div>" +
         "</td>");
 
@@ -1495,23 +1499,6 @@
         "<span>$ " + licenceFee + "</span>" +
         "</td>");
 
-      // Distributor
-
-      trEle.insertAdjacentHTML("beforeend", "<td>" +
-        "<input name=\"ticketType_distributorLocationID\" type=\"hidden\" value=\"\" />" +
-        "<span><span class=\"has-text-grey\">(Not Set)</span><span>" +
-        "</td>");
-
-      trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right is-hidden-print\">" +
-        "<button class=\"button is-small is-amend-ticket-type-distributor-button\" data-tooltip=\"Change Distributor\" type=\"button\">" +
-        "<i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i>" +
-        "<span class=\"sr-only\">Change Distributor</span>" +
-        "</button>" +
-        "</td>");
-
-      trEle.getElementsByClassName("is-amend-ticket-type-distributor-button")[0]
-        .addEventListener("click", amendDistributor_openModal);
-
       // Manufacturer
 
       trEle.insertAdjacentHTML("beforeend", "<td>" +
@@ -1520,7 +1507,8 @@
         "</td>");
 
       trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right is-hidden-print\">" +
-        "<button class=\"button is-small is-amend-ticket-type-manufacturer-button\" data-tooltip=\"Change Manufacturer\" type=\"button\">" +
+        "<button class=\"button is-small is-amend-ticket-type-manufacturer-button\"" +
+        " data-tooltip=\"Change Manufacturer\" type=\"button\">" +
         "<i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i>" +
         "<span class=\"sr-only\">Change Manufacturer</span>" +
         "</button>" +
@@ -1528,6 +1516,24 @@
 
       trEle.getElementsByClassName("is-amend-ticket-type-manufacturer-button")[0]
         .addEventListener("click", amendManufacturer_openModal);
+
+      // Distributor
+
+      trEle.insertAdjacentHTML("beforeend", "<td>" +
+        "<input name=\"ticketType_distributorLocationID\" type=\"hidden\" value=\"\" />" +
+        "<span><span class=\"has-text-grey\">(Not Set)</span><span>" +
+        "</td>");
+
+      trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right is-hidden-print\">" +
+        "<button class=\"button is-small is-amend-ticket-type-distributor-button\"" +
+        " data-tooltip=\"Change Distributor\" type=\"button\">" +
+        "<i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i>" +
+        "<span class=\"sr-only\">Change Distributor</span>" +
+        "</button>" +
+        "</td>");
+
+      trEle.getElementsByClassName("is-amend-ticket-type-distributor-button")[0]
+        .addEventListener("click", amendDistributor_openModal);
 
       // Insert row
 

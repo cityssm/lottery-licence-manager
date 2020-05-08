@@ -33,13 +33,16 @@
 
     const addressTdEle = document.createElement("td");
 
-    addressTdEle.innerHTML = cityssm.escapeHTML(locationObj.locationAddress1) +
+    addressTdEle.innerHTML =
+      (locationObj.locationAddress1 === "" ?
+        "" :
+        cityssm.escapeHTML(locationObj.locationAddress1) + "<br />") +
       (locationObj.locationAddress2 === "" ?
         "" :
-        "<br /><small>" + cityssm.escapeHTML(locationObj.locationAddress2) + "</small>") +
+        "<small>" + cityssm.escapeHTML(locationObj.locationAddress2) + "</small><br />") +
       (locationObj.locationCity === "" ?
         "" :
-        "<br /><small>" + cityssm.escapeHTML(locationObj.locationCity) + ", " + locationObj.locationProvince + "</small>");
+        "<small>" + cityssm.escapeHTML(locationObj.locationCity) + ", " + locationObj.locationProvince + "</small>");
 
     trEle.insertAdjacentElement("beforeend", addressTdEle);
 
@@ -57,10 +60,10 @@
     trEle.insertAdjacentHTML(
       "beforeend",
       "<td class=\"has-text-centered\">" +
-      (locationObj.locationIsDistributor ?
-        "<span data-tooltip=\"Distributor\">" +
+      (locationObj.locationIsManufacturer ?
+        "<span data-tooltip=\"Manufacturer\">" +
         "<span class=\"tag is-success\">Yes</span><br />" +
-        (locationObj.distributor_endDateMaxString === "" ? "<span class=\"has-text-grey\">Never Used</span>" : locationObj.distributor_endDateMaxString) +
+        (locationObj.manufacturer_endDateMaxString === "" ? "<span class=\"has-text-grey\">Never Used</span>" : locationObj.manufacturer_endDateMaxString) +
         "</span>" :
         "<span class=\"sr-only\">No</span>"
       ) +
@@ -71,10 +74,10 @@
     trEle.insertAdjacentHTML(
       "beforeend",
       "<td class=\"has-text-centered\">" +
-      (locationObj.locationIsManufacturer ?
-        "<span data-tooltip=\"Manufacturer\">" +
+      (locationObj.locationIsDistributor ?
+        "<span data-tooltip=\"Distributor\">" +
         "<span class=\"tag is-success\">Yes</span><br />" +
-        (locationObj.manufacturer_endDateMaxString === "" ? "<span class=\"has-text-grey\">Never Used</span>" : locationObj.manufacturer_endDateMaxString) +
+        (locationObj.distributor_endDateMaxString === "" ? "<span class=\"has-text-grey\">Never Used</span>" : locationObj.distributor_endDateMaxString) +
         "</span>" :
         "<span class=\"sr-only\">No</span>"
       ) +
@@ -154,9 +157,9 @@
           "<thead><tr>" +
           "<th>Location</th>" +
           "<th>Address</th>" +
-          "<th class=\"has-text-centered\">Licences</th>" +
-          "<th class=\"has-text-centered\">Distributor</th>" +
-          "<th class=\"has-text-centered\">Manufacturer</th>" +
+          "<th class=\"has-text-centered\">Last Licence End Date</th>" +
+          "<th class=\"has-text-centered\">Last Manufacturer End Date</th>" +
+          "<th class=\"has-text-centered\">Last Distributor End Date</th>" +
           (canCreate ? "<th class=\"is-hidden-print\"><span class=\"sr-only\">Options</span></th>" : "") +
           "</tr></thead>" +
           "<tbody></tbody>" +

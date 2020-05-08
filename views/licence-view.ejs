@@ -197,8 +197,8 @@
               <th class="has-text-right">Value</th>
               <th class="has-text-right">Prizes</th>
               <th class="has-text-right">Licence Fee</th>
-              <th>Distributor</th>
               <th>Manufacturer</th>
+              <th>Distributor</th>
             </tr>
           </thead>
           <tbody>
@@ -238,19 +238,19 @@
                   </td>
                   <td>
                     <span>
-                      <% if (licenceTicketTypeObj.distributorLocationID === null) { %>
+                      <% if (licenceTicketTypeObj.manufacturerLocationID === null) { %>
                         <span class="has-text-grey">(Not Set)</span>
                       <% } else { %>
-                        <%= licenceTicketTypeObj.distributorLocationDisplayName %>
+                        <%= licenceTicketTypeObj.manufacturerLocationDisplayName %>
                       <% } %>
                     </span>
                   </td>
                   <td>
                     <span>
-                      <% if (licenceTicketTypeObj.manufacturerLocationID === null) { %>
+                      <% if (licenceTicketTypeObj.distributorLocationID === null) { %>
                         <span class="has-text-grey">(Not Set)</span>
                       <% } else { %>
-                        <%= licenceTicketTypeObj.manufacturerLocationDisplayName %>
+                        <%= licenceTicketTypeObj.distributorLocationDisplayName %>
                       <% } %>
                     </span>
                   </td>

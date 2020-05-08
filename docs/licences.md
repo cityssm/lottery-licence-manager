@@ -112,3 +112,4 @@ After the page refreshes, the licence record should have the option to edit.
 
 - [Organizations](organizations.md)
 - [Lottery Events](events.md)
+- [Locations](locations.md)

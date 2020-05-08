@@ -333,13 +333,13 @@
                 <span class="sr-only">Amend Units</span>
               </th>
               <th class="has-text-right">Licence Fee</th>
-              <th>Distributor</th>
-              <th class="is-hidden-print">
-                <span class="sr-only">Distributor Options</span>
-              </th>
               <th>Manufacturer</th>
               <th class="is-hidden-print">
                 <span class="sr-only">Manufacturer Options</span>
+              </th>
+              <th>Distributor</th>
+              <th class="is-hidden-print">
+                <span class="sr-only">Distributor Options</span>
               </th>
             </tr>
           </thead>
@@ -392,22 +392,6 @@
                     <span><%= "$ " + licenceTicketTypeObj.licenceFee.toFixed(2) %></span>
                   </td>
                   <td>
-                    <input name="ticketType_distributorLocationID" type="hidden" value="<%= licenceTicketTypeObj.distributorLocationID %>" />
-                    <span>
-                      <% if (licenceTicketTypeObj.distributorLocationID === null) { %>
-                        <span class="has-text-grey">(Not Set)</span>
-                      <% } else { %>
-                        <%= licenceTicketTypeObj.distributorLocationDisplayName %>
-                      <% } %>
-                    </span>
-                  </td>
-                  <td class="has-text-right is-hidden-print">
-                    <button class="button is-small is-amend-ticket-type-distributor-button" data-tooltip="Change Distributor" type="button">
-                      <i class="fas fa-pencil-alt" aria-hidden="true"></i>
-                      <span class="sr-only">Change Distributor</span>
-                    </button>
-                  </td>
-                  <td>
                     <input name="ticketType_manufacturerLocationID" type="hidden" value="<%= licenceTicketTypeObj.manufacturerLocationID %>" />
                     <span>
                       <% if (licenceTicketTypeObj.manufacturerLocationID === null) { %>
@@ -421,6 +405,22 @@
                     <button class="button is-small is-amend-ticket-type-manufacturer-button" data-tooltip="Change Manufacturer" type="button">
                       <i class="fas fa-pencil-alt" aria-hidden="true"></i>
                       <span class="sr-only">Change Manufacturer</span>
+                    </button>
+                  </td>
+                  <td>
+                    <input name="ticketType_distributorLocationID" type="hidden" value="<%= licenceTicketTypeObj.distributorLocationID %>" />
+                    <span>
+                      <% if (licenceTicketTypeObj.distributorLocationID === null) { %>
+                        <span class="has-text-grey">(Not Set)</span>
+                      <% } else { %>
+                        <%= licenceTicketTypeObj.distributorLocationDisplayName %>
+                      <% } %>
+                    </span>
+                  </td>
+                  <td class="has-text-right is-hidden-print">
+                    <button class="button is-small is-amend-ticket-type-distributor-button" data-tooltip="Change Distributor" type="button">
+                      <i class="fas fa-pencil-alt" aria-hidden="true"></i>
+                      <span class="sr-only">Change Distributor</span>
                     </button>
                   </td>
                 </tr>

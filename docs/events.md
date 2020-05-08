@@ -59,3 +59,4 @@ After the page refreshes, the event record should have the option to edit.
 
 - [Organizations](organizations.md)
 - [Lottery Licences](licences.md)
+- [Locations](locations.md)
