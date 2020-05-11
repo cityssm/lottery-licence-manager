@@ -8,7 +8,8 @@ const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const session = require("express-session");
-const SQLiteStore = require("connect-sqlite3")(session);
+const sqlite3 = require("connect-sqlite3");
+const SQLiteStore = sqlite3(session);
 const packageJSON = require("./package.json");
 const routerDocs = require("./routes/docs");
 const routerLogin = require("./routes/login");
@@ -21,7 +22,8 @@ const routerReports = require("./routes/reports");
 const routerAdmin = require("./routes/admin");
 const configFns = require("./helpers/configFns");
 const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
-const stringFns = require("./helpers/stringFns");
+const stringFns = require("@cityssm/expressjs-server-js/stringFns");
+const htmlFns = require("@cityssm/expressjs-server-js/htmlFns");
 const dbInit = require("./helpers/dbInit");
 dbInit.initUsersDB();
 dbInit.initLicencesDB();
@@ -72,6 +74,7 @@ app.use(function (req, res, next) {
     res.locals.configFns = configFns;
     res.locals.dateTimeFns = dateTimeFns;
     res.locals.stringFns = stringFns;
+    res.locals.htmlFns = htmlFns;
     next();
 });
 app.get("/", sessionChecker, function (_req, res) {

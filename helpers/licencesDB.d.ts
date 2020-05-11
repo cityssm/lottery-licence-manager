@@ -1,6 +1,7 @@
 /// <reference types="express-session" />
 import * as llm from "./llmTypes";
-export declare function getRawRowsColumns(sql: string, params: any[]): llm.RawRowsColumnsReturn;
+import { RawRowsColumnsReturn } from "@cityssm/expressjs-server-js/types";
+export declare function getRawRowsColumns(sql: string, params: any[]): RawRowsColumnsReturn;
 export declare function getLocations(reqSession: Express.SessionData, queryOptions: {
     limit: number;
     offset?: number;
@@ -75,7 +76,7 @@ export declare function getPastEventBankingInformation(licenceID: number): any[]
 export declare function updateEvent(reqBody: any, reqSession: Express.SessionData): boolean;
 export declare function deleteEvent(licenceID: number, eventDate: number, reqSession: Express.SessionData): boolean;
 export declare function pokeEvent(licenceID: number, eventDate: number, reqSession: Express.SessionData): boolean;
-export declare function getLicenceActivityByDateRange(startDate: number, endDate: number, reqBody: any): {
+export declare function getLicenceActivityByDateRange(startDate: number, endDate: number, _reqBody: any): {
     startDateString: string;
     endDateString: string;
     licences: any;

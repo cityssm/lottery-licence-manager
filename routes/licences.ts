@@ -1,14 +1,12 @@
-"use strict";
+import { Router } from "express";
+const router = Router();
 
-import express = require("express");
-const router = express.Router();
+import * as path from "path";
+import * as ejs from "ejs";
 
-import path = require("path");
-import ejs = require("ejs");
-// import pdf = require("html-pdf");
 import convertHTMLToPDF = require("pdf-puppeteer");
 
-import dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
+import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns";
 import * as configFns from "../helpers/configFns";
 
 import * as licencesDB from "../helpers/licencesDB";

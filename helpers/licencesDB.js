@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const sqlite = require("better-sqlite3");
 const dbPath = "data/licences.db";
+const sqlite = require("better-sqlite3");
 const configFns = require("./configFns");
 const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
 function canUpdateObject(obj, reqSession) {
@@ -2050,7 +2050,7 @@ function pokeEvent(licenceID, eventDate, reqSession) {
     return info.changes > 0;
 }
 exports.pokeEvent = pokeEvent;
-function getLicenceActivityByDateRange(startDate, endDate, reqBody) {
+function getLicenceActivityByDateRange(startDate, endDate, _reqBody) {
     const db = sqlite(dbPath, {
         readonly: true
     });

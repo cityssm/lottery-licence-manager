@@ -245,16 +245,16 @@
                 <th class="has-border-top-width-3"><i class="fas fa-equals" aria-hidden="true"></i></th>
                 <th class="has-border-top-width-3">Net Proceeds</th>
                 <td class="has-border-top-width-3 has-text-right">
-                  <%- stringFns.formatDollarsAsHTML(event.costs_netProceeds) %>
+                  <%- htmlFns.formatDollarsAsHTML(event.costs_netProceeds) %>
                 </td>
                 <% if (licence.events.length > 1) { %>
                   <td class="has-border-top-width-3 has-text-grey-lighter"><i class="fas fa-plus" aria-hidden="true"></i></td>
                   <td class="has-border-top-width-3 has-text-right">
-                    <%- stringFns.formatDollarsAsHTML(costs_netProceeds_otherSum) %>
+                    <%- htmlFns.formatDollarsAsHTML(costs_netProceeds_otherSum) %>
                   </td>
                   <td class="has-border-top-width-3 has-text-grey-lighter"><i class="fas fa-equals" aria-hidden="true"></i></td>
                   <td class="has-border-top-width-3 has-text-right">
-                    <%- stringFns.formatDollarsAsHTML(event.costs_netProceeds + costs_netProceeds_otherSum) %>
+                    <%- htmlFns.formatDollarsAsHTML(event.costs_netProceeds + costs_netProceeds_otherSum) %>
                   </td>
                 <% } %>
               </tr>

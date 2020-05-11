@@ -1,4 +1,3 @@
-import sqlite = require("better-sqlite3");
 export declare type Config = {
     application?: Config_ApplicationConfig;
     session?: Config_SessionConfig;
@@ -92,6 +91,7 @@ declare type Config_FieldInputAttributes = {
     min?: number;
     max?: number;
     step?: number;
+    maxlength?: number;
 };
 export declare type Config_TicketType = {
     ticketType: string;
@@ -109,10 +109,6 @@ declare type Config_AmendmentConfig = {
     trackTicketTypeNew: boolean;
     trackTicketTypeUpdate: boolean;
     trackTicketTypeDelete: boolean;
-};
-export declare type RawRowsColumnsReturn = {
-    rows: object[];
-    columns: sqlite.ColumnDefinition[];
 };
 export declare type Record = {
     recordType: "location" | "organization" | "remark" | "bankRecord" | "licence" | "event";

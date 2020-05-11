@@ -1,6 +1,3 @@
-import sqlite = require("better-sqlite3");
-
-
 /*
  * CONFIG TYPES
  */
@@ -107,7 +104,8 @@ type Config_FieldInputAttributes = {
   type: "number" | "text",
   min?: number,
   max?: number,
-  step?: number
+  step?: number,
+  maxlength?: number
 }
 
 export type Config_TicketType = {
@@ -134,11 +132,6 @@ type Config_AmendmentConfig = {
  * LICENCE DB TYPES
  */
 
-
-export type RawRowsColumnsReturn = {
-  rows: object[],
-  columns: sqlite.ColumnDefinition[]
-};
 
 export type Record = {
   recordType: "location" | "organization" | "remark" | "bankRecord" | "licence" | "event",

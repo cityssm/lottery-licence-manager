@@ -1,35 +1,12 @@
-/* global require, module */
-
 "use strict";
-
-
-const config = require("./config-ontario");
-
-
-/*
- * APPLICATION SETTINGS
- */
-
+Object.defineProperty(exports, "__esModule", { value: true });
+const configOntario = require("./config-ontario");
+const config = Object.assign({}, configOntario);
 config.application = {
-  applicationName: "Lottery Licence Manager"
+    applicationName: "Lottery Licence Manager"
 };
-
-
-/*
- * ADMIN SETTINGS
- */
-
-
 config.admin = {
-  defaultPassword: ""
+    defaultPassword: ""
 };
-
-
-/*
- * DEFAULT VALUES
- */
-
 config.defaults.city = "";
-
-
 module.exports = config;

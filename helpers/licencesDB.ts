@@ -1,11 +1,13 @@
 "use strict";
 
-import sqlite = require("better-sqlite3");
 const dbPath = "data/licences.db";
+import * as sqlite from "better-sqlite3";
 
 import * as llm from "./llmTypes";
 import * as configFns from "./configFns";
-import dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
+import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns";
+
+import { RawRowsColumnsReturn } from "@cityssm/expressjs-server-js/types";
 
 
 /*
@@ -328,7 +330,7 @@ function addLicenceAmendmentWithDB(db: sqlite.Database, licenceID: number, amend
 }
 
 
-export function getRawRowsColumns(sql: string, params: any[]): llm.RawRowsColumnsReturn {
+export function getRawRowsColumns(sql: string, params: any[]): RawRowsColumnsReturn {
 
   const db = sqlite(dbPath, {
     readonly: true
@@ -3631,7 +3633,7 @@ export function pokeEvent(licenceID: number, eventDate: number, reqSession: Expr
 }
 
 
-export function getLicenceActivityByDateRange(startDate: number, endDate: number, reqBody: any) {
+export function getLicenceActivityByDateRange(startDate: number, endDate: number, _reqBody: any) {
 
   const db = sqlite(dbPath, {
     readonly: true

@@ -55,17 +55,17 @@
       let rowHTML = "<tr>" +
         "<td>" +
           "<a href=\"/licences/" + licence.licenceID + "\">" +
-          stringFns.escapeHTML(licence.externalLicenceNumber) + "<br />" +
+          htmlFns.escapeHTML(licence.externalLicenceNumber) + "<br />" +
           "<small>Licence #" + licence.licenceID + "</small>" +
           "</a>" +
           "</td>" +
         "<td>" + (licenceType.licenceType || licence.licenceTypeKey) + "</td>" +
-        "<td class=\"has-newline-chars\">" + stringFns.escapeHTML(licence.licenceDetails) + "</td>" +
+        "<td class=\"has-newline-chars\">" + htmlFns.escapeHTML(licence.licenceDetails) + "</td>" +
         "<td>" +
           "<a href=\"/locations/" + licence.locationID + "\">" +
-          stringFns.escapeHTML(licence.locationDisplayName) +
+          htmlFns.escapeHTML(licence.locationDisplayName) +
           "</a>" +
-          (licence.locationDisplayName === licence.locationAddress1 ? "" : "<br /><small>" + stringFns.escapeHTML(licence.locationAddress1) + "</small>") +
+          (licence.locationDisplayName === licence.locationAddress1 ? "" : "<br /><small>" + htmlFns.escapeHTML(licence.locationAddress1) + "</small>") +
           "</td>" +
         "<td class=\"is-nowrap\">" + licence.startDateString + "</td>" +
         "<td class=\"is-nowrap\">" + licence.endDateString + "</td>" +

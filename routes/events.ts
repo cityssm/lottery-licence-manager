@@ -1,9 +1,7 @@
-"use strict";
+import { Router } from "express";
+const router = Router();
 
-import express = require("express");
-const router = express.Router();
-
-import dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
+import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns";
 
 import * as licencesDB from "../helpers/licencesDB";
 

@@ -1,13 +1,13 @@
 "use strict";
 
-import { Config_BankRecordType, Config_LicenceType } from "../helpers/llmTypes";
+import { Config, Config_BankRecordType, Config_LicenceType } from "../helpers/llmTypes";
 
 
 /*
  * LOAD CONFIGURATION
  */
 
-export let config = {};
+export let config : Config = {};
 
 try {
 
@@ -95,6 +95,8 @@ const configFallbackValues = {
   "amendments.trackTicketTypeUpdate": true,
   "amendments.trackTicketTypeDelete": true
 };
+
+
 
 export function getProperty(propertyName: string): any {
 

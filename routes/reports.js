@@ -1,9 +1,9 @@
 "use strict";
-const express = require("express");
-const router = express.Router();
+const express_1 = require("express");
+const router = express_1.Router();
 const licencesDB = require("../helpers/licencesDB");
-const stringFns_1 = require("../helpers/stringFns");
 const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
+const stringFns_1 = require("@cityssm/expressjs-server-js/stringFns");
 router.get("/", function (_req, res) {
     const rightNow = new Date();
     res.render("report-search", {

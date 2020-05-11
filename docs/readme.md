@@ -7,6 +7,8 @@
 
 ## User Documentation
 
+[Tips and Tricks](tipsTricks.md)
+
 [Organizations](organizations.md)<br />
 What are organizations?
 How do I search organization records?

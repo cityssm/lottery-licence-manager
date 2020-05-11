@@ -1,19 +1,20 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const objectFns = require("../helpers/objectFns");
-const config = require("./config-ontario");
-config.application = {
+const configOntario = require("./config-ontario");
+const configSSM = Object.assign({}, configOntario);
+configSSM.application = {
     applicationName: "SSM Lottery Licence Manager"
 };
-config.session = {
+configSSM.session = {
     doKeepAlive: true
 };
-config.defaults.city = "Sault Ste. Marie";
-config.licences.externalLicenceNumber.newCalculation = "range";
-config.licences.externalReceiptNumber = {
+configSSM.defaults.city = "Sault Ste. Marie";
+configSSM.licences.externalLicenceNumber.newCalculation = "range";
+configSSM.licences.externalReceiptNumber = {
     fieldLabel: "GP Receipt Number"
 };
-config.licences.feeCalculationFn = function (licenceObj) {
+configSSM.licences.feeCalculationFn = function (licenceObj) {
     const totalPrizeValue = (licenceObj.totalPrizeValue || 0.0);
     const licenceFeeMin = 10;
     const calculatedLicenceFee = totalPrizeValue * 0.03;
@@ -50,7 +51,7 @@ config.licences.feeCalculationFn = function (licenceObj) {
         licenceHasErrors: licenceHasErrors
     };
 };
-const licenceTypeNevada = config.licenceTypes.find(licenceType => licenceType.licenceTypeKey === "NV");
+const licenceTypeNevada = configSSM.licenceTypes.find(licenceType => licenceType.licenceTypeKey === "NV");
 for (let ticketTypeIndex = 0; ticketTypeIndex < licenceTypeNevada.ticketTypes.length; ticketTypeIndex += 1) {
     licenceTypeNevada.ticketTypes[ticketTypeIndex].feePerUnit =
         Math.round(licenceTypeNevada.ticketTypes[ticketTypeIndex].prizesPerDeal * 0.03 * 100) / 100;
@@ -60,6 +61,7 @@ licenceTypeNevada.licenceFields = [
         fieldKey: "distributor",
         fieldLabel: "Distributor",
         isActive: false,
+        isShownOnEvent: false,
         inputAttributes: {
             type: "text",
             maxlength: 100
@@ -69,6 +71,7 @@ licenceTypeNevada.licenceFields = [
         fieldKey: "manufacturer",
         fieldLabel: "Manufacturer",
         isActive: false,
+        isShownOnEvent: false,
         inputAttributes: {
             type: "text",
             maxlength: 100
@@ -78,6 +81,7 @@ licenceTypeNevada.licenceFields = [
         fieldKey: "units",
         fieldLabel: "Units",
         isActive: false,
+        isShownOnEvent: true,
         inputAttributes: {
             type: "number",
             min: 0,
@@ -86,4 +90,4 @@ licenceTypeNevada.licenceFields = [
         }
     }
 ];
-module.exports = config;
+module.exports = configSSM;

@@ -1,37 +1,34 @@
-/* eslint-env node */
+import * as createError from "http-errors";
+import * as express from "express";
+import * as https from "https";
+import * as fs from "fs";
+import * as compression from "compression";
+import * as path from "path";
+import * as cookieParser from "cookie-parser";
+import * as logger from "morgan";
 
-"use strict";
-
-import createError = require("http-errors");
-import express = require("express");
-import https = require("https");
-import fs = require("fs");
-import compression = require("compression");
-import path = require("path");
-import cookieParser = require("cookie-parser");
-import logger = require("morgan");
-
-
-import session = require("express-session");
-const SQLiteStore = require("connect-sqlite3")(session);
+import * as session from "express-session";
+import * as sqlite3 from "connect-sqlite3";
+const SQLiteStore = sqlite3(session);
 
 
-import packageJSON = require("./package.json");
+import * as packageJSON from "./package.json";
 
-import routerDocs = require("./routes/docs");
-import routerLogin = require("./routes/login");
-import routerDashboard = require("./routes/dashboard");
-import routerOrganizations = require("./routes/organizations");
-import routerLicences = require("./routes/licences");
-import routerLocations = require("./routes/locations");
-import routerEvents = require("./routes/events");
-import routerReports = require("./routes/reports");
-import routerAdmin = require("./routes/admin");
+import * as routerDocs from "./routes/docs";
+import * as routerLogin from "./routes/login";
+import * as routerDashboard from "./routes/dashboard";
+import * as routerOrganizations from "./routes/organizations";
+import * as routerLicences from "./routes/licences";
+import * as routerLocations from "./routes/locations";
+import * as routerEvents from "./routes/events";
+import * as routerReports from "./routes/reports";
+import * as routerAdmin from "./routes/admin";
 
 import { Config_HttpsConfig } from "./helpers/llmTypes";
 import * as configFns from "./helpers/configFns";
-import dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
-import * as stringFns from "./helpers/stringFns";
+import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns";
+import * as stringFns from "@cityssm/expressjs-server-js/stringFns";
+import * as htmlFns from "@cityssm/expressjs-server-js/htmlFns";
 
 
 /*
@@ -72,9 +69,15 @@ app.use(cookieParser());
 
 
 app.use(express.static(path.join(__dirname, "public")));
-app.use("/docs/images", express.static(path.join(__dirname, "docs", "images")));
-app.use("/fa", express.static(path.join(__dirname, "node_modules", "@fortawesome", "fontawesome-free")));
-app.use("/cityssm-bulma-webapp-js", express.static(path.join(__dirname, "node_modules", "@cityssm", "bulma-webapp-js")));
+
+app.use("/docs/images",
+  express.static(path.join(__dirname, "docs", "images")));
+
+app.use("/fa",
+  express.static(path.join(__dirname, "node_modules", "@fortawesome", "fontawesome-free")));
+
+app.use("/cityssm-bulma-webapp-js",
+  express.static(path.join(__dirname, "node_modules", "@cityssm", "bulma-webapp-js")));
 
 
 /*
@@ -115,7 +118,7 @@ app.use(function(req, res, next) {
 });
 
 // Redirect logged in users
-const sessionChecker = function(req: express.Request, res : express.Response, next : express.NextFunction) {
+const sessionChecker = function(req: express.Request, res: express.Response, next: express.NextFunction) {
 
   if (req.session.user && req.cookies[sessionCookieName]) {
 
@@ -141,6 +144,7 @@ app.use(function(req, res, next) {
   res.locals.configFns = configFns;
   res.locals.dateTimeFns = dateTimeFns;
   res.locals.stringFns = stringFns;
+  res.locals.htmlFns = htmlFns;
 
   next();
 
@@ -195,7 +199,7 @@ app.use(function(_req, _res, next) {
 });
 
 // Error handler
-app.use(function(err, req: express.Request, res: express.Response, _next : express.NextFunction) {
+app.use(function(err: any, req: express.Request, res: express.Response, _next: express.NextFunction) {
 
   // Set locals, only providing error in development
   res.locals.message = err.message;
@@ -219,7 +223,6 @@ if (httpPort) {
 
   app.listen(httpPort, function() {
 
-    // eslint-disable-next-line no-console
     console.log("HTTP listening on port " + httpPort);
 
   });
@@ -237,7 +240,6 @@ if (httpsConfig) {
   }, app)
     .listen(httpsConfig.port);
 
-  // eslint-disable-next-line no-console
   console.log("HTTPS listening on port " + httpsConfig.port);
 
 }
