@@ -1,10 +1,8 @@
+*.d.ts
 *.db-journal
 *.min.js
-app.d.ts
 app.js
-data/*.d.ts
-helpers/*.d.ts
+gulpfile.js
 helpers/*.js
-routes/*.d.ts
 routes/*.js
 public/stylesheets/*.min.css

@@ -51,7 +51,8 @@ app.use(session({
     saveUninitialized: false,
     rolling: true,
     cookie: {
-        maxAge: configFns.getProperty("session.maxAgeMillis")
+        maxAge: configFns.getProperty("session.maxAgeMillis"),
+        sameSite: "strict"
     }
 }));
 app.use(function (req, res, next) {

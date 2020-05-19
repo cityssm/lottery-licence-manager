@@ -40,7 +40,7 @@
 <%- include('_footerA'); -%>
 
 <script>
-  llm.config_licenceTypes = <%- JSON.stringify(configFns.getLicenceTypeKeyToNameObject()) %>;
+  exports.config_licenceTypes = <%- JSON.stringify(configFns.getLicenceTypeKeyToNameObject()) %>;
 </script>
 <script src="/javascripts/licence-activeSummary.min.js"></script>
 

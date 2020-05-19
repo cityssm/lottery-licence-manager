@@ -48,8 +48,8 @@
 <%- include('_footerA'); -%>
 
 <script>
-  llm.config_days = <%- JSON.stringify(dateTimeFns.days) %>;
-  llm.config_licenceTypes = <%- JSON.stringify(configFns.getLicenceTypeKeyToNameObject()) %>;
+  exports.config_days = <%- JSON.stringify(dateTimeFns.days) %>;
+  exports.config_licenceTypes = <%- JSON.stringify(configFns.getLicenceTypeKeyToNameObject()) %>;
 </script>
 <script src="/javascripts/event-byWeek.min.js"></script>
 
