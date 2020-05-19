@@ -1,7 +1,5 @@
 import * as createError from "http-errors";
 import * as express from "express";
-import * as https from "https";
-import * as fs from "fs";
 import * as compression from "compression";
 import * as path from "path";
 import * as cookieParser from "cookie-parser";
@@ -24,7 +22,6 @@ import * as routerEvents from "./routes/events";
 import * as routerReports from "./routes/reports";
 import * as routerAdmin from "./routes/admin";
 
-import { Config_HttpsConfig } from "./helpers/llmTypes";
 import * as configFns from "./helpers/configFns";
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns";
 import * as stringFns from "@cityssm/expressjs-server-js/stringFns";
@@ -210,39 +207,6 @@ app.use(function(err: any, req: express.Request, res: express.Response, _next: e
   res.render("error");
 
 });
-
-
-/*
- * Open ports
- */
-
-
-const httpPort = configFns.getProperty("application.httpPort");
-
-if (httpPort) {
-
-  app.listen(httpPort, function() {
-
-    console.log("HTTP listening on port " + httpPort);
-
-  });
-
-}
-
-const httpsConfig = <Config_HttpsConfig>configFns.getProperty("application.https");
-
-if (httpsConfig) {
-
-  https.createServer({
-    key: fs.readFileSync(httpsConfig.keyPath),
-    cert: fs.readFileSync(httpsConfig.certPath),
-    passphrase: httpsConfig.passphrase
-  }, app)
-    .listen(httpsConfig.port);
-
-  console.log("HTTPS listening on port " + httpsConfig.port);
-
-}
 
 
 export = app;

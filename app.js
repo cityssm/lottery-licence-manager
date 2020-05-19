@@ -1,8 +1,6 @@
 "use strict";
 const createError = require("http-errors");
 const express = require("express");
-const https = require("https");
-const fs = require("fs");
 const compression = require("compression");
 const path = require("path");
 const cookieParser = require("cookie-parser");
@@ -112,20 +110,4 @@ app.use(function (err, req, res, _next) {
     res.status(err.status || 500);
     res.render("error");
 });
-const httpPort = configFns.getProperty("application.httpPort");
-if (httpPort) {
-    app.listen(httpPort, function () {
-        console.log("HTTP listening on port " + httpPort);
-    });
-}
-const httpsConfig = configFns.getProperty("application.https");
-if (httpsConfig) {
-    https.createServer({
-        key: fs.readFileSync(httpsConfig.keyPath),
-        cert: fs.readFileSync(httpsConfig.certPath),
-        passphrase: httpsConfig.passphrase
-    }, app)
-        .listen(httpsConfig.port);
-    console.log("HTTPS listening on port " + httpsConfig.port);
-}
 module.exports = app;

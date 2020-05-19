@@ -62,4 +62,4 @@ your configuration.
 
 ## Step 6: Start the application
 
-    > node app.js
+    > node ./bin/www
