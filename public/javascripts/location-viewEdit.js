@@ -1,8 +1,5 @@
 "use strict";
-
-(function() {
-
-  // Licences
-  llm.initializeTabs(document.getElementById("tabs--licences"));
-
+Object.defineProperty(exports, "__esModule", { value: true });
+(function () {
+    llm.initializeTabs(document.getElementById("tabs--licences"));
 }());

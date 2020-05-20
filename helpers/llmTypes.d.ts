@@ -136,10 +136,13 @@ export interface Location extends Record {
     locationPostalCode: string;
     locationIsDistributor: boolean;
     locationIsManufacturer: boolean;
+    licences_count?: number;
     licences_endDateMax: number;
     licences_endDateMaxString: string;
+    distributor_count?: number;
     distributor_endDateMax: number;
     distributor_endDateMaxString: string;
+    manufacturer_count?: number;
     manufacturer_endDateMax: number;
     manufacturer_endDateMaxString: string;
 }

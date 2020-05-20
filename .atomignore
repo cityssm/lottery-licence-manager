@@ -4,5 +4,6 @@
 app.js
 gulpfile.js
 helpers/*.js
-routes/*.js
+public/javascripts/*.js
 public/stylesheets/*.min.css
+routes/*.js
