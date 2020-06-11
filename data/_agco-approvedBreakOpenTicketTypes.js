@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.ticketTypes = void 0;
 const ticketTypes_AG = [
     {
         ticketType: "AG1",

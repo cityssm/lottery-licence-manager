@@ -201,7 +201,10 @@ config.licenceTypes = [
         max: 10000.00,
         step: 0.01
       }
-    }]
+    }],
+    printSettings: {
+      agco_useLicenceDatesAsEventDates: true
+    }
   },
   {
     licenceTypeKey: "RA",

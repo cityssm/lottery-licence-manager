@@ -72,6 +72,7 @@ export declare type Config_LicenceType = {
     licenceFields: Config_LicenceField[];
     eventFields: Config_EventField[];
     ticketTypes?: Config_TicketType[];
+    printSettings?: {};
 };
 declare type Config_LicenceField = {
     fieldKey: string;

@@ -1,4 +1,7 @@
-<html>
+<%
+  const licenceType = configFns.getLicenceType(licence.licenceTypeKey);
+
+%><html>
 <head>
   <meta charset="utf-8" />
   <style>
@@ -22,7 +25,6 @@
     }
 
     table td {
-
       padding: 0;
       margin: 0;
     }
@@ -146,6 +148,16 @@
       background-color: #eff;
     }
 
+
+    .data-table {
+      text-align: left;
+    }
+
+    .data-table th,
+    .data-table td {
+      padding: 2px 5px;
+    }
+
   </style>
 </head>
 <body>
@@ -203,16 +215,7 @@
             </td>
             <td class="is-fullwidth">
               <div class="field">
-                <%
-                  const licenceTypes = configFns.getProperty("licenceTypes");
-                  let licenceType = {};
-                  for (let typeIndex = 0; typeIndex < licenceTypes.length; typeIndex += 1) {
-                    if (licenceTypes[typeIndex].licenceTypeKey === licence.licenceTypeKey) {
-                      licenceType = licenceTypes[typeIndex];
-                      break;
-                    }
-                  }
-                %><%= licenceType.licenceType || licence.licenceTypeKey  %>
+                <%= licenceType.licenceType || licence.licenceTypeKey  %>
               </div>
             </td>
           </tr>
@@ -256,8 +259,12 @@
           <tr>
             <td class="has-padding-right-10 is-two-thirds">
               <div class="field" style="min-height:100px">
-                <% for (let eventIndex = 0; eventIndex < licence.events.length; eventIndex += 1) { %>
-                  <%= (eventIndex === 0 ? "" : ", ") + licence.events[eventIndex].eventDateString.replace(/-/g, "/"); %>
+                <% if (licenceType && licenceType.printSettings && licenceType.printSettings.agco_useLicenceDatesAsEventDates) { %>
+                  <%= licence.startDateString %> to <%= licence.endDateString %>
+                <% } else { %>
+                  <% for (let eventIndex = 0; eventIndex < licence.events.length; eventIndex += 1) { %>
+                    <%= (eventIndex === 0 ? "" : ", ") + licence.events[eventIndex].eventDateString.replace(/-/g, "/"); %>
+                  <% } %>
                 <% } %>
               </div>
             </td>
@@ -313,12 +320,42 @@
         <% } %>
         <div class="has-newline-chars"><%= licence.termsConditions %></div>
         <% if (licence.licenceTicketTypes.length > 0) { %>
-          <div class="has-margin-top-10">
-            Ticket Types:
-            <% for (let index = 0; index < licence.licenceTicketTypes.length; index += 1) { %>
-              <%= licence.licenceTicketTypes[index].unitCount %>x <%= licence.licenceTicketTypes[index].ticketType %>;
-            <% } %>
-          </div>
+          <table class="data-table has-margin-top-10">
+            <thead>
+              <tr>
+                <th>Type</th>
+                <th class="has-text-right">Value</th>
+                <th class="has-text-right">Prizes</th>
+                <th class="has-text-right">Units</th>
+                <th class="has-text-right">Fee</th>
+                <th>Manufacturer</th>
+                <th>Distributor</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% for (let index = 0; index < licence.licenceTicketTypes.length; index += 1) { %>
+                <%
+                  const record = licence.licenceTicketTypes[index];
+                  const ticketTypeConfig = licenceType.ticketTypes.find(function(possibleConfig) {
+                    return possibleConfig.ticketType === record.ticketType;
+                  });
+                %>
+                <tr>
+                  <td><%= record.ticketType %></td>
+                  <td class="has-text-right">
+                    <%= (ticketTypeConfig ? "$" + (ticketTypeConfig.ticketPrice * ticketTypeConfig.ticketCount).toFixed(2) : "") %>
+                  </td>
+                  <td class="has-text-right">
+                    <%= (ticketTypeConfig ? "$" + ticketTypeConfig.prizesPerDeal.toFixed(2) : "") %>
+                  </td>
+                  <td class="has-text-right"><%= record.unitCount %></td>
+                  <td class="has-text-right">$<%= record.licenceFee.toFixed(2) %></td>
+                  <td><%= record.manufacturerLocationDisplayName %></td>
+                  <td><%= record.distributorLocationDisplayName %></td>
+                </tr>
+              <% } %>
+            </tbody>
+          </table>
         <% } %>
       </div>
     </div>

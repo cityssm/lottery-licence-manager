@@ -82,7 +82,8 @@ export type Config_LicenceType = {
   isActive: boolean,
   licenceFields: Config_LicenceField[],
   eventFields: Config_EventField[],
-  ticketTypes?: Config_TicketType[]
+  ticketTypes?: Config_TicketType[],
+  printSettings?: {}
 };
 
 type Config_LicenceField = {
