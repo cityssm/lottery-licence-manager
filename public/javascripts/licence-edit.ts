@@ -1,4 +1,4 @@
-import type { cityssmGlobal } from "../../node_modules/@cityssm/bulma-webapp-js/types";
+import type { cityssmGlobal } from "../../node_modules/@cityssm/bulma-webapp-js/src/types";
 declare const cityssm: cityssmGlobal;
 
 import type { llmGlobal } from "./types";
@@ -642,7 +642,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
           } else {
 
             const listEle = document.createElement("div");
-            listEle.className = "list is-hoverable has-margin-bottom-10";
+            listEle.className = "list is-hoverable mb-3";
 
             for (let termsConditionsIndex = 0; termsConditionsIndex < termsConditionsList.length; termsConditionsIndex += 1) {
 

@@ -1,4 +1,4 @@
-import type { cityssmGlobal } from "../../node_modules/@cityssm/bulma-webapp-js/types";
+import type { cityssmGlobal } from "../../node_modules/@cityssm/bulma-webapp-js/src/types";
 declare const cityssm: cityssmGlobal;
 
 import type { llmGlobal } from "./types";
@@ -275,7 +275,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
             "<small>Not Applicable</small>" +
             (bankRecord.recordNote === "" ?
               "" :
-              " <span class=\"has-margin-left-5\" data-tooltip=\"" + cityssm.escapeHTML(bankRecord.recordNote) + "\">" +
+              " <span class=\"ml-2\" data-tooltip=\"" + cityssm.escapeHTML(bankRecord.recordNote) + "\">" +
               "<i class=\"fas fa-sticky-note\" aria-hidden=\"true\"></i>" +
               "</span>");
 
@@ -289,7 +289,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
             "<small>Recorded " + bankRecord.recordDateString + "</small>" +
             (bankRecord.recordNote === "" ?
               "" :
-              " <span class=\"has-margin-left-5\" data-tooltip=\"" + cityssm.escapeHTML(bankRecord.recordNote) + "\">" +
+              " <span class=\"ml-2\" data-tooltip=\"" + cityssm.escapeHTML(bankRecord.recordNote) + "\">" +
               "<i class=\"fas fa-sticky-note\" aria-hidden=\"true\"></i>" +
               "</span>");
 

@@ -330,7 +330,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 }
                 else {
                     var listEle = document.createElement("div");
-                    listEle.className = "list is-hoverable has-margin-bottom-10";
+                    listEle.className = "list is-hoverable mb-3";
                     for (var termsConditionsIndex = 0; termsConditionsIndex < termsConditionsList_1.length; termsConditionsIndex += 1) {
                         var termsConditionsObj = termsConditionsList_1[termsConditionsIndex];
                         var listItemEle = document.createElement("a");

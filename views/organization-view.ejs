@@ -43,7 +43,7 @@
     </h1>
 
     <% if (organization.canUpdate) { %>
-      <div class="fixed-container is-fixed-bottom-right has-margin-20 has-text-right is-hidden-print">
+      <div class="fixed-container is-fixed-bottom-right mx-4 my-4 has-text-right is-hidden-print">
         <a class="button is-circle is-primary has-tooltip-left" data-tooltip="Edit this Organization" href="/organizations/<%= organization.organizationID %>/edit">
           <i class="fas fa-pencil-alt" aria-hidden="true"></i>
           <span class="sr-only">Edit this Organization</span>
@@ -90,20 +90,20 @@
         <% if (organization.isEligibleForLicences) { %>
           <div class="message is-success">
             <p class="message-body">
-              <i class="fas fa-check has-margin-right-10" aria-hidden="true"></i>
+              <i class="fas fa-check mr-3" aria-hidden="true"></i>
               Eligible for New Licences
             </p>
           </div>
         <% } else { %>
           <div class="message is-danger">
             <p class="message-body">
-              <i class="fas fa-times has-margin-right-10" aria-hidden="true"></i>
+              <i class="fas fa-times mr-3" aria-hidden="true"></i>
               <strong>Not Eligible for New Licences</strong>
             </p>
           </div>
         <% } %>
         <% if (organization.organizationNote && organization.organizationNote !== "") { %>
-          <p class="has-margin-top-10">
+          <p class="mt-3">
             <strong>Notes</strong><br />
             <span class="has-newline-chars"><%= organization.organizationNote %></span>
           </p>
@@ -118,7 +118,7 @@
             <span class="icon"><i class="fas fa-users" aria-hidden="true"></i></span>
             <span>Representatives</span>
             <% if (organization.organizationRepresentatives.length > 0) { %>
-              <span class="tag is-info is-rounded has-margin-left-10">
+              <span class="tag is-info is-rounded ml-3">
                 <%= organization.organizationRepresentatives.length %>
               </span>
             <% } %>
@@ -129,7 +129,7 @@
             <span class="icon"><i class="fas fa-certificate" aria-hidden="true"></i></span>
             <span>Licences</span>
             <% if (licences.length > 0) { %>
-              <span class="tag is-info is-rounded has-margin-left-10">
+              <span class="tag is-info is-rounded ml-3">
                 <%= licences.length %>
               </span>
             <% } %>
@@ -140,7 +140,7 @@
             <span class="icon"><i class="fas fa-comment" aria-hidden="true"></i></span>
             <span>Remarks</span>
             <% if (remarks.length > 0) { %>
-              <span class="tag is-info is-rounded has-margin-left-10">
+              <span class="tag is-info is-rounded ml-3">
                 <%= remarks.length %>
               </span>
             <% } %>

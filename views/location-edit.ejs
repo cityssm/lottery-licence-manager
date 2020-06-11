@@ -23,7 +23,7 @@
       <%= (isCreate ? "Create a New Location" : "Update a Location") %>
     </h1>
 
-    <form class="has-margin-bottom-20" id="form--location">
+    <form class="mb-4" id="form--location">
       <input id="location--locationID" name="locationID" type="hidden" value="<%= location.locationID %>" />
 
       <div class="columns">
@@ -73,7 +73,7 @@
         </div>
         <div class="column">
           <fieldset>
-            <legend class="is-size-5 has-margin-bottom-10">Location Attributes</legend>
+            <legend class="is-size-5 mb-3">Location Attributes</legend>
             <div class="field">
               <div class="control">
                 <div class="b-checkbox is-primary">
@@ -98,7 +98,7 @@
         </div>
       </div>
 
-      <div class="fixed-container is-fixed-bottom has-padding-10 has-background-grey-light is-hidden-print">
+      <div class="fixed-container is-fixed-bottom px-3 py-3 has-background-grey-light is-hidden-print">
         <div class="level">
           <div class="level-left" id="container--form-message"></div>
           <div class="level-right">

@@ -23,7 +23,7 @@
       <%= (isCreate ? "Create a New Organization" : "Update an Organization") %>
     </h1>
 
-    <form class="has-margin-bottom-20" id="form--organization">
+    <form class="mb-4" id="form--organization">
       <input id="organization--organizationID" name="organizationID" type="hidden" value="<%= organization.organizationID %>" />
 
       <div class="columns">
@@ -141,7 +141,7 @@
           </div>
       </div>
 
-      <div class="fixed-container is-fixed-bottom has-padding-10 has-background-grey-light is-hidden-print">
+      <div class="fixed-container is-fixed-bottom px-3 py-3 has-background-grey-light is-hidden-print">
         <div class="level">
           <div class="level-left" id="container--form-message"></div>
           <div class="level-right">
@@ -392,7 +392,7 @@
                       </div>
                     </div>
                   </div>
-                  <div class="field has-margin-bottom-20">
+                  <div class="field mb-4">
                     <label class="label" for="addOrganizationRepresentative--representativeEmailAddress">Email Address</label>
                     <div class="control">
                       <input class="input" id="addOrganizationRepresentative--representativeEmailAddress" name="representativeEmailAddress" type="email" value="" maxlength="200" autocomplete="off" />
@@ -476,7 +476,7 @@
                       </div>
                     </div>
                   </div>
-                  <div class="field has-margin-bottom-20">
+                  <div class="field mb-4">
                     <label class="label" for="editOrganizationRepresentative--representativeEmailAddress">Email Address</label>
                     <div class="control">
                       <input class="input" id="editOrganizationRepresentative--representativeEmailAddress" name="representativeEmailAddress" type="email" value="" maxlength="200" autocomplete="off" />

@@ -1,4 +1,4 @@
-import type { cityssmGlobal } from "../../node_modules/@cityssm/bulma-webapp-js/types";
+import type { cityssmGlobal } from "../../node_modules/@cityssm/bulma-webapp-js/src/types";
 declare const cityssm: cityssmGlobal;
 
 import type * as llmTypes from "../../helpers/llmTypes";
@@ -213,7 +213,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
           if (currentLimit + currentOffset < locationResults.count) {
 
             const nextEle = document.createElement("a");
-            nextEle.className = "button has-margin-left-10";
+            nextEle.className = "button ml-3";
             nextEle.innerHTML = "<span>Next Locations</span><span class=\"icon\"><i class=\"fas fa-chevron-right\" aria-hidden=\"true\"></i></span>";
             nextEle.addEventListener("click", function(clickEvent) {
 

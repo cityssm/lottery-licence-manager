@@ -46,7 +46,7 @@
       %>
       <div class="column is-narrow is-hidden-print">
         <div class="field is-grouped align-items-center justify-flex-end">
-          <div class="field has-addons has-margin-left-20">
+          <div class="field has-addons ml-4">
             <div class="control">
               <label class="button is-small is-static" for="eventNav--eventDate">Switch Dates</label>
             </div>
@@ -108,7 +108,7 @@
     </div>
 
     <% if (event.canUpdate) { %>
-      <div class="fixed-container is-fixed-bottom-right has-margin-20 has-text-right is-hidden-print">
+      <div class="fixed-container is-fixed-bottom-right mx-4 my-4 has-text-right is-hidden-print">
         <a class="button is-circle is-primary has-tooltip-left" data-tooltip="Edit this Event" href="/events/<%= licence.licenceID %>/<%= event.eventDate %>/edit">
           <i class="fas fa-pencil-alt" aria-hidden="true"></i>
           <span class="sr-only">Edit this Event</span>

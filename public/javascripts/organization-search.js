@@ -49,7 +49,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     (organizationObj.organizationNote === "" ?
                         "" :
                         "<span class=\"tag has-cursor-default is-info is-light\" data-tooltip=\"" + cityssm.escapeHTML(organizationObj.organizationNote.length > 30 ? organizationObj.organizationNote.substring(0, 27) + "..." : organizationObj.organizationNote) + "\">" +
-                            "<i class=\"fas fa-sticky-note has-margin-right-5\" aria-hidden=\"true\"></i> Note" +
+                            "<i class=\"fas fa-sticky-note mr-2\" aria-hidden=\"true\"></i> Note" +
                             "</span>") +
                     "</td>");
                 trEle.insertAdjacentHTML("beforeend", "<td>" +
@@ -68,12 +68,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 var licenceHTML = "";
                 if (organizationObj.licences_activeCount > 0) {
                     licenceHTML = "<span class=\"tag has-cursor-default is-info\" data-tooltip=\"Number of Active Licences\">" +
-                        "<i class=\"fas fa-certificate has-margin-right-5\" aria-hidden=\"true\"></i> " + organizationObj.licences_activeCount +
+                        "<i class=\"fas fa-certificate mr-2\" aria-hidden=\"true\"></i> " + organizationObj.licences_activeCount +
                         "</span>";
                 }
                 else if (organizationObj.licences_endDateMax) {
                     licenceHTML = "<span class=\"tag has-cursor-default is-info is-light\" data-tooltip=\"Last Licence End Date\">" +
-                        "<i class=\"fas fa-stop has-margin-right-5\" aria-hidden=\"true\"></i> " + organizationObj.licences_endDateMaxString +
+                        "<i class=\"fas fa-stop mr-2\" aria-hidden=\"true\"></i> " + organizationObj.licences_endDateMaxString +
                         "</span>";
                 }
                 trEle.insertAdjacentHTML("beforeend", "<td>" + licenceHTML + "</td>");

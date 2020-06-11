@@ -1,4 +1,4 @@
-import type { cityssmGlobal } from "../../node_modules/@cityssm/bulma-webapp-js/types";
+import type { cityssmGlobal } from "../../node_modules/@cityssm/bulma-webapp-js/src/types";
 declare const cityssm: cityssmGlobal;
 
 
@@ -132,30 +132,30 @@ declare const cityssm: cityssmGlobal;
           " data-tooltip=\"View Licence\"" +
           " href=\"/licences/" + licenceRecord.licenceID + "\">" +
 
-          ("<div class=\"columns has-margin-bottom-0 is-variable is-1\">" +
-            "<div class=\"column has-padding-bottom-5 is-narrow\">" +
+          ("<div class=\"columns mb-0 is-variable is-1\">" +
+            "<div class=\"column pb-2 is-narrow\">" +
             "<i class=\"fas fa-fw fa-certificate\" aria-hidden=\"true\"></i>" +
             "</div>" +
-            "<div class=\"column has-padding-bottom-5 has-text-weight-semibold\">" +
+            "<div class=\"column pb-2 has-text-weight-semibold\">" +
             licenceRecord.externalLicenceNumber + "<br />" +
             (licenceType ? licenceType : licenceRecord.licenceTypeKey) +
             "</div>" +
             "</div>") +
 
-          ("<div class=\"columns has-margin-bottom-0 is-variable is-1\">" +
-            "<div class=\"column has-padding-bottom-5 is-narrow\">" +
+          ("<div class=\"columns mb-0 is-variable is-1\">" +
+            "<div class=\"column pb-2 is-narrow\">" +
             "<i class=\"fas fa-fw fa-map-marker-alt\" aria-hidden=\"true\"></i>" +
             "</div>" +
-            "<div class=\"column has-padding-bottom-5\">" +
+            "<div class=\"column pb-2\">" +
             (licenceRecord.locationName === "" ? licenceRecord.locationAddress1 : licenceRecord.locationName) +
             "</div>" +
             "</div>") +
 
-          ("<div class=\"columns has-margin-bottom-0 is-variable is-1\">" +
-            "<div class=\"column has-padding-bottom-5 is-narrow\">" +
+          ("<div class=\"columns mb-0 is-variable is-1\">" +
+            "<div class=\"column pb-2 is-narrow\">" +
             "<i class=\"fas fa-fw fa-users\" aria-hidden=\"true\"></i>" +
             "</div>" +
-            "<div class=\"column has-padding-bottom-5\">" +
+            "<div class=\"column pb-2\">" +
             licenceRecord.organizationName +
             "</div>" +
             "</div>") +
@@ -203,43 +203,43 @@ declare const cityssm: cityssmGlobal;
 
         eventTdEles[tdIndex].insertAdjacentHTML(
           "beforeend",
-          "<a class=\"button has-margin-bottom-5 has-text-left is-small is-block has-height-auto is-wrap is-link is-light\"" +
+          "<a class=\"button mb-2 has-text-left is-small is-block has-height-auto is-wrap is-link is-light\"" +
           " data-tooltip=\"View Event\"" +
           " href=\"/events/" + eventRecord.licenceID + "/" + eventRecord.eventDate + "\">" +
 
-          ("<div class=\"columns has-margin-bottom-0 is-variable is-1\">" +
-            "<div class=\"column has-padding-bottom-5 is-narrow\">" +
+          ("<div class=\"columns mb-0 is-variable is-1\">" +
+            "<div class=\"column pb-2 is-narrow\">" +
             "<i class=\"fas fa-fw fa-clock\" aria-hidden=\"true\"></i>" +
             "</div>" +
-            "<div class=\"column has-padding-bottom-5\">" +
+            "<div class=\"column pb-2\">" +
             eventRecord.startTimeString +
             "</div>" +
             "</div>") +
 
-          ("<div class=\"columns has-margin-bottom-0 is-variable is-1\">" +
-            "<div class=\"column has-padding-bottom-5 is-narrow\">" +
+          ("<div class=\"columns mb-0 is-variable is-1\">" +
+            "<div class=\"column pb-2 is-narrow\">" +
             "<i class=\"fas fa-fw fa-certificate\" aria-hidden=\"true\"></i>" +
             "</div>" +
-            "<div class=\"column has-padding-bottom-5 has-text-weight-semibold\">" +
+            "<div class=\"column pb-2 has-text-weight-semibold\">" +
             eventRecord.externalLicenceNumber + "<br />" +
             (licenceType ? licenceType : eventRecord.licenceTypeKey) +
             "</div>" +
             "</div>") +
 
-          ("<div class=\"columns has-margin-bottom-0 is-variable is-1\">" +
-            "<div class=\"column has-padding-bottom-5 is-narrow\">" +
+          ("<div class=\"columns mb-0 is-variable is-1\">" +
+            "<div class=\"column pb-2 is-narrow\">" +
             "<i class=\"fas fa-fw fa-map-marker-alt\" aria-hidden=\"true\"></i>" +
             "</div>" +
-            "<div class=\"column has-padding-bottom-5\">" +
+            "<div class=\"column pb-2\">" +
             (eventRecord.locationName === "" ? eventRecord.locationAddress1 : eventRecord.locationName) +
             "</div>" +
             "</div>") +
 
-          ("<div class=\"columns has-margin-bottom-0 is-variable is-1\">" +
-            "<div class=\"column has-padding-bottom-5 is-narrow\">" +
+          ("<div class=\"columns mb-0 is-variable is-1\">" +
+            "<div class=\"column pb-2 is-narrow\">" +
             "<i class=\"fas fa-fw fa-users\" aria-hidden=\"true\"></i>" +
             "</div>" +
-            "<div class=\"column has-padding-bottom-5\">" +
+            "<div class=\"column pb-2\">" +
             eventRecord.organizationName +
             "</div>" +
             "</div>") +

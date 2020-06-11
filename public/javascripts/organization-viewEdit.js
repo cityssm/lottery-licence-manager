@@ -158,7 +158,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                             "<small>Not Applicable</small>" +
                             (bankRecord.recordNote === "" ?
                                 "" :
-                                " <span class=\"has-margin-left-5\" data-tooltip=\"" + cityssm.escapeHTML(bankRecord.recordNote) + "\">" +
+                                " <span class=\"ml-2\" data-tooltip=\"" + cityssm.escapeHTML(bankRecord.recordNote) + "\">" +
                                     "<i class=\"fas fa-sticky-note\" aria-hidden=\"true\"></i>" +
                                     "</span>");
                 }
@@ -170,7 +170,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                             "<small>Recorded " + bankRecord.recordDateString + "</small>" +
                             (bankRecord.recordNote === "" ?
                                 "" :
-                                " <span class=\"has-margin-left-5\" data-tooltip=\"" + cityssm.escapeHTML(bankRecord.recordNote) + "\">" +
+                                " <span class=\"ml-2\" data-tooltip=\"" + cityssm.escapeHTML(bankRecord.recordNote) + "\">" +
                                     "<i class=\"fas fa-sticky-note\" aria-hidden=\"true\"></i>" +
                                     "</span>");
                 }

@@ -33,7 +33,7 @@
           <%= (isCreate ? "Create a New Lottery Licence" : "Update an Existing Lottery Licence") %>
         </h1>
       </div>
-      <div class="level-right has-text-right has-margin-left-20 is-hidden-print">
+      <div class="level-right has-text-right ml-4 is-hidden-print">
         <% if (licence.issueDate) { %>
           <a class="button is-link" href="/licences/<%= licence.licenceID %>/print" download>
             <span class="icon is-small">
@@ -662,7 +662,7 @@
                   </div>
                 </div>
                 <p class="has-text-right is-size-7"><%= feeCalculation.message %></p>
-                <button class="button is-small is-fullwidth has-margin-top-10 is-primary is-hidden-print" id="is-update-expected-licence-fee-button" data-licence-fee-expected="<%= feeCalculation.fee %>" type="button">
+                <button class="button is-small is-fullwidth mt-3 is-primary is-hidden-print" id="is-update-expected-licence-fee-button" data-licence-fee-expected="<%= feeCalculation.fee %>" type="button">
                   Update Licence Fee
                 </button>
               </div>
@@ -781,7 +781,7 @@
         }
       %>
 
-      <div class="fixed-container is-fixed-bottom has-padding-10 has-background-grey-light is-hidden-print">
+      <div class="fixed-container is-fixed-bottom px-3 py-3 has-background-grey-light is-hidden-print">
         <div class="level">
           <div class="level-left">
             <div class="tags">

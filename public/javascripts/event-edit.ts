@@ -1,4 +1,4 @@
-import type { cityssmGlobal } from "../../node_modules/@cityssm/bulma-webapp-js/types";
+import type { cityssmGlobal } from "../../node_modules/@cityssm/bulma-webapp-js/src/types";
 declare const cityssm: cityssmGlobal;
 
 
@@ -155,7 +155,7 @@ declare const cityssm: cityssmGlobal;
         savedBankInfoList = bankInfoList;
 
         const listEle = document.createElement("div");
-        listEle.className = "list is-hoverable has-margin-bottom-10";
+        listEle.className = "list is-hoverable mb-3";
 
         for (let index = 0; index < bankInfoList.length; index += 1) {
 

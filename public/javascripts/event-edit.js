@@ -71,7 +71,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
             }, function (bankInfoList) {
                 savedBankInfoList = bankInfoList;
                 var listEle = document.createElement("div");
-                listEle.className = "list is-hoverable has-margin-bottom-10";
+                listEle.className = "list is-hoverable mb-3";
                 for (var index = 0; index < bankInfoList.length; index += 1) {
                     var record = bankInfoList[index];
                     var listItemEle = document.createElement("a");
