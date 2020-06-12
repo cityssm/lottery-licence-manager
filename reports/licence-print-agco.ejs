@@ -328,8 +328,8 @@
                 <th class="has-text-right">Prizes</th>
                 <th class="has-text-right">Units</th>
                 <th class="has-text-right">Fee</th>
-                <th>Manufacturer</th>
                 <th>Distributor</th>
+                <th>Manufacturer</th>
               </tr>
             </thead>
             <tbody>
@@ -350,8 +350,8 @@
                   </td>
                   <td class="has-text-right"><%= record.unitCount %></td>
                   <td class="has-text-right">$<%= record.licenceFee.toFixed(2) %></td>
-                  <td><%= record.manufacturerLocationDisplayName %></td>
                   <td><%= record.distributorLocationDisplayName %></td>
+                  <td><%= record.manufacturerLocationDisplayName %></td>
                 </tr>
               <% } %>
             </tbody>
