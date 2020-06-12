@@ -298,7 +298,7 @@ export interface LotteryLicence extends Location, Record {
 
   licenceTicketTypes: LotteryLicenceTicketType[]
   licenceFields: FieldData[],
-  licenceAmendments: LotteryLicenceAmendments[],
+  licenceAmendments: LotteryLicenceAmendment[],
 
   licenceTransactionTotal: number,
   licenceTransactions: LotteryLicenceTransaction[],
@@ -313,11 +313,21 @@ export interface LotteryLicenceTicketType extends Record {
 };
 
 export interface LotteryLicenceTransaction extends Record {
-
+  transactionIndex: number,
+  transactionDate: number,
+  transactionTime: number,
+  externalReceiptNumber: string,
+  transactionAmount: number,
+  transactionNote: string
 };
 
-export interface LotteryLicenceAmendments extends Record {
-
+export interface LotteryLicenceAmendment extends Record {
+  amendmentIndex: number,
+  amendmentDate: number,
+  amendmentTime: number,
+  amendmentType: string,
+  amendment: string,
+  isHidden: boolean
 };
 
 export interface LotteryEvent extends LotteryLicence {
