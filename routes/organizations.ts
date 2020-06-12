@@ -63,7 +63,7 @@ router.get("/cleanup", function(req, res) {
 
 router.post("/doGetInactive", function(req, res) {
 
-  const inactiveYears = parseInt(req.body.inactiveYears);
+  const inactiveYears = parseInt(req.body.inactiveYears, 10);
 
   res.json(licencesDB.getInactiveOrganizations(inactiveYears));
 
@@ -501,7 +501,7 @@ router.post("/doRestore", function(req, res) {
 
 router.get("/:organizationID", function(req, res) {
 
-  const organizationID = parseInt(req.params.organizationID);
+  const organizationID = parseInt(req.params.organizationID, 10);
 
   const organization = licencesDB.getOrganization(organizationID, req.session);
 
@@ -543,7 +543,7 @@ router.get("/:organizationID", function(req, res) {
 
 router.get("/:organizationID/edit", function(req, res) {
 
-  const organizationID = parseInt(req.params.organizationID);
+  const organizationID = parseInt(req.params.organizationID, 10);
 
   if (!req.session.user.userProperties.canCreate) {
 
@@ -609,7 +609,7 @@ router.post("/:organizationID/doAddOrganizationRepresentative", function(req, re
 
   }
 
-  const organizationID = parseInt(req.params.organizationID);
+  const organizationID = parseInt(req.params.organizationID, 10);
 
   const representativeObj = licencesDB.addOrganizationRepresentative(organizationID, req.body);
 
@@ -646,7 +646,7 @@ router.post("/:organizationID/doEditOrganizationRepresentative", function(req, r
 
   }
 
-  const organizationID = parseInt(req.params.organizationID);
+  const organizationID = parseInt(req.params.organizationID, 10);
 
   const representativeObj = licencesDB.updateOrganizationRepresentative(organizationID, req.body);
 
@@ -683,7 +683,7 @@ router.post("/:organizationID/doDeleteOrganizationRepresentative", function(req,
 
   }
 
-  const organizationID = parseInt(req.params.organizationID);
+  const organizationID = parseInt(req.params.organizationID, 10);
   const representativeIndex = req.body.representativeIndex;
 
   const success = licencesDB.deleteOrganizationRepresentative(organizationID, representativeIndex);
@@ -710,7 +710,7 @@ router.post("/:organizationID/doSetDefaultRepresentative", function(req, res) {
 
   }
 
-  const organizationID = parseInt(req.params.organizationID);
+  const organizationID = parseInt(req.params.organizationID, 10);
   const isDefaultRepresentativeIndex = req.body.isDefaultRepresentativeIndex;
 
   const success = licencesDB.setDefaultOrganizationRepresentative(organizationID, isDefaultRepresentativeIndex);

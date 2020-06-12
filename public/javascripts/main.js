@@ -1,44 +1,44 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const llm = {};
+var llm = {};
 llm.arrayToObject = function (array, objectKey) {
-    const obj = {};
-    for (let arrayIndex = 0; arrayIndex < array.length; arrayIndex += 1) {
+    var obj = {};
+    for (var arrayIndex = 0; arrayIndex < array.length; arrayIndex += 1) {
         obj[array[arrayIndex][objectKey]] = array[arrayIndex];
     }
     return obj;
 };
 llm.initializeDateRangeSelector = function (containerEle, changeFn) {
-    const rangeTypeSelectEle = containerEle.querySelector("[data-field='rangeType']").getElementsByTagName("select")[0];
-    const rangeSelectEle = containerEle.querySelector("[data-field='range']").getElementsByTagName("select")[0];
-    const dateOptionEle = rangeSelectEle.querySelector("[data-range-type='']");
-    const yearOptgroupEle = rangeSelectEle.querySelector("[data-range-type='year']");
-    const quarterOptgroupEle = rangeSelectEle.querySelector("[data-range-type='quarter']");
-    const monthOptgroupEle = rangeSelectEle.querySelector("[data-range-type='month']");
-    const startDateEle = containerEle.querySelector("[data-field='start']").getElementsByTagName("input")[0];
-    const endDateEle = containerEle.querySelector("[data-field='end']").getElementsByTagName("input")[0];
-    const setStartEndDatesFromRange = function () {
-        const rangeValue = rangeSelectEle.value;
+    var rangeTypeSelectEle = containerEle.querySelector("[data-field='rangeType']").getElementsByTagName("select")[0];
+    var rangeSelectEle = containerEle.querySelector("[data-field='range']").getElementsByTagName("select")[0];
+    var dateOptionEle = rangeSelectEle.querySelector("[data-range-type='']");
+    var yearOptgroupEle = rangeSelectEle.querySelector("[data-range-type='year']");
+    var quarterOptgroupEle = rangeSelectEle.querySelector("[data-range-type='quarter']");
+    var monthOptgroupEle = rangeSelectEle.querySelector("[data-range-type='month']");
+    var startDateEle = containerEle.querySelector("[data-field='start']").getElementsByTagName("input")[0];
+    var endDateEle = containerEle.querySelector("[data-field='end']").getElementsByTagName("input")[0];
+    var setStartEndDatesFromRange = function () {
+        var rangeValue = rangeSelectEle.value;
         if (rangeValue === "") {
             return;
         }
-        let startDateString = "";
-        let endDateString = "";
-        const range = rangeValue.split("-");
+        var startDateString = "";
+        var endDateString = "";
+        var range = rangeValue.split("-");
         if (range.length === 1) {
             startDateString = range[0] + "-01-01";
             endDateString = range[0] + "-12-31";
         }
         else if (range[1] === "q") {
-            const jsQuarterStartMonth = (parseInt(range[2]) - 1) * 3;
+            var jsQuarterStartMonth = (parseInt(range[2], 10) - 1) * 3;
             startDateString = range[0] + "-" + ("0" + (jsQuarterStartMonth + 1)).slice(-2) + "-01";
-            const endDate = new Date(parseInt(range[0]), jsQuarterStartMonth + 3, 0);
+            var endDate = new Date(parseInt(range[0], 10), jsQuarterStartMonth + 3, 0);
             endDateString = range[0] + "-" + ("0" + (endDate.getMonth() + 1)).slice(-2) + "-" + endDate.getDate();
         }
         else {
-            const jsQuarterStartMonth = (parseInt(range[1]) - 1);
+            var jsQuarterStartMonth = (parseInt(range[1], 10) - 1);
             startDateString = range[0] + "-" + ("0" + (jsQuarterStartMonth + 1)).slice(-2) + "-01";
-            const endDate = new Date(parseInt(range[0]), jsQuarterStartMonth + 1, 0);
+            var endDate = new Date(parseInt(range[0], 10), jsQuarterStartMonth + 1, 0);
             endDateString = range[0] + "-" + ("0" + (endDate.getMonth() + 1)).slice(-2) + "-" + endDate.getDate();
         }
         startDateEle.value = startDateString;
@@ -49,7 +49,7 @@ llm.initializeDateRangeSelector = function (containerEle, changeFn) {
         }
     };
     rangeTypeSelectEle.addEventListener("change", function () {
-        const rangeType = rangeTypeSelectEle.value;
+        var rangeType = rangeTypeSelectEle.value;
         if (rangeType === "") {
             rangeSelectEle.setAttribute("readonly", "readonly");
             rangeSelectEle.classList.add("is-readonly");
@@ -104,9 +104,9 @@ llm.initializeDateRangeSelector = function (containerEle, changeFn) {
 };
 llm.getDefaultConfigProperty = function (propertyName, propertyValueCallbackFn) {
     try {
-        const defaultConfigPropertiesString = window.localStorage.getItem("defaultConfigProperties");
+        var defaultConfigPropertiesString = window.localStorage.getItem("defaultConfigProperties");
         if (defaultConfigPropertiesString) {
-            const defaultConfigProperties = JSON.parse(defaultConfigPropertiesString);
+            var defaultConfigProperties = JSON.parse(defaultConfigPropertiesString);
             propertyValueCallbackFn(defaultConfigProperties[propertyName]);
             return;
         }
@@ -126,21 +126,21 @@ llm.initializeTabs = function (tabsListEle, callbackFns) {
     if (!tabsListEle) {
         return;
     }
-    const isPanelOrMenuListTabs = tabsListEle.classList.contains("panel-tabs") || tabsListEle.classList.contains("menu-list");
-    const listItemEles = tabsListEle.getElementsByTagName(isPanelOrMenuListTabs ? "a" : "li");
-    const tabLinkEles = (isPanelOrMenuListTabs ? listItemEles : tabsListEle.getElementsByTagName("a"));
+    var isPanelOrMenuListTabs = tabsListEle.classList.contains("panel-tabs") || tabsListEle.classList.contains("menu-list");
+    var listItemEles = tabsListEle.getElementsByTagName(isPanelOrMenuListTabs ? "a" : "li");
+    var tabLinkEles = (isPanelOrMenuListTabs ? listItemEles : tabsListEle.getElementsByTagName("a"));
     function tabClickFn(clickEvent) {
         clickEvent.preventDefault();
-        const tabLinkEle = clickEvent.currentTarget;
-        const tabContentEle = document.getElementById(tabLinkEle.getAttribute("href").substring(1));
-        for (let index = 0; index < listItemEles.length; index += 1) {
+        var tabLinkEle = clickEvent.currentTarget;
+        var tabContentEle = document.getElementById(tabLinkEle.getAttribute("href").substring(1));
+        for (var index = 0; index < listItemEles.length; index += 1) {
             listItemEles[index].classList.remove("is-active");
             tabLinkEles[index].setAttribute("aria-selected", "false");
         }
         (isPanelOrMenuListTabs ? tabLinkEle : tabLinkEle.parentElement).classList.add("is-active");
         tabLinkEle.setAttribute("aria-selected", "true");
-        const tabContentEles = tabContentEle.parentElement.getElementsByClassName("tab-content");
-        for (let index = 0; index < tabContentEles.length; index += 1) {
+        var tabContentEles = tabContentEle.parentElement.getElementsByClassName("tab-content");
+        for (var index = 0; index < tabContentEles.length; index += 1) {
             tabContentEles[index].classList.remove("is-active");
         }
         tabContentEle.classList.add("is-active");
@@ -148,7 +148,7 @@ llm.initializeTabs = function (tabsListEle, callbackFns) {
             callbackFns.onshown(tabContentEle);
         }
     }
-    for (let index = 0; index < listItemEles.length; index += 1) {
+    for (var index = 0; index < listItemEles.length; index += 1) {
         (isPanelOrMenuListTabs ?
             listItemEles[index] :
             listItemEles[index].getElementsByTagName("a")[0]).addEventListener("click", tabClickFn);

@@ -18,8 +18,8 @@ declare const cityssm: cityssmGlobal;
 
   function doLicenceSearch() {
 
-    const currentLimit = parseInt(limitEle.value);
-    const currentOffset = parseInt(offsetEle.value);
+    const currentLimit = parseInt(limitEle.value, 10);
+    const currentOffset = parseInt(offsetEle.value, 10);
 
     searchResultsEle.innerHTML = "<p class=\"has-text-centered has-text-grey-lighter\">" +
       "<i class=\"fas fa-3x fa-circle-notch fa-spin\" aria-hidden=\"true\"></i><br />" +

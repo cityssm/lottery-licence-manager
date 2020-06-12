@@ -64,7 +64,7 @@ router.get([
         res.redirect("/licences/?error=accessDenied");
         return;
     }
-    const organizationID = parseInt(req.params.organizationID);
+    const organizationID = parseInt(req.params.organizationID, 10);
     let organization = null;
     if (organizationID) {
         organization = licencesDB.getOrganization(organizationID, req.session);
@@ -266,7 +266,7 @@ router.post("/doDelete", function (req, res) {
     }
 });
 router.get("/:licenceID", function (req, res) {
-    const licenceID = parseInt(req.params.licenceID);
+    const licenceID = parseInt(req.params.licenceID, 10);
     const licence = licencesDB.getLicence(licenceID, req.session);
     if (!licence) {
         res.redirect("/licences/?error=licenceNotFound");
@@ -283,7 +283,7 @@ router.get("/:licenceID", function (req, res) {
     });
 });
 router.get("/:licenceID/edit", function (req, res) {
-    const licenceID = parseInt(req.params.licenceID);
+    const licenceID = parseInt(req.params.licenceID, 10);
     if (!req.session.user.userProperties.canCreate) {
         res.redirect("/licences/" + licenceID + "/?error=accessDenied");
         return;
@@ -308,7 +308,7 @@ router.get("/:licenceID/edit", function (req, res) {
     });
 });
 router.get("/:licenceID/print", function (req, res, next) {
-    const licenceID = parseInt(req.params.licenceID);
+    const licenceID = parseInt(req.params.licenceID, 10);
     const licence = licencesDB.getLicence(licenceID, req.session);
     if (!licence) {
         res.redirect("/licences/?error=licenceNotFound");
@@ -340,7 +340,7 @@ router.get("/:licenceID/print", function (req, res, next) {
     });
 });
 router.get("/:licenceID/poke", function (req, res) {
-    const licenceID = parseInt(req.params.licenceID);
+    const licenceID = parseInt(req.params.licenceID, 10);
     if (req.session.user.userProperties.isAdmin) {
         licencesDB.pokeLicence(licenceID, req.session);
     }

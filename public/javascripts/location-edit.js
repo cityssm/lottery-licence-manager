@@ -41,7 +41,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
         });
     }
     if (!isCreate && isAdmin) {
-        var intLocationID_1 = parseInt(locationID);
+        var intLocationID_1 = parseInt(locationID, 10);
         formEle.getElementsByClassName("is-merge-button")[0].addEventListener("click", function (mergeButton_clickEvent) {
             mergeButton_clickEvent.preventDefault();
             if (hasUnsavedChanges) {

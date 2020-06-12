@@ -125,8 +125,8 @@ router.post("/doDelete", function (req, res) {
     }
 });
 router.get("/:licenceID/:eventDate", function (req, res) {
-    const licenceID = parseInt(req.params.licenceID);
-    const eventDate = parseInt(req.params.eventDate);
+    const licenceID = parseInt(req.params.licenceID, 10);
+    const eventDate = parseInt(req.params.eventDate, 10);
     const eventObj = licencesDB.getEvent(licenceID, eventDate, req.session);
     if (!eventObj) {
         res.redirect("/events/?error=eventNotFound");
@@ -142,8 +142,8 @@ router.get("/:licenceID/:eventDate", function (req, res) {
     });
 });
 router.get("/:licenceID/:eventDate/edit", function (req, res) {
-    const licenceID = parseInt(req.params.licenceID);
-    const eventDate = parseInt(req.params.eventDate);
+    const licenceID = parseInt(req.params.licenceID, 10);
+    const eventDate = parseInt(req.params.eventDate, 10);
     if (!req.session.user.userProperties.canUpdate) {
         res.redirect("/events/" + licenceID + "/" + eventDate + "/?error=accessDenied");
         return;
@@ -167,8 +167,8 @@ router.get("/:licenceID/:eventDate/edit", function (req, res) {
     });
 });
 router.get("/:licenceID/:eventDate/poke", function (req, res) {
-    const licenceID = parseInt(req.params.licenceID);
-    const eventDate = parseInt(req.params.eventDate);
+    const licenceID = parseInt(req.params.licenceID, 10);
+    const eventDate = parseInt(req.params.eventDate, 10);
     if (req.session.user.userProperties.isAdmin) {
         licencesDB.pokeEvent(licenceID, eventDate, req.session);
     }

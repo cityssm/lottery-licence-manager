@@ -21,20 +21,20 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
   if (canCreate) {
 
-    const organizationID = parseInt(remarksContainerEle.getAttribute("data-organization-id"));
+    const organizationID = parseInt(remarksContainerEle.getAttribute("data-organization-id"), 10);
 
     let refreshRemarksFn: () => void;
 
     const editRemarkFn = function(buttonEvent: Event) {
 
-      const remarkIndex = parseInt((<HTMLButtonElement>buttonEvent.currentTarget).getAttribute("data-remark-index"));
+      const remarkIndex = parseInt((<HTMLButtonElement>buttonEvent.currentTarget).getAttribute("data-remark-index"), 10);
       llm.organizationRemarks.openEditRemarkModal(organizationID, remarkIndex, refreshRemarksFn);
 
     };
 
     const deleteRemarkFn = function(buttonEvent: Event) {
 
-      const remarkIndex = parseInt((<HTMLButtonElement>buttonEvent.currentTarget).getAttribute("data-remark-index"));
+      const remarkIndex = parseInt((<HTMLButtonElement>buttonEvent.currentTarget).getAttribute("data-remark-index"), 10);
       llm.organizationRemarks.deleteRemark(organizationID, remarkIndex, true, refreshRemarksFn);
 
     };
@@ -484,18 +484,18 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
         recordIndex = buttonEle.getAttribute("data-record-index");
 
-        bankingYear = parseInt(bankRecordsBankingYearFilterEle.value);
+        bankingYear = parseInt(bankRecordsBankingYearFilterEle.value, 10);
 
         // If no record exists, use default data
         if (recordIndex === "") {
 
-          bankingMonth = parseInt(buttonEle.closest("tr").getAttribute("data-banking-month"));
+          bankingMonth = parseInt(buttonEle.closest("tr").getAttribute("data-banking-month"), 10);
 
           bankRecordType = buttonEle.getAttribute("data-bank-record-type");
 
         } else {
 
-          const recordObj = bankRecordsCache[parseInt(recordIndex)];
+          const recordObj = bankRecordsCache[parseInt(recordIndex, 10)];
 
           isUpdate = true;
           bankingMonth = recordObj.bankingMonth;

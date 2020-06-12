@@ -30,7 +30,7 @@ router.get("/cleanup", function (req, res) {
     });
 });
 router.post("/doGetInactive", function (req, res) {
-    const inactiveYears = parseInt(req.body.inactiveYears);
+    const inactiveYears = parseInt(req.body.inactiveYears, 10);
     res.json(licencesDB.getInactiveOrganizations(inactiveYears));
 });
 router.get("/recovery", function (req, res) {
@@ -299,7 +299,7 @@ router.post("/doRestore", function (req, res) {
     }
 });
 router.get("/:organizationID", function (req, res) {
-    const organizationID = parseInt(req.params.organizationID);
+    const organizationID = parseInt(req.params.organizationID, 10);
     const organization = licencesDB.getOrganization(organizationID, req.session);
     if (!organization) {
         res.redirect("/organizations/?error=organizationNotFound");
@@ -322,7 +322,7 @@ router.get("/:organizationID", function (req, res) {
     });
 });
 router.get("/:organizationID/edit", function (req, res) {
-    const organizationID = parseInt(req.params.organizationID);
+    const organizationID = parseInt(req.params.organizationID, 10);
     if (!req.session.user.userProperties.canCreate) {
         res.redirect("/organizations/" + organizationID + "/?error=accessDenied-noCreate");
         return;
@@ -363,7 +363,7 @@ router.post("/:organizationID/doAddOrganizationRepresentative", function (req, r
         });
         return;
     }
-    const organizationID = parseInt(req.params.organizationID);
+    const organizationID = parseInt(req.params.organizationID, 10);
     const representativeObj = licencesDB.addOrganizationRepresentative(organizationID, req.body);
     if (representativeObj) {
         res.json({
@@ -387,7 +387,7 @@ router.post("/:organizationID/doEditOrganizationRepresentative", function (req, 
         });
         return;
     }
-    const organizationID = parseInt(req.params.organizationID);
+    const organizationID = parseInt(req.params.organizationID, 10);
     const representativeObj = licencesDB.updateOrganizationRepresentative(organizationID, req.body);
     if (representativeObj) {
         res.json({
@@ -411,7 +411,7 @@ router.post("/:organizationID/doDeleteOrganizationRepresentative", function (req
         });
         return;
     }
-    const organizationID = parseInt(req.params.organizationID);
+    const organizationID = parseInt(req.params.organizationID, 10);
     const representativeIndex = req.body.representativeIndex;
     const success = licencesDB.deleteOrganizationRepresentative(organizationID, representativeIndex);
     res.json({
@@ -428,7 +428,7 @@ router.post("/:organizationID/doSetDefaultRepresentative", function (req, res) {
         });
         return;
     }
-    const organizationID = parseInt(req.params.organizationID);
+    const organizationID = parseInt(req.params.organizationID, 10);
     const isDefaultRepresentativeIndex = req.body.isDefaultRepresentativeIndex;
     const success = licencesDB.setDefaultOrganizationRepresentative(organizationID, isDefaultRepresentativeIndex);
     res.json({

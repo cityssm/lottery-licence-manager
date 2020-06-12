@@ -14,8 +14,12 @@ router.post("/doGetLocations", function (req, res) {
         limit: req.body.limit || -1,
         offset: req.body.offset || 0,
         locationNameAddress: req.body.locationNameAddress,
-        locationIsDistributor: ("locationIsDistributor" in req.body && req.body.locationIsDistributor !== "" ? parseInt(req.body.locationIsDistributor) : -1),
-        locationIsManufacturer: ("locationIsManufacturer" in req.body && req.body.locationIsManufacturer !== "" ? parseInt(req.body.locationIsManufacturer) : -1)
+        locationIsDistributor: ("locationIsDistributor" in req.body && req.body.locationIsDistributor !== "" ?
+            parseInt(req.body.locationIsDistributor, 10) :
+            -1),
+        locationIsManufacturer: ("locationIsManufacturer" in req.body && req.body.locationIsManufacturer !== "" ?
+            parseInt(req.body.locationIsManufacturer, 10) :
+            -1)
     });
     res.json(locations);
 });
@@ -29,7 +33,7 @@ router.get("/cleanup", function (req, res) {
     });
 });
 router.post("/doGetInactive", function (req, res) {
-    const inactiveYears = parseInt(req.body.inactiveYears);
+    const inactiveYears = parseInt(req.body.inactiveYears, 10);
     res.json(licencesDB.getInactiveLocations(inactiveYears));
 });
 router.post("/doCreate", function (req, res) {
@@ -154,7 +158,7 @@ router.get("/new", function (req, res) {
     });
 });
 router.get("/:locationID", function (req, res) {
-    const locationID = parseInt(req.params.locationID);
+    const locationID = parseInt(req.params.locationID, 10);
     const location = licencesDB.getLocation(locationID, req.session);
     if (!location) {
         res.redirect("/locations/?error=locationNotFound");
@@ -174,7 +178,7 @@ router.get("/:locationID", function (req, res) {
     });
 });
 router.get("/:locationID/edit", function (req, res) {
-    const locationID = parseInt(req.params.locationID);
+    const locationID = parseInt(req.params.locationID, 10);
     if (!req.session.user.userProperties.canCreate) {
         res.redirect("/locations/" + locationID + "/?error=accessDenied-noCreate");
         return;

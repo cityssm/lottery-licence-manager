@@ -75,11 +75,11 @@ llm.initializeDateRangeSelector = function(containerEle, changeFn) {
 
       // Quarter
 
-      const jsQuarterStartMonth = (parseInt(range[2]) - 1) * 3;
+      const jsQuarterStartMonth = (parseInt(range[2], 10) - 1) * 3;
 
       startDateString = range[0] + "-" + ("0" + (jsQuarterStartMonth + 1)).slice(-2) + "-01";
 
-      const endDate = new Date(parseInt(range[0]), jsQuarterStartMonth + 3, 0);
+      const endDate = new Date(parseInt(range[0], 10), jsQuarterStartMonth + 3, 0);
 
       endDateString = range[0] + "-" + ("0" + (endDate.getMonth() + 1)).slice(-2) + "-" + endDate.getDate();
 
@@ -87,11 +87,11 @@ llm.initializeDateRangeSelector = function(containerEle, changeFn) {
 
       // Month
 
-      const jsQuarterStartMonth = (parseInt(range[1]) - 1);
+      const jsQuarterStartMonth = (parseInt(range[1], 10) - 1);
 
       startDateString = range[0] + "-" + ("0" + (jsQuarterStartMonth + 1)).slice(-2) + "-01";
 
-      const endDate = new Date(parseInt(range[0]), jsQuarterStartMonth + 1, 0);
+      const endDate = new Date(parseInt(range[0], 10), jsQuarterStartMonth + 1, 0);
 
       endDateString = range[0] + "-" + ("0" + (endDate.getMonth() + 1)).slice(-2) + "-" + endDate.getDate();
 

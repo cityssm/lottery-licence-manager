@@ -130,7 +130,7 @@ declare const cityssm: cityssmGlobal;
 
       bankInfoClickEvent.preventDefault();
 
-      const listIndex = parseInt((<HTMLAnchorElement>bankInfoClickEvent.currentTarget).getAttribute("data-list-index"));
+      const listIndex = parseInt((<HTMLAnchorElement>bankInfoClickEvent.currentTarget).getAttribute("data-list-index"), 10);
 
       const record = savedBankInfoList[listIndex];
 

@@ -144,7 +144,7 @@ router.get([
 
   // Get organization (if set)
 
-  const organizationID = parseInt(req.params.organizationID);
+  const organizationID = parseInt(req.params.organizationID, 10);
 
   let organization: Organization = null;
 
@@ -456,7 +456,7 @@ router.post("/doDelete", function(req, res) {
 
 router.get("/:licenceID", function(req, res) {
 
-  const licenceID = parseInt(req.params.licenceID);
+  const licenceID = parseInt(req.params.licenceID, 10);
 
   const licence = licencesDB.getLicence(licenceID, req.session);
 
@@ -485,7 +485,7 @@ router.get("/:licenceID", function(req, res) {
 
 router.get("/:licenceID/edit", function(req, res) {
 
-  const licenceID = parseInt(req.params.licenceID);
+  const licenceID = parseInt(req.params.licenceID, 10);
 
   if (!req.session.user.userProperties.canCreate) {
 
@@ -526,7 +526,7 @@ router.get("/:licenceID/edit", function(req, res) {
 
 router.get("/:licenceID/print", function(req, res, next) {
 
-  const licenceID = parseInt(req.params.licenceID);
+  const licenceID = parseInt(req.params.licenceID, 10);
 
   const licence = licencesDB.getLicence(licenceID, req.session);
 
@@ -586,7 +586,7 @@ router.get("/:licenceID/print", function(req, res, next) {
 
 router.get("/:licenceID/poke", function(req, res) {
 
-  const licenceID = parseInt(req.params.licenceID);
+  const licenceID = parseInt(req.params.licenceID, 10);
 
   if (req.session.user.userProperties.isAdmin) {
 

@@ -124,8 +124,8 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
   function getLocations() {
 
-    const currentLimit = parseInt(limitEle.value);
-    const currentOffset = parseInt(offsetEle.value);
+    const currentLimit = parseInt(limitEle.value, 10);
+    const currentOffset = parseInt(offsetEle.value, 10);
 
     displayedLocationList = [];
 
@@ -249,7 +249,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
     clickEvent.preventDefault();
 
-    const locationIndex = parseInt((<HTMLButtonElement>clickEvent.currentTarget).getAttribute("data-location-index"));
+    const locationIndex = parseInt((<HTMLButtonElement>clickEvent.currentTarget).getAttribute("data-location-index"), 10);
     const locationObj = displayedLocationList[locationIndex];
 
     const deleteFn = function() {

@@ -587,7 +587,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
       clickEvent.preventDefault();
 
-      const termsConditionsIndex = parseInt((<HTMLInputElement>clickEvent.currentTarget).getAttribute("data-terms-conditions-index"));
+      const termsConditionsIndex = parseInt((<HTMLInputElement>clickEvent.currentTarget).getAttribute("data-terms-conditions-index"), 10);
 
       const termsConditionsEle = <HTMLTextAreaElement>document.getElementById("licence--termsConditions");
       termsConditionsEle.value = termsConditionsList[termsConditionsIndex].termsConditions;
@@ -907,16 +907,16 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
     document.getElementsByClassName("is-calculate-events-button")[0].addEventListener("click", function() {
 
-      const eventCount = parseInt((<HTMLInputElement>document.getElementById("eventCalc--eventCount")).value);
-      const dayInterval = parseInt((<HTMLInputElement>document.getElementById("eventCalc--dayInterval")).value);
+      const eventCount = parseInt((<HTMLInputElement>document.getElementById("eventCalc--eventCount")).value, 10);
+      const dayInterval = parseInt((<HTMLInputElement>document.getElementById("eventCalc--dayInterval")).value, 10);
 
       let dateSplit = endDateEle.value.split("-");
 
-      const endDate = new Date(parseInt(dateSplit[0]), parseInt(dateSplit[1]) - 1, parseInt(dateSplit[2]));
+      const endDate = new Date(parseInt(dateSplit[0], 10), parseInt(dateSplit[1], 10) - 1, parseInt(dateSplit[2], 10));
 
       dateSplit = startDateEle.value.split("-");
 
-      let eventDate = new Date(parseInt(dateSplit[0]), parseInt(dateSplit[1]) - 1, parseInt(dateSplit[2]));
+      let eventDate = new Date(parseInt(dateSplit[0], 10), parseInt(dateSplit[1], 10) - 1, parseInt(dateSplit[2], 10));
 
       for (let eventNum = 0; eventNum < eventCount && eventDate.getTime() <= endDate.getTime(); eventNum += 1) {
 
@@ -1091,7 +1091,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
         formEvent.preventDefault();
 
-        const unitCount = parseInt((<HTMLInputElement>document.getElementById("amendUnit_unitCount")).value);
+        const unitCount = parseInt((<HTMLInputElement>document.getElementById("amendUnit_unitCount")).value, 10);
 
         const unitCountEle = <HTMLInputElement>trEle.querySelector("input[name='ticketType_unitCount']");
         unitCountEle.value = unitCount.toString();
@@ -1122,7 +1122,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
       const amendUnitCount_calculateLicenceFee = function() {
 
         (<HTMLInputElement>document.getElementById("amendUnit_licenceFee")).value =
-          (ticketTypeObj.feePerUnit * parseInt((<HTMLInputElement>document.getElementById("amendUnit_unitCount")).value)).toFixed(2);
+          (ticketTypeObj.feePerUnit * parseInt((<HTMLInputElement>document.getElementById("amendUnit_unitCount")).value, 10)).toFixed(2);
 
       };
 
@@ -1320,7 +1320,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
         ticketTypes_addTr({
           ticketType: (<HTMLInputElement>document.getElementById("ticketTypeAdd--ticketType")).value,
-          unitCount: parseInt((<HTMLInputElement>document.getElementById("ticketTypeAdd--unitCount")).value),
+          unitCount: parseInt((<HTMLInputElement>document.getElementById("ticketTypeAdd--unitCount")).value, 10),
           valuePerDeal: parseFloat((<HTMLInputElement>document.getElementById("ticketTypeAdd--valuePerDeal")).value),
           prizesPerDeal: parseFloat((<HTMLInputElement>document.getElementById("ticketTypeAdd--prizesPerDeal")).value),
           licenceFee: parseFloat((<HTMLInputElement>document.getElementById("ticketTypeAdd--licenceFee")).value)
@@ -1342,7 +1342,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
       const addTicketType_refreshUnitCountChange = function() {
 
-        const unitCount = parseInt(addTicketType_unitCountEle.value);
+        const unitCount = parseInt(addTicketType_unitCountEle.value, 10);
 
         (<HTMLInputElement>document.getElementById("ticketTypeAdd--prizesTotal")).value =
           (parseFloat((<HTMLInputElement>document.getElementById("ticketTypeAdd--prizesPerDeal")).value) * unitCount).toFixed(2);
@@ -1360,7 +1360,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
         (<HTMLInputElement>document.getElementById("ticketTypeAdd--ticketCount")).value = ticketTypeOptionEle.getAttribute("data-ticket-count");
 
         (<HTMLInputElement>document.getElementById("ticketTypeAdd--valuePerDeal")).value =
-          (parseFloat(ticketTypeOptionEle.getAttribute("data-ticket-price")) * parseInt(ticketTypeOptionEle.getAttribute("data-ticket-count"))).toFixed(2);
+          (parseFloat(ticketTypeOptionEle.getAttribute("data-ticket-price")) * parseInt(ticketTypeOptionEle.getAttribute("data-ticket-count"), 10)).toFixed(2);
 
         (<HTMLInputElement>document.getElementById("ticketTypeAdd--prizesPerDeal")).value = ticketTypeOptionEle.getAttribute("data-prizes-per-deal");
 

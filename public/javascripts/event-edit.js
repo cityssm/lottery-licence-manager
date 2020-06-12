@@ -56,7 +56,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
         var savedBankInfoList;
         var setPastBankInformation = function (bankInfoClickEvent) {
             bankInfoClickEvent.preventDefault();
-            var listIndex = parseInt(bankInfoClickEvent.currentTarget.getAttribute("data-list-index"));
+            var listIndex = parseInt(bankInfoClickEvent.currentTarget.getAttribute("data-list-index"), 10);
             var record = savedBankInfoList[listIndex];
             document.getElementById("event--bank_name").value = record.bank_name;
             document.getElementById("event--bank_address").value = record.bank_address;

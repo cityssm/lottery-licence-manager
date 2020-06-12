@@ -93,7 +93,7 @@ declare const cityssm: cityssmGlobal;
 
   if (!isCreate && isAdmin) {
 
-    const intLocationID = parseInt(locationID);
+    const intLocationID = parseInt(locationID, 10);
 
     formEle.getElementsByClassName("is-merge-button")[0].addEventListener("click", function(mergeButton_clickEvent) {
 
