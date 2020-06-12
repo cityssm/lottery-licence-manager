@@ -1,10 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 (function () {
-    var formEle = document.getElementById("form--organization");
-    var formMessageEle = document.getElementById("container--form-message");
-    var organizationID = document.getElementById("organization--organizationID").value;
-    var isCreate = organizationID === "";
+    const formEle = document.getElementById("form--organization");
+    const formMessageEle = document.getElementById("container--form-message");
+    const organizationID = document.getElementById("organization--organizationID").value;
+    const isCreate = organizationID === "";
     formEle.addEventListener("submit", function (formEvent) {
         formEvent.preventDefault();
         formMessageEle.innerHTML = "Saving... <i class=\"fas fa-circle-notch fa-spin\" aria-hidden=\"true\"></i>";
@@ -22,7 +22,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
         });
     });
     if (!isCreate) {
-        var deleteOrganizationFn_1 = function () {
+        const deleteOrganizationFn = function () {
             cityssm.postJSON("/organizations/doDelete", {
                 organizationID: organizationID
             }, function (responseJSON) {
@@ -33,80 +33,80 @@ Object.defineProperty(exports, "__esModule", { value: true });
         };
         formEle.getElementsByClassName("is-delete-button")[0].addEventListener("click", function () {
             cityssm.confirmModal("Delete Organization?", ("Are you sure you want to delete this organization?<br />" +
-                "Note that any active licences issued to this organization will remain active."), "Yes, Delete Organization", "warning", deleteOrganizationFn_1);
+                "Note that any active licences issued to this organization will remain active."), "Yes, Delete Organization", "warning", deleteOrganizationFn);
         });
-        var representativeTbodyEle_1 = document.getElementsByClassName("is-representative-table")[0].getElementsByTagName("tbody")[0];
-        var showNoRepresentativesWarning_1 = function () {
-            if (representativeTbodyEle_1.getElementsByTagName("tr").length === 0) {
-                representativeTbodyEle_1.innerHTML = "<tr class=\"has-background-warning is-empty-warning\">" +
+        const representativeTbodyEle = document.getElementsByClassName("is-representative-table")[0].getElementsByTagName("tbody")[0];
+        const showNoRepresentativesWarning = function () {
+            if (representativeTbodyEle.getElementsByTagName("tr").length === 0) {
+                representativeTbodyEle.innerHTML = "<tr class=\"has-background-warning is-empty-warning\">" +
                     "<td class=\"has-text-centered\" colspan=\"6\">" +
                     "<strong>There are no representatives associated with this organization.</strong>" +
                     "</td>" +
                     "</tr>";
             }
         };
-        showNoRepresentativesWarning_1();
-        var updateDefaultRepresentativeFn_1 = function (changeEvent) {
-            var defaultRepresentativeIndex = changeEvent.currentTarget.value;
+        showNoRepresentativesWarning();
+        const updateDefaultRepresentativeFn = function (changeEvent) {
+            const defaultRepresentativeIndex = changeEvent.currentTarget.value;
             cityssm.postJSON("/organizations/" + organizationID + "/doSetDefaultRepresentative", {
                 isDefaultRepresentativeIndex: defaultRepresentativeIndex
             }, function () {
             });
         };
-        var radioEles = representativeTbodyEle_1.getElementsByTagName("input");
-        for (var eleIndex = 0; eleIndex < radioEles.length; eleIndex += 1) {
-            radioEles[eleIndex].addEventListener("change", updateDefaultRepresentativeFn_1);
+        const radioEles = representativeTbodyEle.getElementsByTagName("input");
+        for (let eleIndex = 0; eleIndex < radioEles.length; eleIndex += 1) {
+            radioEles[eleIndex].addEventListener("change", updateDefaultRepresentativeFn);
         }
-        var deleteRepresentativeFn_1 = function (clickEvent) {
+        const deleteRepresentativeFn = function (clickEvent) {
             clickEvent.preventDefault();
-            var trEle = clickEvent.currentTarget.closest("tr");
-            var representativeName = trEle.getAttribute("data-representative-name");
+            const trEle = clickEvent.currentTarget.closest("tr");
+            const representativeName = trEle.getAttribute("data-representative-name");
             cityssm.confirmModal("Delete a Representative?", "<p>Are you sure you want to delete the representative \"" + representativeName + "\"?</p>", "Yes, Delete", "danger", function () {
                 cityssm.postJSON("/organizations/" + organizationID + "/doDeleteOrganizationRepresentative", {
                     representativeIndex: trEle.getAttribute("data-representative-index")
                 }, function (responseJSON) {
                     if (responseJSON.success) {
                         trEle.remove();
-                        showNoRepresentativesWarning_1();
+                        showNoRepresentativesWarning();
                     }
                 });
             });
         };
-        var deleteBtnEles = representativeTbodyEle_1.getElementsByClassName("is-delete-representative-button");
-        for (var eleIndex = 0; eleIndex < deleteBtnEles.length; eleIndex += 1) {
-            deleteBtnEles[eleIndex].addEventListener("click", deleteRepresentativeFn_1);
+        const deleteBtnEles = representativeTbodyEle.getElementsByClassName("is-delete-representative-button");
+        for (let eleIndex = 0; eleIndex < deleteBtnEles.length; eleIndex += 1) {
+            deleteBtnEles[eleIndex].addEventListener("click", deleteRepresentativeFn);
         }
-        var editRepresentativeModalEle_1 = document.getElementsByClassName("is-edit-representative-modal")[0];
-        var editRepresentativeFormEle = editRepresentativeModalEle_1.getElementsByTagName("form")[0];
-        var editRepresentativeTrEle_1;
-        var openEditRepresentativeModalFn_1 = function (clickEvent) {
-            editRepresentativeTrEle_1 = clickEvent.currentTarget.closest("tr");
-            var representativeIndex = editRepresentativeTrEle_1.getAttribute("data-representative-index");
+        const editRepresentativeModalEle = document.getElementsByClassName("is-edit-representative-modal")[0];
+        const editRepresentativeFormEle = editRepresentativeModalEle.getElementsByTagName("form")[0];
+        let editRepresentativeTrEle;
+        const openEditRepresentativeModalFn = function (clickEvent) {
+            editRepresentativeTrEle = clickEvent.currentTarget.closest("tr");
+            const representativeIndex = editRepresentativeTrEle.getAttribute("data-representative-index");
             document.getElementById("editOrganizationRepresentative--representativeIndex").value = representativeIndex;
             document.getElementById("editOrganizationRepresentative--representativeName").value =
-                editRepresentativeTrEle_1.getAttribute("data-representative-name");
+                editRepresentativeTrEle.getAttribute("data-representative-name");
             document.getElementById("editOrganizationRepresentative--representativeTitle").value =
-                editRepresentativeTrEle_1.getAttribute("data-representative-title");
+                editRepresentativeTrEle.getAttribute("data-representative-title");
             document.getElementById("editOrganizationRepresentative--representativeAddress1").value =
-                editRepresentativeTrEle_1.getAttribute("data-representative-address-1");
+                editRepresentativeTrEle.getAttribute("data-representative-address-1");
             document.getElementById("editOrganizationRepresentative--representativeAddress2").value =
-                editRepresentativeTrEle_1.getAttribute("data-representative-address-2");
+                editRepresentativeTrEle.getAttribute("data-representative-address-2");
             document.getElementById("editOrganizationRepresentative--representativeCity").value =
-                editRepresentativeTrEle_1.getAttribute("data-representative-city");
+                editRepresentativeTrEle.getAttribute("data-representative-city");
             document.getElementById("editOrganizationRepresentative--representativeProvince").value =
-                editRepresentativeTrEle_1.getAttribute("data-representative-province");
+                editRepresentativeTrEle.getAttribute("data-representative-province");
             document.getElementById("editOrganizationRepresentative--representativePostalCode").value =
-                editRepresentativeTrEle_1.getAttribute("data-representative-postal-code");
+                editRepresentativeTrEle.getAttribute("data-representative-postal-code");
             document.getElementById("editOrganizationRepresentative--representativePhoneNumber").value =
-                editRepresentativeTrEle_1.getAttribute("data-representative-phone-number");
+                editRepresentativeTrEle.getAttribute("data-representative-phone-number");
             document.getElementById("editOrganizationRepresentative--representativeEmailAddress").value =
-                editRepresentativeTrEle_1.getAttribute("data-representative-email-address");
+                editRepresentativeTrEle.getAttribute("data-representative-email-address");
             document.getElementById("editOrganizationRepresentative--isDefault").value =
                 document.getElementById("representative-isDefault--" + representativeIndex).checked ? "1" : "0";
-            cityssm.showModal(editRepresentativeModalEle_1);
+            cityssm.showModal(editRepresentativeModalEle);
         };
-        var insertRepresentativeRowFn_1 = function (representativeObj) {
-            var trEle = document.createElement("tr");
+        const insertRepresentativeRowFn = function (representativeObj) {
+            const trEle = document.createElement("tr");
             trEle.setAttribute("data-representative-index", representativeObj.representativeIndex.toString());
             trEle.setAttribute("data-representative-name", representativeObj.representativeName);
             trEle.setAttribute("data-representative-title", representativeObj.representativeTitle);
@@ -123,8 +123,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 "<label for=\"representative-isDefault--" + representativeObj.representativeIndex + "\"></label>" +
                 "</div>" +
                 "</td>");
-            trEle.getElementsByTagName("input")[0].addEventListener("change", updateDefaultRepresentativeFn_1);
-            var tdEle = document.createElement("td");
+            trEle.getElementsByTagName("input")[0].addEventListener("change", updateDefaultRepresentativeFn);
+            let tdEle = document.createElement("td");
             tdEle.innerHTML = representativeObj.representativeName + "<br />" +
                 "<small>" + representativeObj.representativeTitle + "</small>";
             trEle.insertAdjacentElement("beforeend", tdEle);
@@ -153,55 +153,55 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 "</button>" +
                 "</td>");
             trEle.getElementsByClassName("is-edit-representative-button")[0]
-                .addEventListener("click", openEditRepresentativeModalFn_1);
+                .addEventListener("click", openEditRepresentativeModalFn);
             trEle.getElementsByClassName("is-delete-representative-button")[0]
-                .addEventListener("click", deleteRepresentativeFn_1);
-            representativeTbodyEle_1.insertAdjacentElement("beforeend", trEle);
+                .addEventListener("click", deleteRepresentativeFn);
+            representativeTbodyEle.insertAdjacentElement("beforeend", trEle);
         };
-        var editBtnEles = representativeTbodyEle_1.getElementsByClassName("is-edit-representative-button");
-        for (var eleIndex = 0; eleIndex < editBtnEles.length; eleIndex += 1) {
-            editBtnEles[eleIndex].addEventListener("click", openEditRepresentativeModalFn_1);
+        const editBtnEles = representativeTbodyEle.getElementsByClassName("is-edit-representative-button");
+        for (let eleIndex = 0; eleIndex < editBtnEles.length; eleIndex += 1) {
+            editBtnEles[eleIndex].addEventListener("click", openEditRepresentativeModalFn);
         }
-        var cancelButtonEles = editRepresentativeModalEle_1.getElementsByClassName("is-cancel-button");
-        for (var buttonIndex = 0; buttonIndex < cancelButtonEles.length; buttonIndex += 1) {
+        let cancelButtonEles = editRepresentativeModalEle.getElementsByClassName("is-cancel-button");
+        for (let buttonIndex = 0; buttonIndex < cancelButtonEles.length; buttonIndex += 1) {
             cancelButtonEles[buttonIndex].addEventListener("click", cityssm.hideModal);
         }
         editRepresentativeFormEle.addEventListener("submit", function (formEvent) {
             formEvent.preventDefault();
             cityssm.postJSON("/organizations/" + organizationID + "/doEditOrganizationRepresentative", formEvent.currentTarget, function (responseJSON) {
                 if (responseJSON.success) {
-                    editRepresentativeTrEle_1.remove();
-                    editRepresentativeTrEle_1 = null;
-                    insertRepresentativeRowFn_1(responseJSON.organizationRepresentative);
-                    cityssm.hideModal(editRepresentativeModalEle_1);
+                    editRepresentativeTrEle.remove();
+                    editRepresentativeTrEle = null;
+                    insertRepresentativeRowFn(responseJSON.organizationRepresentative);
+                    cityssm.hideModal(editRepresentativeModalEle);
                 }
             });
         });
-        var addRepresentativeModalEle_1 = document.getElementsByClassName("is-add-representative-modal")[0];
-        var addRepresentativeFormEle_1 = addRepresentativeModalEle_1.getElementsByTagName("form")[0];
+        const addRepresentativeModalEle = document.getElementsByClassName("is-add-representative-modal")[0];
+        const addRepresentativeFormEle = addRepresentativeModalEle.getElementsByTagName("form")[0];
         document.getElementsByClassName("is-add-representative-button")[0].addEventListener("click", function () {
-            addRepresentativeFormEle_1.reset();
-            cityssm.showModal(addRepresentativeModalEle_1);
+            addRepresentativeFormEle.reset();
+            cityssm.showModal(addRepresentativeModalEle);
             document.getElementById("addOrganizationRepresentative--representativeName").focus();
         });
-        cancelButtonEles = addRepresentativeModalEle_1.getElementsByClassName("is-cancel-button");
-        for (var buttonIndex = 0; buttonIndex < cancelButtonEles.length; buttonIndex += 1) {
+        cancelButtonEles = addRepresentativeModalEle.getElementsByClassName("is-cancel-button");
+        for (let buttonIndex = 0; buttonIndex < cancelButtonEles.length; buttonIndex += 1) {
             cancelButtonEles[buttonIndex].addEventListener("click", cityssm.hideModal);
         }
-        addRepresentativeFormEle_1.addEventListener("submit", function (formEvent) {
+        addRepresentativeFormEle.addEventListener("submit", function (formEvent) {
             formEvent.preventDefault();
             cityssm.postJSON("/organizations/" + organizationID + "/doAddOrganizationRepresentative", formEvent.currentTarget, function (responseJSON) {
                 if (responseJSON.success) {
-                    var emptyWarningEle = representativeTbodyEle_1.getElementsByClassName("is-empty-warning");
+                    const emptyWarningEle = representativeTbodyEle.getElementsByClassName("is-empty-warning");
                     if (emptyWarningEle.length > 0) {
                         emptyWarningEle[0].remove();
                     }
-                    insertRepresentativeRowFn_1(responseJSON.organizationRepresentative);
-                    cityssm.hideModal(addRepresentativeModalEle_1);
+                    insertRepresentativeRowFn(responseJSON.organizationRepresentative);
+                    cityssm.hideModal(addRepresentativeModalEle);
                 }
             });
         });
-        addRepresentativeModalEle_1.getElementsByClassName("is-copy-organization-address-button")[0]
+        addRepresentativeModalEle.getElementsByClassName("is-copy-organization-address-button")[0]
             .addEventListener("click", function (clickEvent) {
             clickEvent.preventDefault();
             document.getElementById("addOrganizationRepresentative--representativeAddress1").value =
@@ -223,8 +223,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
             " <span>Unsaved Changes</span>" +
             "</div>";
     }
-    var inputEles = formEle.querySelectorAll("input, select, textarea");
-    for (var inputIndex = 0; inputIndex < inputEles.length; inputIndex += 1) {
+    const inputEles = formEle.querySelectorAll("input, select, textarea");
+    for (let inputIndex = 0; inputIndex < inputEles.length; inputIndex += 1) {
         inputEles[inputIndex].addEventListener("change", setUnsavedChanges);
     }
 }());

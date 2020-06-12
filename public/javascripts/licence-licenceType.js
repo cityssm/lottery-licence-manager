@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 (function () {
-    var formEle = document.getElementById("form--licenceTypes");
-    var containerEle = document.getElementById("container--licenceTypes");
-    var externalLicenceNumberLabel = "";
+    const formEle = document.getElementById("form--licenceTypes");
+    const containerEle = document.getElementById("container--licenceTypes");
+    let externalLicenceNumberLabel = "";
     function getLicenceTypeSummary() {
         cityssm.clearElement(containerEle);
         containerEle.innerHTML = "<p class=\"has-text-centered has-text-grey-lighter\">" +
@@ -18,7 +18,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     "</div>";
                 return;
             }
-            var tableEle = document.createElement("table");
+            const tableEle = document.createElement("table");
             tableEle.className = "table is-fullwidth is-striped is-hoverable";
             tableEle.innerHTML = "<thead><tr>" +
                 "<th>Application Date</th>" +
@@ -29,14 +29,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 "<th class=\"has-text-right\">Prize Value</th>" +
                 "<th class=\"has-text-right\">Licence Fee</th>" +
                 "</tr></thead>";
-            var tbodyEle = document.createElement("tbody");
-            var issueDateCount = 0;
-            var totalPrizeValueSum = 0;
-            var licenceFeeSum = 0;
-            var transactionAmountSum = 0;
-            for (var licenceIndex = 0; licenceIndex < licenceList.length; licenceIndex += 1) {
-                var licenceObj = licenceList[licenceIndex];
-                var trEle = document.createElement("tr");
+            const tbodyEle = document.createElement("tbody");
+            let issueDateCount = 0;
+            let totalPrizeValueSum = 0;
+            let licenceFeeSum = 0;
+            let transactionAmountSum = 0;
+            for (let licenceIndex = 0; licenceIndex < licenceList.length; licenceIndex += 1) {
+                const licenceObj = licenceList[licenceIndex];
+                const trEle = document.createElement("tr");
                 trEle.insertAdjacentHTML("beforeend", "<td>" + licenceObj.applicationDateString + "</td>");
                 trEle.insertAdjacentHTML("beforeend", "<td>" + licenceObj.issueDateString + "</td>");
                 trEle.insertAdjacentHTML("beforeend", "<td>" +
@@ -58,7 +58,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 transactionAmountSum += licenceObj.transactionAmountSum;
             }
             tableEle.insertAdjacentElement("beforeend", tbodyEle);
-            var tfootEle = document.createElement("tfoot");
+            const tfootEle = document.createElement("tfoot");
             tfootEle.innerHTML = "<tr>" +
                 "<th>" +
                 licenceList.length + " licence" + (licenceList.length === 1 ? "" : "s") +

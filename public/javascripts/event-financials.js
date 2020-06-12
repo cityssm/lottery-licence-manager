@@ -1,10 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 (function () {
-    var formEle = document.getElementById("form--financialSummary");
-    var tableEle = document.getElementById("table--financialSummary");
-    var tbodyEle = tableEle.getElementsByTagName("tbody")[0];
-    var tfootEle = tableEle.getElementsByTagName("tfoot")[0];
+    const formEle = document.getElementById("form--financialSummary");
+    const tableEle = document.getElementById("table--financialSummary");
+    const tbodyEle = tableEle.getElementsByTagName("tbody")[0];
+    const tfootEle = tableEle.getElementsByTagName("tfoot")[0];
     function formatDollarsAsHTML(dollarAmt) {
         if (dollarAmt < 0) {
             return "<span class=\"has-text-danger\">($" + (dollarAmt * -1).toFixed(2) + ")</span>";
@@ -15,22 +15,22 @@ Object.defineProperty(exports, "__esModule", { value: true });
         tableEle.classList.remove("has-status-view");
         tableEle.classList.add("has-status-loading");
         cityssm.postJSON("/events/doGetFinancialSummary", formEle, function (summary) {
-            var trEles = tbodyEle.children;
-            for (var trIndex = 0; trIndex < trEles.length; trIndex += 1) {
+            const trEles = tbodyEle.children;
+            for (let trIndex = 0; trIndex < trEles.length; trIndex += 1) {
                 trEles[trIndex].classList.add("is-hidden");
             }
-            var licenceCount = 0;
-            var eventCount = 0;
-            var reportDateCount = 0;
-            var costs_receiptsSum = 0.0;
-            var costs_adminSum = 0.0;
-            var costs_prizesAwardedSum = 0.0;
-            var costs_netProceedsSum = 0.0;
-            var costs_amountDonatedSum = 0.0;
-            var licenceFeeSum = 0.0;
-            for (var summaryIndex = 0; summaryIndex < summary.length; summaryIndex += 1) {
-                var licenceTypeSummaryObj = summary[summaryIndex];
-                var trEle = tbodyEle.querySelector("tr[data-licence-type-key='" + licenceTypeSummaryObj.licenceTypeKey + "']");
+            let licenceCount = 0;
+            let eventCount = 0;
+            let reportDateCount = 0;
+            let costs_receiptsSum = 0.0;
+            let costs_adminSum = 0.0;
+            let costs_prizesAwardedSum = 0.0;
+            let costs_netProceedsSum = 0.0;
+            let costs_amountDonatedSum = 0.0;
+            let licenceFeeSum = 0.0;
+            for (let summaryIndex = 0; summaryIndex < summary.length; summaryIndex += 1) {
+                const licenceTypeSummaryObj = summary[summaryIndex];
+                const trEle = tbodyEle.querySelector("tr[data-licence-type-key='" + licenceTypeSummaryObj.licenceTypeKey + "']");
                 trEle.querySelector("[data-field='licenceCount']").innerText =
                     licenceTypeSummaryObj.licenceCount;
                 licenceCount += licenceTypeSummaryObj.licenceCount;

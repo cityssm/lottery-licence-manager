@@ -16,8 +16,8 @@ llm.organizationRemarks = (function () {
         cityssm.postJSON("/organizations/doAddRemark", formEle, callbackFn);
     }
     function openAddRemarkModal(organizationID, updateCallbackFn) {
-        var addRemarkCloseModalFn;
-        var addFormFn = function (formEvent) {
+        let addRemarkCloseModalFn;
+        const addFormFn = function (formEvent) {
             formEvent.preventDefault();
             doAddRemark(formEvent.currentTarget, function () {
                 addRemarkCloseModalFn();
@@ -39,8 +39,8 @@ llm.organizationRemarks = (function () {
         cityssm.postJSON("/organizations/doEditRemark", formEle, callbackFn);
     }
     function openEditRemarkModal(organizationID, remarkIndex, updateCallbackFn) {
-        var editRemarkCloseModalFn;
-        var formFn_edit = function (formEvent) {
+        let editRemarkCloseModalFn;
+        const formFn_edit = function (formEvent) {
             formEvent.preventDefault();
             doEditRemark(formEvent.currentTarget, function () {
                 editRemarkCloseModalFn();
@@ -54,7 +54,7 @@ llm.organizationRemarks = (function () {
                 document.getElementById("editRemark--organizationID").value = organizationID.toString();
                 document.getElementById("editRemark--remarkIndex").value = remarkIndex.toString();
                 getRemarkByID(organizationID, remarkIndex, function (remark) {
-                    var remarkEle = document.getElementById("editRemark--remark");
+                    const remarkEle = document.getElementById("editRemark--remark");
                     remarkEle.value = remark.remark;
                     remarkEle.removeAttribute("placeholder");
                     document.getElementById("editRemark--remarkDateString").value = remark.remarkDateString;

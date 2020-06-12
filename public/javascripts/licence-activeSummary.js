@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 (function () {
-    var externalLicenceNumberFieldLabel = "";
-    var formEle = document.getElementById("form--activeSummary");
-    var containerEle = document.getElementById("container--activeSummary");
+    let externalLicenceNumberFieldLabel = "";
+    const formEle = document.getElementById("form--activeSummary");
+    const containerEle = document.getElementById("container--activeSummary");
     function getActiveLicenceSummary() {
         containerEle.innerHTML = "<p class=\"has-text-centered has-text-grey-lighter\">" +
             "<i class=\"fas fa-3x fa-circle-notch fa-spin\" aria-hidden=\"true\"></i><br />" +
@@ -18,7 +18,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     "</div>";
                 return;
             }
-            var tableEle = document.createElement("table");
+            const tableEle = document.createElement("table");
             tableEle.className = "table is-striped is-hoverable is-fullwidth";
             tableEle.innerHTML = "<thead>" +
                 "<tr>" +
@@ -31,10 +31,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 "<th>Licence End Date</th>" +
                 "</tr>" +
                 "</thead>";
-            var tbodyEle = document.createElement("tbody");
-            for (var index = 0; index < activeLicenceList.length; index += 1) {
-                var licenceObj = activeLicenceList[index];
-                var trEle = document.createElement("tr");
+            const tbodyEle = document.createElement("tbody");
+            for (let index = 0; index < activeLicenceList.length; index += 1) {
+                const licenceObj = activeLicenceList[index];
+                const trEle = document.createElement("tr");
                 trEle.innerHTML = ("<td>" +
                     "<a href=\"/licences/" + licenceObj.licenceID + "\" data-tooltip=\"View Licence\">" +
                     cityssm.escapeHTML(licenceObj.externalLicenceNumber) + "<br />" +
