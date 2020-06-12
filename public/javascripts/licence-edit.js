@@ -111,7 +111,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
         };
         var organizationLookupFn_refreshResults_1 = function () {
             var listEle = document.createElement("div");
-            listEle.className = "list is-hoverable";
+            listEle.className = "panel";
             var searchStringSplit = organizationLookupSearchStrEle_1.value
                 .trim()
                 .toLowerCase()
@@ -133,7 +133,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 if (doDisplayRecord) {
                     displayLimit -= 1;
                     var listItemEle = document.createElement("a");
-                    listItemEle.className = "list-item";
+                    listItemEle.className = "panel-block is-block";
                     listItemEle.setAttribute("data-organization-id", organizationObj.organizationID);
                     listItemEle.setAttribute("data-organization-name", organizationObj.organizationName);
                     listItemEle.setAttribute("href", "#");
@@ -210,7 +210,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
         };
         var locationLookupFn_refreshResults_1 = function () {
             var listEle = document.createElement("div");
-            listEle.className = "list is-hoverable";
+            listEle.className = "panel";
             var searchStringSplit = locationLookup_searchStrEle_1.value
                 .trim()
                 .toLowerCase()
@@ -229,7 +229,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 if (doDisplayRecord) {
                     displayLimit -= 1;
                     var listItemEle = document.createElement("a");
-                    listItemEle.className = "list-item";
+                    listItemEle.className = "panel-block is-block";
                     listItemEle.setAttribute("data-location-id", locationObj.locationID.toString());
                     listItemEle.setAttribute("data-location-display-name", locationObj.locationDisplayName);
                     listItemEle.setAttribute("href", "#");
@@ -330,11 +330,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 }
                 else {
                     var listEle = document.createElement("div");
-                    listEle.className = "list is-hoverable mb-3";
+                    listEle.className = "panel mb-3";
                     for (var termsConditionsIndex = 0; termsConditionsIndex < termsConditionsList_1.length; termsConditionsIndex += 1) {
                         var termsConditionsObj = termsConditionsList_1[termsConditionsIndex];
                         var listItemEle = document.createElement("a");
-                        listItemEle.className = "list-item";
+                        listItemEle.className = "panel-block is-block";
                         listItemEle.setAttribute("data-terms-conditions-index", termsConditionsIndex.toString());
                         listItemEle.innerHTML = "<p class=\"has-newline-chars\">" +
                             cityssm.escapeHTML(termsConditionsObj.termsConditions) +
@@ -626,14 +626,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 onshow: function () {
                     loadLocationList(function () {
                         var listEle = document.createElement("div");
-                        listEle.className = "list is-hoverable";
+                        listEle.className = "panel";
                         for (var index = 0; index < locationList.length; index += 1) {
                             var locationObj = locationList[index];
                             if (!locationObj.locationIsDistributor) {
                                 continue;
                             }
                             var listItemEle = document.createElement("a");
-                            listItemEle.className = "list-item";
+                            listItemEle.className = "panel-block is-block";
                             listItemEle.setAttribute("data-location-id", locationObj.locationID.toString());
                             listItemEle.setAttribute("data-location-display-name", locationObj.locationDisplayName);
                             listItemEle.innerHTML = "<div class=\"columns\">" +
@@ -672,14 +672,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 onshow: function () {
                     loadLocationList(function () {
                         var listEle = document.createElement("div");
-                        listEle.className = "list is-hoverable";
+                        listEle.className = "panel";
                         for (var index = 0; index < locationList.length; index += 1) {
                             var locationObj = locationList[index];
                             if (!locationObj.locationIsManufacturer) {
                                 continue;
                             }
                             var listItemEle = document.createElement("a");
-                            listItemEle.className = "list-item";
+                            listItemEle.className = "panel-block is-block";
                             listItemEle.setAttribute("data-location-id", locationObj.locationID.toString());
                             listItemEle.setAttribute("data-location-display-name", locationObj.locationDisplayName);
                             listItemEle.innerHTML = "<div class=\"columns\">" +

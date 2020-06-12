@@ -71,11 +71,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
             }, function (bankInfoList) {
                 savedBankInfoList = bankInfoList;
                 var listEle = document.createElement("div");
-                listEle.className = "list is-hoverable mb-3";
+                listEle.className = "panel mb-3";
                 for (var index = 0; index < bankInfoList.length; index += 1) {
                     var record = bankInfoList[index];
                     var listItemEle = document.createElement("a");
-                    listItemEle.className = "list-item";
+                    listItemEle.className = "panel-block is-block";
                     listItemEle.setAttribute("data-list-index", index.toString());
                     listItemEle.innerHTML = "<div class=\"columns\">" +
                         "<div class=\"column\">" + cityssm.escapeHTML(record.bank_name) + "</div>" +

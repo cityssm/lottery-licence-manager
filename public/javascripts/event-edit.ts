@@ -155,7 +155,7 @@ declare const cityssm: cityssmGlobal;
         savedBankInfoList = bankInfoList;
 
         const listEle = document.createElement("div");
-        listEle.className = "list is-hoverable mb-3";
+        listEle.className = "panel mb-3";
 
         for (let index = 0; index < bankInfoList.length; index += 1) {
 
@@ -163,7 +163,7 @@ declare const cityssm: cityssmGlobal;
 
           const listItemEle = document.createElement("a");
 
-          listItemEle.className = "list-item";
+          listItemEle.className = "panel-block is-block";
           listItemEle.setAttribute("data-list-index", index.toString());
 
           listItemEle.innerHTML = "<div class=\"columns\">" +

@@ -1,6 +1,6 @@
 {
   "name": "lottery-licence-manager",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "scripts": {
     "start": "node ./bin/www"
   },

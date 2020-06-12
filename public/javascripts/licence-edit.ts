@@ -231,7 +231,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
     const organizationLookupFn_refreshResults = function() {
 
       const listEle = document.createElement("div");
-      listEle.className = "list is-hoverable";
+      listEle.className = "panel";
 
       const searchStringSplit = organizationLookupSearchStrEle.value
         .trim()
@@ -270,7 +270,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
           displayLimit -= 1;
 
           const listItemEle = document.createElement("a");
-          listItemEle.className = "list-item";
+          listItemEle.className = "panel-block is-block";
           listItemEle.setAttribute("data-organization-id", organizationObj.organizationID);
           listItemEle.setAttribute("data-organization-name", organizationObj.organizationName);
           listItemEle.setAttribute("href", "#");
@@ -417,7 +417,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
     const locationLookupFn_refreshResults = function() {
 
       const listEle = document.createElement("div");
-      listEle.className = "list is-hoverable";
+      listEle.className = "panel";
 
       const searchStringSplit = locationLookup_searchStrEle.value
         .trim()
@@ -450,7 +450,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
           displayLimit -= 1;
 
           const listItemEle = document.createElement("a");
-          listItemEle.className = "list-item";
+          listItemEle.className = "panel-block is-block";
           listItemEle.setAttribute("data-location-id", locationObj.locationID.toString());
           listItemEle.setAttribute("data-location-display-name", locationObj.locationDisplayName);
           listItemEle.setAttribute("href", "#");
@@ -642,14 +642,14 @@ import type * as llmTypes from "../../helpers/llmTypes";
           } else {
 
             const listEle = document.createElement("div");
-            listEle.className = "list is-hoverable mb-3";
+            listEle.className = "panel mb-3";
 
             for (let termsConditionsIndex = 0; termsConditionsIndex < termsConditionsList.length; termsConditionsIndex += 1) {
 
               const termsConditionsObj = termsConditionsList[termsConditionsIndex];
 
               const listItemEle = document.createElement("a");
-              listItemEle.className = "list-item";
+              listItemEle.className = "panel-block is-block";
               listItemEle.setAttribute("data-terms-conditions-index", termsConditionsIndex.toString());
 
               listItemEle.innerHTML = "<p class=\"has-newline-chars\">" +
@@ -1183,7 +1183,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
           loadLocationList(function() {
 
             const listEle = document.createElement("div");
-            listEle.className = "list is-hoverable";
+            listEle.className = "panel";
 
             for (let index = 0; index < locationList.length; index += 1) {
 
@@ -1195,7 +1195,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
 
               const listItemEle = document.createElement("a");
-              listItemEle.className = "list-item";
+              listItemEle.className = "panel-block is-block";
               listItemEle.setAttribute("data-location-id", locationObj.locationID.toString());
               listItemEle.setAttribute("data-location-display-name", locationObj.locationDisplayName);
 
@@ -1257,7 +1257,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
           loadLocationList(function() {
 
             const listEle = document.createElement("div");
-            listEle.className = "list is-hoverable";
+            listEle.className = "panel";
 
             for (let index = 0; index < locationList.length; index += 1) {
 
@@ -1270,7 +1270,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
               }
 
               const listItemEle = document.createElement("a");
-              listItemEle.className = "list-item";
+              listItemEle.className = "panel-block is-block";
               listItemEle.setAttribute("data-location-id", locationObj.locationID.toString());
               listItemEle.setAttribute("data-location-display-name", locationObj.locationDisplayName);
 

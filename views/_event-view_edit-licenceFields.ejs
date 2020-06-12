@@ -30,7 +30,11 @@
       <div class="panel-block">
         <p>
           <strong><%= licenceFieldConfig.fieldLabel %></strong><br />
-          <%= (licenceFieldValue && licenceFieldValue.trim() !== "" ? licenceFieldValue : "<span class=\"has-text-grey\">(Not Set)</span>") %>
+          <% if (licenceFieldValue && licenceFieldValue.trim() !== "") { %>
+            <%= licenceFieldValue %>
+          <% } else { %>
+            <span class="has-text-grey">(Not Set)</span>
+          <% } %>
         </p>
       </div>
   <%

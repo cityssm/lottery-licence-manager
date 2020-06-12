@@ -88,7 +88,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     .toLowerCase()
                     .split(" ");
                 var listEle = document.createElement("div");
-                listEle.className = "list is-hoverable";
+                listEle.className = "panel";
                 for (var locationIndex = 0; locationIndex < locationsList.length; locationIndex += 1) {
                     var locationObj = locationsList[locationIndex];
                     if (locationObj.locationID === intLocationID_1) {
@@ -106,7 +106,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                         continue;
                     }
                     var listItemEle = document.createElement("a");
-                    listItemEle.className = "list-item";
+                    listItemEle.className = "panel-block is-block";
                     listItemEle.setAttribute("data-location-id", locationObj.locationID);
                     listItemEle.setAttribute("data-location-display-name", locationObj.locationDisplayName);
                     listItemEle.addEventListener("click", clickFn_selectSourceLocation);

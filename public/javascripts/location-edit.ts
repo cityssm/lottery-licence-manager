@@ -184,7 +184,7 @@ declare const cityssm: cityssmGlobal;
           .split(" ");
 
         const listEle = document.createElement("div");
-        listEle.className = "list is-hoverable";
+        listEle.className = "panel";
 
         for (let locationIndex = 0; locationIndex < locationsList.length; locationIndex += 1) {
 
@@ -218,7 +218,7 @@ declare const cityssm: cityssmGlobal;
           }
 
           const listItemEle = document.createElement("a");
-          listItemEle.className = "list-item";
+          listItemEle.className = "panel-block is-block";
           listItemEle.setAttribute("data-location-id", locationObj.locationID);
           listItemEle.setAttribute("data-location-display-name", locationObj.locationDisplayName);
           listItemEle.addEventListener("click", clickFn_selectSourceLocation);
