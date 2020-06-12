@@ -27,18 +27,18 @@ configSSM.licences.feeCalculationFn = function (licenceObj) {
         const licenceFieldData = objectFns.fieldDataArrayToObject(licenceObj.licenceFields);
         let ticketCost = parseFloat(licenceFieldData.ticketCost || "0");
         if (licenceFieldData.discount1_tickets !== "" && licenceFieldData.discount1_cost !== "") {
-            const discountTicketCost = parseFloat(licenceFieldData.discount1_cost) / parseInt(licenceFieldData.discount1_tickets);
+            const discountTicketCost = parseFloat(licenceFieldData.discount1_cost) / parseInt(licenceFieldData.discount1_tickets, 10);
             ticketCost = Math.min(ticketCost, discountTicketCost);
         }
         if (licenceFieldData.discount2_tickets !== "" && licenceFieldData.discount2_cost !== "") {
-            const discountTicketCost = parseFloat(licenceFieldData.discount2_cost) / parseInt(licenceFieldData.discount2_tickets);
+            const discountTicketCost = parseFloat(licenceFieldData.discount2_cost) / parseInt(licenceFieldData.discount2_tickets, 10);
             ticketCost = Math.min(ticketCost, discountTicketCost);
         }
         if (licenceFieldData.discount3_tickets !== "" && licenceFieldData.discount3_cost !== "") {
-            const discountTicketCost = parseFloat(licenceFieldData.discount3_cost) / parseInt(licenceFieldData.discount3_tickets);
+            const discountTicketCost = parseFloat(licenceFieldData.discount3_cost) / parseInt(licenceFieldData.discount3_tickets, 10);
             ticketCost = Math.min(ticketCost, discountTicketCost);
         }
-        const minPotentialTakeIn = ticketCost * parseInt(licenceFieldData.ticketCount || "0");
+        const minPotentialTakeIn = ticketCost * parseInt(licenceFieldData.ticketCount || "0", 10);
         const minPrizeValue = minPotentialTakeIn * 0.2;
         if (totalPrizeValue < minPrizeValue) {
             licenceHasErrors = true;
