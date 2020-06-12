@@ -1871,9 +1871,9 @@ export function getNextExternalLicenceNumberFromRange() {
 
   const rangeStartFromConfig = getApplicationSettingWithDB(db, "licences.externalLicenceNumber.range.start");
 
-  const rangeStart = (rangeStartFromConfig === "" ? -1 : parseInt(rangeStartFromConfig));
+  const rangeStart = (rangeStartFromConfig === "" ? -1 : parseInt(rangeStartFromConfig, 10));
 
-  const rangeEnd = parseInt(getApplicationSettingWithDB(db, "licences.externalLicenceNumber.range.end") || "0");
+  const rangeEnd = parseInt(getApplicationSettingWithDB(db, "licences.externalLicenceNumber.range.end") || "0", 10);
 
   const row = db.prepare("select max(externalLicenceNumberInteger) as maxExternalLicenceNumberInteger" +
     " from LotteryLicences" +
@@ -1922,7 +1922,7 @@ export function createLicence(reqBody: any, reqSession: Express.SessionData) {
 
   try {
 
-    externalLicenceNumberInteger = parseInt(reqBody.externalLicenceNumber);
+    externalLicenceNumberInteger = parseInt(reqBody.externalLicenceNumber, 10);
 
   } catch (e) {
 
@@ -2138,7 +2138,7 @@ export function updateLicence(reqBody: any, reqSession: Express.SessionData): bo
 
   try {
 
-    externalLicenceNumberInteger = parseInt(reqBody.externalLicenceNumber);
+    externalLicenceNumberInteger = parseInt(reqBody.externalLicenceNumber, 10);
 
   } catch (e) {
 
@@ -2239,7 +2239,7 @@ export function updateLicence(reqBody: any, reqSession: Express.SessionData): bo
 
     }
 
-    if (pastLicenceObj.organizationID !== parseInt(reqBody.organizationID) &&
+    if (pastLicenceObj.organizationID !== parseInt(reqBody.organizationID, 10) &&
       configFns.getProperty("amendments.trackOrganizationUpdate")) {
 
       addLicenceAmendmentWithDB(
@@ -2253,7 +2253,7 @@ export function updateLicence(reqBody: any, reqSession: Express.SessionData): bo
 
     }
 
-    if (pastLicenceObj.locationID !== parseInt(reqBody.locationID) &&
+    if (pastLicenceObj.locationID !== parseInt(reqBody.locationID, 10) &&
       configFns.getProperty("amendments.trackLocationUpdate")) {
 
       addLicenceAmendmentWithDB(
@@ -2524,7 +2524,7 @@ export function updateLicence(reqBody: any, reqSession: Express.SessionData): bo
 
       if (ticketTypeObj_past &&
         configFns.getProperty("amendments.trackTicketTypeUpdate") &&
-        ticketTypeObj_past.unitCount !== parseInt(reqBody.ticketType_unitCount)) {
+        ticketTypeObj_past.unitCount !== parseInt(reqBody.ticketType_unitCount, 10)) {
 
         addLicenceAmendmentWithDB(
           db,
@@ -2578,7 +2578,7 @@ export function updateLicence(reqBody: any, reqSession: Express.SessionData): bo
 
         if (ticketTypeObj_past &&
           configFns.getProperty("amendments.trackTicketTypeUpdate") &&
-          ticketTypeObj_past.unitCount !== parseInt(reqBody.ticketType_unitCount[ticketTypeIndex])) {
+          ticketTypeObj_past.unitCount !== parseInt(reqBody.ticketType_unitCount[ticketTypeIndex], 10)) {
 
           addLicenceAmendmentWithDB(
             db,

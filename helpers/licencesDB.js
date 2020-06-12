@@ -1094,8 +1094,8 @@ function getNextExternalLicenceNumberFromRange() {
         readonly: true
     });
     const rangeStartFromConfig = getApplicationSettingWithDB(db, "licences.externalLicenceNumber.range.start");
-    const rangeStart = (rangeStartFromConfig === "" ? -1 : parseInt(rangeStartFromConfig));
-    const rangeEnd = parseInt(getApplicationSettingWithDB(db, "licences.externalLicenceNumber.range.end") || "0");
+    const rangeStart = (rangeStartFromConfig === "" ? -1 : parseInt(rangeStartFromConfig, 10));
+    const rangeEnd = parseInt(getApplicationSettingWithDB(db, "licences.externalLicenceNumber.range.end") || "0", 10);
     const row = db.prepare("select max(externalLicenceNumberInteger) as maxExternalLicenceNumberInteger" +
         " from LotteryLicences" +
         " where externalLicenceNumberInteger >= ?" +
@@ -1121,7 +1121,7 @@ function createLicence(reqBody, reqSession) {
     const nowMillis = Date.now();
     let externalLicenceNumberInteger = -1;
     try {
-        externalLicenceNumberInteger = parseInt(reqBody.externalLicenceNumber);
+        externalLicenceNumberInteger = parseInt(reqBody.externalLicenceNumber, 10);
     }
     catch (e) {
         externalLicenceNumberInteger = -1;
@@ -1223,7 +1223,7 @@ function updateLicence(reqBody, reqSession) {
     const nowMillis = Date.now();
     let externalLicenceNumberInteger = -1;
     try {
-        externalLicenceNumberInteger = parseInt(reqBody.externalLicenceNumber);
+        externalLicenceNumberInteger = parseInt(reqBody.externalLicenceNumber, 10);
     }
     catch (e) {
         externalLicenceNumberInteger = -1;
@@ -1278,11 +1278,11 @@ function updateLicence(reqBody, reqSession) {
                     "")).trim();
             addLicenceAmendmentWithDB(db, reqBody.licenceID, "Date Update", amendment, 0, reqSession);
         }
-        if (pastLicenceObj.organizationID !== parseInt(reqBody.organizationID) &&
+        if (pastLicenceObj.organizationID !== parseInt(reqBody.organizationID, 10) &&
             configFns.getProperty("amendments.trackOrganizationUpdate")) {
             addLicenceAmendmentWithDB(db, reqBody.licenceID, "Organization Change", "", 0, reqSession);
         }
-        if (pastLicenceObj.locationID !== parseInt(reqBody.locationID) &&
+        if (pastLicenceObj.locationID !== parseInt(reqBody.locationID, 10) &&
             configFns.getProperty("amendments.trackLocationUpdate")) {
             addLicenceAmendmentWithDB(db, reqBody.licenceID, "Location Change", "", 0, reqSession);
         }
@@ -1401,7 +1401,7 @@ function updateLicence(reqBody, reqSession) {
             const ticketTypeObj_past = pastLicenceObj.licenceTicketTypes.find(ele => ele.ticketType === reqBody.ticketType_ticketType);
             if (ticketTypeObj_past &&
                 configFns.getProperty("amendments.trackTicketTypeUpdate") &&
-                ticketTypeObj_past.unitCount !== parseInt(reqBody.ticketType_unitCount)) {
+                ticketTypeObj_past.unitCount !== parseInt(reqBody.ticketType_unitCount, 10)) {
                 addLicenceAmendmentWithDB(db, reqBody.licenceID, "Ticket Type Change", (reqBody.ticketType_ticketType + " Units: " +
                     ticketTypeObj_past.unitCount + " -> " + reqBody.ticketType_unitCount), 0, reqSession);
             }
@@ -1428,7 +1428,7 @@ function updateLicence(reqBody, reqSession) {
                 const ticketTypeObj_past = pastLicenceObj.licenceTicketTypes.find(ele => ele.ticketType === reqBody.ticketType_ticketType[ticketTypeIndex]);
                 if (ticketTypeObj_past &&
                     configFns.getProperty("amendments.trackTicketTypeUpdate") &&
-                    ticketTypeObj_past.unitCount !== parseInt(reqBody.ticketType_unitCount[ticketTypeIndex])) {
+                    ticketTypeObj_past.unitCount !== parseInt(reqBody.ticketType_unitCount[ticketTypeIndex], 10)) {
                     addLicenceAmendmentWithDB(db, reqBody.licenceID, "Ticket Type Change", (reqBody.ticketType_ticketType[ticketTypeIndex] + " Units: " +
                         ticketTypeObj_past.unitCount + " -> " + reqBody.ticketType_unitCount[ticketTypeIndex]), 0, reqSession);
                 }
