@@ -1,13 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 (function () {
-    var currentDateString = cityssm.dateToString(new Date());
-    var eventDateFilterEle = document.getElementById("filter--eventDate");
-    var showLicencesCheckboxEle = document.getElementById("filter--showLicences");
-    var eventContainerEle = document.getElementById("container--events");
-    var dayNames = exports.config_days;
+    const currentDateString = cityssm.dateToString(new Date());
+    const eventDateFilterEle = document.getElementById("filter--eventDate");
+    const showLicencesCheckboxEle = document.getElementById("filter--showLicences");
+    const eventContainerEle = document.getElementById("container--events");
+    const dayNames = exports.config_days;
     delete exports.config_days;
-    var licenceTypes = exports.config_licenceTypes;
+    const licenceTypes = exports.config_licenceTypes;
     delete exports.config_licenceTypes;
     function refreshEvents() {
         cityssm.clearElement(eventContainerEle);
@@ -25,12 +25,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     "</div>";
                 return;
             }
-            var tableEle = document.createElement("table");
+            const tableEle = document.createElement("table");
             tableEle.className = "table is-fixed is-fullwidth is-bordered";
-            var headerTheadHTML = "<thead><tr>";
-            var headerDate = cityssm.dateStringToDate(responseJSON.startDateString);
-            for (var weekDayIndex = 0; weekDayIndex <= 6; weekDayIndex += 1) {
-                var headerDateString = cityssm.dateToString(headerDate);
+            let headerTheadHTML = "<thead><tr>";
+            const headerDate = cityssm.dateStringToDate(responseJSON.startDateString);
+            for (let weekDayIndex = 0; weekDayIndex <= 6; weekDayIndex += 1) {
+                const headerDateString = cityssm.dateToString(headerDate);
                 headerTheadHTML += "<th class=\"has-text-centered" +
                     (headerDateString === currentDateString ?
                         " has-background-primary has-text-white" :
@@ -42,30 +42,30 @@ Object.defineProperty(exports, "__esModule", { value: true });
             }
             headerTheadHTML += "</tr></thead>";
             tableEle.innerHTML = headerTheadHTML;
-            var licenceTbodyEle = document.createElement("tbody");
+            const licenceTbodyEle = document.createElement("tbody");
             licenceTbodyEle.id = "tbody--licences";
             if (!showLicencesCheckboxEle.checked) {
                 licenceTbodyEle.className = "is-hidden";
             }
-            for (var licenceIndex = 0; licenceIndex < responseJSON.licences.length; licenceIndex += 1) {
-                var licenceRecord = responseJSON.licences[licenceIndex];
-                var fillerSize = 0;
-                var leftSideFiller = "";
+            for (let licenceIndex = 0; licenceIndex < responseJSON.licences.length; licenceIndex += 1) {
+                const licenceRecord = responseJSON.licences[licenceIndex];
+                let fillerSize = 0;
+                let leftSideFiller = "";
                 if (licenceRecord.startDateString > responseJSON.startDateString) {
                     fillerSize = cityssm.dateStringDifferenceInDays(responseJSON.startDateString, licenceRecord.startDateString);
-                    for (var fillerIndex = 0; fillerIndex < fillerSize; fillerIndex += 1) {
+                    for (let fillerIndex = 0; fillerIndex < fillerSize; fillerIndex += 1) {
                         leftSideFiller += "<td></td>";
                     }
                 }
-                var licenceColspan = 1;
+                let licenceColspan = 1;
                 if (licenceRecord.startDateString !== licenceRecord.endDateString) {
                     licenceColspan = Math.min(7 - fillerSize, cityssm.dateStringDifferenceInDays((fillerSize === 0 ? responseJSON.startDateString : licenceRecord.startDateString), licenceRecord.endDateString) + 1);
                 }
-                var rightSideFiller = "";
-                for (var fillerIndex = fillerSize + licenceColspan; fillerIndex < 7; fillerIndex += 1) {
+                let rightSideFiller = "";
+                for (let fillerIndex = fillerSize + licenceColspan; fillerIndex < 7; fillerIndex += 1) {
                     rightSideFiller += "<td></td>";
                 }
-                var licenceType = licenceTypes[licenceRecord.licenceTypeKey];
+                const licenceType = licenceTypes[licenceRecord.licenceTypeKey];
                 licenceTbodyEle.insertAdjacentHTML("beforeend", "<tr>" +
                     leftSideFiller +
                     "<td colspan=\"" + licenceColspan + "\">" +
@@ -114,7 +114,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     "</tr>");
             }
             tableEle.appendChild(licenceTbodyEle);
-            var eventTdEles = [
+            const eventTdEles = [
                 document.createElement("td"),
                 document.createElement("td"),
                 document.createElement("td"),
@@ -123,10 +123,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 document.createElement("td"),
                 document.createElement("td")
             ];
-            for (var eventIndex = 0; eventIndex < responseJSON.events.length; eventIndex += 1) {
-                var eventRecord = responseJSON.events[eventIndex];
-                var licenceType = licenceTypes[eventRecord.licenceTypeKey];
-                var tdIndex = cityssm.dateStringToDate(eventRecord.eventDateString).getDay();
+            for (let eventIndex = 0; eventIndex < responseJSON.events.length; eventIndex += 1) {
+                const eventRecord = responseJSON.events[eventIndex];
+                const licenceType = licenceTypes[eventRecord.licenceTypeKey];
+                const tdIndex = cityssm.dateStringToDate(eventRecord.eventDateString).getDay();
                 eventTdEles[tdIndex].insertAdjacentHTML("beforeend", "<a class=\"button mb-2 has-text-left is-small is-block has-height-auto is-wrap is-link is-light\"" +
                     " data-tooltip=\"View Event\"" +
                     " href=\"/events/" + eventRecord.licenceID + "/" + eventRecord.eventDate + "\">" +
@@ -165,11 +165,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
                         "</div>") +
                     "</a>");
             }
-            var eventTrEle = document.createElement("tr");
-            for (var tdIndex = 0; tdIndex < eventTdEles.length; tdIndex += 1) {
+            const eventTrEle = document.createElement("tr");
+            for (let tdIndex = 0; tdIndex < eventTdEles.length; tdIndex += 1) {
                 eventTrEle.appendChild(eventTdEles[tdIndex]);
             }
-            var eventTbodyEle = document.createElement("tbody");
+            const eventTbodyEle = document.createElement("tbody");
             eventTbodyEle.appendChild(eventTrEle);
             tableEle.appendChild(eventTbodyEle);
             eventContainerEle.appendChild(tableEle);

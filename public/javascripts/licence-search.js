@@ -1,21 +1,21 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 (function () {
-    var licenceType_keyToName = {};
-    var formEle = document.getElementById("form--filters");
-    var limitEle = document.getElementById("filter--limit");
-    var offsetEle = document.getElementById("filter--offset");
-    var searchResultsEle = document.getElementById("container--searchResults");
-    var externalLicenceNumberLabel = searchResultsEle.getAttribute("data-external-licence-number-label");
+    let licenceType_keyToName = {};
+    const formEle = document.getElementById("form--filters");
+    const limitEle = document.getElementById("filter--limit");
+    const offsetEle = document.getElementById("filter--offset");
+    const searchResultsEle = document.getElementById("container--searchResults");
+    const externalLicenceNumberLabel = searchResultsEle.getAttribute("data-external-licence-number-label");
     function doLicenceSearch() {
-        var currentLimit = parseInt(limitEle.value, 10);
-        var currentOffset = parseInt(offsetEle.value, 10);
+        const currentLimit = parseInt(limitEle.value, 10);
+        const currentOffset = parseInt(offsetEle.value, 10);
         searchResultsEle.innerHTML = "<p class=\"has-text-centered has-text-grey-lighter\">" +
             "<i class=\"fas fa-3x fa-circle-notch fa-spin\" aria-hidden=\"true\"></i><br />" +
             "<em>Loading licences...</em>" +
             "</p>";
         cityssm.postJSON("/licences/doSearch", formEle, function (licenceResults) {
-            var licenceList = licenceResults.licences;
+            const licenceList = licenceResults.licences;
             if (licenceList.length === 0) {
                 searchResultsEle.innerHTML = "<div class=\"message is-info\">" +
                     "<div class=\"message-body\">" +
@@ -36,11 +36,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 "</tr></thead>" +
                 "<tbody></tbody>" +
                 "</table>";
-            var tbodyEle = searchResultsEle.getElementsByTagName("tbody")[0];
-            for (var licenceIndex = 0; licenceIndex < licenceList.length; licenceIndex += 1) {
-                var licenceObj = licenceList[licenceIndex];
-                var licenceType = licenceType_keyToName[licenceObj.licenceTypeKey];
-                var trEle = document.createElement("tr");
+            const tbodyEle = searchResultsEle.getElementsByTagName("tbody")[0];
+            for (let licenceIndex = 0; licenceIndex < licenceList.length; licenceIndex += 1) {
+                const licenceObj = licenceList[licenceIndex];
+                const licenceType = licenceType_keyToName[licenceObj.licenceTypeKey];
+                const trEle = document.createElement("tr");
                 trEle.innerHTML =
                     "<td>" +
                         "<a data-tooltip=\"View Licence\" href=\"/licences/" + licenceObj.licenceID + "\">" +
@@ -97,12 +97,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 "</div>" +
                 "</div>");
             if (currentLimit < licenceResults.count) {
-                var paginationEle = document.createElement("nav");
+                const paginationEle = document.createElement("nav");
                 paginationEle.className = "level-right is-hidden-print";
                 paginationEle.setAttribute("role", "pagination");
                 paginationEle.setAttribute("aria-label", "pagination");
                 if (currentOffset > 0) {
-                    var previousEle = document.createElement("a");
+                    const previousEle = document.createElement("a");
                     previousEle.className = "button";
                     previousEle.innerText = "Previous";
                     previousEle.addEventListener("click", function (clickEvent) {
@@ -113,7 +113,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     paginationEle.insertAdjacentElement("beforeend", previousEle);
                 }
                 if (currentLimit + currentOffset < licenceResults.count) {
-                    var nextEle = document.createElement("a");
+                    const nextEle = document.createElement("a");
                     nextEle.className = "button ml-3";
                     nextEle.innerHTML = "<span>Next Licences</span><span class=\"icon\"><i class=\"fas fa-chevron-right\" aria-hidden=\"true\"></i></span>";
                     nextEle.addEventListener("click", function (clickEvent) {
@@ -131,16 +131,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
         offsetEle.value = "0";
         doLicenceSearch();
     }
-    var licenceTypeOptionEles = document.getElementById("filter--licenceTypeKey").getElementsByTagName("option");
-    for (var optionIndex = 1; optionIndex < licenceTypeOptionEles.length; optionIndex += 1) {
-        var optionEle = licenceTypeOptionEles[optionIndex];
+    const licenceTypeOptionEles = document.getElementById("filter--licenceTypeKey").getElementsByTagName("option");
+    for (let optionIndex = 1; optionIndex < licenceTypeOptionEles.length; optionIndex += 1) {
+        const optionEle = licenceTypeOptionEles[optionIndex];
         licenceType_keyToName[optionEle.value] = optionEle.innerText;
     }
     formEle.addEventListener("submit", function (formEvent) {
         formEvent.preventDefault();
     });
-    var inputEles = formEle.querySelectorAll(".input, .select select");
-    for (var inputIndex = 0; inputIndex < inputEles.length; inputIndex += 1) {
+    const inputEles = formEle.querySelectorAll(".input, .select select");
+    for (let inputIndex = 0; inputIndex < inputEles.length; inputIndex += 1) {
         inputEles[inputIndex].addEventListener("change", resetOffsetAndDoLicenceSearch);
     }
     resetOffsetAndDoLicenceSearch();

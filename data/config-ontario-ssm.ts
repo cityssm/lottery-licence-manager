@@ -1,7 +1,3 @@
-/* global require, module */
-
-"use strict";
-
 import * as llm from "../helpers/llmTypes";
 
 import * as objectFns from "../helpers/objectFns";
@@ -9,7 +5,7 @@ import * as objectFns from "../helpers/objectFns";
 import * as configOntario from "./config-ontario";
 
 
-const configSSM = Object.assign ({}, configOntario);
+const configSSM: llm.Config = Object.assign ({}, configOntario);
 
 
 /*

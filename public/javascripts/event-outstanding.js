@@ -1,14 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 (function () {
-    var formEle = document.getElementById("form--outstandingEvents");
-    var tbodyEle = document.getElementById("tbody--outstandingEvents");
+    const formEle = document.getElementById("form--outstandingEvents");
+    const tbodyEle = document.getElementById("tbody--outstandingEvents");
     function getOutstandingEvents() {
         cityssm.clearElement(tbodyEle);
         cityssm.postJSON("/events/doGetOutstandingEvents", formEle, function (outstandingEvents) {
-            var currentOrganizationID = -1;
-            for (var eventIndex = 0; eventIndex < outstandingEvents.length; eventIndex += 1) {
-                var outstandingEventObj = outstandingEvents[eventIndex];
+            let currentOrganizationID = -1;
+            for (let eventIndex = 0; eventIndex < outstandingEvents.length; eventIndex += 1) {
+                const outstandingEventObj = outstandingEvents[eventIndex];
                 if (currentOrganizationID !== outstandingEventObj.organizationID) {
                     currentOrganizationID = outstandingEventObj.organizationID;
                     tbodyEle.insertAdjacentHTML("beforeend", "<tr>" +
@@ -17,7 +17,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                         "</th>" +
                         "</tr>");
                 }
-                var trEle = document.createElement("tr");
+                const trEle = document.createElement("tr");
                 trEle.insertAdjacentHTML("beforeend", "<td>" +
                     "<a href=\"/licences/" + outstandingEventObj.licenceID + "\" data-tooltip=\"View Licence\" target=\"_blank\">" +
                     outstandingEventObj.externalLicenceNumber + "<br / > " +

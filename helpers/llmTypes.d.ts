@@ -1,107 +1,107 @@
-export declare type Config = {
-    application?: Config_ApplicationConfig;
-    session?: Config_SessionConfig;
-    admin?: Config_AdminDefaults;
-    user?: Config_UserConfig;
-    defaults?: Config_DefaultsConfig;
-    bankRecordTypes?: Config_BankRecordType[];
-    licences?: Config_LicencesConfig;
-    licenceTypes?: Config_LicenceType[];
-    amendments?: Config_AmendmentConfig;
-};
-declare type Config_ApplicationConfig = {
+export interface Config {
+    application?: ConfigApplication;
+    session?: ConfigSession;
+    admin?: ConfigAdmin;
+    user?: ConfigUser;
+    defaults?: ConfigDefaults;
+    bankRecordTypes?: ConfigBankRecordType[];
+    licences?: ConfigLicences;
+    licenceTypes?: ConfigLicenceType[];
+    amendments?: ConfigAmendments;
+}
+interface ConfigApplication {
     applicationName?: string;
     logoURL?: string;
     httpPort?: number;
-    https?: Config_HttpsConfig;
-};
-export declare type Config_HttpsConfig = {
+    https?: ConfigHTTPS;
+}
+export interface ConfigHTTPS {
     port: number;
     keyPath: string;
     certPath: string;
-    passphrase: string;
-};
-declare type Config_SessionConfig = {
+    passphrase?: string;
+}
+interface ConfigSession {
     cookieName?: string;
     secret?: string;
     maxAgeMillis?: number;
     doKeepAlive?: boolean;
-};
-declare type Config_AdminDefaults = {
+}
+interface ConfigAdmin {
     defaultPassword?: string;
-};
-declare type Config_UserConfig = {
+}
+interface ConfigUser {
     createUpdateWindowMillis: number;
     defaultProperties: {
         canCreate: boolean;
         canUpdate: boolean;
         isAdmin: boolean;
     };
-};
-declare type Config_DefaultsConfig = {
+}
+interface ConfigDefaults {
     city: string;
     province: string;
-};
-export declare type Config_BankRecordType = {
+}
+export interface ConfigBankRecordType {
     bankRecordType: "statement" | "cheques" | "receipts";
     bankRecordTypeName: string;
-};
-declare type Config_LicencesConfig = {
+}
+interface ConfigLicences {
     feeCalculationFn: (licenceObj: LotteryLicence) => {
         fee: string | number;
         message: string;
         licenceHasErrors: boolean;
     };
     printTemplate: string;
-    externalLicenceNumber?: Config_ExternalLicenceNumber;
-    externalReceiptNumber?: Config_ExternalReceiptNumber;
-};
-declare type Config_ExternalLicenceNumber = {
+    externalLicenceNumber?: ConfigExternalLicenceNumber;
+    externalReceiptNumber?: ConfigExternalReceiptNumber;
+}
+interface ConfigExternalLicenceNumber {
     fieldLabel?: string;
     newCalculation?: "" | "range";
     isPreferredID?: boolean;
-};
-declare type Config_ExternalReceiptNumber = {
+}
+interface ConfigExternalReceiptNumber {
     fieldLabel: string;
-};
-export declare type Config_LicenceType = {
+}
+export interface ConfigLicenceType {
     licenceTypeKey: string;
     licenceType: string;
     totalPrizeValueMax: number;
     isActive: boolean;
-    licenceFields: Config_LicenceField[];
-    eventFields: Config_EventField[];
-    ticketTypes?: Config_TicketType[];
+    licenceFields: ConfigLicenceField[];
+    eventFields: ConfigEventField[];
+    ticketTypes?: ConfigTicketType[];
     printSettings?: {};
-};
-declare type Config_LicenceField = {
+}
+interface ConfigLicenceField {
     fieldKey: string;
     fieldLabel: string;
     isActive: boolean;
     isShownOnEvent: boolean;
-    inputAttributes: Config_FieldInputAttributes;
-};
-declare type Config_EventField = {
+    inputAttributes: ConfigFieldInputAttributes;
+}
+interface ConfigEventField {
     fieldKey: string;
     fieldLabel: string;
     isActive: boolean;
-    inputAttributes: Config_FieldInputAttributes;
-};
-declare type Config_FieldInputAttributes = {
+    inputAttributes: ConfigFieldInputAttributes;
+}
+interface ConfigFieldInputAttributes {
     type: "number" | "text";
     min?: number;
     max?: number;
     step?: number;
     maxlength?: number;
-};
-export declare type Config_TicketType = {
+}
+export interface ConfigTicketType {
     ticketType: string;
     ticketPrice: number;
     ticketCount: number;
     prizesPerDeal: number;
     feePerUnit?: number;
-};
-declare type Config_AmendmentConfig = {
+}
+interface ConfigAmendments {
     displayCount: number;
     trackLicenceFeeUpdate: boolean;
     trackDateTimeUpdate: boolean;
@@ -110,8 +110,8 @@ declare type Config_AmendmentConfig = {
     trackTicketTypeNew: boolean;
     trackTicketTypeUpdate: boolean;
     trackTicketTypeDelete: boolean;
-};
-export declare type Record = {
+}
+export interface Record {
     recordType: "location" | "organization" | "remark" | "bankRecord" | "licence" | "event";
     recordCreate_userName: string;
     recordCreate_timeMillis: number;
@@ -124,7 +124,7 @@ export declare type Record = {
     recordDelete_timeMillis?: number;
     recordDelete_dateString?: string;
     canUpdate: boolean;
-};
+}
 export interface Location extends Record {
     recordType: "location" | "licence" | "event";
     locationID: number;
@@ -281,34 +281,34 @@ export interface LotteryEvent extends LotteryLicence {
     costs_amountDonated: number;
     eventFields: FieldData[];
 }
-export declare type FieldData = {
+export interface FieldData {
     fieldKey: string;
     fieldValue: string;
-};
-export declare type LotteryEventStats = {
+}
+export interface LotteryEventStats {
     eventYearMin: number;
-};
-export declare type LotteryLicenceStats = {
+}
+export interface LotteryLicenceStats {
     applicationYearMin: number;
     startYearMin: number;
     endYearMax: number;
-};
-export declare type TermsConditionsStat = {
+}
+export interface TermsConditionsStat {
     termsConditions: string;
     termsConditionsCount: number;
     startDateMax: number;
     startDateMaxString: string;
-};
-export declare type User = {
+}
+export interface User {
     userName: string;
     firstName?: string;
     lastName?: string;
     userProperties?: UserProperties;
-};
-export declare type UserProperties = {
+}
+export interface UserProperties {
     isDefaultAdmin: boolean;
     canCreate: boolean;
     canUpdate: boolean;
     isAdmin: boolean;
-};
+}
 export {};

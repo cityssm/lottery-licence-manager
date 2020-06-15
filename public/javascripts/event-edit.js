@@ -1,11 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 (function () {
-    var eventDateNavEle = document.getElementById("eventNav--eventDate");
-    var formEle = document.getElementById("form--event");
-    var formMessageEle = document.getElementById("container--form-message");
-    var licenceID = document.getElementById("event--licenceID").value;
-    var eventDate = document.getElementById("event--eventDate").value;
+    const eventDateNavEle = document.getElementById("eventNav--eventDate");
+    const formEle = document.getElementById("form--event");
+    const formMessageEle = document.getElementById("container--form-message");
+    const licenceID = document.getElementById("event--licenceID").value;
+    const eventDate = document.getElementById("event--eventDate").value;
     formEle.addEventListener("submit", function (formEvent) {
         formEvent.preventDefault();
         formMessageEle.innerHTML = "Saving... <i class=\"fas fa-circle-notch fa-spin\" aria-hidden=\"true\"></i>";
@@ -44,37 +44,37 @@ Object.defineProperty(exports, "__esModule", { value: true });
             " <span>Unsaved Changes</span>" +
             "</div>";
     }
-    var inputEles = formEle.querySelectorAll("input, select, textarea");
-    for (var inputIndex = 0; inputIndex < inputEles.length; inputIndex += 1) {
+    const inputEles = formEle.querySelectorAll("input, select, textarea");
+    for (let inputIndex = 0; inputIndex < inputEles.length; inputIndex += 1) {
         if (inputEles[inputIndex].name !== "") {
             inputEles[inputIndex].addEventListener("change", setUnsavedChanges);
         }
     }
     document.getElementById("is-bank-information-lookup-button").addEventListener("click", function (clickEvent) {
         clickEvent.preventDefault();
-        var bankInfoCloseModalFn;
-        var savedBankInfoList;
-        var setPastBankInformation = function (bankInfoClickEvent) {
+        let bankInfoCloseModalFn;
+        let savedBankInfoList;
+        const setPastBankInformation = function (bankInfoClickEvent) {
             bankInfoClickEvent.preventDefault();
-            var listIndex = parseInt(bankInfoClickEvent.currentTarget.getAttribute("data-list-index"), 10);
-            var record = savedBankInfoList[listIndex];
+            const listIndex = parseInt(bankInfoClickEvent.currentTarget.getAttribute("data-list-index"), 10);
+            const record = savedBankInfoList[listIndex];
             document.getElementById("event--bank_name").value = record.bank_name;
             document.getElementById("event--bank_address").value = record.bank_address;
             document.getElementById("event--bank_accountNumber").value = record.bank_accountNumber;
             setUnsavedChanges();
             bankInfoCloseModalFn();
         };
-        var getPastBankInformation = function () {
-            var containerEle = document.getElementById("container--bankInformationLookup");
+        const getPastBankInformation = function () {
+            const containerEle = document.getElementById("container--bankInformationLookup");
             cityssm.postJSON("/events/doGetPastBankInformation", {
                 licenceID: licenceID
             }, function (bankInfoList) {
                 savedBankInfoList = bankInfoList;
-                var listEle = document.createElement("div");
+                const listEle = document.createElement("div");
                 listEle.className = "panel mb-3";
-                for (var index = 0; index < bankInfoList.length; index += 1) {
-                    var record = bankInfoList[index];
-                    var listItemEle = document.createElement("a");
+                for (let index = 0; index < bankInfoList.length; index += 1) {
+                    const record = bankInfoList[index];
+                    const listItemEle = document.createElement("a");
                     listItemEle.className = "panel-block is-block";
                     listItemEle.setAttribute("data-list-index", index.toString());
                     listItemEle.innerHTML = "<div class=\"columns\">" +
@@ -101,13 +101,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
             }
         });
     });
-    var costs_receipts_ele = document.getElementById("event--costs_receipts");
-    var costs_admin_ele = document.getElementById("event--costs_admin");
-    var costs_prizesAwarded_ele = document.getElementById("event--costs_prizesAwarded");
-    var costs_netProceeds_ele = document.getElementById("event--costs_netProceeds");
-    var costs_amountDonated_ele = document.getElementById("event--costs_amountDonated");
+    const costs_receipts_ele = document.getElementById("event--costs_receipts");
+    const costs_admin_ele = document.getElementById("event--costs_admin");
+    const costs_prizesAwarded_ele = document.getElementById("event--costs_prizesAwarded");
+    const costs_netProceeds_ele = document.getElementById("event--costs_netProceeds");
+    const costs_amountDonated_ele = document.getElementById("event--costs_amountDonated");
     function refreshNetProceeds() {
-        var netProceeds = (parseFloat(costs_receipts_ele.value || "0") -
+        const netProceeds = (parseFloat(costs_receipts_ele.value || "0") -
             parseFloat(costs_admin_ele.value || "0") -
             parseFloat(costs_prizesAwarded_ele.value || "0")).toFixed(2);
         costs_netProceeds_ele.value = netProceeds;

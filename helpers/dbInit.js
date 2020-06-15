@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.initLicencesDB = exports.initUsersDB = void 0;
 const sqlite = require("better-sqlite3");
 function initUsersDB() {
     const usersDB = sqlite("data/users.db");

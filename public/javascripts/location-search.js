@@ -1,20 +1,20 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 (function () {
-    var formEle = document.getElementById("form--searchFilters");
-    var limitEle = document.getElementById("filter--limit");
-    var offsetEle = document.getElementById("filter--offset");
-    var searchResultsEle = document.getElementById("container--searchResults");
-    var canCreate = document.getElementsByTagName("main")[0].getAttribute("data-can-create") === "true";
-    var displayedLocationList = [];
+    const formEle = document.getElementById("form--searchFilters");
+    const limitEle = document.getElementById("filter--limit");
+    const offsetEle = document.getElementById("filter--offset");
+    const searchResultsEle = document.getElementById("container--searchResults");
+    const canCreate = document.getElementsByTagName("main")[0].getAttribute("data-can-create") === "true";
+    let displayedLocationList = [];
     function renderLocationTrEle(locationObj, locationIndex) {
-        var trEle = document.createElement("tr");
+        const trEle = document.createElement("tr");
         trEle.innerHTML = "<td></td>";
-        var locationDisplayNameLinkEle = document.createElement("a");
+        const locationDisplayNameLinkEle = document.createElement("a");
         locationDisplayNameLinkEle.innerText = locationObj.locationDisplayName;
         locationDisplayNameLinkEle.href = "/locations/" + locationObj.locationID;
         trEle.getElementsByTagName("td")[0].insertAdjacentElement("beforeend", locationDisplayNameLinkEle);
-        var addressTdEle = document.createElement("td");
+        const addressTdEle = document.createElement("td");
         addressTdEle.innerHTML =
             (locationObj.locationAddress1 === "" ?
                 "" :
@@ -48,7 +48,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 "<span class=\"sr-only\">No</span>") +
             "</td>");
         if (canCreate) {
-            var canDeleteLocation = locationObj.canUpdate && locationObj.licences_count === 0 && locationObj.distributor_count === 0 && locationObj.manufacturer_count === 0;
+            const canDeleteLocation = locationObj.canUpdate && locationObj.licences_count === 0 && locationObj.distributor_count === 0 && locationObj.manufacturer_count === 0;
             trEle.insertAdjacentHTML("beforeend", "<td class=\"is-hidden-print has-text-right is-nowrap\">" +
                 (locationObj.canUpdate ?
                     "<a class=\"button is-small\" data-tooltip=\"Edit Location\" href=\"/locations/" + locationObj.locationID + "/edit\">" +
@@ -68,8 +68,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
         return trEle;
     }
     function getLocations() {
-        var currentLimit = parseInt(limitEle.value, 10);
-        var currentOffset = parseInt(offsetEle.value, 10);
+        const currentLimit = parseInt(limitEle.value, 10);
+        const currentOffset = parseInt(offsetEle.value, 10);
         displayedLocationList = [];
         searchResultsEle.innerHTML = "<p class=\"has-text-centered has-text-grey-lighter\">" +
             "<i class=\"fas fa-3x fa-circle-notch fa-spin\" aria-hidden=\"true\"></i><br />" +
@@ -97,9 +97,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 "</tr></thead>" +
                 "<tbody></tbody>" +
                 "</table>";
-            var tbodyEle = searchResultsEle.getElementsByTagName("tbody")[0];
-            for (var locationIndex = 0; locationIndex < displayedLocationList.length; locationIndex += 1) {
-                var locationTrEle = renderLocationTrEle(displayedLocationList[locationIndex], locationIndex);
+            const tbodyEle = searchResultsEle.getElementsByTagName("tbody")[0];
+            for (let locationIndex = 0; locationIndex < displayedLocationList.length; locationIndex += 1) {
+                const locationTrEle = renderLocationTrEle(displayedLocationList[locationIndex], locationIndex);
                 tbodyEle.insertAdjacentElement("beforeend", locationTrEle);
             }
             searchResultsEle.insertAdjacentHTML("beforeend", "<div class=\"level is-block-print\">" +
@@ -113,12 +113,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 "</div>" +
                 "</div>");
             if (currentLimit < locationResults.count) {
-                var paginationEle = document.createElement("nav");
+                const paginationEle = document.createElement("nav");
                 paginationEle.className = "level-right is-hidden-print";
                 paginationEle.setAttribute("role", "pagination");
                 paginationEle.setAttribute("aria-label", "pagination");
                 if (currentOffset > 0) {
-                    var previousEle = document.createElement("a");
+                    const previousEle = document.createElement("a");
                     previousEle.className = "button";
                     previousEle.innerText = "Previous";
                     previousEle.addEventListener("click", function (clickEvent) {
@@ -129,7 +129,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     paginationEle.insertAdjacentElement("beforeend", previousEle);
                 }
                 if (currentLimit + currentOffset < locationResults.count) {
-                    var nextEle = document.createElement("a");
+                    const nextEle = document.createElement("a");
                     nextEle.className = "button ml-3";
                     nextEle.innerHTML = "<span>Next Locations</span><span class=\"icon\"><i class=\"fas fa-chevron-right\" aria-hidden=\"true\"></i></span>";
                     nextEle.addEventListener("click", function (clickEvent) {
@@ -149,9 +149,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
     }
     function deleteLocationClickFn(clickEvent) {
         clickEvent.preventDefault();
-        var locationIndex = parseInt(clickEvent.currentTarget.getAttribute("data-location-index"), 10);
-        var locationObj = displayedLocationList[locationIndex];
-        var deleteFn = function () {
+        const locationIndex = parseInt(clickEvent.currentTarget.getAttribute("data-location-index"), 10);
+        const locationObj = displayedLocationList[locationIndex];
+        const deleteFn = function () {
             cityssm.postJSON("/locations/doDelete", {
                 locationID: locationObj.locationID
             }, function (responseJSON) {
@@ -160,7 +160,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 }
             });
         };
-        cityssm.confirmModal("Delete Location", "Are you sure you want to delete " + cityssm.escapeHTML(locationObj.locationDisplayName) + "?", "Yes, Delete", "warning", deleteFn);
+        cityssm.confirmModal("Delete Location", `Are you sure you want to delete ${cityssm.escapeHTML(locationObj.locationDisplayName)}?`, "Yes, Delete", "warning", deleteFn);
     }
     formEle.addEventListener("submit", function (formEvent) {
         formEvent.preventDefault();

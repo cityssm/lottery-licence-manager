@@ -1,27 +1,13 @@
 "use strict";
 
-import { Config, Config_BankRecordType, Config_LicenceType } from "../helpers/llmTypes";
+import * as llm from "../helpers/llmTypes";
 
 
 /*
  * LOAD CONFIGURATION
  */
 
-export let config : Config = {};
-
-try {
-
-  config = require("../data/config");
-
-} catch (e) {
-
-  config = {};
-
-  console.log("No \"config.js\" found." +
-    " To customize, create your own \"config.js\" in the \"data\" folder." +
-    " See \"config-example.js\" or \"config-example-ontario.js\" to get started.");
-
-}
+import * as config from "../data/config";
 
 
 /*
@@ -51,7 +37,7 @@ const configFallbackValues = {
   "defaults.city": "",
   "defaults.province": "",
 
-  "bankRecordTypes": <Config_BankRecordType[]>[
+  "bankRecordTypes": <llm.ConfigBankRecordType[]>[
     {
       bankRecordType: "statement",
       bankRecordTypeName: "Bank Statement"
@@ -136,13 +122,13 @@ export const keepAliveMillis =
 const licenceTypeCache = {};
 let licenceTypeKeyNameObject = {};
 
-export function getLicenceType(licenceTypeKey: string): Config_LicenceType {
+export function getLicenceType(licenceTypeKey: string): llm.ConfigLicenceType {
 
   if (!licenceTypeCache[licenceTypeKey]) {
 
     licenceTypeCache[licenceTypeKey] =
       getProperty("licenceTypes").find(
-        function(ele: Config_LicenceType) {
+        function(ele: llm.ConfigLicenceType) {
           return (ele.licenceTypeKey === licenceTypeKey);
         }
       );
@@ -159,7 +145,7 @@ export function getLicenceTypeKeyToNameObject() {
 
     let list = {};
 
-    getProperty("licenceTypes").forEach(function(ele: Config_LicenceType) {
+    getProperty("licenceTypes").forEach(function(ele: llm.ConfigLicenceType) {
 
       if (ele.isActive) {
         list[ele.licenceTypeKey] = ele.licenceType;
@@ -172,4 +158,4 @@ export function getLicenceTypeKeyToNameObject() {
 
   return licenceTypeKeyNameObject;
 
-};
+}

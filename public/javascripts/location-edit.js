@@ -1,12 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 (function () {
-    var formEle = document.getElementById("form--location");
-    var formMessageEle = document.getElementById("container--form-message");
-    var locationID = document.getElementById("location--locationID").value;
-    var hasUnsavedChanges = false;
-    var isCreate = locationID === "";
-    var isAdmin = (document.getElementsByTagName("main")[0].getAttribute("data-is-admin") === "true");
+    const formEle = document.getElementById("form--location");
+    const formMessageEle = document.getElementById("container--form-message");
+    const locationID = document.getElementById("location--locationID").value;
+    let hasUnsavedChanges = false;
+    const isCreate = locationID === "";
+    const isAdmin = (document.getElementsByTagName("main")[0].getAttribute("data-is-admin") === "true");
     formEle.addEventListener("submit", function (formEvent) {
         formEvent.preventDefault();
         formMessageEle.innerHTML = "Saving... <i class=\"fas fa-circle-notch fa-spin\" aria-hidden=\"true\"></i>";
@@ -25,7 +25,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
         });
     });
     if (!isCreate) {
-        var deleteLocationFn_1 = function () {
+        const deleteLocationFn = function () {
             cityssm.postJSON("/locations/doDelete", {
                 locationID: locationID
             }, function (responseJSON) {
@@ -37,28 +37,28 @@ Object.defineProperty(exports, "__esModule", { value: true });
         formEle.getElementsByClassName("is-delete-button")[0].addEventListener("click", function (clickEvent) {
             clickEvent.preventDefault();
             cityssm.confirmModal("Delete Location?", ("Are you sure you want to delete this location?<br />" +
-                "Note that any active licences associated with this location will remain active."), "Yes, Delete Location", "warning", deleteLocationFn_1);
+                "Note that any active licences associated with this location will remain active."), "Yes, Delete Location", "warning", deleteLocationFn);
         });
     }
     if (!isCreate && isAdmin) {
-        var intLocationID_1 = parseInt(locationID, 10);
+        const intLocationID = parseInt(locationID, 10);
         formEle.getElementsByClassName("is-merge-button")[0].addEventListener("click", function (mergeButton_clickEvent) {
             mergeButton_clickEvent.preventDefault();
             if (hasUnsavedChanges) {
                 cityssm.alertModal("Unsaved Changes", "You must save all unsaved changes before merging this location record.", "OK", "warning");
                 return;
             }
-            var locationName_target = document.getElementById("location--locationName").value;
-            var locationDisplayNameAndID_target = (locationName_target === "" ?
+            const locationName_target = document.getElementById("location--locationName").value;
+            const locationDisplayNameAndID_target = (locationName_target === "" ?
                 document.getElementById("location--locationAddress1").value :
                 locationName_target) +
                 ", #" + locationID;
-            var locationID_source = "";
-            var locationsList = [];
-            var locationFilterEle = null;
-            var sourceLocationsContainerEle = null;
-            var closeMergeLocationModalFn = null;
-            var doMerge = function () {
+            let locationID_source = "";
+            let locationsList = [];
+            let locationFilterEle = null;
+            let sourceLocationsContainerEle = null;
+            let closeMergeLocationModalFn = null;
+            const doMerge = function () {
                 cityssm.postJSON("/locations/doMerge", {
                     targetLocationID: locationID,
                     sourceLocationID: locationID_source
@@ -71,32 +71,32 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     }
                 });
             };
-            var clickFn_selectSourceLocation = function (clickEvent) {
+            const clickFn_selectSourceLocation = function (clickEvent) {
                 clickEvent.preventDefault();
-                var sourceLocationLinkEle = clickEvent.currentTarget;
+                const sourceLocationLinkEle = clickEvent.currentTarget;
                 locationID_source = sourceLocationLinkEle.getAttribute("data-location-id");
-                var locationDisplayName_source = sourceLocationLinkEle.getAttribute("data-location-display-name");
+                const locationDisplayName_source = sourceLocationLinkEle.getAttribute("data-location-display-name");
                 closeMergeLocationModalFn();
                 cityssm.confirmModal("Confirm Merge", "Are you sure you want to update all licences associated with" +
                     " <em>" + locationDisplayName_source + ", #" + locationID_source + "</em>" +
                     " and associate them with" +
                     " <em>" + locationDisplayNameAndID_target + "</em>?", "Yes, Complete Merge", "warning", doMerge);
             };
-            var filterLocationsFn = function () {
-                var filterSplit = locationFilterEle.value
+            const filterLocationsFn = function () {
+                const filterSplit = locationFilterEle.value
                     .trim()
                     .toLowerCase()
                     .split(" ");
-                var listEle = document.createElement("div");
+                const listEle = document.createElement("div");
                 listEle.className = "panel";
-                for (var locationIndex = 0; locationIndex < locationsList.length; locationIndex += 1) {
-                    var locationObj = locationsList[locationIndex];
-                    if (locationObj.locationID === intLocationID_1) {
+                for (let locationIndex = 0; locationIndex < locationsList.length; locationIndex += 1) {
+                    const locationObj = locationsList[locationIndex];
+                    if (locationObj.locationID === intLocationID) {
                         continue;
                     }
-                    var showLocation = true;
-                    for (var filterIndex = 0; filterIndex < filterSplit.length; filterIndex += 1) {
-                        var filterString = filterSplit[filterIndex];
+                    let showLocation = true;
+                    for (let filterIndex = 0; filterIndex < filterSplit.length; filterIndex += 1) {
+                        const filterString = filterSplit[filterIndex];
                         if (locationObj.locationName.toLowerCase().indexOf(filterString) === -1) {
                             showLocation = false;
                             break;
@@ -105,7 +105,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     if (!showLocation) {
                         continue;
                     }
-                    var listItemEle = document.createElement("a");
+                    const listItemEle = document.createElement("a");
                     listItemEle.className = "panel-block is-block";
                     listItemEle.setAttribute("data-location-id", locationObj.locationID);
                     listItemEle.setAttribute("data-location-display-name", locationObj.locationDisplayName);
@@ -147,8 +147,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
             };
             cityssm.openHtmlModal("locationMerge", {
                 onshow: function (modalEle) {
-                    var locationDisplayNameAndID_target_eles = modalEle.getElementsByClassName("mergeLocation--locationDisplayNameAndID_target");
-                    for (var index = 0; index < locationDisplayNameAndID_target_eles.length; index += 1) {
+                    const locationDisplayNameAndID_target_eles = modalEle.getElementsByClassName("mergeLocation--locationDisplayNameAndID_target");
+                    for (let index = 0; index < locationDisplayNameAndID_target_eles.length; index += 1) {
                         locationDisplayNameAndID_target_eles[index].innerText = locationDisplayNameAndID_target;
                     }
                     sourceLocationsContainerEle = document.getElementById("container--sourceLocations");
@@ -177,16 +177,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
             " <span>Unsaved Changes</span>" +
             "</div>";
     }
-    var inputEles = formEle.getElementsByTagName("input");
-    for (var inputIndex = 0; inputIndex < inputEles.length; inputIndex += 1) {
+    const inputEles = formEle.getElementsByTagName("input");
+    for (let inputIndex = 0; inputIndex < inputEles.length; inputIndex += 1) {
         inputEles[inputIndex].addEventListener("change", setUnsavedChanges);
     }
-    var locationNameEle = document.getElementById("location--locationName");
+    const locationNameEle = document.getElementById("location--locationName");
     if (isCreate) {
         locationNameEle.focus();
     }
-    var locationIsDistributorCheckboxEle = document.getElementById("location--locationIsDistributor");
-    var locationIsManufacturerCheckboxEle = document.getElementById("location--locationIsManufacturer");
+    const locationIsDistributorCheckboxEle = document.getElementById("location--locationIsDistributor");
+    const locationIsManufacturerCheckboxEle = document.getElementById("location--locationIsManufacturer");
     function setLocationNameRequired() {
         if (locationIsDistributorCheckboxEle.checked || locationIsManufacturerCheckboxEle.checked) {
             locationNameEle.setAttribute("required", "required");

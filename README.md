@@ -1,5 +1,7 @@
 # Lottery Licence Manager
 
+[![CodeFactor](https://www.codefactor.io/repository/github/cityssm/lottery-licence-manager/badge)](https://www.codefactor.io/repository/github/cityssm/lottery-licence-manager)
+
 The Lottery Licence Manager is a web application written by the
 [City of Sault Ste. Marie](https://saultstemarie.ca/)
 to meet the lottery licensing requirements of Ontario municipalities

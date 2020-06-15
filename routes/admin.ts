@@ -239,7 +239,7 @@ router.post("/doDeleteUser", function(req, res) {
 
   res.json({
     success: success
-  })
+  });
 
 });
 

@@ -1,7 +1,3 @@
-/* eslint-disable no-console */
-
-"use strict";
-
 import * as sqlite from "better-sqlite3";
 
 

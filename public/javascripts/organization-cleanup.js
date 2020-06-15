@@ -1,14 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 (function () {
-    var canUpdate = document.getElementsByTagName("main")[0].getAttribute("data-can-update") === "true";
-    var inactiveYearsFilterEle = document.getElementById("filter--inactiveYears");
-    var searchResultsEle = document.getElementById("container--searchResults");
+    const canUpdate = document.getElementsByTagName("main")[0].getAttribute("data-can-update") === "true";
+    const inactiveYearsFilterEle = document.getElementById("filter--inactiveYears");
+    const searchResultsEle = document.getElementById("container--searchResults");
     function confirmDeleteOrganizationFn(clickEvent) {
-        var buttonEle = clickEvent.currentTarget;
-        var organizationName = cityssm.escapeHTML(buttonEle.getAttribute("data-organization-name"));
-        var deleteFn = function () {
-            var organizationID = buttonEle.getAttribute("data-organization-id");
+        const buttonEle = clickEvent.currentTarget;
+        const organizationName = cityssm.escapeHTML(buttonEle.getAttribute("data-organization-name"));
+        const deleteFn = function () {
+            const organizationID = buttonEle.getAttribute("data-organization-id");
             cityssm.postJSON("/organizations/doDelete", {
                 organizationID: organizationID
             }, function (responseJSON) {
@@ -39,7 +39,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     "</div>";
                 return;
             }
-            var tableEle = document.createElement("table");
+            const tableEle = document.createElement("table");
             tableEle.className = "table is-fullwidth is-striped is-hoverable";
             tableEle.innerHTML = "<thead>" +
                 "<tr>" +
@@ -50,11 +50,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 (canUpdate ? "<th><span class=\"sr-only\">Delete</span></th>" : "") +
                 "</tr>" +
                 "</thead>";
-            var tbodyEle = document.createElement("tbody");
-            for (var i = 0; i < inactiveList.length; i += 1) {
-                var organizationObj = inactiveList[i];
-                var trEle = document.createElement("tr");
-                var safeOrganizationName = cityssm.escapeHTML(organizationObj.organizationName);
+            const tbodyEle = document.createElement("tbody");
+            for (let i = 0; i < inactiveList.length; i += 1) {
+                const organizationObj = inactiveList[i];
+                const trEle = document.createElement("tr");
+                const safeOrganizationName = cityssm.escapeHTML(organizationObj.organizationName);
                 trEle.innerHTML = ("<td>" +
                     "<a data-tooltip=\"View Organization\"" +
                     " href=\"/organizations/" + organizationObj.organizationID + "\">" +

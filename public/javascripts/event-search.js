@@ -1,10 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 (function () {
-    var filterExternalLicenceNumberEle = document.getElementById("filter--externalLicenceNumber");
-    var filterLicenceTypeKeyEle = document.getElementById("filter--licenceTypeKey");
-    var filterYearEle = document.getElementById("filter--year");
-    var resultsEle = document.getElementById("container--events");
+    const filterExternalLicenceNumberEle = document.getElementById("filter--externalLicenceNumber");
+    const filterLicenceTypeKeyEle = document.getElementById("filter--licenceTypeKey");
+    const filterYearEle = document.getElementById("filter--year");
+    const resultsEle = document.getElementById("container--events");
     function getEvents() {
         resultsEle.innerHTML = "<p class=\"has-text-centered has-text-grey-lighter\">" +
             "<i class=\"fas fa-3x fa-circle-notch fa-spin\" aria-hidden=\"true\"></i><br />" +
@@ -23,12 +23,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     "</div>";
                 return;
             }
-            var tbodyEle = document.createElement("tbody");
-            for (var eventIndex = 0; eventIndex < eventList.length; eventIndex += 1) {
-                var eventObj = eventList[eventIndex];
-                var licenceType = exports.config_licenceTypes[eventObj.licenceTypeKey] || eventObj.licenceTypeKey;
-                var eventURL = "/events/" + eventObj.licenceID + "/" + eventObj.eventDate;
-                var trEle = document.createElement("tr");
+            const tbodyEle = document.createElement("tbody");
+            for (let eventIndex = 0; eventIndex < eventList.length; eventIndex += 1) {
+                const eventObj = eventList[eventIndex];
+                const licenceType = exports.config_licenceTypes[eventObj.licenceTypeKey] || eventObj.licenceTypeKey;
+                const eventURL = "/events/" + eventObj.licenceID + "/" + eventObj.eventDate;
+                const trEle = document.createElement("tr");
                 trEle.innerHTML =
                     ("<td>" +
                         "<a href=\"" + eventURL + "\">" +
@@ -62,7 +62,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 tbodyEle.appendChild(trEle);
             }
             cityssm.clearElement(resultsEle);
-            var tableEle = document.createElement("table");
+            const tableEle = document.createElement("table");
             tableEle.className = "table is-fullwidth is-striped is-hoverable";
             tableEle.innerHTML = "<thead>" +
                 "<tr>" +

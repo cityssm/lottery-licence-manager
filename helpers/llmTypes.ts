@@ -2,131 +2,131 @@
  * CONFIG TYPES
  */
 
-export type Config = {
-  application?: Config_ApplicationConfig,
-  session?: Config_SessionConfig,
-  admin?: Config_AdminDefaults,
-  user?: Config_UserConfig,
-  defaults?: Config_DefaultsConfig,
-  bankRecordTypes?: Config_BankRecordType[],
-  licences?: Config_LicencesConfig,
-  licenceTypes?: Config_LicenceType[],
-  amendments?: Config_AmendmentConfig
-};
+export interface Config {
+  application?: ConfigApplication;
+  session?: ConfigSession;
+  admin?: ConfigAdmin;
+  user?: ConfigUser;
+  defaults?: ConfigDefaults;
+  bankRecordTypes?: ConfigBankRecordType[];
+  licences?: ConfigLicences;
+  licenceTypes?: ConfigLicenceType[];
+  amendments?: ConfigAmendments;
+}
 
-type Config_ApplicationConfig = {
-  applicationName?: string,
-  logoURL?: string,
-  httpPort?: number,
-  https?: Config_HttpsConfig
-};
+interface ConfigApplication {
+  applicationName?: string;
+  logoURL?: string;
+  httpPort?: number;
+  https?: ConfigHTTPS;
+}
 
-export type Config_HttpsConfig = {
-  port: number,
-  keyPath: string,
-  certPath: string,
-  passphrase: string
-};
+export interface ConfigHTTPS {
+  port: number;
+  keyPath: string;
+  certPath: string;
+  passphrase?: string;
+}
 
-type Config_SessionConfig = {
-  cookieName?: string,
-  secret?: string,
-  maxAgeMillis?: number,
-  doKeepAlive?: boolean
-};
+interface ConfigSession {
+  cookieName?: string;
+  secret?: string;
+  maxAgeMillis?: number;
+  doKeepAlive?: boolean;
+}
 
-type Config_AdminDefaults = {
-  defaultPassword?: string
-};
+interface ConfigAdmin {
+  defaultPassword?: string;
+}
 
-type Config_UserConfig = {
-  createUpdateWindowMillis: number,
+interface ConfigUser {
+  createUpdateWindowMillis: number;
   defaultProperties: {
     canCreate: boolean,
     canUpdate: boolean,
     isAdmin: boolean
-  }
-};
-
-type Config_DefaultsConfig = {
-  city: string,
-  province: string
-};
-
-export type Config_BankRecordType = {
-  bankRecordType: "statement" | "cheques" | "receipts",
-  bankRecordTypeName: string
+  };
 }
 
-type Config_LicencesConfig = {
-  feeCalculationFn: (licenceObj: LotteryLicence) => { fee: string | number, message: string, licenceHasErrors: boolean },
-  printTemplate: string,
-  externalLicenceNumber?: Config_ExternalLicenceNumber,
-  externalReceiptNumber?: Config_ExternalReceiptNumber
-};
-
-type Config_ExternalLicenceNumber = {
-  fieldLabel?: string,
-  newCalculation?: "" | "range",
-  isPreferredID?: boolean
-};
-
-type Config_ExternalReceiptNumber = {
-  fieldLabel: string
-};
-
-export type Config_LicenceType = {
-  licenceTypeKey: string,
-  licenceType: string,
-  totalPrizeValueMax: number,
-  isActive: boolean,
-  licenceFields: Config_LicenceField[],
-  eventFields: Config_EventField[],
-  ticketTypes?: Config_TicketType[],
-  printSettings?: {}
-};
-
-type Config_LicenceField = {
-  fieldKey: string,
-  fieldLabel: string,
-  isActive: boolean,
-  isShownOnEvent: boolean,
-  inputAttributes: Config_FieldInputAttributes
-};
-
-type Config_EventField = {
-  fieldKey: string,
-  fieldLabel: string,
-  isActive: boolean,
-  inputAttributes: Config_FieldInputAttributes
-};
-
-type Config_FieldInputAttributes = {
-  type: "number" | "text",
-  min?: number,
-  max?: number,
-  step?: number,
-  maxlength?: number
+interface ConfigDefaults {
+  city: string;
+  province: string;
 }
 
-export type Config_TicketType = {
-  ticketType: string,
-  ticketPrice: number,
-  ticketCount: number,
-  prizesPerDeal: number,
-  feePerUnit?: number
-};
+export interface ConfigBankRecordType {
+  bankRecordType: "statement" | "cheques" | "receipts";
+  bankRecordTypeName: string;
+}
 
-type Config_AmendmentConfig = {
-  displayCount: number,
-  trackLicenceFeeUpdate: boolean,
-  trackDateTimeUpdate: boolean,
-  trackOrganizationUpdate: boolean,
-  trackLocationUpdate: boolean,
-  trackTicketTypeNew: boolean,
-  trackTicketTypeUpdate: boolean,
-  trackTicketTypeDelete: boolean
-};
+interface ConfigLicences {
+  feeCalculationFn: (licenceObj: LotteryLicence) => { fee: string | number, message: string, licenceHasErrors: boolean };
+  printTemplate: string;
+  externalLicenceNumber?: ConfigExternalLicenceNumber;
+  externalReceiptNumber?: ConfigExternalReceiptNumber;
+}
+
+interface ConfigExternalLicenceNumber {
+  fieldLabel?: string;
+  newCalculation?: "" | "range";
+  isPreferredID?: boolean;
+}
+
+interface ConfigExternalReceiptNumber {
+  fieldLabel: string;
+}
+
+export interface ConfigLicenceType {
+  licenceTypeKey: string;
+  licenceType: string;
+  totalPrizeValueMax: number;
+  isActive: boolean;
+  licenceFields: ConfigLicenceField[];
+  eventFields: ConfigEventField[];
+  ticketTypes?: ConfigTicketType[];
+  printSettings?: {};
+}
+
+interface ConfigLicenceField {
+  fieldKey: string;
+  fieldLabel: string;
+  isActive: boolean;
+  isShownOnEvent: boolean;
+  inputAttributes: ConfigFieldInputAttributes;
+}
+
+interface ConfigEventField {
+  fieldKey: string;
+  fieldLabel: string;
+  isActive: boolean;
+  inputAttributes: ConfigFieldInputAttributes;
+}
+
+interface ConfigFieldInputAttributes {
+  type: "number" | "text";
+  min?: number;
+  max?: number;
+  step?: number;
+  maxlength?: number;
+}
+
+export interface ConfigTicketType {
+  ticketType: string;
+  ticketPrice: number;
+  ticketCount: number;
+  prizesPerDeal: number;
+  feePerUnit?: number;
+}
+
+interface ConfigAmendments {
+  displayCount: number;
+  trackLicenceFeeUpdate: boolean;
+  trackDateTimeUpdate: boolean;
+  trackOrganizationUpdate: boolean;
+  trackLocationUpdate: boolean;
+  trackTicketTypeNew: boolean;
+  trackTicketTypeUpdate: boolean;
+  trackTicketTypeDelete: boolean;
+}
 
 
 /*
@@ -134,84 +134,84 @@ type Config_AmendmentConfig = {
  */
 
 
-export type Record = {
-  recordType: "location" | "organization" | "remark" | "bankRecord" | "licence" | "event",
+export interface Record {
+  recordType: "location" | "organization" | "remark" | "bankRecord" | "licence" | "event";
 
-  recordCreate_userName: string,
-  recordCreate_timeMillis: number,
-  recordCreate_dateString: string,
+  recordCreate_userName: string;
+  recordCreate_timeMillis: number;
+  recordCreate_dateString: string;
 
-  recordUpdate_userName: string,
-  recordUpdate_timeMillis: number,
-  recordUpdate_dateString: string,
-  recordUpdate_timeString: string,
+  recordUpdate_userName: string;
+  recordUpdate_timeMillis: number;
+  recordUpdate_dateString: string;
+  recordUpdate_timeString: string;
 
-  recordDelete_userName?: string,
-  recordDelete_timeMillis?: number,
-  recordDelete_dateString?: string,
+  recordDelete_userName?: string;
+  recordDelete_timeMillis?: number;
+  recordDelete_dateString?: string;
 
-  canUpdate: boolean
-};
+  canUpdate: boolean;
+}
 
 export interface Location extends Record {
 
-  recordType: "location" | "licence" | "event",
+  recordType: "location" | "licence" | "event";
 
-  locationID: number
-  locationDisplayName: string,
-  locationName: string,
-  locationAddress1: string,
-  locationAddress2: string,
-  locationCity: string,
-  locationProvince: string,
-  locationPostalCode: string,
+  locationID: number;
+  locationDisplayName: string;
+  locationName: string;
+  locationAddress1: string;
+  locationAddress2: string;
+  locationCity: string;
+  locationProvince: string;
+  locationPostalCode: string;
 
-  locationIsDistributor: boolean,
-  locationIsManufacturer: boolean,
+  locationIsDistributor: boolean;
+  locationIsManufacturer: boolean;
 
-  licences_count?: number,
-  licences_endDateMax: number,
-  licences_endDateMaxString: string,
+  licences_count?: number;
+  licences_endDateMax: number;
+  licences_endDateMaxString: string;
 
-  distributor_count?: number,
-  distributor_endDateMax: number,
-  distributor_endDateMaxString: string,
+  distributor_count?: number;
+  distributor_endDateMax: number;
+  distributor_endDateMaxString: string;
 
-  manufacturer_count?: number,
-  manufacturer_endDateMax: number,
-  manufacturer_endDateMaxString: string
-};
+  manufacturer_count?: number;
+  manufacturer_endDateMax: number;
+  manufacturer_endDateMaxString: string;
+}
 
 export interface Organization extends Record {
 
-  recordType: "organization",
+  recordType: "organization";
 
-  organizationID: number,
-  organizationName: string,
-  organizationAddress1: string,
-  organizationAddress2: string,
-  organizationCity: string,
-  organizationProvince: string,
-  organizationPostalCode: string,
+  organizationID: number;
+  organizationName: string;
+  organizationAddress1: string;
+  organizationAddress2: string;
+  organizationCity: string;
+  organizationProvince: string;
+  organizationPostalCode: string;
 
-  trustAccountNumber: string,
+  trustAccountNumber: string;
 
-  fiscalStartDate: number,
-  fiscalStartDateString: string,
-  fiscalEndDate: number,
-  fiscalEndDateString: string,
+  fiscalStartDate: number;
+  fiscalStartDateString: string;
+  fiscalEndDate: number;
+  fiscalEndDateString: string;
 
-  isEligibleForLicences: boolean,
-  organizationNote: string,
+  isEligibleForLicences: boolean;
+  organizationNote: string;
 
   // calculated values
-  canUpdate: boolean,
-  organizationRepresentatives: OrganizationRepresentative[],
+  canUpdate: boolean;
+  organizationRepresentatives: OrganizationRepresentative[];
 
   // search results
-  licences_endDateMax: number,
-  licences_endDateMaxString: string
-};
+  licences_endDateMax: number;
+  licences_endDateMaxString: string;
+}
 
 export type OrganizationRepresentative = {
   organizationID: number
@@ -230,151 +230,151 @@ export type OrganizationRepresentative = {
 
 export interface OrganizationRemark extends Record {
 
-  recordType: "remark",
+  recordType: "remark";
 
-  organizationID: number,
-  remarkIndex: number,
-  remarkDate: number,
-  remarkDateString: string,
-  remarkTime: number,
-  remarkTimeString: string,
-  remark: string,
-  isImportant: boolean
-};
+  organizationID: number;
+  remarkIndex: number;
+  remarkDate: number;
+  remarkDateString: string;
+  remarkTime: number;
+  remarkTimeString: string;
+  remark: string;
+  isImportant: boolean;
+}
 
 export interface OrganizationBankRecord extends Record {
 
-  recordType: "bankRecord",
+  recordType: "bankRecord";
 
-  organizationID: number,
-  recordIndex: number,
+  organizationID: number;
+  recordIndex: number;
 
-  bankingYear: number,
-  bankingMonth: number,
-  bankRecordType: "statement" | "cheques" | "receipts",
-  accountNumber: string,
+  bankingYear: number;
+  bankingMonth: number;
+  bankRecordType: "statement" | "cheques" | "receipts";
+  accountNumber: string;
 
-  recordDate: number,
-  recordDateString: string,
+  recordDate: number;
+  recordDateString: string;
 
-  recordNote: string,
+  recordNote: string;
 
-  recordIsNA: boolean
-};
+  recordIsNA: boolean;
+}
 
 export interface LotteryLicence extends Location, Record {
-  recordType: "licence" | "event",
-  licenceID: number,
-  organizationID: number,
-  externalLicenceNumber: string,
-  externalLicenceNumberInteger: number,
-  applicationDate: number,
-  applicationDateString: string,
+  recordType: "licence" | "event";
+  licenceID: number;
+  organizationID: number;
+  externalLicenceNumber: string;
+  externalLicenceNumberInteger: number;
+  applicationDate: number;
+  applicationDateString: string;
 
-  licenceTypeKey: string,
-  licenceType: string,
+  licenceTypeKey: string;
+  licenceType: string;
 
-  startDate: number,
-  startDateString: string,
-  endDate: number,
-  endDateString: string,
-  startTime: number,
-  startTimeString: string,
-  endTime: number,
-  endTimeString: string,
+  startDate: number;
+  startDateString: string;
+  endDate: number;
+  endDateString: string;
+  startTime: number;
+  startTimeString: string;
+  endTime: number;
+  endTimeString: string;
 
-  locationID: number,
+  locationID: number;
 
-  municipality: string,
-  licenceDetails: string,
-  termsConditions: string,
-  totalPrizeValue: number,
-  licenceFee: number,
-  issueDate: number,
-  issueDateString: string,
-  issueTime: number,
-  issueTimeString: string,
-  trackUpdatesAsAmendments: boolean,
+  municipality: string;
+  licenceDetails: string;
+  termsConditions: string;
+  totalPrizeValue: number;
+  licenceFee: number;
+  issueDate: number;
+  issueDateString: string;
+  issueTime: number;
+  issueTimeString: string;
+  trackUpdatesAsAmendments: boolean;
 
-  licenceTicketTypes: LotteryLicenceTicketType[]
-  licenceFields: FieldData[],
-  licenceAmendments: LotteryLicenceAmendment[],
+  licenceTicketTypes: LotteryLicenceTicketType[];
+  licenceFields: FieldData[];
+  licenceAmendments: LotteryLicenceAmendment[];
 
-  licenceTransactionTotal: number,
-  licenceTransactions: LotteryLicenceTransaction[],
+  licenceTransactionTotal: number;
+  licenceTransactions: LotteryLicenceTransaction[];
 
-  events: LotteryEvent[]
-};
+  events: LotteryEvent[];
+}
 
 export interface LotteryLicenceTicketType extends Record {
-  licenceID: number,
-  ticketType: string,
-  unitCount: number
-};
+  licenceID: number;
+  ticketType: string;
+  unitCount: number;
+}
 
 export interface LotteryLicenceTransaction extends Record {
-  transactionIndex: number,
-  transactionDate: number,
-  transactionTime: number,
-  externalReceiptNumber: string,
-  transactionAmount: number,
-  transactionNote: string
-};
+  transactionIndex: number;
+  transactionDate: number;
+  transactionTime: number;
+  externalReceiptNumber: string;
+  transactionAmount: number;
+  transactionNote: string;
+}
 
 export interface LotteryLicenceAmendment extends Record {
-  amendmentIndex: number,
-  amendmentDate: number,
-  amendmentTime: number,
-  amendmentType: string,
-  amendment: string,
-  isHidden: boolean
-};
+  amendmentIndex: number;
+  amendmentDate: number;
+  amendmentTime: number;
+  amendmentType: string;
+  amendment: string;
+  isHidden: boolean;
+}
 
 export interface LotteryEvent extends LotteryLicence {
 
-  recordType: "event",
+  recordType: "event";
 
-  eventDate: number,
-  eventDateString: string,
-  reportDate: number,
-  reportDateString: string,
+  eventDate: number;
+  eventDateString: string;
+  reportDate: number;
+  reportDateString: string;
 
-  bank_name: string,
-  bank_name_isOutstanding: boolean,
-  bank_address: string,
-  bank_accountNumber: string,
-  bank_accountBalance: string,
+  bank_name: string;
+  bank_name_isOutstanding: boolean;
+  bank_address: string;
+  bank_accountNumber: string;
+  bank_accountBalance: string;
 
-  costs_receipts: number,
-  costs_admin: number,
-  costs_prizesAwarded: number,
-  costs_netProceeds: number,
-  costs_amountDonated: number,
+  costs_receipts: number;
+  costs_admin: number;
+  costs_prizesAwarded: number;
+  costs_netProceeds: number;
+  costs_amountDonated: number;
 
-  eventFields: FieldData[]
-};
+  eventFields: FieldData[];
+}
 
-export type FieldData = {
-  fieldKey: string,
-  fieldValue: string
-};
+export interface FieldData {
+  fieldKey: string;
+  fieldValue: string;
+}
 
-export type LotteryEventStats = {
-  eventYearMin: number
-};
+export interface LotteryEventStats {
+  eventYearMin: number;
+}
 
-export type LotteryLicenceStats = {
-  applicationYearMin: number,
-  startYearMin: number,
-  endYearMax: number
-};
+export interface LotteryLicenceStats {
+  applicationYearMin: number;
+  startYearMin: number;
+  endYearMax: number;
+}
 
-export type TermsConditionsStat = {
-  termsConditions: string,
-  termsConditionsCount: number,
-  startDateMax: number,
-  startDateMaxString: string
-};
+export interface TermsConditionsStat {
+  termsConditions: string;
+  termsConditionsCount: number;
+  startDateMax: number;
+  startDateMaxString: string;
+}
 
 
 /*
@@ -382,16 +382,16 @@ export type TermsConditionsStat = {
  */
 
 
-export type User = {
-  userName: string,
-  firstName?: string,
-  lastName?: string,
-  userProperties?: UserProperties
-};
+export interface User {
+  userName: string;
+  firstName?: string;
+  lastName?: string;
+  userProperties?: UserProperties;
+}
 
-export type UserProperties = {
-  isDefaultAdmin: boolean,
-  canCreate: boolean,
-  canUpdate: boolean,
-  isAdmin: boolean
-};
+export interface UserProperties {
+  isDefaultAdmin: boolean;
+  canCreate: boolean;
+  canUpdate: boolean;
+  isAdmin: boolean;
+}

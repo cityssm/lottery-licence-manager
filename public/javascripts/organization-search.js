@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 (function () {
-    var formEle = document.getElementById("form--filters");
-    var searchResultsEle = document.getElementById("container--searchResults");
-    var canCreate = document.getElementsByTagName("main")[0].getAttribute("data-can-create") === "true";
+    const formEle = document.getElementById("form--filters");
+    const searchResultsEle = document.getElementById("container--searchResults");
+    const canCreate = document.getElementsByTagName("main")[0].getAttribute("data-can-create") === "true";
     function doOrganizationSearch() {
         searchResultsEle.innerHTML = "<p class=\"has-text-centered has-text-grey-lighter\">" +
             "<i class=\"fas fa-3x fa-circle-notch fa-spin\" aria-hidden=\"true\"></i><br />" +
@@ -29,12 +29,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 "</tr></thead>" +
                 "<tbody></tbody>" +
                 "</table>";
-            var tbodyEle = searchResultsEle.getElementsByTagName("tbody")[0];
-            for (var organizationIndex = 0; organizationIndex < organizationsList.length; organizationIndex += 1) {
-                var organizationObj = organizationsList[organizationIndex];
-                var trEle = document.createElement("tr");
+            const tbodyEle = searchResultsEle.getElementsByTagName("tbody")[0];
+            for (let organizationIndex = 0; organizationIndex < organizationsList.length; organizationIndex += 1) {
+                const organizationObj = organizationsList[organizationIndex];
+                const trEle = document.createElement("tr");
                 trEle.innerHTML = "<td></td>";
-                var organizationNameLinkEle = document.createElement("a");
+                const organizationNameLinkEle = document.createElement("a");
                 if (!organizationObj.isEligibleForLicences) {
                     organizationNameLinkEle.className = "has-text-danger";
                     organizationNameLinkEle.setAttribute("data-tooltip", "Not Eligible for New Licences");
@@ -65,7 +65,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                             "") +
                         "</td>");
                 }
-                var licenceHTML = "";
+                let licenceHTML = "";
                 if (organizationObj.licences_activeCount > 0) {
                     licenceHTML = "<span class=\"tag has-cursor-default is-info\" data-tooltip=\"Number of Active Licences\">" +
                         "<i class=\"fas fa-certificate mr-2\" aria-hidden=\"true\"></i> " + organizationObj.licences_activeCount +
@@ -93,8 +93,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
     formEle.addEventListener("submit", function (formEvent) {
         formEvent.preventDefault();
     });
-    var inputEles = formEle.querySelectorAll(".input, .select");
-    for (var inputIndex = 0; inputIndex < inputEles.length; inputIndex += 1) {
+    const inputEles = formEle.querySelectorAll(".input, .select");
+    for (let inputIndex = 0; inputIndex < inputEles.length; inputIndex += 1) {
         inputEles[inputIndex].addEventListener("change", doOrganizationSearch);
     }
     doOrganizationSearch();

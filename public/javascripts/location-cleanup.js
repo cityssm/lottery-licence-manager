@@ -1,13 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 (function () {
-    var inactiveYearsFilterEle = document.getElementById("filter--inactiveYears");
-    var searchResultsEle = document.getElementById("container--searchResults");
+    const inactiveYearsFilterEle = document.getElementById("filter--inactiveYears");
+    const searchResultsEle = document.getElementById("container--searchResults");
     function confirmDeleteLocationFn(clickEvent) {
-        var buttonEle = clickEvent.currentTarget;
-        var locationDisplayName = cityssm.escapeHTML(buttonEle.getAttribute("data-location-display-name"));
-        var deleteFn = function () {
-            var locationID = buttonEle.getAttribute("data-location-id");
+        const buttonEle = clickEvent.currentTarget;
+        const locationDisplayName = cityssm.escapeHTML(buttonEle.getAttribute("data-location-display-name"));
+        const deleteFn = function () {
+            const locationID = buttonEle.getAttribute("data-location-id");
             cityssm.postJSON("/locations/doDelete", {
                 locationID: locationID
             }, function (responseJSON) {
@@ -38,7 +38,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     "</div>";
                 return;
             }
-            var tableEle = document.createElement("table");
+            const tableEle = document.createElement("table");
             tableEle.className = "table is-fullwidth is-striped is-hoverable";
             tableEle.innerHTML = "<thead>" +
                 "<tr>" +
@@ -48,11 +48,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 "<th><span class=\"sr-only\">Delete</span></th>" +
                 "</tr>" +
                 "</thead>";
-            var tbodyEle = document.createElement("tbody");
-            for (var i = 0; i < inactiveList.length; i += 1) {
-                var locationObj = inactiveList[i];
-                var trEle = document.createElement("tr");
-                var safeLocationDisplayName = cityssm.escapeHTML(locationObj.locationDisplayName);
+            const tbodyEle = document.createElement("tbody");
+            for (let i = 0; i < inactiveList.length; i += 1) {
+                const locationObj = inactiveList[i];
+                const trEle = document.createElement("tr");
+                const safeLocationDisplayName = cityssm.escapeHTML(locationObj.locationDisplayName);
                 trEle.insertAdjacentHTML("beforeend", "<td>" +
                     "<a data-tooltip=\"View Location\"" +
                     " href=\"/locations/" + locationObj.locationID + "\">" +
@@ -60,9 +60,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     "</a>" +
                     (locationObj.locationDisplayName === locationObj.locationAddress1 ? "" : "<br /><small>" + cityssm.escapeHTML(locationObj.locationAddress1) + "</small>") +
                     "</td>");
-                var dateMax = locationObj.licences_endDateMax;
-                var dateMaxString = locationObj.licences_endDateMaxString;
-                var dateTag = "Licence Location";
+                let dateMax = locationObj.licences_endDateMax;
+                let dateMaxString = locationObj.licences_endDateMaxString;
+                let dateTag = "Licence Location";
                 if (locationObj.distributor_endDateMax && (!dateMax || dateMax < locationObj.distributor_endDateMax)) {
                     dateMax = locationObj.distributor_endDateMax;
                     dateMaxString = locationObj.distributor_endDateMaxString;

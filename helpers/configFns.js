@@ -1,16 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getLicenceTypeKeyToNameObject = exports.getLicenceType = exports.keepAliveMillis = exports.getProperty = exports.config = void 0;
-exports.config = {};
-try {
-    exports.config = require("../data/config");
-}
-catch (e) {
-    exports.config = {};
-    console.log("No \"config.js\" found." +
-        " To customize, create your own \"config.js\" in the \"data\" folder." +
-        " See \"config-example.js\" or \"config-example-ontario.js\" to get started.");
-}
+exports.getLicenceTypeKeyToNameObject = exports.getLicenceType = exports.keepAliveMillis = exports.getProperty = void 0;
+const config = require("../data/config");
 const configFallbackValues = {
     "application.applicationName": "Lottery Licence System",
     "application.logoURL": "/images/bingoBalls.png",
@@ -64,7 +55,7 @@ const configFallbackValues = {
 };
 function getProperty(propertyName) {
     const propertyNameSplit = propertyName.split(".");
-    let currentObj = exports.config;
+    let currentObj = config;
     for (let index = 0; index < propertyNameSplit.length; index += 1) {
         currentObj = currentObj[propertyNameSplit[index]];
         if (!currentObj) {
@@ -102,4 +93,3 @@ function getLicenceTypeKeyToNameObject() {
     return licenceTypeKeyNameObject;
 }
 exports.getLicenceTypeKeyToNameObject = getLicenceTypeKeyToNameObject;
-;

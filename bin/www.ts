@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import * as app from "../app";
-const debug = require("debug")("lottery-licence-manager:server");
+import * as debug from "debug";
 
 import * as http from "http";
 import * as https from "https";
