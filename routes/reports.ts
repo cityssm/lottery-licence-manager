@@ -36,8 +36,7 @@ router.all("/:reportName", function(req, res) {
       sql = "select * from Locations";
       break;
 
-    case "locations-unused":
-      {
+    case "locations-unused": {
 
         sql = "select lo.locationID, lo.locationName," +
           " lo.locationAddress1, lo.locationAddress2, lo.locationCity, lo.locationProvince," +

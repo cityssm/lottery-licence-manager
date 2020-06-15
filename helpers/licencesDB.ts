@@ -380,7 +380,7 @@ export function getLocations(reqSession: Express.SessionData, queryOptions: {
     ele.manufacturer_endDateMaxString = dateTimeFns.dateIntegerToString(ele.manufacturer_endDateMax);
 
     ele.canUpdate = canUpdateObject(ele, reqSession);
-  }
+  };
 
   const db = sqlite(dbPath, {
     readonly: true
@@ -1114,7 +1114,7 @@ export function getDeletedOrganizations() {
 
   const addCalculatedFieldsFn = function(ele: llm.Organization) {
     ele.recordDelete_dateString = dateTimeFns.dateToString(new Date(ele.recordDelete_timeMillis));
-  }
+  };
 
   const db = sqlite(dbPath, {
     readonly: true
@@ -3210,7 +3210,7 @@ export function getEvents(reqBody: any, reqSession: Express.SessionData) {
 
   }
 
-  sql += " order by e.eventDate, l.startTime"
+  sql += " order by e.eventDate, l.startTime";
 
   const rows: llm.LotteryEvent[] =
     db.prepare(sql)
@@ -3325,8 +3325,7 @@ export function getOutstandingEvents(reqBody: any, reqSession: Express.SessionDa
     if (reqBody.eventDateType === "past") {
       sql += " and e.eventDate < ?";
       sqlParams.push(currentDate);
-    }
-    else if (reqBody.eventDateType === "upcoming") {
+    } else if (reqBody.eventDateType === "upcoming") {
       sql += " and e.eventDate >= ?";
       sqlParams.push(currentDate);
     }
