@@ -18,12 +18,16 @@ configSSM.licences.feeCalculationFn = function (licenceObj) {
     const totalPrizeValue = (licenceObj.totalPrizeValue || 0.0);
     const licenceFeeMin = 10;
     const calculatedLicenceFee = totalPrizeValue * 0.03;
-    const fee = Math.max(licenceFeeMin, calculatedLicenceFee);
+    let fee = Math.max(licenceFeeMin, calculatedLicenceFee);
     let message = (fee === licenceFeeMin ?
         "Base minimum licence fee." :
         "3% of $" + licenceObj.totalPrizeValue.toFixed(2));
     let licenceHasErrors = false;
-    if (licenceObj.licenceTypeKey === "RA") {
+    if (licenceObj.licenceTypeKey === "BI") {
+        fee = totalPrizeValue * 0.03 * licenceObj.events.length;
+        message = "3% of $" + licenceObj.totalPrizeValue.toFixed(2) + " times " + licenceObj.events.length + " events";
+    }
+    else if (licenceObj.licenceTypeKey === "RA") {
         const licenceFieldData = objectFns.fieldDataArrayToObject(licenceObj.licenceFields);
         let ticketCost = parseFloat(licenceFieldData.ticketCost || "0");
         if (licenceFieldData.discount1_tickets !== "" && licenceFieldData.discount1_cost !== "") {

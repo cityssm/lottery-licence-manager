@@ -48,7 +48,7 @@ configSSM.licences.feeCalculationFn = function(licenceObj: llm.LotteryLicence) {
 
   const calculatedLicenceFee = totalPrizeValue * 0.03;
 
-  const fee = Math.max(licenceFeeMin, calculatedLicenceFee);
+  let fee = Math.max(licenceFeeMin, calculatedLicenceFee);
   let message = (fee === licenceFeeMin ?
     "Base minimum licence fee." :
     "3% of $" + licenceObj.totalPrizeValue.toFixed(2));
@@ -56,7 +56,13 @@ configSSM.licences.feeCalculationFn = function(licenceObj: llm.LotteryLicence) {
 
   // Check the total prize value
 
-  if (licenceObj.licenceTypeKey === "RA") {
+  if (licenceObj.licenceTypeKey === "BI") {
+
+    fee = totalPrizeValue * 0.03 * licenceObj.events.length;
+
+    message = "3% of $" + licenceObj.totalPrizeValue.toFixed(2) + " times " + licenceObj.events.length + " events";
+
+  } else if (licenceObj.licenceTypeKey === "RA") {
 
     const licenceFieldData = objectFns.fieldDataArrayToObject(licenceObj.licenceFields);
 
