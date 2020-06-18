@@ -1,16 +1,36 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 const express_1 = require("express");
 const router = express_1.Router();
-const configFns = require("../helpers/configFns");
-const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
-const licencesDB = require("../helpers/licencesDB");
+const configFns = __importStar(require("../helpers/configFns"));
+const dateTimeFns = __importStar(require("@cityssm/expressjs-server-js/dateTimeFns"));
+const licencesDB = __importStar(require("../helpers/licencesDB"));
+const licencesDBLocations = __importStar(require("../helpers/licencesDB-locations"));
 router.get("/", function (_req, res) {
     res.render("location-search", {
         headTitle: "Locations"
     });
 });
 router.post("/doGetLocations", function (req, res) {
-    const locations = licencesDB.getLocations(req.session, {
+    const locations = licencesDBLocations.getLocations(req.session, {
         limit: req.body.limit || -1,
         offset: req.body.offset || 0,
         locationNameAddress: req.body.locationNameAddress,
@@ -34,7 +54,7 @@ router.get("/cleanup", function (req, res) {
 });
 router.post("/doGetInactive", function (req, res) {
     const inactiveYears = parseInt(req.body.inactiveYears, 10);
-    res.json(licencesDB.getInactiveLocations(inactiveYears));
+    res.json(licencesDBLocations.getInactiveLocations(inactiveYears));
 });
 router.post("/doCreate", function (req, res) {
     if (!req.session.user.userProperties.canCreate) {
@@ -46,7 +66,7 @@ router.post("/doCreate", function (req, res) {
         });
         return;
     }
-    const locationID = licencesDB.createLocation(req.body, req.session);
+    const locationID = licencesDBLocations.createLocation(req.body, req.session);
     res.json({
         success: true,
         locationID: locationID,
@@ -63,7 +83,7 @@ router.post("/doUpdate", function (req, res) {
         });
         return;
     }
-    const changeCount = licencesDB.updateLocation(req.body, req.session);
+    const changeCount = licencesDBLocations.updateLocation(req.body, req.session);
     if (changeCount) {
         res.json({
             success: true,
@@ -87,7 +107,7 @@ router.post("/doDelete", function (req, res) {
         });
         return;
     }
-    const changeCount = licencesDB.deleteLocation(req.body.locationID, req.session);
+    const changeCount = licencesDBLocations.deleteLocation(req.body.locationID, req.session);
     if (changeCount) {
         res.json({
             success: true,
@@ -111,7 +131,7 @@ router.post("/doRestore", function (req, res) {
         });
         return;
     }
-    const changeCount = licencesDB.restoreLocation(req.body.locationID, req.session);
+    const changeCount = licencesDBLocations.restoreLocation(req.body.locationID, req.session);
     if (changeCount) {
         res.json({
             success: true,
@@ -137,7 +157,7 @@ router.post("/doMerge", function (req, res) {
     }
     const targetLocationID = req.body.targetLocationID;
     const sourceLocationID = req.body.sourceLocationID;
-    const success = licencesDB.mergeLocations(targetLocationID, sourceLocationID, req.session);
+    const success = licencesDBLocations.mergeLocations(targetLocationID, sourceLocationID, req.session);
     res.json({
         success: success
     });
@@ -159,7 +179,7 @@ router.get("/new", function (req, res) {
 });
 router.get("/:locationID", function (req, res) {
     const locationID = parseInt(req.params.locationID, 10);
-    const location = licencesDB.getLocation(locationID, req.session);
+    const location = licencesDBLocations.getLocation(locationID, req.session);
     if (!location) {
         res.redirect("/locations/?error=locationNotFound");
         return;
@@ -183,7 +203,7 @@ router.get("/:locationID/edit", function (req, res) {
         res.redirect("/locations/" + locationID + "/?error=accessDenied-noCreate");
         return;
     }
-    const location = licencesDB.getLocation(locationID, req.session);
+    const location = licencesDBLocations.getLocation(locationID, req.session);
     if (!location) {
         res.redirect("/locations/?error=locationNotFound");
         return;

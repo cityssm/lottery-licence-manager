@@ -1,14 +1,14 @@
 #!/usr/bin/env node
 
-import * as app from "../app";
-import * as debug from "debug";
+import app from "../app";
+import debug from "debug";
 
-import * as http from "http";
-import * as https from "https";
-import * as fs from "fs";
+import http from "http";
+import https from "https";
+import fs from "fs";
 
 import * as configFns from "../helpers/configFns";
-import { Config_HttpsConfig } from "../helpers/llmTypes";
+import { ConfigHTTPS } from "../helpers/llmTypes";
 
 function onError(error: Error) {
 
@@ -69,7 +69,7 @@ if (httpPort) {
  * Initialize HTTPS
  */
 
-const httpsConfig = <Config_HttpsConfig>configFns.getProperty("application.https");
+const httpsConfig = <ConfigHTTPS>configFns.getProperty("application.https");
 
 if (httpsConfig) {
 

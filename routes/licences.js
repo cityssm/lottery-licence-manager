@@ -1,12 +1,35 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 const express_1 = require("express");
 const router = express_1.Router();
-const path = require("path");
-const ejs = require("ejs");
-const convertHTMLToPDF = require("pdf-puppeteer");
-const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
-const configFns = require("../helpers/configFns");
-const licencesDB = require("../helpers/licencesDB");
+const path = __importStar(require("path"));
+const ejs = __importStar(require("ejs"));
+const pdf_puppeteer_1 = __importDefault(require("pdf-puppeteer"));
+const dateTimeFns = __importStar(require("@cityssm/expressjs-server-js/dateTimeFns"));
+const configFns = __importStar(require("../helpers/configFns"));
+const licencesDB = __importStar(require("../helpers/licencesDB"));
+const licencesDBOrganizations = __importStar(require("../helpers/licencesDB-organizations"));
 router.get("/", function (_req, res) {
     res.render("licence-search", {
         headTitle: "Lottery Licences"
@@ -67,7 +90,7 @@ router.get([
     const organizationID = parseInt(req.params.organizationID, 10);
     let organization = null;
     if (organizationID) {
-        organization = licencesDB.getOrganization(organizationID, req.session);
+        organization = licencesDBOrganizations.getOrganization(organizationID, req.session);
         if (organization && !organization.isEligibleForLicences) {
             organization = null;
         }
@@ -272,7 +295,7 @@ router.get("/:licenceID", function (req, res) {
         res.redirect("/licences/?error=licenceNotFound");
         return;
     }
-    const organization = licencesDB.getOrganization(licence.organizationID, req.session);
+    const organization = licencesDBOrganizations.getOrganization(licence.organizationID, req.session);
     const headTitle = configFns.getProperty("licences.externalLicenceNumber.isPreferredID") ?
         "Licence " + licence.externalLicenceNumber :
         "Licence #" + licenceID;
@@ -297,7 +320,7 @@ router.get("/:licenceID/edit", function (req, res) {
         res.redirect("/licences/" + licenceID + "/?error=accessDenied");
         return;
     }
-    const organization = licencesDB.getOrganization(licence.organizationID, req.session);
+    const organization = licencesDBOrganizations.getOrganization(licence.organizationID, req.session);
     const feeCalculation = configFns.getProperty("licences.feeCalculationFn")(licence);
     res.render("licence-edit", {
         headTitle: "Licence #" + licenceID + " Update",
@@ -318,7 +341,7 @@ router.get("/:licenceID/print", function (req, res, next) {
         res.redirect("/licences/?error=licenceNotIssued");
         return;
     }
-    const organization = licencesDB.getOrganization(licence.organizationID, req.session);
+    const organization = licencesDBOrganizations.getOrganization(licence.organizationID, req.session);
     ejs.renderFile(path.join(__dirname, "../reports/", configFns.getProperty("licences.printTemplate")), {
         configFns: configFns,
         licence: licence,
@@ -327,7 +350,7 @@ router.get("/:licenceID/print", function (req, res, next) {
         if (ejsErr) {
             return next(ejsErr);
         }
-        convertHTMLToPDF(ejsData, function (pdf) {
+        pdf_puppeteer_1.default(ejsData, function (pdf) {
             res.setHeader("Content-Disposition", "attachment; filename=licence-" + licenceID + "-" + licence.recordUpdate_timeMillis + ".pdf");
             res.setHeader("Content-Type", "application/pdf");
             res.send(pdf);

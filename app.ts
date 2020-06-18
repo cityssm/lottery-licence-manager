@@ -1,26 +1,26 @@
-import * as createError from "http-errors";
-import * as express from "express";
-import * as compression from "compression";
-import * as path from "path";
-import * as cookieParser from "cookie-parser";
-import * as logger from "morgan";
+import createError from "http-errors";
+import express from "express";
+import compression from "compression";
+import path from "path";
+import cookieParser from "cookie-parser";
+import logger from "morgan";
 
-import * as session from "express-session";
-import * as sqlite3 from "connect-sqlite3";
+import session from "express-session";
+import sqlite3 from "connect-sqlite3";
 const SQLiteStore = sqlite3(session);
 
 
 import * as packageJSON from "./package.json";
 
-import * as routerDocs from "./routes/docs";
-import * as routerLogin from "./routes/login";
-import * as routerDashboard from "./routes/dashboard";
-import * as routerOrganizations from "./routes/organizations";
-import * as routerLicences from "./routes/licences";
-import * as routerLocations from "./routes/locations";
-import * as routerEvents from "./routes/events";
-import * as routerReports from "./routes/reports";
-import * as routerAdmin from "./routes/admin";
+import routerDocs from "./routes/docs";
+import routerLogin from "./routes/login";
+import routerDashboard from "./routes/dashboard";
+import routerOrganizations from "./routes/organizations";
+import routerLicences from "./routes/licences";
+import routerLocations from "./routes/locations";
+import routerEvents from "./routes/events";
+import routerReports from "./routes/reports";
+import routerAdmin from "./routes/admin";
 
 import * as configFns from "./helpers/configFns";
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns";

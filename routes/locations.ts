@@ -5,6 +5,7 @@ import * as configFns from "../helpers/configFns";
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns";
 
 import * as licencesDB from "../helpers/licencesDB";
+import * as licencesDBLocations from "../helpers/licencesDB-locations";
 
 
 router.get("/", function(_req, res) {
@@ -18,7 +19,7 @@ router.get("/", function(_req, res) {
 
 router.post("/doGetLocations", function(req, res) {
 
-  const locations = licencesDB.getLocations(req.session, {
+  const locations = licencesDBLocations.getLocations(req.session, {
     limit: req.body.limit || -1,
     offset: req.body.offset || 0,
     locationNameAddress: req.body.locationNameAddress,
@@ -58,7 +59,7 @@ router.post("/doGetInactive", function(req, res) {
 
   const inactiveYears = parseInt(req.body.inactiveYears, 10);
 
-  res.json(licencesDB.getInactiveLocations(inactiveYears));
+  res.json(licencesDBLocations.getInactiveLocations(inactiveYears));
 
 });
 
@@ -78,7 +79,7 @@ router.post("/doCreate", function(req, res) {
 
   }
 
-  const locationID = licencesDB.createLocation(req.body, req.session);
+  const locationID = licencesDBLocations.createLocation(req.body, req.session);
 
   res.json({
     success: true,
@@ -103,7 +104,7 @@ router.post("/doUpdate", function(req, res) {
 
   }
 
-  const changeCount = licencesDB.updateLocation(req.body, req.session);
+  const changeCount = licencesDBLocations.updateLocation(req.body, req.session);
 
   if (changeCount) {
 
@@ -139,7 +140,7 @@ router.post("/doDelete", function(req, res) {
 
   }
 
-  const changeCount = licencesDB.deleteLocation(req.body.locationID, req.session);
+  const changeCount = licencesDBLocations.deleteLocation(req.body.locationID, req.session);
 
   if (changeCount) {
 
@@ -175,7 +176,7 @@ router.post("/doRestore", function(req, res) {
 
   }
 
-  const changeCount = licencesDB.restoreLocation(req.body.locationID, req.session);
+  const changeCount = licencesDBLocations.restoreLocation(req.body.locationID, req.session);
 
   if (changeCount) {
 
@@ -214,7 +215,7 @@ router.post("/doMerge", function(req, res) {
   const targetLocationID = req.body.targetLocationID;
   const sourceLocationID = req.body.sourceLocationID;
 
-  const success = licencesDB.mergeLocations(targetLocationID, sourceLocationID, req.session);
+  const success = licencesDBLocations.mergeLocations(targetLocationID, sourceLocationID, req.session);
 
   res.json({
     success: success
@@ -249,7 +250,7 @@ router.get("/:locationID", function(req, res) {
 
   const locationID = parseInt(req.params.locationID, 10);
 
-  const location = licencesDB.getLocation(locationID, req.session);
+  const location = licencesDBLocations.getLocation(locationID, req.session);
 
   if (!location) {
 
@@ -286,7 +287,7 @@ router.get("/:locationID/edit", function(req, res) {
 
   }
 
-  const location = licencesDB.getLocation(locationID, req.session);
+  const location = licencesDBLocations.getLocation(locationID, req.session);
 
   if (!location) {
 

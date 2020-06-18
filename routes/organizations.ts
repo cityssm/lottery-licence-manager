@@ -5,6 +5,7 @@ import * as configFns from "../helpers/configFns";
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns";
 
 import * as licencesDB from "../helpers/licencesDB";
+import * as licencesDBOrganizations from "../helpers/licencesDB-organizations";
 
 
 /*
@@ -23,7 +24,7 @@ router.get("/", function(_req, res) {
 
 router.post("/doSearch", function(req, res) {
 
-  res.json(licencesDB.getOrganizations(req.body, req.session, {
+  res.json(licencesDBOrganizations.getOrganizations(req.body, req.session, {
     limit: 100,
     offset: 0
   }));
@@ -33,7 +34,7 @@ router.post("/doSearch", function(req, res) {
 
 router.all("/doGetAll", function(req, res) {
 
-  res.json(licencesDB.getOrganizations({}, req.session, {
+  res.json(licencesDBOrganizations.getOrganizations({}, req.session, {
     limit: -1
   }));
 
@@ -65,7 +66,7 @@ router.post("/doGetInactive", function(req, res) {
 
   const inactiveYears = parseInt(req.body.inactiveYears, 10);
 
-  res.json(licencesDB.getInactiveOrganizations(inactiveYears));
+  res.json(licencesDBOrganizations.getInactiveOrganizations(inactiveYears));
 
 });
 
@@ -83,7 +84,7 @@ router.get("/recovery", function(req, res) {
 
   }
 
-  const organizations = licencesDB.getDeletedOrganizations();
+  const organizations = licencesDBOrganizations.getDeletedOrganizations();
 
   res.render("organization-recovery", {
     headTitle: "Organization Recovery",
@@ -102,7 +103,7 @@ router.post("/doGetRemarks", function(req, res) {
 
   const organizationID = req.body.organizationID;
 
-  res.json(licencesDB.getOrganizationRemarks(organizationID, req.session));
+  res.json(licencesDBOrganizations.getOrganizationRemarks(organizationID, req.session));
 
 });
 
@@ -112,7 +113,7 @@ router.post("/doGetRemark", function(req, res) {
   const organizationID = req.body.organizationID;
   const remarkIndex = req.body.remarkIndex;
 
-  res.json(licencesDB.getOrganizationRemark(organizationID, remarkIndex, req.session));
+  res.json(licencesDBOrganizations.getOrganizationRemark(organizationID, remarkIndex, req.session));
 
 });
 
@@ -132,7 +133,7 @@ router.post("/doAddRemark", function(req, res) {
 
   }
 
-  const remarkIndex = licencesDB.addOrganizationRemark(req.body, req.session);
+  const remarkIndex = licencesDBOrganizations.addOrganizationRemark(req.body, req.session);
 
   res.json({
     success: true,
@@ -158,7 +159,7 @@ router.post("/doEditRemark", function(req, res) {
 
   }
 
-  const success = licencesDB.updateOrganizationRemark(req.body, req.session);
+  const success = licencesDBOrganizations.updateOrganizationRemark(req.body, req.session);
 
   if (success) {
 
@@ -197,7 +198,7 @@ router.post("/doDeleteRemark", function(req, res) {
   const organizationID = req.body.organizationID;
   const remarkIndex = req.body.remarkIndex;
 
-  const success = licencesDB.deleteOrganizationRemark(organizationID, remarkIndex, req.session);
+  const success = licencesDBOrganizations.deleteOrganizationRemark(organizationID, remarkIndex, req.session);
 
   if (success) {
 
@@ -229,7 +230,7 @@ router.post("/doGetBankRecords", function(req, res) {
   const bankingYear = req.body.bankingYear;
   const accountNumber = req.body.accountNumber;
 
-  res.json(licencesDB.getOrganizationBankRecords(organizationID, accountNumber, bankingYear));
+  res.json(licencesDBOrganizations.getOrganizationBankRecords(organizationID, accountNumber, bankingYear));
 
 });
 
@@ -237,7 +238,7 @@ router.post("/doGetBankRecords", function(req, res) {
 router.post("/doGetBankRecordStats", function(req, res) {
 
   const organizationID = req.body.organizationID;
-  res.json(licencesDB.getOrganizationBankRecordStats(organizationID));
+  res.json(licencesDBOrganizations.getOrganizationBankRecordStats(organizationID));
 
 });
 
@@ -257,7 +258,7 @@ router.post("/doAddBankRecord", function(req, res) {
 
   }
 
-  const success = licencesDB.addOrganizationBankRecord(req.body, req.session);
+  const success = licencesDBOrganizations.addOrganizationBankRecord(req.body, req.session);
 
   if (success) {
 
@@ -293,7 +294,7 @@ router.post("/doEditBankRecord", function(req, res) {
 
   }
 
-  const success = licencesDB.updateOrganizationBankRecord(req.body, req.session);
+  const success = licencesDBOrganizations.updateOrganizationBankRecord(req.body, req.session);
 
   if (success) {
 
@@ -329,7 +330,7 @@ router.post("/doDeleteBankRecord", function(req, res) {
 
   }
 
-  const success = licencesDB.deleteOrganizationBankRecord(req.body.organizationID, req.body.recordIndex, req.session);
+  const success = licencesDBOrganizations.deleteOrganizationBankRecord(req.body.organizationID, req.body.recordIndex, req.session);
 
   if (success) {
 
@@ -390,7 +391,7 @@ router.post("/doSave", function(req, res) {
 
   if (req.body.organizationID === "") {
 
-    const newOrganizationID = licencesDB.createOrganization(req.body, req.session);
+    const newOrganizationID = licencesDBOrganizations.createOrganization(req.body, req.session);
 
     res.json({
       success: true,
@@ -399,7 +400,7 @@ router.post("/doSave", function(req, res) {
 
   } else {
 
-    const success = licencesDB.updateOrganization(req.body, req.session);
+    const success = licencesDBOrganizations.updateOrganization(req.body, req.session);
 
     if (success) {
 
@@ -437,7 +438,7 @@ router.post("/doDelete", function(req, res) {
 
   }
 
-  const success = licencesDB.deleteOrganization(req.body.organizationID, req.session);
+  const success = licencesDBOrganizations.deleteOrganization(req.body.organizationID, req.session);
 
   if (success) {
 
@@ -473,7 +474,7 @@ router.post("/doRestore", function(req, res) {
 
   }
 
-  const success = licencesDB.restoreOrganization(req.body.organizationID, req.session);
+  const success = licencesDBOrganizations.restoreOrganization(req.body.organizationID, req.session);
 
   if (success) {
 
@@ -503,7 +504,7 @@ router.get("/:organizationID", function(req, res) {
 
   const organizationID = parseInt(req.params.organizationID, 10);
 
-  const organization = licencesDB.getOrganization(organizationID, req.session);
+  const organization = licencesDBOrganizations.getOrganization(organizationID, req.session);
 
   if (!organization) {
 
@@ -522,7 +523,7 @@ router.get("/:organizationID", function(req, res) {
       limit: -1
     }).licences || [];
 
-  const remarks = licencesDB.getOrganizationRemarks(organizationID, req.session) || [];
+  const remarks = licencesDBOrganizations.getOrganizationRemarks(organizationID, req.session) || [];
 
   res.render("organization-view", {
     headTitle: organization.organizationName,
@@ -552,7 +553,7 @@ router.get("/:organizationID/edit", function(req, res) {
 
   }
 
-  const organization = licencesDB.getOrganization(organizationID, req.session);
+  const organization = licencesDBOrganizations.getOrganization(organizationID, req.session);
 
   if (!organization) {
 
@@ -579,7 +580,7 @@ router.get("/:organizationID/edit", function(req, res) {
     }
   ).licences || [];
 
-  const remarks = licencesDB.getOrganizationRemarks(organizationID, req.session) || [];
+  const remarks = licencesDBOrganizations.getOrganizationRemarks(organizationID, req.session) || [];
 
   res.render("organization-edit", {
     headTitle: "Organization Update",
@@ -611,7 +612,7 @@ router.post("/:organizationID/doAddOrganizationRepresentative", function(req, re
 
   const organizationID = parseInt(req.params.organizationID, 10);
 
-  const representativeObj = licencesDB.addOrganizationRepresentative(organizationID, req.body);
+  const representativeObj = licencesDBOrganizations.addOrganizationRepresentative(organizationID, req.body);
 
   if (representativeObj) {
 
@@ -648,7 +649,7 @@ router.post("/:organizationID/doEditOrganizationRepresentative", function(req, r
 
   const organizationID = parseInt(req.params.organizationID, 10);
 
-  const representativeObj = licencesDB.updateOrganizationRepresentative(organizationID, req.body);
+  const representativeObj = licencesDBOrganizations.updateOrganizationRepresentative(organizationID, req.body);
 
   if (representativeObj) {
 
@@ -686,7 +687,7 @@ router.post("/:organizationID/doDeleteOrganizationRepresentative", function(req,
   const organizationID = parseInt(req.params.organizationID, 10);
   const representativeIndex = req.body.representativeIndex;
 
-  const success = licencesDB.deleteOrganizationRepresentative(organizationID, representativeIndex);
+  const success = licencesDBOrganizations.deleteOrganizationRepresentative(organizationID, representativeIndex);
 
   res.json({
     success: success
@@ -713,7 +714,7 @@ router.post("/:organizationID/doSetDefaultRepresentative", function(req, res) {
   const organizationID = parseInt(req.params.organizationID, 10);
   const isDefaultRepresentativeIndex = req.body.isDefaultRepresentativeIndex;
 
-  const success = licencesDB.setDefaultOrganizationRepresentative(organizationID, isDefaultRepresentativeIndex);
+  const success = licencesDBOrganizations.setDefaultOrganizationRepresentative(organizationID, isDefaultRepresentativeIndex);
 
   res.json({
     success: success

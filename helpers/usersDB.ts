@@ -1,7 +1,5 @@
-"use strict";
-
 const dbPath = "data/users.db";
-import * as sqlite from "better-sqlite3";
+import sqlite from "better-sqlite3";
 
 import * as bcrypt from "bcrypt";
 

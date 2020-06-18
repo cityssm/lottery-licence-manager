@@ -2,14 +2,14 @@
 
 "use strict";
 
-import { Config_TicketType } from "../helpers/llmTypes";
+import { ConfigTicketType } from "../helpers/llmTypes";
 
 /*
  * Source
  * https://www.agco.ca/sites/default/files/schedule_of_approved_bot_types_and_associated_expense_maximumsen.pdf
  */
 
-const ticketTypes_AG: Config_TicketType[] = [
+const ticketTypes_AG: ConfigTicketType[] = [
 
   {
     ticketType: "AG1",
@@ -197,7 +197,7 @@ const ticketTypes_AG: Config_TicketType[] = [
   }
 ];
 
-const ticketTypes_BN: Config_TicketType[] = [
+const ticketTypes_BN: ConfigTicketType[] = [
 
   {
     ticketType: "BN1",
@@ -524,7 +524,7 @@ const ticketTypes_BN: Config_TicketType[] = [
   }
 ];
 
-const ticketTypes_PG: Config_TicketType[] = [
+const ticketTypes_PG: ConfigTicketType[] = [
 
   {
     ticketType: "PG1",
@@ -552,7 +552,7 @@ const ticketTypes_PG: Config_TicketType[] = [
   }
 ];
 
-const ticketTypes_SP: Config_TicketType[] = [
+const ticketTypes_SP: ConfigTicketType[] = [
 
   {
     ticketType: "SP1",

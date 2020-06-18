@@ -1,49 +1,9 @@
 /// <reference types="express-session" />
+export declare const dbPath = "data/licences.db";
 import * as llm from "./llmTypes";
 import { RawRowsColumnsReturn } from "@cityssm/expressjs-server-js/types";
+export declare function canUpdateObject(obj: llm.Record, reqSession: Express.SessionData): boolean;
 export declare function getRawRowsColumns(sql: string, params: any[]): RawRowsColumnsReturn;
-export declare function getLocations(reqSession: Express.SessionData, queryOptions: {
-    limit: number;
-    offset?: number;
-    locationNameAddress: string;
-    locationIsDistributor: number;
-    locationIsManufacturer: number;
-}): {
-    count: number;
-    locations: llm.Location[];
-};
-export declare function getLocation(locationID: number, reqSession: Express.SessionData): llm.Location;
-export declare function createLocation(reqBody: llm.Location, reqSession: Express.SessionData): number;
-export declare function updateLocation(reqBody: llm.Location, reqSession: Express.SessionData): boolean;
-export declare function deleteLocation(locationID: number, reqSession: Express.SessionData): boolean;
-export declare function restoreLocation(locationID: number, reqSession: Express.SessionData): boolean;
-export declare function mergeLocations(targetLocationID: number, sourceLocationID: number, reqSession: Express.SessionData): boolean;
-export declare function getInactiveLocations(inactiveYears: number): llm.Location[];
-export declare function getOrganizations(reqBody: any, reqSession: Express.SessionData, includeOptions: {
-    limit: number;
-    offset?: number;
-}): llm.Organization[];
-export declare function getOrganization(organizationID: number, reqSession: Express.SessionData): llm.Organization;
-export declare function createOrganization(reqBody: llm.Organization, reqSession: Express.SessionData): number;
-export declare function updateOrganization(reqBody: llm.Organization, reqSession: Express.SessionData): boolean;
-export declare function deleteOrganization(organizationID: number, reqSession: Express.SessionData): boolean;
-export declare function restoreOrganization(organizationID: number, reqSession: Express.SessionData): boolean;
-export declare function getInactiveOrganizations(inactiveYears: number): llm.Organization[];
-export declare function getDeletedOrganizations(): llm.Organization[];
-export declare function addOrganizationRepresentative(organizationID: number, reqBody: llm.OrganizationRepresentative): llm.OrganizationRepresentative;
-export declare function updateOrganizationRepresentative(organizationID: number, reqBody: llm.OrganizationRepresentative): llm.OrganizationRepresentative;
-export declare function deleteOrganizationRepresentative(organizationID: number, representativeIndex: number): boolean;
-export declare function setDefaultOrganizationRepresentative(organizationID: number, representativeIndex: number): boolean;
-export declare function getOrganizationRemarks(organizationID: number, reqSession: Express.SessionData): llm.OrganizationRemark[];
-export declare function getOrganizationRemark(organizationID: number, remarkIndex: number, reqSession: Express.SessionData): llm.OrganizationRemark;
-export declare function addOrganizationRemark(reqBody: llm.OrganizationRemark, reqSession: Express.SessionData): number;
-export declare function updateOrganizationRemark(reqBody: llm.OrganizationRemark, reqSession: Express.SessionData): boolean;
-export declare function deleteOrganizationRemark(organizationID: number, remarkIndex: number, reqSession: Express.SessionData): boolean;
-export declare function getOrganizationBankRecords(organizationID: number, accountNumber: string, bankingYear: number): llm.OrganizationBankRecord[];
-export declare function getOrganizationBankRecordStats(organizationID: number): any[];
-export declare function addOrganizationBankRecord(reqBody: llm.OrganizationBankRecord, reqSession: Express.Session): boolean;
-export declare function updateOrganizationBankRecord(reqBody: llm.OrganizationBankRecord, reqSession: Express.Session): boolean;
-export declare function deleteOrganizationBankRecord(organizationID: number, recordIndex: number, reqSession: Express.Session): boolean;
 export declare function getLicenceTableStats(): llm.LotteryLicenceStats;
 export declare function getLicences(reqBodyOrParamsObj: any, reqSession: Express.SessionData, includeOptions: {
     includeOrganization: boolean;

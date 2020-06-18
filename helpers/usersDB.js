@@ -1,13 +1,35 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.inactivateUser = exports.generateNewPassword = exports.updateUserProperty = exports.updateUser = exports.createUser = exports.getUserProperties = exports.getAllUsers = exports.tryResetPassword = exports.getUser = void 0;
 const dbPath = "data/users.db";
-const sqlite = require("better-sqlite3");
-const bcrypt = require("bcrypt");
-const stringFns = require("@cityssm/expressjs-server-js/stringFns");
-const configFns = require("./configFns");
+const better_sqlite3_1 = __importDefault(require("better-sqlite3"));
+const bcrypt = __importStar(require("bcrypt"));
+const stringFns = __importStar(require("@cityssm/expressjs-server-js/stringFns"));
+const configFns = __importStar(require("./configFns"));
 function getUser(userNameSubmitted, passwordPlain) {
-    const db = sqlite(dbPath);
+    const db = better_sqlite3_1.default(dbPath);
     const row = db.prepare("select userName, passwordHash, isActive" +
         " from Users" +
         " where userName = ?")
@@ -72,7 +94,7 @@ function getUser(userNameSubmitted, passwordPlain) {
 }
 exports.getUser = getUser;
 function tryResetPassword(userName, oldPasswordPlain, newPasswordPlain) {
-    const db = sqlite(dbPath);
+    const db = better_sqlite3_1.default(dbPath);
     const row = db.prepare("select passwordHash from Users" +
         " where userName = ?" +
         " and isActive = 1")
@@ -105,7 +127,7 @@ function tryResetPassword(userName, oldPasswordPlain, newPasswordPlain) {
 }
 exports.tryResetPassword = tryResetPassword;
 function getAllUsers() {
-    const db = sqlite(dbPath, {
+    const db = better_sqlite3_1.default(dbPath, {
         readonly: true
     });
     const rows = db.prepare("select userName, firstName, lastName" +
@@ -118,7 +140,7 @@ function getAllUsers() {
 }
 exports.getAllUsers = getAllUsers;
 function getUserProperties(userName) {
-    const db = sqlite(dbPath, {
+    const db = better_sqlite3_1.default(dbPath, {
         readonly: true
     });
     const userProperties = Object.assign({}, configFns.getProperty("user.defaultProperties"));
@@ -137,7 +159,7 @@ exports.getUserProperties = getUserProperties;
 function createUser(reqBody) {
     const newPasswordPlain = stringFns.generatePassword();
     const hash = bcrypt.hashSync(reqBody.userName + "::" + newPasswordPlain, 10);
-    const db = sqlite(dbPath);
+    const db = better_sqlite3_1.default(dbPath);
     const row = db.prepare("select isActive" +
         " from Users" +
         " where userName = ?")
@@ -168,7 +190,7 @@ function createUser(reqBody) {
 }
 exports.createUser = createUser;
 function updateUser(reqBody) {
-    const db = sqlite(dbPath);
+    const db = better_sqlite3_1.default(dbPath);
     const info = db.prepare("update Users" +
         " set firstName = ?," +
         " lastName = ?" +
@@ -180,7 +202,7 @@ function updateUser(reqBody) {
 }
 exports.updateUser = updateUser;
 function updateUserProperty(reqBody) {
-    const db = sqlite(dbPath);
+    const db = better_sqlite3_1.default(dbPath);
     let info;
     if (reqBody.propertyValue === "") {
         info = db.prepare("delete from UserProperties" +
@@ -201,7 +223,7 @@ exports.updateUserProperty = updateUserProperty;
 function generateNewPassword(userName) {
     const newPasswordPlain = stringFns.generatePassword();
     const hash = bcrypt.hashSync(userName + "::" + newPasswordPlain, 10);
-    const db = sqlite(dbPath);
+    const db = better_sqlite3_1.default(dbPath);
     db.prepare("update Users" +
         " set passwordHash = ?" +
         " where userName = ?")
@@ -211,7 +233,7 @@ function generateNewPassword(userName) {
 }
 exports.generateNewPassword = generateNewPassword;
 function inactivateUser(userName) {
-    const db = sqlite(dbPath);
+    const db = better_sqlite3_1.default(dbPath);
     const info = db.prepare("update Users" +
         " set isActive = 0" +
         " where userName = ?" +

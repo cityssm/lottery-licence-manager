@@ -1,5 +1,5 @@
 import * as gulp from "gulp";
-import * as minify from "gulp-minify";
+import minify from "gulp-minify";
 
 /*
  * Minify public/javascripts

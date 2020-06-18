@@ -4,12 +4,13 @@ const router = Router();
 import * as path from "path";
 import * as ejs from "ejs";
 
-import convertHTMLToPDF = require("pdf-puppeteer");
+import convertHTMLToPDF from "pdf-puppeteer";
 
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns";
 import * as configFns from "../helpers/configFns";
 
 import * as licencesDB from "../helpers/licencesDB";
+import * as licencesDBOrganizations from "../helpers/licencesDB-organizations";
 import { Organization } from "../helpers/llmTypes";
 
 
@@ -150,7 +151,7 @@ router.get([
 
   if (organizationID) {
 
-    organization = licencesDB.getOrganization(organizationID, req.session);
+    organization = licencesDBOrganizations.getOrganization(organizationID, req.session);
 
     if (organization && !organization.isEligibleForLicences) {
 
@@ -467,7 +468,7 @@ router.get("/:licenceID", function(req, res) {
 
   }
 
-  const organization = licencesDB.getOrganization(licence.organizationID, req.session);
+  const organization = licencesDBOrganizations.getOrganization(licence.organizationID, req.session);
 
   const headTitle =
     configFns.getProperty("licences.externalLicenceNumber.isPreferredID") ?
@@ -509,7 +510,7 @@ router.get("/:licenceID/edit", function(req, res) {
   }
 
 
-  const organization = licencesDB.getOrganization(licence.organizationID, req.session);
+  const organization = licencesDBOrganizations.getOrganization(licence.organizationID, req.session);
 
   const feeCalculation = configFns.getProperty("licences.feeCalculationFn")(licence);
 
@@ -544,7 +545,7 @@ router.get("/:licenceID/print", function(req, res, next) {
 
   }
 
-  const organization = licencesDB.getOrganization(licence.organizationID, req.session);
+  const organization = licencesDBOrganizations.getOrganization(licence.organizationID, req.session);
 
   ejs.renderFile(
     path.join(__dirname, "../reports/", configFns.getProperty("licences.printTemplate")), {
