@@ -41,14 +41,12 @@ export function getLocations(reqSession: Express.SessionData, queryOptions: {
 
     const locationNameAddressSplit = queryOptions.locationNameAddress.toLowerCase().split(" ");
 
-    for (let index = 0; index < locationNameAddressSplit.length; index += 1) {
+    for (const locationPiece of locationNameAddressSplit) {
 
       sqlWhereClause += " and (instr(lower(lo.locationName), ?) or instr(lower(lo.locationAddress1),?))";
-      sqlParams.push(locationNameAddressSplit[index]);
-      sqlParams.push(locationNameAddressSplit[index]);
-
+      sqlParams.push(locationPiece);
+      sqlParams.push(locationPiece);
     }
-
   }
 
   if ("locationIsDistributor" in queryOptions && queryOptions.locationIsDistributor !== -1) {
@@ -373,11 +371,22 @@ export function mergeLocations(targetLocationID: number, sourceLocationID: numbe
   db.close();
 
   return true;
-
 }
 
 
 export function getInactiveLocations(inactiveYears: number) {
+
+  const addCalculatedFieldsFn = function(locationObj: llm.Location) {
+
+    locationObj.locationDisplayName =
+      locationObj.locationName === "" ? locationObj.locationAddress1 : locationObj.locationName;
+
+    locationObj.recordUpdate_dateString = dateTimeFns.dateToString(new Date(locationObj.recordUpdate_timeMillis));
+
+    locationObj.licences_endDateMaxString = dateTimeFns.dateIntegerToString(locationObj.licences_endDateMax || 0);
+    locationObj.distributor_endDateMaxString = dateTimeFns.dateIntegerToString(locationObj.distributor_endDateMax || 0);
+    locationObj.manufacturer_endDateMaxString = dateTimeFns.dateIntegerToString(locationObj.manufacturer_endDateMax || 0);
+  };
 
   const cutoffDate = new Date();
   cutoffDate.setFullYear(cutoffDate.getFullYear() - inactiveYears);
@@ -424,20 +433,7 @@ export function getInactiveLocations(inactiveYears: number) {
 
   db.close();
 
-  for (let rowIndex = 0; rowIndex < rows.length; rowIndex += 1) {
-
-    const locationObj = rows[rowIndex];
-
-    locationObj.locationDisplayName =
-      locationObj.locationName === "" ? locationObj.locationAddress1 : locationObj.locationName;
-
-    locationObj.recordUpdate_dateString = dateTimeFns.dateToString(new Date(locationObj.recordUpdate_timeMillis));
-
-    locationObj.licences_endDateMaxString = dateTimeFns.dateIntegerToString(locationObj.licences_endDateMax || 0);
-    locationObj.distributor_endDateMaxString = dateTimeFns.dateIntegerToString(locationObj.distributor_endDateMax || 0);
-    locationObj.manufacturer_endDateMaxString = dateTimeFns.dateIntegerToString(locationObj.manufacturer_endDateMax || 0);
-
-  }
+  rows.forEach(addCalculatedFieldsFn);
 
   return rows;
 }

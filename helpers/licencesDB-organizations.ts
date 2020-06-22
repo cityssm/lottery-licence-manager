@@ -48,29 +48,25 @@ export function getOrganizations(reqBody: any, reqSession: Express.SessionData, 
 
     const organizationNamePieces = reqBody.organizationName.toLowerCase().split(" ");
 
-    for (let pieceIndex = 0; pieceIndex < organizationNamePieces.length; pieceIndex += 1) {
+    for (const organizationPiece of organizationNamePieces) {
 
       sql += " and instr(lower(o.organizationName), ?)";
-      sqlParams.push(organizationNamePieces[pieceIndex]);
-
+      sqlParams.push(organizationPiece);
     }
-
   }
 
   if (reqBody.representativeName && reqBody.representativeName !== "") {
 
     const representativeNamePieces = reqBody.representativeName.toLowerCase().split(" ");
 
-    for (let pieceIndex = 0; pieceIndex < representativeNamePieces.length; pieceIndex += 1) {
+    for (const representativePiece of representativeNamePieces) {
 
       sql += " and o.organizationID in (" +
         "select organizationID from OrganizationRepresentatives where instr(lower(representativeName), ?)" +
         ")";
 
-      sqlParams.push(representativeNamePieces[pieceIndex]);
-
+      sqlParams.push(representativePiece);
     }
-
   }
 
   if (reqBody.isEligibleForLicences && reqBody.isEligibleForLicences !== "") {
@@ -303,18 +299,14 @@ export function getInactiveOrganizations(inactiveYears: number) {
 
   db.close();
 
-  for (let rowIndex = 0; rowIndex < rows.length; rowIndex += 1) {
-
-    const organization = rows[rowIndex];
+  for (const organization of rows) {
 
     organization.recordCreate_dateString = dateTimeFns.dateToString(new Date(organization.recordCreate_timeMillis));
     organization.recordUpdate_dateString = dateTimeFns.dateToString(new Date(organization.recordUpdate_timeMillis));
     organization.licences_endDateMaxString = dateTimeFns.dateIntegerToString(organization.licences_endDateMax || 0);
-
   }
 
   return rows;
-
 }
 
 export function getDeletedOrganizations() {
@@ -342,11 +334,10 @@ export function getDeletedOrganizations() {
 }
 
 
-
-
 /*
  * ORGANIZATION REPRESENTATIVES
  */
+
 
 export function addOrganizationRepresentative(organizationID: number, reqBody: llm.OrganizationRepresentative) {
 
@@ -381,7 +372,7 @@ export function addOrganizationRepresentative(organizationID: number, reqBody: l
   db.close();
 
   return <llm.OrganizationRepresentative>{
-    organizationID: organizationID,
+    organizationID,
     representativeIndex: newRepresentativeIndex,
     representativeName: reqBody.representativeName,
     representativeTitle: reqBody.representativeTitle,
@@ -424,7 +415,7 @@ export function updateOrganizationRepresentative(organizationID: number, reqBody
   db.close();
 
   return <llm.OrganizationRepresentative>{
-    organizationID: organizationID,
+    organizationID,
     representativeIndex: reqBody.representativeIndex,
     representativeName: reqBody.representativeName,
     representativeTitle: reqBody.representativeTitle,
@@ -437,7 +428,6 @@ export function updateOrganizationRepresentative(organizationID: number, reqBody
     representativeEmailAddress: reqBody.representativeEmailAddress,
     isDefault: Number(reqBody.isDefault) > 0
   };
-
 }
 
 /**
@@ -455,7 +445,6 @@ export function deleteOrganizationRepresentative(organizationID: number, represe
   db.close();
 
   return info.changes > 0;
-
 }
 
 export function setDefaultOrganizationRepresentative(organizationID: number, representativeIndex: number) {
@@ -476,7 +465,6 @@ export function setDefaultOrganizationRepresentative(organizationID: number, rep
   db.close();
 
   return true;
-
 }
 
 
@@ -516,7 +504,6 @@ export function getOrganizationRemarks(organizationID: number, reqSession: Expre
   rows.forEach(addCalculatedFieldsFn);
 
   return rows;
-
 }
 
 export function getOrganizationRemark(organizationID: number, remarkIndex: number, reqSession: Express.SessionData) {
@@ -546,14 +533,15 @@ export function getOrganizationRemark(organizationID: number, remarkIndex: numbe
   remark.canUpdate = canUpdateObject(remark, reqSession);
 
   return remark;
-
 }
 
 export function addOrganizationRemark(reqBody: llm.OrganizationRemark, reqSession: Express.SessionData) {
 
   const db = sqlite(dbPath);
 
-  const row = db.prepare("select ifnull(max(remarkIndex), -1) as maxIndex" +
+  const row: {
+    maxIndex: number
+  } = db.prepare("select ifnull(max(remarkIndex), -1) as maxIndex" +
     " from OrganizationRemarks" +
     " where organizationID = ?")
     .get(reqBody.organizationID);
@@ -583,8 +571,7 @@ export function addOrganizationRemark(reqBody: llm.OrganizationRemark, reqSessio
 
   db.close();
 
-  return Number(newRemarkIndex);
-
+  return newRemarkIndex;
 }
 
 /**
@@ -620,7 +607,6 @@ export function updateOrganizationRemark(reqBody: llm.OrganizationRemark, reqSes
   db.close();
 
   return info.changes > 0;
-
 }
 
 /**
@@ -648,7 +634,6 @@ export function deleteOrganizationRemark(organizationID: number, remarkIndex: nu
   db.close();
 
   return info.changes > 0;
-
 }
 
 
@@ -683,7 +668,6 @@ export function getOrganizationBankRecords(organizationID: number, accountNumber
   rows.forEach(addCalculatedFieldsFn);
 
   return rows;
-
 }
 
 export function getOrganizationBankRecordStats(organizationID: number) {
@@ -741,7 +725,6 @@ export function addOrganizationBankRecord(reqBody: llm.OrganizationBankRecord, r
         // Record not deleted
         db.close();
         return false;
-
       }
 
     } else {
@@ -749,9 +732,7 @@ export function addOrganizationBankRecord(reqBody: llm.OrganizationBankRecord, r
       // An active record already exists
       db.close();
       return false;
-
     }
-
   }
 
   // Get next recordIndex
@@ -790,7 +771,6 @@ export function addOrganizationBankRecord(reqBody: llm.OrganizationBankRecord, r
   db.close();
 
   return info.changes > 0;
-
 }
 
 export function updateOrganizationBankRecord(reqBody: llm.OrganizationBankRecord, reqSession: Express.Session) {
@@ -821,7 +801,6 @@ export function updateOrganizationBankRecord(reqBody: llm.OrganizationBankRecord
   db.close();
 
   return info.changes > 0;
-
 }
 
 export function deleteOrganizationBankRecord(organizationID: number, recordIndex: number, reqSession: Express.Session) {
@@ -846,5 +825,4 @@ export function deleteOrganizationBankRecord(organizationID: number, recordIndex
   db.close();
 
   return info.changes > 0;
-
 }

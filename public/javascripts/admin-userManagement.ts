@@ -37,10 +37,8 @@ declare const llm: llmGlobal;
 
   let cancelButtonEles = createUserModalEle.getElementsByClassName("is-cancel-button");
 
-  for (let buttonIndex = 0; buttonIndex < cancelButtonEles.length; buttonIndex += 1) {
-
-    cancelButtonEles[buttonIndex].addEventListener("click", cityssm.hideModal);
-
+  for (const cancelButtonEle of cancelButtonEles) {
+    cancelButtonEle.addEventListener("click", cityssm.hideModal);
   }
 
   // Existing users
@@ -55,7 +53,7 @@ declare const llm: llmGlobal;
 
     clickEvent.preventDefault();
 
-    const deleteButtonEle = <HTMLButtonElement> clickEvent.currentTarget;
+    const deleteButtonEle = <HTMLButtonElement>clickEvent.currentTarget;
 
     const userNameToDelete = deleteButtonEle.getAttribute("data-user-name");
     const trEle = deleteButtonEle.closest("tr");
@@ -69,11 +67,8 @@ declare const llm: llmGlobal;
         if (resultJSON.success) {
 
           trEle.remove();
-
         }
-
       });
-
     };
 
     cityssm.confirmModal(
@@ -88,10 +83,8 @@ declare const llm: llmGlobal;
 
   const deleteUserButtonEles = userContainerEle.getElementsByClassName("is-delete-user-button");
 
-  for (let buttonIndex = 0; buttonIndex < deleteUserButtonEles.length; buttonIndex += 1) {
-
-    deleteUserButtonEles[buttonIndex].addEventListener("click", deleteUserFn);
-
+  for (const deleteUserButtonEle of deleteUserButtonEles) {
+    deleteUserButtonEle.addEventListener("click", deleteUserFn);
   }
 
   /*
@@ -125,12 +118,9 @@ declare const llm: llmGlobal;
 
           submitBtnEle.classList.add("is-success");
           submitBtnEle.classList.remove("is-danger");
-
         }
-
       }
     );
-
   }
 
   function keyupFn_markSettingUnsaved(keyupEvent: Event) {
@@ -146,7 +136,6 @@ declare const llm: llmGlobal;
     submitBtnEle.classList.add("is-danger");
     submitBtnEle.classList.remove("is-primary");
     submitBtnEle.classList.remove("is-success");
-
   }
 
   function clickFn_updateUser(clickEvent: Event) {
@@ -230,9 +219,7 @@ declare const llm: llmGlobal;
             userPropertiesContainerEle.insertAdjacentElement("beforeend", formEle);
 
           }
-
         }
-
       }
     );
 
@@ -250,18 +237,14 @@ declare const llm: llmGlobal;
 
   const updateUserButtonEles = userContainerEle.getElementsByClassName("is-update-user-button");
 
-  for (let buttonIndex = 0; buttonIndex < updateUserButtonEles.length; buttonIndex += 1) {
-
-    updateUserButtonEles[buttonIndex].addEventListener("click", clickFn_updateUser);
-
+  for (const updateUserButtonEle of updateUserButtonEles) {
+    updateUserButtonEle.addEventListener("click", clickFn_updateUser);
   }
 
   cancelButtonEles = updateUserModalEle.getElementsByClassName("is-cancel-button");
 
-  for (let buttonIndex = 0; buttonIndex < cancelButtonEles.length; buttonIndex += 1) {
-
-    cancelButtonEles[buttonIndex].addEventListener("click", cityssm.hideModal);
-
+  for (const cancelButtonEle of cancelButtonEles) {
+    cancelButtonEle.addEventListener("click", cityssm.hideModal);
   }
 
   // User name
@@ -279,9 +262,7 @@ declare const llm: llmGlobal;
           if (responseJSON.success) {
 
             window.location.reload(true);
-
           }
-
         }
       );
 
@@ -306,12 +287,8 @@ declare const llm: llmGlobal;
             newPasswordEle.innerText = responseJSON.newPassword;
 
             newPasswordEle.closest(".message").removeAttribute("hidden");
-
           }
-
         }
       );
-
     });
-
 }());

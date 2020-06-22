@@ -45,9 +45,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
             "</div>";
     }
     const inputEles = formEle.querySelectorAll("input, select, textarea");
-    for (let inputIndex = 0; inputIndex < inputEles.length; inputIndex += 1) {
-        if (inputEles[inputIndex].name !== "") {
-            inputEles[inputIndex].addEventListener("change", setUnsavedChanges);
+    for (const inputEle of inputEles) {
+        if (inputEle.name !== "") {
+            inputEle.addEventListener("change", setUnsavedChanges);
         }
     }
     document.getElementById("is-bank-information-lookup-button").addEventListener("click", function (clickEvent) {
@@ -72,8 +72,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 savedBankInfoList = bankInfoList;
                 const listEle = document.createElement("div");
                 listEle.className = "panel mb-3";
-                for (let index = 0; index < bankInfoList.length; index += 1) {
-                    const record = bankInfoList[index];
+                savedBankInfoList.forEach(function (record, index) {
                     const listItemEle = document.createElement("a");
                     listItemEle.className = "panel-block is-block";
                     listItemEle.setAttribute("data-list-index", index.toString());
@@ -89,14 +88,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
                         "</div>";
                     listItemEle.addEventListener("click", setPastBankInformation);
                     listEle.insertAdjacentElement("beforeend", listItemEle);
-                }
+                });
                 cityssm.clearElement(containerEle);
                 containerEle.insertAdjacentElement("beforeend", listEle);
             });
         };
         cityssm.openHtmlModal("event-bankInformationLookup", {
             onshow: getPastBankInformation,
-            onshown: function (_modalEle, closeModalFn) {
+            onshown(_modalEle, closeModalFn) {
                 bankInfoCloseModalFn = closeModalFn;
             }
         });

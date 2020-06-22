@@ -22,8 +22,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
         getMessageEle(inputEvent.currentTarget).innerHTML = "<span class=\"has-text-info\">Unsaved Changes</span>";
     }
     const formEles = document.getElementsByClassName("form--applicationSetting");
-    for (let formIndex = 0; formIndex < formEles.length; formIndex += 1) {
-        formEles[formIndex].addEventListener("submit", submitFn);
-        formEles[formIndex].getElementsByClassName("input")[0].addEventListener("change", changeFn);
+    for (const formEle of formEles) {
+        formEle.addEventListener("submit", submitFn);
+        formEle.getElementsByClassName("input")[0].addEventListener("change", changeFn);
     }
 }());

@@ -72,15 +72,11 @@ declare const cityssm: cityssmGlobal;
 
               cityssm.disableNavBlocker();
               window.location.href = "/licences/" + licenceID;
-
             }
-
           }
         );
-
       }
     );
-
   });
 
 
@@ -91,28 +87,22 @@ declare const cityssm: cityssmGlobal;
     cityssm.enableNavBlocker();
 
     if (eventDateNavEle) {
-
       eventDateNavEle.setAttribute("disabled", "disabled");
-
     }
 
     formMessageEle.innerHTML = "<span class=\"tag is-light is-info is-medium\">" +
       "<span class=\"icon\"><i class=\"fas fa-exclamation-triangle\" aria-hidden=\"true\"></i></span>" +
       " <span>Unsaved Changes</span>" +
       "</div>";
-
   }
 
   const inputEles = <NodeListOf<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>>formEle.querySelectorAll("input, select, textarea");
 
-  for (let inputIndex = 0; inputIndex < inputEles.length; inputIndex += 1) {
+  for (const inputEle of inputEles) {
 
-    if (inputEles[inputIndex].name !== "") {
-
-      inputEles[inputIndex].addEventListener("change", setUnsavedChanges);
-
+    if (inputEle.name !== "") {
+      inputEle.addEventListener("change", setUnsavedChanges);
     }
-
   }
 
 
@@ -124,7 +114,13 @@ declare const cityssm: cityssmGlobal;
     clickEvent.preventDefault();
 
     let bankInfoCloseModalFn: Function;
-    let savedBankInfoList: any[];
+    let savedBankInfoList: {
+      bank_name: string;
+      bank_address: string;
+      bank_accountNumber: string;
+      eventDateMax: number;
+      eventDateMaxString: string;
+    }[];
 
     const setPastBankInformation = function(bankInfoClickEvent: Event) {
 
@@ -157,9 +153,7 @@ declare const cityssm: cityssmGlobal;
         const listEle = document.createElement("div");
         listEle.className = "panel mb-3";
 
-        for (let index = 0; index < bankInfoList.length; index += 1) {
-
-          const record = bankInfoList[index];
+        savedBankInfoList.forEach(function(record, index) {
 
           const listItemEle = document.createElement("a");
 
@@ -181,7 +175,7 @@ declare const cityssm: cityssmGlobal;
 
           listEle.insertAdjacentElement("beforeend", listItemEle);
 
-        }
+        });
 
         cityssm.clearElement(containerEle);
 
@@ -195,7 +189,7 @@ declare const cityssm: cityssmGlobal;
 
       onshow: getPastBankInformation,
 
-      onshown: function(_modalEle, closeModalFn) {
+      onshown(_modalEle, closeModalFn) {
         bankInfoCloseModalFn = closeModalFn;
       }
     });

@@ -1,6 +1,8 @@
 import type { cityssmGlobal } from "../../node_modules/@cityssm/bulma-webapp-js/src/types";
 declare const cityssm: cityssmGlobal;
 
+import type * as llmTypes from "../../helpers/llmTypes";
+
 
 (function() {
 
@@ -11,13 +13,11 @@ declare const cityssm: cityssmGlobal;
 
     cityssm.clearElement(tbodyEle);
 
-    cityssm.postJSON("/events/doGetOutstandingEvents", formEle, function(outstandingEvents) {
+    cityssm.postJSON("/events/doGetOutstandingEvents", formEle, function(outstandingEvents: llmTypes.LotteryEvent[]) {
 
       let currentOrganizationID = -1;
 
-      for (let eventIndex = 0; eventIndex < outstandingEvents.length; eventIndex += 1) {
-
-        const outstandingEventObj = outstandingEvents[eventIndex];
+      for (const outstandingEventObj of outstandingEvents) {
 
         if (currentOrganizationID !== outstandingEventObj.organizationID) {
 
@@ -87,11 +87,8 @@ declare const cityssm: cityssmGlobal;
 
 
         tbodyEle.insertAdjacentElement("beforeend", trEle);
-
       }
-
     });
-
   }
 
   getOutstandingEvents();

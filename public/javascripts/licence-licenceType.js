@@ -34,8 +34,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
             let totalPrizeValueSum = 0;
             let licenceFeeSum = 0;
             let transactionAmountSum = 0;
-            for (let licenceIndex = 0; licenceIndex < licenceList.length; licenceIndex += 1) {
-                const licenceObj = licenceList[licenceIndex];
+            for (const licenceObj of licenceList) {
                 const trEle = document.createElement("tr");
                 trEle.insertAdjacentHTML("beforeend", "<td>" + licenceObj.applicationDateString + "</td>");
                 trEle.insertAdjacentHTML("beforeend", "<td>" + licenceObj.issueDateString + "</td>");

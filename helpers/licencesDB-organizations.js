@@ -51,18 +51,18 @@ function getOrganizations(reqBody, reqSession, includeOptions) {
         " where o.recordDelete_timeMillis is null";
     if (reqBody.organizationName && reqBody.organizationName !== "") {
         const organizationNamePieces = reqBody.organizationName.toLowerCase().split(" ");
-        for (let pieceIndex = 0; pieceIndex < organizationNamePieces.length; pieceIndex += 1) {
+        for (const organizationPiece of organizationNamePieces) {
             sql += " and instr(lower(o.organizationName), ?)";
-            sqlParams.push(organizationNamePieces[pieceIndex]);
+            sqlParams.push(organizationPiece);
         }
     }
     if (reqBody.representativeName && reqBody.representativeName !== "") {
         const representativeNamePieces = reqBody.representativeName.toLowerCase().split(" ");
-        for (let pieceIndex = 0; pieceIndex < representativeNamePieces.length; pieceIndex += 1) {
+        for (const representativePiece of representativeNamePieces) {
             sql += " and o.organizationID in (" +
                 "select organizationID from OrganizationRepresentatives where instr(lower(representativeName), ?)" +
                 ")";
-            sqlParams.push(representativeNamePieces[pieceIndex]);
+            sqlParams.push(representativePiece);
         }
     }
     if (reqBody.isEligibleForLicences && reqBody.isEligibleForLicences !== "") {
@@ -193,8 +193,7 @@ function getInactiveOrganizations(inactiveYears) {
         " order by o.organizationName, o.organizationID")
         .all(cutoffDateInteger);
     db.close();
-    for (let rowIndex = 0; rowIndex < rows.length; rowIndex += 1) {
-        const organization = rows[rowIndex];
+    for (const organization of rows) {
         organization.recordCreate_dateString = dateTimeFns.dateToString(new Date(organization.recordCreate_timeMillis));
         organization.recordUpdate_dateString = dateTimeFns.dateToString(new Date(organization.recordUpdate_timeMillis));
         organization.licences_endDateMaxString = dateTimeFns.dateIntegerToString(organization.licences_endDateMax || 0);
@@ -239,7 +238,7 @@ function addOrganizationRepresentative(organizationID, reqBody) {
         .run(organizationID, newRepresentativeIndex, reqBody.representativeName, reqBody.representativeTitle, reqBody.representativeAddress1, reqBody.representativeAddress2, reqBody.representativeCity, reqBody.representativeProvince, reqBody.representativePostalCode, reqBody.representativePhoneNumber, reqBody.representativeEmailAddress, newIsDefault);
     db.close();
     return {
-        organizationID: organizationID,
+        organizationID,
         representativeIndex: newRepresentativeIndex,
         representativeName: reqBody.representativeName,
         representativeTitle: reqBody.representativeTitle,
@@ -271,7 +270,7 @@ function updateOrganizationRepresentative(organizationID, reqBody) {
         .run(reqBody.representativeName, reqBody.representativeTitle, reqBody.representativeAddress1, reqBody.representativeAddress2, reqBody.representativeCity, reqBody.representativeProvince, reqBody.representativePostalCode, reqBody.representativePhoneNumber, reqBody.representativeEmailAddress, organizationID, reqBody.representativeIndex);
     db.close();
     return {
-        organizationID: organizationID,
+        organizationID,
         representativeIndex: reqBody.representativeIndex,
         representativeName: reqBody.representativeName,
         representativeTitle: reqBody.representativeTitle,
@@ -374,7 +373,7 @@ function addOrganizationRemark(reqBody, reqSession) {
         " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
         .run(reqBody.organizationID, newRemarkIndex, remarkDate, remarkTime, reqBody.remark, 0, reqSession.user.userName, rightNow.getTime(), reqSession.user.userName, rightNow.getTime());
     db.close();
-    return Number(newRemarkIndex);
+    return newRemarkIndex;
 }
 exports.addOrganizationRemark = addOrganizationRemark;
 function updateOrganizationRemark(reqBody, reqSession) {

@@ -32,8 +32,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 "</tr>" +
                 "</thead>";
             const tbodyEle = document.createElement("tbody");
-            for (let index = 0; index < activeLicenceList.length; index += 1) {
-                const licenceObj = activeLicenceList[index];
+            for (const licenceObj of activeLicenceList) {
                 const trEle = document.createElement("tr");
                 trEle.innerHTML = ("<td>" +
                     "<a href=\"/licences/" + licenceObj.licenceID + "\" data-tooltip=\"View Licence\">" +

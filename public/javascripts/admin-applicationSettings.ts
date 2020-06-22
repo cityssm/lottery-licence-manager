@@ -33,28 +33,20 @@ declare const cityssm: cityssmGlobal;
         } else {
 
           messageEle.innerHTML = "<span class=\"has-text-danger\">Update Error</span>";
-
         }
-
       }
     );
-
   }
 
   function changeFn(inputEvent: Event) {
-
     getMessageEle(<HTMLInputElement>inputEvent.currentTarget).innerHTML = "<span class=\"has-text-info\">Unsaved Changes</span>";
-
   }
 
 
-  const formEles = document.getElementsByClassName("form--applicationSetting");
+  const formEles = <HTMLCollectionOf<HTMLFormElement>>document.getElementsByClassName("form--applicationSetting");
 
-  for (let formIndex = 0; formIndex < formEles.length; formIndex += 1) {
-
-    formEles[formIndex].addEventListener("submit", submitFn);
-    formEles[formIndex].getElementsByClassName("input")[0].addEventListener("change", changeFn);
-
+  for (const formEle of formEles) {
+    formEle.addEventListener("submit", submitFn);
+    formEle.getElementsByClassName("input")[0].addEventListener("change", changeFn);
   }
-
 }());

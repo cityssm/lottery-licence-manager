@@ -47,7 +47,7 @@ function getUser(userNameSubmitted, passwordPlain) {
                 userProperties.isDefaultAdmin = true;
                 return {
                     userName: userNameSubmitted,
-                    userProperties: userProperties
+                    userProperties
                 };
             }
         }
@@ -72,9 +72,9 @@ function getUser(userNameSubmitted, passwordPlain) {
         " from UserProperties" +
         " where userName = ?")
         .all(databaseUserName);
-    for (let userPropertyIndex = 0; userPropertyIndex < userPropertyRows.length; userPropertyIndex += 1) {
-        const propertyName = userPropertyRows[userPropertyIndex].propertyName;
-        const propertyValue = userPropertyRows[userPropertyIndex].propertyValue;
+    for (const userProperty of userPropertyRows) {
+        const propertyName = userProperty.propertyName;
+        const propertyValue = userProperty.propertyValue;
         switch (propertyName) {
             case "canCreate":
             case "canUpdate":
@@ -89,7 +89,7 @@ function getUser(userNameSubmitted, passwordPlain) {
     db.close();
     return {
         userName: databaseUserName,
-        userProperties: userProperties
+        userProperties
     };
 }
 exports.getUser = getUser;
@@ -148,9 +148,8 @@ function getUserProperties(userName) {
         " from UserProperties" +
         " where userName = ?")
         .all(userName);
-    for (let userPropertyIndex = 0; userPropertyIndex < userPropertyRows.length; userPropertyIndex += 1) {
-        userProperties[userPropertyRows[userPropertyIndex].propertyName] =
-            userPropertyRows[userPropertyIndex].propertyValue;
+    for (const userProperty of userPropertyRows) {
+        userProperties[userProperty.propertyName] = userProperty.propertyValue;
     }
     db.close();
     return userProperties;

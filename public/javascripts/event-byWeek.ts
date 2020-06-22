@@ -21,9 +21,7 @@ declare const cityssm: cityssmGlobal;
     cityssm.clearElement(eventContainerEle);
 
     if (eventDateFilterEle.value === "") {
-
       eventDateFilterEle.value = cityssm.dateToString(new Date());
-
     }
 
     cityssm.postJSON("/events/doGetEventsByWeek", {
@@ -64,7 +62,6 @@ declare const cityssm: cityssmGlobal;
           "</th>";
 
         headerDate.setDate(headerDate.getDate() + 1);
-
       }
 
       headerTheadHTML += "</tr></thead>";
@@ -98,7 +95,6 @@ declare const cityssm: cityssmGlobal;
             leftSideFiller += "<td></td>";
 
           }
-
         }
 
         let licenceColspan = 1;
@@ -176,7 +172,6 @@ declare const cityssm: cityssmGlobal;
           "</td>" +
           rightSideFiller +
           "</tr>");
-
       }
 
       tableEle.appendChild(licenceTbodyEle);
@@ -193,9 +188,7 @@ declare const cityssm: cityssmGlobal;
         document.createElement("td")
       ];
 
-      for (let eventIndex = 0; eventIndex < responseJSON.events.length; eventIndex += 1) {
-
-        const eventRecord = responseJSON.events[eventIndex];
+      for (const eventRecord of responseJSON.events) {
 
         const licenceType = licenceTypes[eventRecord.licenceTypeKey];
 
@@ -251,10 +244,8 @@ declare const cityssm: cityssmGlobal;
 
       const eventTrEle = document.createElement("tr");
 
-      for (let tdIndex = 0; tdIndex < eventTdEles.length; tdIndex += 1) {
-
-        eventTrEle.appendChild(eventTdEles[tdIndex]);
-
+      for (const eventTdEle of eventTdEles) {
+        eventTrEle.appendChild(eventTdEle);
       }
 
       const eventTbodyEle = document.createElement("tbody");
@@ -265,9 +256,7 @@ declare const cityssm: cityssmGlobal;
       // Display table
 
       eventContainerEle.appendChild(tableEle);
-
     });
-
   }
 
   eventDateFilterEle.addEventListener("change", refreshEvents);
@@ -285,7 +274,5 @@ declare const cityssm: cityssmGlobal;
       document.getElementById("tbody--licences").classList.add("is-hidden");
 
     }
-
   });
-
 }());

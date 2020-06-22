@@ -16,8 +16,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
         tableEle.classList.add("has-status-loading");
         cityssm.postJSON("/events/doGetFinancialSummary", formEle, function (summary) {
             const trEles = tbodyEle.children;
-            for (let trIndex = 0; trIndex < trEles.length; trIndex += 1) {
-                trEles[trIndex].classList.add("is-hidden");
+            for (const trEle of trEles) {
+                trEle.classList.add("is-hidden");
             }
             let licenceCount = 0;
             let eventCount = 0;
@@ -28,8 +28,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
             let costs_netProceedsSum = 0.0;
             let costs_amountDonatedSum = 0.0;
             let licenceFeeSum = 0.0;
-            for (let summaryIndex = 0; summaryIndex < summary.length; summaryIndex += 1) {
-                const licenceTypeSummaryObj = summary[summaryIndex];
+            for (const licenceTypeSummaryObj of summary) {
                 const trEle = tbodyEle.querySelector("tr[data-licence-type-key='" + licenceTypeSummaryObj.licenceTypeKey + "']");
                 trEle.querySelector("[data-field='licenceCount']").innerText =
                     licenceTypeSummaryObj.licenceCount;

@@ -88,16 +88,13 @@ export function getProperty(propertyName: string): any {
 
   let currentObj = config;
 
-  for (let index = 0; index < propertyNameSplit.length; index += 1) {
+  for (const propertyNamePiece of propertyNameSplit) {
 
-    currentObj = currentObj[propertyNameSplit[index]];
+    currentObj = currentObj[propertyNamePiece];
 
     if (!currentObj) {
-
       return configFallbackValues[propertyName];
-
     }
-
   }
 
   return currentObj;

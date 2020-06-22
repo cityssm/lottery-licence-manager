@@ -1,7 +1,3 @@
-/* global module */
-
-"use strict";
-
 import { ConfigTicketType } from "../helpers/llmTypes";
 
 /*

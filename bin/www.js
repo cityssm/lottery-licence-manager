@@ -24,7 +24,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const app_1 = __importDefault(require("../app"));
-const debug_1 = __importDefault(require("debug"));
+const fancy_log_1 = __importDefault(require("fancy-log"));
 const http_1 = __importDefault(require("http"));
 const https_1 = __importDefault(require("https"));
 const fs_1 = __importDefault(require("fs"));
@@ -35,10 +35,10 @@ function onError(error) {
     }
     switch (error.code) {
         case "EACCES":
-            console.error("Requires elevated privileges");
+            fancy_log_1.default.error("Requires elevated privileges");
             process.exit(1);
         case "EADDRINUSE":
-            console.error("Port is already in use.");
+            fancy_log_1.default.error("Port is already in use.");
             process.exit(1);
         default:
             throw error;
@@ -49,7 +49,7 @@ function onListening(server) {
     const bind = typeof addr === "string"
         ? "pipe " + addr
         : "port " + addr.port;
-    debug_1.default("Listening on " + bind);
+    fancy_log_1.default.info("Listening on " + bind);
 }
 const httpPort = configFns.getProperty("application.httpPort");
 if (httpPort) {
@@ -59,7 +59,7 @@ if (httpPort) {
     httpServer.on("listening", function () {
         onListening(httpServer);
     });
-    console.log("HTTP listening on " + httpPort);
+    fancy_log_1.default.info("HTTP listening on " + httpPort);
 }
 const httpsConfig = configFns.getProperty("application.https");
 if (httpsConfig) {
@@ -73,5 +73,5 @@ if (httpsConfig) {
     httpsServer.on("listening", function () {
         onListening(httpsServer);
     });
-    console.log("HTTPS listening on " + httpsConfig.port);
+    fancy_log_1.default.info("HTTPS listening on " + httpsConfig.port);
 }

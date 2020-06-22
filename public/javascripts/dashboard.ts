@@ -54,20 +54,14 @@ declare const cityssm: cityssmGlobal;
 
     const toggleVisibilityButtonEles = changePasswordModalEle.getElementsByClassName("is-toggle-visibility-button");
 
-    for (let buttonIndex = 0; buttonIndex < toggleVisibilityButtonEles.length; buttonIndex += 1) {
-
-      toggleVisibilityButtonEles[buttonIndex].addEventListener("click", toggleVisibilityFn);
-
+    for (const toggleVisibilityButtonEle of toggleVisibilityButtonEles) {
+      toggleVisibilityButtonEle.addEventListener("click", toggleVisibilityFn);
     }
 
     const cancelButtonEles = changePasswordModalEle.getElementsByClassName("is-cancel-button");
 
-    for (let buttonIndex = 0; buttonIndex < cancelButtonEles.length; buttonIndex += 1) {
-
-      cancelButtonEles[buttonIndex].addEventListener("click", cityssm.hideModal);
-
+    for (const cancelButtonEle of cancelButtonEles) {
+      cancelButtonEle.addEventListener("click", cityssm.hideModal);
     }
-
   }
-
 }());

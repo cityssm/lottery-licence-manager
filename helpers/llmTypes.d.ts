@@ -210,6 +210,7 @@ export interface LotteryLicence extends Location, Record {
     recordType: "licence" | "event";
     licenceID: number;
     organizationID: number;
+    organizationName?: string;
     externalLicenceNumber: string;
     externalLicenceNumberInteger: number;
     applicationDate: number;

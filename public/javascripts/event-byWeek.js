@@ -123,8 +123,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 document.createElement("td"),
                 document.createElement("td")
             ];
-            for (let eventIndex = 0; eventIndex < responseJSON.events.length; eventIndex += 1) {
-                const eventRecord = responseJSON.events[eventIndex];
+            for (const eventRecord of responseJSON.events) {
                 const licenceType = licenceTypes[eventRecord.licenceTypeKey];
                 const tdIndex = cityssm.dateStringToDate(eventRecord.eventDateString).getDay();
                 eventTdEles[tdIndex].insertAdjacentHTML("beforeend", "<a class=\"button mb-2 has-text-left is-small is-block has-height-auto is-wrap is-link is-light\"" +
@@ -166,8 +165,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     "</a>");
             }
             const eventTrEle = document.createElement("tr");
-            for (let tdIndex = 0; tdIndex < eventTdEles.length; tdIndex += 1) {
-                eventTrEle.appendChild(eventTdEles[tdIndex]);
+            for (const eventTdEle of eventTdEles) {
+                eventTrEle.appendChild(eventTdEle);
             }
             const eventTbodyEle = document.createElement("tbody");
             eventTbodyEle.appendChild(eventTrEle);

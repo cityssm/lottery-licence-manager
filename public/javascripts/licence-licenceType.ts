@@ -4,6 +4,8 @@ declare const cityssm: cityssmGlobal;
 import type { llmGlobal } from "./types";
 declare const llm: llmGlobal;
 
+import type * as llmTypes from "../../helpers/llmTypes";
+
 
 (function() {
 
@@ -21,7 +23,7 @@ declare const llm: llmGlobal;
       "<em>Loading report...</em>" +
       "</p>";
 
-    cityssm.postJSON("/licences/doGetLicenceTypeSummary", formEle, function(licenceList) {
+    cityssm.postJSON("/licences/doGetLicenceTypeSummary", formEle, function(licenceList: any[]) {
 
       cityssm.clearElement(containerEle);
 
@@ -32,7 +34,6 @@ declare const llm: llmGlobal;
           "</div>";
 
         return;
-
       }
 
       const tableEle = document.createElement("table");
@@ -55,9 +56,7 @@ declare const llm: llmGlobal;
       let licenceFeeSum = 0;
       let transactionAmountSum = 0;
 
-      for (let licenceIndex = 0; licenceIndex < licenceList.length; licenceIndex += 1) {
-
-        const licenceObj = licenceList[licenceIndex];
+      for (const licenceObj of licenceList) {
 
         const trEle = document.createElement("tr");
 
@@ -115,7 +114,6 @@ declare const llm: llmGlobal;
         totalPrizeValueSum += licenceObj.totalPrizeValue;
         licenceFeeSum += licenceObj.licenceFee;
         transactionAmountSum += licenceObj.transactionAmountSum;
-
       }
 
       tableEle.insertAdjacentElement("beforeend", tbodyEle);
@@ -139,16 +137,13 @@ declare const llm: llmGlobal;
       tableEle.insertAdjacentElement("beforeend", tfootEle);
 
       containerEle.insertAdjacentElement("beforeend", tableEle);
-
     });
 
   }
 
   llm.getDefaultConfigProperty("externalLicenceNumber_fieldLabel", function(fieldLabel) {
-
     externalLicenceNumberLabel = fieldLabel;
     getLicenceTypeSummary();
-
   });
 
 

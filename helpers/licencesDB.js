@@ -564,8 +564,7 @@ function updateLicence(reqBody, reqSession) {
         " where licenceID = ?")
         .run(reqBody.licenceID);
     const fieldKeys = reqBody.fieldKeys.substring(1).split(",");
-    for (let fieldIndex = 0; fieldIndex < fieldKeys.length; fieldIndex += 1) {
-        const fieldKey = fieldKeys[fieldIndex];
+    for (const fieldKey of fieldKeys) {
         const fieldValue = reqBody[fieldKey];
         if (fieldKey === "" || fieldValue === "") {
             continue;
@@ -588,16 +587,16 @@ function updateLicence(reqBody, reqSession) {
         }
     }
     else if (typeof (reqBody.ticketType_toDelete) === "object") {
-        for (let deleteIndex = 0; deleteIndex < reqBody.ticketType_toDelete.length; deleteIndex += 1) {
+        for (const ticketType of reqBody.ticketType_toDelete) {
             db.prepare("update LotteryLicenceTicketTypes" +
                 " set recordDelete_userName = ?," +
                 " recordDelete_timeMillis = ?" +
                 " where licenceID = ?" +
                 " and ticketType = ?")
-                .run(reqSession.user.userName, nowMillis, reqBody.licenceID, reqBody.ticketType_toDelete[deleteIndex]);
+                .run(reqSession.user.userName, nowMillis, reqBody.licenceID, ticketType);
             if (pastLicenceObj.trackUpdatesAsAmendments &&
                 configFns.getProperty("amendments.trackTicketTypeDelete")) {
-                addLicenceAmendmentWithDB(db, reqBody.licenceID, "Ticket Type Removed", "Removed " + reqBody.ticketType_toDelete[deleteIndex] + ".", 0, reqSession);
+                addLicenceAmendmentWithDB(db, reqBody.licenceID, "Ticket Type Removed", "Removed " + ticketType + ".", 0, reqSession);
             }
         }
     }
@@ -628,7 +627,7 @@ function updateLicence(reqBody, reqSession) {
         }
     }
     else if (typeof (reqBody.ticketType_toAdd) === "object") {
-        for (let addIndex = 0; addIndex < reqBody.ticketType_toAdd.length; addIndex += 1) {
+        for (const ticketType of reqBody.ticketType_toAdd) {
             const addInfo = db.prepare("update LotteryLicenceTicketTypes" +
                 " set costs_receipts = null," +
                 " costs_admin = null," +
@@ -640,17 +639,17 @@ function updateLicence(reqBody, reqSession) {
                 " where licenceID = ?" +
                 " and ticketType = ?" +
                 " and recordDelete_timeMillis is not null")
-                .run(reqSession.user.userName, nowMillis, reqBody.licenceID, reqBody.ticketType_toAdd[addIndex]);
+                .run(reqSession.user.userName, nowMillis, reqBody.licenceID, ticketType);
             if (addInfo.changes === 0) {
                 db.prepare("insert or ignore into LotteryLicenceTicketTypes" +
                     " (licenceID, ticketType, unitCount," +
                     " recordCreate_userName, recordCreate_timeMillis, recordUpdate_userName, recordUpdate_timeMillis)" +
                     " values (?, ?, ?, ?, ?, ?, ?)")
-                    .run(reqBody.licenceID, reqBody.ticketType_toAdd[addIndex], 0, reqSession.user.userName, nowMillis, reqSession.user.userName, nowMillis);
+                    .run(reqBody.licenceID, ticketType, 0, reqSession.user.userName, nowMillis, reqSession.user.userName, nowMillis);
             }
             if (pastLicenceObj.trackUpdatesAsAmendments &&
                 configFns.getProperty("amendments.trackTicketTypeNew")) {
-                addLicenceAmendmentWithDB(db, reqBody.licenceID, "New Ticket Type", "Added " + reqBody.ticketType_toAdd[addIndex] + ".", 0, reqSession);
+                addLicenceAmendmentWithDB(db, reqBody.licenceID, "New Ticket Type", "Added " + ticketType + ".", 0, reqSession);
             }
         }
     }
@@ -725,13 +724,13 @@ function updateLicence(reqBody, reqSession) {
             .run(reqBody.licenceID, dateTimeFns.dateStringToInteger(reqBody.eventDate), reqSession.user.userName, nowMillis, reqSession.user.userName, nowMillis);
     }
     else if (typeof (reqBody.eventDate) === "object") {
-        for (let eventIndex = 0; eventIndex < reqBody.eventDate.length; eventIndex += 1) {
+        for (const eventDate of reqBody.eventDate) {
             db.prepare("insert or ignore into LotteryEvents (" +
                 "licenceID, eventDate," +
                 " recordCreate_userName, recordCreate_timeMillis," +
                 " recordUpdate_userName, recordUpdate_timeMillis)" +
                 " values (?, ?, ?, ?, ?, ?)")
-                .run(reqBody.licenceID, dateTimeFns.dateStringToInteger(reqBody.eventDate[eventIndex]), reqSession.user.userName, nowMillis, reqSession.user.userName, nowMillis);
+                .run(reqBody.licenceID, dateTimeFns.dateStringToInteger(eventDate), reqSession.user.userName, nowMillis, reqSession.user.userName, nowMillis);
         }
     }
     db.close();
@@ -874,8 +873,7 @@ function getLicenceTypeSummary(reqBody) {
         " order by o.organizationName, o.organizationID, l.applicationDate, l.externalLicenceNumber";
     const rows = db.prepare(sql).all(sqlParams);
     db.close();
-    for (let rowIndex = 0; rowIndex < rows.length; rowIndex += 1) {
-        const record = rows[rowIndex];
+    for (const record of rows) {
         record.applicationDateString = dateTimeFns.dateIntegerToString(record.applicationDate);
         record.issueDateString = dateTimeFns.dateIntegerToString(record.issueDate);
         record.locationDisplayName =
@@ -1217,9 +1215,6 @@ function getEvent(licenceID, eventDate, reqSession) {
 }
 exports.getEvent = getEvent;
 function getPastEventBankingInformation(licenceID) {
-    const addCalculatedFieldsFn = function (ele) {
-        ele.eventDateMaxString = dateTimeFns.dateIntegerToString(ele.eventDateMax);
-    };
     const db = better_sqlite3_1.default(exports.dbPath, {
         readonly: true
     });
@@ -1242,7 +1237,9 @@ function getPastEventBankingInformation(licenceID) {
         " order by max(eventDate) desc")
         .all(organizationID, licenceID, cutoffDateInteger);
     db.close();
-    bankInfoList.forEach(addCalculatedFieldsFn);
+    for (const record of bankInfoList) {
+        record.eventDateMaxString = dateTimeFns.dateIntegerToString(record.eventDateMax);
+    }
     return bankInfoList;
 }
 exports.getPastEventBankingInformation = getPastEventBankingInformation;
@@ -1275,8 +1272,7 @@ function updateEvent(reqBody, reqSession) {
         " and eventDate = ?")
         .run(reqBody.licenceID, reqBody.eventDate);
     const fieldKeys = reqBody.fieldKeys.substring(1).split(",");
-    for (let fieldIndex = 0; fieldIndex < fieldKeys.length; fieldIndex += 1) {
-        const fieldKey = fieldKeys[fieldIndex];
+    for (const fieldKey of fieldKeys) {
         const fieldValue = reqBody[fieldKey];
         if (fieldValue !== "") {
             db.prepare("insert into LotteryEventFields" +
@@ -1346,10 +1342,10 @@ function getLicenceActivityByDateRange(startDate, endDate, _reqBody) {
             " or l.endDate between ? and ?)" +
             " order by l.endDate, l.startDate")
             .all(startDate, endDate, startDate, endDate, startDate, endDate);
-    activity.licences.forEach(function (record) {
+    for (const record of activity.licences) {
         record.startDateString = dateTimeFns.dateIntegerToString(record.startDate);
         record.endDateString = dateTimeFns.dateIntegerToString(record.endDate);
-    });
+    }
     activity.events =
         db.prepare("select e.eventDate, l.licenceID, l.externalLicenceNumber," +
             " l.startTime, l.endTime," +
@@ -1364,11 +1360,11 @@ function getLicenceActivityByDateRange(startDate, endDate, _reqBody) {
             " and e.eventDate between ? and ?" +
             " order by l.startTime, l.endTime")
             .all(startDate, endDate);
-    activity.events.forEach(function (record) {
+    for (const record of activity.events) {
         record.eventDateString = dateTimeFns.dateIntegerToString(record.eventDate);
         record.startTimeString = dateTimeFns.timeIntegerToString(record.startTime);
         record.endTimeString = dateTimeFns.timeIntegerToString(record.endTime);
-    });
+    }
     db.close();
     return activity;
 }

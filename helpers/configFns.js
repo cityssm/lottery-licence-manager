@@ -75,8 +75,8 @@ const configFallbackValues = {
 function getProperty(propertyName) {
     const propertyNameSplit = propertyName.split(".");
     let currentObj = config;
-    for (let index = 0; index < propertyNameSplit.length; index += 1) {
-        currentObj = currentObj[propertyNameSplit[index]];
+    for (const propertyNamePiece of propertyNameSplit) {
+        currentObj = currentObj[propertyNamePiece];
         if (!currentObj) {
             return configFallbackValues[propertyName];
         }

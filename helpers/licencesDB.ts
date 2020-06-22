@@ -56,7 +56,6 @@ export function canUpdateObject(obj: llm.Record, reqSession: Express.SessionData
 
   if (canUpdate) {
 
-
     switch (obj.recordType) {
 
       case "licence":
@@ -912,9 +911,7 @@ export function updateLicence(reqBody: any, reqSession: Express.SessionData): bo
   if (!changeCount) {
 
     db.close();
-
     return false;
-
   }
 
   // Record amendments (if necessary)
@@ -1006,15 +1003,12 @@ export function updateLicence(reqBody: any, reqSession: Express.SessionData): bo
 
   const fieldKeys = reqBody.fieldKeys.substring(1).split(",");
 
-  for (let fieldIndex = 0; fieldIndex < fieldKeys.length; fieldIndex += 1) {
+  for (const fieldKey of fieldKeys) {
 
-    const fieldKey = fieldKeys[fieldIndex];
     const fieldValue = reqBody[fieldKey];
 
     if (fieldKey === "" || fieldValue === "") {
-
       continue;
-
     }
 
     db.prepare("insert into LotteryLicenceFields" +
@@ -1060,7 +1054,7 @@ export function updateLicence(reqBody: any, reqSession: Express.SessionData): bo
 
   } else if (typeof (reqBody.ticketType_toDelete) === "object") {
 
-    for (let deleteIndex = 0; deleteIndex < reqBody.ticketType_toDelete.length; deleteIndex += 1) {
+    for (const ticketType of reqBody.ticketType_toDelete) {
 
       db.prepare("update LotteryLicenceTicketTypes" +
         " set recordDelete_userName = ?," +
@@ -1071,7 +1065,7 @@ export function updateLicence(reqBody: any, reqSession: Express.SessionData): bo
           reqSession.user.userName,
           nowMillis,
           reqBody.licenceID,
-          reqBody.ticketType_toDelete[deleteIndex]
+          ticketType
         );
 
       if (pastLicenceObj.trackUpdatesAsAmendments &&
@@ -1081,15 +1075,13 @@ export function updateLicence(reqBody: any, reqSession: Express.SessionData): bo
           db,
           reqBody.licenceID,
           "Ticket Type Removed",
-          "Removed " + reqBody.ticketType_toDelete[deleteIndex] + ".",
+          "Removed " + ticketType + ".",
           0,
           reqSession
         );
 
       }
-
     }
-
   }
 
   // Do adds
@@ -1149,7 +1141,7 @@ export function updateLicence(reqBody: any, reqSession: Express.SessionData): bo
 
   } else if (typeof (reqBody.ticketType_toAdd) === "object") {
 
-    for (let addIndex = 0; addIndex < reqBody.ticketType_toAdd.length; addIndex += 1) {
+    for (const ticketType of reqBody.ticketType_toAdd) {
 
       const addInfo = db.prepare("update LotteryLicenceTicketTypes" +
         " set costs_receipts = null," +
@@ -1166,7 +1158,7 @@ export function updateLicence(reqBody: any, reqSession: Express.SessionData): bo
           reqSession.user.userName,
           nowMillis,
           reqBody.licenceID,
-          reqBody.ticketType_toAdd[addIndex]
+          ticketType
         );
 
       if (addInfo.changes === 0) {
@@ -1177,7 +1169,7 @@ export function updateLicence(reqBody: any, reqSession: Express.SessionData): bo
           " values (?, ?, ?, ?, ?, ?, ?)")
           .run(
             reqBody.licenceID,
-            reqBody.ticketType_toAdd[addIndex],
+            ticketType,
             0,
             reqSession.user.userName,
             nowMillis,
@@ -1194,15 +1186,12 @@ export function updateLicence(reqBody: any, reqSession: Express.SessionData): bo
           db,
           reqBody.licenceID,
           "New Ticket Type",
-          "Added " + reqBody.ticketType_toAdd[addIndex] + ".",
+          "Added " + ticketType + ".",
           0,
           reqSession
         );
-
       }
-
     }
-
   }
 
   // Do updates
@@ -1349,7 +1338,7 @@ export function updateLicence(reqBody: any, reqSession: Express.SessionData): bo
 
   } else if (typeof (reqBody.eventDate) === "object") {
 
-    for (let eventIndex = 0; eventIndex < reqBody.eventDate.length; eventIndex += 1) {
+    for (const eventDate of reqBody.eventDate) {
 
       db.prepare("insert or ignore into LotteryEvents (" +
         "licenceID, eventDate," +
@@ -1358,15 +1347,13 @@ export function updateLicence(reqBody: any, reqSession: Express.SessionData): bo
         " values (?, ?, ?, ?, ?, ?)")
         .run(
           reqBody.licenceID,
-          dateTimeFns.dateStringToInteger(reqBody.eventDate[eventIndex]),
+          dateTimeFns.dateStringToInteger(eventDate),
           reqSession.user.userName,
           nowMillis,
           reqSession.user.userName,
           nowMillis
         );
-
     }
-
   }
 
   db.close();
@@ -1376,7 +1363,6 @@ export function updateLicence(reqBody: any, reqSession: Express.SessionData): bo
   eventTableStatsExpiryMillis = -1;
 
   return changeCount > 0;
-
 }
 
 export function deleteLicence(licenceID: number, reqSession: Express.SessionData) {
@@ -1611,9 +1597,8 @@ export function getLicenceTypeSummary(reqBody: any) {
 
   db.close();
 
-  for (let rowIndex = 0; rowIndex < rows.length; rowIndex += 1) {
+  for (const record of rows) {
 
-    const record = rows[rowIndex];
 
     record.applicationDateString = dateTimeFns.dateIntegerToString(record.applicationDate);
     record.issueDateString = dateTimeFns.dateIntegerToString(record.issueDate);
@@ -1770,13 +1755,11 @@ export function addTransaction(reqBody: any, reqSession: Express.SessionData) {
         rightNow.getTime(),
         reqBody.licenceID
       );
-
   }
 
   db.close();
 
   return newTransactionIndex;
-
 }
 
 /**
@@ -1864,7 +1847,6 @@ export function getEventTableStats() {
   db.close();
 
   return eventTableStats;
-
 }
 
 export function getEvents(reqBody: any, reqSession: Express.SessionData) {
@@ -1934,7 +1916,6 @@ export function getEvents(reqBody: any, reqSession: Express.SessionData) {
   rows.forEach(addCalculatedFieldsFn);
 
   return rows;
-
 }
 
 export function getRecentlyUpdateEvents(reqSession: Express.SessionData) {
@@ -1950,7 +1931,6 @@ export function getRecentlyUpdateEvents(reqSession: Express.SessionData) {
     ele.recordUpdate_timeString = dateTimeFns.dateToTimeString(new Date(ele.recordUpdate_timeMillis));
 
     ele.canUpdate = canUpdateObject(ele, reqSession);
-
   };
 
   const db = sqlite(dbPath, {
@@ -1979,7 +1959,6 @@ export function getRecentlyUpdateEvents(reqSession: Express.SessionData) {
   rows.forEach(addCalculatedFieldsFn);
 
   return rows;
-
 }
 
 export function getOutstandingEvents(reqBody: any, reqSession: Express.SessionData) {
@@ -2028,7 +2007,6 @@ export function getOutstandingEvents(reqBody: any, reqSession: Express.SessionDa
 
     sql += " and l.licenceTypeKey = ?";
     sqlParams.push(reqBody.licenceTypeKey);
-
   }
 
   if (reqBody.eventDateType) {
@@ -2042,7 +2020,6 @@ export function getOutstandingEvents(reqBody: any, reqSession: Express.SessionDa
       sql += " and e.eventDate >= ?";
       sqlParams.push(currentDate);
     }
-
   }
 
   sql += " order by o.organizationName, o.organizationID, e.eventDate, l.licenceID";
@@ -2055,7 +2032,6 @@ export function getOutstandingEvents(reqBody: any, reqSession: Express.SessionDa
   rows.forEach(addCalculatedFieldsFn);
 
   return rows;
-
 }
 
 export function getEventFinancialSummary(reqBody: any) {
@@ -2091,17 +2067,13 @@ export function getEventFinancialSummary(reqBody: any) {
   if (reqBody.eventDateStartString && reqBody.eventDateStartString !== "") {
 
     sql += " and e.eventDate >= ?";
-
     sqlParams.push(dateTimeFns.dateStringToInteger(reqBody.eventDateStartString));
-
   }
 
   if (reqBody.eventDateEndString && reqBody.eventDateEndString !== "") {
 
     sql += " and e.eventDate <= ?";
-
     sqlParams.push(dateTimeFns.dateStringToInteger(reqBody.eventDateEndString));
-
   }
 
   sql += " group by l.licenceID, l.licenceTypeKey, l.licenceFee" +
@@ -2113,7 +2085,6 @@ export function getEventFinancialSummary(reqBody: any) {
   db.close();
 
   return rows;
-
 }
 
 export function getEvent(licenceID: number, eventDate: number, reqSession: Express.SessionData) {
@@ -2152,20 +2123,14 @@ export function getEvent(licenceID: number, eventDate: number, reqSession: Expre
       .all(licenceID, eventDate);
 
     eventObj.eventFields = rows || [];
-
   }
 
   db.close();
 
   return eventObj;
-
 }
 
 export function getPastEventBankingInformation(licenceID: number) {
-
-  const addCalculatedFieldsFn = function(ele) {
-    ele.eventDateMaxString = dateTimeFns.dateIntegerToString(ele.eventDateMax);
-  };
 
   const db = sqlite(dbPath, {
     readonly: true
@@ -2194,10 +2159,11 @@ export function getPastEventBankingInformation(licenceID: number) {
 
   db.close();
 
-  bankInfoList.forEach(addCalculatedFieldsFn);
+  for (const record of bankInfoList) {
+    record.eventDateMaxString = dateTimeFns.dateIntegerToString(record.eventDateMax);
+  }
 
   return bankInfoList;
-
 }
 
 /**
@@ -2246,7 +2212,6 @@ export function updateEvent(reqBody: any, reqSession: Express.SessionData): bool
 
     db.close();
     return false;
-
   }
 
   // Fields
@@ -2258,9 +2223,8 @@ export function updateEvent(reqBody: any, reqSession: Express.SessionData): bool
 
   const fieldKeys = reqBody.fieldKeys.substring(1).split(",");
 
-  for (let fieldIndex = 0; fieldIndex < fieldKeys.length; fieldIndex += 1) {
+  for (const fieldKey of fieldKeys) {
 
-    const fieldKey = fieldKeys[fieldIndex];
     const fieldValue = reqBody[fieldKey];
 
     if (fieldValue !== "") {
@@ -2269,9 +2233,7 @@ export function updateEvent(reqBody: any, reqSession: Express.SessionData): bool
         " (licenceID, eventDate, fieldKey, fieldValue)" +
         " values (?, ?, ?, ?)")
         .run(reqBody.licenceID, reqBody.eventDate, fieldKey, fieldValue);
-
     }
-
   }
 
   db.close();
@@ -2313,7 +2275,6 @@ export function deleteEvent(licenceID: number, eventDate: number, reqSession: Ex
   eventTableStatsExpiryMillis = -1;
 
   return changeCount > 0;
-
 }
 
 /**
@@ -2341,7 +2302,6 @@ export function pokeEvent(licenceID: number, eventDate: number, reqSession: Expr
   db.close();
 
   return info.changes > 0;
-
 }
 
 
@@ -2354,8 +2314,8 @@ export function getLicenceActivityByDateRange(startDate: number, endDate: number
   const activity = {
     startDateString: dateTimeFns.dateIntegerToString(startDate),
     endDateString: dateTimeFns.dateIntegerToString(endDate),
-    licences: null,
-    events: null
+    licences: <llm.LotteryLicence[]>null,
+    events: <llm.LotteryEvent[]>null
   };
 
   // Get licences
@@ -2377,11 +2337,10 @@ export function getLicenceActivityByDateRange(startDate: number, endDate: number
       " order by l.endDate, l.startDate")
       .all(startDate, endDate, startDate, endDate, startDate, endDate);
 
-  activity.licences.forEach(function(record: llm.LotteryLicence) {
-
+  for (const record of activity.licences) {
     record.startDateString = dateTimeFns.dateIntegerToString(record.startDate);
     record.endDateString = dateTimeFns.dateIntegerToString(record.endDate);
-  });
+  }
 
   // Get events
 
@@ -2400,12 +2359,11 @@ export function getLicenceActivityByDateRange(startDate: number, endDate: number
       " order by l.startTime, l.endTime")
       .all(startDate, endDate);
 
-  activity.events.forEach(function(record: llm.LotteryEvent) {
-
+  for (const record of activity.events) {
     record.eventDateString = dateTimeFns.dateIntegerToString(record.eventDate);
     record.startTimeString = dateTimeFns.timeIntegerToString(record.startTime);
     record.endTimeString = dateTimeFns.timeIntegerToString(record.endTime);
-  });
+  }
 
   db.close();
 
@@ -2428,7 +2386,6 @@ export function getApplicationSettings() {
   db.close();
 
   return rows;
-
 }
 
 export function getApplicationSetting(settingKey: string) {
@@ -2442,7 +2399,6 @@ export function getApplicationSetting(settingKey: string) {
   db.close();
 
   return settingValue;
-
 }
 
 /**
@@ -2469,5 +2425,4 @@ export function updateApplicationSetting(settingKey: string, settingValue: strin
   db.close();
 
   return info.changes > 0;
-
 }

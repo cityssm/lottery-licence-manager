@@ -4,6 +4,7 @@ const router = Router();
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns";
 
 import * as licencesDB from "../helpers/licencesDB";
+import * as licencesDBOrganizations from "../helpers/licencesDB-organizations";
 
 /*
  * Event Calendar
@@ -245,7 +246,7 @@ router.get("/:licenceID/:eventDate", function(req, res) {
   }
 
   const licence = licencesDB.getLicence(licenceID, req.session);
-  const organization = licencesDB.getOrganization(licence.organizationID, req.session);
+  const organization = licencesDBOrganizations.getOrganization(licence.organizationID, req.session);
 
   res.render("event-view", {
     headTitle: "Event View",
@@ -286,7 +287,7 @@ router.get("/:licenceID/:eventDate/edit", function(req, res) {
   }
 
   const licence = licencesDB.getLicence(licenceID, req.session);
-  const organization = licencesDB.getOrganization(licence.organizationID, req.session);
+  const organization = licencesDBOrganizations.getOrganization(licence.organizationID, req.session);
 
   res.render("event-edit", {
     headTitle: "Event Update",

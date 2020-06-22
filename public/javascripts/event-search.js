@@ -24,8 +24,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 return;
             }
             const tbodyEle = document.createElement("tbody");
-            for (let eventIndex = 0; eventIndex < eventList.length; eventIndex += 1) {
-                const eventObj = eventList[eventIndex];
+            for (const eventObj of eventList) {
                 const licenceType = exports.config_licenceTypes[eventObj.licenceTypeKey] || eventObj.licenceTypeKey;
                 const eventURL = "/events/" + eventObj.licenceID + "/" + eventObj.eventDate;
                 const trEle = document.createElement("tr");

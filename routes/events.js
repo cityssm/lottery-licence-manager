@@ -22,6 +22,7 @@ const express_1 = require("express");
 const router = express_1.Router();
 const dateTimeFns = __importStar(require("@cityssm/expressjs-server-js/dateTimeFns"));
 const licencesDB = __importStar(require("../helpers/licencesDB"));
+const licencesDBOrganizations = __importStar(require("../helpers/licencesDB-organizations"));
 router.get("/", function (_req, res) {
     const eventTableStats = licencesDB.getEventTableStats();
     res.render("event-search", {
@@ -152,7 +153,7 @@ router.get("/:licenceID/:eventDate", function (req, res) {
         return;
     }
     const licence = licencesDB.getLicence(licenceID, req.session);
-    const organization = licencesDB.getOrganization(licence.organizationID, req.session);
+    const organization = licencesDBOrganizations.getOrganization(licence.organizationID, req.session);
     res.render("event-view", {
         headTitle: "Event View",
         event: eventObj,
@@ -177,7 +178,7 @@ router.get("/:licenceID/:eventDate/edit", function (req, res) {
         return;
     }
     const licence = licencesDB.getLicence(licenceID, req.session);
-    const organization = licencesDB.getOrganization(licence.organizationID, req.session);
+    const organization = licencesDBOrganizations.getOrganization(licence.organizationID, req.session);
     res.render("event-edit", {
         headTitle: "Event Update",
         event: eventObj,

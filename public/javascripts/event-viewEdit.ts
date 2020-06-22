@@ -13,9 +13,6 @@
       const isEdit = eventDateSelectEle.getAttribute("data-is-edit") === "true";
 
       window.location.href = "/events/" + licenceID + "/" + newEventDate + (isEdit ? "/edit" : "");
-
     });
-
   }
-
 }());

@@ -4,6 +4,8 @@ declare const cityssm: cityssmGlobal;
 import type { llmGlobal } from "./types";
 declare const llm: llmGlobal;
 
+import * as llmTypes from "../../helpers/llmTypes";
+
 
 (function() {
 
@@ -21,7 +23,7 @@ declare const llm: llmGlobal;
 
     cityssm.postJSON(
       "/licences/doGetActiveLicenceSummary", formEle,
-      function(activeLicenceList) {
+      function(activeLicenceList: llmTypes.LotteryLicence[]) {
 
         if (activeLicenceList.length === 0) {
 
@@ -32,7 +34,6 @@ declare const llm: llmGlobal;
             "</div>";
 
           return;
-
         }
 
         const tableEle = document.createElement("table");
@@ -51,9 +52,7 @@ declare const llm: llmGlobal;
 
         const tbodyEle = document.createElement("tbody");
 
-        for (let index = 0; index < activeLicenceList.length; index += 1) {
-
-          const licenceObj = activeLicenceList[index];
+        for (const licenceObj of activeLicenceList) {
 
           const trEle = document.createElement("tr");
 
@@ -90,7 +89,6 @@ declare const llm: llmGlobal;
               "</td>");
 
           tbodyEle.insertAdjacentElement("beforeend", trEle);
-
         }
 
         tableEle.insertAdjacentElement("beforeend", tbodyEle);
@@ -98,10 +96,8 @@ declare const llm: llmGlobal;
         cityssm.clearElement(containerEle);
 
         containerEle.insertAdjacentElement("beforeend", tableEle);
-
       }
     );
-
   }
 
 
@@ -114,7 +110,5 @@ declare const llm: llmGlobal;
 
     externalLicenceNumberFieldLabel = fieldLabel;
     getActiveLicenceSummary();
-
   });
-
 }());

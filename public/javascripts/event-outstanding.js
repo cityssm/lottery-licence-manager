@@ -7,8 +7,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
         cityssm.clearElement(tbodyEle);
         cityssm.postJSON("/events/doGetOutstandingEvents", formEle, function (outstandingEvents) {
             let currentOrganizationID = -1;
-            for (let eventIndex = 0; eventIndex < outstandingEvents.length; eventIndex += 1) {
-                const outstandingEventObj = outstandingEvents[eventIndex];
+            for (const outstandingEventObj of outstandingEvents) {
                 if (currentOrganizationID !== outstandingEventObj.organizationID) {
                     currentOrganizationID = outstandingEventObj.organizationID;
                     tbodyEle.insertAdjacentHTML("beforeend", "<tr>" +

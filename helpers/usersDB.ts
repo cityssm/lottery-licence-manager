@@ -41,7 +41,7 @@ export function getUser(userNameSubmitted: string, passwordPlain: string): User 
 
         return {
           userName: userNameSubmitted,
-          userProperties: userProperties
+          userProperties
         };
 
       }
@@ -89,10 +89,10 @@ export function getUser(userNameSubmitted: string, passwordPlain: string): User 
     " where userName = ?")
     .all(databaseUserName);
 
-  for (let userPropertyIndex = 0; userPropertyIndex < userPropertyRows.length; userPropertyIndex += 1) {
+  for (const userProperty of userPropertyRows) {
 
-    const propertyName: string = userPropertyRows[userPropertyIndex].propertyName;
-    const propertyValue: string = userPropertyRows[userPropertyIndex].propertyValue;
+    const propertyName: string = userProperty.propertyName;
+    const propertyValue: string = userProperty.propertyValue;
 
     switch (propertyName) {
 
@@ -115,7 +115,7 @@ export function getUser(userNameSubmitted: string, passwordPlain: string): User 
 
   return {
     userName: databaseUserName,
-    userProperties: userProperties
+    userProperties
   };
 
 }
@@ -183,7 +183,6 @@ export function getAllUsers() {
   db.close();
 
   return rows;
-
 }
 
 export function getUserProperties(userName: string) {
@@ -200,17 +199,14 @@ export function getUserProperties(userName: string) {
     " where userName = ?")
     .all(userName);
 
-  for (let userPropertyIndex = 0; userPropertyIndex < userPropertyRows.length; userPropertyIndex += 1) {
+  for (const userProperty of userPropertyRows) {
 
-    userProperties[userPropertyRows[userPropertyIndex].propertyName] =
-      userPropertyRows[userPropertyIndex].propertyValue;
-
+    userProperties[userProperty.propertyName] = userProperty.propertyValue;
   }
 
   db.close();
 
   return userProperties;
-
 }
 
 export function createUser(reqBody: any) {
@@ -231,7 +227,6 @@ export function createUser(reqBody: any) {
 
       db.close();
       return false;
-
     }
 
     db.prepare("update Users" +
@@ -256,7 +251,6 @@ export function createUser(reqBody: any) {
   }
 
   return newPasswordPlain;
-
 }
 
 export function updateUser(reqBody: any) {
@@ -312,7 +306,6 @@ export function updateUserProperty(reqBody: any) {
   db.close();
 
   return info.changes;
-
 }
 
 export function generateNewPassword(userName: string) {
@@ -330,7 +323,6 @@ export function generateNewPassword(userName: string) {
   db.close();
 
   return newPasswordPlain;
-
 }
 
 export function inactivateUser(userName: string) {
@@ -346,5 +338,4 @@ export function inactivateUser(userName: string) {
   db.close();
 
   return info.changes;
-
 }

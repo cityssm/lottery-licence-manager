@@ -1,6 +1,8 @@
 import type { cityssmGlobal } from "../../node_modules/@cityssm/bulma-webapp-js/src/types";
 declare const cityssm: cityssmGlobal;
 
+import type * as llmTypes from "../../helpers/llmTypes";
+
 
 (function() {
 
@@ -23,7 +25,7 @@ declare const cityssm: cityssmGlobal;
         licenceTypeKey: filterLicenceTypeKeyEle.value,
         eventYear: filterYearEle.value
       },
-      function(eventList) {
+      function(eventList: llmTypes.LotteryEvent[]) {
 
         if (eventList.length === 0) {
 
@@ -34,14 +36,11 @@ declare const cityssm: cityssmGlobal;
             "</div>";
 
           return;
-
         }
 
         const tbodyEle = document.createElement("tbody");
 
-        for (let eventIndex = 0; eventIndex < eventList.length; eventIndex += 1) {
-
-          const eventObj = eventList[eventIndex];
+        for (const eventObj of eventList) {
 
           const licenceType = exports.config_licenceTypes[eventObj.licenceTypeKey] || eventObj.licenceTypeKey;
 
@@ -81,7 +80,6 @@ declare const cityssm: cityssmGlobal;
               "</td>");
 
           tbodyEle.appendChild(trEle);
-
         }
 
         cityssm.clearElement(resultsEle);
@@ -103,11 +101,8 @@ declare const cityssm: cityssmGlobal;
         tableEle.appendChild(tbodyEle);
 
         resultsEle.appendChild(tableEle);
-
       }
-
     );
-
   }
 
   filterExternalLicenceNumberEle.addEventListener("change", getEvents);

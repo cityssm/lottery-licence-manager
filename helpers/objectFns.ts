@@ -5,8 +5,7 @@ export function fieldDataArrayToObject(fieldDataArray: FieldData[]): any {
 
   const fieldDataObject = {};
 
-  for (let i = 0; i < fieldDataArray.length; i += 1) {
-    const fieldData = fieldDataArray[i];
+  for (const fieldData of fieldDataArray) {
     fieldDataObject[fieldData.fieldKey] = fieldData.fieldValue;
   }
 

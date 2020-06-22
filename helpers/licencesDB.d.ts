@@ -39,8 +39,8 @@ export declare function pokeEvent(licenceID: number, eventDate: number, reqSessi
 export declare function getLicenceActivityByDateRange(startDate: number, endDate: number, _reqBody: any): {
     startDateString: string;
     endDateString: string;
-    licences: any;
-    events: any;
+    licences: llm.LotteryLicence[];
+    events: llm.LotteryEvent[];
 };
 export declare function getApplicationSettings(): any[];
 export declare function getApplicationSetting(settingKey: string): string;
