@@ -1,6 +1,6 @@
 # Lottery Licence Manager
 
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/d2d290ed8f214420aad853c41c90c708)](https://www.codacy.com/gh/cityssm/lottery-licence-manager?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=cityssm/lottery-licence-manager&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/d2d290ed8f214420aad853c41c90c708)](https://www.codacy.com/gh/cityssm/lottery-licence-manager?utm_source=github.com&utm_medium=referral&utm_content=cityssm/lottery-licence-manager&utm_campaign=Badge_Grade)
 
 The Lottery Licence Manager is a web application written by the
 [City of Sault Ste. Marie](https://saultstemarie.ca/)
@@ -22,7 +22,6 @@ among other Ontario municipalities and present an option to those
 who may be looking to refresh their own lottery licensing systems in the near future.
 
 [Documentation So Far](/docs)
-
 
 ## Helpful Links
 
