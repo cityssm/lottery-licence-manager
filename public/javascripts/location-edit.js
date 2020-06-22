@@ -89,14 +89,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     .split(" ");
                 const listEle = document.createElement("div");
                 listEle.className = "panel";
-                for (let locationIndex = 0; locationIndex < locationsList.length; locationIndex += 1) {
-                    const locationObj = locationsList[locationIndex];
+                for (const locationObj of locationsList) {
                     if (locationObj.locationID === intLocationID) {
                         continue;
                     }
                     let showLocation = true;
-                    for (let filterIndex = 0; filterIndex < filterSplit.length; filterIndex += 1) {
-                        const filterString = filterSplit[filterIndex];
+                    for (const filterString of filterSplit) {
                         if (locationObj.locationName.toLowerCase().indexOf(filterString) === -1) {
                             showLocation = false;
                             break;
@@ -107,7 +105,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     }
                     const listItemEle = document.createElement("a");
                     listItemEle.className = "panel-block is-block";
-                    listItemEle.setAttribute("data-location-id", locationObj.locationID);
+                    listItemEle.setAttribute("data-location-id", locationObj.locationID.toString());
                     listItemEle.setAttribute("data-location-display-name", locationObj.locationDisplayName);
                     listItemEle.addEventListener("click", clickFn_selectSourceLocation);
                     listItemEle.innerHTML = "<div class=\"level is-marginless\">" +
@@ -146,7 +144,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 sourceLocationsContainerEle.insertAdjacentElement("beforeend", listEle);
             };
             cityssm.openHtmlModal("locationMerge", {
-                onshow: function (modalEle) {
+                onshow(modalEle) {
                     const locationDisplayNameAndID_target_eles = modalEle.getElementsByClassName("mergeLocation--locationDisplayNameAndID_target");
                     for (let index = 0; index < locationDisplayNameAndID_target_eles.length; index += 1) {
                         locationDisplayNameAndID_target_eles[index].innerText = locationDisplayNameAndID_target;
@@ -155,7 +153,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     locationFilterEle = document.getElementById("mergeLocation--locationFilter");
                     locationFilterEle.addEventListener("keyup", filterLocationsFn);
                 },
-                onshown: function (_modalEle, closeModalFn) {
+                onshown(_modalEle, closeModalFn) {
                     closeMergeLocationModalFn = closeModalFn;
                     cityssm.postJSON("/locations/doGetLocations", {
                         limit: -1
@@ -178,8 +176,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
             "</div>";
     }
     const inputEles = formEle.getElementsByTagName("input");
-    for (let inputIndex = 0; inputIndex < inputEles.length; inputIndex += 1) {
-        inputEles[inputIndex].addEventListener("change", setUnsavedChanges);
+    for (const inputEle of inputEles) {
+        inputEle.addEventListener("change", setUnsavedChanges);
     }
     const locationNameEle = document.getElementById("location--locationName");
     if (isCreate) {

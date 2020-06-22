@@ -169,7 +169,6 @@ import type * as llmTypes from "../../helpers/llmTypes";
         const tbodyEle = searchResultsEle.getElementsByTagName("tbody")[0];
 
         displayedLocationList.forEach(function(location, locationIndex) {
-
           const locationTrEle = renderLocationTrEle(location, locationIndex);
           tbodyEle.insertAdjacentElement("beforeend", locationTrEle);
         });

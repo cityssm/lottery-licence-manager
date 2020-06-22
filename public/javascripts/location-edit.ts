@@ -1,6 +1,8 @@
 import type { cityssmGlobal } from "../../node_modules/@cityssm/bulma-webapp-js/src/types";
 declare const cityssm: cityssmGlobal;
 
+import type * as llmTypes from "../../helpers/llmTypes";
+
 
 (function() {
 
@@ -28,7 +30,6 @@ declare const cityssm: cityssmGlobal;
 
           hasUnsavedChanges = false;
           cityssm.disableNavBlocker();
-
         }
 
         if (responseJSON.success && isCreate) {
@@ -43,9 +44,7 @@ declare const cityssm: cityssmGlobal;
             responseJSON.message, "", "OK",
             responseJSON.success ? "success" : "danger"
           );
-
         }
-
       }
     );
 
@@ -63,14 +62,10 @@ declare const cityssm: cityssmGlobal;
         function(responseJSON) {
 
           if (responseJSON.success) {
-
             window.location.href = "/locations";
-
           }
-
         }
       );
-
     };
 
     formEle.getElementsByClassName("is-delete-button")[0].addEventListener("click", function(clickEvent) {
@@ -85,9 +80,7 @@ declare const cityssm: cityssmGlobal;
         "warning",
         deleteLocationFn
       );
-
     });
-
   }
 
 
@@ -108,7 +101,6 @@ declare const cityssm: cityssmGlobal;
           "warning"
         );
         return;
-
       }
 
       // get location display name
@@ -124,7 +116,7 @@ declare const cityssm: cityssmGlobal;
 
       let locationID_source = "";
 
-      let locationsList = [];
+      let locationsList: llmTypes.Location[] = [];
       let locationFilterEle = null;
       let sourceLocationsContainerEle = null;
       let closeMergeLocationModalFn = null;
@@ -139,18 +131,13 @@ declare const cityssm: cityssmGlobal;
           function(responseJSON) {
 
             if (responseJSON.success) {
-
               window.location.reload(true);
 
             } else {
-
               cityssm.alertModal("Merge Not Completed", "Please try again.", "OK", "danger");
-
             }
-
           }
         );
-
       };
 
       const clickFn_selectSourceLocation = function(clickEvent: Event) {
@@ -186,40 +173,29 @@ declare const cityssm: cityssmGlobal;
         const listEle = document.createElement("div");
         listEle.className = "panel";
 
-        for (let locationIndex = 0; locationIndex < locationsList.length; locationIndex += 1) {
-
-          const locationObj = locationsList[locationIndex];
+        for (const locationObj of locationsList) {
 
           if (locationObj.locationID === intLocationID) {
-
             continue;
-
           }
 
           let showLocation = true;
 
-          for (let filterIndex = 0; filterIndex < filterSplit.length; filterIndex += 1) {
-
-            const filterString = filterSplit[filterIndex];
+          for (const filterString of filterSplit) {
 
             if (locationObj.locationName.toLowerCase().indexOf(filterString) === -1) {
-
               showLocation = false;
               break;
-
             }
-
           }
 
           if (!showLocation) {
-
             continue;
-
           }
 
           const listItemEle = document.createElement("a");
           listItemEle.className = "panel-block is-block";
-          listItemEle.setAttribute("data-location-id", locationObj.locationID);
+          listItemEle.setAttribute("data-location-id", locationObj.locationID.toString());
           listItemEle.setAttribute("data-location-display-name", locationObj.locationDisplayName);
           listItemEle.addEventListener("click", clickFn_selectSourceLocation);
 
@@ -255,16 +231,14 @@ declare const cityssm: cityssmGlobal;
             "</div>";
 
           listEle.insertAdjacentElement("beforeend", listItemEle);
-
         }
 
         cityssm.clearElement(sourceLocationsContainerEle);
         sourceLocationsContainerEle.insertAdjacentElement("beforeend", listEle);
-
       };
 
       cityssm.openHtmlModal("locationMerge", {
-        onshow: function(modalEle) {
+        onshow(modalEle) {
 
           // Location name - target
 
@@ -284,7 +258,7 @@ declare const cityssm: cityssmGlobal;
           locationFilterEle.addEventListener("keyup", filterLocationsFn);
 
         },
-        onshown: function(_modalEle, closeModalFn) {
+        onshown(_modalEle, closeModalFn) {
 
           closeMergeLocationModalFn = closeModalFn;
 
@@ -300,17 +274,11 @@ declare const cityssm: cityssmGlobal;
               locationFilterEle.focus();
 
               filterLocationsFn();
-
             }
           );
-
-
         }
-
       });
-
     });
-
   }
 
 
@@ -331,18 +299,14 @@ declare const cityssm: cityssmGlobal;
 
   const inputEles = formEle.getElementsByTagName("input");
 
-  for (let inputIndex = 0; inputIndex < inputEles.length; inputIndex += 1) {
-
-    inputEles[inputIndex].addEventListener("change", setUnsavedChanges);
-
+  for (const inputEle of inputEles) {
+    inputEle.addEventListener("change", setUnsavedChanges);
   }
 
   const locationNameEle = document.getElementById("location--locationName");
 
   if (isCreate) {
-
     locationNameEle.focus();
-
   }
 
   // Location Name is required for manufacturers and distributors
@@ -353,18 +317,13 @@ declare const cityssm: cityssmGlobal;
   function setLocationNameRequired() {
 
     if (locationIsDistributorCheckboxEle.checked || locationIsManufacturerCheckboxEle.checked) {
-
       locationNameEle.setAttribute("required", "required");
 
     } else {
-
       locationNameEle.removeAttribute("required");
-
     }
-
   }
 
   locationIsDistributorCheckboxEle.addEventListener("change", setLocationNameRequired);
   locationIsManufacturerCheckboxEle.addEventListener("change", setLocationNameRequired);
-
 }());
