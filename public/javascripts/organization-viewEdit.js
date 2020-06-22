@@ -25,8 +25,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                         "</div>";
                 }
                 else {
-                    for (let remarkIndex = 0; remarkIndex < remarkList.length; remarkIndex += 1) {
-                        const remark = remarkList[remarkIndex];
+                    for (const remark of remarkList) {
                         remarksContainerEle.insertAdjacentHTML("beforeend", "<div class=\"panel-block is-block\">" +
                             "<div class=\"columns is-mobile\">" +
                             "<div class=\"column is-narrow\">" +
@@ -59,12 +58,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
                             "</div>");
                     }
                     const editBtnEles = remarksContainerEle.getElementsByClassName("is-edit-remark-button");
-                    for (let btnIndex = 0; btnIndex < editBtnEles.length; btnIndex += 1) {
-                        editBtnEles[btnIndex].addEventListener("click", editRemarkFn);
+                    for (const editBtnEle of editBtnEles) {
+                        editBtnEle.addEventListener("click", editRemarkFn);
                     }
                     const deleteBtnEles = remarksContainerEle.getElementsByClassName("is-delete-remark-button");
-                    for (let btnIndex = 0; btnIndex < deleteBtnEles.length; btnIndex += 1) {
-                        deleteBtnEles[btnIndex].addEventListener("click", deleteRemarkFn);
+                    for (const deleteBtnEle of deleteBtnEles) {
+                        deleteBtnEle.addEventListener("click", deleteRemarkFn);
                     }
                 }
             });
@@ -74,12 +73,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
             llm.organizationRemarks.openAddRemarkModal(organizationID, refreshRemarksFn);
         });
         const editBtnEles = remarksContainerEle.getElementsByClassName("is-edit-remark-button");
-        for (let btnIndex = 0; btnIndex < editBtnEles.length; btnIndex += 1) {
-            editBtnEles[btnIndex].addEventListener("click", editRemarkFn);
+        for (const editBtnEle of editBtnEles) {
+            editBtnEle.addEventListener("click", editRemarkFn);
         }
         const deleteBtnEles = remarksContainerEle.getElementsByClassName("is-delete-remark-button");
-        for (let btnIndex = 0; btnIndex < deleteBtnEles.length; btnIndex += 1) {
-            deleteBtnEles[btnIndex].addEventListener("click", deleteRemarkFn);
+        for (const deleteBtnEle of deleteBtnEles) {
+            deleteBtnEle.addEventListener("click", deleteRemarkFn);
         }
     }
     const remarkSearchStrEle = document.getElementById("remark--searchStr");
@@ -93,23 +92,23 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 .toLowerCase()
                 .split(" ");
             let displayCount = remarkBlockEles.length;
-            for (let remarkBlockIndex = 0; remarkBlockIndex < remarkBlockEles.length; remarkBlockIndex += 1) {
-                const remark = remarkBlockEles[remarkBlockIndex].getElementsByClassName("is-remark")[0].innerText
+            for (const remarkBlockEle of remarkBlockEles) {
+                const remark = remarkBlockEle.getElementsByClassName("is-remark")[0].innerText
                     .trim()
                     .toLowerCase();
                 let showRemark = true;
-                for (let searchStrIndex = 0; searchStrIndex < searchStrSplit.length; searchStrIndex += 1) {
-                    if (remark.indexOf(searchStrSplit[searchStrIndex]) === -1) {
+                for (const searchStrPiece of searchStrSplit) {
+                    if (remark.indexOf(searchStrPiece) === -1) {
                         showRemark = false;
                         displayCount -= 1;
                         break;
                     }
                 }
                 if (showRemark) {
-                    remarkBlockEles[remarkBlockIndex].classList.remove("is-hidden");
+                    remarkBlockEle.classList.remove("is-hidden");
                 }
                 else {
-                    remarkBlockEles[remarkBlockIndex].classList.add("is-hidden");
+                    remarkBlockEle.classList.add("is-hidden");
                 }
             }
             remarkDisplayCountEle.innerText = displayCount.toString();
@@ -126,8 +125,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
         bankRecordsTableEle.classList.remove("has-status-loaded");
         bankRecordsTableEle.classList.add("has-status-loading");
         const buttonEles = bankRecordsTableEle.getElementsByClassName("is-bank-record-button");
-        for (let index = 0; index < buttonEles.length; index += 1) {
-            const buttonEle = buttonEles[index];
+        for (const buttonEle of buttonEles) {
             buttonEle.classList.remove("is-success");
             buttonEle.classList.remove("is-info");
             buttonEle.innerHTML = "<span class=\"icon\">" +
@@ -140,8 +138,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
     function getBankRecords() {
         clearBankRecordsTable();
         const processRecordsFn = function (bankRecords) {
-            for (let recordIndex = 0; recordIndex < bankRecords.length; recordIndex += 1) {
-                const bankRecord = bankRecords[recordIndex];
+            for (const bankRecord of bankRecords) {
                 bankRecordsCache[bankRecord.recordIndex] = bankRecord;
                 const buttonEle = bankRecordsTableEle
                     .querySelector("[data-banking-month='" + bankRecord.bankingMonth + "']")
@@ -183,7 +180,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
         }
         else {
             cityssm.postJSON("/organizations/doGetBankRecords", {
-                organizationID: organizationID,
+                organizationID,
                 bankingYear: bankRecordsBankingYearFilterEle.value,
                 accountNumber: bankRecordsAccountNumberFilterEle.value
             }, processRecordsFn);
@@ -191,7 +188,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
     }
     function loadBankRecordFilters() {
         cityssm.postJSON("/organizations/doGetBankRecordStats", {
-            organizationID: organizationID
+            organizationID
         }, function (bankRecordStats) {
             const currentYear = new Date().getFullYear();
             let bankingYearMin = currentYear - 1;
@@ -200,8 +197,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
             }
             else {
                 bankRecordsAccountNumberFilterEle.innerHTML = "";
-                for (let index = 0; index < bankRecordStats.length; index += 1) {
-                    const bankRecordsStat = bankRecordStats[index];
+                for (const bankRecordsStat of bankRecordStats) {
                     bankingYearMin = Math.min(bankRecordsStat.bankingYearMin, bankingYearMin);
                     const accountNumber = cityssm.escapeHTML(bankRecordsStat.accountNumber);
                     bankRecordsAccountNumberFilterEle.insertAdjacentHTML("beforeend", "<option value=\"" + accountNumber + "\">" +
@@ -291,7 +287,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 }
             }
             cityssm.openHtmlModal("organization-bankRecordEdit", {
-                onshow: function () {
+                onshow() {
                     document.getElementById("bankRecordEdit--organizationID").value = organizationID;
                     document.getElementById("bankRecordEdit--recordIndex").value = recordIndex;
                     const accountNumberEle = document.getElementById("bankRecordEdit--accountNumber");
@@ -339,20 +335,20 @@ Object.defineProperty(exports, "__esModule", { value: true });
                         document.getElementById("bankRecordEdit--moreOptionsDropdown").remove();
                     }
                 },
-                onshown: function (modalEle, closeModalFn) {
+                onshown(modalEle, closeModalFn) {
                     bankRecordEditCloseModalFn = closeModalFn;
                     modalEle.getElementsByTagName("form")[0].addEventListener("submit", submitBankRecordEditFn);
                 }
             });
         };
         const buttonEles = bankRecordsTableEle.getElementsByTagName("button");
-        for (let index = 0; index < buttonEles.length; index += 1) {
-            buttonEles[index].addEventListener("click", openBankRecordEditModal);
+        for (const buttonEle of buttonEles) {
+            buttonEle.addEventListener("click", openBankRecordEditModal);
         }
         document.getElementById("is-add-bank-record-button").addEventListener("click", openBankRecordEditModal);
     }
     llm.initializeTabs(document.getElementById("tabs--organization"), {
-        onshown: function (tabContentEle) {
+        onshown(tabContentEle) {
             if (tabContentEle.id === "organizationTabContent--bankRecords" && !bankRecordsFiltersLoaded) {
                 bankRecordsFiltersLoaded = true;
                 loadBankRecordFilters();

@@ -165,8 +165,10 @@ export interface Organization extends Record {
     organizationNote: string;
     canUpdate: boolean;
     organizationRepresentatives: OrganizationRepresentative[];
-    licences_endDateMax: number;
-    licences_endDateMaxString: string;
+    representativeName: string;
+    licences_activeCount?: number;
+    licences_endDateMax?: number;
+    licences_endDateMaxString?: string;
 }
 export declare type OrganizationRepresentative = {
     organizationID: number;

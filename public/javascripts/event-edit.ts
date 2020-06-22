@@ -69,7 +69,6 @@ declare const cityssm: cityssmGlobal;
           function(responseJSON) {
 
             if (responseJSON.success) {
-
               cityssm.disableNavBlocker();
               window.location.href = "/licences/" + licenceID;
             }
@@ -99,10 +98,10 @@ declare const cityssm: cityssmGlobal;
   const inputEles = <NodeListOf<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>>formEle.querySelectorAll("input, select, textarea");
 
   for (const inputEle of inputEles) {
-
     if (inputEle.name !== "") {
       inputEle.addEventListener("change", setUnsavedChanges);
     }
+
   }
 
 

@@ -30,8 +30,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 "<tbody></tbody>" +
                 "</table>";
             const tbodyEle = searchResultsEle.getElementsByTagName("tbody")[0];
-            for (let organizationIndex = 0; organizationIndex < organizationsList.length; organizationIndex += 1) {
-                const organizationObj = organizationsList[organizationIndex];
+            for (const organizationObj of organizationsList) {
                 const trEle = document.createElement("tr");
                 trEle.innerHTML = "<td></td>";
                 const organizationNameLinkEle = document.createElement("a");
@@ -94,8 +93,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
         formEvent.preventDefault();
     });
     const inputEles = formEle.querySelectorAll(".input, .select");
-    for (let inputIndex = 0; inputIndex < inputEles.length; inputIndex += 1) {
-        inputEles[inputIndex].addEventListener("change", doOrganizationSearch);
+    for (const inputEle of inputEles) {
+        inputEle.addEventListener("change", doOrganizationSearch);
     }
     doOrganizationSearch();
 }());

@@ -107,7 +107,6 @@ import * as llmTypes from "../../helpers/llmTypes";
   );
 
   llm.getDefaultConfigProperty("externalLicenceNumber_fieldLabel", function(fieldLabel) {
-
     externalLicenceNumberFieldLabel = fieldLabel;
     getActiveLicenceSummary();
   });

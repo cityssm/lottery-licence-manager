@@ -1,6 +1,8 @@
 import type { cityssmGlobal } from "../../node_modules/@cityssm/bulma-webapp-js/src/types";
 declare const cityssm: cityssmGlobal;
 
+import type * as llmTypes from "../../helpers/llmTypes";
+
 
 (function() {
 
@@ -20,7 +22,7 @@ declare const cityssm: cityssmGlobal;
     cityssm.postJSON(
       "/organizations/doSearch",
       formEle,
-      function(organizationsList) {
+      function(organizationsList: llmTypes.Organization[]) {
 
         if (organizationsList.length === 0) {
 
@@ -32,7 +34,6 @@ declare const cityssm: cityssmGlobal;
             "</div>";
 
           return;
-
         }
 
         searchResultsEle.innerHTML = "<table class=\"table is-fullwidth is-striped is-hoverable\">" +
@@ -48,9 +49,7 @@ declare const cityssm: cityssmGlobal;
 
         const tbodyEle = searchResultsEle.getElementsByTagName("tbody")[0];
 
-        for (let organizationIndex = 0; organizationIndex < organizationsList.length; organizationIndex += 1) {
-
-          const organizationObj = organizationsList[organizationIndex];
+        for (const organizationObj of organizationsList) {
 
           const trEle = document.createElement("tr");
           trEle.innerHTML = "<td></td>";
@@ -65,7 +64,6 @@ declare const cityssm: cityssmGlobal;
           } else {
 
             organizationNameLinkEle.setAttribute("data-tooltip", "View Organization");
-
           }
 
           organizationNameLinkEle.innerText = organizationObj.organizationName;
@@ -136,12 +134,9 @@ declare const cityssm: cityssmGlobal;
           }
 
           tbodyEle.insertAdjacentElement("beforeend", trEle);
-
         }
-
       }
     );
-
   }
 
 
@@ -153,10 +148,8 @@ declare const cityssm: cityssmGlobal;
 
   const inputEles = formEle.querySelectorAll(".input, .select");
 
-  for (let inputIndex = 0; inputIndex < inputEles.length; inputIndex += 1) {
-
-    inputEles[inputIndex].addEventListener("change", doOrganizationSearch);
-
+  for (const inputEle of inputEles) {
+    inputEle.addEventListener("change", doOrganizationSearch);
   }
 
   doOrganizationSearch();

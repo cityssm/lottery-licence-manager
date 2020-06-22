@@ -1,7 +1,7 @@
 import type * as llmTypes from "../../helpers/llmTypes";
 export declare type llmGlobal = {
     arrayToObject?: (array: [], objectKey: any) => {};
-    getDefaultConfigProperty?: (propertyName: string, propertyValueCallbackFn: (any: any) => void) => void;
+    getDefaultConfigProperty?: (propertyName: string, propertyValueCallbackFn: (propertyValue: any) => void) => void;
     initializeDateRangeSelector?: (containerEle: HTMLElement, changeFn: () => void) => void;
     initializeTabs?: (tabsListEle: HTMLElement, callbackFns?: {
         onshown?: (tabContentEle: HTMLElement) => void;

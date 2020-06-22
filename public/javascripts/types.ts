@@ -5,7 +5,7 @@ export type llmGlobal = {
 
   arrayToObject?: (array: [], objectKey: any) => {},
 
-  getDefaultConfigProperty?: (propertyName: string, propertyValueCallbackFn: (any) => void) => void,
+  getDefaultConfigProperty?: (propertyName: string, propertyValueCallbackFn: (propertyValue: any) => void) => void,
 
   initializeDateRangeSelector?: (containerEle: HTMLElement, changeFn: () => void) => void,
 

@@ -23,14 +23,10 @@ declare const cityssm: cityssmGlobal;
           function(responseJSON) {
 
             if (responseJSON.success) {
-
               window.location.href = "/organizations/" + organizationID + "?_" + Date.now();
-
             }
-
           }
         );
-
       };
 
       buttonEle.addEventListener("click", function() {
@@ -44,11 +40,7 @@ declare const cityssm: cityssmGlobal;
           "warning",
           restoreFn
         );
-
       });
-
     }
-
   }
-
 }());

@@ -209,8 +209,10 @@ export interface Organization extends Record {
   organizationRepresentatives: OrganizationRepresentative[];
 
   // search results
-  licences_endDateMax: number;
-  licences_endDateMaxString: string;
+  representativeName: string;
+  licences_activeCount?: number;
+  licences_endDateMax?: number;
+  licences_endDateMaxString?: string;
 }
 
 export type OrganizationRepresentative = {
