@@ -168,12 +168,11 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
         const tbodyEle = searchResultsEle.getElementsByTagName("tbody")[0];
 
-        for (let locationIndex = 0; locationIndex < displayedLocationList.length; locationIndex += 1) {
+        displayedLocationList.forEach(function(location, locationIndex) {
 
-          const locationTrEle = renderLocationTrEle(displayedLocationList[locationIndex], locationIndex);
+          const locationTrEle = renderLocationTrEle(location, locationIndex);
           tbodyEle.insertAdjacentElement("beforeend", locationTrEle);
-
-        }
+        });
 
         searchResultsEle.insertAdjacentHTML("beforeend", "<div class=\"level is-block-print\">" +
           "<div class=\"level-left has-text-weight-bold\">" +
