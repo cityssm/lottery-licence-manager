@@ -345,8 +345,8 @@ export function getRawRowsColumns(sql: string, params: any[]): RawRowsColumnsRet
   db.close();
 
   return {
-    rows: rows,
-    columns: columns
+    rows,
+    columns
   };
 
 }

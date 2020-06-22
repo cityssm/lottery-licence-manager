@@ -210,8 +210,8 @@ function getRawRowsColumns(sql, params) {
     stmt.raw(false);
     db.close();
     return {
-        rows: rows,
-        columns: columns
+        rows,
+        columns
     };
 }
 exports.getRawRowsColumns = getRawRowsColumns;

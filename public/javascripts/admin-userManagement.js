@@ -71,8 +71,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
         const userName = linkEle.getAttribute("data-user-name");
         const firstName = linkEle.getAttribute("data-first-name");
         const lastName = linkEle.getAttribute("data-last-name");
-        for (let index = 0; index < updateUserUserNameSpanEles.length; index += 1) {
-            updateUserUserNameSpanEles[index].innerText = userName;
+        for (const updateUserUserNameSpanEle of updateUserUserNameSpanEles) {
+            updateUserUserNameSpanEle.innerText = userName;
         }
         document.getElementById("updateUser--userName").value = userName;
         document.getElementById("updateUser--firstName").value = firstName;

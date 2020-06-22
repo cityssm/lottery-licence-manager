@@ -150,10 +150,8 @@ declare const llm: llmGlobal;
 
     // Spans
 
-    for (let index = 0; index < updateUserUserNameSpanEles.length; index += 1) {
-
-      updateUserUserNameSpanEles[index].innerText = userName;
-
+    for (const updateUserUserNameSpanEle of updateUserUserNameSpanEles) {
+      updateUserUserNameSpanEle.innerText = userName;
     }
 
     // Name form
