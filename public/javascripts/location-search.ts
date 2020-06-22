@@ -228,9 +228,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
           }
 
           searchResultsEle.getElementsByClassName("level")[0].insertAdjacentElement("beforeend", paginationEle);
-
         }
-
       }
     );
 
@@ -245,7 +243,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
   }
 
 
-  function deleteLocationClickFn (clickEvent: Event) {
+  function deleteLocationClickFn(clickEvent: Event) {
 
     clickEvent.preventDefault();
 

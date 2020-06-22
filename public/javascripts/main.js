@@ -111,7 +111,7 @@ llm.getDefaultConfigProperty = function (propertyName, propertyValueCallbackFn) 
             return;
         }
     }
-    catch (e) {
+    catch (_e) {
     }
     cityssm.postJSON("/dashboard/doGetDefaultConfigProperties", {}, function (defaultConfigProperties) {
         try {
@@ -140,17 +140,17 @@ llm.initializeTabs = function (tabsListEle, callbackFns) {
         (isPanelOrMenuListTabs ? tabLinkEle : tabLinkEle.parentElement).classList.add("is-active");
         tabLinkEle.setAttribute("aria-selected", "true");
         const tabContentEles = tabContentEle.parentElement.getElementsByClassName("tab-content");
-        for (let index = 0; index < tabContentEles.length; index += 1) {
-            tabContentEles[index].classList.remove("is-active");
+        for (const tabContentEle of tabContentEles) {
+            tabContentEle.classList.remove("is-active");
         }
         tabContentEle.classList.add("is-active");
         if (callbackFns && callbackFns.onshown) {
             callbackFns.onshown(tabContentEle);
         }
     }
-    for (let index = 0; index < listItemEles.length; index += 1) {
+    for (const listItemEle of listItemEles) {
         (isPanelOrMenuListTabs ?
-            listItemEles[index] :
-            listItemEles[index].getElementsByTagName("a")[0]).addEventListener("click", tabClickFn);
+            listItemEle :
+            listItemEle.getElementsByTagName("a")[0]).addEventListener("click", tabClickFn);
     }
 };

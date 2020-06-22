@@ -1,6 +1,8 @@
 import type { cityssmGlobal } from "../../node_modules/@cityssm/bulma-webapp-js/src/types";
 declare const cityssm: cityssmGlobal;
 
+import type * as llmTypes from "../../helpers/llmTypes";
+
 
 (function() {
 
@@ -27,13 +29,9 @@ declare const cityssm: cityssmGlobal;
           buttonEle.closest("tr").remove();
 
         } else {
-
           cityssm.alertModal(responseJSON.message, "", "OK", "danger");
-
         }
-
       });
-
     };
 
     cityssm.confirmModal(
@@ -55,7 +53,7 @@ declare const cityssm: cityssmGlobal;
 
     cityssm.postJSON("/locations/doGetInactive", {
       inactiveYears: inactiveYearsFilterEle.value
-    }, function(inactiveList) {
+    }, function(inactiveList: llmTypes.Location[]) {
 
       if (inactiveList.length === 0) {
 
@@ -83,9 +81,7 @@ declare const cityssm: cityssmGlobal;
 
       const tbodyEle = document.createElement("tbody");
 
-      for (let i = 0; i < inactiveList.length; i += 1) {
-
-        const locationObj = inactiveList[i];
+      for (const locationObj of inactiveList) {
 
         const trEle = document.createElement("tr");
 
@@ -108,7 +104,6 @@ declare const cityssm: cityssmGlobal;
           dateMax = locationObj.distributor_endDateMax;
           dateMaxString = locationObj.distributor_endDateMaxString;
           dateTag = "Distributor";
-
         }
 
         if (locationObj.manufacturer_endDateMax && (!dateMax || dateMax < locationObj.manufacturer_endDateMax)) {
@@ -116,7 +111,6 @@ declare const cityssm: cityssmGlobal;
           dateMax = locationObj.manufacturer_endDateMax;
           dateMaxString = locationObj.manufacturer_endDateMaxString;
           dateTag = "Manufacturer";
-
         }
 
 
@@ -150,7 +144,6 @@ declare const cityssm: cityssmGlobal;
       cityssm.clearElement(searchResultsEle);
 
       searchResultsEle.insertAdjacentElement("beforeend", tableEle);
-
     });
 
   }
@@ -158,5 +151,4 @@ declare const cityssm: cityssmGlobal;
   inactiveYearsFilterEle.addEventListener("change", getInactiveLocations);
 
   getInactiveLocations();
-
 }());

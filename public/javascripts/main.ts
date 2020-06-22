@@ -102,11 +102,8 @@ llm.initializeDateRangeSelector = function(containerEle, changeFn) {
     endDateEle.value = endDateString;
 
     if (changeFn) {
-
       changeFn();
-
     }
-
   };
 
 
@@ -217,10 +214,9 @@ llm.getDefaultConfigProperty = function(propertyName, propertyValueCallbackFn) {
       propertyValueCallbackFn(defaultConfigProperties[propertyName]);
 
       return;
-
     }
 
-  } catch (e) {
+  } catch (_e) {
     // Ignore
   }
 
@@ -239,7 +235,6 @@ llm.getDefaultConfigProperty = function(propertyName, propertyValueCallbackFn) {
       }
 
       propertyValueCallbackFn(defaultConfigProperties[propertyName]);
-
     }
   );
 
@@ -259,7 +254,6 @@ llm.initializeTabs = function(tabsListEle, callbackFns) {
   }
 
   const isPanelOrMenuListTabs = tabsListEle.classList.contains("panel-tabs") || tabsListEle.classList.contains("menu-list");
-
 
   const listItemEles = tabsListEle.getElementsByTagName(isPanelOrMenuListTabs ? "a" : "li");
   const tabLinkEles = <HTMLCollectionOf<HTMLAnchorElement>>(isPanelOrMenuListTabs ? listItemEles : tabsListEle.getElementsByTagName("a"));
@@ -284,28 +278,22 @@ llm.initializeTabs = function(tabsListEle, callbackFns) {
 
     const tabContentEles = tabContentEle.parentElement.getElementsByClassName("tab-content");
 
-    for (let index = 0; index < tabContentEles.length; index += 1) {
-
-      tabContentEles[index].classList.remove("is-active");
-
+    for (const tabContentEle of tabContentEles) {
+      tabContentEle.classList.remove("is-active");
     }
 
     tabContentEle.classList.add("is-active");
 
     if (callbackFns && callbackFns.onshown) {
-
       callbackFns.onshown(tabContentEle);
-
     }
-
   }
 
-  for (let index = 0; index < listItemEles.length; index += 1) {
+  for (const listItemEle of listItemEles) {
 
     (isPanelOrMenuListTabs ?
-      listItemEles[index] :
-      listItemEles[index].getElementsByTagName("a")[0]).addEventListener("click", tabClickFn);
+      listItemEle :
+      listItemEle.getElementsByTagName("a")[0]).addEventListener("click", tabClickFn);
 
   }
-
 };

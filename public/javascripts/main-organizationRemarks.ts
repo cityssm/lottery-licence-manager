@@ -18,7 +18,6 @@ llm.organizationRemarks = (function() {
       },
       callbackFn
     );
-
   }
 
   function getRemarkByID(organizationID: number, remarkIndex: number,
@@ -31,7 +30,6 @@ llm.organizationRemarks = (function() {
       },
       callbackFn
     );
-
   }
 
 
@@ -42,7 +40,6 @@ llm.organizationRemarks = (function() {
   }) => void) {
 
     cityssm.postJSON("/organizations/doAddRemark", formEle, callbackFn);
-
   }
 
   function openAddRemarkModal(organizationID: number, updateCallbackFn: () => void) {
@@ -58,17 +55,13 @@ llm.organizationRemarks = (function() {
         addRemarkCloseModalFn();
 
         if (updateCallbackFn) {
-
           updateCallbackFn();
-
         }
-
       });
-
     };
 
     cityssm.openHtmlModal("remarkAdd", {
-      onshown: function(modalEle, closeModalFn) {
+      onshown(modalEle, closeModalFn) {
 
         (<HTMLInputElement>document.getElementById("addRemark--organizationID")).value = organizationID.toString();
         document.getElementById("addRemark--remark").focus();
@@ -76,7 +69,6 @@ llm.organizationRemarks = (function() {
         modalEle.getElementsByTagName("form")[0].addEventListener("submit", addFormFn);
 
         addRemarkCloseModalFn = closeModalFn;
-
       }
     });
 
@@ -88,7 +80,6 @@ llm.organizationRemarks = (function() {
   }) => void) {
 
     cityssm.postJSON("/organizations/doEditRemark", formEle, callbackFn);
-
   }
 
   function openEditRemarkModal(organizationID: number, remarkIndex: number, updateCallbackFn: () => void) {
@@ -104,17 +95,13 @@ llm.organizationRemarks = (function() {
         editRemarkCloseModalFn();
 
         if (updateCallbackFn) {
-
           updateCallbackFn();
-
         }
-
       });
-
     };
 
     cityssm.openHtmlModal("remarkEdit", {
-      onshow: function(modalEle) {
+      onshow(modalEle) {
 
         (<HTMLInputElement>document.getElementById("editRemark--organizationID")).value = organizationID.toString();
         (<HTMLInputElement>document.getElementById("editRemark--remarkIndex")).value = remarkIndex.toString();
@@ -129,9 +116,7 @@ llm.organizationRemarks = (function() {
           (<HTMLInputElement>document.getElementById("editRemark--remarkTimeString")).value = remark.remarkTimeString;
 
           if (remark.isImportant) {
-
             document.getElementById("editRemark--isImportant").setAttribute("checked", "checked");
-
           }
 
         });
@@ -139,11 +124,10 @@ llm.organizationRemarks = (function() {
         modalEle.getElementsByTagName("form")[0].addEventListener("submit", formFn_edit);
 
       },
-      onshown: function(modalEle, closeModalFn) {
+      onshown(_modalEle, closeModalFn) {
 
         editRemarkCloseModalFn = closeModalFn;
         document.getElementById("editRemark--remark").focus();
-
       }
     });
 
@@ -161,7 +145,6 @@ llm.organizationRemarks = (function() {
       },
       callbackFn
     );
-
   }
 
   function deleteRemark(organizationID: number, remarkIndex: number, doConfirm: boolean,
@@ -180,16 +163,13 @@ llm.organizationRemarks = (function() {
         function() {
 
           doDeleteRemark(organizationID, remarkIndex, deleteCallbackFn);
-
         }
       );
 
     } else {
 
       doDeleteRemark(organizationID, remarkIndex, deleteCallbackFn);
-
     }
-
   }
 
 

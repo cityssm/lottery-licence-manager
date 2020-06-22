@@ -27,7 +27,7 @@ llm.organizationRemarks = (function () {
             });
         };
         cityssm.openHtmlModal("remarkAdd", {
-            onshown: function (modalEle, closeModalFn) {
+            onshown(modalEle, closeModalFn) {
                 document.getElementById("addRemark--organizationID").value = organizationID.toString();
                 document.getElementById("addRemark--remark").focus();
                 modalEle.getElementsByTagName("form")[0].addEventListener("submit", addFormFn);
@@ -50,7 +50,7 @@ llm.organizationRemarks = (function () {
             });
         };
         cityssm.openHtmlModal("remarkEdit", {
-            onshow: function (modalEle) {
+            onshow(modalEle) {
                 document.getElementById("editRemark--organizationID").value = organizationID.toString();
                 document.getElementById("editRemark--remarkIndex").value = remarkIndex.toString();
                 getRemarkByID(organizationID, remarkIndex, function (remark) {
@@ -65,7 +65,7 @@ llm.organizationRemarks = (function () {
                 });
                 modalEle.getElementsByTagName("form")[0].addEventListener("submit", formFn_edit);
             },
-            onshown: function (modalEle, closeModalFn) {
+            onshown(_modalEle, closeModalFn) {
                 editRemarkCloseModalFn = closeModalFn;
                 document.getElementById("editRemark--remark").focus();
             }

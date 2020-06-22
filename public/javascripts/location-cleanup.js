@@ -49,8 +49,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 "</tr>" +
                 "</thead>";
             const tbodyEle = document.createElement("tbody");
-            for (let i = 0; i < inactiveList.length; i += 1) {
-                const locationObj = inactiveList[i];
+            for (const locationObj of inactiveList) {
                 const trEle = document.createElement("tr");
                 const safeLocationDisplayName = cityssm.escapeHTML(locationObj.locationDisplayName);
                 trEle.insertAdjacentHTML("beforeend", "<td>" +
