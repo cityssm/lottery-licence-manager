@@ -54,7 +54,7 @@ const configFallbackValues = {
 
   "licences.externalReceiptNumber.fieldLabel": "Receipt Number",
 
-  "licences.feeCalculationFn": function() {
+  "licences.feeCalculationFn"() {
 
     return {
       fee: 10,

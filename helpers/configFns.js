@@ -35,7 +35,7 @@ const configFallbackValues = {
     "licences.externalLicenceNumber.newCalculation": "",
     "licences.externalLicenceNumber.isPreferredID": false,
     "licences.externalReceiptNumber.fieldLabel": "Receipt Number",
-    "licences.feeCalculationFn": function () {
+    "licences.feeCalculationFn"() {
         return {
             fee: 10,
             message: "Using base licence fee.",

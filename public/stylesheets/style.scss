@@ -1,26 +1,23 @@
 @import '@cityssm/bulma-webapp-css/cityssm';
 
-
 /*
  * Status containers
  */
 
-
-fieldset:enabled .is-hidden-enabled,
-.has-status-view .is-hidden-status-view,
+.has-status-loaded .is-hidden-status-loaded,
 .has-status-loading .is-hidden-status-loading,
-.has-status-loaded .is-hidden-status-loaded {
+.has-status-view .is-hidden-status-view,
+fieldset:enabled .is-hidden-enabled {
   display: none;
 }
-
 
 .has-status-view .is-noninteractive-status-view {
   pointer-events: none;
 }
 
-
 // to fix page titles inside level components
 // set on .level-left
+
 .has-flex-shrink-1 {
   flex-shrink: 1;
 }
@@ -29,11 +26,9 @@ fieldset:enabled .is-hidden-enabled,
   border-radius: 3px;
 }
 
-
 /*
  * Tabs
  */
-
 
 .tab-content {
   display: none;
@@ -43,12 +38,10 @@ fieldset:enabled .is-hidden-enabled,
   }
 }
 
-
 #is-login-page {
   overflow: auto;
 
   body > .columns {
     min-height: 100vh;
-
   }
 }
