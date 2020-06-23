@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 
-import app from "../app";
+import * as app from "../app";
 
-import log from "fancy-log";
+import * as log from "fancy-log";
 
-import http from "http";
-import https from "https";
-import fs from "fs";
+import * as http from "http";
+import * as https from "https";
+import * as fs from "fs";
 
 import * as configFns from "../helpers/configFns";
 import { ConfigHTTPS } from "../helpers/llmTypes";

@@ -1,5 +1,5 @@
 export const dbPath = "data/licences.db";
-import sqlite from "better-sqlite3";
+import * as sqlite from "better-sqlite3";
 
 import * as llm from "./llmTypes";
 import * as configFns from "./configFns";

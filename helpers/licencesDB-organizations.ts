@@ -1,5 +1,5 @@
 import { dbPath, canUpdateObject } from "./licencesDB";
-import sqlite from "better-sqlite3";
+import * as sqlite from "better-sqlite3";
 
 import * as llm from "./llmTypes";
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns";

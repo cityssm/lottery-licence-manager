@@ -1,31 +1,9 @@
 "use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getInactiveLocations = exports.mergeLocations = exports.restoreLocation = exports.deleteLocation = exports.updateLocation = exports.createLocation = exports.getLocation = exports.getLocations = void 0;
 const licencesDB_1 = require("./licencesDB");
-const better_sqlite3_1 = __importDefault(require("better-sqlite3"));
-const dateTimeFns = __importStar(require("@cityssm/expressjs-server-js/dateTimeFns"));
+const sqlite = require("better-sqlite3");
+const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
 function getLocations(reqSession, queryOptions) {
     const addCalculatedFieldsFn = function (ele) {
         ele.recordType = "location";
@@ -36,7 +14,7 @@ function getLocations(reqSession, queryOptions) {
         ele.manufacturer_endDateMaxString = dateTimeFns.dateIntegerToString(ele.manufacturer_endDateMax);
         ele.canUpdate = licencesDB_1.canUpdateObject(ele, reqSession);
     };
-    const db = better_sqlite3_1.default(licencesDB_1.dbPath, {
+    const db = sqlite(licencesDB_1.dbPath, {
         readonly: true
     });
     const sqlParams = [];
@@ -113,7 +91,7 @@ function getLocations(reqSession, queryOptions) {
 }
 exports.getLocations = getLocations;
 function getLocation(locationID, reqSession) {
-    const db = better_sqlite3_1.default(licencesDB_1.dbPath, {
+    const db = sqlite(licencesDB_1.dbPath, {
         readonly: true
     });
     const locationObj = db.prepare("select * from Locations" +
@@ -130,7 +108,7 @@ function getLocation(locationID, reqSession) {
 }
 exports.getLocation = getLocation;
 function createLocation(reqBody, reqSession) {
-    const db = better_sqlite3_1.default(licencesDB_1.dbPath);
+    const db = sqlite(licencesDB_1.dbPath);
     const nowMillis = Date.now();
     const info = db.prepare("insert into Locations" +
         " (locationName, locationAddress1, locationAddress2, locationCity, locationProvince, locationPostalCode," +
@@ -143,7 +121,7 @@ function createLocation(reqBody, reqSession) {
 }
 exports.createLocation = createLocation;
 function updateLocation(reqBody, reqSession) {
-    const db = better_sqlite3_1.default(licencesDB_1.dbPath);
+    const db = sqlite(licencesDB_1.dbPath);
     const nowMillis = Date.now();
     const info = db.prepare("update Locations" +
         " set locationName = ?," +
@@ -164,7 +142,7 @@ function updateLocation(reqBody, reqSession) {
 }
 exports.updateLocation = updateLocation;
 function deleteLocation(locationID, reqSession) {
-    const db = better_sqlite3_1.default(licencesDB_1.dbPath);
+    const db = sqlite(licencesDB_1.dbPath);
     const nowMillis = Date.now();
     const info = db.prepare("update Locations" +
         " set recordDelete_userName = ?," +
@@ -177,7 +155,7 @@ function deleteLocation(locationID, reqSession) {
 }
 exports.deleteLocation = deleteLocation;
 function restoreLocation(locationID, reqSession) {
-    const db = better_sqlite3_1.default(licencesDB_1.dbPath);
+    const db = sqlite(licencesDB_1.dbPath);
     const nowMillis = Date.now();
     const info = db.prepare("update Locations" +
         " set recordDelete_userName = null," +
@@ -192,7 +170,7 @@ function restoreLocation(locationID, reqSession) {
 }
 exports.restoreLocation = restoreLocation;
 function mergeLocations(targetLocationID, sourceLocationID, reqSession) {
-    const db = better_sqlite3_1.default(licencesDB_1.dbPath);
+    const db = sqlite(licencesDB_1.dbPath);
     const nowMillis = Date.now();
     const locationAttributes = db.prepare("select max(locationIsDistributor) as locationIsDistributorMax," +
         " max(locationIsManufacturer) as locationIsManufacturerMax," +
@@ -250,7 +228,7 @@ function getInactiveLocations(inactiveYears) {
     const cutoffDate = new Date();
     cutoffDate.setFullYear(cutoffDate.getFullYear() - inactiveYears);
     const cutoffDateInteger = dateTimeFns.dateToInteger(cutoffDate);
-    const db = better_sqlite3_1.default(licencesDB_1.dbPath, {
+    const db = sqlite(licencesDB_1.dbPath, {
         readonly: true
     });
     const rows = db.prepare("select lo.locationID, lo.locationName, lo.locationAddress1," +

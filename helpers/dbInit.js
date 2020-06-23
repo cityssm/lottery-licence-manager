@@ -1,16 +1,13 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.initLicencesDB = exports.initUsersDB = void 0;
-const fancy_log_1 = __importDefault(require("fancy-log"));
-const better_sqlite3_1 = __importDefault(require("better-sqlite3"));
+const log = require("fancy-log");
+const sqlite = require("better-sqlite3");
 function initUsersDB() {
-    const usersDB = better_sqlite3_1.default("data/users.db");
+    const usersDB = sqlite("data/users.db");
     const row = usersDB.prepare("select name from sqlite_master where type = 'table' and name = 'Users'").get();
     if (!row) {
-        fancy_log_1.default.warn("Creating users.db." +
+        log.warn("Creating users.db." +
             " To get started creating users, set the 'admin.defaultPassword' property in your config.js file.");
         usersDB.prepare("create table if not exists Users (" +
             "userName varchar(30) primary key not null," +
@@ -32,12 +29,12 @@ function initUsersDB() {
 }
 exports.initUsersDB = initUsersDB;
 function initLicencesDB() {
-    const licencesDB = better_sqlite3_1.default("data/licences.db");
+    const licencesDB = sqlite("data/licences.db");
     const row = licencesDB
         .prepare("select name from sqlite_master where type = 'table' and name = 'Organizations'")
         .get();
     if (!row) {
-        fancy_log_1.default.warn("Creating licences.db");
+        log.warn("Creating licences.db");
         licencesDB.prepare("create table if not exists Locations (" +
             "locationID integer primary key autoincrement," +
             " locationName varchar(100)," +

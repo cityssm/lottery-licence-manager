@@ -1,31 +1,9 @@
 "use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteOrganizationBankRecord = exports.updateOrganizationBankRecord = exports.addOrganizationBankRecord = exports.getOrganizationBankRecordStats = exports.getOrganizationBankRecords = exports.deleteOrganizationRemark = exports.updateOrganizationRemark = exports.addOrganizationRemark = exports.getOrganizationRemark = exports.getOrganizationRemarks = exports.setDefaultOrganizationRepresentative = exports.deleteOrganizationRepresentative = exports.updateOrganizationRepresentative = exports.addOrganizationRepresentative = exports.getDeletedOrganizations = exports.getInactiveOrganizations = exports.restoreOrganization = exports.deleteOrganization = exports.updateOrganization = exports.createOrganization = exports.getOrganization = exports.getOrganizations = void 0;
 const licencesDB_1 = require("./licencesDB");
-const better_sqlite3_1 = __importDefault(require("better-sqlite3"));
-const dateTimeFns = __importStar(require("@cityssm/expressjs-server-js/dateTimeFns"));
+const sqlite = require("better-sqlite3");
+const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
 function getOrganizations(reqBody, reqSession, includeOptions) {
     const addCalculatedFieldsFn = function (ele) {
         ele.recordType = "organization";
@@ -36,7 +14,7 @@ function getOrganizations(reqBody, reqSession, includeOptions) {
         delete ele.recordUpdate_userName;
         delete ele.recordUpdate_timeMillis;
     };
-    const db = better_sqlite3_1.default(licencesDB_1.dbPath, {
+    const db = sqlite(licencesDB_1.dbPath, {
         readonly: true
     });
     const sqlParams = [dateTimeFns.dateToInteger(new Date())];
@@ -83,7 +61,7 @@ function getOrganizations(reqBody, reqSession, includeOptions) {
 }
 exports.getOrganizations = getOrganizations;
 function getOrganization(organizationID, reqSession) {
-    const db = better_sqlite3_1.default(licencesDB_1.dbPath, {
+    const db = sqlite(licencesDB_1.dbPath, {
         readonly: true
     });
     const organizationObj = db.prepare("select * from Organizations" +
@@ -105,7 +83,7 @@ function getOrganization(organizationID, reqSession) {
 }
 exports.getOrganization = getOrganization;
 function createOrganization(reqBody, reqSession) {
-    const db = better_sqlite3_1.default(licencesDB_1.dbPath);
+    const db = sqlite(licencesDB_1.dbPath);
     const nowMillis = Date.now();
     const info = db.prepare("insert into Organizations (" +
         "organizationName, organizationAddress1, organizationAddress2," +
@@ -120,7 +98,7 @@ function createOrganization(reqBody, reqSession) {
 }
 exports.createOrganization = createOrganization;
 function updateOrganization(reqBody, reqSession) {
-    const db = better_sqlite3_1.default(licencesDB_1.dbPath);
+    const db = sqlite(licencesDB_1.dbPath);
     const nowMillis = Date.now();
     const info = db.prepare("update Organizations" +
         " set organizationName = ?," +
@@ -144,7 +122,7 @@ function updateOrganization(reqBody, reqSession) {
 }
 exports.updateOrganization = updateOrganization;
 function deleteOrganization(organizationID, reqSession) {
-    const db = better_sqlite3_1.default(licencesDB_1.dbPath);
+    const db = sqlite(licencesDB_1.dbPath);
     const nowMillis = Date.now();
     const info = db.prepare("update Organizations" +
         " set recordDelete_userName = ?," +
@@ -157,7 +135,7 @@ function deleteOrganization(organizationID, reqSession) {
 }
 exports.deleteOrganization = deleteOrganization;
 function restoreOrganization(organizationID, reqSession) {
-    const db = better_sqlite3_1.default(licencesDB_1.dbPath);
+    const db = sqlite(licencesDB_1.dbPath);
     const nowMillis = Date.now();
     const info = db.prepare("update Organizations" +
         " set recordDelete_userName = null," +
@@ -175,7 +153,7 @@ function getInactiveOrganizations(inactiveYears) {
     const cutoffDate = new Date();
     cutoffDate.setFullYear(cutoffDate.getFullYear() - inactiveYears);
     const cutoffDateInteger = dateTimeFns.dateToInteger(cutoffDate);
-    const db = better_sqlite3_1.default(licencesDB_1.dbPath, {
+    const db = sqlite(licencesDB_1.dbPath, {
         readonly: true
     });
     const rows = db.prepare("select o.organizationID, o.organizationName," +
@@ -205,7 +183,7 @@ function getDeletedOrganizations() {
     const addCalculatedFieldsFn = function (ele) {
         ele.recordDelete_dateString = dateTimeFns.dateToString(new Date(ele.recordDelete_timeMillis));
     };
-    const db = better_sqlite3_1.default(licencesDB_1.dbPath, {
+    const db = sqlite(licencesDB_1.dbPath, {
         readonly: true
     });
     const organizations = db.prepare("select organizationID, organizationName, recordDelete_timeMillis, recordDelete_userName" +
@@ -219,7 +197,7 @@ function getDeletedOrganizations() {
 }
 exports.getDeletedOrganizations = getDeletedOrganizations;
 function addOrganizationRepresentative(organizationID, reqBody) {
-    const db = better_sqlite3_1.default(licencesDB_1.dbPath);
+    const db = sqlite(licencesDB_1.dbPath);
     const row = db.prepare("select count(representativeIndex) as indexCount," +
         " ifnull(max(representativeIndex), -1) as maxIndex" +
         " from OrganizationRepresentatives" +
@@ -254,7 +232,7 @@ function addOrganizationRepresentative(organizationID, reqBody) {
 }
 exports.addOrganizationRepresentative = addOrganizationRepresentative;
 function updateOrganizationRepresentative(organizationID, reqBody) {
-    const db = better_sqlite3_1.default(licencesDB_1.dbPath);
+    const db = sqlite(licencesDB_1.dbPath);
     db.prepare("update OrganizationRepresentatives" +
         " set representativeName = ?," +
         " representativeTitle = ?," +
@@ -286,7 +264,7 @@ function updateOrganizationRepresentative(organizationID, reqBody) {
 }
 exports.updateOrganizationRepresentative = updateOrganizationRepresentative;
 function deleteOrganizationRepresentative(organizationID, representativeIndex) {
-    const db = better_sqlite3_1.default(licencesDB_1.dbPath);
+    const db = sqlite(licencesDB_1.dbPath);
     const info = db.prepare("delete from OrganizationRepresentatives" +
         " where organizationID = ?" +
         " and representativeIndex = ?")
@@ -296,7 +274,7 @@ function deleteOrganizationRepresentative(organizationID, representativeIndex) {
 }
 exports.deleteOrganizationRepresentative = deleteOrganizationRepresentative;
 function setDefaultOrganizationRepresentative(organizationID, representativeIndex) {
-    const db = better_sqlite3_1.default(licencesDB_1.dbPath);
+    const db = sqlite(licencesDB_1.dbPath);
     db.prepare("update OrganizationRepresentatives" +
         " set isDefault = 0" +
         " where organizationID = ?")
@@ -317,7 +295,7 @@ function getOrganizationRemarks(organizationID, reqSession) {
         ele.remarkTimeString = dateTimeFns.timeIntegerToString(ele.remarkTime || 0);
         ele.canUpdate = licencesDB_1.canUpdateObject(ele, reqSession);
     };
-    const db = better_sqlite3_1.default(licencesDB_1.dbPath, {
+    const db = sqlite(licencesDB_1.dbPath, {
         readonly: true
     });
     const rows = db.prepare("select remarkIndex," +
@@ -335,7 +313,7 @@ function getOrganizationRemarks(organizationID, reqSession) {
 }
 exports.getOrganizationRemarks = getOrganizationRemarks;
 function getOrganizationRemark(organizationID, remarkIndex, reqSession) {
-    const db = better_sqlite3_1.default(licencesDB_1.dbPath, {
+    const db = sqlite(licencesDB_1.dbPath, {
         readonly: true
     });
     const remark = db.prepare("select" +
@@ -356,7 +334,7 @@ function getOrganizationRemark(organizationID, remarkIndex, reqSession) {
 }
 exports.getOrganizationRemark = getOrganizationRemark;
 function addOrganizationRemark(reqBody, reqSession) {
-    const db = better_sqlite3_1.default(licencesDB_1.dbPath);
+    const db = sqlite(licencesDB_1.dbPath);
     const row = db.prepare("select ifnull(max(remarkIndex), -1) as maxIndex" +
         " from OrganizationRemarks" +
         " where organizationID = ?")
@@ -377,7 +355,7 @@ function addOrganizationRemark(reqBody, reqSession) {
 }
 exports.addOrganizationRemark = addOrganizationRemark;
 function updateOrganizationRemark(reqBody, reqSession) {
-    const db = better_sqlite3_1.default(licencesDB_1.dbPath);
+    const db = sqlite(licencesDB_1.dbPath);
     const nowMillis = Date.now();
     const info = db.prepare("update OrganizationRemarks" +
         " set remarkDate = ?," +
@@ -395,7 +373,7 @@ function updateOrganizationRemark(reqBody, reqSession) {
 }
 exports.updateOrganizationRemark = updateOrganizationRemark;
 function deleteOrganizationRemark(organizationID, remarkIndex, reqSession) {
-    const db = better_sqlite3_1.default(licencesDB_1.dbPath);
+    const db = sqlite(licencesDB_1.dbPath);
     const nowMillis = Date.now();
     const info = db.prepare("update OrganizationRemarks" +
         " set recordDelete_userName = ?," +
@@ -412,7 +390,7 @@ function getOrganizationBankRecords(organizationID, accountNumber, bankingYear) 
     const addCalculatedFieldsFn = function (ele) {
         ele.recordDateString = dateTimeFns.dateIntegerToString(ele.recordDate);
     };
-    const db = better_sqlite3_1.default(licencesDB_1.dbPath, {
+    const db = sqlite(licencesDB_1.dbPath, {
         readonly: true
     });
     const rows = db.prepare("select recordIndex," +
@@ -431,7 +409,7 @@ function getOrganizationBankRecords(organizationID, accountNumber, bankingYear) 
 }
 exports.getOrganizationBankRecords = getOrganizationBankRecords;
 function getOrganizationBankRecordStats(organizationID) {
-    const db = better_sqlite3_1.default(licencesDB_1.dbPath, {
+    const db = sqlite(licencesDB_1.dbPath, {
         readonly: true
     });
     const rows = db.prepare("select accountNumber," +
@@ -448,7 +426,7 @@ function getOrganizationBankRecordStats(organizationID) {
 }
 exports.getOrganizationBankRecordStats = getOrganizationBankRecordStats;
 function addOrganizationBankRecord(reqBody, reqSession) {
-    const db = better_sqlite3_1.default(licencesDB_1.dbPath);
+    const db = sqlite(licencesDB_1.dbPath);
     const record = db.prepare("select recordIndex, recordDelete_timeMillis" +
         " from OrganizationBankRecords" +
         " where organizationID = ?" +
@@ -490,7 +468,7 @@ function addOrganizationBankRecord(reqBody, reqSession) {
 }
 exports.addOrganizationBankRecord = addOrganizationBankRecord;
 function updateOrganizationBankRecord(reqBody, reqSession) {
-    const db = better_sqlite3_1.default(licencesDB_1.dbPath);
+    const db = sqlite(licencesDB_1.dbPath);
     const nowMillis = Date.now();
     const info = db.prepare("update OrganizationBankRecords" +
         " set recordDate = ?," +
@@ -507,7 +485,7 @@ function updateOrganizationBankRecord(reqBody, reqSession) {
 }
 exports.updateOrganizationBankRecord = updateOrganizationBankRecord;
 function deleteOrganizationBankRecord(organizationID, recordIndex, reqSession) {
-    const db = better_sqlite3_1.default(licencesDB_1.dbPath);
+    const db = sqlite(licencesDB_1.dbPath);
     const nowMillis = Date.now();
     const info = db.prepare("update OrganizationBankRecords" +
         " set recordDelete_userName = ?," +

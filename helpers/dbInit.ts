@@ -1,6 +1,6 @@
-import log from "fancy-log";
+import * as log from "fancy-log";
 
-import sqlite from "better-sqlite3";
+import * as sqlite from "better-sqlite3";
 
 
 export function initUsersDB() {

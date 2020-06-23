@@ -1,32 +1,10 @@
 "use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateApplicationSetting = exports.getApplicationSetting = exports.getApplicationSettings = exports.getLicenceActivityByDateRange = exports.pokeEvent = exports.deleteEvent = exports.updateEvent = exports.getPastEventBankingInformation = exports.getEvent = exports.getEventFinancialSummary = exports.getOutstandingEvents = exports.getRecentlyUpdateEvents = exports.getEvents = exports.getEventTableStats = exports.voidTransaction = exports.addTransaction = exports.getActiveLicenceSummary = exports.getLicenceTypeSummary = exports.unissueLicence = exports.issueLicence = exports.pokeLicence = exports.getDistinctTermsConditions = exports.deleteLicence = exports.updateLicence = exports.createLicence = exports.getNextExternalLicenceNumberFromRange = exports.getLicence = exports.getLicences = exports.getLicenceTableStats = exports.getRawRowsColumns = exports.canUpdateObject = exports.dbPath = void 0;
 exports.dbPath = "data/licences.db";
-const better_sqlite3_1 = __importDefault(require("better-sqlite3"));
-const configFns = __importStar(require("./configFns"));
-const dateTimeFns = __importStar(require("@cityssm/expressjs-server-js/dateTimeFns"));
+const sqlite = require("better-sqlite3");
+const configFns = require("./configFns");
+const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
 function canUpdateObject(obj, reqSession) {
     const userProperties = reqSession.user.userProperties;
     let canUpdate = false;
@@ -200,7 +178,7 @@ function addLicenceAmendmentWithDB(db, licenceID, amendmentType, amendment, isHi
     return amendmentIndex;
 }
 function getRawRowsColumns(sql, params) {
-    const db = better_sqlite3_1.default(exports.dbPath, {
+    const db = sqlite(exports.dbPath, {
         readonly: true
     });
     const stmt = db.prepare(sql);
@@ -225,7 +203,7 @@ function getLicenceTableStats() {
     if (Date.now() < licenceTableStatsExpiryMillis) {
         return licenceTableStats;
     }
-    const db = better_sqlite3_1.default(exports.dbPath, {
+    const db = sqlite(exports.dbPath, {
         readonly: true
     });
     licenceTableStats = db.prepare("select" +
@@ -256,7 +234,7 @@ function getLicences(reqBodyOrParamsObj, reqSession, includeOptions) {
             (ele.locationName === "" ? ele.locationAddress1 : ele.locationName);
         ele.canUpdate = canUpdateObject(ele, reqSession);
     };
-    const db = better_sqlite3_1.default(exports.dbPath, {
+    const db = sqlite(exports.dbPath, {
         readonly: true
     });
     const sqlParams = [];
@@ -344,7 +322,7 @@ function getLicences(reqBodyOrParamsObj, reqSession, includeOptions) {
 }
 exports.getLicences = getLicences;
 function getLicence(licenceID, reqSession) {
-    const db = better_sqlite3_1.default(exports.dbPath, {
+    const db = sqlite(exports.dbPath, {
         readonly: true
     });
     const licenceObj = getLicenceWithDB(db, licenceID, reqSession, {
@@ -359,7 +337,7 @@ function getLicence(licenceID, reqSession) {
 }
 exports.getLicence = getLicence;
 function getNextExternalLicenceNumberFromRange() {
-    const db = better_sqlite3_1.default(exports.dbPath, {
+    const db = sqlite(exports.dbPath, {
         readonly: true
     });
     const rangeStartFromConfig = getApplicationSettingWithDB(db, "licences.externalLicenceNumber.range.start");
@@ -386,7 +364,7 @@ function getNextExternalLicenceNumberFromRange() {
 }
 exports.getNextExternalLicenceNumberFromRange = getNextExternalLicenceNumberFromRange;
 function createLicence(reqBody, reqSession) {
-    const db = better_sqlite3_1.default(exports.dbPath);
+    const db = sqlite(exports.dbPath);
     const nowMillis = Date.now();
     let externalLicenceNumberInteger = -1;
     try {
@@ -477,7 +455,7 @@ function createLicence(reqBody, reqSession) {
 }
 exports.createLicence = createLicence;
 function updateLicence(reqBody, reqSession) {
-    const db = better_sqlite3_1.default(exports.dbPath);
+    const db = sqlite(exports.dbPath);
     const pastLicenceObj = getLicenceWithDB(db, reqBody.licenceID, reqSession, {
         includeTicketTypes: true,
         includeFields: true,
@@ -740,7 +718,7 @@ function updateLicence(reqBody, reqSession) {
 }
 exports.updateLicence = updateLicence;
 function deleteLicence(licenceID, reqSession) {
-    const db = better_sqlite3_1.default(exports.dbPath);
+    const db = sqlite(exports.dbPath);
     const nowMillis = Date.now();
     const info = db.prepare("update LotteryLicences" +
         " set recordDelete_userName = ?," +
@@ -767,7 +745,7 @@ function getDistinctTermsConditions(organizationID) {
     const addCalculatedFieldsFn = function (ele) {
         ele.startDateMaxString = dateTimeFns.dateIntegerToString(ele.startDateMax);
     };
-    const db = better_sqlite3_1.default(exports.dbPath, {
+    const db = sqlite(exports.dbPath, {
         readonly: true
     });
     const rows = db.prepare("select termsConditions," +
@@ -786,7 +764,7 @@ function getDistinctTermsConditions(organizationID) {
 }
 exports.getDistinctTermsConditions = getDistinctTermsConditions;
 function pokeLicence(licenceID, reqSession) {
-    const db = better_sqlite3_1.default(exports.dbPath);
+    const db = sqlite(exports.dbPath);
     const nowMillis = Date.now();
     const info = db.prepare("update LotteryLicences" +
         " set recordUpdate_userName = ?," +
@@ -799,7 +777,7 @@ function pokeLicence(licenceID, reqSession) {
 }
 exports.pokeLicence = pokeLicence;
 function issueLicence(licenceID, reqSession) {
-    const db = better_sqlite3_1.default(exports.dbPath);
+    const db = sqlite(exports.dbPath);
     const nowDate = new Date();
     const issueDate = dateTimeFns.dateToInteger(nowDate);
     const issueTime = dateTimeFns.dateToTimeInteger(nowDate);
@@ -818,7 +796,7 @@ function issueLicence(licenceID, reqSession) {
 }
 exports.issueLicence = issueLicence;
 function unissueLicence(licenceID, reqSession) {
-    const db = better_sqlite3_1.default(exports.dbPath);
+    const db = sqlite(exports.dbPath);
     const nowMillis = Date.now();
     const info = db.prepare("update LotteryLicences" +
         " set issueDate = null," +
@@ -838,7 +816,7 @@ function unissueLicence(licenceID, reqSession) {
 }
 exports.unissueLicence = unissueLicence;
 function getLicenceTypeSummary(reqBody) {
-    const db = better_sqlite3_1.default(exports.dbPath, {
+    const db = sqlite(exports.dbPath, {
         readonly: true
     });
     const sqlParams = [];
@@ -893,7 +871,7 @@ function getActiveLicenceSummary(reqBody, reqSession) {
             (ele.locationName === "" ? ele.locationAddress1 : ele.locationName);
         ele.canUpdate = canUpdateObject(ele, reqSession);
     };
-    const db = better_sqlite3_1.default(exports.dbPath, {
+    const db = sqlite(exports.dbPath, {
         readonly: true
     });
     const startEndDateStart = dateTimeFns.dateStringToInteger(reqBody.startEndDateStartString);
@@ -923,7 +901,7 @@ function getActiveLicenceSummary(reqBody, reqSession) {
 }
 exports.getActiveLicenceSummary = getActiveLicenceSummary;
 function addTransaction(reqBody, reqSession) {
-    const db = better_sqlite3_1.default(exports.dbPath);
+    const db = sqlite(exports.dbPath);
     const licenceObj = getLicenceWithDB(db, reqBody.licenceID, reqSession, {
         includeTicketTypes: false,
         includeFields: false,
@@ -967,7 +945,7 @@ function addTransaction(reqBody, reqSession) {
 }
 exports.addTransaction = addTransaction;
 function voidTransaction(licenceID, transactionIndex, reqSession) {
-    const db = better_sqlite3_1.default(exports.dbPath);
+    const db = sqlite(exports.dbPath);
     const licenceObj = getLicenceWithDB(db, licenceID, reqSession, {
         includeTicketTypes: false,
         includeFields: false,
@@ -999,7 +977,7 @@ function getEventTableStats() {
     if (Date.now() < eventTableStatsExpiryMillis) {
         return eventTableStats;
     }
-    const db = better_sqlite3_1.default(exports.dbPath, {
+    const db = sqlite(exports.dbPath, {
         readonly: true
     });
     eventTableStats = db.prepare("select" +
@@ -1027,7 +1005,7 @@ function getEvents(reqBody, reqSession) {
         delete ele.bank_name;
         delete ele.costs_receipts;
     };
-    const db = better_sqlite3_1.default(exports.dbPath, {
+    const db = sqlite(exports.dbPath, {
         readonly: true
     });
     const sqlParams = [reqBody.eventYear, reqBody.eventYear];
@@ -1077,7 +1055,7 @@ function getRecentlyUpdateEvents(reqSession) {
         ele.recordUpdate_timeString = dateTimeFns.dateToTimeString(new Date(ele.recordUpdate_timeMillis));
         ele.canUpdate = canUpdateObject(ele, reqSession);
     };
-    const db = better_sqlite3_1.default(exports.dbPath, {
+    const db = sqlite(exports.dbPath, {
         readonly: true
     });
     const rows = db.prepare("select e.eventDate, e.reportDate," +
@@ -1108,7 +1086,7 @@ function getOutstandingEvents(reqBody, reqSession) {
         ele.bank_name_isOutstanding = (ele.bank_name === null || ele.bank_name === "");
         ele.canUpdate = canUpdateObject(ele, reqSession);
     };
-    const db = better_sqlite3_1.default(exports.dbPath, {
+    const db = sqlite(exports.dbPath, {
         readonly: true
     });
     const sqlParams = [];
@@ -1150,7 +1128,7 @@ function getOutstandingEvents(reqBody, reqSession) {
 }
 exports.getOutstandingEvents = getOutstandingEvents;
 function getEventFinancialSummary(reqBody) {
-    const db = better_sqlite3_1.default(exports.dbPath, {
+    const db = sqlite(exports.dbPath, {
         readonly: true
     });
     const sqlParams = [];
@@ -1192,7 +1170,7 @@ function getEventFinancialSummary(reqBody) {
 }
 exports.getEventFinancialSummary = getEventFinancialSummary;
 function getEvent(licenceID, eventDate, reqSession) {
-    const db = better_sqlite3_1.default(exports.dbPath, {
+    const db = sqlite(exports.dbPath, {
         readonly: true
     });
     const eventObj = db.prepare("select *" +
@@ -1222,7 +1200,7 @@ function getEvent(licenceID, eventDate, reqSession) {
 }
 exports.getEvent = getEvent;
 function getPastEventBankingInformation(licenceID) {
-    const db = better_sqlite3_1.default(exports.dbPath, {
+    const db = sqlite(exports.dbPath, {
         readonly: true
     });
     const organizationID = db.prepare("select organizationID from LotteryLicences" +
@@ -1251,7 +1229,7 @@ function getPastEventBankingInformation(licenceID) {
 }
 exports.getPastEventBankingInformation = getPastEventBankingInformation;
 function updateEvent(reqBody, reqSession) {
-    const db = better_sqlite3_1.default(exports.dbPath);
+    const db = sqlite(exports.dbPath);
     const nowMillis = Date.now();
     const info = db.prepare("update LotteryEvents" +
         " set reportDate = ?," +
@@ -1294,7 +1272,7 @@ function updateEvent(reqBody, reqSession) {
 }
 exports.updateEvent = updateEvent;
 function deleteEvent(licenceID, eventDate, reqSession) {
-    const db = better_sqlite3_1.default(exports.dbPath);
+    const db = sqlite(exports.dbPath);
     const nowMillis = Date.now();
     const info = db.prepare("update LotteryEvents" +
         " set recordDelete_userName = ?," +
@@ -1310,7 +1288,7 @@ function deleteEvent(licenceID, eventDate, reqSession) {
 }
 exports.deleteEvent = deleteEvent;
 function pokeEvent(licenceID, eventDate, reqSession) {
-    const db = better_sqlite3_1.default(exports.dbPath);
+    const db = sqlite(exports.dbPath);
     const nowMillis = Date.now();
     const info = db.prepare("update LotteryEvents" +
         " set recordUpdate_userName = ?," +
@@ -1324,7 +1302,7 @@ function pokeEvent(licenceID, eventDate, reqSession) {
 }
 exports.pokeEvent = pokeEvent;
 function getLicenceActivityByDateRange(startDate, endDate, _reqBody) {
-    const db = better_sqlite3_1.default(exports.dbPath, {
+    const db = sqlite(exports.dbPath, {
         readonly: true
     });
     const activity = {
@@ -1377,7 +1355,7 @@ function getLicenceActivityByDateRange(startDate, endDate, _reqBody) {
 }
 exports.getLicenceActivityByDateRange = getLicenceActivityByDateRange;
 function getApplicationSettings() {
-    const db = better_sqlite3_1.default(exports.dbPath, {
+    const db = sqlite(exports.dbPath, {
         readonly: true
     });
     const rows = db.prepare("select * from ApplicationSettings order by orderNumber, settingKey").all();
@@ -1386,7 +1364,7 @@ function getApplicationSettings() {
 }
 exports.getApplicationSettings = getApplicationSettings;
 function getApplicationSetting(settingKey) {
-    const db = better_sqlite3_1.default(exports.dbPath, {
+    const db = sqlite(exports.dbPath, {
         readonly: true
     });
     const settingValue = getApplicationSettingWithDB(db, settingKey);
@@ -1395,7 +1373,7 @@ function getApplicationSetting(settingKey) {
 }
 exports.getApplicationSetting = getApplicationSetting;
 function updateApplicationSetting(settingKey, settingValue, reqSession) {
-    const db = better_sqlite3_1.default(exports.dbPath);
+    const db = sqlite(exports.dbPath);
     const nowMillis = Date.now();
     const info = db.prepare("update ApplicationSettings" +
         " set settingValue = ?," +

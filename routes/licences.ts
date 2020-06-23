@@ -4,7 +4,8 @@ const router = Router();
 import * as path from "path";
 import * as ejs from "ejs";
 
-import convertHTMLToPDF from "pdf-puppeteer";
+// tslint:disable-next-line
+const convertHTMLToPDF = require("pdf-puppeteer");
 
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns";
 import * as configFns from "../helpers/configFns";
