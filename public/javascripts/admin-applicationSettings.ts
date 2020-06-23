@@ -2,17 +2,17 @@ import type { cityssmGlobal } from "../../node_modules/@cityssm/bulma-webapp-js/
 declare const cityssm: cityssmGlobal;
 
 
-(function() {
+(() => {
 
-  function getMessageEle(formEle: HTMLFormElement | HTMLInputElement) {
-    return formEle.closest("tr").getElementsByClassName("formMessage")[0];
-  }
+  const getMessageEle = (formEle: HTMLFormElement | HTMLInputElement): HTMLElement => {
+    return <HTMLElement>formEle.closest("tr").getElementsByClassName("formMessage")[0];
+  };
 
   /*
    * Form
    */
 
-  function submitFn(formEvent: Event) {
+  const submitFn = (formEvent: Event) => {
 
     formEvent.preventDefault();
 
@@ -24,7 +24,7 @@ declare const cityssm: cityssmGlobal;
     cityssm.postJSON(
       "/admin/doSaveApplicationSetting",
       formEle,
-      function(responseJSON) {
+      (responseJSON: { success: boolean }) => {
 
         if (responseJSON.success) {
 
@@ -36,11 +36,12 @@ declare const cityssm: cityssmGlobal;
         }
       }
     );
-  }
+  };
 
-  function changeFn(inputEvent: Event) {
-    getMessageEle(<HTMLInputElement>inputEvent.currentTarget).innerHTML = "<span class=\"has-text-info\">Unsaved Changes</span>";
-  }
+  const changeFn = (inputEvent: Event) => {
+    getMessageEle(<HTMLInputElement>inputEvent.currentTarget).innerHTML =
+      "<span class=\"has-text-info\">Unsaved Changes</span>";
+  };
 
 
   const formEles = <HTMLCollectionOf<HTMLFormElement>>document.getElementsByClassName("form--applicationSetting");
@@ -49,4 +50,5 @@ declare const cityssm: cityssmGlobal;
     formEle.addEventListener("submit", submitFn);
     formEle.getElementsByClassName("input")[0].addEventListener("change", changeFn);
   }
-}());
+
+})();
