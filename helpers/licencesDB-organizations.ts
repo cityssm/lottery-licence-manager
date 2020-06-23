@@ -13,21 +13,6 @@ export function getOrganizations(reqBody: any, reqSession: Express.SessionData, 
   offset?: number
 }) {
 
-  const addCalculatedFieldsFn = function(ele: llm.Organization) {
-
-    ele.recordType = "organization";
-
-    ele.licences_endDateMaxString = dateTimeFns.dateIntegerToString(ele.licences_endDateMax || 0);
-
-    ele.canUpdate = canUpdateObject(ele, reqSession);
-
-    delete ele.recordCreate_userName;
-    delete ele.recordCreate_timeMillis;
-    delete ele.recordUpdate_userName;
-    delete ele.recordUpdate_timeMillis;
-
-  };
-
   const db = sqlite(dbPath, {
     readonly: true
   });
@@ -91,7 +76,19 @@ export function getOrganizations(reqBody: any, reqSession: Express.SessionData, 
 
   db.close();
 
-  rows.forEach(addCalculatedFieldsFn);
+  for (const ele of rows) {
+
+    ele.recordType = "organization";
+
+    ele.licences_endDateMaxString = dateTimeFns.dateIntegerToString(ele.licences_endDateMax || 0);
+
+    ele.canUpdate = canUpdateObject(ele, reqSession);
+
+    delete ele.recordCreate_userName;
+    delete ele.recordCreate_timeMillis;
+    delete ele.recordUpdate_userName;
+    delete ele.recordUpdate_timeMillis;
+  }
 
   return rows;
 

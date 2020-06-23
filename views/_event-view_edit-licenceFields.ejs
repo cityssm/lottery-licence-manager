@@ -26,6 +26,9 @@
 
       let licenceFieldValue = licenceFieldValueMap[licence.licenceTypeKey + "-" + licenceFieldConfig.fieldKey] || "";
 
+      if (!licenceFieldConfig.isActive && (licenceFieldValue === null || licenceFieldValue === "")) {
+        continue;
+      }
   %>
       <div class="panel-block">
         <p>

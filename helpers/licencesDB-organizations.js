@@ -5,15 +5,6 @@ const licencesDB_1 = require("./licencesDB");
 const sqlite = require("better-sqlite3");
 const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
 function getOrganizations(reqBody, reqSession, includeOptions) {
-    const addCalculatedFieldsFn = function (ele) {
-        ele.recordType = "organization";
-        ele.licences_endDateMaxString = dateTimeFns.dateIntegerToString(ele.licences_endDateMax || 0);
-        ele.canUpdate = licencesDB_1.canUpdateObject(ele, reqSession);
-        delete ele.recordCreate_userName;
-        delete ele.recordCreate_timeMillis;
-        delete ele.recordUpdate_userName;
-        delete ele.recordUpdate_timeMillis;
-    };
     const db = sqlite(licencesDB_1.dbPath, {
         readonly: true
     });
@@ -56,7 +47,15 @@ function getOrganizations(reqBody, reqSession, includeOptions) {
     }
     const rows = db.prepare(sql).all(sqlParams);
     db.close();
-    rows.forEach(addCalculatedFieldsFn);
+    for (const ele of rows) {
+        ele.recordType = "organization";
+        ele.licences_endDateMaxString = dateTimeFns.dateIntegerToString(ele.licences_endDateMax || 0);
+        ele.canUpdate = licencesDB_1.canUpdateObject(ele, reqSession);
+        delete ele.recordCreate_userName;
+        delete ele.recordCreate_timeMillis;
+        delete ele.recordUpdate_userName;
+        delete ele.recordUpdate_timeMillis;
+    }
     return rows;
 }
 exports.getOrganizations = getOrganizations;

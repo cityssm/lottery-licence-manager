@@ -9,7 +9,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
         const deleteFn = function () {
             const locationID = buttonEle.getAttribute("data-location-id");
             cityssm.postJSON("/locations/doDelete", {
-                locationID: locationID
+                locationID
             }, function (responseJSON) {
                 if (responseJSON.success) {
                     cityssm.alertModal(responseJSON.message, "", "OK", "success");

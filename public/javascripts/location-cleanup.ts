@@ -19,19 +19,24 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
       const locationID = buttonEle.getAttribute("data-location-id");
 
-      cityssm.postJSON("/locations/doDelete", {
-        locationID: locationID
-      }, function(responseJSON) {
+      cityssm.postJSON(
+        "/locations/doDelete", {
+          locationID
+        },
+        function(responseJSON: {
+          success: boolean,
+          message: string
+        }) {
 
-        if (responseJSON.success) {
+          if (responseJSON.success) {
 
-          cityssm.alertModal(responseJSON.message, "", "OK", "success");
-          buttonEle.closest("tr").remove();
+            cityssm.alertModal(responseJSON.message, "", "OK", "success");
+            buttonEle.closest("tr").remove();
 
-        } else {
-          cityssm.alertModal(responseJSON.message, "", "OK", "danger");
-        }
-      });
+          } else {
+            cityssm.alertModal(responseJSON.message, "", "OK", "danger");
+          }
+        });
     };
 
     cityssm.confirmModal(
