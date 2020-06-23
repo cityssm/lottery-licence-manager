@@ -4,8 +4,6 @@ declare const cityssm: cityssmGlobal;
 import type { llmGlobal } from "./types";
 declare const llm: llmGlobal;
 
-import type * as llmTypes from "../../helpers/llmTypes";
-
 
 (function() {
 

@@ -25,7 +25,6 @@ llm.arrayToObject = function(array, objectKey) {
   }
 
   return obj;
-
 };
 
 
@@ -54,9 +53,7 @@ llm.initializeDateRangeSelector = function(containerEle, changeFn) {
     const rangeValue = rangeSelectEle.value;
 
     if (rangeValue === "") {
-
       return;
-
     }
 
     let startDateString = "";
@@ -94,7 +91,6 @@ llm.initializeDateRangeSelector = function(containerEle, changeFn) {
       const endDate = new Date(parseInt(range[0], 10), jsQuarterStartMonth + 1, 0);
 
       endDateString = range[0] + "-" + ("0" + (endDate.getMonth() + 1)).slice(-2) + "-" + endDate.getDate();
-
     }
 
     startDateEle.value = startDateString;
@@ -176,9 +172,7 @@ llm.initializeDateRangeSelector = function(containerEle, changeFn) {
       endDateEle.classList.add("is-readonly");
 
       setStartEndDatesFromRange();
-
     }
-
   });
 
   rangeSelectEle.addEventListener("change", setStartEndDatesFromRange);
@@ -191,7 +185,6 @@ llm.initializeDateRangeSelector = function(containerEle, changeFn) {
   });
 
   endDateEle.addEventListener("change", changeFn);
-
 };
 
 
@@ -237,7 +230,6 @@ llm.getDefaultConfigProperty = function(propertyName, propertyValueCallbackFn) {
       propertyValueCallbackFn(defaultConfigProperties[propertyName]);
     }
   );
-
 };
 
 
@@ -248,9 +240,7 @@ llm.getDefaultConfigProperty = function(propertyName, propertyValueCallbackFn) {
 llm.initializeTabs = function(tabsListEle, callbackFns) {
 
   if (!tabsListEle) {
-
     return;
-
   }
 
   const isPanelOrMenuListTabs = tabsListEle.classList.contains("panel-tabs") || tabsListEle.classList.contains("menu-list");
@@ -294,6 +284,5 @@ llm.initializeTabs = function(tabsListEle, callbackFns) {
     (isPanelOrMenuListTabs ?
       listItemEle :
       listItemEle.getElementsByTagName("a")[0]).addEventListener("click", tabClickFn);
-
   }
 };
