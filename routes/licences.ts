@@ -20,7 +20,7 @@ import { Organization } from "../helpers/llmTypes";
  */
 
 
-router.get("/", function(_req, res) {
+router.get("/", (_req, res) => {
 
   res.render("licence-search", {
     headTitle: "Lottery Licences"
@@ -29,7 +29,7 @@ router.get("/", function(_req, res) {
 });
 
 
-router.post("/doSearch", function(req, res) {
+router.post("/doSearch", (req, res) => {
 
   res.json(licencesDB.getLicences(req.body, req.session, {
     includeOrganization: true,
@@ -45,7 +45,7 @@ router.post("/doSearch", function(req, res) {
  */
 
 
-router.get("/licenceTypes", function(_req, res) {
+router.get("/licenceTypes", (_req, res) => {
 
   // Get licence table stats
 
@@ -76,7 +76,7 @@ router.get("/licenceTypes", function(_req, res) {
 
 });
 
-router.post("/doGetLicenceTypeSummary", function(req, res) {
+router.post("/doGetLicenceTypeSummary", (req, res) => {
 
   res.json(licencesDB.getLicenceTypeSummary(req.body));
 
@@ -88,7 +88,7 @@ router.post("/doGetLicenceTypeSummary", function(req, res) {
  */
 
 
-router.get("/activeSummary", function(_req, res) {
+router.get("/activeSummary", (_req, res) => {
 
   // Get licence table stats
 
@@ -118,7 +118,7 @@ router.get("/activeSummary", function(_req, res) {
 
 });
 
-router.post("/doGetActiveLicenceSummary", function(req, res) {
+router.post("/doGetActiveLicenceSummary", (req, res) => {
 
   res.json(licencesDB.getActiveLicenceSummary(req.body, req.session));
 
@@ -200,7 +200,7 @@ router.get([
 });
 
 
-router.post("/doGetDistinctTermsConditions", function(req, res) {
+router.post("/doGetDistinctTermsConditions", (req, res) => {
 
   const organizationID = req.body.organizationID;
 
@@ -209,7 +209,7 @@ router.post("/doGetDistinctTermsConditions", function(req, res) {
 });
 
 
-router.post("/doGetTicketTypes", function(req, res) {
+router.post("/doGetTicketTypes", (req, res) => {
 
   const licenceTypeKey = req.body.licenceTypeKey;
 
@@ -228,7 +228,7 @@ router.post("/doGetTicketTypes", function(req, res) {
 });
 
 
-router.post("/doSave", function(req, res) {
+router.post("/doSave", (req, res) => {
 
   if (!req.session.user.userProperties.canCreate) {
 
@@ -277,7 +277,7 @@ router.post("/doSave", function(req, res) {
 });
 
 
-router.post("/doAddTransaction", function(req, res) {
+router.post("/doAddTransaction", (req, res) => {
 
   if (!req.session.user.userProperties.canCreate) {
 
@@ -302,7 +302,7 @@ router.post("/doAddTransaction", function(req, res) {
 });
 
 
-router.post("/doVoidTransaction", function(req, res) {
+router.post("/doVoidTransaction", (req, res) => {
 
   if (!req.session.user.userProperties.canCreate) {
 
@@ -338,7 +338,7 @@ router.post("/doVoidTransaction", function(req, res) {
 });
 
 
-router.post("/doIssueLicence", function(req, res) {
+router.post("/doIssueLicence", (req, res) => {
 
   if (!req.session.user.userProperties.canCreate) {
 
@@ -374,7 +374,7 @@ router.post("/doIssueLicence", function(req, res) {
 });
 
 
-router.post("/doUnissueLicence", function(req, res) {
+router.post("/doUnissueLicence", (req, res) => {
 
   if (!req.session.user.userProperties.canCreate) {
 
@@ -409,7 +409,7 @@ router.post("/doUnissueLicence", function(req, res) {
 });
 
 
-router.post("/doDelete", function(req, res) {
+router.post("/doDelete", (req, res) => {
 
   if (!req.session.user.userProperties.canCreate) {
 
@@ -456,7 +456,7 @@ router.post("/doDelete", function(req, res) {
 });
 
 
-router.get("/:licenceID", function(req, res) {
+router.get("/:licenceID", (req, res) => {
 
   const licenceID = parseInt(req.params.licenceID, 10);
 
@@ -485,7 +485,7 @@ router.get("/:licenceID", function(req, res) {
 });
 
 
-router.get("/:licenceID/edit", function(req, res) {
+router.get("/:licenceID/edit", (req, res) => {
 
   const licenceID = parseInt(req.params.licenceID, 10);
 
@@ -526,7 +526,7 @@ router.get("/:licenceID/edit", function(req, res) {
 });
 
 
-router.get("/:licenceID/print", function(req, res, next) {
+router.get("/:licenceID/print", (req, res, next) => {
 
   const licenceID = parseInt(req.params.licenceID, 10);
 
@@ -586,7 +586,7 @@ router.get("/:licenceID/print", function(req, res, next) {
 });
 
 
-router.get("/:licenceID/poke", function(req, res) {
+router.get("/:licenceID/poke", (req, res) => {
 
   const licenceID = parseInt(req.params.licenceID, 10);
 

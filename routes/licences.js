@@ -8,19 +8,19 @@ const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
 const configFns = require("../helpers/configFns");
 const licencesDB = require("../helpers/licencesDB");
 const licencesDBOrganizations = require("../helpers/licencesDB-organizations");
-router.get("/", function (_req, res) {
+router.get("/", (_req, res) => {
     res.render("licence-search", {
         headTitle: "Lottery Licences"
     });
 });
-router.post("/doSearch", function (req, res) {
+router.post("/doSearch", (req, res) => {
     res.json(licencesDB.getLicences(req.body, req.session, {
         includeOrganization: true,
         limit: req.body.limit,
         offset: req.body.offset
     }));
 });
-router.get("/licenceTypes", function (_req, res) {
+router.get("/licenceTypes", (_req, res) => {
     const licenceTableStats = licencesDB.getLicenceTableStats();
     const applicationDate = new Date();
     applicationDate.setMonth(applicationDate.getMonth() - 1);
@@ -36,10 +36,10 @@ router.get("/licenceTypes", function (_req, res) {
         applicationDateEndString: applicationDateEndString
     });
 });
-router.post("/doGetLicenceTypeSummary", function (req, res) {
+router.post("/doGetLicenceTypeSummary", (req, res) => {
     res.json(licencesDB.getLicenceTypeSummary(req.body));
 });
-router.get("/activeSummary", function (_req, res) {
+router.get("/activeSummary", (_req, res) => {
     const licenceTableStats = licencesDB.getLicenceTableStats();
     const startDate = new Date();
     startDate.setDate(1);
@@ -54,7 +54,7 @@ router.get("/activeSummary", function (_req, res) {
         startDateEndString: startDateEndString
     });
 });
-router.post("/doGetActiveLicenceSummary", function (req, res) {
+router.post("/doGetActiveLicenceSummary", (req, res) => {
     res.json(licencesDB.getActiveLicenceSummary(req.body, req.session));
 });
 router.get([
@@ -98,11 +98,11 @@ router.get([
         organization: organization
     });
 });
-router.post("/doGetDistinctTermsConditions", function (req, res) {
+router.post("/doGetDistinctTermsConditions", (req, res) => {
     const organizationID = req.body.organizationID;
     res.json(licencesDB.getDistinctTermsConditions(organizationID));
 });
-router.post("/doGetTicketTypes", function (req, res) {
+router.post("/doGetTicketTypes", (req, res) => {
     const licenceTypeKey = req.body.licenceTypeKey;
     const licenceType = configFns.getLicenceType(licenceTypeKey);
     if (licenceType) {
@@ -112,7 +112,7 @@ router.post("/doGetTicketTypes", function (req, res) {
         res.json([]);
     }
 });
-router.post("/doSave", function (req, res) {
+router.post("/doSave", (req, res) => {
     if (!req.session.user.userProperties.canCreate) {
         res
             .status(403)
@@ -145,7 +145,7 @@ router.post("/doSave", function (req, res) {
         }
     }
 });
-router.post("/doAddTransaction", function (req, res) {
+router.post("/doAddTransaction", (req, res) => {
     if (!req.session.user.userProperties.canCreate) {
         res
             .status(403)
@@ -162,7 +162,7 @@ router.post("/doAddTransaction", function (req, res) {
         transactionIndex: newTransactionIndex
     });
 });
-router.post("/doVoidTransaction", function (req, res) {
+router.post("/doVoidTransaction", (req, res) => {
     if (!req.session.user.userProperties.canCreate) {
         res
             .status(403)
@@ -186,7 +186,7 @@ router.post("/doVoidTransaction", function (req, res) {
         });
     }
 });
-router.post("/doIssueLicence", function (req, res) {
+router.post("/doIssueLicence", (req, res) => {
     if (!req.session.user.userProperties.canCreate) {
         res
             .status(403)
@@ -210,7 +210,7 @@ router.post("/doIssueLicence", function (req, res) {
         });
     }
 });
-router.post("/doUnissueLicence", function (req, res) {
+router.post("/doUnissueLicence", (req, res) => {
     if (!req.session.user.userProperties.canCreate) {
         res
             .status(403)
@@ -234,7 +234,7 @@ router.post("/doUnissueLicence", function (req, res) {
         });
     }
 });
-router.post("/doDelete", function (req, res) {
+router.post("/doDelete", (req, res) => {
     if (!req.session.user.userProperties.canCreate) {
         res
             .status(403)
@@ -266,7 +266,7 @@ router.post("/doDelete", function (req, res) {
         }
     }
 });
-router.get("/:licenceID", function (req, res) {
+router.get("/:licenceID", (req, res) => {
     const licenceID = parseInt(req.params.licenceID, 10);
     const licence = licencesDB.getLicence(licenceID, req.session);
     if (!licence) {
@@ -283,7 +283,7 @@ router.get("/:licenceID", function (req, res) {
         organization: organization
     });
 });
-router.get("/:licenceID/edit", function (req, res) {
+router.get("/:licenceID/edit", (req, res) => {
     const licenceID = parseInt(req.params.licenceID, 10);
     if (!req.session.user.userProperties.canCreate) {
         res.redirect("/licences/" + licenceID + "/?error=accessDenied");
@@ -308,7 +308,7 @@ router.get("/:licenceID/edit", function (req, res) {
         feeCalculation: feeCalculation
     });
 });
-router.get("/:licenceID/print", function (req, res, next) {
+router.get("/:licenceID/print", (req, res, next) => {
     const licenceID = parseInt(req.params.licenceID, 10);
     const licence = licencesDB.getLicence(licenceID, req.session);
     if (!licence) {
@@ -340,7 +340,7 @@ router.get("/:licenceID/print", function (req, res, next) {
         return null;
     });
 });
-router.get("/:licenceID/poke", function (req, res) {
+router.get("/:licenceID/poke", (req, res) => {
     const licenceID = parseInt(req.params.licenceID, 10);
     if (req.session.user.userProperties.isAdmin) {
         licencesDB.pokeLicence(licenceID, req.session);

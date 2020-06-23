@@ -4,22 +4,22 @@ const router = express_1.Router();
 const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
 const licencesDB = require("../helpers/licencesDB");
 const licencesDBOrganizations = require("../helpers/licencesDB-organizations");
-router.get("/", function (_req, res) {
+router.get("/", (_req, res) => {
     const eventTableStats = licencesDB.getEventTableStats();
     res.render("event-search", {
         headTitle: "Lottery Events",
         eventTableStats: eventTableStats
     });
 });
-router.post("/doSearch", function (req, res) {
+router.post("/doSearch", (req, res) => {
     res.json(licencesDB.getEvents(req.body, req.session));
 });
-router.get("/byWeek", function (_req, res) {
+router.get("/byWeek", (_req, res) => {
     res.render("event-byWeek", {
         headTitle: "Events By Week"
     });
 });
-router.post("/doGetEventsByWeek", function (req, res) {
+router.post("/doGetEventsByWeek", (req, res) => {
     const dateWithinWeek = dateTimeFns.dateStringToDate(req.body.eventDate);
     dateWithinWeek.setDate(dateWithinWeek.getDate() - dateWithinWeek.getDay());
     const startDateInteger = dateTimeFns.dateToInteger(dateWithinWeek);
@@ -28,23 +28,23 @@ router.post("/doGetEventsByWeek", function (req, res) {
     const activity = licencesDB.getLicenceActivityByDateRange(startDateInteger, endDateInteger, req.body);
     res.json(activity);
 });
-router.get("/recent", function (req, res) {
+router.get("/recent", (req, res) => {
     const records = licencesDB.getRecentlyUpdateEvents(req.session);
     res.render("event-recent", {
         headTitle: "Recently Updated Events",
         records: records
     });
 });
-router.get("/outstanding", function (_req, res) {
+router.get("/outstanding", (_req, res) => {
     res.render("event-outstanding", {
         headTitle: "Outstanding Events"
     });
 });
-router.post("/doGetOutstandingEvents", function (req, res) {
+router.post("/doGetOutstandingEvents", (req, res) => {
     const events = licencesDB.getOutstandingEvents(req.body, req.session);
     res.json(events);
 });
-router.get("/financials", function (_req, res) {
+router.get("/financials", (_req, res) => {
     const eventTableStats = licencesDB.getEventTableStats();
     const eventDate = new Date();
     eventDate.setMonth(eventDate.getMonth() - 1);
@@ -61,15 +61,15 @@ router.get("/financials", function (_req, res) {
         eventDateEndString: eventDateEndString
     });
 });
-router.post("/doGetFinancialSummary", function (req, res) {
+router.post("/doGetFinancialSummary", (req, res) => {
     const summary = licencesDB.getEventFinancialSummary(req.body);
     res.json(summary);
 });
-router.post("/doGetPastBankInformation", function (req, res) {
+router.post("/doGetPastBankInformation", (req, res) => {
     const bankInfoList = licencesDB.getPastEventBankingInformation(req.body.licenceID);
     res.json(bankInfoList);
 });
-router.post("/doSave", function (req, res) {
+router.post("/doSave", (req, res) => {
     if (!req.session.user.userProperties.canUpdate) {
         res
             .status(403)
@@ -93,7 +93,7 @@ router.post("/doSave", function (req, res) {
         });
     }
 });
-router.post("/doDelete", function (req, res) {
+router.post("/doDelete", (req, res) => {
     if (!req.session.user.userProperties.canUpdate) {
         res
             .status(403)
@@ -125,7 +125,7 @@ router.post("/doDelete", function (req, res) {
         }
     }
 });
-router.get("/:licenceID/:eventDate", function (req, res) {
+router.get("/:licenceID/:eventDate", (req, res) => {
     const licenceID = parseInt(req.params.licenceID, 10);
     const eventDate = parseInt(req.params.eventDate, 10);
     const eventObj = licencesDB.getEvent(licenceID, eventDate, req.session);
@@ -142,7 +142,7 @@ router.get("/:licenceID/:eventDate", function (req, res) {
         organization: organization
     });
 });
-router.get("/:licenceID/:eventDate/edit", function (req, res) {
+router.get("/:licenceID/:eventDate/edit", (req, res) => {
     const licenceID = parseInt(req.params.licenceID, 10);
     const eventDate = parseInt(req.params.eventDate, 10);
     if (!req.session.user.userProperties.canUpdate) {
@@ -167,7 +167,7 @@ router.get("/:licenceID/:eventDate/edit", function (req, res) {
         organization: organization
     });
 });
-router.get("/:licenceID/:eventDate/poke", function (req, res) {
+router.get("/:licenceID/:eventDate/poke", (req, res) => {
     const licenceID = parseInt(req.params.licenceID, 10);
     const eventDate = parseInt(req.params.eventDate, 10);
     if (req.session.user.userProperties.isAdmin) {

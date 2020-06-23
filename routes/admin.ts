@@ -7,7 +7,7 @@ import * as usersDB from "../helpers/usersDB";
 
 // Application Settings
 
-router.get("/applicationSettings", function(req, res) {
+router.get("/applicationSettings", (req, res) => {
 
   if (!req.session.user.userProperties.isAdmin) {
 
@@ -26,7 +26,7 @@ router.get("/applicationSettings", function(req, res) {
 });
 
 
-router.post("/doSaveApplicationSetting", function(req, res) {
+router.post("/doSaveApplicationSetting", (req, res) => {
 
   if (!req.session.user.userProperties.isAdmin) {
 
@@ -56,7 +56,7 @@ router.post("/doSaveApplicationSetting", function(req, res) {
 // User Management
 
 
-router.get("/userManagement", function(req, res) {
+router.get("/userManagement", (req, res) => {
 
   if (!req.session.user.userProperties.isAdmin) {
 
@@ -75,7 +75,7 @@ router.get("/userManagement", function(req, res) {
 });
 
 
-router.post("/doCreateUser", function(req, res) {
+router.post("/doCreateUser", (req, res) => {
 
   if (!req.session.user.userProperties.isAdmin) {
 
@@ -111,7 +111,7 @@ router.post("/doCreateUser", function(req, res) {
 });
 
 
-router.post("/doUpdateUser", function(req, res) {
+router.post("/doUpdateUser", (req, res) => {
 
   if (!req.session.user.userProperties.isAdmin) {
 
@@ -135,7 +135,7 @@ router.post("/doUpdateUser", function(req, res) {
 });
 
 
-router.post("/doUpdateUserProperty", function(req, res) {
+router.post("/doUpdateUserProperty", (req, res) => {
 
   if (!req.session.user.userProperties.isAdmin) {
 
@@ -159,7 +159,7 @@ router.post("/doUpdateUserProperty", function(req, res) {
 });
 
 
-router.post("/doResetPassword", function(req, res) {
+router.post("/doResetPassword", (req, res) => {
 
   if (!req.session.user.userProperties.isAdmin) {
 
@@ -184,7 +184,7 @@ router.post("/doResetPassword", function(req, res) {
 });
 
 
-router.post("/doGetUserProperties", function(req, res) {
+router.post("/doGetUserProperties", (req, res) => {
 
   if (!req.session.user.userProperties.isAdmin) {
 
@@ -205,7 +205,7 @@ router.post("/doGetUserProperties", function(req, res) {
 });
 
 
-router.post("/doDeleteUser", function(req, res) {
+router.post("/doDeleteUser", (req, res) => {
 
   if (!req.session.user.userProperties.isAdmin) {
 
@@ -242,5 +242,6 @@ router.post("/doDeleteUser", function(req, res) {
   });
 
 });
+
 
 export = router;

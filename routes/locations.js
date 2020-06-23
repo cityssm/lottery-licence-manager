@@ -5,12 +5,12 @@ const configFns = require("../helpers/configFns");
 const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
 const licencesDB = require("../helpers/licencesDB");
 const licencesDBLocations = require("../helpers/licencesDB-locations");
-router.get("/", function (_req, res) {
+router.get("/", (_req, res) => {
     res.render("location-search", {
         headTitle: "Locations"
     });
 });
-router.post("/doGetLocations", function (req, res) {
+router.post("/doGetLocations", (req, res) => {
     const locations = licencesDBLocations.getLocations(req.session, {
         limit: req.body.limit || -1,
         offset: req.body.offset || 0,
@@ -24,7 +24,7 @@ router.post("/doGetLocations", function (req, res) {
     });
     res.json(locations);
 });
-router.get("/cleanup", function (req, res) {
+router.get("/cleanup", (req, res) => {
     if (!req.session.user.userProperties.canUpdate) {
         res.redirect("/locations/?error=accessDenied");
         return;
@@ -33,11 +33,11 @@ router.get("/cleanup", function (req, res) {
         headTitle: "Location Cleanup"
     });
 });
-router.post("/doGetInactive", function (req, res) {
+router.post("/doGetInactive", (req, res) => {
     const inactiveYears = parseInt(req.body.inactiveYears, 10);
     res.json(licencesDBLocations.getInactiveLocations(inactiveYears));
 });
-router.post("/doCreate", function (req, res) {
+router.post("/doCreate", (req, res) => {
     if (!req.session.user.userProperties.canCreate) {
         res
             .status(403)
@@ -54,7 +54,7 @@ router.post("/doCreate", function (req, res) {
         locationDisplayName: (req.body.locationName === "" ? req.body.locationAddress1 : req.body.locationName)
     });
 });
-router.post("/doUpdate", function (req, res) {
+router.post("/doUpdate", (req, res) => {
     if (!req.session.user.userProperties.canCreate) {
         res
             .status(403)
@@ -78,7 +78,7 @@ router.post("/doUpdate", function (req, res) {
         });
     }
 });
-router.post("/doDelete", function (req, res) {
+router.post("/doDelete", (req, res) => {
     if (!req.session.user.userProperties.canCreate) {
         res
             .status(403)
@@ -102,7 +102,7 @@ router.post("/doDelete", function (req, res) {
         });
     }
 });
-router.post("/doRestore", function (req, res) {
+router.post("/doRestore", (req, res) => {
     if (!req.session.user.userProperties.canUpdate) {
         res
             .status(403)
@@ -126,7 +126,7 @@ router.post("/doRestore", function (req, res) {
         });
     }
 });
-router.post("/doMerge", function (req, res) {
+router.post("/doMerge", (req, res) => {
     if (!req.session.user.userProperties.isAdmin) {
         res
             .status(403)
@@ -143,7 +143,7 @@ router.post("/doMerge", function (req, res) {
         success: success
     });
 });
-router.get("/new", function (req, res) {
+router.get("/new", (req, res) => {
     if (!req.session.user.userProperties.canCreate) {
         res.redirect("/locations/?error=accessDenied-noCreate");
         return;
@@ -158,7 +158,7 @@ router.get("/new", function (req, res) {
         isCreate: true
     });
 });
-router.get("/:locationID", function (req, res) {
+router.get("/:locationID", (req, res) => {
     const locationID = parseInt(req.params.locationID, 10);
     const location = licencesDBLocations.getLocation(locationID, req.session);
     if (!location) {
@@ -178,7 +178,7 @@ router.get("/:locationID", function (req, res) {
         currentDateInteger: dateTimeFns.dateToInteger(new Date())
     });
 });
-router.get("/:locationID/edit", function (req, res) {
+router.get("/:locationID/edit", (req, res) => {
     const locationID = parseInt(req.params.locationID, 10);
     if (!req.session.user.userProperties.canCreate) {
         res.redirect("/locations/" + locationID + "/?error=accessDenied-noCreate");

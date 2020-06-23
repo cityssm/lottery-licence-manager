@@ -8,7 +8,7 @@ import * as licencesDB from "../helpers/licencesDB";
 import * as licencesDBLocations from "../helpers/licencesDB-locations";
 
 
-router.get("/", function(_req, res) {
+router.get("/", (_req, res) => {
 
   res.render("location-search", {
     headTitle: "Locations"
@@ -17,7 +17,7 @@ router.get("/", function(_req, res) {
 });
 
 
-router.post("/doGetLocations", function(req, res) {
+router.post("/doGetLocations", (req, res) => {
 
   const locations = licencesDBLocations.getLocations(req.session, {
     limit: req.body.limit || -1,
@@ -39,7 +39,7 @@ router.post("/doGetLocations", function(req, res) {
 // Cleanup
 
 
-router.get("/cleanup", function(req, res) {
+router.get("/cleanup", (req, res) => {
 
   if (!req.session.user.userProperties.canUpdate) {
 
@@ -55,7 +55,7 @@ router.get("/cleanup", function(req, res) {
 
 });
 
-router.post("/doGetInactive", function(req, res) {
+router.post("/doGetInactive", (req, res) => {
 
   const inactiveYears = parseInt(req.body.inactiveYears, 10);
 
@@ -64,7 +64,7 @@ router.post("/doGetInactive", function(req, res) {
 });
 
 
-router.post("/doCreate", function(req, res) {
+router.post("/doCreate", (req, res) => {
 
   if (!req.session.user.userProperties.canCreate) {
 
@@ -90,7 +90,7 @@ router.post("/doCreate", function(req, res) {
 });
 
 
-router.post("/doUpdate", function(req, res) {
+router.post("/doUpdate", (req, res) => {
 
   if (!req.session.user.userProperties.canCreate) {
 
@@ -125,7 +125,7 @@ router.post("/doUpdate", function(req, res) {
 });
 
 
-router.post("/doDelete", function(req, res) {
+router.post("/doDelete", (req, res) => {
 
   if (!req.session.user.userProperties.canCreate) {
 
@@ -161,7 +161,7 @@ router.post("/doDelete", function(req, res) {
 });
 
 
-router.post("/doRestore", function(req, res) {
+router.post("/doRestore", (req, res) => {
 
   if (!req.session.user.userProperties.canUpdate) {
 
@@ -197,7 +197,7 @@ router.post("/doRestore", function(req, res) {
 });
 
 
-router.post("/doMerge", function(req, res) {
+router.post("/doMerge", (req, res) => {
 
   if (!req.session.user.userProperties.isAdmin) {
 
@@ -224,7 +224,7 @@ router.post("/doMerge", function(req, res) {
 });
 
 
-router.get("/new", function(req, res) {
+router.get("/new", (req, res) => {
 
   if (!req.session.user.userProperties.canCreate) {
 
@@ -246,7 +246,7 @@ router.get("/new", function(req, res) {
 });
 
 
-router.get("/:locationID", function(req, res) {
+router.get("/:locationID", (req, res) => {
 
   const locationID = parseInt(req.params.locationID, 10);
 
@@ -276,7 +276,7 @@ router.get("/:locationID", function(req, res) {
 });
 
 
-router.get("/:locationID/edit", function(req, res) {
+router.get("/:locationID/edit", (req, res) => {
 
   const locationID = parseInt(req.params.locationID, 10);
 

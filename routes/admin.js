@@ -3,7 +3,7 @@ const express_1 = require("express");
 const router = express_1.Router();
 const licencesDB = require("../helpers/licencesDB");
 const usersDB = require("../helpers/usersDB");
-router.get("/applicationSettings", function (req, res) {
+router.get("/applicationSettings", (req, res) => {
     if (!req.session.user.userProperties.isAdmin) {
         res.redirect("/dashboard/?error=accessDenied");
         return;
@@ -14,7 +14,7 @@ router.get("/applicationSettings", function (req, res) {
         applicationSettings: applicationSettings
     });
 });
-router.post("/doSaveApplicationSetting", function (req, res) {
+router.post("/doSaveApplicationSetting", (req, res) => {
     if (!req.session.user.userProperties.isAdmin) {
         res
             .status(403)
@@ -31,7 +31,7 @@ router.post("/doSaveApplicationSetting", function (req, res) {
         success: success
     });
 });
-router.get("/userManagement", function (req, res) {
+router.get("/userManagement", (req, res) => {
     if (!req.session.user.userProperties.isAdmin) {
         res.redirect("/dashboard/?error=accessDenied");
         return;
@@ -42,7 +42,7 @@ router.get("/userManagement", function (req, res) {
         users: users
     });
 });
-router.post("/doCreateUser", function (req, res) {
+router.post("/doCreateUser", (req, res) => {
     if (!req.session.user.userProperties.isAdmin) {
         res
             .status(403)
@@ -66,7 +66,7 @@ router.post("/doCreateUser", function (req, res) {
         });
     }
 });
-router.post("/doUpdateUser", function (req, res) {
+router.post("/doUpdateUser", (req, res) => {
     if (!req.session.user.userProperties.isAdmin) {
         res
             .status(403)
@@ -81,7 +81,7 @@ router.post("/doUpdateUser", function (req, res) {
         success: (changeCount === 1)
     });
 });
-router.post("/doUpdateUserProperty", function (req, res) {
+router.post("/doUpdateUserProperty", (req, res) => {
     if (!req.session.user.userProperties.isAdmin) {
         res
             .status(403)
@@ -96,7 +96,7 @@ router.post("/doUpdateUserProperty", function (req, res) {
         success: (changeCount === 1)
     });
 });
-router.post("/doResetPassword", function (req, res) {
+router.post("/doResetPassword", (req, res) => {
     if (!req.session.user.userProperties.isAdmin) {
         res
             .status(403)
@@ -112,7 +112,7 @@ router.post("/doResetPassword", function (req, res) {
         newPassword: newPassword
     });
 });
-router.post("/doGetUserProperties", function (req, res) {
+router.post("/doGetUserProperties", (req, res) => {
     if (!req.session.user.userProperties.isAdmin) {
         res
             .status(403)
@@ -125,7 +125,7 @@ router.post("/doGetUserProperties", function (req, res) {
     const userProperties = usersDB.getUserProperties(req.body.userName);
     res.json(userProperties);
 });
-router.post("/doDeleteUser", function (req, res) {
+router.post("/doDeleteUser", (req, res) => {
     if (!req.session.user.userProperties.isAdmin) {
         res
             .status(403)

@@ -10,7 +10,7 @@ import * as licencesDBOrganizations from "../helpers/licencesDB-organizations";
  * Event Calendar
  */
 
-router.get("/", function(_req, res) {
+router.get("/", (_req, res) => {
 
   const eventTableStats = licencesDB.getEventTableStats();
 
@@ -21,7 +21,7 @@ router.get("/", function(_req, res) {
 
 });
 
-router.post("/doSearch", function(req, res) {
+router.post("/doSearch", (req, res) => {
 
   res.json(licencesDB.getEvents(req.body, req.session));
 
@@ -31,7 +31,7 @@ router.post("/doSearch", function(req, res) {
  * Events by Week
  */
 
-router.get("/byWeek", function(_req, res) {
+router.get("/byWeek", (_req, res) => {
 
   res.render("event-byWeek", {
     headTitle: "Events By Week"
@@ -39,7 +39,7 @@ router.get("/byWeek", function(_req, res) {
 
 });
 
-router.post("/doGetEventsByWeek", function(req, res) {
+router.post("/doGetEventsByWeek", (req, res) => {
 
   const dateWithinWeek = dateTimeFns.dateStringToDate(req.body.eventDate);
 
@@ -61,7 +61,7 @@ router.post("/doGetEventsByWeek", function(req, res) {
  * Recently Updated Events
  */
 
-router.get("/recent", function(req, res) {
+router.get("/recent", (req, res) => {
 
   const records = licencesDB.getRecentlyUpdateEvents(req.session);
 
@@ -76,7 +76,7 @@ router.get("/recent", function(req, res) {
  * Outstanding Events Report
  */
 
-router.get("/outstanding", function(_req, res) {
+router.get("/outstanding", (_req, res) => {
 
   res.render("event-outstanding", {
     headTitle: "Outstanding Events"
@@ -84,7 +84,7 @@ router.get("/outstanding", function(_req, res) {
 
 });
 
-router.post("/doGetOutstandingEvents", function(req, res) {
+router.post("/doGetOutstandingEvents", (req, res) => {
 
   const events = licencesDB.getOutstandingEvents(req.body, req.session);
 
@@ -97,7 +97,7 @@ router.post("/doGetOutstandingEvents", function(req, res) {
  * Financial Summary
  */
 
-router.get("/financials", function(_req, res) {
+router.get("/financials", (_req, res) => {
 
   // Get event table stats
 
@@ -127,7 +127,7 @@ router.get("/financials", function(_req, res) {
 
 });
 
-router.post("/doGetFinancialSummary", function(req, res) {
+router.post("/doGetFinancialSummary", (req, res) => {
 
   const summary = licencesDB.getEventFinancialSummary(req.body);
   res.json(summary);
@@ -140,7 +140,7 @@ router.post("/doGetFinancialSummary", function(req, res) {
  */
 
 
-router.post("/doGetPastBankInformation", function(req, res) {
+router.post("/doGetPastBankInformation", (req, res) => {
 
   const bankInfoList = licencesDB.getPastEventBankingInformation(req.body.licenceID);
   res.json(bankInfoList);
@@ -148,7 +148,7 @@ router.post("/doGetPastBankInformation", function(req, res) {
 });
 
 
-router.post("/doSave", function(req, res) {
+router.post("/doSave", (req, res) => {
 
   if (!req.session.user.userProperties.canUpdate) {
 
@@ -184,7 +184,7 @@ router.post("/doSave", function(req, res) {
 });
 
 
-router.post("/doDelete", function(req, res) {
+router.post("/doDelete", (req, res) => {
 
   if (!req.session.user.userProperties.canUpdate) {
 
@@ -231,7 +231,7 @@ router.post("/doDelete", function(req, res) {
 });
 
 
-router.get("/:licenceID/:eventDate", function(req, res) {
+router.get("/:licenceID/:eventDate", (req, res) => {
 
   const licenceID = parseInt(req.params.licenceID, 10);
   const eventDate = parseInt(req.params.eventDate, 10);
@@ -258,7 +258,7 @@ router.get("/:licenceID/:eventDate", function(req, res) {
 });
 
 
-router.get("/:licenceID/:eventDate/edit", function(req, res) {
+router.get("/:licenceID/:eventDate/edit", (req, res) => {
 
   const licenceID = parseInt(req.params.licenceID, 10);
   const eventDate = parseInt(req.params.eventDate, 10);
@@ -299,7 +299,7 @@ router.get("/:licenceID/:eventDate/edit", function(req, res) {
 });
 
 
-router.get("/:licenceID/:eventDate/poke", function(req, res) {
+router.get("/:licenceID/:eventDate/poke", (req, res) => {
 
   const licenceID = parseInt(req.params.licenceID, 10);
   const eventDate = parseInt(req.params.eventDate, 10);

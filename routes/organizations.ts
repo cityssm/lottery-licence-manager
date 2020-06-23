@@ -13,7 +13,7 @@ import * as licencesDBOrganizations from "../helpers/licencesDB-organizations";
  */
 
 
-router.get("/", function(_req, res) {
+router.get("/", (_req, res) => {
 
   res.render("organization-search", {
     headTitle: "Organizations"
@@ -22,7 +22,7 @@ router.get("/", function(_req, res) {
 });
 
 
-router.post("/doSearch", function(req, res) {
+router.post("/doSearch", (req, res) => {
 
   res.json(licencesDBOrganizations.getOrganizations(req.body, req.session, {
     limit: 100,
@@ -32,7 +32,7 @@ router.post("/doSearch", function(req, res) {
 });
 
 
-router.all("/doGetAll", function(req, res) {
+router.all("/doGetAll", (req, res) => {
 
   res.json(licencesDBOrganizations.getOrganizations({}, req.session, {
     limit: -1
@@ -46,7 +46,7 @@ router.all("/doGetAll", function(req, res) {
  */
 
 
-router.get("/cleanup", function(req, res) {
+router.get("/cleanup", (req, res) => {
 
   if (!req.session.user.userProperties.canUpdate) {
 
@@ -62,7 +62,7 @@ router.get("/cleanup", function(req, res) {
 });
 
 
-router.post("/doGetInactive", function(req, res) {
+router.post("/doGetInactive", (req, res) => {
 
   const inactiveYears = parseInt(req.body.inactiveYears, 10);
 
@@ -75,7 +75,7 @@ router.post("/doGetInactive", function(req, res) {
  * RECOVERY
  */
 
-router.get("/recovery", function(req, res) {
+router.get("/recovery", (req, res) => {
 
   if (!req.session.user.userProperties.isAdmin) {
 
@@ -99,7 +99,7 @@ router.get("/recovery", function(req, res) {
  */
 
 
-router.post("/doGetRemarks", function(req, res) {
+router.post("/doGetRemarks", (req, res) => {
 
   const organizationID = req.body.organizationID;
 
@@ -108,7 +108,7 @@ router.post("/doGetRemarks", function(req, res) {
 });
 
 
-router.post("/doGetRemark", function(req, res) {
+router.post("/doGetRemark", (req, res) => {
 
   const organizationID = req.body.organizationID;
   const remarkIndex = req.body.remarkIndex;
@@ -118,7 +118,7 @@ router.post("/doGetRemark", function(req, res) {
 });
 
 
-router.post("/doAddRemark", function(req, res) {
+router.post("/doAddRemark", (req, res) => {
 
   if (!req.session.user.userProperties.canCreate) {
 
@@ -144,7 +144,7 @@ router.post("/doAddRemark", function(req, res) {
 });
 
 
-router.post("/doEditRemark", function(req, res) {
+router.post("/doEditRemark", (req, res) => {
 
   if (!req.session.user.userProperties.canCreate) {
 
@@ -180,7 +180,7 @@ router.post("/doEditRemark", function(req, res) {
 });
 
 
-router.post("/doDeleteRemark", function(req, res) {
+router.post("/doDeleteRemark", (req, res) => {
 
   if (!req.session.user.userProperties.canCreate) {
 
@@ -224,7 +224,7 @@ router.post("/doDeleteRemark", function(req, res) {
  */
 
 
-router.post("/doGetBankRecords", function(req, res) {
+router.post("/doGetBankRecords", (req, res) => {
 
   const organizationID = req.body.organizationID;
   const bankingYear = req.body.bankingYear;
@@ -235,7 +235,7 @@ router.post("/doGetBankRecords", function(req, res) {
 });
 
 
-router.post("/doGetBankRecordStats", function(req, res) {
+router.post("/doGetBankRecordStats", (req, res) => {
 
   const organizationID = req.body.organizationID;
   res.json(licencesDBOrganizations.getOrganizationBankRecordStats(organizationID));
@@ -243,7 +243,7 @@ router.post("/doGetBankRecordStats", function(req, res) {
 });
 
 
-router.post("/doAddBankRecord", function(req, res) {
+router.post("/doAddBankRecord", (req, res) => {
 
   if (!req.session.user.userProperties.canCreate) {
 
@@ -279,7 +279,7 @@ router.post("/doAddBankRecord", function(req, res) {
 });
 
 
-router.post("/doEditBankRecord", function(req, res) {
+router.post("/doEditBankRecord", (req, res) => {
 
   if (!req.session.user.userProperties.canCreate) {
 
@@ -315,7 +315,7 @@ router.post("/doEditBankRecord", function(req, res) {
 });
 
 
-router.post("/doDeleteBankRecord", function(req, res) {
+router.post("/doDeleteBankRecord", (req, res) => {
 
   if (!req.session.user.userProperties.canCreate) {
 
@@ -330,29 +330,24 @@ router.post("/doDeleteBankRecord", function(req, res) {
 
   }
 
-  const success = licencesDBOrganizations.deleteOrganizationBankRecord(req.body.organizationID, req.body.recordIndex, req.session);
+  const success =
+    licencesDBOrganizations.deleteOrganizationBankRecord(req.body.organizationID, req.body.recordIndex, req.session);
 
   if (success) {
-
     res.json({
       success: true,
       message: "Organization updated successfully."
     });
-
   } else {
-
     res.json({
       success: false,
       message: "Record Not Saved"
     });
-
   }
-
-
 });
 
 
-router.get("/new", function(req, res) {
+router.get("/new", (req, res) => {
 
   if (!req.session.user.userProperties.canCreate) {
 
@@ -374,7 +369,7 @@ router.get("/new", function(req, res) {
 });
 
 
-router.post("/doSave", function(req, res) {
+router.post("/doSave", (req, res) => {
 
   if (!req.session.user.userProperties.canCreate) {
 
@@ -423,7 +418,7 @@ router.post("/doSave", function(req, res) {
 });
 
 
-router.post("/doDelete", function(req, res) {
+router.post("/doDelete", (req, res) => {
 
   if (!req.session.user.userProperties.canCreate) {
 
@@ -459,7 +454,7 @@ router.post("/doDelete", function(req, res) {
 });
 
 
-router.post("/doRestore", function(req, res) {
+router.post("/doRestore", (req, res) => {
 
   if (!req.session.user.userProperties.canUpdate) {
 
@@ -500,7 +495,7 @@ router.post("/doRestore", function(req, res) {
  */
 
 
-router.get("/:organizationID", function(req, res) {
+router.get("/:organizationID", (req, res) => {
 
   const organizationID = parseInt(req.params.organizationID, 10);
 
@@ -542,7 +537,7 @@ router.get("/:organizationID", function(req, res) {
  */
 
 
-router.get("/:organizationID/edit", function(req, res) {
+router.get("/:organizationID/edit", (req, res) => {
 
   const organizationID = parseInt(req.params.organizationID, 10);
 
@@ -595,7 +590,7 @@ router.get("/:organizationID/edit", function(req, res) {
 });
 
 
-router.post("/:organizationID/doAddOrganizationRepresentative", function(req, res) {
+router.post("/:organizationID/doAddOrganizationRepresentative", (req, res) => {
 
   if (!req.session.user.userProperties.canCreate) {
 
@@ -632,7 +627,7 @@ router.post("/:organizationID/doAddOrganizationRepresentative", function(req, re
 });
 
 
-router.post("/:organizationID/doEditOrganizationRepresentative", function(req, res) {
+router.post("/:organizationID/doEditOrganizationRepresentative", (req, res) => {
 
   if (!req.session.user.userProperties.canCreate) {
 
@@ -669,7 +664,7 @@ router.post("/:organizationID/doEditOrganizationRepresentative", function(req, r
 });
 
 
-router.post("/:organizationID/doDeleteOrganizationRepresentative", function(req, res) {
+router.post("/:organizationID/doDeleteOrganizationRepresentative", (req, res) => {
 
   if (!req.session.user.userProperties.canCreate) {
 
@@ -696,7 +691,7 @@ router.post("/:organizationID/doDeleteOrganizationRepresentative", function(req,
 });
 
 
-router.post("/:organizationID/doSetDefaultRepresentative", function(req, res) {
+router.post("/:organizationID/doSetDefaultRepresentative", (req, res) => {
 
   if (!req.session.user.userProperties.canCreate) {
 

@@ -4,14 +4,14 @@ const router = express_1.Router();
 const licencesDB = require("../helpers/licencesDB");
 const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
 const stringFns_1 = require("@cityssm/expressjs-server-js/stringFns");
-router.get("/", function (_req, res) {
+router.get("/", (_req, res) => {
     const rightNow = new Date();
     res.render("report-search", {
         headTitle: "Reports",
         todayDateString: dateTimeFns.dateToString(rightNow)
     });
 });
-router.all("/:reportName", function (req, res) {
+router.all("/:reportName", (req, res) => {
     const reportName = req.params.reportName;
     let sql = "";
     let params = [];
