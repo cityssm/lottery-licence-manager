@@ -454,11 +454,9 @@ export function getLicences(reqBodyOrParamsObj: any, reqSession: Express.Session
 
     const organizationNamePieces = reqBodyOrParamsObj.organizationName.toLowerCase().split(" ");
 
-    for (let pieceIndex = 0; pieceIndex < organizationNamePieces.length; pieceIndex += 1) {
-
+    for (const organizationNamePiece of organizationNamePieces) {
       sqlWhereClause += " and instr(lower(o.organizationName), ?)";
-      sqlParams.push(organizationNamePieces[pieceIndex]);
-
+      sqlParams.push(organizationNamePiece);
     }
 
   }
@@ -1892,17 +1890,23 @@ export function getEvents(reqBody: any, reqSession: Express.SessionData) {
     " and e.eventDate < (? * 10000) + 9999";
 
   if (reqBody.externalLicenceNumber !== "") {
-
     sql += " and instr(lower(l.externalLicenceNumber), ?) > 0";
     sqlParams.push(reqBody.externalLicenceNumber);
-
   }
 
   if (reqBody.licenceTypeKey !== "") {
-
     sql += " and l.licenceTypeKey = ?";
     sqlParams.push(reqBody.licenceTypeKey);
+  }
 
+  if (reqBody.organizationName !== "") {
+
+    const organizationNamePieces = reqBody.organizationName.toLowerCase().split(" ");
+
+    for (const organizationNamePiece of organizationNamePieces) {
+      sql += " and instr(lower(o.organizationName), ?)";
+      sqlParams.push(organizationNamePiece);
+    }
   }
 
   sql += " order by e.eventDate, l.startTime";

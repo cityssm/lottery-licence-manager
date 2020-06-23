@@ -22,15 +22,18 @@
         <div class="column">
           <div class="field">
             <label class="label" for="filter--externalLicenceNumber"><%= configFns.getProperty("licences.externalLicenceNumber.fieldLabel") %></label>
-            <div class="control">
+            <div class="control has-icons-left">
               <input class="input" id="filter--externalLicenceNumber" type="text" />
+              <span class="icon is-small is-left">
+                <i class="fas fa-filter" aria-hidden="true"></i>
+              </span>
             </div>
           </div>
         </div>
         <div class="column">
           <div class="field">
             <label class="label" for="filter--licenceTypeKey">Licence Type</label>
-            <div class="control">
+            <div class="control has-icons-left">
               <div class="select is-fullwidth">
                 <select id="filter--licenceTypeKey">
                   <option value="">(All Types)</option>
@@ -38,19 +41,35 @@
                     const licenceTypes = configFns.getProperty("licenceTypes");
                     for (let licenceTypeIndex = 0; licenceTypeIndex < licenceTypes.length; licenceTypeIndex += 1) {
                   %>
-                    <option value="<%= licenceTypes[licenceTypeIndex].licenceTypeKey %>">
-                      <%= licenceTypes[licenceTypeIndex].licenceType %>
-                    </option>
+                  <option value="<%= licenceTypes[licenceTypeIndex].licenceTypeKey %>">
+                    <%= licenceTypes[licenceTypeIndex].licenceType %>
+                  </option>
                   <% } %>
                 </select>
               </div>
+              <span class="icon is-small is-left">
+                <i class="fas fa-filter" aria-hidden="true"></i>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="columns">
+        <div class="column">
+          <div class="field">
+            <label class="label" for="filter--organizationName">Organization Name</label>
+            <div class="control has-icons-left">
+              <input class="input" id="filter--organizationName" name="organizationName" type="text" />
+              <span class="icon is-small is-left">
+                <i class="fas fa-filter" aria-hidden="true"></i>
+              </span>
             </div>
           </div>
         </div>
         <div class="column">
           <div class="field">
             <label class="label" for="filter--year">Event Year</label>
-            <div class="control">
+            <div class="control has-icons-left">
               <div class="select is-fullwidth">
                 <select id="filter--year" required>
                   <%
@@ -64,6 +83,9 @@
                   <% } %>
                 </select>
               </div>
+              <span class="icon is-small is-left">
+                <i class="fas fa-filter" aria-hidden="true"></i>
+              </span>
             </div>
           </div>
         </div>

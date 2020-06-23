@@ -8,6 +8,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
   const filterExternalLicenceNumberEle = <HTMLInputElement>document.getElementById("filter--externalLicenceNumber");
   const filterLicenceTypeKeyEle = <HTMLSelectElement>document.getElementById("filter--licenceTypeKey");
+  const filterOrganizationNameEle = <HTMLSelectElement>document.getElementById("filter--organizationName");
   const filterYearEle = <HTMLSelectElement>document.getElementById("filter--year");
 
   const resultsEle = document.getElementById("container--events");
@@ -23,6 +24,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
       "/events/doSearch", {
         externalLicenceNumber: filterExternalLicenceNumberEle.value,
         licenceTypeKey: filterLicenceTypeKeyEle.value,
+        organizationName: filterOrganizationNameEle.value,
         eventYear: filterYearEle.value
       },
       function(eventList: llmTypes.LotteryEvent[]) {
@@ -107,8 +109,8 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
   filterExternalLicenceNumberEle.addEventListener("change", getEvents);
   filterLicenceTypeKeyEle.addEventListener("change", getEvents);
+  filterOrganizationNameEle.addEventListener("change", getEvents);
   filterYearEle.addEventListener("change", getEvents);
 
   getEvents();
-
 }());

@@ -274,9 +274,9 @@ function getLicences(reqBodyOrParamsObj, reqSession, includeOptions) {
     }
     if (reqBodyOrParamsObj.organizationName && reqBodyOrParamsObj.organizationName !== "") {
         const organizationNamePieces = reqBodyOrParamsObj.organizationName.toLowerCase().split(" ");
-        for (let pieceIndex = 0; pieceIndex < organizationNamePieces.length; pieceIndex += 1) {
+        for (const organizationNamePiece of organizationNamePieces) {
             sqlWhereClause += " and instr(lower(o.organizationName), ?)";
-            sqlParams.push(organizationNamePieces[pieceIndex]);
+            sqlParams.push(organizationNamePiece);
         }
     }
     if (reqBodyOrParamsObj.licenceTypeKey && reqBodyOrParamsObj.licenceTypeKey !== "") {
@@ -1052,6 +1052,13 @@ function getEvents(reqBody, reqSession) {
     if (reqBody.licenceTypeKey !== "") {
         sql += " and l.licenceTypeKey = ?";
         sqlParams.push(reqBody.licenceTypeKey);
+    }
+    if (reqBody.organizationName !== "") {
+        const organizationNamePieces = reqBody.organizationName.toLowerCase().split(" ");
+        for (const organizationNamePiece of organizationNamePieces) {
+            sql += " and instr(lower(o.organizationName), ?)";
+            sqlParams.push(organizationNamePiece);
+        }
     }
     sql += " order by e.eventDate, l.startTime";
     const rows = db.prepare(sql)

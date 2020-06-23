@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 (function () {
     const filterExternalLicenceNumberEle = document.getElementById("filter--externalLicenceNumber");
     const filterLicenceTypeKeyEle = document.getElementById("filter--licenceTypeKey");
+    const filterOrganizationNameEle = document.getElementById("filter--organizationName");
     const filterYearEle = document.getElementById("filter--year");
     const resultsEle = document.getElementById("container--events");
     function getEvents() {
@@ -13,6 +14,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
         cityssm.postJSON("/events/doSearch", {
             externalLicenceNumber: filterExternalLicenceNumberEle.value,
             licenceTypeKey: filterLicenceTypeKeyEle.value,
+            organizationName: filterOrganizationNameEle.value,
             eventYear: filterYearEle.value
         }, function (eventList) {
             if (eventList.length === 0) {
@@ -79,6 +81,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
     }
     filterExternalLicenceNumberEle.addEventListener("change", getEvents);
     filterLicenceTypeKeyEle.addEventListener("change", getEvents);
+    filterOrganizationNameEle.addEventListener("change", getEvents);
     filterYearEle.addEventListener("change", getEvents);
     getEvents();
 }());
