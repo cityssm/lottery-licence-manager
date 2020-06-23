@@ -170,9 +170,7 @@ function getLicenceWithDB(db: sqlite.Database, licenceID: number, reqSession: Ex
         " order by t.ticketType")
         .all(licenceID);
 
-      for (let index = 0; index < ticketTypesList.length; index += 1) {
-
-        const ticketTypeObj = ticketTypesList[index];
+      for (const ticketTypeObj of ticketTypesList) {
 
         ticketTypeObj.distributorLocationDisplayName = ticketTypeObj.distributorLocationName === "" ?
           ticketTypeObj.distributorLocationAddress1 :
@@ -264,13 +262,12 @@ function getLicenceWithDB(db: sqlite.Database, licenceID: number, reqSession: Ex
 
       let licenceTransactionTotal = 0;
 
-      for (let index = 0; index < transactions.length; index += 1) {
+      for (const transactionObj of transactions) {
 
-        const amendmentObj = transactions[index];
-        amendmentObj.transactionDateString = dateTimeFns.dateIntegerToString(amendmentObj.transactionDate);
-        amendmentObj.transactionTimeString = dateTimeFns.timeIntegerToString(amendmentObj.transactionTime);
+        transactionObj.transactionDateString = dateTimeFns.dateIntegerToString(transactionObj.transactionDate);
+        transactionObj.transactionTimeString = dateTimeFns.timeIntegerToString(transactionObj.transactionTime);
 
-        licenceTransactionTotal += amendmentObj.transactionAmount;
+        licenceTransactionTotal += transactionObj.transactionAmount;
       }
 
       licenceObj.licenceTransactions = transactions;
@@ -1255,7 +1252,7 @@ export function updateLicence(reqBody: any, reqSession: Express.SessionData): bo
             db,
             reqBody.licenceID,
             "Ticket Type Change",
-            (reqBody.ticketType_ticketType[ticketTypeIndex] + " Units: " +
+            (ticketType + " Units: " +
               ticketTypeObj_past.unitCount + " -> " + reqBody.ticketType_unitCount[ticketTypeIndex]),
             0,
             reqSession

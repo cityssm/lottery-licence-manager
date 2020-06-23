@@ -93,8 +93,7 @@ function getLicenceWithDB(db, licenceID, reqSession, queryOptions) {
                 " and t.licenceID = ?" +
                 " order by t.ticketType")
                 .all(licenceID);
-            for (let index = 0; index < ticketTypesList.length; index += 1) {
-                const ticketTypeObj = ticketTypesList[index];
+            for (const ticketTypeObj of ticketTypesList) {
                 ticketTypeObj.distributorLocationDisplayName = ticketTypeObj.distributorLocationName === "" ?
                     ticketTypeObj.distributorLocationAddress1 :
                     ticketTypeObj.distributorLocationName;
@@ -147,11 +146,10 @@ function getLicenceWithDB(db, licenceID, reqSession, queryOptions) {
                 " order by transactionDate, transactionTime, transactionIndex")
                 .all(licenceID);
             let licenceTransactionTotal = 0;
-            for (let index = 0; index < transactions.length; index += 1) {
-                const amendmentObj = transactions[index];
-                amendmentObj.transactionDateString = dateTimeFns.dateIntegerToString(amendmentObj.transactionDate);
-                amendmentObj.transactionTimeString = dateTimeFns.timeIntegerToString(amendmentObj.transactionTime);
-                licenceTransactionTotal += amendmentObj.transactionAmount;
+            for (const transactionObj of transactions) {
+                transactionObj.transactionDateString = dateTimeFns.dateIntegerToString(transactionObj.transactionDate);
+                transactionObj.transactionTimeString = dateTimeFns.timeIntegerToString(transactionObj.transactionTime);
+                licenceTransactionTotal += transactionObj.transactionAmount;
             }
             licenceObj.licenceTransactions = transactions;
             licenceObj.licenceTransactionTotal = licenceTransactionTotal;
@@ -679,7 +677,7 @@ function updateLicence(reqBody, reqSession) {
                 if (ticketTypeObj_past &&
                     configFns.getProperty("amendments.trackTicketTypeUpdate") &&
                     ticketTypeObj_past.unitCount !== parseInt(reqBody.ticketType_unitCount[ticketTypeIndex], 10)) {
-                    addLicenceAmendmentWithDB(db, reqBody.licenceID, "Ticket Type Change", (reqBody.ticketType_ticketType[ticketTypeIndex] + " Units: " +
+                    addLicenceAmendmentWithDB(db, reqBody.licenceID, "Ticket Type Change", (ticketType + " Units: " +
                         ticketTypeObj_past.unitCount + " -> " + reqBody.ticketType_unitCount[ticketTypeIndex]), 0, reqSession);
                 }
             }
