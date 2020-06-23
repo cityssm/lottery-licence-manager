@@ -4,7 +4,7 @@ exports.getInactiveLocations = exports.mergeLocations = exports.restoreLocation 
 const licencesDB_1 = require("./licencesDB");
 const sqlite = require("better-sqlite3");
 const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
-function getLocations(reqSession, queryOptions) {
+exports.getLocations = (reqSession, queryOptions) => {
     const addCalculatedFieldsFn = function (ele) {
         ele.recordType = "location";
         ele.locationDisplayName =
@@ -88,9 +88,8 @@ function getLocations(reqSession, queryOptions) {
         count: (queryOptions.limit === -1 ? rows.length : count),
         locations: rows
     };
-}
-exports.getLocations = getLocations;
-function getLocation(locationID, reqSession) {
+};
+exports.getLocation = (locationID, reqSession) => {
     const db = sqlite(licencesDB_1.dbPath, {
         readonly: true
     });
@@ -105,9 +104,8 @@ function getLocation(locationID, reqSession) {
     locationObj.locationDisplayName =
         locationObj.locationName === "" ? locationObj.locationAddress1 : locationObj.locationName;
     return locationObj;
-}
-exports.getLocation = getLocation;
-function createLocation(reqBody, reqSession) {
+};
+exports.createLocation = (reqBody, reqSession) => {
     const db = sqlite(licencesDB_1.dbPath);
     const nowMillis = Date.now();
     const info = db.prepare("insert into Locations" +
@@ -118,9 +116,8 @@ function createLocation(reqBody, reqSession) {
         .run(reqBody.locationName, reqBody.locationAddress1, reqBody.locationAddress2, reqBody.locationCity, reqBody.locationProvince, reqBody.locationPostalCode, reqBody.locationIsDistributor || 0, reqBody.locationIsManufacturer || 0, reqSession.user.userName, nowMillis, reqSession.user.userName, nowMillis);
     db.close();
     return Number(info.lastInsertRowid);
-}
-exports.createLocation = createLocation;
-function updateLocation(reqBody, reqSession) {
+};
+exports.updateLocation = (reqBody, reqSession) => {
     const db = sqlite(licencesDB_1.dbPath);
     const nowMillis = Date.now();
     const info = db.prepare("update Locations" +
@@ -139,9 +136,8 @@ function updateLocation(reqBody, reqSession) {
         .run(reqBody.locationName, reqBody.locationAddress1, reqBody.locationAddress2, reqBody.locationCity, reqBody.locationProvince, reqBody.locationPostalCode, reqBody.locationIsDistributor ? 1 : 0, reqBody.locationIsManufacturer ? 1 : 0, reqSession.user.userName, nowMillis, reqBody.locationID);
     db.close();
     return info.changes > 0;
-}
-exports.updateLocation = updateLocation;
-function deleteLocation(locationID, reqSession) {
+};
+exports.deleteLocation = (locationID, reqSession) => {
     const db = sqlite(licencesDB_1.dbPath);
     const nowMillis = Date.now();
     const info = db.prepare("update Locations" +
@@ -152,9 +148,8 @@ function deleteLocation(locationID, reqSession) {
         .run(reqSession.user.userName, nowMillis, locationID);
     db.close();
     return info.changes > 0;
-}
-exports.deleteLocation = deleteLocation;
-function restoreLocation(locationID, reqSession) {
+};
+exports.restoreLocation = (locationID, reqSession) => {
     const db = sqlite(licencesDB_1.dbPath);
     const nowMillis = Date.now();
     const info = db.prepare("update Locations" +
@@ -167,9 +162,8 @@ function restoreLocation(locationID, reqSession) {
         .run(reqSession.user.userName, nowMillis, locationID);
     db.close();
     return info.changes > 0;
-}
-exports.restoreLocation = restoreLocation;
-function mergeLocations(targetLocationID, sourceLocationID, reqSession) {
+};
+exports.mergeLocations = (targetLocationID, sourceLocationID, reqSession) => {
     const db = sqlite(licencesDB_1.dbPath);
     const nowMillis = Date.now();
     const locationAttributes = db.prepare("select max(locationIsDistributor) as locationIsDistributorMax," +
@@ -214,9 +208,8 @@ function mergeLocations(targetLocationID, sourceLocationID, reqSession) {
         .run(reqSession.user.userName, nowMillis, sourceLocationID);
     db.close();
     return true;
-}
-exports.mergeLocations = mergeLocations;
-function getInactiveLocations(inactiveYears) {
+};
+exports.getInactiveLocations = (inactiveYears) => {
     const addCalculatedFieldsFn = function (locationObj) {
         locationObj.locationDisplayName =
             locationObj.locationName === "" ? locationObj.locationAddress1 : locationObj.locationName;
@@ -261,5 +254,4 @@ function getInactiveLocations(inactiveYears) {
     db.close();
     rows.forEach(addCalculatedFieldsFn);
     return rows;
-}
-exports.getInactiveLocations = getInactiveLocations;
+};

@@ -5,13 +5,13 @@ import * as llm from "./llmTypes";
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns";
 
 
-export function getLocations(reqSession: Express.SessionData, queryOptions: {
+export const getLocations = (reqSession: Express.SessionData, queryOptions: {
   limit: number,
   offset?: number,
   locationNameAddress: string,
   locationIsDistributor: number,
   locationIsManufacturer: number
-}) {
+}) => {
 
   const addCalculatedFieldsFn = function(ele: llm.Location) {
 
@@ -133,9 +133,9 @@ export function getLocations(reqSession: Express.SessionData, queryOptions: {
     locations: rows
   };
 
-}
+};
 
-export function getLocation(locationID: number, reqSession: Express.SessionData) {
+export const getLocation = (locationID: number, reqSession: Express.SessionData) => {
 
   const db = sqlite(dbPath, {
     readonly: true
@@ -158,12 +158,12 @@ export function getLocation(locationID: number, reqSession: Express.SessionData)
 
   return locationObj;
 
-}
+};
 
 /**
  * @returns New locationID
  */
-export function createLocation(reqBody: llm.Location, reqSession: Express.SessionData) {
+export const createLocation = (reqBody: llm.Location, reqSession: Express.SessionData) => {
 
   const db = sqlite(dbPath);
 
@@ -193,12 +193,12 @@ export function createLocation(reqBody: llm.Location, reqSession: Express.Sessio
 
   return Number(info.lastInsertRowid);
 
-}
+};
 
 /**
  * @returns TRUE if successful
  */
-export function updateLocation(reqBody: llm.Location, reqSession: Express.SessionData): boolean {
+export const updateLocation = (reqBody: llm.Location, reqSession: Express.SessionData): boolean => {
 
   const db = sqlite(dbPath);
 
@@ -235,12 +235,12 @@ export function updateLocation(reqBody: llm.Location, reqSession: Express.Sessio
 
   return info.changes > 0;
 
-}
+};
 
 /**
  * @returns TRUE if successful
  */
-export function deleteLocation(locationID: number, reqSession: Express.SessionData): boolean {
+export const deleteLocation = (locationID: number, reqSession: Express.SessionData): boolean => {
 
   const db = sqlite(dbPath);
 
@@ -261,12 +261,12 @@ export function deleteLocation(locationID: number, reqSession: Express.SessionDa
 
   return info.changes > 0;
 
-}
+};
 
 /**
  * @returns TRUE if successful
  */
-export function restoreLocation(locationID: number, reqSession: Express.SessionData): boolean {
+export const restoreLocation = (locationID: number, reqSession: Express.SessionData): boolean => {
 
   const db = sqlite(dbPath);
 
@@ -289,92 +289,93 @@ export function restoreLocation(locationID: number, reqSession: Express.SessionD
 
   return info.changes > 0;
 
-}
+};
 
 /**
  * @returns TRUE if successful
  */
-export function mergeLocations(targetLocationID: number, sourceLocationID: number, reqSession: Express.SessionData) {
+export const mergeLocations =
+  (targetLocationID: number, sourceLocationID: number, reqSession: Express.SessionData) => {
 
-  const db = sqlite(dbPath);
+    const db = sqlite(dbPath);
 
-  const nowMillis = Date.now();
+    const nowMillis = Date.now();
 
-  // Get locationAttributes
+    // Get locationAttributes
 
-  const locationAttributes = db.prepare("select max(locationIsDistributor) as locationIsDistributorMax," +
-    " max(locationIsManufacturer) as locationIsManufacturerMax," +
-    " count(locationID) as locationCount" +
-    " from Locations" +
-    " where recordDelete_timeMillis is null" +
-    " and (locationID = ? or locationID = ?)")
-    .get(targetLocationID, sourceLocationID);
+    const locationAttributes = db.prepare("select max(locationIsDistributor) as locationIsDistributorMax," +
+      " max(locationIsManufacturer) as locationIsManufacturerMax," +
+      " count(locationID) as locationCount" +
+      " from Locations" +
+      " where recordDelete_timeMillis is null" +
+      " and (locationID = ? or locationID = ?)")
+      .get(targetLocationID, sourceLocationID);
 
-  if (!locationAttributes) {
+    if (!locationAttributes) {
+
+      db.close();
+      return false;
+
+    }
+
+    if (locationAttributes.locationCount !== 2) {
+
+      db.close();
+      return false;
+
+    }
+
+    // Update the target location
+
+    db.prepare("update Locations" +
+      " set locationIsDistributor = ?," +
+      " locationIsManufacturer = ?" +
+      " where locationID = ?")
+      .run(
+        locationAttributes.locationIsDistributorMax,
+        locationAttributes.locationIsManufacturerMax,
+        targetLocationID
+      );
+
+    // Update records assigned to the source location
+
+    db.prepare("update LotteryLicences" +
+      " set locationID = ?" +
+      " where locationID = ?" +
+      " and recordDelete_timeMillis is null")
+      .run(targetLocationID, sourceLocationID);
+
+    db.prepare("update LotteryLicenceTicketTypes" +
+      " set distributorLocationID = ?" +
+      " where distributorLocationID = ?" +
+      " and recordDelete_timeMillis is null")
+      .run(targetLocationID, sourceLocationID);
+
+    db.prepare("update LotteryLicenceTicketTypes" +
+      " set manufacturerLocationID = ?" +
+      " where manufacturerLocationID = ?" +
+      " and recordDelete_timeMillis is null")
+      .run(targetLocationID, sourceLocationID);
+
+    // Set the source record to inactive
+
+    db.prepare("update Locations" +
+      " set recordDelete_userName = ?," +
+      " recordDelete_timeMillis = ?" +
+      " where locationID = ?")
+      .run(
+        reqSession.user.userName,
+        nowMillis,
+        sourceLocationID
+      );
 
     db.close();
-    return false;
 
-  }
-
-  if (locationAttributes.locationCount !== 2) {
-
-    db.close();
-    return false;
-
-  }
-
-  // Update the target location
-
-  db.prepare("update Locations" +
-    " set locationIsDistributor = ?," +
-    " locationIsManufacturer = ?" +
-    " where locationID = ?")
-    .run(
-      locationAttributes.locationIsDistributorMax,
-      locationAttributes.locationIsManufacturerMax,
-      targetLocationID
-    );
-
-  // Update records assigned to the source location
-
-  db.prepare("update LotteryLicences" +
-    " set locationID = ?" +
-    " where locationID = ?" +
-    " and recordDelete_timeMillis is null")
-    .run(targetLocationID, sourceLocationID);
-
-  db.prepare("update LotteryLicenceTicketTypes" +
-    " set distributorLocationID = ?" +
-    " where distributorLocationID = ?" +
-    " and recordDelete_timeMillis is null")
-    .run(targetLocationID, sourceLocationID);
-
-  db.prepare("update LotteryLicenceTicketTypes" +
-    " set manufacturerLocationID = ?" +
-    " where manufacturerLocationID = ?" +
-    " and recordDelete_timeMillis is null")
-    .run(targetLocationID, sourceLocationID);
-
-  // Set the source record to inactive
-
-  db.prepare("update Locations" +
-    " set recordDelete_userName = ?," +
-    " recordDelete_timeMillis = ?" +
-    " where locationID = ?")
-    .run(
-      reqSession.user.userName,
-      nowMillis,
-      sourceLocationID
-    );
-
-  db.close();
-
-  return true;
-}
+    return true;
+  };
 
 
-export function getInactiveLocations(inactiveYears: number) {
+export const getInactiveLocations = (inactiveYears: number) => {
 
   const addCalculatedFieldsFn = function(locationObj: llm.Location) {
 
@@ -436,4 +437,4 @@ export function getInactiveLocations(inactiveYears: number) {
   rows.forEach(addCalculatedFieldsFn);
 
   return rows;
-}
+};
