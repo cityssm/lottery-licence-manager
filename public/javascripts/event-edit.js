@@ -1,15 +1,15 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-(function () {
+(() => {
     const eventDateNavEle = document.getElementById("eventNav--eventDate");
     const formEle = document.getElementById("form--event");
     const formMessageEle = document.getElementById("container--form-message");
     const licenceID = document.getElementById("event--licenceID").value;
     const eventDate = document.getElementById("event--eventDate").value;
-    formEle.addEventListener("submit", function (formEvent) {
+    formEle.addEventListener("submit", (formEvent) => {
         formEvent.preventDefault();
         formMessageEle.innerHTML = "Saving... <i class=\"fas fa-circle-notch fa-spin\" aria-hidden=\"true\"></i>";
-        cityssm.postJSON("/events/doSave", formEle, function (responseJSON) {
+        cityssm.postJSON("/events/doSave", formEle, (responseJSON) => {
             if (responseJSON.success) {
                 cityssm.disableNavBlocker();
                 if (eventDateNavEle) {
@@ -20,13 +20,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
             cityssm.alertModal(responseJSON.message, "", "OK", responseJSON.success ? "success" : "danger");
         });
     });
-    document.getElementById("is-delete-event-button").addEventListener("click", function (clickEvent) {
+    document.getElementById("is-delete-event-button").addEventListener("click", (clickEvent) => {
         clickEvent.preventDefault();
-        cityssm.confirmModal("Delete Event?", "Are you sure you want to delete this event?", "Yes, Delete", "danger", function () {
+        cityssm.confirmModal("Delete Event?", "Are you sure you want to delete this event?", "Yes, Delete", "danger", () => {
             cityssm.postJSON("/events/doDelete", {
                 licenceID: licenceID,
                 eventDate: eventDate
-            }, function (responseJSON) {
+            }, (responseJSON) => {
                 if (responseJSON.success) {
                     cityssm.disableNavBlocker();
                     window.location.href = "/licences/" + licenceID;
@@ -34,7 +34,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
             });
         });
     });
-    function setUnsavedChanges() {
+    const setUnsavedChangesFn = () => {
         cityssm.enableNavBlocker();
         if (eventDateNavEle) {
             eventDateNavEle.setAttribute("disabled", "disabled");
@@ -43,36 +43,36 @@ Object.defineProperty(exports, "__esModule", { value: true });
             "<span class=\"icon\"><i class=\"fas fa-exclamation-triangle\" aria-hidden=\"true\"></i></span>" +
             " <span>Unsaved Changes</span>" +
             "</div>";
-    }
+    };
     const inputEles = formEle.querySelectorAll("input, select, textarea");
     for (const inputEle of inputEles) {
         if (inputEle.name !== "") {
-            inputEle.addEventListener("change", setUnsavedChanges);
+            inputEle.addEventListener("change", setUnsavedChangesFn);
         }
     }
-    document.getElementById("is-bank-information-lookup-button").addEventListener("click", function (clickEvent) {
+    document.getElementById("is-bank-information-lookup-button").addEventListener("click", (clickEvent) => {
         clickEvent.preventDefault();
         let bankInfoCloseModalFn;
         let savedBankInfoList;
-        const setPastBankInformation = function (bankInfoClickEvent) {
+        const setPastBankInformationFn = (bankInfoClickEvent) => {
             bankInfoClickEvent.preventDefault();
             const listIndex = parseInt(bankInfoClickEvent.currentTarget.getAttribute("data-list-index"), 10);
             const record = savedBankInfoList[listIndex];
             document.getElementById("event--bank_name").value = record.bank_name;
             document.getElementById("event--bank_address").value = record.bank_address;
             document.getElementById("event--bank_accountNumber").value = record.bank_accountNumber;
-            setUnsavedChanges();
+            setUnsavedChangesFn();
             bankInfoCloseModalFn();
         };
-        const getPastBankInformation = function () {
+        const getPastBankInformationFn = () => {
             const containerEle = document.getElementById("container--bankInformationLookup");
             cityssm.postJSON("/events/doGetPastBankInformation", {
                 licenceID: licenceID
-            }, function (bankInfoList) {
+            }, (bankInfoList) => {
                 savedBankInfoList = bankInfoList;
                 const listEle = document.createElement("div");
                 listEle.className = "panel mb-3";
-                savedBankInfoList.forEach(function (record, index) {
+                savedBankInfoList.forEach((record, index) => {
                     const listItemEle = document.createElement("a");
                     listItemEle.className = "panel-block is-block";
                     listItemEle.setAttribute("data-list-index", index.toString());
@@ -86,7 +86,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                         record.eventDateMaxString +
                         "</span>" +
                         "</div>";
-                    listItemEle.addEventListener("click", setPastBankInformation);
+                    listItemEle.addEventListener("click", setPastBankInformationFn);
                     listEle.insertAdjacentElement("beforeend", listItemEle);
                 });
                 cityssm.clearElement(containerEle);
@@ -94,7 +94,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
             });
         };
         cityssm.openHtmlModal("event-bankInformationLookup", {
-            onshow: getPastBankInformation,
+            onshow: getPastBankInformationFn,
             onshown(_modalEle, closeModalFn) {
                 bankInfoCloseModalFn = closeModalFn;
             }
@@ -105,14 +105,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
     const costs_prizesAwarded_ele = document.getElementById("event--costs_prizesAwarded");
     const costs_netProceeds_ele = document.getElementById("event--costs_netProceeds");
     const costs_amountDonated_ele = document.getElementById("event--costs_amountDonated");
-    function refreshNetProceeds() {
+    const refreshNetProceedsFn = () => {
         const netProceeds = (parseFloat(costs_receipts_ele.value || "0") -
             parseFloat(costs_admin_ele.value || "0") -
             parseFloat(costs_prizesAwarded_ele.value || "0")).toFixed(2);
         costs_netProceeds_ele.value = netProceeds;
         costs_amountDonated_ele.setAttribute("max", netProceeds);
-    }
-    costs_receipts_ele.addEventListener("keyup", refreshNetProceeds);
-    costs_admin_ele.addEventListener("keyup", refreshNetProceeds);
-    costs_prizesAwarded_ele.addEventListener("keyup", refreshNetProceeds);
-}());
+    };
+    costs_receipts_ele.addEventListener("keyup", refreshNetProceedsFn);
+    costs_admin_ele.addEventListener("keyup", refreshNetProceedsFn);
+    costs_prizesAwarded_ele.addEventListener("keyup", refreshNetProceedsFn);
+})();

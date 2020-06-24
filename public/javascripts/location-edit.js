@@ -1,16 +1,16 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-(function () {
+(() => {
     const formEle = document.getElementById("form--location");
     const formMessageEle = document.getElementById("container--form-message");
     const locationID = document.getElementById("location--locationID").value;
     let hasUnsavedChanges = false;
     const isCreate = locationID === "";
     const isAdmin = (document.getElementsByTagName("main")[0].getAttribute("data-is-admin") === "true");
-    formEle.addEventListener("submit", function (formEvent) {
+    formEle.addEventListener("submit", (formEvent) => {
         formEvent.preventDefault();
         formMessageEle.innerHTML = "Saving... <i class=\"fas fa-circle-notch fa-spin\" aria-hidden=\"true\"></i>";
-        cityssm.postJSON((isCreate ? "/locations/doCreate" : "/locations/doUpdate"), formEle, function (responseJSON) {
+        cityssm.postJSON((isCreate ? "/locations/doCreate" : "/locations/doUpdate"), formEle, (responseJSON) => {
             if (responseJSON.success) {
                 hasUnsavedChanges = false;
                 cityssm.disableNavBlocker();
@@ -25,16 +25,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
         });
     });
     if (!isCreate) {
-        const deleteLocationFn = function () {
+        const deleteLocationFn = () => {
             cityssm.postJSON("/locations/doDelete", {
                 locationID: locationID
-            }, function (responseJSON) {
+            }, (responseJSON) => {
                 if (responseJSON.success) {
                     window.location.href = "/locations";
                 }
             });
         };
-        formEle.getElementsByClassName("is-delete-button")[0].addEventListener("click", function (clickEvent) {
+        formEle.getElementsByClassName("is-delete-button")[0].addEventListener("click", (clickEvent) => {
             clickEvent.preventDefault();
             cityssm.confirmModal("Delete Location?", ("Are you sure you want to delete this location?<br />" +
                 "Note that any active licences associated with this location will remain active."), "Yes, Delete Location", "warning", deleteLocationFn);
@@ -42,7 +42,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
     }
     if (!isCreate && isAdmin) {
         const intLocationID = parseInt(locationID, 10);
-        formEle.getElementsByClassName("is-merge-button")[0].addEventListener("click", function (mergeButton_clickEvent) {
+        formEle.getElementsByClassName("is-merge-button")[0].addEventListener("click", (mergeButton_clickEvent) => {
             mergeButton_clickEvent.preventDefault();
             if (hasUnsavedChanges) {
                 cityssm.alertModal("Unsaved Changes", "You must save all unsaved changes before merging this location record.", "OK", "warning");
@@ -58,7 +58,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
             let locationFilterEle = null;
             let sourceLocationsContainerEle = null;
             let closeMergeLocationModalFn = null;
-            const doMerge = function () {
+            const doMergeFn = () => {
                 cityssm.postJSON("/locations/doMerge", {
                     targetLocationID: locationID,
                     sourceLocationID: locationID_source
@@ -71,7 +71,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     }
                 });
             };
-            const clickFn_selectSourceLocation = function (clickEvent) {
+            const clickFn_selectSourceLocation = (clickEvent) => {
                 clickEvent.preventDefault();
                 const sourceLocationLinkEle = clickEvent.currentTarget;
                 locationID_source = sourceLocationLinkEle.getAttribute("data-location-id");
@@ -80,9 +80,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 cityssm.confirmModal("Confirm Merge", "Are you sure you want to update all licences associated with" +
                     " <em>" + locationDisplayName_source + ", #" + locationID_source + "</em>" +
                     " and associate them with" +
-                    " <em>" + locationDisplayNameAndID_target + "</em>?", "Yes, Complete Merge", "warning", doMerge);
+                    " <em>" + locationDisplayNameAndID_target + "</em>?", "Yes, Complete Merge", "warning", doMergeFn);
             };
-            const filterLocationsFn = function () {
+            const filterLocationsFn = () => {
                 const filterSplit = locationFilterEle.value
                     .trim()
                     .toLowerCase()
@@ -146,8 +146,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
             cityssm.openHtmlModal("locationMerge", {
                 onshow(modalEle) {
                     const locationDisplayNameAndID_target_eles = modalEle.getElementsByClassName("mergeLocation--locationDisplayNameAndID_target");
-                    for (let index = 0; index < locationDisplayNameAndID_target_eles.length; index += 1) {
-                        locationDisplayNameAndID_target_eles[index].innerText = locationDisplayNameAndID_target;
+                    for (const locationDisplayNameAndID_target_ele of locationDisplayNameAndID_target_eles) {
+                        locationDisplayNameAndID_target_ele.innerText = locationDisplayNameAndID_target;
                     }
                     sourceLocationsContainerEle = document.getElementById("container--sourceLocations");
                     locationFilterEle = document.getElementById("mergeLocation--locationFilter");
@@ -157,7 +157,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     closeMergeLocationModalFn = closeModalFn;
                     cityssm.postJSON("/locations/doGetLocations", {
                         limit: -1
-                    }, function (responseJSON) {
+                    }, (responseJSON) => {
                         locationsList = responseJSON.locations;
                         locationFilterEle.removeAttribute("disabled");
                         locationFilterEle.focus();
@@ -167,17 +167,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
             });
         });
     }
-    function setUnsavedChanges() {
+    const setUnsavedChangesFn = () => {
         hasUnsavedChanges = true;
         cityssm.enableNavBlocker();
         formMessageEle.innerHTML = "<span class=\"tag is-light is-info is-medium\">" +
             "<span class=\"icon\"><i class=\"fas fa-exclamation-triangle\" aria-hidden=\"true\"></i></span>" +
             " <span>Unsaved Changes</span>" +
             "</div>";
-    }
+    };
     const inputEles = formEle.getElementsByTagName("input");
     for (const inputEle of inputEles) {
-        inputEle.addEventListener("change", setUnsavedChanges);
+        inputEle.addEventListener("change", setUnsavedChangesFn);
     }
     const locationNameEle = document.getElementById("location--locationName");
     if (isCreate) {
@@ -185,14 +185,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
     }
     const locationIsDistributorCheckboxEle = document.getElementById("location--locationIsDistributor");
     const locationIsManufacturerCheckboxEle = document.getElementById("location--locationIsManufacturer");
-    function setLocationNameRequired() {
+    const setLocationNameRequiredFn = () => {
         if (locationIsDistributorCheckboxEle.checked || locationIsManufacturerCheckboxEle.checked) {
             locationNameEle.setAttribute("required", "required");
         }
         else {
             locationNameEle.removeAttribute("required");
         }
-    }
-    locationIsDistributorCheckboxEle.addEventListener("change", setLocationNameRequired);
-    locationIsManufacturerCheckboxEle.addEventListener("change", setLocationNameRequired);
-}());
+    };
+    locationIsDistributorCheckboxEle.addEventListener("change", setLocationNameRequiredFn);
+    locationIsManufacturerCheckboxEle.addEventListener("change", setLocationNameRequiredFn);
+})();

@@ -4,7 +4,7 @@ declare const cityssm: cityssmGlobal;
 import type * as llmTypes from "../../helpers/llmTypes";
 
 
-(function() {
+(() => {
 
   const formEle = <HTMLFormElement>document.getElementById("form--location");
   const formMessageEle = document.getElementById("container--form-message");
@@ -15,7 +15,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
   const isCreate = locationID === "";
   const isAdmin = (document.getElementsByTagName("main")[0].getAttribute("data-is-admin") === "true");
 
-  formEle.addEventListener("submit", function(formEvent) {
+  formEle.addEventListener("submit", (formEvent) => {
 
     formEvent.preventDefault();
 
@@ -24,7 +24,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
     cityssm.postJSON(
       (isCreate ? "/locations/doCreate" : "/locations/doUpdate"),
       formEle,
-      function(responseJSON) {
+      (responseJSON: { success: boolean, message?: string, locationID?: number }) => {
 
         if (responseJSON.success) {
 
@@ -53,13 +53,13 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
   if (!isCreate) {
 
-    const deleteLocationFn = function() {
+    const deleteLocationFn = () => {
 
       cityssm.postJSON(
         "/locations/doDelete", {
           locationID: locationID
         },
-        function(responseJSON) {
+        (responseJSON: { success: boolean }) => {
 
           if (responseJSON.success) {
             window.location.href = "/locations";
@@ -68,7 +68,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
       );
     };
 
-    formEle.getElementsByClassName("is-delete-button")[0].addEventListener("click", function(clickEvent) {
+    formEle.getElementsByClassName("is-delete-button")[0].addEventListener("click", (clickEvent) => {
 
       clickEvent.preventDefault();
 
@@ -88,7 +88,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
     const intLocationID = parseInt(locationID, 10);
 
-    formEle.getElementsByClassName("is-merge-button")[0].addEventListener("click", function(mergeButton_clickEvent) {
+    formEle.getElementsByClassName("is-merge-button")[0].addEventListener("click", (mergeButton_clickEvent) => {
 
       mergeButton_clickEvent.preventDefault();
 
@@ -121,7 +121,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
       let sourceLocationsContainerEle = null;
       let closeMergeLocationModalFn = null;
 
-      const doMerge = function() {
+      const doMergeFn = () => {
 
         cityssm.postJSON(
           "/locations/doMerge", {
@@ -140,7 +140,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
         );
       };
 
-      const clickFn_selectSourceLocation = function(clickEvent: Event) {
+      const clickFn_selectSourceLocation = (clickEvent: Event) => {
 
         clickEvent.preventDefault();
 
@@ -158,12 +158,12 @@ import type * as llmTypes from "../../helpers/llmTypes";
           " and associate them with" +
           " <em>" + locationDisplayNameAndID_target + "</em>?",
           "Yes, Complete Merge", "warning",
-          doMerge
+          doMergeFn
         );
 
       };
 
-      const filterLocationsFn = function() {
+      const filterLocationsFn = () => {
 
         const filterSplit = locationFilterEle.value
           .trim()
@@ -242,12 +242,11 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
           // Location name - target
 
-          const locationDisplayNameAndID_target_eles = <HTMLCollectionOf<HTMLSpanElement>>modalEle.getElementsByClassName("mergeLocation--locationDisplayNameAndID_target");
+          const locationDisplayNameAndID_target_eles =
+            <HTMLCollectionOf<HTMLSpanElement>>modalEle.getElementsByClassName("mergeLocation--locationDisplayNameAndID_target");
 
-          for (let index = 0; index < locationDisplayNameAndID_target_eles.length; index += 1) {
-
-            locationDisplayNameAndID_target_eles[index].innerText = locationDisplayNameAndID_target;
-
+          for (const locationDisplayNameAndID_target_ele of locationDisplayNameAndID_target_eles) {
+            locationDisplayNameAndID_target_ele.innerText = locationDisplayNameAndID_target;
           }
 
           // Locations - source
@@ -266,7 +265,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
             "/locations/doGetLocations", {
               limit: -1
             },
-            function(responseJSON) {
+            (responseJSON) => {
 
               locationsList = responseJSON.locations;
 
@@ -284,7 +283,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
   // Nav blocker
 
-  function setUnsavedChanges() {
+  const setUnsavedChangesFn = () => {
 
     hasUnsavedChanges = true;
 
@@ -295,12 +294,12 @@ import type * as llmTypes from "../../helpers/llmTypes";
       " <span>Unsaved Changes</span>" +
       "</div>";
 
-  }
+  };
 
   const inputEles = formEle.getElementsByTagName("input");
 
   for (const inputEle of inputEles) {
-    inputEle.addEventListener("change", setUnsavedChanges);
+    inputEle.addEventListener("change", setUnsavedChangesFn);
   }
 
   const locationNameEle = document.getElementById("location--locationName");
@@ -311,10 +310,13 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
   // Location Name is required for manufacturers and distributors
 
-  const locationIsDistributorCheckboxEle = <HTMLInputElement>document.getElementById("location--locationIsDistributor");
-  const locationIsManufacturerCheckboxEle = <HTMLInputElement>document.getElementById("location--locationIsManufacturer");
+  const locationIsDistributorCheckboxEle =
+    <HTMLInputElement>document.getElementById("location--locationIsDistributor");
 
-  function setLocationNameRequired() {
+  const locationIsManufacturerCheckboxEle =
+    <HTMLInputElement>document.getElementById("location--locationIsManufacturer");
+
+  const setLocationNameRequiredFn = () => {
 
     if (locationIsDistributorCheckboxEle.checked || locationIsManufacturerCheckboxEle.checked) {
       locationNameEle.setAttribute("required", "required");
@@ -322,8 +324,8 @@ import type * as llmTypes from "../../helpers/llmTypes";
     } else {
       locationNameEle.removeAttribute("required");
     }
-  }
+  };
 
-  locationIsDistributorCheckboxEle.addEventListener("change", setLocationNameRequired);
-  locationIsManufacturerCheckboxEle.addEventListener("change", setLocationNameRequired);
-}());
+  locationIsDistributorCheckboxEle.addEventListener("change", setLocationNameRequiredFn);
+  locationIsManufacturerCheckboxEle.addEventListener("change", setLocationNameRequiredFn);
+})();

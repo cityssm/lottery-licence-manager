@@ -390,7 +390,7 @@ export const getLicences = (reqBodyOrParamsObj: {
   organizationID?: string,
   organizationName?: string,
   licenceStatus?: string,
-  locationID?: number,
+  locationID?: number
 },
   reqSession: Express.SessionData,
   includeOptions: {

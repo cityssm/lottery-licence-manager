@@ -281,18 +281,26 @@
 
     <table class="has-margin-top-10 has-margin-bottom-10">
       <tbody>
-        <tr>
-          <td class="has-padding-bottom-5 has-padding-right-10">
-            Total value of all prizes in any lottery conducted under this<br />
-            licence not to exceed $ <%= licence.totalPrizeValue.toFixed(2) %> in cash,<br />
-            or merchandise or articles at equivalent market value.
-          </td>
-          <td class="has-padding-bottom-5">
-            La valeur totale des prix d'une loterie organisée en vertu de<br />
-            la présente licence ne doit pas excéder <%= licence.totalPrizeValue.toFixed(2) %> $<br />
-            en espèces ou valeur équivalente en nature.
-          </td>
-        </tr>
+        <%
+          let showPrizeValue = true;
+          if (licenceType && licenceType.printSettings && licenceType.printSettings.hasOwnProperty("agco_hideTotalPrizeValue") && licenceType.printSettings.agco_hideTotalPrizeValue) {
+            showPrizeValue = false;
+          }
+        %>
+        <% if (showPrizeValue) { %>
+          <tr>
+            <td class="has-padding-bottom-5 has-padding-right-10">
+              Total value of all prizes in any lottery conducted under this<br />
+              licence not to exceed $ <%= licence.totalPrizeValue.toFixed(2) %> in cash,<br />
+              or merchandise or articles at equivalent market value.
+            </td>
+            <td class="has-padding-bottom-5">
+              La valeur totale des prix d'une loterie organisée en vertu de<br />
+              la présente licence ne doit pas excéder <%= licence.totalPrizeValue.toFixed(2) %> $<br />
+              en espèces ou valeur équivalente en nature.
+            </td>
+          </tr>
+        <% } %>
         <tr>
           <td class="is-half">
             The licensee must observe all terms and conditions of<br />
@@ -312,15 +320,19 @@
 
     <div class="container has-background-blue has-margin-bottom-10">
       <div class="has-text-weight-bold">
-        Special Terms and Conditions/Modalités spéciales
+        Licence Details/Détails de la licence
       </div>
-      <div class="field" style="min-height:140px">
+      <div class="field has-margin-bottom-10" style="min-height:70px">
         <% if (licence.licenceDetails !== "") { %>
           <div class="has-newline-chars has-margin-bottom-10"><%= licence.licenceDetails %></div>
         <% } %>
-        <div class="has-newline-chars"><%= licence.termsConditions %></div>
+        <% if (licenceType && licenceType.printSettings && licenceType.printSettings.hasOwnProperty("agco_additionalLicenceDetailsHTMLFn")) { %>
+          <div class="has-margin-bottom-10">
+            <%- licenceType.printSettings.agco_additionalLicenceDetailsHTMLFn(licence) %>
+          </div>
+        <% } %>
         <% if (licence.licenceTicketTypes.length > 0) { %>
-          <table class="data-table has-margin-top-10">
+          <table class="data-table">
             <thead>
               <tr>
                 <th>Type</th>
@@ -335,10 +347,10 @@
             <tbody>
               <% for (let index = 0; index < licence.licenceTicketTypes.length; index += 1) { %>
                 <%
-                  const record = licence.licenceTicketTypes[index];
-                  const ticketTypeConfig = licenceType.ticketTypes.find(function(possibleConfig) {
-                    return possibleConfig.ticketType === record.ticketType;
-                  });
+                const record = licence.licenceTicketTypes[index];
+                const ticketTypeConfig = licenceType.ticketTypes.find(function(possibleConfig) {
+                  return possibleConfig.ticketType === record.ticketType;
+                });
                 %>
                 <tr>
                   <td><%= record.ticketType %></td>
@@ -357,6 +369,12 @@
             </tbody>
           </table>
         <% } %>
+      </div>
+      <div class="has-text-weight-bold">
+        Special Terms and Conditions/Modalités spéciales
+      </div>
+      <div class="field" style="min-height:70px">
+        <div class="has-newline-chars"><%= licence.termsConditions %></div>
       </div>
     </div>
 

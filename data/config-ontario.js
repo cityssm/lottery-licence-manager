@@ -185,6 +185,7 @@ config.licenceTypes = [
                 }
             }],
         printSettings: {
+            agco_hideTotalPrizeValue: true,
             agco_useLicenceDatesAsEventDates: true
         }
     },
@@ -303,7 +304,15 @@ config.licenceTypes = [
                     max: 1000000,
                     step: 1
                 }
-            }]
+            }],
+        printSettings: {
+            agco_additionalLicenceDetailsHTMLFn: function (licenceObj) {
+                const ticketCountField = licenceObj.licenceFields.find(field => field.fieldKey === "RA-ticketCount");
+                const ticketCostField = licenceObj.licenceFields.find(field => field.fieldKey === "RA-ticketCost");
+                return (ticketCountField ? ticketCountField.fieldValue + " tickets; " : "") +
+                    (ticketCostField ? "$" + ticketCostField.fieldValue + " per ticket" : "");
+            }
+        }
     }
 ];
 module.exports = config;

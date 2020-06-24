@@ -2,7 +2,7 @@ import type { cityssmGlobal } from "../../node_modules/@cityssm/bulma-webapp-js/
 declare const cityssm: cityssmGlobal;
 
 
-(function() {
+(() => {
 
   const eventDateNavEle = <HTMLSelectElement>document.getElementById("eventNav--eventDate");
 
@@ -13,7 +13,7 @@ declare const cityssm: cityssmGlobal;
   const eventDate = (<HTMLInputElement>document.getElementById("event--eventDate")).value;
 
 
-  formEle.addEventListener("submit", function(formEvent) {
+  formEle.addEventListener("submit", (formEvent) => {
 
     formEvent.preventDefault();
 
@@ -22,18 +22,15 @@ declare const cityssm: cityssmGlobal;
     cityssm.postJSON(
       "/events/doSave",
       formEle,
-      function(responseJSON) {
+      (responseJSON: { success: boolean, message?: string }) => {
 
         if (responseJSON.success) {
 
           cityssm.disableNavBlocker();
 
           if (eventDateNavEle) {
-
             eventDateNavEle.removeAttribute("disabled");
-
           }
-
         }
 
         formMessageEle.innerHTML = "";
@@ -44,13 +41,11 @@ declare const cityssm: cityssmGlobal;
           "OK",
           responseJSON.success ? "success" : "danger"
         );
-
       }
     );
-
   });
 
-  document.getElementById("is-delete-event-button").addEventListener("click", function(clickEvent) {
+  document.getElementById("is-delete-event-button").addEventListener("click", (clickEvent) => {
 
     clickEvent.preventDefault();
 
@@ -59,14 +54,14 @@ declare const cityssm: cityssmGlobal;
       "Are you sure you want to delete this event?",
       "Yes, Delete",
       "danger",
-      function() {
+      () => {
 
         cityssm.postJSON(
           "/events/doDelete", {
             licenceID: licenceID,
             eventDate: eventDate
           },
-          function(responseJSON) {
+          (responseJSON: { success: boolean }) => {
 
             if (responseJSON.success) {
               cityssm.disableNavBlocker();
@@ -81,7 +76,7 @@ declare const cityssm: cityssmGlobal;
 
   // Nav blocker
 
-  function setUnsavedChanges() {
+  const setUnsavedChangesFn = () => {
 
     cityssm.enableNavBlocker();
 
@@ -93,22 +88,22 @@ declare const cityssm: cityssmGlobal;
       "<span class=\"icon\"><i class=\"fas fa-exclamation-triangle\" aria-hidden=\"true\"></i></span>" +
       " <span>Unsaved Changes</span>" +
       "</div>";
-  }
+  };
 
-  const inputEles = <NodeListOf<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>>formEle.querySelectorAll("input, select, textarea");
+  const inputEles =
+    <NodeListOf<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>>formEle.querySelectorAll("input, select, textarea");
 
   for (const inputEle of inputEles) {
     if (inputEle.name !== "") {
-      inputEle.addEventListener("change", setUnsavedChanges);
+      inputEle.addEventListener("change", setUnsavedChangesFn);
     }
-
   }
 
 
   // Bank Info Lookup
 
 
-  document.getElementById("is-bank-information-lookup-button").addEventListener("click", function(clickEvent) {
+  document.getElementById("is-bank-information-lookup-button").addEventListener("click", (clickEvent) => {
 
     clickEvent.preventDefault();
 
@@ -121,11 +116,12 @@ declare const cityssm: cityssmGlobal;
       eventDateMaxString: string;
     }[];
 
-    const setPastBankInformation = function(bankInfoClickEvent: Event) {
+    const setPastBankInformationFn = (bankInfoClickEvent: Event) => {
 
       bankInfoClickEvent.preventDefault();
 
-      const listIndex = parseInt((<HTMLAnchorElement>bankInfoClickEvent.currentTarget).getAttribute("data-list-index"), 10);
+      const listIndex =
+        parseInt((<HTMLAnchorElement>bankInfoClickEvent.currentTarget).getAttribute("data-list-index"), 10);
 
       const record = savedBankInfoList[listIndex];
 
@@ -133,26 +129,25 @@ declare const cityssm: cityssmGlobal;
       (<HTMLInputElement>document.getElementById("event--bank_address")).value = record.bank_address;
       (<HTMLInputElement>document.getElementById("event--bank_accountNumber")).value = record.bank_accountNumber;
 
-      setUnsavedChanges();
+      setUnsavedChangesFn();
 
       bankInfoCloseModalFn();
-
     };
 
-    const getPastBankInformation = function() {
+    const getPastBankInformationFn = () => {
 
       const containerEle = document.getElementById("container--bankInformationLookup");
 
       cityssm.postJSON("/events/doGetPastBankInformation", {
         licenceID: licenceID
-      }, function(bankInfoList) {
+      }, (bankInfoList) => {
 
         savedBankInfoList = bankInfoList;
 
         const listEle = document.createElement("div");
         listEle.className = "panel mb-3";
 
-        savedBankInfoList.forEach(function(record, index) {
+        savedBankInfoList.forEach((record, index) => {
 
           const listItemEle = document.createElement("a");
 
@@ -170,7 +165,7 @@ declare const cityssm: cityssmGlobal;
             "</span>" +
             "</div>";
 
-          listItemEle.addEventListener("click", setPastBankInformation);
+          listItemEle.addEventListener("click", setPastBankInformationFn);
 
           listEle.insertAdjacentElement("beforeend", listItemEle);
 
@@ -186,13 +181,12 @@ declare const cityssm: cityssmGlobal;
 
     cityssm.openHtmlModal("event-bankInformationLookup", {
 
-      onshow: getPastBankInformation,
+      onshow: getPastBankInformationFn,
 
       onshown(_modalEle, closeModalFn) {
         bankInfoCloseModalFn = closeModalFn;
       }
     });
-
   });
 
 
@@ -205,7 +199,7 @@ declare const cityssm: cityssmGlobal;
   const costs_netProceeds_ele = <HTMLInputElement>document.getElementById("event--costs_netProceeds");
   const costs_amountDonated_ele = <HTMLInputElement>document.getElementById("event--costs_amountDonated");
 
-  function refreshNetProceeds() {
+  const refreshNetProceedsFn = () => {
 
     const netProceeds = (parseFloat(costs_receipts_ele.value || "0") -
       parseFloat(costs_admin_ele.value || "0") -
@@ -214,10 +208,10 @@ declare const cityssm: cityssmGlobal;
     costs_netProceeds_ele.value = netProceeds;
     costs_amountDonated_ele.setAttribute("max", netProceeds);
 
-  }
+  };
 
-  costs_receipts_ele.addEventListener("keyup", refreshNetProceeds);
-  costs_admin_ele.addEventListener("keyup", refreshNetProceeds);
-  costs_prizesAwarded_ele.addEventListener("keyup", refreshNetProceeds);
+  costs_receipts_ele.addEventListener("keyup", refreshNetProceedsFn);
+  costs_admin_ele.addEventListener("keyup", refreshNetProceedsFn);
+  costs_prizesAwarded_ele.addEventListener("keyup", refreshNetProceedsFn);
 
-}());
+})();

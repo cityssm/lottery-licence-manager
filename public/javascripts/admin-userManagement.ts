@@ -5,7 +5,7 @@ import type { llmGlobal } from "./types";
 declare const llm: llmGlobal;
 
 
-(function() {
+(() => {
 
   /*
    * Create user
@@ -13,25 +13,23 @@ declare const llm: llmGlobal;
 
   const createUserModalEle = document.getElementById("is-create-user-modal");
 
-  createUserModalEle.getElementsByTagName("form")[0].addEventListener("submit", function(formEvent) {
+  createUserModalEle.getElementsByTagName("form")[0].addEventListener("submit", (formEvent) => {
 
     formEvent.preventDefault();
 
     cityssm.postJSON(
       "/admin/doCreateUser",
       formEvent.currentTarget,
-      function(responseJSON) {
+      (responseJSON: { success: boolean }) => {
 
         if (responseJSON.success) {
           window.location.reload(true);
         }
-
       }
     );
-
   });
 
-  document.getElementById("is-create-user-button").addEventListener("click", function() {
+  document.getElementById("is-create-user-button").addEventListener("click", () => {
     cityssm.showModal(createUserModalEle);
   });
 
@@ -49,7 +47,7 @@ declare const llm: llmGlobal;
    * Delete users
    */
 
-  function deleteUserFn(clickEvent: Event) {
+  const deleteUserFn = (clickEvent: Event) => {
 
     clickEvent.preventDefault();
 
@@ -62,10 +60,9 @@ declare const llm: llmGlobal;
 
       cityssm.postJSON("/admin/doDeleteUser", {
         userName: userNameToDelete
-      }, function(resultJSON) {
+      }, (resultJSON: { success: boolean }) => {
 
         if (resultJSON.success) {
-
           trEle.remove();
         }
       });
@@ -79,7 +76,7 @@ declare const llm: llmGlobal;
       doDeleteFn
     );
 
-  }
+  };
 
   const deleteUserButtonEles = userContainerEle.getElementsByClassName("is-delete-user-button");
 
@@ -92,11 +89,12 @@ declare const llm: llmGlobal;
    */
 
   const updateUserModalEle = document.getElementById("is-update-user-modal");
-  const updateUserUserNameSpanEles = <HTMLCollectionOf<HTMLSpanElement>>updateUserModalEle.getElementsByClassName("container--userName");
+  const updateUserUserNameSpanEles =
+    <HTMLCollectionOf<HTMLSpanElement>>updateUserModalEle.getElementsByClassName("container--userName");
 
   llm.initializeTabs(updateUserModalEle.getElementsByClassName("tabs")[0].getElementsByTagName("ul")[0]);
 
-  function submitFn_updateUserSetting(formEvent: Event) {
+  const submitFn_updateUserSetting = (formEvent: Event) => {
 
     formEvent.preventDefault();
 
@@ -105,7 +103,7 @@ declare const llm: llmGlobal;
     cityssm.postJSON(
       "/admin/doUpdateUserProperty",
       formEle,
-      function(responseJSON) {
+      (responseJSON: { success: boolean }) => {
 
         if (responseJSON.success) {
 
@@ -121,9 +119,9 @@ declare const llm: llmGlobal;
         }
       }
     );
-  }
+  };
 
-  function keyupFn_markSettingUnsaved(keyupEvent: Event) {
+  const keyupFn_markSettingUnsaved = (keyupEvent: Event) => {
 
     const inputEle = <HTMLInputElement>keyupEvent.currentTarget;
 
@@ -136,9 +134,9 @@ declare const llm: llmGlobal;
     submitBtnEle.classList.add("is-danger");
     submitBtnEle.classList.remove("is-primary");
     submitBtnEle.classList.remove("is-success");
-  }
+  };
 
-  function clickFn_updateUser(clickEvent: Event) {
+  const clickFn_updateUser = (clickEvent: Event) => {
 
     clickEvent.preventDefault();
 
@@ -170,7 +168,7 @@ declare const llm: llmGlobal;
       "/admin/doGetUserProperties", {
         userName: userName
       },
-      function(userPropertiesJSON) {
+      (userPropertiesJSON) => {
 
         let propertyIndex = 0;
 
@@ -230,8 +228,7 @@ declare const llm: llmGlobal;
       .setAttribute("hidden", "hidden");
 
     cityssm.showModal(updateUserModalEle);
-
-  }
+  };
 
   const updateUserButtonEles = userContainerEle.getElementsByClassName("is-update-user-button");
 
@@ -248,35 +245,33 @@ declare const llm: llmGlobal;
   // User name
 
   document.getElementById("tab--updateUser-name").getElementsByTagName("form")[0]
-    .addEventListener("submit", function(formEvent) {
+    .addEventListener("submit", (formEvent) => {
 
       formEvent.preventDefault();
 
       cityssm.postJSON(
         "/admin/doUpdateUser",
         formEvent.currentTarget,
-        function(responseJSON) {
+        (responseJSON: { success: boolean }) => {
 
           if (responseJSON.success) {
-
             window.location.reload(true);
           }
         }
       );
-
     });
 
   // Reset password
 
   document.getElementById("tab--updateUser-password").getElementsByTagName("form")[0]
-    .addEventListener("submit", function(formEvent) {
+    .addEventListener("submit", (formEvent) => {
 
       formEvent.preventDefault();
 
       cityssm.postJSON(
         "/admin/doResetPassword",
         formEvent.currentTarget,
-        function(responseJSON) {
+        function(responseJSON: { success: boolean, newPassword?: string }) {
 
           if (responseJSON.success) {
 
@@ -289,4 +284,4 @@ declare const llm: llmGlobal;
         }
       );
     });
-}());
+})();
