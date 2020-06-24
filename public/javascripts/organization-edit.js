@@ -81,7 +81,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
         const openEditRepresentativeModalFn = (clickEvent) => {
             editRepresentativeTrEle = clickEvent.currentTarget.closest("tr");
             const representativeIndex = editRepresentativeTrEle.getAttribute("data-representative-index");
-            document.getElementById("editOrganizationRepresentative--representativeIndex").value = representativeIndex;
+            document.getElementById("editOrganizationRepresentative--representativeIndex").value =
+                representativeIndex;
             document.getElementById("editOrganizationRepresentative--representativeName").value =
                 editRepresentativeTrEle.getAttribute("data-representative-name");
             document.getElementById("editOrganizationRepresentative--representativeTitle").value =
@@ -146,13 +147,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
             trEle.insertAdjacentElement("beforeend", tdEle);
             trEle.insertAdjacentHTML("beforeend", "<td>" +
                 "<div class=\"buttons is-right has-addons\">" +
-                "<button class=\"button is-small is-edit-representative-button\" data-tooltip=\"Edit Representative\" type=\"button\">" +
-                "<span class=\"icon\"><i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i></span>" +
-                "<span>Edit</span></button>" +
-                "<button class=\"button is-small has-text-danger is-delete-representative-button\" data-tooltip=\"Delete Representative\" type=\"button\">" +
-                "<i class=\"fas fa-trash\" aria-hidden=\"true\"></i>" +
-                "<span class=\"sr-only\">Delete</span>" +
-                "</button>" +
+                ("<button class=\"button is-small is-edit-representative-button\"" +
+                    " data-tooltip=\"Edit Representative\" type=\"button\">" +
+                    "<span class=\"icon\"><i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i></span>" +
+                    "<span>Edit</span></button>") +
+                ("<button class=\"button is-small has-text-danger is-delete-representative-button\"" +
+                    " data-tooltip=\"Delete Representative\" type=\"button\">" +
+                    "<i class=\"fas fa-trash\" aria-hidden=\"true\"></i>" +
+                    "<span class=\"sr-only\">Delete</span>" +
+                    "</button>") +
                 "</td>");
             trEle.getElementsByClassName("is-edit-representative-button")[0]
                 .addEventListener("click", openEditRepresentativeModalFn);

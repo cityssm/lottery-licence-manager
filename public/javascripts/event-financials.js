@@ -34,7 +34,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     licenceTypeSummaryObj.licenceCount;
                 licenceCount += licenceTypeSummaryObj.licenceCount;
                 trEle.querySelector("[data-field='eventCount']").innerHTML =
-                    (licenceTypeSummaryObj.reportDateCount === licenceTypeSummaryObj.eventCount ? "" : "<span class=\"has-text-danger\" data-tooltip=\"Events Unreported\">") +
+                    (licenceTypeSummaryObj.reportDateCount === licenceTypeSummaryObj.eventCount ?
+                        "" :
+                        "<span class=\"has-text-danger\" data-tooltip=\"Events Unreported\">") +
                         licenceTypeSummaryObj.reportDateCount + "/" + licenceTypeSummaryObj.eventCount +
                         (licenceTypeSummaryObj.reportDateCount === licenceTypeSummaryObj.eventCount ? "" : "</span>");
                 reportDateCount += licenceTypeSummaryObj.reportDateCount;

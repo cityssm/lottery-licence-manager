@@ -60,7 +60,7 @@ router.post("/doGetActiveLicenceSummary", (req, res) => {
 router.get([
     "/new",
     "/new/:organizationID"
-], function (req, res) {
+], (req, res) => {
     if (!req.session.user.userProperties.canCreate) {
         res.redirect("/licences/?error=accessDenied");
         return;
@@ -324,11 +324,11 @@ router.get("/:licenceID/print", (req, res, next) => {
         configFns: configFns,
         licence: licence,
         organization: organization
-    }, {}, function (ejsErr, ejsData) {
+    }, {}, (ejsErr, ejsData) => {
         if (ejsErr) {
             return next(ejsErr);
         }
-        convertHTMLToPDF(ejsData, function (pdf) {
+        convertHTMLToPDF(ejsData, (pdf) => {
             res.setHeader("Content-Disposition", "attachment; filename=licence-" + licenceID + "-" + licence.recordUpdate_timeMillis + ".pdf");
             res.setHeader("Content-Type", "application/pdf");
             res.send(pdf);

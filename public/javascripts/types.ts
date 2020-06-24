@@ -3,7 +3,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
 export type llmGlobal = {
 
-  arrayToObject?: (array: [], objectKey: any) => {},
+  arrayToObject?: (array: [], objectKey: string | number) => {},
 
   getDefaultConfigProperty?: (propertyName: string, propertyValueCallbackFn: (propertyValue: any) => void) => void,
 

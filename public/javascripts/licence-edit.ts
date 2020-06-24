@@ -503,14 +503,10 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
           llm.initializeTabs(modalEle.querySelector(".tabs ul"));
         },
-
         onshown(_modalEle, closeModalFn) {
-
           locationLookup_closeModalFn = closeModalFn;
           locationLookup_searchStrEle.focus();
-
         },
-
         onremoved() {
           document.getElementById("is-location-lookup-button").focus();
         }
@@ -843,7 +839,8 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
       dateSplit = startDateEle.value.split("-");
 
-      let eventDate = new Date(parseInt(dateSplit[0], 10), parseInt(dateSplit[1], 10) - 1, parseInt(dateSplit[2], 10));
+      const eventDate =
+        new Date(parseInt(dateSplit[0], 10), parseInt(dateSplit[1], 10) - 1, parseInt(dateSplit[2], 10));
 
       for (let eventNum = 0; eventNum < eventCount && eventDate.getTime() <= endDate.getTime(); eventNum += 1) {
 
@@ -1008,11 +1005,13 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
         const totalValueEle = <HTMLInputElement>trEle.getElementsByClassName("is-total-value-per-deal")[0];
         totalValueEle.value = (ticketTypeObj.ticketPrice * ticketTypeObj.ticketCount * unitCount).toFixed(2);
-        (<HTMLSpanElement>totalValueEle.nextElementSibling).innerText = "$" + (ticketTypeObj.ticketPrice * ticketTypeObj.ticketCount * unitCount).toFixed(2);
+        (<HTMLSpanElement>totalValueEle.nextElementSibling).innerText =
+          "$" + (ticketTypeObj.ticketPrice * ticketTypeObj.ticketCount * unitCount).toFixed(2);
 
         const totalPrizesEle = <HTMLInputElement>trEle.getElementsByClassName("is-total-prizes-per-deal")[0];
         totalPrizesEle.value = (ticketTypeObj.prizesPerDeal * unitCount).toFixed(2);
-        (<HTMLSpanElement>totalPrizesEle.nextElementSibling).innerText = "$" + (ticketTypeObj.prizesPerDeal * unitCount).toFixed(2);
+        (<HTMLSpanElement>totalPrizesEle.nextElementSibling).innerText =
+          "$" + (ticketTypeObj.prizesPerDeal * unitCount).toFixed(2);
 
         const licenceFee = (<HTMLInputElement>document.getElementById("amendUnit_licenceFee")).value;
 
@@ -1030,7 +1029,9 @@ import type * as llmTypes from "../../helpers/llmTypes";
       const amendUnitCountFn_calculateLicenceFee = () => {
 
         (<HTMLInputElement>document.getElementById("amendUnit_licenceFee")).value =
-          (ticketTypeObj.feePerUnit * parseInt((<HTMLInputElement>document.getElementById("amendUnit_unitCount")).value, 10)).toFixed(2);
+          (ticketTypeObj.feePerUnit *
+            parseInt((<HTMLInputElement>document.getElementById("amendUnit_unitCount")).value, 10))
+            .toFixed(2);
       };
 
       cityssm.openHtmlModal("licence-ticketTypeUnitAmend", {
@@ -1068,14 +1069,17 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
       let distributorLookup_closeModalFn: () => void;
 
-      const distributorTdEle = <HTMLTableCellElement>(<HTMLButtonElement>buttonEvent.currentTarget).closest("td").previousElementSibling;
+      const distributorTdEle =
+        <HTMLTableCellElement>(<HTMLButtonElement>buttonEvent.currentTarget).closest("td").previousElementSibling;
 
       const distributorLookupFn_updateDistributor = (locationButtonEvent: Event) => {
 
         const locationButtonEle = <HTMLButtonElement>locationButtonEvent.currentTarget;
 
         distributorTdEle.getElementsByTagName("input")[0].value = locationButtonEle.getAttribute("data-location-id");
-        distributorTdEle.getElementsByTagName("span")[0].innerText = locationButtonEle.getAttribute("data-location-display-name");
+
+        distributorTdEle.getElementsByTagName("span")[0].innerText =
+          locationButtonEle.getAttribute("data-location-display-name");
 
         distributorLookup_closeModalFn();
 
@@ -1137,14 +1141,17 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
       let manufacturerLookup_closeModalFn: () => void;
 
-      const manufacturerTdEle = <HTMLTableCellElement>(<HTMLButtonElement>buttonEvent.currentTarget).closest("td").previousElementSibling;
+      const manufacturerTdEle =
+        <HTMLTableCellElement>(<HTMLButtonElement>buttonEvent.currentTarget).closest("td").previousElementSibling;
 
       const manufacturerLookupFn_updateManufacturer = (locationButtonEvent: Event) => {
 
         const locationButtonEle = <HTMLButtonElement>locationButtonEvent.currentTarget;
 
         manufacturerTdEle.getElementsByTagName("input")[0].value = locationButtonEle.getAttribute("data-location-id");
-        manufacturerTdEle.getElementsByTagName("span")[0].innerText = locationButtonEle.getAttribute("data-location-display-name");
+
+        manufacturerTdEle.getElementsByTagName("span")[0].innerText =
+          locationButtonEle.getAttribute("data-location-display-name");
 
         manufacturerLookup_closeModalFn();
 
@@ -1224,7 +1231,8 @@ import type * as llmTypes from "../../helpers/llmTypes";
           formEle.insertAdjacentHTML(
             "beforeend",
             "<input class=\"is-removed-after-save\" name=\"ticketType_toAdd\"" +
-            " type=\"hidden\" value=\"" + (<HTMLSelectElement>document.getElementById("ticketTypeAdd--ticketType")).value + "\" />"
+            " type=\"hidden\"" +
+            " value=\"" + (<HTMLSelectElement>document.getElementById("ticketTypeAdd--ticketType")).value + "\" />"
           );
         }
 
@@ -1524,9 +1532,8 @@ import type * as llmTypes from "../../helpers/llmTypes";
         onshow(modalEle) {
 
           llm.getDefaultConfigProperty("externalReceiptNumber_fieldLabel", (fieldLabel: string) => {
-
-            (<HTMLLabelElement>modalEle.querySelector("label[for='transactionAdd--externalReceiptNumber']")).innerText = fieldLabel;
-
+            (<HTMLLabelElement>modalEle.querySelector("label[for='transactionAdd--externalReceiptNumber']")).innerText =
+              fieldLabel;
           });
 
           (<HTMLInputElement>document.getElementById("transactionAdd--licenceID")).value = licenceID;

@@ -182,7 +182,8 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
       const representativeIndex = editRepresentativeTrEle.getAttribute("data-representative-index");
 
-      (<HTMLInputElement>document.getElementById("editOrganizationRepresentative--representativeIndex")).value = representativeIndex;
+      (<HTMLInputElement>document.getElementById("editOrganizationRepresentative--representativeIndex")).value =
+        representativeIndex;
 
       (<HTMLInputElement>document.getElementById("editOrganizationRepresentative--representativeName")).value =
         editRepresentativeTrEle.getAttribute("data-representative-name");
@@ -269,14 +270,15 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
       trEle.insertAdjacentHTML("beforeend", "<td>" +
         "<div class=\"buttons is-right has-addons\">" +
-        "<button class=\"button is-small is-edit-representative-button\" data-tooltip=\"Edit Representative\" type=\"button\">" +
-        "<span class=\"icon\"><i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i></span>" +
-        "<span>Edit</span></button>" +
-        "<button class=\"button is-small has-text-danger is-delete-representative-button\" data-tooltip=\"Delete Representative\" type=\"button\">" +
-        "<i class=\"fas fa-trash\" aria-hidden=\"true\"></i>" +
-        "<span class=\"sr-only\">Delete</span>" +
-        "</button>" +
-
+        ("<button class=\"button is-small is-edit-representative-button\"" +
+          " data-tooltip=\"Edit Representative\" type=\"button\">" +
+          "<span class=\"icon\"><i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i></span>" +
+          "<span>Edit</span></button>") +
+        ("<button class=\"button is-small has-text-danger is-delete-representative-button\"" +
+          " data-tooltip=\"Delete Representative\" type=\"button\">" +
+          "<i class=\"fas fa-trash\" aria-hidden=\"true\"></i>" +
+          "<span class=\"sr-only\">Delete</span>" +
+          "</button>") +
 
         "</td>");
 

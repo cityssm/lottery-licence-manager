@@ -56,12 +56,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 locationObj.distributor_count === 0 && locationObj.manufacturer_count === 0;
             trEle.insertAdjacentHTML("beforeend", "<td class=\"is-hidden-print has-text-right is-nowrap\">" +
                 (locationObj.canUpdate ?
-                    "<a class=\"button is-small\" data-tooltip=\"Edit Location\" href=\"/locations/" + locationObj.locationID + "/edit\">" +
+                    "<a class=\"button is-small\" data-tooltip=\"Edit Location\"" +
+                        " href=\"/locations/" + locationObj.locationID + "/edit\">" +
                         "<span class=\"icon\"><i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i></span> <span>Edit</span>" +
                         "</a>" :
                     "") +
                 (canDeleteLocation ?
-                    " <button class=\"button is-small is-danger is-delete-location-button\" data-tooltip=\"Delete Location\" data-location-index=\"" + locationIndex + "\" type=\"button\">" +
+                    " <button class=\"button is-small is-danger is-delete-location-button\"" +
+                        " data-tooltip=\"Delete Location\" data-location-index=\"" + locationIndex + "\" type=\"button\">" +
                         "<span class=\"icon\"><i class=\"fas fa-trash\" aria-hidden=\"true\"></i></span>" +
                         "</button>" :
                     "") +
@@ -136,7 +138,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 if (currentLimit + currentOffset < locationResults.count) {
                     const nextEle = document.createElement("a");
                     nextEle.className = "button ml-3";
-                    nextEle.innerHTML = "<span>Next Locations</span><span class=\"icon\"><i class=\"fas fa-chevron-right\" aria-hidden=\"true\"></i></span>";
+                    nextEle.innerHTML = "<span>Next Locations</span><span class=\"icon\">" +
+                        "<i class=\"fas fa-chevron-right\" aria-hidden=\"true\"></i>" +
+                        "</span>";
                     nextEle.addEventListener("click", (clickEvent) => {
                         clickEvent.preventDefault();
                         offsetEle.value = (currentOffset + currentLimit).toString();

@@ -56,7 +56,9 @@ declare const llm: llmGlobal;
         licenceCount += licenceTypeSummaryObj.licenceCount;
 
         trEle.querySelector("[data-field='eventCount']").innerHTML =
-          (licenceTypeSummaryObj.reportDateCount === licenceTypeSummaryObj.eventCount ? "" : "<span class=\"has-text-danger\" data-tooltip=\"Events Unreported\">") +
+          (licenceTypeSummaryObj.reportDateCount === licenceTypeSummaryObj.eventCount ?
+            "" :
+            "<span class=\"has-text-danger\" data-tooltip=\"Events Unreported\">") +
           licenceTypeSummaryObj.reportDateCount + "/" + licenceTypeSummaryObj.eventCount +
           (licenceTypeSummaryObj.reportDateCount === licenceTypeSummaryObj.eventCount ? "" : "</span>");
 

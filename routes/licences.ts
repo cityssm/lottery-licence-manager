@@ -133,7 +133,7 @@ router.post("/doGetActiveLicenceSummary", (req, res) => {
 router.get([
   "/new",
   "/new/:organizationID"
-], function(req, res) {
+], (req, res) => {
 
   // Check permission
 
@@ -554,15 +554,13 @@ router.get("/:licenceID/print", (req, res, next) => {
       licence: licence,
       organization: organization
     }, {},
-    function(ejsErr, ejsData) {
+    (ejsErr, ejsData) => {
 
       if (ejsErr) {
-
         return next(ejsErr);
-
       }
 
-      convertHTMLToPDF(ejsData, function(pdf) {
+      convertHTMLToPDF(ejsData, (pdf) => {
 
         res.setHeader(
           "Content-Disposition",
@@ -579,10 +577,8 @@ router.get("/:licenceID/print", (req, res, next) => {
         });
 
       return null;
-
     }
   );
-
 });
 
 
@@ -591,13 +587,10 @@ router.get("/:licenceID/poke", (req, res) => {
   const licenceID = parseInt(req.params.licenceID, 10);
 
   if (req.session.user.userProperties.isAdmin) {
-
     licencesDB.pokeLicence(licenceID, req.session);
-
   }
 
   res.redirect("/licences/" + licenceID);
-
 });
 
 

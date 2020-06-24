@@ -88,9 +88,9 @@ export const getProperty = (propertyName: string): any => {
 
   for (const propertyNamePiece of propertyNameSplit) {
 
-    currentObj = currentObj[propertyNamePiece];
-
-    if (!currentObj) {
+    if (currentObj.hasOwnProperty(propertyNamePiece)) {
+      currentObj = currentObj[propertyNamePiece];
+    } else {
       return configFallbackValues.get(propertyName);
     }
   }

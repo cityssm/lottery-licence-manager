@@ -484,7 +484,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
             let dateSplit = endDateEle.value.split("-");
             const endDate = new Date(parseInt(dateSplit[0], 10), parseInt(dateSplit[1], 10) - 1, parseInt(dateSplit[2], 10));
             dateSplit = startDateEle.value.split("-");
-            let eventDate = new Date(parseInt(dateSplit[0], 10), parseInt(dateSplit[1], 10) - 1, parseInt(dateSplit[2], 10));
+            const eventDate = new Date(parseInt(dateSplit[0], 10), parseInt(dateSplit[1], 10) - 1, parseInt(dateSplit[2], 10));
             for (let eventNum = 0; eventNum < eventCount && eventDate.getTime() <= endDate.getTime(); eventNum += 1) {
                 eventFn_add(eventDate);
                 eventDate.setDate(eventDate.getDate() + dayInterval);
@@ -579,10 +579,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 unitCountEle.nextElementSibling.innerText = unitCount.toString();
                 const totalValueEle = trEle.getElementsByClassName("is-total-value-per-deal")[0];
                 totalValueEle.value = (ticketTypeObj.ticketPrice * ticketTypeObj.ticketCount * unitCount).toFixed(2);
-                totalValueEle.nextElementSibling.innerText = "$" + (ticketTypeObj.ticketPrice * ticketTypeObj.ticketCount * unitCount).toFixed(2);
+                totalValueEle.nextElementSibling.innerText =
+                    "$" + (ticketTypeObj.ticketPrice * ticketTypeObj.ticketCount * unitCount).toFixed(2);
                 const totalPrizesEle = trEle.getElementsByClassName("is-total-prizes-per-deal")[0];
                 totalPrizesEle.value = (ticketTypeObj.prizesPerDeal * unitCount).toFixed(2);
-                totalPrizesEle.nextElementSibling.innerText = "$" + (ticketTypeObj.prizesPerDeal * unitCount).toFixed(2);
+                totalPrizesEle.nextElementSibling.innerText =
+                    "$" + (ticketTypeObj.prizesPerDeal * unitCount).toFixed(2);
                 const licenceFee = document.getElementById("amendUnit_licenceFee").value;
                 const licenceFeeEle = trEle.querySelector("input[name='ticketType_licenceFee']");
                 licenceFeeEle.value = licenceFee;
@@ -594,7 +596,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
             };
             const amendUnitCountFn_calculateLicenceFee = () => {
                 document.getElementById("amendUnit_licenceFee").value =
-                    (ticketTypeObj.feePerUnit * parseInt(document.getElementById("amendUnit_unitCount").value, 10)).toFixed(2);
+                    (ticketTypeObj.feePerUnit *
+                        parseInt(document.getElementById("amendUnit_unitCount").value, 10))
+                        .toFixed(2);
             };
             cityssm.openHtmlModal("licence-ticketTypeUnitAmend", {
                 onshow(modalEle) {
@@ -621,7 +625,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
             const distributorLookupFn_updateDistributor = (locationButtonEvent) => {
                 const locationButtonEle = locationButtonEvent.currentTarget;
                 distributorTdEle.getElementsByTagName("input")[0].value = locationButtonEle.getAttribute("data-location-id");
-                distributorTdEle.getElementsByTagName("span")[0].innerText = locationButtonEle.getAttribute("data-location-display-name");
+                distributorTdEle.getElementsByTagName("span")[0].innerText =
+                    locationButtonEle.getAttribute("data-location-display-name");
                 distributorLookup_closeModalFn();
                 setUnsavedChangesFn();
             };
@@ -666,7 +671,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
             const manufacturerLookupFn_updateManufacturer = (locationButtonEvent) => {
                 const locationButtonEle = locationButtonEvent.currentTarget;
                 manufacturerTdEle.getElementsByTagName("input")[0].value = locationButtonEle.getAttribute("data-location-id");
-                manufacturerTdEle.getElementsByTagName("span")[0].innerText = locationButtonEle.getAttribute("data-location-display-name");
+                manufacturerTdEle.getElementsByTagName("span")[0].innerText =
+                    locationButtonEle.getAttribute("data-location-display-name");
                 manufacturerLookup_closeModalFn();
                 setUnsavedChangesFn();
             };
@@ -720,7 +726,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 });
                 if (!isCreate) {
                     formEle.insertAdjacentHTML("beforeend", "<input class=\"is-removed-after-save\" name=\"ticketType_toAdd\"" +
-                        " type=\"hidden\" value=\"" + document.getElementById("ticketTypeAdd--ticketType").value + "\" />");
+                        " type=\"hidden\"" +
+                        " value=\"" + document.getElementById("ticketTypeAdd--ticketType").value + "\" />");
                 }
                 addTicketType_closeModalFn();
             };
@@ -904,7 +911,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
             cityssm.openHtmlModal("licence-transactionAdd", {
                 onshow(modalEle) {
                     llm.getDefaultConfigProperty("externalReceiptNumber_fieldLabel", (fieldLabel) => {
-                        modalEle.querySelector("label[for='transactionAdd--externalReceiptNumber']").innerText = fieldLabel;
+                        modalEle.querySelector("label[for='transactionAdd--externalReceiptNumber']").innerText =
+                            fieldLabel;
                     });
                     document.getElementById("transactionAdd--licenceID").value = licenceID;
                     const licenceFee = parseFloat(document.getElementById("licence--licenceFee").value);
