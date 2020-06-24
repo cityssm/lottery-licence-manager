@@ -353,7 +353,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
   {
 
-    let locationLookup_closeModalFn: Function;
+    let locationLookup_closeModalFn: () => void;
     let locationLookup_searchStrEle: HTMLInputElement;
     let locationLookup_resultsEle: HTMLElement;
 
@@ -886,7 +886,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
     let licenceTypeKeyToTicketTypes: Map<string, llmTypes.ConfigTicketType[]> = new Map();
 
-    const ticketTypesFn_getAll = (callbackFn: Function) => {
+    const ticketTypesFn_getAll = (callbackFn: (ticketTypes: llmTypes.ConfigTicketType[]) => void) => {
 
       const licenceTypeKey = licenceType_selectEle.value;
 
@@ -994,7 +994,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
       const ticketType = trEle.getAttribute("data-ticket-type");
       let ticketTypeObj: llmTypes.ConfigTicketType;
 
-      let amendUnitCount_closeModalFn: Function;
+      let amendUnitCount_closeModalFn: () => void;
 
       const amendUnitCountFn_closeAndUpdate = (formEvent: Event) => {
 
@@ -1066,7 +1066,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
     const amendDistributorFn_openModal = (buttonEvent: Event) => {
 
-      let distributorLookup_closeModalFn: Function;
+      let distributorLookup_closeModalFn: () => void;
 
       const distributorTdEle = <HTMLTableCellElement>(<HTMLButtonElement>buttonEvent.currentTarget).closest("td").previousElementSibling;
 
@@ -1135,7 +1135,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
     const amendManufacturerFn_openModal = (buttonEvent: Event) => {
 
-      let manufacturerLookup_closeModalFn: Function;
+      let manufacturerLookup_closeModalFn: () => void;
 
       const manufacturerTdEle = <HTMLTableCellElement>(<HTMLButtonElement>buttonEvent.currentTarget).closest("td").previousElementSibling;
 
@@ -1203,7 +1203,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
     const addTicketType_openModal = () => {
 
-      let addTicketType_closeModalFn: Function;
+      let addTicketType_closeModalFn: () => void;
       let addTicketType_ticketTypeEle: HTMLSelectElement;
       let addTicketType_unitCountEle: HTMLInputElement;
 
@@ -1242,7 +1242,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
           (parseFloat((<HTMLInputElement>document.getElementById("ticketTypeAdd--feePerUnit")).value) * unitCount).toFixed(2);
       };
 
-      const addTicketType_refreshTicketTypeChange = function() {
+      const addTicketType_refreshTicketTypeChange = () => {
 
         const ticketTypeOptionEle = addTicketType_ticketTypeEle.selectedOptions[0];
 

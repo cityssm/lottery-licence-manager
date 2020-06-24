@@ -1,25 +1,25 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-llm.organizationRemarks = (function () {
-    function getRemarksByOrganizationID(organizationID, callbackFn) {
+llm.organizationRemarks = (() => {
+    const getRemarksByOrganizationID = (organizationID, callbackFn) => {
         cityssm.postJSON("/organizations/doGetRemarks", {
             organizationID: organizationID
         }, callbackFn);
-    }
-    function getRemarkByID(organizationID, remarkIndex, callbackFn) {
+    };
+    const getRemarkByID = (organizationID, remarkIndex, callbackFn) => {
         cityssm.postJSON("/organizations/doGetRemark", {
             organizationID: organizationID,
             remarkIndex: remarkIndex
         }, callbackFn);
-    }
-    function doAddRemark(formEle, callbackFn) {
+    };
+    const doAddRemark = (formEle, callbackFn) => {
         cityssm.postJSON("/organizations/doAddRemark", formEle, callbackFn);
-    }
-    function openAddRemarkModal(organizationID, updateCallbackFn) {
+    };
+    const openAddRemarkModal = (organizationID, updateCallbackFn) => {
         let addRemarkCloseModalFn;
-        const addFormFn = function (formEvent) {
+        const addFormFn = (formEvent) => {
             formEvent.preventDefault();
-            doAddRemark(formEvent.currentTarget, function () {
+            doAddRemark(formEvent.currentTarget, () => {
                 addRemarkCloseModalFn();
                 if (updateCallbackFn) {
                     updateCallbackFn();
@@ -34,15 +34,15 @@ llm.organizationRemarks = (function () {
                 addRemarkCloseModalFn = closeModalFn;
             }
         });
-    }
-    function doEditRemark(formEle, callbackFn) {
+    };
+    const doEditRemark = (formEle, callbackFn) => {
         cityssm.postJSON("/organizations/doEditRemark", formEle, callbackFn);
-    }
-    function openEditRemarkModal(organizationID, remarkIndex, updateCallbackFn) {
+    };
+    const openEditRemarkModal = (organizationID, remarkIndex, updateCallbackFn) => {
         let editRemarkCloseModalFn;
-        const formFn_edit = function (formEvent) {
+        const formFn_edit = (formEvent) => {
             formEvent.preventDefault();
-            doEditRemark(formEvent.currentTarget, function () {
+            doEditRemark(formEvent.currentTarget, () => {
                 editRemarkCloseModalFn();
                 if (updateCallbackFn) {
                     updateCallbackFn();
@@ -53,7 +53,7 @@ llm.organizationRemarks = (function () {
             onshow(modalEle) {
                 document.getElementById("editRemark--organizationID").value = organizationID.toString();
                 document.getElementById("editRemark--remarkIndex").value = remarkIndex.toString();
-                getRemarkByID(organizationID, remarkIndex, function (remark) {
+                getRemarkByID(organizationID, remarkIndex, (remark) => {
                     const remarkEle = document.getElementById("editRemark--remark");
                     remarkEle.value = remark.remark;
                     remarkEle.removeAttribute("placeholder");
@@ -70,28 +70,28 @@ llm.organizationRemarks = (function () {
                 document.getElementById("editRemark--remark").focus();
             }
         });
-    }
-    function doDeleteRemark(organiztionID, remarkIndex, callbackFn) {
+    };
+    const doDeleteRemark = (organiztionID, remarkIndex, callbackFn) => {
         cityssm.postJSON("/organizations/doDeleteRemark", {
             organizationID: organiztionID,
             remarkIndex: remarkIndex
         }, callbackFn);
-    }
-    function deleteRemark(organizationID, remarkIndex, doConfirm, deleteCallbackFn) {
+    };
+    const deleteRemark = (organizationID, remarkIndex, doConfirm, deleteCallbackFn) => {
         if (doConfirm) {
-            cityssm.confirmModal("Delete Remark?", "Are you sure you want to delete this remark?", "Yes, Delete", "danger", function () {
+            cityssm.confirmModal("Delete Remark?", "Are you sure you want to delete this remark?", "Yes, Delete", "danger", () => {
                 doDeleteRemark(organizationID, remarkIndex, deleteCallbackFn);
             });
         }
         else {
             doDeleteRemark(organizationID, remarkIndex, deleteCallbackFn);
         }
-    }
-    return {
-        getRemarksByOrganizationID: getRemarksByOrganizationID,
-        getRemarkByID: getRemarkByID,
-        openAddRemarkModal: openAddRemarkModal,
-        openEditRemarkModal: openEditRemarkModal,
-        deleteRemark: deleteRemark
     };
-}());
+    return {
+        getRemarksByOrganizationID,
+        getRemarkByID,
+        openAddRemarkModal,
+        openEditRemarkModal,
+        deleteRemark
+    };
+})();

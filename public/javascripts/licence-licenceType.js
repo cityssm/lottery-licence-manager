@@ -1,16 +1,16 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-(function () {
+(() => {
     const formEle = document.getElementById("form--licenceTypes");
     const containerEle = document.getElementById("container--licenceTypes");
     let externalLicenceNumberLabel = "";
-    function getLicenceTypeSummary() {
+    const getLicenceTypeSummaryFn = () => {
         cityssm.clearElement(containerEle);
         containerEle.innerHTML = "<p class=\"has-text-centered has-text-grey-lighter\">" +
             "<i class=\"fas fa-3x fa-circle-notch fa-spin\" aria-hidden=\"true\"></i><br />" +
             "<em>Loading report...</em>" +
             "</p>";
-        cityssm.postJSON("/licences/doGetLicenceTypeSummary", formEle, function (licenceList) {
+        cityssm.postJSON("/licences/doGetLicenceTypeSummary", formEle, (licenceList) => {
             cityssm.clearElement(containerEle);
             if (licenceList.length === 0) {
                 containerEle.innerHTML = "<div class=\"message is-info\">" +
@@ -33,7 +33,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
             let issueDateCount = 0;
             let totalPrizeValueSum = 0;
             let licenceFeeSum = 0;
-            let transactionAmountSum = 0;
             for (const licenceObj of licenceList) {
                 const trEle = document.createElement("tr");
                 trEle.insertAdjacentHTML("beforeend", "<td>" + licenceObj.applicationDateString + "</td>");
@@ -54,7 +53,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 }
                 totalPrizeValueSum += licenceObj.totalPrizeValue;
                 licenceFeeSum += licenceObj.licenceFee;
-                transactionAmountSum += licenceObj.transactionAmountSum;
             }
             tableEle.insertAdjacentElement("beforeend", tbodyEle);
             const tfootEle = document.createElement("tfoot");
@@ -74,11 +72,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
             tableEle.insertAdjacentElement("beforeend", tfootEle);
             containerEle.insertAdjacentElement("beforeend", tableEle);
         });
-    }
-    llm.getDefaultConfigProperty("externalLicenceNumber_fieldLabel", function (fieldLabel) {
+    };
+    llm.initializeDateRangeSelector(document.querySelector(".is-date-range-selector[data-field-key='applicationDate']"), getLicenceTypeSummaryFn);
+    document.getElementById("filter--licenceTypeKey").addEventListener("change", getLicenceTypeSummaryFn);
+    llm.getDefaultConfigProperty("externalLicenceNumber_fieldLabel", (fieldLabel) => {
         externalLicenceNumberLabel = fieldLabel;
-        getLicenceTypeSummary();
+        getLicenceTypeSummaryFn();
     });
-    llm.initializeDateRangeSelector(document.querySelector(".is-date-range-selector[data-field-key='applicationDate']"), getLicenceTypeSummary);
-    document.getElementById("filter--licenceTypeKey").addEventListener("change", getLicenceTypeSummary);
-}());
+})();

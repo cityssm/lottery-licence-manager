@@ -56,7 +56,7 @@ declare const llm: llmGlobal;
     const userNameToDelete = deleteButtonEle.getAttribute("data-user-name");
     const trEle = deleteButtonEle.closest("tr");
 
-    const doDeleteFn = function() {
+    const doDeleteFn = () => {
 
       cityssm.postJSON("/admin/doDeleteUser", {
         userName: userNameToDelete
@@ -271,7 +271,7 @@ declare const llm: llmGlobal;
       cityssm.postJSON(
         "/admin/doResetPassword",
         formEvent.currentTarget,
-        function(responseJSON: { success: boolean, newPassword?: string }) {
+        (responseJSON: { success: boolean, newPassword?: string }) => {
 
           if (responseJSON.success) {
 

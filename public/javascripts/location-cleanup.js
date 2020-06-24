@@ -1,16 +1,16 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-(function () {
+(() => {
     const inactiveYearsFilterEle = document.getElementById("filter--inactiveYears");
     const searchResultsEle = document.getElementById("container--searchResults");
-    function confirmDeleteLocationFn(clickEvent) {
+    const confirmDeleteLocationFn = (clickEvent) => {
         const buttonEle = clickEvent.currentTarget;
         const locationDisplayName = cityssm.escapeHTML(buttonEle.getAttribute("data-location-display-name"));
-        const deleteFn = function () {
+        const deleteFn = () => {
             const locationID = buttonEle.getAttribute("data-location-id");
             cityssm.postJSON("/locations/doDelete", {
                 locationID
-            }, function (responseJSON) {
+            }, (responseJSON) => {
                 if (responseJSON.success) {
                     cityssm.alertModal(responseJSON.message, "", "OK", "success");
                     buttonEle.closest("tr").remove();
@@ -21,15 +21,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
             });
         };
         cityssm.confirmModal("Delete Location?", "Are you sure you want delete " + locationDisplayName + "?", "Yes, Delete", "danger", deleteFn);
-    }
-    function getInactiveLocations() {
+    };
+    const getInactiveLocationsFn = () => {
         searchResultsEle.innerHTML = "<p class=\"has-text-centered has-text-grey-lighter\">" +
             "<i class=\"fas fa-3x fa-circle-notch fa-spin\" aria-hidden=\"true\"></i><br />" +
             "<em>Loading locations...</em>" +
             "</p>";
         cityssm.postJSON("/locations/doGetInactive", {
             inactiveYears: inactiveYearsFilterEle.value
-        }, function (inactiveList) {
+        }, (inactiveList) => {
             if (inactiveList.length === 0) {
                 searchResultsEle.innerHTML = "<div class=\"message is-info\">" +
                     "<p class=\"message-body\">" +
@@ -95,7 +95,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
             cityssm.clearElement(searchResultsEle);
             searchResultsEle.insertAdjacentElement("beforeend", tableEle);
         });
-    }
-    inactiveYearsFilterEle.addEventListener("change", getInactiveLocations);
-    getInactiveLocations();
-}());
+    };
+    inactiveYearsFilterEle.addEventListener("change", getInactiveLocationsFn);
+    getInactiveLocationsFn();
+})();

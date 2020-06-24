@@ -4,7 +4,7 @@ declare const cityssm: cityssmGlobal;
 import type * as llmTypes from "../../helpers/llmTypes";
 
 
-(function() {
+(() => {
 
   const formEle = <HTMLFormElement>document.getElementById("form--organization");
   const formMessageEle = document.getElementById("container--form-message");
@@ -13,7 +13,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
   // Main record update
 
-  formEle.addEventListener("submit", function(formEvent) {
+  formEle.addEventListener("submit", (formEvent) => {
 
     formEvent.preventDefault();
 
@@ -22,7 +22,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
     cityssm.postJSON(
       "/organizations/doSave",
       formEle,
-      function(responseJSON) {
+      (responseJSON: { success: boolean, organizationID?: number, message?: string }) => {
 
         if (responseJSON.success) {
 
@@ -53,26 +53,23 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
   if (!isCreate) {
 
-    const deleteOrganizationFn = function() {
+    const deleteOrganizationFn = () => {
 
       cityssm.postJSON(
         "/organizations/doDelete", {
           organizationID: organizationID
         },
-        function(responseJSON) {
+        (responseJSON: { success: boolean }) => {
 
           if (responseJSON.success) {
-
             window.location.href = "/organizations";
-
           }
-
         }
       );
 
     };
 
-    formEle.getElementsByClassName("is-delete-button")[0].addEventListener("click", function() {
+    formEle.getElementsByClassName("is-delete-button")[0].addEventListener("click", () => {
 
       cityssm.confirmModal(
         "Delete Organization?",
@@ -92,7 +89,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
     const representativeTbodyEle =
       document.getElementsByClassName("is-representative-table")[0].getElementsByTagName("tbody")[0];
 
-    const showNoRepresentativesWarning = function() {
+    const showNoRepresentativesWarning = () => {
 
       if (representativeTbodyEle.getElementsByTagName("tr").length === 0) {
 
@@ -103,14 +100,13 @@ import type * as llmTypes from "../../helpers/llmTypes";
           "</tr>";
 
       }
-
     };
 
     showNoRepresentativesWarning();
 
     // Default toggle
 
-    const updateDefaultRepresentativeFn = function(changeEvent: Event) {
+    const updateDefaultRepresentativeFn = (changeEvent: Event) => {
 
       const defaultRepresentativeIndex = (<HTMLInputElement>changeEvent.currentTarget).value;
 
@@ -118,19 +114,15 @@ import type * as llmTypes from "../../helpers/llmTypes";
         "/organizations/" + organizationID + "/doSetDefaultRepresentative", {
           isDefaultRepresentativeIndex: defaultRepresentativeIndex
         },
-        function() {
-          // Ignore
-        }
+        () => { }
       );
 
     };
 
     const radioEles = representativeTbodyEle.getElementsByTagName("input");
 
-    for (let eleIndex = 0; eleIndex < radioEles.length; eleIndex += 1) {
-
-      radioEles[eleIndex].addEventListener("change", updateDefaultRepresentativeFn);
-
+    for (const radioEle of radioEles) {
+      radioEle.addEventListener("change", updateDefaultRepresentativeFn);
     }
 
     // Delete
@@ -139,7 +131,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
     /**
      * @param  {MouseEvent} clickEvent
      */
-    const deleteRepresentativeFn = function(clickEvent: Event) {
+    const deleteRepresentativeFn = (clickEvent: Event) => {
 
       clickEvent.preventDefault();
 
@@ -152,24 +144,20 @@ import type * as llmTypes from "../../helpers/llmTypes";
         "<p>Are you sure you want to delete the representative \"" + representativeName + "\"?</p>",
         "Yes, Delete",
         "danger",
-        function() {
+        () => {
 
           cityssm.postJSON(
             "/organizations/" + organizationID + "/doDeleteOrganizationRepresentative", {
               representativeIndex: trEle.getAttribute("data-representative-index")
             },
-            function(responseJSON) {
+            (responseJSON: { success: boolean }) => {
 
               if (responseJSON.success) {
-
                 trEle.remove();
                 showNoRepresentativesWarning();
-
               }
-
             }
           );
-
         }
       );
 
@@ -177,10 +165,8 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
     const deleteBtnEles = representativeTbodyEle.getElementsByClassName("is-delete-representative-button");
 
-    for (let eleIndex = 0; eleIndex < deleteBtnEles.length; eleIndex += 1) {
-
-      deleteBtnEles[eleIndex].addEventListener("click", deleteRepresentativeFn);
-
+    for (const deleteBtnEle of deleteBtnEles) {
+      deleteBtnEle.addEventListener("click", deleteRepresentativeFn);
     }
 
     // Add / edit
@@ -190,7 +176,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
     let editRepresentativeTrEle: HTMLTableRowElement;
 
-    const openEditRepresentativeModalFn = function(clickEvent: Event) {
+    const openEditRepresentativeModalFn = (clickEvent: Event) => {
 
       editRepresentativeTrEle = (<HTMLButtonElement>clickEvent.currentTarget).closest("tr");
 
@@ -232,7 +218,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
     };
 
-    const insertRepresentativeRowFn = function(representativeObj: llmTypes.OrganizationRepresentative) {
+    const insertRepresentativeRowFn = (representativeObj: llmTypes.OrganizationRepresentative) => {
 
       const trEle = document.createElement("tr");
 
@@ -249,7 +235,10 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
       trEle.insertAdjacentHTML("beforeend", "<td>" +
         "<div class=\"field\">" +
-        "<input class=\"is-checkradio is-info\" id=\"representative-isDefault--" + representativeObj.representativeIndex + "\" name=\"representative-isDefault\" type=\"radio\"" + (representativeObj.isDefault ? " checked" : "") + " />&nbsp;" +
+        "<input class=\"is-checkradio is-info\"" +
+        " id=\"representative-isDefault--" + representativeObj.representativeIndex + "\"" +
+        " name=\"representative-isDefault\" type=\"radio\"" +
+        (representativeObj.isDefault ? " checked" : "") + " />&nbsp;" +
         "<label for=\"representative-isDefault--" + representativeObj.representativeIndex + "\"></label>" +
         "</div>" +
         "</td>");
@@ -305,29 +294,25 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
     const editBtnEles = representativeTbodyEle.getElementsByClassName("is-edit-representative-button");
 
-    for (let eleIndex = 0; eleIndex < editBtnEles.length; eleIndex += 1) {
-
-      editBtnEles[eleIndex].addEventListener("click", openEditRepresentativeModalFn);
-
+    for (const editBtnEle of editBtnEles) {
+      editBtnEle.addEventListener("click", openEditRepresentativeModalFn);
     }
 
     // Close edit
     let cancelButtonEles = editRepresentativeModalEle.getElementsByClassName("is-cancel-button");
 
-    for (let buttonIndex = 0; buttonIndex < cancelButtonEles.length; buttonIndex += 1) {
-
-      cancelButtonEles[buttonIndex].addEventListener("click", cityssm.hideModal);
-
+    for (const cancelButtonEle of cancelButtonEles) {
+      cancelButtonEle.addEventListener("click", cityssm.hideModal);
     }
 
-    editRepresentativeFormEle.addEventListener("submit", function(formEvent) {
+    editRepresentativeFormEle.addEventListener("submit", (formEvent) => {
 
       formEvent.preventDefault();
 
       cityssm.postJSON(
         "/organizations/" + organizationID + "/doEditOrganizationRepresentative",
         formEvent.currentTarget,
-        function(responseJSON) {
+        (responseJSON) => {
 
           if (responseJSON.success) {
 
@@ -338,12 +323,9 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
             insertRepresentativeRowFn(responseJSON.organizationRepresentative);
             cityssm.hideModal(editRepresentativeModalEle);
-
           }
-
         }
       );
-
     });
 
     // Add
@@ -352,7 +334,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
     const addRepresentativeFormEle = addRepresentativeModalEle.getElementsByTagName("form")[0];
 
     // Open add
-    document.getElementsByClassName("is-add-representative-button")[0].addEventListener("click", function() {
+    document.getElementsByClassName("is-add-representative-button")[0].addEventListener("click", () => {
 
       addRepresentativeFormEle.reset();
       cityssm.showModal(addRepresentativeModalEle);
@@ -363,20 +345,18 @@ import type * as llmTypes from "../../helpers/llmTypes";
     // Close add
     cancelButtonEles = addRepresentativeModalEle.getElementsByClassName("is-cancel-button");
 
-    for (let buttonIndex = 0; buttonIndex < cancelButtonEles.length; buttonIndex += 1) {
-
-      cancelButtonEles[buttonIndex].addEventListener("click", cityssm.hideModal);
-
+    for (const cancelButtonEle of cancelButtonEles) {
+      cancelButtonEle.addEventListener("click", cityssm.hideModal);
     }
 
-    addRepresentativeFormEle.addEventListener("submit", function(formEvent) {
+    addRepresentativeFormEle.addEventListener("submit", (formEvent) => {
 
       formEvent.preventDefault();
 
       cityssm.postJSON(
         "/organizations/" + organizationID + "/doAddOrganizationRepresentative",
         formEvent.currentTarget,
-        function(responseJSON) {
+        (responseJSON: { success: boolean, organizationRepresentative: llmTypes.OrganizationRepresentative }) => {
 
           if (responseJSON.success) {
 
@@ -393,16 +373,14 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
             insertRepresentativeRowFn(responseJSON.organizationRepresentative);
             cityssm.hideModal(addRepresentativeModalEle);
-
           }
-
         }
       );
 
     });
 
     addRepresentativeModalEle.getElementsByClassName("is-copy-organization-address-button")[0]
-      .addEventListener("click", function(clickEvent) {
+      .addEventListener("click", (clickEvent) => {
 
         clickEvent.preventDefault();
 
@@ -428,7 +406,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
   // Nav blocker
 
-  function setUnsavedChanges() {
+  const setUnsavedChangesFn = () => {
 
     cityssm.enableNavBlocker();
 
@@ -437,14 +415,12 @@ import type * as llmTypes from "../../helpers/llmTypes";
       " <span>Unsaved Changes</span>" +
       "</div>";
 
-  }
+  };
 
   const inputEles = formEle.querySelectorAll("input, select, textarea");
 
-  for (let inputIndex = 0; inputIndex < inputEles.length; inputIndex += 1) {
-
-    inputEles[inputIndex].addEventListener("change", setUnsavedChanges);
-
+  for (const inputEle of inputEles) {
+    inputEle.addEventListener("change", setUnsavedChangesFn);
   }
 
-}());
+})();

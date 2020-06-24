@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-(function () {
+(() => {
     const currentDateString = cityssm.dateToString(new Date());
     const eventDateFilterEle = document.getElementById("filter--eventDate");
     const showLicencesCheckboxEle = document.getElementById("filter--showLicences");
@@ -9,14 +9,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
     delete exports.config_days;
     const licenceTypes = exports.config_licenceTypes;
     delete exports.config_licenceTypes;
-    function refreshEvents() {
+    const refreshEventsFn = () => {
         cityssm.clearElement(eventContainerEle);
         if (eventDateFilterEle.value === "") {
             eventDateFilterEle.value = cityssm.dateToString(new Date());
         }
         cityssm.postJSON("/events/doGetEventsByWeek", {
             eventDate: eventDateFilterEle.value
-        }, function (responseJSON) {
+        }, (responseJSON) => {
             if (responseJSON.licences.length === 0 && responseJSON.events.length === 0) {
                 eventContainerEle.innerHTML = "<div class=\"message is-info\">" +
                     "<p class=\"message-body\">There are no licences or events with activity between " +
@@ -47,8 +47,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
             if (!showLicencesCheckboxEle.checked) {
                 licenceTbodyEle.className = "is-hidden";
             }
-            for (let licenceIndex = 0; licenceIndex < responseJSON.licences.length; licenceIndex += 1) {
-                const licenceRecord = responseJSON.licences[licenceIndex];
+            for (const licenceRecord of responseJSON.licences) {
                 let fillerSize = 0;
                 let leftSideFiller = "";
                 if (licenceRecord.startDateString > responseJSON.startDateString) {
@@ -173,10 +172,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
             tableEle.appendChild(eventTbodyEle);
             eventContainerEle.appendChild(tableEle);
         });
-    }
-    eventDateFilterEle.addEventListener("change", refreshEvents);
-    refreshEvents();
-    showLicencesCheckboxEle.addEventListener("change", function () {
+    };
+    eventDateFilterEle.addEventListener("change", refreshEventsFn);
+    refreshEventsFn();
+    showLicencesCheckboxEle.addEventListener("change", () => {
         if (showLicencesCheckboxEle.checked) {
             document.getElementById("tbody--licences").classList.remove("is-hidden");
         }
@@ -184,4 +183,4 @@ Object.defineProperty(exports, "__esModule", { value: true });
             document.getElementById("tbody--licences").classList.add("is-hidden");
         }
     });
-}());
+})();

@@ -2,7 +2,7 @@ import type { cityssmGlobal } from "../../node_modules/@cityssm/bulma-webapp-js/
 declare const cityssm: cityssmGlobal;
 
 
-(function() {
+(() => {
 
   if (document.getElementsByTagName("main")[0].getAttribute("data-can-update") === "true") {
 
@@ -14,13 +14,13 @@ declare const cityssm: cityssmGlobal;
 
       const organizationID = buttonEle.getAttribute("data-organization-id");
 
-      const restoreFn = function() {
+      const restoreFn = () => {
 
         cityssm.postJSON(
           "/organizations/doRestore", {
             organizationID: organizationID
           },
-          function(responseJSON) {
+          (responseJSON: { success: boolean }) => {
 
             if (responseJSON.success) {
               window.location.href = "/organizations/" + organizationID + "?_" + Date.now();
@@ -29,7 +29,7 @@ declare const cityssm: cityssmGlobal;
         );
       };
 
-      buttonEle.addEventListener("click", function() {
+      buttonEle.addEventListener("click", () => {
 
         const organizationName = buttonEle.getAttribute("data-organization-name");
 
@@ -43,4 +43,4 @@ declare const cityssm: cityssmGlobal;
       });
     }
   }
-}());
+})();

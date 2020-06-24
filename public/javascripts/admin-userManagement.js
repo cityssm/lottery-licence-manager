@@ -23,7 +23,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
         const deleteButtonEle = clickEvent.currentTarget;
         const userNameToDelete = deleteButtonEle.getAttribute("data-user-name");
         const trEle = deleteButtonEle.closest("tr");
-        const doDeleteFn = function () {
+        const doDeleteFn = () => {
             cityssm.postJSON("/admin/doDeleteUser", {
                 userName: userNameToDelete
             }, (resultJSON) => {
@@ -145,7 +145,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
     document.getElementById("tab--updateUser-password").getElementsByTagName("form")[0]
         .addEventListener("submit", (formEvent) => {
         formEvent.preventDefault();
-        cityssm.postJSON("/admin/doResetPassword", formEvent.currentTarget, function (responseJSON) {
+        cityssm.postJSON("/admin/doResetPassword", formEvent.currentTarget, (responseJSON) => {
             if (responseJSON.success) {
                 const newPasswordEle = document.getElementById("resetPassword--newPassword");
                 newPasswordEle.innerText = responseJSON.newPassword;

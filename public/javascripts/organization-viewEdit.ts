@@ -343,7 +343,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
       let lockKeyFields = false;
       let accountNumberIsBlank = true;
 
-      const submitBankRecordEditFn = function(formEvent: Event) {
+      const submitBankRecordEditFn = (formEvent: Event) => {
 
         formEvent.preventDefault();
 
@@ -376,13 +376,13 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
       };
 
-      const deleteBankRecordFn = function(deleteButtonEvent: Event) {
+      const deleteBankRecordFn = (deleteButtonEvent: Event) => {
 
         deleteButtonEvent.preventDefault();
 
         const recordIndex = (<HTMLButtonElement>deleteButtonEvent.currentTarget).getAttribute("data-record-index");
 
-        const deleteFn = function() {
+        const deleteFn = () => {
 
           cityssm.postJSON("/organizations/doDeleteBankRecord", {
             organizationID: organizationID,

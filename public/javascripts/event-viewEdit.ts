@@ -1,4 +1,4 @@
-(function() {
+(() => {
 
   // Switch dates nav
 
@@ -6,7 +6,7 @@
 
   if (eventDateSelectEle) {
 
-    eventDateSelectEle.addEventListener("change", function() {
+    eventDateSelectEle.addEventListener("change", () => {
 
       const licenceID = eventDateSelectEle.getAttribute("data-licence-id");
       const newEventDate = eventDateSelectEle.value;
@@ -15,4 +15,4 @@
       window.location.href = "/events/" + licenceID + "/" + newEventDate + (isEdit ? "/edit" : "");
     });
   }
-}());
+})();

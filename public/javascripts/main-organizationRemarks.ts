@@ -7,10 +7,10 @@ declare const llm: llmGlobal;
 import type * as llmTypes from "../../helpers/llmTypes";
 
 
-llm.organizationRemarks = (function() {
+llm.organizationRemarks = (() => {
 
-  function getRemarksByOrganizationID(organizationID: number,
-    callbackFn: (remarkList: llmTypes.OrganizationRemark[]) => void) {
+  const getRemarksByOrganizationID = (organizationID: number,
+    callbackFn: (remarkList: llmTypes.OrganizationRemark[]) => void) => {
 
     cityssm.postJSON(
       "/organizations/doGetRemarks", {
@@ -18,10 +18,10 @@ llm.organizationRemarks = (function() {
       },
       callbackFn
     );
-  }
+  };
 
-  function getRemarkByID(organizationID: number, remarkIndex: number,
-    callbackFn: (remark: llmTypes.OrganizationRemark) => void) {
+  const getRemarkByID = (organizationID: number, remarkIndex: number,
+    callbackFn: (remark: llmTypes.OrganizationRemark) => void) => {
 
     cityssm.postJSON(
       "/organizations/doGetRemark", {
@@ -30,27 +30,27 @@ llm.organizationRemarks = (function() {
       },
       callbackFn
     );
-  }
+  };
 
 
-  function doAddRemark(formEle: HTMLFormElement, callbackFn: (response: {
+  const doAddRemark = (formEle: HTMLFormElement, callbackFn: (response: {
     success: boolean,
     message: string,
     remarkIndex: number
-  }) => void) {
+  }) => void) => {
 
     cityssm.postJSON("/organizations/doAddRemark", formEle, callbackFn);
-  }
+  };
 
-  function openAddRemarkModal(organizationID: number, updateCallbackFn: () => void) {
+  const openAddRemarkModal = (organizationID: number, updateCallbackFn: () => void) => {
 
-    let addRemarkCloseModalFn: Function;
+    let addRemarkCloseModalFn: () => void;
 
-    const addFormFn = function(formEvent: Event) {
+    const addFormFn = (formEvent: Event) => {
 
       formEvent.preventDefault();
 
-      doAddRemark(<HTMLFormElement>formEvent.currentTarget, function() {
+      doAddRemark(<HTMLFormElement>formEvent.currentTarget, () => {
 
         addRemarkCloseModalFn();
 
@@ -72,25 +72,25 @@ llm.organizationRemarks = (function() {
       }
     });
 
-  }
+  };
 
-  function doEditRemark(formEle: HTMLFormElement, callbackFn: (response: {
+  const doEditRemark = (formEle: HTMLFormElement, callbackFn: (response: {
     success: boolean,
     message: string
-  }) => void) {
+  }) => void) => {
 
     cityssm.postJSON("/organizations/doEditRemark", formEle, callbackFn);
-  }
+  };
 
-  function openEditRemarkModal(organizationID: number, remarkIndex: number, updateCallbackFn: () => void) {
+  const openEditRemarkModal = (organizationID: number, remarkIndex: number, updateCallbackFn: () => void) => {
 
-    let editRemarkCloseModalFn: Function;
+    let editRemarkCloseModalFn: () => void;
 
-    const formFn_edit = function(formEvent: Event) {
+    const formFn_edit = (formEvent: Event) => {
 
       formEvent.preventDefault();
 
-      doEditRemark(<HTMLFormElement>formEvent.currentTarget, function() {
+      doEditRemark(<HTMLFormElement>formEvent.currentTarget, () => {
 
         editRemarkCloseModalFn();
 
@@ -106,7 +106,7 @@ llm.organizationRemarks = (function() {
         (<HTMLInputElement>document.getElementById("editRemark--organizationID")).value = organizationID.toString();
         (<HTMLInputElement>document.getElementById("editRemark--remarkIndex")).value = remarkIndex.toString();
 
-        getRemarkByID(organizationID, remarkIndex, function(remark) {
+        getRemarkByID(organizationID, remarkIndex, (remark) => {
 
           const remarkEle = <HTMLTextAreaElement>document.getElementById("editRemark--remark");
           remarkEle.value = remark.remark;
@@ -118,7 +118,6 @@ llm.organizationRemarks = (function() {
           if (remark.isImportant) {
             document.getElementById("editRemark--isImportant").setAttribute("checked", "checked");
           }
-
         });
 
         modalEle.getElementsByTagName("form")[0].addEventListener("submit", formFn_edit);
@@ -130,13 +129,12 @@ llm.organizationRemarks = (function() {
         document.getElementById("editRemark--remark").focus();
       }
     });
+  };
 
-  }
-
-  function doDeleteRemark(organiztionID: number, remarkIndex: number, callbackFn: (response: {
+  const doDeleteRemark = (organiztionID: number, remarkIndex: number, callbackFn: (response: {
     success: boolean,
     message: string
-  }) => void) {
+  }) => void) => {
 
     cityssm.postJSON(
       "/organizations/doDeleteRemark", {
@@ -145,13 +143,13 @@ llm.organizationRemarks = (function() {
       },
       callbackFn
     );
-  }
+  };
 
-  function deleteRemark(organizationID: number, remarkIndex: number, doConfirm: boolean,
+  const deleteRemark = (organizationID: number, remarkIndex: number, doConfirm: boolean,
     deleteCallbackFn: (response: {
       success: boolean,
       message: string
-    }) => void) {
+    }) => void) => {
 
     if (doConfirm) {
 
@@ -160,30 +158,23 @@ llm.organizationRemarks = (function() {
         "Are you sure you want to delete this remark?",
         "Yes, Delete",
         "danger",
-        function() {
-
+        () => {
           doDeleteRemark(organizationID, remarkIndex, deleteCallbackFn);
         }
       );
 
     } else {
-
       doDeleteRemark(organizationID, remarkIndex, deleteCallbackFn);
     }
-  }
+  };
 
 
   return {
-
-    getRemarksByOrganizationID: getRemarksByOrganizationID,
-
-    getRemarkByID: getRemarkByID,
-
-    openAddRemarkModal: openAddRemarkModal,
-
-    openEditRemarkModal: openEditRemarkModal,
-
-    deleteRemark: deleteRemark
+    getRemarksByOrganizationID,
+    getRemarkByID,
+    openAddRemarkModal,
+    openEditRemarkModal,
+    deleteRemark
   };
 
-}());
+})();

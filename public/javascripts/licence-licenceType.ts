@@ -5,14 +5,14 @@ import type { llmGlobal } from "./types";
 declare const llm: llmGlobal;
 
 
-(function() {
+(() => {
 
   const formEle = document.getElementById("form--licenceTypes");
   const containerEle = document.getElementById("container--licenceTypes");
 
   let externalLicenceNumberLabel = "";
 
-  function getLicenceTypeSummary() {
+  const getLicenceTypeSummaryFn = () => {
 
     cityssm.clearElement(containerEle);
 
@@ -21,136 +21,134 @@ declare const llm: llmGlobal;
       "<em>Loading report...</em>" +
       "</p>";
 
-    cityssm.postJSON("/licences/doGetLicenceTypeSummary", formEle, function(licenceList: any[]) {
+    cityssm.postJSON("/licences/doGetLicenceTypeSummary", formEle,
+      (licenceList: any[]) => {
 
-      cityssm.clearElement(containerEle);
+        cityssm.clearElement(containerEle);
 
-      if (licenceList.length === 0) {
+        if (licenceList.length === 0) {
 
-        containerEle.innerHTML = "<div class=\"message is-info\">" +
-          "<p class=\"message-body\">There are no licences available that meet your search criteria.</p>" +
-          "</div>";
+          containerEle.innerHTML = "<div class=\"message is-info\">" +
+            "<p class=\"message-body\">There are no licences available that meet your search criteria.</p>" +
+            "</div>";
 
-        return;
-      }
-
-      const tableEle = document.createElement("table");
-      tableEle.className = "table is-fullwidth is-striped is-hoverable";
-
-      tableEle.innerHTML = "<thead><tr>" +
-        "<th>Application Date</th>" +
-        "<th>Issue Date</th>" +
-        "<th>" + externalLicenceNumberLabel + "</th>" +
-        "<th>Organization</th>" +
-        "<th>Location</th>" +
-        "<th class=\"has-text-right\">Prize Value</th>" +
-        "<th class=\"has-text-right\">Licence Fee</th>" +
-        "</tr></thead>";
-
-      const tbodyEle = document.createElement("tbody");
-
-      let issueDateCount = 0;
-      let totalPrizeValueSum = 0;
-      let licenceFeeSum = 0;
-      let transactionAmountSum = 0;
-
-      for (const licenceObj of licenceList) {
-
-        const trEle = document.createElement("tr");
-
-        trEle.insertAdjacentHTML(
-          "beforeend",
-          "<td>" + licenceObj.applicationDateString + "</td>"
-        );
-
-        trEle.insertAdjacentHTML(
-          "beforeend",
-          "<td>" + licenceObj.issueDateString + "</td>"
-        );
-
-        trEle.insertAdjacentHTML(
-          "beforeend",
-          "<td>" +
-          "<a data-tooltip=\"View Licence\" href=\"/licences/" + licenceObj.licenceID + "\">" +
-          cityssm.escapeHTML(licenceObj.externalLicenceNumber) + "<br />" +
-          "<small>Licence #" + licenceObj.licenceID + "</small>" +
-          "</a>" +
-          "</td>"
-        );
-
-        trEle.insertAdjacentHTML(
-          "beforeend",
-          "<td>" + cityssm.escapeHTML(licenceObj.organizationName) + "</td>"
-        );
-
-        trEle.insertAdjacentHTML(
-          "beforeend",
-          "<td>" + cityssm.escapeHTML(licenceObj.locationDisplayName) + "</td>"
-        );
-
-        trEle.insertAdjacentHTML(
-          "beforeend",
-          "<td class=\"is-nowrap has-text-right\">$ " + licenceObj.totalPrizeValue.toFixed(2) + "</td>"
-        );
-
-        trEle.insertAdjacentHTML(
-          "beforeend",
-          "<td class=\"is-nowrap has-text-right\">$ " + licenceObj.licenceFee.toFixed(2) + "</td>"
-        );
-
-
-        tbodyEle.insertAdjacentElement("beforeend", trEle);
-
-        // Update summaries
-
-        if (licenceObj.issueDate && licenceObj.issueDate > 0) {
-
-          issueDateCount += 1;
-
+          return;
         }
 
-        totalPrizeValueSum += licenceObj.totalPrizeValue;
-        licenceFeeSum += licenceObj.licenceFee;
-        transactionAmountSum += licenceObj.transactionAmountSum;
-      }
+        const tableEle = document.createElement("table");
+        tableEle.className = "table is-fullwidth is-striped is-hoverable";
 
-      tableEle.insertAdjacentElement("beforeend", tbodyEle);
+        tableEle.innerHTML = "<thead><tr>" +
+          "<th>Application Date</th>" +
+          "<th>Issue Date</th>" +
+          "<th>" + externalLicenceNumberLabel + "</th>" +
+          "<th>Organization</th>" +
+          "<th>Location</th>" +
+          "<th class=\"has-text-right\">Prize Value</th>" +
+          "<th class=\"has-text-right\">Licence Fee</th>" +
+          "</tr></thead>";
 
-      const tfootEle = document.createElement("tfoot");
+        const tbodyEle = document.createElement("tbody");
 
-      tfootEle.innerHTML = "<tr>" +
-        "<th>" +
-        licenceList.length + " licence" + (licenceList.length === 1 ? "" : "s") +
-        "</th>" +
-        "<th>" +
-        issueDateCount + " issued" +
-        "</th>" +
-        "<td></td>" +
-        "<td></td>" +
-        "<td></td>" +
-        "<th class=\"is-nowrap has-text-right\">$ " + totalPrizeValueSum.toFixed(2) + "</th>" +
-        "<th class=\"is-nowrap has-text-right\">$ " + licenceFeeSum.toFixed(2) + "</th>" +
-        "</tr>";
+        let issueDateCount = 0;
+        let totalPrizeValueSum = 0;
+        let licenceFeeSum = 0;
+        //let transactionAmountSum = 0;
 
-      tableEle.insertAdjacentElement("beforeend", tfootEle);
+        for (const licenceObj of licenceList) {
 
-      containerEle.insertAdjacentElement("beforeend", tableEle);
-    });
+          const trEle = document.createElement("tr");
 
-  }
+          trEle.insertAdjacentHTML(
+            "beforeend",
+            "<td>" + licenceObj.applicationDateString + "</td>"
+          );
 
-  llm.getDefaultConfigProperty("externalLicenceNumber_fieldLabel", function(fieldLabel) {
-    externalLicenceNumberLabel = fieldLabel;
-    getLicenceTypeSummary();
-  });
+          trEle.insertAdjacentHTML(
+            "beforeend",
+            "<td>" + licenceObj.issueDateString + "</td>"
+          );
 
+          trEle.insertAdjacentHTML(
+            "beforeend",
+            "<td>" +
+            "<a data-tooltip=\"View Licence\" href=\"/licences/" + licenceObj.licenceID + "\">" +
+            cityssm.escapeHTML(licenceObj.externalLicenceNumber) + "<br />" +
+            "<small>Licence #" + licenceObj.licenceID + "</small>" +
+            "</a>" +
+            "</td>"
+          );
+
+          trEle.insertAdjacentHTML(
+            "beforeend",
+            "<td>" + cityssm.escapeHTML(licenceObj.organizationName) + "</td>"
+          );
+
+          trEle.insertAdjacentHTML(
+            "beforeend",
+            "<td>" + cityssm.escapeHTML(licenceObj.locationDisplayName) + "</td>"
+          );
+
+          trEle.insertAdjacentHTML(
+            "beforeend",
+            "<td class=\"is-nowrap has-text-right\">$ " + licenceObj.totalPrizeValue.toFixed(2) + "</td>"
+          );
+
+          trEle.insertAdjacentHTML(
+            "beforeend",
+            "<td class=\"is-nowrap has-text-right\">$ " + licenceObj.licenceFee.toFixed(2) + "</td>"
+          );
+
+
+          tbodyEle.insertAdjacentElement("beforeend", trEle);
+
+          // Update summaries
+
+          if (licenceObj.issueDate && licenceObj.issueDate > 0) {
+
+            issueDateCount += 1;
+
+          }
+
+          totalPrizeValueSum += licenceObj.totalPrizeValue;
+          licenceFeeSum += licenceObj.licenceFee;
+          //transactionAmountSum += licenceObj.transactionAmountSum;
+        }
+
+        tableEle.insertAdjacentElement("beforeend", tbodyEle);
+
+        const tfootEle = document.createElement("tfoot");
+
+        tfootEle.innerHTML = "<tr>" +
+          "<th>" +
+          licenceList.length + " licence" + (licenceList.length === 1 ? "" : "s") +
+          "</th>" +
+          "<th>" +
+          issueDateCount + " issued" +
+          "</th>" +
+          "<td></td>" +
+          "<td></td>" +
+          "<td></td>" +
+          "<th class=\"is-nowrap has-text-right\">$ " + totalPrizeValueSum.toFixed(2) + "</th>" +
+          "<th class=\"is-nowrap has-text-right\">$ " + licenceFeeSum.toFixed(2) + "</th>" +
+          "</tr>";
+
+        tableEle.insertAdjacentElement("beforeend", tfootEle);
+
+        containerEle.insertAdjacentElement("beforeend", tableEle);
+      });
+  };
 
   llm.initializeDateRangeSelector(
     document.querySelector(".is-date-range-selector[data-field-key='applicationDate']"),
-    getLicenceTypeSummary
+    getLicenceTypeSummaryFn
   );
 
+  document.getElementById("filter--licenceTypeKey").addEventListener("change", getLicenceTypeSummaryFn);
 
-  document.getElementById("filter--licenceTypeKey").addEventListener("change", getLicenceTypeSummary);
+  llm.getDefaultConfigProperty("externalLicenceNumber_fieldLabel", (fieldLabel: string) => {
+    externalLicenceNumberLabel = fieldLabel;
+    getLicenceTypeSummaryFn();
+  });
 
-}());
+})();

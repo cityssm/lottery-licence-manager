@@ -4,16 +4,16 @@ declare const cityssm: cityssmGlobal;
 import type * as llmTypes from "../../helpers/llmTypes";
 
 
-(function() {
+(() => {
 
   const formEle = <HTMLFormElement>document.getElementById("form--outstandingEvents");
   const tbodyEle = document.getElementById("tbody--outstandingEvents");
 
-  function getOutstandingEvents() {
+  const getOutstandingEventsFn = () => {
 
     cityssm.clearElement(tbodyEle);
 
-    cityssm.postJSON("/events/doGetOutstandingEvents", formEle, function(outstandingEvents: llmTypes.LotteryEvent[]) {
+    cityssm.postJSON("/events/doGetOutstandingEvents", formEle, (outstandingEvents: llmTypes.LotteryEvent[]) => {
 
       let currentOrganizationID = -1;
 
@@ -89,11 +89,10 @@ import type * as llmTypes from "../../helpers/llmTypes";
         tbodyEle.insertAdjacentElement("beforeend", trEle);
       }
     });
-  }
+  };
 
-  getOutstandingEvents();
+  document.getElementById("filter--licenceTypeKey").addEventListener("change", getOutstandingEventsFn);
+  document.getElementById("filter--eventDateType").addEventListener("change", getOutstandingEventsFn);
 
-  document.getElementById("filter--licenceTypeKey").addEventListener("change", getOutstandingEvents);
-  document.getElementById("filter--eventDateType").addEventListener("change", getOutstandingEvents);
-
-}());
+  getOutstandingEventsFn();
+})();

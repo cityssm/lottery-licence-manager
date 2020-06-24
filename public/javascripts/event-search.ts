@@ -4,7 +4,7 @@ declare const cityssm: cityssmGlobal;
 import type * as llmTypes from "../../helpers/llmTypes";
 
 
-(function() {
+(() => {
 
   const filterExternalLicenceNumberEle = <HTMLInputElement>document.getElementById("filter--externalLicenceNumber");
   const filterLicenceTypeKeyEle = <HTMLSelectElement>document.getElementById("filter--licenceTypeKey");
@@ -13,7 +13,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
   const resultsEle = document.getElementById("container--events");
 
-  function getEvents() {
+  const getEventsFn = () => {
 
     resultsEle.innerHTML = "<p class=\"has-text-centered has-text-grey-lighter\">" +
       "<i class=\"fas fa-3x fa-circle-notch fa-spin\" aria-hidden=\"true\"></i><br />" +
@@ -27,7 +27,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
         organizationName: filterOrganizationNameEle.value,
         eventYear: filterYearEle.value
       },
-      function(eventList: llmTypes.LotteryEvent[]) {
+      (eventList: llmTypes.LotteryEvent[]) => {
 
         if (eventList.length === 0) {
 
@@ -105,12 +105,12 @@ import type * as llmTypes from "../../helpers/llmTypes";
         resultsEle.appendChild(tableEle);
       }
     );
-  }
+  };
 
-  filterExternalLicenceNumberEle.addEventListener("change", getEvents);
-  filterLicenceTypeKeyEle.addEventListener("change", getEvents);
-  filterOrganizationNameEle.addEventListener("change", getEvents);
-  filterYearEle.addEventListener("change", getEvents);
+  filterExternalLicenceNumberEle.addEventListener("change", getEventsFn);
+  filterLicenceTypeKeyEle.addEventListener("change", getEventsFn);
+  filterOrganizationNameEle.addEventListener("change", getEventsFn);
+  filterYearEle.addEventListener("change", getEventsFn);
 
-  getEvents();
-}());
+  getEventsFn();
+})();

@@ -221,7 +221,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
             let isUpdate = false;
             let lockKeyFields = false;
             let accountNumberIsBlank = true;
-            const submitBankRecordEditFn = function (formEvent) {
+            const submitBankRecordEditFn = (formEvent) => {
                 formEvent.preventDefault();
                 cityssm.postJSON("/organizations/" + (isUpdate ? "doEditBankRecord" : "doAddBankRecord"), formEvent.currentTarget, (resultJSON) => {
                     if (resultJSON.success) {
@@ -239,10 +239,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     }
                 });
             };
-            const deleteBankRecordFn = function (deleteButtonEvent) {
+            const deleteBankRecordFn = (deleteButtonEvent) => {
                 deleteButtonEvent.preventDefault();
                 const recordIndex = deleteButtonEvent.currentTarget.getAttribute("data-record-index");
-                const deleteFn = function () {
+                const deleteFn = () => {
                     cityssm.postJSON("/organizations/doDeleteBankRecord", {
                         organizationID: organizationID,
                         recordIndex: recordIndex

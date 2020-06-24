@@ -1,15 +1,15 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-(function () {
+(() => {
     const formEle = document.getElementById("form--filters");
     const searchResultsEle = document.getElementById("container--searchResults");
     const canCreate = document.getElementsByTagName("main")[0].getAttribute("data-can-create") === "true";
-    function doOrganizationSearch() {
+    const doOrganizationSearchFn = () => {
         searchResultsEle.innerHTML = "<p class=\"has-text-centered has-text-grey-lighter\">" +
             "<i class=\"fas fa-3x fa-circle-notch fa-spin\" aria-hidden=\"true\"></i><br />" +
             "<em>Loading organizations...</em>" +
             "</p>";
-        cityssm.postJSON("/organizations/doSearch", formEle, function (organizationsList) {
+        cityssm.postJSON("/organizations/doSearch", formEle, (organizationsList) => {
             if (organizationsList.length === 0) {
                 searchResultsEle.innerHTML = "<div class=\"message is-info\">" +
                     "<div class=\"message-body\">" +
@@ -88,13 +88,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 tbodyEle.insertAdjacentElement("beforeend", trEle);
             }
         });
-    }
-    formEle.addEventListener("submit", function (formEvent) {
+    };
+    formEle.addEventListener("submit", (formEvent) => {
         formEvent.preventDefault();
     });
     const inputEles = formEle.querySelectorAll(".input, .select");
     for (const inputEle of inputEles) {
-        inputEle.addEventListener("change", doOrganizationSearch);
+        inputEle.addEventListener("change", doOrganizationSearchFn);
     }
-    doOrganizationSearch();
-}());
+    doOrganizationSearchFn();
+})();

@@ -1,8 +1,10 @@
 import type { cityssmGlobal } from "../../node_modules/@cityssm/bulma-webapp-js/src/types";
 declare const cityssm: cityssmGlobal;
 
+import type * as llmTypes from "../../helpers/llmTypes";
 
-(function() {
+
+(() => {
 
   let licenceType_keyToName = {};
 
@@ -16,7 +18,7 @@ declare const cityssm: cityssmGlobal;
   const externalLicenceNumberLabel = searchResultsEle.getAttribute("data-external-licence-number-label");
 
 
-  function doLicenceSearch() {
+  const doLicenceSearchFn = () => {
 
     const currentLimit = parseInt(limitEle.value, 10);
     const currentOffset = parseInt(offsetEle.value, 10);
@@ -29,7 +31,7 @@ declare const cityssm: cityssmGlobal;
     cityssm.postJSON(
       "/licences/doSearch",
       formEle,
-      function(licenceResults) {
+      (licenceResults: { count: number, licences: llmTypes.LotteryLicence[] }) => {
 
         const licenceList = licenceResults.licences;
 
@@ -43,7 +45,6 @@ declare const cityssm: cityssmGlobal;
             "</div>";
 
           return;
-
         }
 
         searchResultsEle.innerHTML = "<table class=\"table is-fullwidth is-striped is-hoverable\">" +
@@ -60,9 +61,8 @@ declare const cityssm: cityssmGlobal;
 
         const tbodyEle = searchResultsEle.getElementsByTagName("tbody")[0];
 
-        for (let licenceIndex = 0; licenceIndex < licenceList.length; licenceIndex += 1) {
+        for (const licenceObj of licenceList) {
 
-          const licenceObj = licenceList[licenceIndex];
           const licenceType = licenceType_keyToName[licenceObj.licenceTypeKey];
 
           const trEle = document.createElement("tr");
@@ -145,11 +145,11 @@ declare const cityssm: cityssmGlobal;
             const previousEle = document.createElement("a");
             previousEle.className = "button";
             previousEle.innerText = "Previous";
-            previousEle.addEventListener("click", function(clickEvent) {
+            previousEle.addEventListener("click", (clickEvent) => {
 
               clickEvent.preventDefault();
               offsetEle.value = Math.max(0, currentOffset - currentLimit).toString();
-              doLicenceSearch();
+              doLicenceSearchFn();
 
             });
 
@@ -162,34 +162,28 @@ declare const cityssm: cityssmGlobal;
             const nextEle = document.createElement("a");
             nextEle.className = "button ml-3";
             nextEle.innerHTML = "<span>Next Licences</span><span class=\"icon\"><i class=\"fas fa-chevron-right\" aria-hidden=\"true\"></i></span>";
-            nextEle.addEventListener("click", function(clickEvent) {
+            nextEle.addEventListener("click", (clickEvent) => {
 
               clickEvent.preventDefault();
               offsetEle.value = (currentOffset + currentLimit).toString();
-              doLicenceSearch();
+              doLicenceSearchFn();
 
             });
 
             paginationEle.insertAdjacentElement("beforeend", nextEle);
-
           }
 
           searchResultsEle.getElementsByClassName("level")[0].insertAdjacentElement("beforeend", paginationEle);
-
         }
-
       }
     );
+  };
 
-  }
 
-
-  function resetOffsetAndDoLicenceSearch() {
-
+  const resetOffsetAndDoLicenceSearchFn = () => {
     offsetEle.value = "0";
-    doLicenceSearch();
-
-  }
+    doLicenceSearchFn();
+  };
 
   const licenceTypeOptionEles = document.getElementById("filter--licenceTypeKey").getElementsByTagName("option");
 
@@ -198,24 +192,19 @@ declare const cityssm: cityssmGlobal;
 
     const optionEle = licenceTypeOptionEles[optionIndex];
     licenceType_keyToName[optionEle.value] = optionEle.innerText;
-
   }
 
 
-  formEle.addEventListener("submit", function(formEvent) {
-
+  formEle.addEventListener("submit", (formEvent) => {
     formEvent.preventDefault();
-
   });
 
   const inputEles = formEle.querySelectorAll(".input, .select select");
 
-  for (let inputIndex = 0; inputIndex < inputEles.length; inputIndex += 1) {
-
-    inputEles[inputIndex].addEventListener("change", resetOffsetAndDoLicenceSearch);
-
+  for (const inputEle of inputEles) {
+    inputEle.addEventListener("change", resetOffsetAndDoLicenceSearchFn);
   }
 
-  resetOffsetAndDoLicenceSearch();
+  resetOffsetAndDoLicenceSearchFn();
 
-}());
+})();

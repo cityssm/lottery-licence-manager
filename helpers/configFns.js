@@ -72,7 +72,7 @@ let licenceTypeKeyNameObject = {};
 exports.getLicenceType = (licenceTypeKey) => {
     if (!licenceTypeCache.has(licenceTypeKey)) {
         const licenceType = exports.getProperty("licenceTypes")
-            .find(ele => ele.licenceTypeKey === licenceTypeKey);
+            .find((ele) => ele.licenceTypeKey === licenceTypeKey);
         licenceTypeCache.set(licenceTypeKey, licenceType);
     }
     return licenceTypeCache.get(licenceTypeKey);

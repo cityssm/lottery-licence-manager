@@ -1,11 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-(function () {
+(() => {
     const formEle = document.getElementById("form--outstandingEvents");
     const tbodyEle = document.getElementById("tbody--outstandingEvents");
-    function getOutstandingEvents() {
+    const getOutstandingEventsFn = () => {
         cityssm.clearElement(tbodyEle);
-        cityssm.postJSON("/events/doGetOutstandingEvents", formEle, function (outstandingEvents) {
+        cityssm.postJSON("/events/doGetOutstandingEvents", formEle, (outstandingEvents) => {
             let currentOrganizationID = -1;
             for (const outstandingEventObj of outstandingEvents) {
                 if (currentOrganizationID !== outstandingEventObj.organizationID) {
@@ -62,8 +62,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 tbodyEle.insertAdjacentElement("beforeend", trEle);
             }
         });
-    }
-    getOutstandingEvents();
-    document.getElementById("filter--licenceTypeKey").addEventListener("change", getOutstandingEvents);
-    document.getElementById("filter--eventDateType").addEventListener("change", getOutstandingEvents);
-}());
+    };
+    document.getElementById("filter--licenceTypeKey").addEventListener("change", getOutstandingEventsFn);
+    document.getElementById("filter--eventDateType").addEventListener("change", getOutstandingEventsFn);
+    getOutstandingEventsFn();
+})();

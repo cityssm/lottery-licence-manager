@@ -5,7 +5,7 @@ import type { llmGlobal } from "./types";
 declare const llm: llmGlobal;
 
 
-(function() {
+(() => {
 
   const formEle = <HTMLFormElement>document.getElementById("form--financialSummary");
 
@@ -13,22 +13,21 @@ declare const llm: llmGlobal;
   const tbodyEle = tableEle.getElementsByTagName("tbody")[0];
   const tfootEle = tableEle.getElementsByTagName("tfoot")[0];
 
-  function formatDollarsAsHTML(dollarAmt: number) {
+  const formatDollarsAsHTMLFn = (dollarAmt: number) => {
 
     if (dollarAmt < 0) {
       return "<span class=\"has-text-danger\">($" + (dollarAmt * -1).toFixed(2) + ")</span>";
     }
 
     return "$" + dollarAmt.toFixed(2);
+  };
 
-  }
-
-  function getFinancialSummary() {
+  const getFinancialSummaryFn = () => {
 
     tableEle.classList.remove("has-status-view");
     tableEle.classList.add("has-status-loading");
 
-    cityssm.postJSON("/events/doGetFinancialSummary", formEle, function(summary: any[]) {
+    cityssm.postJSON("/events/doGetFinancialSummary", formEle, (summary: any[]) => {
 
       // Hide all rows
 
@@ -77,7 +76,7 @@ declare const llm: llmGlobal;
         costs_prizesAwardedSum += licenceTypeSummaryObj.costs_prizesAwardedSum;
 
         trEle.querySelector("[data-field='costs_netProceedsSum']").innerHTML =
-          formatDollarsAsHTML(licenceTypeSummaryObj.costs_netProceedsSum);
+          formatDollarsAsHTMLFn(licenceTypeSummaryObj.costs_netProceedsSum);
         costs_netProceedsSum += licenceTypeSummaryObj.costs_netProceedsSum;
 
         (<HTMLSpanElement>trEle.querySelector("[data-field='costs_amountDonatedSum']")).innerText =
@@ -110,7 +109,7 @@ declare const llm: llmGlobal;
         "$" + costs_prizesAwardedSum.toFixed(2);
 
       tfootEle.querySelector("[data-field='costs_netProceedsSum']").innerHTML =
-        formatDollarsAsHTML(costs_netProceedsSum);
+        formatDollarsAsHTMLFn(costs_netProceedsSum);
 
       (<HTMLSpanElement>tfootEle.querySelector("[data-field='costs_amountDonatedSum']")).innerText =
         "$" + costs_amountDonatedSum.toFixed(2);
@@ -123,13 +122,13 @@ declare const llm: llmGlobal;
 
     });
 
-  }
+  };
 
   llm.initializeDateRangeSelector(
     document.querySelector(".is-date-range-selector[data-field-key='eventDate']"),
-    getFinancialSummary
+    getFinancialSummaryFn
   );
 
-  getFinancialSummary();
+  getFinancialSummaryFn();
 
-}());
+})();

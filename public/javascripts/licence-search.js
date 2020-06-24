@@ -1,20 +1,20 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-(function () {
+(() => {
     let licenceType_keyToName = {};
     const formEle = document.getElementById("form--filters");
     const limitEle = document.getElementById("filter--limit");
     const offsetEle = document.getElementById("filter--offset");
     const searchResultsEle = document.getElementById("container--searchResults");
     const externalLicenceNumberLabel = searchResultsEle.getAttribute("data-external-licence-number-label");
-    function doLicenceSearch() {
+    const doLicenceSearchFn = () => {
         const currentLimit = parseInt(limitEle.value, 10);
         const currentOffset = parseInt(offsetEle.value, 10);
         searchResultsEle.innerHTML = "<p class=\"has-text-centered has-text-grey-lighter\">" +
             "<i class=\"fas fa-3x fa-circle-notch fa-spin\" aria-hidden=\"true\"></i><br />" +
             "<em>Loading licences...</em>" +
             "</p>";
-        cityssm.postJSON("/licences/doSearch", formEle, function (licenceResults) {
+        cityssm.postJSON("/licences/doSearch", formEle, (licenceResults) => {
             const licenceList = licenceResults.licences;
             if (licenceList.length === 0) {
                 searchResultsEle.innerHTML = "<div class=\"message is-info\">" +
@@ -37,8 +37,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 "<tbody></tbody>" +
                 "</table>";
             const tbodyEle = searchResultsEle.getElementsByTagName("tbody")[0];
-            for (let licenceIndex = 0; licenceIndex < licenceList.length; licenceIndex += 1) {
-                const licenceObj = licenceList[licenceIndex];
+            for (const licenceObj of licenceList) {
                 const licenceType = licenceType_keyToName[licenceObj.licenceTypeKey];
                 const trEle = document.createElement("tr");
                 trEle.innerHTML =
@@ -105,10 +104,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     const previousEle = document.createElement("a");
                     previousEle.className = "button";
                     previousEle.innerText = "Previous";
-                    previousEle.addEventListener("click", function (clickEvent) {
+                    previousEle.addEventListener("click", (clickEvent) => {
                         clickEvent.preventDefault();
                         offsetEle.value = Math.max(0, currentOffset - currentLimit).toString();
-                        doLicenceSearch();
+                        doLicenceSearchFn();
                     });
                     paginationEle.insertAdjacentElement("beforeend", previousEle);
                 }
@@ -116,32 +115,32 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     const nextEle = document.createElement("a");
                     nextEle.className = "button ml-3";
                     nextEle.innerHTML = "<span>Next Licences</span><span class=\"icon\"><i class=\"fas fa-chevron-right\" aria-hidden=\"true\"></i></span>";
-                    nextEle.addEventListener("click", function (clickEvent) {
+                    nextEle.addEventListener("click", (clickEvent) => {
                         clickEvent.preventDefault();
                         offsetEle.value = (currentOffset + currentLimit).toString();
-                        doLicenceSearch();
+                        doLicenceSearchFn();
                     });
                     paginationEle.insertAdjacentElement("beforeend", nextEle);
                 }
                 searchResultsEle.getElementsByClassName("level")[0].insertAdjacentElement("beforeend", paginationEle);
             }
         });
-    }
-    function resetOffsetAndDoLicenceSearch() {
+    };
+    const resetOffsetAndDoLicenceSearchFn = () => {
         offsetEle.value = "0";
-        doLicenceSearch();
-    }
+        doLicenceSearchFn();
+    };
     const licenceTypeOptionEles = document.getElementById("filter--licenceTypeKey").getElementsByTagName("option");
     for (let optionIndex = 1; optionIndex < licenceTypeOptionEles.length; optionIndex += 1) {
         const optionEle = licenceTypeOptionEles[optionIndex];
         licenceType_keyToName[optionEle.value] = optionEle.innerText;
     }
-    formEle.addEventListener("submit", function (formEvent) {
+    formEle.addEventListener("submit", (formEvent) => {
         formEvent.preventDefault();
     });
     const inputEles = formEle.querySelectorAll(".input, .select select");
-    for (let inputIndex = 0; inputIndex < inputEles.length; inputIndex += 1) {
-        inputEles[inputIndex].addEventListener("change", resetOffsetAndDoLicenceSearch);
+    for (const inputEle of inputEles) {
+        inputEle.addEventListener("change", resetOffsetAndDoLicenceSearchFn);
     }
-    resetOffsetAndDoLicenceSearch();
-}());
+    resetOffsetAndDoLicenceSearchFn();
+})();

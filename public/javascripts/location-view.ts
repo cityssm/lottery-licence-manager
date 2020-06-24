@@ -2,29 +2,26 @@ import type { cityssmGlobal } from "../../node_modules/@cityssm/bulma-webapp-js/
 declare const cityssm: cityssmGlobal;
 
 
-(function() {
+(() => {
 
   const restoreButtonEle = document.getElementById("is-location-restore-button");
 
   if (restoreButtonEle) {
 
-    const restoreFn = function() {
+    const restoreFn = () => {
 
       cityssm.postJSON("/locations/doRestore", {
         locationID: restoreButtonEle.getAttribute("data-location-id")
-      }, function(responseJSON) {
+      },
+        (responseJSON: { success: boolean }) => {
 
-        if (responseJSON.success) {
-
-          window.location.reload(true);
-
-        }
-
-      });
-
+          if (responseJSON.success) {
+            window.location.reload(true);
+          }
+        });
     };
 
-    restoreButtonEle.addEventListener("click", function() {
+    restoreButtonEle.addEventListener("click", () => {
 
       cityssm.confirmModal(
         "Restore Location?",
@@ -33,9 +30,6 @@ declare const cityssm: cityssmGlobal;
         "warning",
         restoreFn
       );
-
     });
-
   }
-
-}());
+})();

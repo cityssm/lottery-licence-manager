@@ -1,14 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-(function () {
+(() => {
     const formEle = document.getElementById("form--organization");
     const formMessageEle = document.getElementById("container--form-message");
     const organizationID = document.getElementById("organization--organizationID").value;
     const isCreate = organizationID === "";
-    formEle.addEventListener("submit", function (formEvent) {
+    formEle.addEventListener("submit", (formEvent) => {
         formEvent.preventDefault();
         formMessageEle.innerHTML = "Saving... <i class=\"fas fa-circle-notch fa-spin\" aria-hidden=\"true\"></i>";
-        cityssm.postJSON("/organizations/doSave", formEle, function (responseJSON) {
+        cityssm.postJSON("/organizations/doSave", formEle, (responseJSON) => {
             if (responseJSON.success) {
                 cityssm.disableNavBlocker();
             }
@@ -22,21 +22,21 @@ Object.defineProperty(exports, "__esModule", { value: true });
         });
     });
     if (!isCreate) {
-        const deleteOrganizationFn = function () {
+        const deleteOrganizationFn = () => {
             cityssm.postJSON("/organizations/doDelete", {
                 organizationID: organizationID
-            }, function (responseJSON) {
+            }, (responseJSON) => {
                 if (responseJSON.success) {
                     window.location.href = "/organizations";
                 }
             });
         };
-        formEle.getElementsByClassName("is-delete-button")[0].addEventListener("click", function () {
+        formEle.getElementsByClassName("is-delete-button")[0].addEventListener("click", () => {
             cityssm.confirmModal("Delete Organization?", ("Are you sure you want to delete this organization?<br />" +
                 "Note that any active licences issued to this organization will remain active."), "Yes, Delete Organization", "warning", deleteOrganizationFn);
         });
         const representativeTbodyEle = document.getElementsByClassName("is-representative-table")[0].getElementsByTagName("tbody")[0];
-        const showNoRepresentativesWarning = function () {
+        const showNoRepresentativesWarning = () => {
             if (representativeTbodyEle.getElementsByTagName("tr").length === 0) {
                 representativeTbodyEle.innerHTML = "<tr class=\"has-background-warning is-empty-warning\">" +
                     "<td class=\"has-text-centered\" colspan=\"6\">" +
@@ -46,25 +46,24 @@ Object.defineProperty(exports, "__esModule", { value: true });
             }
         };
         showNoRepresentativesWarning();
-        const updateDefaultRepresentativeFn = function (changeEvent) {
+        const updateDefaultRepresentativeFn = (changeEvent) => {
             const defaultRepresentativeIndex = changeEvent.currentTarget.value;
             cityssm.postJSON("/organizations/" + organizationID + "/doSetDefaultRepresentative", {
                 isDefaultRepresentativeIndex: defaultRepresentativeIndex
-            }, function () {
-            });
+            }, () => { });
         };
         const radioEles = representativeTbodyEle.getElementsByTagName("input");
-        for (let eleIndex = 0; eleIndex < radioEles.length; eleIndex += 1) {
-            radioEles[eleIndex].addEventListener("change", updateDefaultRepresentativeFn);
+        for (const radioEle of radioEles) {
+            radioEle.addEventListener("change", updateDefaultRepresentativeFn);
         }
-        const deleteRepresentativeFn = function (clickEvent) {
+        const deleteRepresentativeFn = (clickEvent) => {
             clickEvent.preventDefault();
             const trEle = clickEvent.currentTarget.closest("tr");
             const representativeName = trEle.getAttribute("data-representative-name");
-            cityssm.confirmModal("Delete a Representative?", "<p>Are you sure you want to delete the representative \"" + representativeName + "\"?</p>", "Yes, Delete", "danger", function () {
+            cityssm.confirmModal("Delete a Representative?", "<p>Are you sure you want to delete the representative \"" + representativeName + "\"?</p>", "Yes, Delete", "danger", () => {
                 cityssm.postJSON("/organizations/" + organizationID + "/doDeleteOrganizationRepresentative", {
                     representativeIndex: trEle.getAttribute("data-representative-index")
-                }, function (responseJSON) {
+                }, (responseJSON) => {
                     if (responseJSON.success) {
                         trEle.remove();
                         showNoRepresentativesWarning();
@@ -73,13 +72,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
             });
         };
         const deleteBtnEles = representativeTbodyEle.getElementsByClassName("is-delete-representative-button");
-        for (let eleIndex = 0; eleIndex < deleteBtnEles.length; eleIndex += 1) {
-            deleteBtnEles[eleIndex].addEventListener("click", deleteRepresentativeFn);
+        for (const deleteBtnEle of deleteBtnEles) {
+            deleteBtnEle.addEventListener("click", deleteRepresentativeFn);
         }
         const editRepresentativeModalEle = document.getElementsByClassName("is-edit-representative-modal")[0];
         const editRepresentativeFormEle = editRepresentativeModalEle.getElementsByTagName("form")[0];
         let editRepresentativeTrEle;
-        const openEditRepresentativeModalFn = function (clickEvent) {
+        const openEditRepresentativeModalFn = (clickEvent) => {
             editRepresentativeTrEle = clickEvent.currentTarget.closest("tr");
             const representativeIndex = editRepresentativeTrEle.getAttribute("data-representative-index");
             document.getElementById("editOrganizationRepresentative--representativeIndex").value = representativeIndex;
@@ -105,7 +104,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 document.getElementById("representative-isDefault--" + representativeIndex).checked ? "1" : "0";
             cityssm.showModal(editRepresentativeModalEle);
         };
-        const insertRepresentativeRowFn = function (representativeObj) {
+        const insertRepresentativeRowFn = (representativeObj) => {
             const trEle = document.createElement("tr");
             trEle.setAttribute("data-representative-index", representativeObj.representativeIndex.toString());
             trEle.setAttribute("data-representative-name", representativeObj.representativeName);
@@ -119,7 +118,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
             trEle.setAttribute("data-representative-email-address", representativeObj.representativeEmailAddress);
             trEle.insertAdjacentHTML("beforeend", "<td>" +
                 "<div class=\"field\">" +
-                "<input class=\"is-checkradio is-info\" id=\"representative-isDefault--" + representativeObj.representativeIndex + "\" name=\"representative-isDefault\" type=\"radio\"" + (representativeObj.isDefault ? " checked" : "") + " />&nbsp;" +
+                "<input class=\"is-checkradio is-info\"" +
+                " id=\"representative-isDefault--" + representativeObj.representativeIndex + "\"" +
+                " name=\"representative-isDefault\" type=\"radio\"" +
+                (representativeObj.isDefault ? " checked" : "") + " />&nbsp;" +
                 "<label for=\"representative-isDefault--" + representativeObj.representativeIndex + "\"></label>" +
                 "</div>" +
                 "</td>");
@@ -159,16 +161,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
             representativeTbodyEle.insertAdjacentElement("beforeend", trEle);
         };
         const editBtnEles = representativeTbodyEle.getElementsByClassName("is-edit-representative-button");
-        for (let eleIndex = 0; eleIndex < editBtnEles.length; eleIndex += 1) {
-            editBtnEles[eleIndex].addEventListener("click", openEditRepresentativeModalFn);
+        for (const editBtnEle of editBtnEles) {
+            editBtnEle.addEventListener("click", openEditRepresentativeModalFn);
         }
         let cancelButtonEles = editRepresentativeModalEle.getElementsByClassName("is-cancel-button");
-        for (let buttonIndex = 0; buttonIndex < cancelButtonEles.length; buttonIndex += 1) {
-            cancelButtonEles[buttonIndex].addEventListener("click", cityssm.hideModal);
+        for (const cancelButtonEle of cancelButtonEles) {
+            cancelButtonEle.addEventListener("click", cityssm.hideModal);
         }
-        editRepresentativeFormEle.addEventListener("submit", function (formEvent) {
+        editRepresentativeFormEle.addEventListener("submit", (formEvent) => {
             formEvent.preventDefault();
-            cityssm.postJSON("/organizations/" + organizationID + "/doEditOrganizationRepresentative", formEvent.currentTarget, function (responseJSON) {
+            cityssm.postJSON("/organizations/" + organizationID + "/doEditOrganizationRepresentative", formEvent.currentTarget, (responseJSON) => {
                 if (responseJSON.success) {
                     editRepresentativeTrEle.remove();
                     editRepresentativeTrEle = null;
@@ -179,18 +181,18 @@ Object.defineProperty(exports, "__esModule", { value: true });
         });
         const addRepresentativeModalEle = document.getElementsByClassName("is-add-representative-modal")[0];
         const addRepresentativeFormEle = addRepresentativeModalEle.getElementsByTagName("form")[0];
-        document.getElementsByClassName("is-add-representative-button")[0].addEventListener("click", function () {
+        document.getElementsByClassName("is-add-representative-button")[0].addEventListener("click", () => {
             addRepresentativeFormEle.reset();
             cityssm.showModal(addRepresentativeModalEle);
             document.getElementById("addOrganizationRepresentative--representativeName").focus();
         });
         cancelButtonEles = addRepresentativeModalEle.getElementsByClassName("is-cancel-button");
-        for (let buttonIndex = 0; buttonIndex < cancelButtonEles.length; buttonIndex += 1) {
-            cancelButtonEles[buttonIndex].addEventListener("click", cityssm.hideModal);
+        for (const cancelButtonEle of cancelButtonEles) {
+            cancelButtonEle.addEventListener("click", cityssm.hideModal);
         }
-        addRepresentativeFormEle.addEventListener("submit", function (formEvent) {
+        addRepresentativeFormEle.addEventListener("submit", (formEvent) => {
             formEvent.preventDefault();
-            cityssm.postJSON("/organizations/" + organizationID + "/doAddOrganizationRepresentative", formEvent.currentTarget, function (responseJSON) {
+            cityssm.postJSON("/organizations/" + organizationID + "/doAddOrganizationRepresentative", formEvent.currentTarget, (responseJSON) => {
                 if (responseJSON.success) {
                     const emptyWarningEle = representativeTbodyEle.getElementsByClassName("is-empty-warning");
                     if (emptyWarningEle.length > 0) {
@@ -202,7 +204,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
             });
         });
         addRepresentativeModalEle.getElementsByClassName("is-copy-organization-address-button")[0]
-            .addEventListener("click", function (clickEvent) {
+            .addEventListener("click", (clickEvent) => {
             clickEvent.preventDefault();
             document.getElementById("addOrganizationRepresentative--representativeAddress1").value =
                 document.getElementById("organization--organizationAddress1").value;
@@ -216,15 +218,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 document.getElementById("organization--organizationPostalCode").value;
         });
     }
-    function setUnsavedChanges() {
+    const setUnsavedChangesFn = () => {
         cityssm.enableNavBlocker();
         formMessageEle.innerHTML = "<span class=\"tag is-light is-info is-medium\">" +
             "<span class=\"icon\"><i class=\"fas fa-exclamation-triangle\" aria-hidden=\"true\"></i></span>" +
             " <span>Unsaved Changes</span>" +
             "</div>";
-    }
+    };
     const inputEles = formEle.querySelectorAll("input, select, textarea");
-    for (let inputIndex = 0; inputIndex < inputEles.length; inputIndex += 1) {
-        inputEles[inputIndex].addEventListener("change", setUnsavedChanges);
+    for (const inputEle of inputEles) {
+        inputEle.addEventListener("change", setUnsavedChangesFn);
     }
-}());
+})();

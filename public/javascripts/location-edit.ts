@@ -128,7 +128,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
             targetLocationID: locationID,
             sourceLocationID: locationID_source
           },
-          function(responseJSON) {
+          (responseJSON: { success: boolean }) => {
 
             if (responseJSON.success) {
               window.location.reload(true);

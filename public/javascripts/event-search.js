@@ -1,12 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-(function () {
+(() => {
     const filterExternalLicenceNumberEle = document.getElementById("filter--externalLicenceNumber");
     const filterLicenceTypeKeyEle = document.getElementById("filter--licenceTypeKey");
     const filterOrganizationNameEle = document.getElementById("filter--organizationName");
     const filterYearEle = document.getElementById("filter--year");
     const resultsEle = document.getElementById("container--events");
-    function getEvents() {
+    const getEventsFn = () => {
         resultsEle.innerHTML = "<p class=\"has-text-centered has-text-grey-lighter\">" +
             "<i class=\"fas fa-3x fa-circle-notch fa-spin\" aria-hidden=\"true\"></i><br />" +
             "<em>Loading events..." +
@@ -16,7 +16,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
             licenceTypeKey: filterLicenceTypeKeyEle.value,
             organizationName: filterOrganizationNameEle.value,
             eventYear: filterYearEle.value
-        }, function (eventList) {
+        }, (eventList) => {
             if (eventList.length === 0) {
                 resultsEle.innerHTML = "<div class=\"message is-info\">" +
                     "<div class=\"message-body\">" +
@@ -78,10 +78,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
             tableEle.appendChild(tbodyEle);
             resultsEle.appendChild(tableEle);
         });
-    }
-    filterExternalLicenceNumberEle.addEventListener("change", getEvents);
-    filterLicenceTypeKeyEle.addEventListener("change", getEvents);
-    filterOrganizationNameEle.addEventListener("change", getEvents);
-    filterYearEle.addEventListener("change", getEvents);
-    getEvents();
-}());
+    };
+    filterExternalLicenceNumberEle.addEventListener("change", getEventsFn);
+    filterLicenceTypeKeyEle.addEventListener("change", getEventsFn);
+    filterOrganizationNameEle.addEventListener("change", getEventsFn);
+    filterYearEle.addEventListener("change", getEventsFn);
+    getEventsFn();
+})();

@@ -122,7 +122,7 @@ export const getLicenceType = (licenceTypeKey: string): llm.ConfigLicenceType =>
   if (!licenceTypeCache.has(licenceTypeKey)) {
 
     const licenceType = (<llm.ConfigLicenceType[]>getProperty("licenceTypes"))
-      .find(ele => ele.licenceTypeKey === licenceTypeKey);
+      .find((ele) => ele.licenceTypeKey === licenceTypeKey);
 
     licenceTypeCache.set(licenceTypeKey, licenceType);
   }

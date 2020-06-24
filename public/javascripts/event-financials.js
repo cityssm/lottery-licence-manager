@@ -1,20 +1,20 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-(function () {
+(() => {
     const formEle = document.getElementById("form--financialSummary");
     const tableEle = document.getElementById("table--financialSummary");
     const tbodyEle = tableEle.getElementsByTagName("tbody")[0];
     const tfootEle = tableEle.getElementsByTagName("tfoot")[0];
-    function formatDollarsAsHTML(dollarAmt) {
+    const formatDollarsAsHTMLFn = (dollarAmt) => {
         if (dollarAmt < 0) {
             return "<span class=\"has-text-danger\">($" + (dollarAmt * -1).toFixed(2) + ")</span>";
         }
         return "$" + dollarAmt.toFixed(2);
-    }
-    function getFinancialSummary() {
+    };
+    const getFinancialSummaryFn = () => {
         tableEle.classList.remove("has-status-view");
         tableEle.classList.add("has-status-loading");
-        cityssm.postJSON("/events/doGetFinancialSummary", formEle, function (summary) {
+        cityssm.postJSON("/events/doGetFinancialSummary", formEle, (summary) => {
             const trEles = tbodyEle.children;
             for (const trEle of trEles) {
                 trEle.classList.add("is-hidden");
@@ -49,7 +49,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     "$" + licenceTypeSummaryObj.costs_prizesAwardedSum.toFixed(2);
                 costs_prizesAwardedSum += licenceTypeSummaryObj.costs_prizesAwardedSum;
                 trEle.querySelector("[data-field='costs_netProceedsSum']").innerHTML =
-                    formatDollarsAsHTML(licenceTypeSummaryObj.costs_netProceedsSum);
+                    formatDollarsAsHTMLFn(licenceTypeSummaryObj.costs_netProceedsSum);
                 costs_netProceedsSum += licenceTypeSummaryObj.costs_netProceedsSum;
                 trEle.querySelector("[data-field='costs_amountDonatedSum']").innerText =
                     "$" + licenceTypeSummaryObj.costs_amountDonatedSum.toFixed(2);
@@ -71,7 +71,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
             tfootEle.querySelector("[data-field='costs_prizesAwardedSum']").innerText =
                 "$" + costs_prizesAwardedSum.toFixed(2);
             tfootEle.querySelector("[data-field='costs_netProceedsSum']").innerHTML =
-                formatDollarsAsHTML(costs_netProceedsSum);
+                formatDollarsAsHTMLFn(costs_netProceedsSum);
             tfootEle.querySelector("[data-field='costs_amountDonatedSum']").innerText =
                 "$" + costs_amountDonatedSum.toFixed(2);
             tfootEle.querySelector("[data-field='licenceFeeSum']").innerText =
@@ -79,7 +79,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
             tableEle.classList.remove("has-status-loading");
             tableEle.classList.add("has-status-view");
         });
-    }
-    llm.initializeDateRangeSelector(document.querySelector(".is-date-range-selector[data-field-key='eventDate']"), getFinancialSummary);
-    getFinancialSummary();
-}());
+    };
+    llm.initializeDateRangeSelector(document.querySelector(".is-date-range-selector[data-field-key='eventDate']"), getFinancialSummaryFn);
+    getFinancialSummaryFn();
+})();

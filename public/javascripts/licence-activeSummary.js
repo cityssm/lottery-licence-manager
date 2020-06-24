@@ -1,15 +1,15 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-(function () {
+(() => {
     let externalLicenceNumberFieldLabel = "";
     const formEle = document.getElementById("form--activeSummary");
     const containerEle = document.getElementById("container--activeSummary");
-    function getActiveLicenceSummary() {
+    const getActiveLicenceSummaryFn = () => {
         containerEle.innerHTML = "<p class=\"has-text-centered has-text-grey-lighter\">" +
             "<i class=\"fas fa-3x fa-circle-notch fa-spin\" aria-hidden=\"true\"></i><br />" +
             "<em>Loading licences...</em>" +
             "</p>";
-        cityssm.postJSON("/licences/doGetActiveLicenceSummary", formEle, function (activeLicenceList) {
+        cityssm.postJSON("/licences/doGetActiveLicenceSummary", formEle, (activeLicenceList) => {
             if (activeLicenceList.length === 0) {
                 containerEle.innerHTML = "<div class=\"message is-info\">" +
                     "<p class=\"message-body\">" +
@@ -71,10 +71,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
             cityssm.clearElement(containerEle);
             containerEle.insertAdjacentElement("beforeend", tableEle);
         });
-    }
-    llm.initializeDateRangeSelector(document.querySelector(".is-date-range-selector[data-field-key='startEndDate']"), getActiveLicenceSummary);
-    llm.getDefaultConfigProperty("externalLicenceNumber_fieldLabel", function (fieldLabel) {
+    };
+    llm.initializeDateRangeSelector(document.querySelector(".is-date-range-selector[data-field-key='startEndDate']"), getActiveLicenceSummaryFn);
+    llm.getDefaultConfigProperty("externalLicenceNumber_fieldLabel", (fieldLabel) => {
         externalLicenceNumberFieldLabel = fieldLabel;
-        getActiveLicenceSummary();
+        getActiveLicenceSummaryFn();
     });
-}());
+})();

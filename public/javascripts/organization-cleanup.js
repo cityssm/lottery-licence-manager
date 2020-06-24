@@ -1,17 +1,17 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-(function () {
+(() => {
     const canUpdate = document.getElementsByTagName("main")[0].getAttribute("data-can-update") === "true";
     const inactiveYearsFilterEle = document.getElementById("filter--inactiveYears");
     const searchResultsEle = document.getElementById("container--searchResults");
-    function confirmDeleteOrganizationFn(clickEvent) {
+    const confirmDeleteOrganizationFn = (clickEvent) => {
         const buttonEle = clickEvent.currentTarget;
         const organizationName = cityssm.escapeHTML(buttonEle.getAttribute("data-organization-name"));
-        const deleteFn = function () {
+        const deleteFn = () => {
             const organizationID = buttonEle.getAttribute("data-organization-id");
             cityssm.postJSON("/organizations/doDelete", {
                 organizationID: organizationID
-            }, function (responseJSON) {
+            }, (responseJSON) => {
                 if (responseJSON.success) {
                     cityssm.alertModal(responseJSON.message, "", "OK", "success");
                     buttonEle.closest("tr").remove();
@@ -22,15 +22,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
             });
         };
         cityssm.confirmModal("Delete Organization?", "Are you sure you want delete " + organizationName + "?", "Yes, Delete", "danger", deleteFn);
-    }
-    function getInactiveOrganizations() {
+    };
+    const getInactiveOrganizationsFn = () => {
         searchResultsEle.innerHTML = "<p class=\"has-text-centered has-text-grey-lighter\">" +
             "<i class=\"fas fa-3x fa-circle-notch fa-spin\" aria-hidden=\"true\"></i><br />" +
             "<em>Loading organizations...</em>" +
             "</p>";
         cityssm.postJSON("/organizations/doGetInactive", {
             inactiveYears: inactiveYearsFilterEle.value
-        }, function (inactiveList) {
+        }, (inactiveList) => {
             if (inactiveList.length === 0) {
                 searchResultsEle.innerHTML = "<div class=\"message is-info\">" +
                     "<p class=\"message-body\">" +
@@ -51,8 +51,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 "</tr>" +
                 "</thead>";
             const tbodyEle = document.createElement("tbody");
-            for (let i = 0; i < inactiveList.length; i += 1) {
-                const organizationObj = inactiveList[i];
+            for (const organizationObj of inactiveList) {
                 const trEle = document.createElement("tr");
                 const safeOrganizationName = cityssm.escapeHTML(organizationObj.organizationName);
                 trEle.innerHTML = ("<td>" +
@@ -93,7 +92,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
             cityssm.clearElement(searchResultsEle);
             searchResultsEle.appendChild(tableEle);
         });
-    }
-    inactiveYearsFilterEle.addEventListener("change", getInactiveOrganizations);
-    getInactiveOrganizations();
-}());
+    };
+    inactiveYearsFilterEle.addEventListener("change", getInactiveOrganizationsFn);
+    getInactiveOrganizationsFn();
+})();

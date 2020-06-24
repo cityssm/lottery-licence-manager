@@ -62,7 +62,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 cityssm.postJSON("/locations/doMerge", {
                     targetLocationID: locationID,
                     sourceLocationID: locationID_source
-                }, function (responseJSON) {
+                }, (responseJSON) => {
                     if (responseJSON.success) {
                         window.location.reload(true);
                     }

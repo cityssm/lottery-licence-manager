@@ -7,14 +7,14 @@ declare const llm: llmGlobal;
 import * as llmTypes from "../../helpers/llmTypes";
 
 
-(function() {
+(() => {
 
   let externalLicenceNumberFieldLabel = "";
 
   const formEle = document.getElementById("form--activeSummary");
   const containerEle = document.getElementById("container--activeSummary");
 
-  function getActiveLicenceSummary() {
+  const getActiveLicenceSummaryFn = () => {
 
     containerEle.innerHTML = "<p class=\"has-text-centered has-text-grey-lighter\">" +
       "<i class=\"fas fa-3x fa-circle-notch fa-spin\" aria-hidden=\"true\"></i><br />" +
@@ -23,7 +23,7 @@ import * as llmTypes from "../../helpers/llmTypes";
 
     cityssm.postJSON(
       "/licences/doGetActiveLicenceSummary", formEle,
-      function(activeLicenceList: llmTypes.LotteryLicence[]) {
+      (activeLicenceList: llmTypes.LotteryLicence[]) => {
 
         if (activeLicenceList.length === 0) {
 
@@ -57,21 +57,21 @@ import * as llmTypes from "../../helpers/llmTypes";
           const trEle = document.createElement("tr");
 
           trEle.innerHTML = ("<td>" +
-              "<a href=\"/licences/" + licenceObj.licenceID + "\" data-tooltip=\"View Licence\">" +
-              cityssm.escapeHTML(licenceObj.externalLicenceNumber) + "<br />" +
-              "<small>Licence #" + licenceObj.licenceID + "</small>" +
-              "</a>" +
-              "</td>") +
+            "<a href=\"/licences/" + licenceObj.licenceID + "\" data-tooltip=\"View Licence\">" +
+            cityssm.escapeHTML(licenceObj.externalLicenceNumber) + "<br />" +
+            "<small>Licence #" + licenceObj.licenceID + "</small>" +
+            "</a>" +
+            "</td>") +
             ("<td>" +
               (exports.config_licenceTypes[licenceObj.licenceTypeKey] || licenceObj.licenceTypeKey) +
               "</td>") +
             ("<td>" +
-            "<a href=\"/organizations/" + licenceObj.organizationID + "\" data-tooltip=\"View Organization\">" +
+              "<a href=\"/organizations/" + licenceObj.organizationID + "\" data-tooltip=\"View Organization\">" +
               cityssm.escapeHTML(licenceObj.organizationName) +
               "</a>" +
               "</td>") +
             ("<td>" +
-            "<a href=\"/locations/" + licenceObj.locationID + "\" data-tooltip=\"View Location\">" +
+              "<a href=\"/locations/" + licenceObj.locationID + "\" data-tooltip=\"View Location\">" +
               cityssm.escapeHTML(licenceObj.locationDisplayName) +
               "</a>" +
               (licenceObj.locationDisplayName === licenceObj.locationName ?
@@ -98,16 +98,16 @@ import * as llmTypes from "../../helpers/llmTypes";
         containerEle.insertAdjacentElement("beforeend", tableEle);
       }
     );
-  }
+  };
 
 
   llm.initializeDateRangeSelector(
     document.querySelector(".is-date-range-selector[data-field-key='startEndDate']"),
-    getActiveLicenceSummary
+    getActiveLicenceSummaryFn
   );
 
-  llm.getDefaultConfigProperty("externalLicenceNumber_fieldLabel", function(fieldLabel) {
+  llm.getDefaultConfigProperty("externalLicenceNumber_fieldLabel", (fieldLabel: string) => {
     externalLicenceNumberFieldLabel = fieldLabel;
-    getActiveLicenceSummary();
+    getActiveLicenceSummaryFn();
   });
-}());
+})();

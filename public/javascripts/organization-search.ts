@@ -4,7 +4,7 @@ declare const cityssm: cityssmGlobal;
 import type * as llmTypes from "../../helpers/llmTypes";
 
 
-(function() {
+(() => {
 
   const formEle = document.getElementById("form--filters");
   const searchResultsEle = document.getElementById("container--searchResults");
@@ -12,7 +12,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
   const canCreate = document.getElementsByTagName("main")[0].getAttribute("data-can-create") === "true";
 
 
-  function doOrganizationSearch() {
+  const doOrganizationSearchFn = () => {
 
     searchResultsEle.innerHTML = "<p class=\"has-text-centered has-text-grey-lighter\">" +
       "<i class=\"fas fa-3x fa-circle-notch fa-spin\" aria-hidden=\"true\"></i><br />" +
@@ -22,7 +22,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
     cityssm.postJSON(
       "/organizations/doSearch",
       formEle,
-      function(organizationsList: llmTypes.Organization[]) {
+      (organizationsList: llmTypes.Organization[]) => {
 
         if (organizationsList.length === 0) {
 
@@ -137,21 +137,19 @@ import type * as llmTypes from "../../helpers/llmTypes";
         }
       }
     );
-  }
+  };
 
 
-  formEle.addEventListener("submit", function(formEvent) {
-
+  formEle.addEventListener("submit", (formEvent) => {
     formEvent.preventDefault();
-
   });
 
   const inputEles = formEle.querySelectorAll(".input, .select");
 
   for (const inputEle of inputEles) {
-    inputEle.addEventListener("change", doOrganizationSearch);
+    inputEle.addEventListener("change", doOrganizationSearchFn);
   }
 
-  doOrganizationSearch();
+  doOrganizationSearchFn();
 
-}());
+})();

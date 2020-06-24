@@ -169,7 +169,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
         const tbodyEle = searchResultsEle.getElementsByTagName("tbody")[0];
 
-        displayedLocationList.forEach(function(location, locationIndex) {
+        displayedLocationList.forEach((location, locationIndex) => {
           const locationTrEle = renderLocationTrEleFn(location, locationIndex);
           tbodyEle.insertAdjacentElement("beforeend", locationTrEle);
         });
@@ -197,7 +197,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
             const previousEle = document.createElement("a");
             previousEle.className = "button";
             previousEle.innerText = "Previous";
-            previousEle.addEventListener("click", function(clickEvent) {
+            previousEle.addEventListener("click", (clickEvent) => {
 
               clickEvent.preventDefault();
               offsetEle.value = Math.max(0, currentOffset - currentLimit).toString();
@@ -214,7 +214,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
             const nextEle = document.createElement("a");
             nextEle.className = "button ml-3";
             nextEle.innerHTML = "<span>Next Locations</span><span class=\"icon\"><i class=\"fas fa-chevron-right\" aria-hidden=\"true\"></i></span>";
-            nextEle.addEventListener("click", function(clickEvent) {
+            nextEle.addEventListener("click", (clickEvent) => {
 
               clickEvent.preventDefault();
               offsetEle.value = (currentOffset + currentLimit).toString();
@@ -223,7 +223,6 @@ import type * as llmTypes from "../../helpers/llmTypes";
             });
 
             paginationEle.insertAdjacentElement("beforeend", nextEle);
-
           }
 
           searchResultsEle.getElementsByClassName("level")[0].insertAdjacentElement("beforeend", paginationEle);
@@ -235,7 +234,6 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
 
   const resetOffsetAndGetLocationsFn = () => {
-
     offsetEle.value = "0";
     getLocationsFn();
   };

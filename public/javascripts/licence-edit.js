@@ -731,7 +731,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 document.getElementById("ticketTypeAdd--licenceFee").value =
                     (parseFloat(document.getElementById("ticketTypeAdd--feePerUnit").value) * unitCount).toFixed(2);
             };
-            const addTicketType_refreshTicketTypeChange = function () {
+            const addTicketType_refreshTicketTypeChange = () => {
                 const ticketTypeOptionEle = addTicketType_ticketTypeEle.selectedOptions[0];
                 document.getElementById("ticketTypeAdd--ticketPrice").value = ticketTypeOptionEle.getAttribute("data-ticket-price");
                 document.getElementById("ticketTypeAdd--ticketCount").value = ticketTypeOptionEle.getAttribute("data-ticket-count");
