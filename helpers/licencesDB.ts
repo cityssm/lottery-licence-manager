@@ -109,7 +109,8 @@ const getApplicationSettingWithDB = (db: sqlite.Database, settingKey: string): s
 };
 
 
-const getLicenceWithDB = (db: sqlite.Database, licenceID: number, reqSession: Express.SessionData, queryOptions: {
+// tslint:disable-next-line:cyclomatic-complexity
+const getLicenceWithDB = (db: sqlite.Database, licenceID: number | string, reqSession: Express.SessionData, queryOptions: {
   includeTicketTypes: boolean,
   includeFields: boolean,
   includeEvents: boolean,
@@ -281,7 +282,7 @@ const getLicenceWithDB = (db: sqlite.Database, licenceID: number, reqSession: Ex
 
 
 const addLicenceAmendmentWithDB = (db: sqlite.Database,
-  licenceID: number, amendmentType: string, amendment: string, isHidden: number,
+  licenceID: number | string, amendmentType: string, amendment: string, isHidden: number,
   reqSession: Express.SessionData) => {
 
   const amendmentIndexRecord = db.prepare("select amendmentIndex" +
@@ -384,6 +385,7 @@ export const getLicenceTableStats = () => {
 
 };
 
+// tslint:disable-next-line:cyclomatic-complexity
 export const getLicences = (reqBodyOrParamsObj: {
   externalLicenceNumber?: string,
   licenceTypeKey?: string,
@@ -612,10 +614,40 @@ export const getNextExternalLicenceNumberFromRange = () => {
 
 };
 
+type LotteryLicenceForm = {
+  licenceID?: string,
+  externalLicenceNumber: string,
+  applicationDateString: string,
+  organizationID: string,
+  municipality: string,
+  locationID: string,
+  startDateString: string,
+  endDateString: string,
+  startTimeString: string,
+  endTimeString: string,
+  licenceDetails: string,
+  termsConditions: string,
+  licenceTypeKey: string,
+  totalPrizeValue: string,
+
+  ticketType_ticketType: string | string[],
+  ticketType_unitCount: string | string[],
+  ticketType_licenceFee: string | string[],
+  ticketType_manufacturerLocationID: string | string[],
+  ticketType_distributorLocationID: string | string[],
+
+  ticketType_toAdd?: string | string[],
+  ticketType_toDelete?: string | string[],
+
+  eventDate: string | string[],
+  fieldKeys: string,
+  licenceFee?: string
+};
+
 /**
  * @returns New licenceID
  */
-export const createLicence = (reqBody: any, reqSession: Express.SessionData) => {
+export const createLicence = (reqBody: LotteryLicenceForm, reqSession: Express.SessionData) => {
 
   const db = sqlite(dbPath);
 
@@ -624,13 +656,10 @@ export const createLicence = (reqBody: any, reqSession: Express.SessionData) => 
   let externalLicenceNumberInteger = -1;
 
   try {
-
     externalLicenceNumberInteger = parseInt(reqBody.externalLicenceNumber, 10);
 
   } catch (e) {
-
     externalLicenceNumberInteger = -1;
-
   }
 
   const info = db.prepare("insert into LotteryLicences (" +
@@ -684,7 +713,7 @@ export const createLicence = (reqBody: any, reqSession: Express.SessionData) => 
 
   // Ticket types
 
-  if (typeof (reqBody.ticketType_ticketType) === "string") {
+  if (reqBody.ticketType_ticketType.constructor === String) {
 
     db.prepare("insert into LotteryLicenceTicketTypes (" +
       "licenceID, ticketType," +
@@ -705,7 +734,7 @@ export const createLicence = (reqBody: any, reqSession: Express.SessionData) => 
         nowMillis
       );
 
-  } else if (typeof (reqBody.ticketType_ticketType) === "object") {
+  } else if (reqBody.ticketType_ticketType.constructor === Array) {
 
     reqBody.ticketType_ticketType.forEach((ticketType: string, ticketTypeIndex: number) => {
 
@@ -804,7 +833,8 @@ export const createLicence = (reqBody: any, reqSession: Express.SessionData) => 
 /**
  * @returns TRUE if successful
  */
-export const updateLicence = (reqBody: any, reqSession: Express.SessionData): boolean => {
+// tslint:disable-next-line:cyclomatic-complexity
+export const updateLicence = (reqBody: LotteryLicenceForm, reqSession: Express.SessionData): boolean => {
 
   // Check if can update
 
@@ -1170,7 +1200,7 @@ export const updateLicence = (reqBody: any, reqSession: Express.SessionData): bo
 
   // Do updates
 
-  if (typeof (reqBody.ticketType_ticketType) === "string") {
+  if (reqBody.ticketType_ticketType.constructor === String) {
 
     db.prepare("update LotteryLicenceTicketTypes" +
       " set distributorLocationID = ?," +
@@ -1216,7 +1246,7 @@ export const updateLicence = (reqBody: any, reqSession: Express.SessionData): bo
 
     }
 
-  } else if (typeof (reqBody.ticketType_ticketType) === "object") {
+  } else if (reqBody.ticketType_ticketType.constructor === Array) {
 
     reqBody.ticketType_ticketType.forEach((ticketType: string, ticketTypeIndex: number) => {
 
