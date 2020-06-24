@@ -82,7 +82,7 @@ const configFallbackValues = {
 
 
 
-export function getProperty(propertyName: string): any {
+export const getProperty = (propertyName: string): any => {
 
   const propertyNameSplit = propertyName.split(".");
 
@@ -99,7 +99,7 @@ export function getProperty(propertyName: string): any {
 
   return currentObj;
 
-}
+};
 
 export const keepAliveMillis =
   getProperty("session.doKeepAlive") ?
@@ -114,43 +114,38 @@ export const keepAliveMillis =
  * LICENCE TYPES
  */
 
-const licenceTypeCache = {};
+const licenceTypeCache = new Map<string, llm.ConfigLicenceType>();
 let licenceTypeKeyNameObject = {};
 
-export function getLicenceType(licenceTypeKey: string): llm.ConfigLicenceType {
+export const getLicenceType = (licenceTypeKey: string): llm.ConfigLicenceType => {
 
-  if (!licenceTypeCache[licenceTypeKey]) {
+  if (!licenceTypeCache.has(licenceTypeKey)) {
 
-    licenceTypeCache[licenceTypeKey] =
-      getProperty("licenceTypes").find(
-        function(ele: llm.ConfigLicenceType) {
-          return (ele.licenceTypeKey === licenceTypeKey);
-        }
-      );
+    const licenceType = (<llm.ConfigLicenceType[]>getProperty("licenceTypes"))
+      .find(ele => ele.licenceTypeKey === licenceTypeKey);
 
+    licenceTypeCache.set(licenceTypeKey, licenceType);
   }
 
-  return licenceTypeCache[licenceTypeKey];
+  return licenceTypeCache.get(licenceTypeKey);
+};
 
-}
-
-export function getLicenceTypeKeyToNameObject() {
+export const getLicenceTypeKeyToNameObject = () => {
 
   if (Object.keys(licenceTypeKeyNameObject).length === 0) {
 
     let list = {};
 
-    getProperty("licenceTypes").forEach(function(ele: llm.ConfigLicenceType) {
+    (<llm.ConfigLicenceType[]>getProperty("licenceTypes"))
+      .forEach((ele) => {
 
-      if (ele.isActive) {
-        list[ele.licenceTypeKey] = ele.licenceType;
-      }
-
-    });
+        if (ele.isActive) {
+          list[ele.licenceTypeKey] = ele.licenceType;
+        }
+      });
 
     licenceTypeKeyNameObject = list;
   }
 
   return licenceTypeKeyNameObject;
-
-}
+};

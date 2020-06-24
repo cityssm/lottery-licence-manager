@@ -1,7 +1,7 @@
 import { FieldData } from "../helpers/llmTypes";
 
 
-export function fieldDataArrayToObject(fieldDataArray: FieldData[]): any {
+export const fieldDataArrayToObject = (fieldDataArray: FieldData[]): any => {
 
   const fieldDataObject = {};
 
@@ -10,4 +10,4 @@ export function fieldDataArrayToObject(fieldDataArray: FieldData[]): any {
   }
 
   return fieldDataObject;
-}
+};

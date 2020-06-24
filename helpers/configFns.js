@@ -53,7 +53,7 @@ const configFallbackValues = {
     "amendments.trackTicketTypeUpdate": true,
     "amendments.trackTicketTypeDelete": true
 };
-function getProperty(propertyName) {
+exports.getProperty = (propertyName) => {
     const propertyNameSplit = propertyName.split(".");
     let currentObj = config;
     for (const propertyNamePiece of propertyNameSplit) {
@@ -63,27 +63,25 @@ function getProperty(propertyName) {
         }
     }
     return currentObj;
-}
-exports.getProperty = getProperty;
-exports.keepAliveMillis = getProperty("session.doKeepAlive") ?
-    Math.max(getProperty("session.maxAgeMillis") / 2, getProperty("session.maxAgeMillis") - (10 * 60 * 1000)) :
+};
+exports.keepAliveMillis = exports.getProperty("session.doKeepAlive") ?
+    Math.max(exports.getProperty("session.maxAgeMillis") / 2, exports.getProperty("session.maxAgeMillis") - (10 * 60 * 1000)) :
     0;
-const licenceTypeCache = {};
+const licenceTypeCache = new Map();
 let licenceTypeKeyNameObject = {};
-function getLicenceType(licenceTypeKey) {
-    if (!licenceTypeCache[licenceTypeKey]) {
-        licenceTypeCache[licenceTypeKey] =
-            getProperty("licenceTypes").find(function (ele) {
-                return (ele.licenceTypeKey === licenceTypeKey);
-            });
+exports.getLicenceType = (licenceTypeKey) => {
+    if (!licenceTypeCache.has(licenceTypeKey)) {
+        const licenceType = exports.getProperty("licenceTypes")
+            .find(ele => ele.licenceTypeKey === licenceTypeKey);
+        licenceTypeCache.set(licenceTypeKey, licenceType);
     }
-    return licenceTypeCache[licenceTypeKey];
-}
-exports.getLicenceType = getLicenceType;
-function getLicenceTypeKeyToNameObject() {
+    return licenceTypeCache.get(licenceTypeKey);
+};
+exports.getLicenceTypeKeyToNameObject = () => {
     if (Object.keys(licenceTypeKeyNameObject).length === 0) {
         let list = {};
-        getProperty("licenceTypes").forEach(function (ele) {
+        exports.getProperty("licenceTypes")
+            .forEach((ele) => {
             if (ele.isActive) {
                 list[ele.licenceTypeKey] = ele.licenceType;
             }
@@ -91,5 +89,4 @@ function getLicenceTypeKeyToNameObject() {
         licenceTypeKeyNameObject = list;
     }
     return licenceTypeKeyNameObject;
-}
-exports.getLicenceTypeKeyToNameObject = getLicenceTypeKeyToNameObject;
+};

@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.initLicencesDB = exports.initUsersDB = void 0;
 const log = require("fancy-log");
 const sqlite = require("better-sqlite3");
-function initUsersDB() {
+exports.initUsersDB = () => {
     const usersDB = sqlite("data/users.db");
     const row = usersDB.prepare("select name from sqlite_master where type = 'table' and name = 'Users'").get();
     if (!row) {
@@ -26,9 +26,8 @@ function initUsersDB() {
         return true;
     }
     return false;
-}
-exports.initUsersDB = initUsersDB;
-function initLicencesDB() {
+};
+exports.initLicencesDB = () => {
     const licencesDB = sqlite("data/licences.db");
     const row = licencesDB
         .prepare("select name from sqlite_master where type = 'table' and name = 'Organizations'")
@@ -262,5 +261,4 @@ function initLicencesDB() {
             " this value will be used as the maximum for the range."), "0", 2, "init", Date.now());
     }
     return false;
-}
-exports.initLicencesDB = initLicencesDB;
+};

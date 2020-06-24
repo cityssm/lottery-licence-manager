@@ -7,7 +7,7 @@ declare const llm: llmGlobal;
 import type * as llmTypes from "../../helpers/llmTypes";
 
 
-(function() {
+(() => {
 
   /*
    * FORM
@@ -31,7 +31,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
   const eventsContainerEle = document.getElementById("container--events");
 
-  formEle.addEventListener("submit", function(formEvent) {
+  formEle.addEventListener("submit", (formEvent) => {
 
     formEvent.preventDefault();
 
@@ -50,70 +50,71 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
     formMessageEle.innerHTML = "Saving... <i class=\"fas fa-circle-notch fa-spin\" aria-hidden=\"true\"></i>";
 
-    cityssm.postJSON("/licences/doSave", formEle, function(responseJSON) {
+    cityssm.postJSON("/licences/doSave", formEle,
+      (responseJSON: { success: boolean, message?: string, licenceID?: number }) => {
 
-      if (responseJSON.success) {
+        if (responseJSON.success) {
 
-        cityssm.disableNavBlocker();
-        hasUnsavedChanges = false;
+          cityssm.disableNavBlocker();
+          hasUnsavedChanges = false;
 
-      }
-
-      if (responseJSON.success && isCreate) {
-
-        window.location.href = "/licences/" + responseJSON.licenceID + "/edit";
-
-      } else if (responseJSON.success && doRefreshAfterSave) {
-
-        window.location.reload(true);
-
-      } else {
-
-        formMessageEle.innerHTML = "";
-
-        cityssm.alertModal(
-          responseJSON.message, "", "OK",
-          responseJSON.success ? "success" : "danger"
-        );
-
-        const removeInputEles = document.getElementsByClassName("is-removed-after-save");
-
-        for (const removeInputEle of removeInputEles) {
-          removeInputEle.remove();
         }
-      }
-    });
+
+        if (responseJSON.success && isCreate) {
+
+          window.location.href = "/licences/" + responseJSON.licenceID + "/edit";
+
+        } else if (responseJSON.success && doRefreshAfterSave) {
+
+          window.location.reload(true);
+
+        } else {
+
+          formMessageEle.innerHTML = "";
+
+          cityssm.alertModal(
+            responseJSON.message, "", "OK",
+            responseJSON.success ? "success" : "danger"
+          );
+
+          const removeInputEles = document.getElementsByClassName("is-removed-after-save");
+
+          for (const removeInputEle of removeInputEles) {
+            removeInputEle.remove();
+          }
+        }
+      });
   });
 
   if (!isCreate) {
 
-    document.getElementById("is-delete-licence-button").addEventListener("click", function(clickEvent) {
+    document.getElementById("is-delete-licence-button").addEventListener("click", (clickEvent) => {
 
       clickEvent.preventDefault();
+
+      const deleteFn = () => {
+        cityssm.postJSON(
+          "/licences/doDelete", {
+            licenceID: licenceID
+          },
+          (responseJSON: { success: boolean }) => {
+
+            if (responseJSON.success) {
+
+              cityssm.disableNavBlocker();
+              window.location.href = "/licences";
+
+            }
+          }
+        );
+      };
 
       cityssm.confirmModal(
         "Delete Licence?",
         "Are you sure you want to delete this licence and all events associated with it?",
         "Yes, Delete",
         "danger",
-        function() {
-
-          cityssm.postJSON(
-            "/licences/doDelete", {
-              licenceID: licenceID
-            },
-            function(responseJSON) {
-
-              if (responseJSON.success) {
-
-                cityssm.disableNavBlocker();
-                window.location.href = "/licences";
-
-              }
-
-            }
-          );
-        }
+        deleteFn
       );
     });
   }
@@ -121,11 +122,11 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
   // Nav blocker
 
-  function setDoRefreshAfterSave() {
+  const setDoRefreshAfterSaveFn = () => {
     doRefreshAfterSave = true;
-  }
+  };
 
-  function setUnsavedChanges(changeEvent?: Event) {
+  const setUnsavedChangesFn = (changeEvent?: Event) => {
 
     cityssm.enableNavBlocker();
 
@@ -148,17 +149,17 @@ import type * as llmTypes from "../../helpers/llmTypes";
       const currentTargetType = (changeEvent.currentTarget instanceof HTMLInputElement ? changeEvent.currentTarget.type : "");
 
       if (refreshInputTypes.includes(currentTargetType)) {
-        setDoRefreshAfterSave();
+        setDoRefreshAfterSaveFn();
       }
     }
 
-  }
+  };
 
   const inputEles = <NodeListOf<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>>formEle.querySelectorAll("input, select, textarea");
 
   for (const inputEle of inputEles) {
     if (inputEle.name !== "") {
-      inputEle.addEventListener("change", setUnsavedChanges);
+      inputEle.addEventListener("change", setUnsavedChangesFn);
     }
   }
 
@@ -172,7 +173,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
   if (externalLicenceNumberUnlockBtnEle) {
 
-    externalLicenceNumberUnlockBtnEle.addEventListener("click", function() {
+    externalLicenceNumberUnlockBtnEle.addEventListener("click", () => {
 
       const externalLicenceNumberEle = document.getElementById("licence--externalLicenceNumber");
       externalLicenceNumberEle.classList.remove("is-readonly");
@@ -188,13 +189,13 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
   {
 
-    let organizationList = [];
+    let organizationList: llmTypes.Organization[] = [];
 
     let organizationLookupCloseModalFn: () => void;
     let organizationLookupSearchStrEle: HTMLInputElement;
     let organizationLookupResultsEle: HTMLElement;
 
-    const organizationLookupFn_setOrganization = function(clickEvent: Event) {
+    const organizationLookupFn_setOrganization = (clickEvent: Event) => {
 
       clickEvent.preventDefault();
 
@@ -208,11 +209,11 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
       organizationLookupCloseModalFn();
 
-      setUnsavedChanges();
+      setUnsavedChangesFn();
 
     };
 
-    const organizationLookupFn_refreshResults = function() {
+    const organizationLookupFn_refreshResults = () => {
 
       const listEle = document.createElement("div");
       listEle.className = "panel";
@@ -231,22 +232,18 @@ import type * as llmTypes from "../../helpers/llmTypes";
         const organizationObj = organizationList[organizationIndex];
 
         if (!organizationObj.isEligibleForLicences) {
-
           continue;
-
         }
 
         const organizationName = organizationObj.organizationName.toLowerCase();
 
-        for (let searchStringIndex = 0; searchStringIndex < searchStringSplit.length; searchStringIndex += 1) {
+        for (const searchStringPiece of searchStringSplit) {
 
-          if (organizationName.indexOf(searchStringSplit[searchStringIndex]) === -1) {
+          if (organizationName.indexOf(searchStringPiece) === -1) {
 
             doDisplayRecord = false;
             break;
-
           }
-
         }
 
         if (doDisplayRecord) {
@@ -255,7 +252,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
           const listItemEle = document.createElement("a");
           listItemEle.className = "panel-block is-block";
-          listItemEle.setAttribute("data-organization-id", organizationObj.organizationID);
+          listItemEle.setAttribute("data-organization-id", organizationObj.organizationID.toString());
           listItemEle.setAttribute("data-organization-name", organizationObj.organizationName);
           listItemEle.setAttribute("href", "#");
           listItemEle.innerHTML = organizationObj.organizationName + "<br />" +
@@ -266,9 +263,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
           listItemEle.addEventListener("click", organizationLookupFn_setOrganization);
 
           listEle.appendChild(listItemEle);
-
         }
-
       }
 
       cityssm.clearElement(organizationLookupResultsEle);
@@ -277,7 +272,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
     };
 
-    const organizationLookupFn_openModal = function() {
+    const organizationLookupFn_openModal = () => {
 
       cityssm.openHtmlModal("licence-organizationLookup", {
 
@@ -293,14 +288,13 @@ import type * as llmTypes from "../../helpers/llmTypes";
             cityssm.postJSON(
               "/organizations/doGetAll",
               null,
-              function(organizationListRes) {
+              (organizationListRes: llmTypes.Organization[]) => {
 
                 organizationList = organizationListRes;
                 organizationLookupSearchStrEle.removeAttribute("disabled");
                 organizationLookupFn_refreshResults();
 
                 organizationLookupSearchStrEle.focus();
-
               }
             );
 
@@ -310,9 +304,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
             organizationLookupFn_refreshResults();
 
             organizationLookupSearchStrEle.focus();
-
           }
-
         },
 
         onshown(_modalEle, closeModalFn) {
@@ -339,18 +331,17 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
   let locationList: llmTypes.Location[] = [];
 
-  function loadLocationList(callbackFn: () => void) {
+  const loadLocationListFn = (callbackFn: () => void) => {
 
     if (locationList.length === 0) {
 
       cityssm.postJSON(
         "/locations/doGetLocations",
         null,
-        function(locationResults) {
+        (locationResults) => {
 
           locationList = locationResults.locations;
           callbackFn();
-
         }
       );
 
@@ -358,7 +349,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
       callbackFn();
     }
 
-  }
+  };
 
   {
 
@@ -367,14 +358,14 @@ import type * as llmTypes from "../../helpers/llmTypes";
     let locationLookup_resultsEle: HTMLElement;
 
 
-    const locationLookupFn_setLocation = function(locationIDString: string, locationDisplayName: string) {
+    const locationLookupFn_setLocation = (locationIDString: string, locationDisplayName: string) => {
 
       (<HTMLInputElement>document.getElementById("licence--locationID")).value = locationIDString;
       (<HTMLInputElement>document.getElementById("licence--locationDisplayName")).value = locationDisplayName;
 
     };
 
-    const locationLookupFn_setLocationFromExisting = function(clickEvent: Event) {
+    const locationLookupFn_setLocationFromExisting = (clickEvent: Event) => {
 
       clickEvent.preventDefault();
 
@@ -387,11 +378,11 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
       locationLookup_closeModalFn();
 
-      setUnsavedChanges();
+      setUnsavedChangesFn();
 
     };
 
-    const locationLookupFn_refreshResults = function() {
+    const locationLookupFn_refreshResults = () => {
 
       const listEle = document.createElement("div");
       listEle.className = "panel";
@@ -402,7 +393,6 @@ import type * as llmTypes from "../../helpers/llmTypes";
         .split(" ");
 
       let displayLimit = 10;
-
 
       for (const locationObj of locationList) {
 
@@ -446,9 +436,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
           listItemEle.addEventListener("click", locationLookupFn_setLocationFromExisting);
           listEle.insertAdjacentElement("beforeend", listItemEle);
-
         }
-
       }
 
       cityssm.clearElement(locationLookup_resultsEle);
@@ -456,7 +444,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
       locationLookup_resultsEle.insertAdjacentElement("beforeend", listEle);
     };
 
-    const locationLookupFn_openModal = function() {
+    const locationLookupFn_openModal = () => {
 
       cityssm.openHtmlModal("licence-locationLookup", {
 
@@ -469,17 +457,16 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
           locationLookup_resultsEle = document.getElementById("container--locationLookup");
 
-          loadLocationList(function() {
+          loadLocationListFn(() => {
 
             locationLookup_searchStrEle.removeAttribute("disabled");
             locationLookupFn_refreshResults();
             locationLookup_searchStrEle.focus();
-
           });
 
           // New location
 
-          llm.getDefaultConfigProperty("city", function(defaultCity: string) {
+          llm.getDefaultConfigProperty("city", (defaultCity: string) => {
 
             if (defaultCity) {
               (<HTMLInputElement>document.getElementById("newLocation--locationCity")).value = defaultCity;
@@ -487,7 +474,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
           });
 
-          llm.getDefaultConfigProperty("province", function(defaultProvince: string) {
+          llm.getDefaultConfigProperty("province", (defaultProvince: string) => {
 
             if (defaultProvince) {
               (<HTMLInputElement>document.getElementById("newLocation--locationProvince")).value = defaultProvince;
@@ -495,21 +482,20 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
           });
 
-          document.getElementById("form--newLocation").addEventListener("submit", function(formEvent) {
+          document.getElementById("form--newLocation").addEventListener("submit", (formEvent) => {
 
             formEvent.preventDefault();
 
             cityssm.postJSON(
               "/locations/doCreate",
               formEvent.currentTarget,
-              function(responseJSON) {
+              (responseJSON) => {
 
                 if (responseJSON.success) {
 
                   locationList = [];
                   locationLookupFn_setLocation(responseJSON.locationID, responseJSON.locationDisplayName);
                   locationLookup_closeModalFn();
-
                 }
               }
             );
@@ -526,13 +512,9 @@ import type * as llmTypes from "../../helpers/llmTypes";
         },
 
         onremoved() {
-
           document.getElementById("is-location-lookup-button").focus();
-
         }
-
       });
-
     };
 
     document.getElementById("is-location-lookup-button").addEventListener("click", locationLookupFn_openModal);
@@ -551,11 +533,12 @@ import type * as llmTypes from "../../helpers/llmTypes";
     const termsConditionsLookupModalEle = document.getElementById("is-termsConditions-lookup-modal");
     const termsConditionsLookupResultsEle = document.getElementById("container--termsConditionsPrevious");
 
-    const termsConditionsLookupFn_setTermsConditions = function(clickEvent: Event) {
+    const termsConditionsLookupFn_setTermsConditions = (clickEvent: Event) => {
 
       clickEvent.preventDefault();
 
-      const termsConditionsIndex = parseInt((<HTMLInputElement>clickEvent.currentTarget).getAttribute("data-terms-conditions-index"), 10);
+      const termsConditionsIndex =
+        parseInt((<HTMLInputElement>clickEvent.currentTarget).getAttribute("data-terms-conditions-index"), 10);
 
       const termsConditionsEle = <HTMLTextAreaElement>document.getElementById("licence--termsConditions");
       termsConditionsEle.value = termsConditionsList[termsConditionsIndex].termsConditions;
@@ -564,10 +547,10 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
       termsConditionsEle.focus();
 
-      setUnsavedChanges();
+      setUnsavedChangesFn();
     };
 
-    document.getElementById("is-termsConditions-lookup-button").addEventListener("click", function() {
+    document.getElementById("is-termsConditions-lookup-button").addEventListener("click", () => {
 
       termsConditionsList = [];
       cityssm.clearElement(termsConditionsLookupResultsEle);
@@ -593,9 +576,9 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
       cityssm.postJSON(
         "/licences/doGetDistinctTermsConditions", {
-          organizationID: organizationID
+          organizationID
         },
-        function(termsConditionsListRes: llmTypes.TermsConditionsStat[]) {
+        (termsConditionsListRes: llmTypes.TermsConditionsStat[]) => {
 
           termsConditionsList = termsConditionsListRes;
 
@@ -610,7 +593,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
             const listEle = document.createElement("div");
             listEle.className = "panel mb-3";
 
-            termsConditionsList.forEach(function(termsConditionsObj, termsConditionsIndex) {
+            termsConditionsList.forEach((termsConditionsObj, termsConditionsIndex) => {
 
               const listItemEle = document.createElement("a");
               listItemEle.className = "panel-block is-block";
@@ -623,8 +606,11 @@ import type * as llmTypes from "../../helpers/llmTypes";
                 (termsConditionsObj.termsConditionsCount > 1 ?
                   "<span class=\"tag is-light\">Used " + termsConditionsObj.termsConditionsCount + " times</span>" :
                   "") +
-                "<span class=\"tag is-info has-tooltip-left\" data-tooltip=\"Most Recent Licence Start Date\">" + termsConditionsObj.startDateMaxString + "</span>" +
+                "<span class=\"tag is-info has-tooltip-left\" data-tooltip=\"Most Recent Licence Start Date\">" +
+                termsConditionsObj.startDateMaxString +
+                "</span>" +
                 "</p>";
+
               listItemEle.addEventListener("click", termsConditionsLookupFn_setTermsConditions);
               listEle.insertAdjacentElement("beforeend", listItemEle);
 
@@ -638,7 +624,6 @@ import type * as llmTypes from "../../helpers/llmTypes";
       );
 
       cityssm.showModal(termsConditionsLookupModalEle);
-
     });
 
     const cancelButtonEles = termsConditionsLookupModalEle.getElementsByClassName("is-close-modal-button");
@@ -659,7 +644,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
     const licenceType_fieldContainerEles = document.getElementsByClassName("container-licenceTypeFields");
 
-    const changeFn_licenceType = function() {
+    const changeFn_licenceType = () => {
 
       const optionEle = licenceType_selectEle.selectedOptions[0];
 
@@ -716,7 +701,6 @@ import type * as llmTypes from "../../helpers/llmTypes";
     };
 
     licenceType_selectEle.addEventListener("change", changeFn_licenceType);
-
   }
 
 
@@ -729,7 +713,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
     const startDateEle = <HTMLInputElement>document.getElementById("licence--startDateString");
     const endDateEle = <HTMLInputElement>document.getElementById("licence--endDateString");
 
-    const dateFn_setMin = function() {
+    const dateFn_setMin = () => {
 
       const startDateString = startDateEle.value;
 
@@ -746,7 +730,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
       }
     };
 
-    const dateFn_setMax = function() {
+    const dateFn_setMax = () => {
 
       const endDateString = endDateEle.value;
 
@@ -757,7 +741,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
       }
     };
 
-    document.getElementById("licence--applicationDateString").addEventListener("change", function(changeEvent) {
+    document.getElementById("licence--applicationDateString").addEventListener("change", (changeEvent) => {
 
       startDateEle.setAttribute("min",
         (<HTMLInputElement>changeEvent.currentTarget).value);
@@ -773,16 +757,16 @@ import type * as llmTypes from "../../helpers/llmTypes";
      */
 
 
-    const eventFn_remove = function(clickEvent: Event) {
+    const eventFn_remove = (clickEvent: Event) => {
 
       (<HTMLButtonElement>clickEvent.currentTarget).closest(".panel-block").remove();
 
       doRefreshAfterSave = true;
-      setUnsavedChanges();
+      setUnsavedChangesFn();
 
     };
 
-    const eventFn_add = function(eventDate: Date | string | Event) {
+    const eventFn_add = (eventDate: Date | string | Event) => {
 
       let eventDateString = "";
 
@@ -842,13 +826,13 @@ import type * as llmTypes from "../../helpers/llmTypes";
       buttonEles[buttonEles.length - 1].addEventListener("click", eventFn_remove);
 
       doRefreshAfterSave = true;
-      setUnsavedChanges();
+      setUnsavedChangesFn();
 
     };
 
     const eventCalculator_modalEle = document.getElementById("is-event-calculator-modal");
 
-    document.getElementsByClassName("is-calculate-events-button")[0].addEventListener("click", function() {
+    document.getElementsByClassName("is-calculate-events-button")[0].addEventListener("click", () => {
 
       const eventCount = parseInt((<HTMLInputElement>document.getElementById("eventCalc--eventCount")).value, 10);
       const dayInterval = parseInt((<HTMLInputElement>document.getElementById("eventCalc--dayInterval")).value, 10);
@@ -870,14 +854,12 @@ import type * as llmTypes from "../../helpers/llmTypes";
       }
 
       cityssm.hideModal(eventCalculator_modalEle);
-
     });
 
 
-    document.getElementById("is-event-calculator-button").addEventListener("click", function() {
+    document.getElementById("is-event-calculator-button").addEventListener("click", () => {
 
       cityssm.showModal(eventCalculator_modalEle);
-
     });
 
     const cancelButtonEles = eventCalculator_modalEle.getElementsByClassName("is-close-modal-button");
@@ -904,7 +886,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
     let licenceTypeKeyToTicketTypes: Map<string, llmTypes.ConfigTicketType[]> = new Map();
 
-    const ticketTypes_getAll = function(callbackFn: Function) {
+    const ticketTypesFn_getAll = (callbackFn: Function) => {
 
       const licenceTypeKey = licenceType_selectEle.value;
 
@@ -918,7 +900,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
           "/licences/doGetTicketTypes", {
             licenceTypeKey: licenceTypeKey
           },
-          function(ticketTypes: llmTypes.ConfigTicketType[]) {
+          (ticketTypes: llmTypes.ConfigTicketType[]) => {
 
             licenceTypeKeyToTicketTypes.set(licenceTypeKey, ticketTypes);
             callbackFn(ticketTypes);
@@ -927,7 +909,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
       }
     };
 
-    const ticketTypes_calculateTfoot = function() {
+    const ticketTypesFn_calculateTfoot = () => {
 
       let prizeValueTotal = 0;
 
@@ -963,12 +945,12 @@ import type * as llmTypes from "../../helpers/llmTypes";
     };
 
 
-    const deleteTicketType_openConfirm = function(buttonEvent: Event) {
+    const deleteTicketTypeFn_openConfirm = (buttonEvent: Event) => {
 
       const trEle = (<HTMLButtonElement>buttonEvent.currentTarget).closest("tr");
       const ticketType = trEle.getAttribute("data-ticket-type");
 
-      const doDeleteTicketType = function() {
+      const doDeleteTicketTypeFn = () => {
 
         trEle.remove();
 
@@ -990,10 +972,10 @@ import type * as llmTypes from "../../helpers/llmTypes";
           }
         }
 
-        ticketTypes_calculateTfoot();
+        ticketTypesFn_calculateTfoot();
 
-        setUnsavedChanges();
-        setDoRefreshAfterSave();
+        setUnsavedChangesFn();
+        setDoRefreshAfterSaveFn();
       };
 
       cityssm.confirmModal(
@@ -1001,11 +983,11 @@ import type * as llmTypes from "../../helpers/llmTypes";
         "Are you sure you want to remove the " + ticketType + " ticket type for this licence?",
         "Yes, Delete",
         "danger",
-        doDeleteTicketType
+        doDeleteTicketTypeFn
       );
     };
 
-    const amendUnitCount_openModal = function(buttonEvent: Event) {
+    const amendUnitCountFn_openModal = (buttonEvent: Event) => {
 
       const trEle = (<HTMLButtonElement>buttonEvent.currentTarget).closest("tr");
 
@@ -1014,7 +996,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
       let amendUnitCount_closeModalFn: Function;
 
-      const amendUnitCount_closeAndUpdate = function(formEvent: Event) {
+      const amendUnitCountFn_closeAndUpdate = (formEvent: Event) => {
 
         formEvent.preventDefault();
 
@@ -1040,12 +1022,12 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
         amendUnitCount_closeModalFn();
 
-        ticketTypes_calculateTfoot();
-        setUnsavedChanges();
-        setDoRefreshAfterSave();
+        ticketTypesFn_calculateTfoot();
+        setUnsavedChangesFn();
+        setDoRefreshAfterSaveFn();
       };
 
-      const amendUnitCount_calculateLicenceFee = function() {
+      const amendUnitCountFn_calculateLicenceFee = () => {
 
         (<HTMLInputElement>document.getElementById("amendUnit_licenceFee")).value =
           (ticketTypeObj.feePerUnit * parseInt((<HTMLInputElement>document.getElementById("amendUnit_unitCount")).value, 10)).toFixed(2);
@@ -1063,16 +1045,16 @@ import type * as llmTypes from "../../helpers/llmTypes";
           const unitCountEle = <HTMLInputElement>document.getElementById("amendUnit_unitCount");
           unitCountEle.value = unitCountCurrent;
 
-          ticketTypes_getAll(function(ticketTypes: llmTypes.ConfigTicketType[]) {
+          ticketTypesFn_getAll((ticketTypes: llmTypes.ConfigTicketType[]) => {
 
             ticketTypeObj = ticketTypes.find(ele => ele.ticketType === ticketType);
 
-            unitCountEle.addEventListener("change", amendUnitCount_calculateLicenceFee);
-            amendUnitCount_calculateLicenceFee();
+            unitCountEle.addEventListener("change", amendUnitCountFn_calculateLicenceFee);
+            amendUnitCountFn_calculateLicenceFee();
 
           });
 
-          modalEle.getElementsByTagName("form")[0].addEventListener("submit", amendUnitCount_closeAndUpdate);
+          modalEle.getElementsByTagName("form")[0].addEventListener("submit", amendUnitCountFn_closeAndUpdate);
 
         },
         onshown(_modalEle, closeModalFn) {
@@ -1082,13 +1064,13 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
     };
 
-    const amendDistributor_openModal = function(buttonEvent: Event) {
+    const amendDistributorFn_openModal = (buttonEvent: Event) => {
 
       let distributorLookup_closeModalFn: Function;
 
       const distributorTdEle = <HTMLTableCellElement>(<HTMLButtonElement>buttonEvent.currentTarget).closest("td").previousElementSibling;
 
-      const distributorLookup_updateDistributor = function(locationButtonEvent: Event) {
+      const distributorLookupFn_updateDistributor = (locationButtonEvent: Event) => {
 
         const locationButtonEle = <HTMLButtonElement>locationButtonEvent.currentTarget;
 
@@ -1097,7 +1079,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
         distributorLookup_closeModalFn();
 
-        setUnsavedChanges();
+        setUnsavedChangesFn();
 
       };
 
@@ -1105,7 +1087,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
         onshow() {
 
-          loadLocationList(function() {
+          loadLocationListFn(() => {
 
             const listEle = document.createElement("div");
             listEle.className = "panel";
@@ -1133,7 +1115,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
                 "</div>";
 
-              listItemEle.addEventListener("click", distributorLookup_updateDistributor);
+              listItemEle.addEventListener("click", distributorLookupFn_updateDistributor);
 
               listEle.insertAdjacentElement("beforeend", listItemEle);
 
@@ -1142,9 +1124,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
             const lookupContainerEle = document.getElementById("container--distributorLookup");
             cityssm.clearElement(lookupContainerEle);
             lookupContainerEle.insertAdjacentElement("beforeend", listEle);
-
           });
-
         },
         onshown(_modalEle, closeModalFn) {
           distributorLookup_closeModalFn = closeModalFn;
@@ -1153,13 +1133,13 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
     };
 
-    const amendManufacturer_openModal = function(buttonEvent: Event) {
+    const amendManufacturerFn_openModal = (buttonEvent: Event) => {
 
       let manufacturerLookup_closeModalFn: Function;
 
       const manufacturerTdEle = <HTMLTableCellElement>(<HTMLButtonElement>buttonEvent.currentTarget).closest("td").previousElementSibling;
 
-      const manufacturerLookup_updateManufacturer = function(locationButtonEvent: Event) {
+      const manufacturerLookupFn_updateManufacturer = (locationButtonEvent: Event) => {
 
         const locationButtonEle = <HTMLButtonElement>locationButtonEvent.currentTarget;
 
@@ -1168,14 +1148,14 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
         manufacturerLookup_closeModalFn();
 
-        setUnsavedChanges();
+        setUnsavedChangesFn();
       };
 
       cityssm.openHtmlModal("licence-manufacturerLookup", {
 
         onshow() {
 
-          loadLocationList(function() {
+          loadLocationListFn(() => {
 
             const listEle = document.createElement("div");
             listEle.className = "panel";
@@ -1203,7 +1183,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
                 "</div>";
 
-              listItemEle.addEventListener("click", manufacturerLookup_updateManufacturer);
+              listItemEle.addEventListener("click", manufacturerLookupFn_updateManufacturer);
 
               listEle.insertAdjacentElement("beforeend", listItemEle);
             }
@@ -1221,17 +1201,17 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
     };
 
-    const addTicketType_openModal = function() {
+    const addTicketType_openModal = () => {
 
       let addTicketType_closeModalFn: Function;
       let addTicketType_ticketTypeEle: HTMLSelectElement;
       let addTicketType_unitCountEle: HTMLInputElement;
 
-      const addTicketType_addTicketType = function(formEvent: Event) {
+      const addTicketTypeFn_addTicketType = (formEvent: Event) => {
 
         formEvent.preventDefault();
 
-        ticketTypes_addTr({
+        ticketTypesFn_addTr({
           ticketType: (<HTMLInputElement>document.getElementById("ticketTypeAdd--ticketType")).value,
           unitCount: parseInt((<HTMLInputElement>document.getElementById("ticketTypeAdd--unitCount")).value, 10),
           valuePerDeal: parseFloat((<HTMLInputElement>document.getElementById("ticketTypeAdd--valuePerDeal")).value),
@@ -1246,13 +1226,12 @@ import type * as llmTypes from "../../helpers/llmTypes";
             "<input class=\"is-removed-after-save\" name=\"ticketType_toAdd\"" +
             " type=\"hidden\" value=\"" + (<HTMLSelectElement>document.getElementById("ticketTypeAdd--ticketType")).value + "\" />"
           );
-
         }
 
         addTicketType_closeModalFn();
       };
 
-      const addTicketType_refreshUnitCountChange = function() {
+      const addTicketTypeFn_refreshUnitCountChange = () => {
 
         const unitCount = parseInt(addTicketType_unitCountEle.value, 10);
 
@@ -1277,10 +1256,10 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
         (<HTMLInputElement>document.getElementById("ticketTypeAdd--feePerUnit")).value = ticketTypeOptionEle.getAttribute("data-fee-per-unit");
 
-        addTicketType_refreshUnitCountChange();
+        addTicketTypeFn_refreshUnitCountChange();
       };
 
-      const addTicketType_populateTicketTypeSelect = function(ticketTypes: llmTypes.ConfigTicketType[]) {
+      const addTicketTypeFn_populateTicketTypeSelect = (ticketTypes: llmTypes.ConfigTicketType[]) => {
 
         if (!ticketTypes || ticketTypes.length === 0) {
 
@@ -1320,26 +1299,26 @@ import type * as llmTypes from "../../helpers/llmTypes";
           addTicketType_ticketTypeEle.addEventListener("change", addTicketType_refreshTicketTypeChange);
 
           addTicketType_unitCountEle = <HTMLInputElement>document.getElementById("ticketTypeAdd--unitCount");
-          addTicketType_unitCountEle.addEventListener("change", addTicketType_refreshUnitCountChange);
+          addTicketType_unitCountEle.addEventListener("change", addTicketTypeFn_refreshUnitCountChange);
 
-          modalEle.getElementsByTagName("form")[0].addEventListener("submit", addTicketType_addTicketType);
+          modalEle.getElementsByTagName("form")[0].addEventListener("submit", addTicketTypeFn_addTicketType);
         },
 
         onshown(_modalEle, closeModalFn) {
           addTicketType_closeModalFn = closeModalFn;
-          ticketTypes_getAll(addTicketType_populateTicketTypeSelect);
+          ticketTypesFn_getAll(addTicketTypeFn_populateTicketTypeSelect);
         }
       });
 
     };
 
-    const ticketTypes_addTr = function(obj: {
+    const ticketTypesFn_addTr = (obj: {
       ticketType: string,
       unitCount: number,
       licenceFee: number,
       prizesPerDeal: number,
       valuePerDeal: number
-    }) {
+    }) => {
 
       const ticketType = obj.ticketType;
 
@@ -1400,10 +1379,10 @@ import type * as llmTypes from "../../helpers/llmTypes";
         "</td>");
 
       trEle.getElementsByClassName("is-amend-ticket-type-unit-count-button")[0]
-        .addEventListener("click", amendUnitCount_openModal);
+        .addEventListener("click", amendUnitCountFn_openModal);
 
       trEle.getElementsByClassName("is-delete-ticket-type-button")[0]
-        .addEventListener("click", deleteTicketType_openConfirm);
+        .addEventListener("click", deleteTicketTypeFn_openConfirm);
 
       // Licence fee
 
@@ -1430,7 +1409,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
         "</td>");
 
       trEle.getElementsByClassName("is-amend-ticket-type-manufacturer-button")[0]
-        .addEventListener("click", amendManufacturer_openModal);
+        .addEventListener("click", amendManufacturerFn_openModal);
 
       // Distributor
 
@@ -1448,47 +1427,47 @@ import type * as llmTypes from "../../helpers/llmTypes";
         "</td>");
 
       trEle.getElementsByClassName("is-amend-ticket-type-distributor-button")[0]
-        .addEventListener("click", amendDistributor_openModal);
+        .addEventListener("click", amendDistributorFn_openModal);
 
       // Insert row
 
       ticketTypesPanelEle.getElementsByTagName("tbody")[0].insertAdjacentElement("afterbegin", trEle);
 
-      ticketTypes_calculateTfoot();
+      ticketTypesFn_calculateTfoot();
 
-      setUnsavedChanges();
-      setDoRefreshAfterSave();
+      setUnsavedChangesFn();
+      setDoRefreshAfterSaveFn();
     };
 
 
-    ticketTypes_calculateTfoot();
+    ticketTypesFn_calculateTfoot();
 
     document.getElementById("is-add-ticket-type-button").addEventListener("click", addTicketType_openModal);
 
     const amendUnitButtonEles = ticketTypesPanelEle.getElementsByClassName("is-amend-ticket-type-unit-count-button");
 
     for (const amendUnitButtonEle of amendUnitButtonEles) {
-      amendUnitButtonEle.addEventListener("click", amendUnitCount_openModal);
+      amendUnitButtonEle.addEventListener("click", amendUnitCountFn_openModal);
     }
 
     const deleteButtonEles = ticketTypesPanelEle.getElementsByClassName("is-delete-ticket-type-button");
 
     for (const deleteButtonEle of deleteButtonEles) {
-      deleteButtonEle.addEventListener("click", deleteTicketType_openConfirm);
+      deleteButtonEle.addEventListener("click", deleteTicketTypeFn_openConfirm);
     }
 
     const amendDistributorButtonEles =
       ticketTypesPanelEle.getElementsByClassName("is-amend-ticket-type-distributor-button");
 
     for (const amendDistributorButtonEle of amendDistributorButtonEles) {
-      amendDistributorButtonEle.addEventListener("click", amendDistributor_openModal);
+      amendDistributorButtonEle.addEventListener("click", amendDistributorFn_openModal);
     }
 
     const amendManufacturerButtonEles =
       ticketTypesPanelEle.getElementsByClassName("is-amend-ticket-type-manufacturer-button");
 
     for (const amendManufacturerButtonEle of amendManufacturerButtonEles) {
-      amendManufacturerButtonEle.addEventListener("click", amendManufacturer_openModal);
+      amendManufacturerButtonEle.addEventListener("click", amendManufacturerFn_openModal);
     }
   }
 
@@ -1503,7 +1482,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
     if (updateFeeButtonEle) {
 
-      updateFeeButtonEle.addEventListener("click", function() {
+      updateFeeButtonEle.addEventListener("click", () => {
 
         const licenceFeeEle = <HTMLInputElement>document.getElementById("licence--licenceFee");
 
@@ -1513,16 +1492,16 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
         updateFeeButtonEle.remove();
 
-        setUnsavedChanges();
-        setDoRefreshAfterSave();
+        setUnsavedChangesFn();
+        setDoRefreshAfterSaveFn();
       });
     }
 
-    document.getElementById("is-add-transaction-button").addEventListener("click", function() {
+    document.getElementById("is-add-transaction-button").addEventListener("click", () => {
 
       let addTransactionFormEle: HTMLFormElement;
 
-      const addTransactionFn = function(formEvent?: Event) {
+      const addTransactionFn = (formEvent?: Event) => {
 
         if (formEvent) {
           formEvent.preventDefault();
@@ -1531,7 +1510,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
         cityssm.postJSON(
           "/licences/doAddTransaction",
           addTransactionFormEle,
-          function(responseJSON) {
+          (responseJSON: { success: boolean }) => {
 
             if (responseJSON.success) {
               window.location.reload(true);
@@ -1544,7 +1523,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
         onshow(modalEle) {
 
-          llm.getDefaultConfigProperty("externalReceiptNumber_fieldLabel", function(fieldLabel) {
+          llm.getDefaultConfigProperty("externalReceiptNumber_fieldLabel", (fieldLabel: string) => {
 
             (<HTMLLabelElement>modalEle.querySelector("label[for='transactionAdd--externalReceiptNumber']")).innerText = fieldLabel;
 
@@ -1575,11 +1554,10 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
             addAndIssueButtonEle.classList.remove("is-hidden");
 
-            addAndIssueButtonEle.addEventListener("click", function() {
+            addAndIssueButtonEle.addEventListener("click", () => {
 
               (<HTMLInputElement>document.getElementById("transactionAdd--issueLicence")).value = "true";
               addTransactionFn();
-
             });
           }
         }
@@ -1590,7 +1568,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
     if (voidTransactionButtonEle) {
 
-      voidTransactionButtonEle.addEventListener("click", function() {
+      voidTransactionButtonEle.addEventListener("click", () => {
 
         if (hasUnsavedChanges) {
 
@@ -1604,14 +1582,14 @@ import type * as llmTypes from "../../helpers/llmTypes";
           return;
         }
 
-        const voidFn = function() {
+        const voidFn = () => {
 
           cityssm.postJSON(
             "/licences/doVoidTransaction", {
               licenceID: licenceID,
               transactionIndex: voidTransactionButtonEle.getAttribute("data-transaction-index")
             },
-            function(responseJSON) {
+            (responseJSON: { success: true }) => {
 
               if (responseJSON.success) {
                 window.location.reload(true);
@@ -1648,15 +1626,15 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
     if (unissueLicenceButtonEle) {
 
-      unissueLicenceButtonEle.addEventListener("click", function() {
+      unissueLicenceButtonEle.addEventListener("click", () => {
 
-        const unissueFn = function() {
+        const unissueFn = () => {
 
           cityssm.postJSON(
             "/licences/doUnissueLicence", {
               licenceID: licenceID
             },
-            function(responseJSON) {
+            (responseJSON) => {
 
               if (responseJSON.success) {
                 window.location.reload(true);
@@ -1676,15 +1654,15 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
     } else {
 
-      const issueLicenceFn = function() {
+      const issueLicenceFn = () => {
 
-        const issueFn = function() {
+        const issueFn = () => {
 
           cityssm.postJSON(
             "/licences/doIssueLicence", {
               licenceID: licenceID
             },
-            function(responseJSON) {
+            (responseJSON: { success: boolean }) => {
 
               if (responseJSON.success) {
                 window.location.reload(true);
@@ -1718,4 +1696,4 @@ import type * as llmTypes from "../../helpers/llmTypes";
       document.getElementById("is-not-issued-tag").addEventListener("dblclick", issueLicenceFn);
     }
   }
-}());
+})();

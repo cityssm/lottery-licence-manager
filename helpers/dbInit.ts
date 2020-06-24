@@ -3,7 +3,7 @@ import * as log from "fancy-log";
 import * as sqlite from "better-sqlite3";
 
 
-export function initUsersDB() {
+export const initUsersDB = () => {
 
   const usersDB = sqlite("data/users.db");
 
@@ -37,9 +37,9 @@ export function initUsersDB() {
 
   return false;
 
-}
+};
 
-export function initLicencesDB() {
+export const initLicencesDB = () => {
 
   const licencesDB = sqlite("data/licences.db");
 
@@ -379,4 +379,4 @@ export function initLicencesDB() {
   }
 
   return false;
-}
+};

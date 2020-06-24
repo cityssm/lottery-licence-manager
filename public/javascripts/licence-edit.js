@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-(function () {
+(() => {
     const formEle = document.getElementById("form--licence");
     const formMessageEle = document.getElementById("container--form-message");
     const licenceID = document.getElementById("licence--licenceID").value;
@@ -14,7 +14,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
     let doRefreshAfterSave = false;
     let hasUnsavedChanges = false;
     const eventsContainerEle = document.getElementById("container--events");
-    formEle.addEventListener("submit", function (formEvent) {
+    formEle.addEventListener("submit", (formEvent) => {
         formEvent.preventDefault();
         const eventDateInputEles = eventsContainerEle.getElementsByTagName("input");
         if (eventDateInputEles.length === 0) {
@@ -22,7 +22,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
             return;
         }
         formMessageEle.innerHTML = "Saving... <i class=\"fas fa-circle-notch fa-spin\" aria-hidden=\"true\"></i>";
-        cityssm.postJSON("/licences/doSave", formEle, function (responseJSON) {
+        cityssm.postJSON("/licences/doSave", formEle, (responseJSON) => {
             if (responseJSON.success) {
                 cityssm.disableNavBlocker();
                 hasUnsavedChanges = false;
@@ -44,24 +44,25 @@ Object.defineProperty(exports, "__esModule", { value: true });
         });
     });
     if (!isCreate) {
-        document.getElementById("is-delete-licence-button").addEventListener("click", function (clickEvent) {
+        document.getElementById("is-delete-licence-button").addEventListener("click", (clickEvent) => {
             clickEvent.preventDefault();
-            cityssm.confirmModal("Delete Licence?", "Are you sure you want to delete this licence and all events associated with it?", "Yes, Delete", "danger", function () {
+            const deleteFn = () => {
                 cityssm.postJSON("/licences/doDelete", {
                     licenceID: licenceID
-                }, function (responseJSON) {
+                }, (responseJSON) => {
                     if (responseJSON.success) {
                         cityssm.disableNavBlocker();
                         window.location.href = "/licences";
                     }
                 });
-            });
+            };
+            cityssm.confirmModal("Delete Licence?", "Are you sure you want to delete this licence and all events associated with it?", "Yes, Delete", "danger", deleteFn);
         });
     }
-    function setDoRefreshAfterSave() {
+    const setDoRefreshAfterSaveFn = () => {
         doRefreshAfterSave = true;
-    }
-    function setUnsavedChanges(changeEvent) {
+    };
+    const setUnsavedChangesFn = (changeEvent) => {
         cityssm.enableNavBlocker();
         hasUnsavedChanges = true;
         formMessageEle.innerHTML = "<span class=\"tag is-light is-info is-medium\">" +
@@ -75,19 +76,19 @@ Object.defineProperty(exports, "__esModule", { value: true });
         if (changeEvent) {
             const currentTargetType = (changeEvent.currentTarget instanceof HTMLInputElement ? changeEvent.currentTarget.type : "");
             if (refreshInputTypes.includes(currentTargetType)) {
-                setDoRefreshAfterSave();
+                setDoRefreshAfterSaveFn();
             }
         }
-    }
+    };
     const inputEles = formEle.querySelectorAll("input, select, textarea");
     for (const inputEle of inputEles) {
         if (inputEle.name !== "") {
-            inputEle.addEventListener("change", setUnsavedChanges);
+            inputEle.addEventListener("change", setUnsavedChangesFn);
         }
     }
     const externalLicenceNumberUnlockBtnEle = document.getElementById("is-external-licence-number-unlock-button");
     if (externalLicenceNumberUnlockBtnEle) {
-        externalLicenceNumberUnlockBtnEle.addEventListener("click", function () {
+        externalLicenceNumberUnlockBtnEle.addEventListener("click", () => {
             const externalLicenceNumberEle = document.getElementById("licence--externalLicenceNumber");
             externalLicenceNumberEle.classList.remove("is-readonly");
             externalLicenceNumberEle.removeAttribute("readonly");
@@ -99,7 +100,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
         let organizationLookupCloseModalFn;
         let organizationLookupSearchStrEle;
         let organizationLookupResultsEle;
-        const organizationLookupFn_setOrganization = function (clickEvent) {
+        const organizationLookupFn_setOrganization = (clickEvent) => {
             clickEvent.preventDefault();
             const organizationEle = clickEvent.currentTarget;
             document.getElementById("licence--organizationID").value =
@@ -107,9 +108,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
             document.getElementById("licence--organizationName").value =
                 organizationEle.getAttribute("data-organization-name");
             organizationLookupCloseModalFn();
-            setUnsavedChanges();
+            setUnsavedChangesFn();
         };
-        const organizationLookupFn_refreshResults = function () {
+        const organizationLookupFn_refreshResults = () => {
             const listEle = document.createElement("div");
             listEle.className = "panel";
             const searchStringSplit = organizationLookupSearchStrEle.value
@@ -124,8 +125,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     continue;
                 }
                 const organizationName = organizationObj.organizationName.toLowerCase();
-                for (let searchStringIndex = 0; searchStringIndex < searchStringSplit.length; searchStringIndex += 1) {
-                    if (organizationName.indexOf(searchStringSplit[searchStringIndex]) === -1) {
+                for (const searchStringPiece of searchStringSplit) {
+                    if (organizationName.indexOf(searchStringPiece) === -1) {
                         doDisplayRecord = false;
                         break;
                     }
@@ -134,7 +135,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     displayLimit -= 1;
                     const listItemEle = document.createElement("a");
                     listItemEle.className = "panel-block is-block";
-                    listItemEle.setAttribute("data-organization-id", organizationObj.organizationID);
+                    listItemEle.setAttribute("data-organization-id", organizationObj.organizationID.toString());
                     listItemEle.setAttribute("data-organization-name", organizationObj.organizationName);
                     listItemEle.setAttribute("href", "#");
                     listItemEle.innerHTML = organizationObj.organizationName + "<br />" +
@@ -149,14 +150,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
             cityssm.clearElement(organizationLookupResultsEle);
             organizationLookupResultsEle.insertAdjacentElement("beforeend", listEle);
         };
-        const organizationLookupFn_openModal = function () {
+        const organizationLookupFn_openModal = () => {
             cityssm.openHtmlModal("licence-organizationLookup", {
                 onshow() {
                     organizationLookupSearchStrEle = document.getElementById("organizationLookup--searchStr");
                     organizationLookupSearchStrEle.addEventListener("keyup", organizationLookupFn_refreshResults);
                     organizationLookupResultsEle = document.getElementById("container--organizationLookup");
                     if (organizationList.length === 0) {
-                        cityssm.postJSON("/organizations/doGetAll", null, function (organizationListRes) {
+                        cityssm.postJSON("/organizations/doGetAll", null, (organizationListRes) => {
                             organizationList = organizationListRes;
                             organizationLookupSearchStrEle.removeAttribute("disabled");
                             organizationLookupFn_refreshResults();
@@ -182,9 +183,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
         document.getElementById("licence--organizationName").addEventListener("dblclick", organizationLookupFn_openModal);
     }
     let locationList = [];
-    function loadLocationList(callbackFn) {
+    const loadLocationListFn = (callbackFn) => {
         if (locationList.length === 0) {
-            cityssm.postJSON("/locations/doGetLocations", null, function (locationResults) {
+            cityssm.postJSON("/locations/doGetLocations", null, (locationResults) => {
                 locationList = locationResults.locations;
                 callbackFn();
             });
@@ -192,23 +193,23 @@ Object.defineProperty(exports, "__esModule", { value: true });
         else {
             callbackFn();
         }
-    }
+    };
     {
         let locationLookup_closeModalFn;
         let locationLookup_searchStrEle;
         let locationLookup_resultsEle;
-        const locationLookupFn_setLocation = function (locationIDString, locationDisplayName) {
+        const locationLookupFn_setLocation = (locationIDString, locationDisplayName) => {
             document.getElementById("licence--locationID").value = locationIDString;
             document.getElementById("licence--locationDisplayName").value = locationDisplayName;
         };
-        const locationLookupFn_setLocationFromExisting = function (clickEvent) {
+        const locationLookupFn_setLocationFromExisting = (clickEvent) => {
             clickEvent.preventDefault();
             const locationEle = clickEvent.currentTarget;
             locationLookupFn_setLocation(locationEle.getAttribute("data-location-id"), locationEle.getAttribute("data-location-display-name"));
             locationLookup_closeModalFn();
-            setUnsavedChanges();
+            setUnsavedChangesFn();
         };
-        const locationLookupFn_refreshResults = function () {
+        const locationLookupFn_refreshResults = () => {
             const listEle = document.createElement("div");
             listEle.className = "panel";
             const searchStringSplit = locationLookup_searchStrEle.value
@@ -251,30 +252,30 @@ Object.defineProperty(exports, "__esModule", { value: true });
             cityssm.clearElement(locationLookup_resultsEle);
             locationLookup_resultsEle.insertAdjacentElement("beforeend", listEle);
         };
-        const locationLookupFn_openModal = function () {
+        const locationLookupFn_openModal = () => {
             cityssm.openHtmlModal("licence-locationLookup", {
                 onshow(modalEle) {
                     locationLookup_searchStrEle = document.getElementById("locationLookup--searchStr");
                     locationLookup_searchStrEle.addEventListener("keyup", locationLookupFn_refreshResults);
                     locationLookup_resultsEle = document.getElementById("container--locationLookup");
-                    loadLocationList(function () {
+                    loadLocationListFn(() => {
                         locationLookup_searchStrEle.removeAttribute("disabled");
                         locationLookupFn_refreshResults();
                         locationLookup_searchStrEle.focus();
                     });
-                    llm.getDefaultConfigProperty("city", function (defaultCity) {
+                    llm.getDefaultConfigProperty("city", (defaultCity) => {
                         if (defaultCity) {
                             document.getElementById("newLocation--locationCity").value = defaultCity;
                         }
                     });
-                    llm.getDefaultConfigProperty("province", function (defaultProvince) {
+                    llm.getDefaultConfigProperty("province", (defaultProvince) => {
                         if (defaultProvince) {
                             document.getElementById("newLocation--locationProvince").value = defaultProvince;
                         }
                     });
-                    document.getElementById("form--newLocation").addEventListener("submit", function (formEvent) {
+                    document.getElementById("form--newLocation").addEventListener("submit", (formEvent) => {
                         formEvent.preventDefault();
-                        cityssm.postJSON("/locations/doCreate", formEvent.currentTarget, function (responseJSON) {
+                        cityssm.postJSON("/locations/doCreate", formEvent.currentTarget, (responseJSON) => {
                             if (responseJSON.success) {
                                 locationList = [];
                                 locationLookupFn_setLocation(responseJSON.locationID, responseJSON.locationDisplayName);
@@ -300,16 +301,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
         let termsConditionsList = [];
         const termsConditionsLookupModalEle = document.getElementById("is-termsConditions-lookup-modal");
         const termsConditionsLookupResultsEle = document.getElementById("container--termsConditionsPrevious");
-        const termsConditionsLookupFn_setTermsConditions = function (clickEvent) {
+        const termsConditionsLookupFn_setTermsConditions = (clickEvent) => {
             clickEvent.preventDefault();
             const termsConditionsIndex = parseInt(clickEvent.currentTarget.getAttribute("data-terms-conditions-index"), 10);
             const termsConditionsEle = document.getElementById("licence--termsConditions");
             termsConditionsEle.value = termsConditionsList[termsConditionsIndex].termsConditions;
             cityssm.hideModal(termsConditionsLookupModalEle);
             termsConditionsEle.focus();
-            setUnsavedChanges();
+            setUnsavedChangesFn();
         };
-        document.getElementById("is-termsConditions-lookup-button").addEventListener("click", function () {
+        document.getElementById("is-termsConditions-lookup-button").addEventListener("click", () => {
             termsConditionsList = [];
             cityssm.clearElement(termsConditionsLookupResultsEle);
             const organizationID = document.getElementById("licence--organizationID").value;
@@ -322,8 +323,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 "Loading previously used terms and conditions..." +
                 "</p>";
             cityssm.postJSON("/licences/doGetDistinctTermsConditions", {
-                organizationID: organizationID
-            }, function (termsConditionsListRes) {
+                organizationID
+            }, (termsConditionsListRes) => {
                 termsConditionsList = termsConditionsListRes;
                 if (termsConditionsList.length === 0) {
                     termsConditionsLookupResultsEle.innerHTML = "<p class=\"has-text-centered\">" +
@@ -333,7 +334,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 else {
                     const listEle = document.createElement("div");
                     listEle.className = "panel mb-3";
-                    termsConditionsList.forEach(function (termsConditionsObj, termsConditionsIndex) {
+                    termsConditionsList.forEach((termsConditionsObj, termsConditionsIndex) => {
                         const listItemEle = document.createElement("a");
                         listItemEle.className = "panel-block is-block";
                         listItemEle.setAttribute("data-terms-conditions-index", termsConditionsIndex.toString());
@@ -344,7 +345,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
                             (termsConditionsObj.termsConditionsCount > 1 ?
                                 "<span class=\"tag is-light\">Used " + termsConditionsObj.termsConditionsCount + " times</span>" :
                                 "") +
-                            "<span class=\"tag is-info has-tooltip-left\" data-tooltip=\"Most Recent Licence Start Date\">" + termsConditionsObj.startDateMaxString + "</span>" +
+                            "<span class=\"tag is-info has-tooltip-left\" data-tooltip=\"Most Recent Licence Start Date\">" +
+                            termsConditionsObj.startDateMaxString +
+                            "</span>" +
                             "</p>";
                         listItemEle.addEventListener("click", termsConditionsLookupFn_setTermsConditions);
                         listEle.insertAdjacentElement("beforeend", listItemEle);
@@ -363,7 +366,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
     const licenceType_selectEle = document.getElementById("licence--licenceTypeKey");
     if (isCreate) {
         const licenceType_fieldContainerEles = document.getElementsByClassName("container-licenceTypeFields");
-        const changeFn_licenceType = function () {
+        const changeFn_licenceType = () => {
             const optionEle = licenceType_selectEle.selectedOptions[0];
             const totalPrizeValueMax = optionEle.getAttribute("data-total-prize-value-max");
             document.getElementById("licence--totalPrizeValue").setAttribute("max", totalPrizeValueMax);
@@ -400,7 +403,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
     {
         const startDateEle = document.getElementById("licence--startDateString");
         const endDateEle = document.getElementById("licence--endDateString");
-        const dateFn_setMin = function () {
+        const dateFn_setMin = () => {
             const startDateString = startDateEle.value;
             endDateEle.setAttribute("min", startDateString);
             if (endDateEle.value < startDateString) {
@@ -411,24 +414,24 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 eventDateEle.setAttribute("min", startDateString);
             }
         };
-        const dateFn_setMax = function () {
+        const dateFn_setMax = () => {
             const endDateString = endDateEle.value;
             const eventDateEles = eventsContainerEle.getElementsByTagName("input");
             for (const eventDateEle of eventDateEles) {
                 eventDateEle.setAttribute("max", endDateString);
             }
         };
-        document.getElementById("licence--applicationDateString").addEventListener("change", function (changeEvent) {
+        document.getElementById("licence--applicationDateString").addEventListener("change", (changeEvent) => {
             startDateEle.setAttribute("min", changeEvent.currentTarget.value);
         });
         startDateEle.addEventListener("change", dateFn_setMin);
         endDateEle.addEventListener("change", dateFn_setMax);
-        const eventFn_remove = function (clickEvent) {
+        const eventFn_remove = (clickEvent) => {
             clickEvent.currentTarget.closest(".panel-block").remove();
             doRefreshAfterSave = true;
-            setUnsavedChanges();
+            setUnsavedChangesFn();
         };
-        const eventFn_add = function (eventDate) {
+        const eventFn_add = (eventDate) => {
             let eventDateString = "";
             if (eventDate) {
                 if (eventDate instanceof Date) {
@@ -472,10 +475,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
             const buttonEles = eventsContainerEle.getElementsByTagName("a");
             buttonEles[buttonEles.length - 1].addEventListener("click", eventFn_remove);
             doRefreshAfterSave = true;
-            setUnsavedChanges();
+            setUnsavedChangesFn();
         };
         const eventCalculator_modalEle = document.getElementById("is-event-calculator-modal");
-        document.getElementsByClassName("is-calculate-events-button")[0].addEventListener("click", function () {
+        document.getElementsByClassName("is-calculate-events-button")[0].addEventListener("click", () => {
             const eventCount = parseInt(document.getElementById("eventCalc--eventCount").value, 10);
             const dayInterval = parseInt(document.getElementById("eventCalc--dayInterval").value, 10);
             let dateSplit = endDateEle.value.split("-");
@@ -488,7 +491,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
             }
             cityssm.hideModal(eventCalculator_modalEle);
         });
-        document.getElementById("is-event-calculator-button").addEventListener("click", function () {
+        document.getElementById("is-event-calculator-button").addEventListener("click", () => {
             cityssm.showModal(eventCalculator_modalEle);
         });
         const cancelButtonEles = eventCalculator_modalEle.getElementsByClassName("is-close-modal-button");
@@ -503,7 +506,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
     const ticketTypesPanelEle = document.getElementById("is-ticket-types-panel");
     if (ticketTypesPanelEle) {
         let licenceTypeKeyToTicketTypes = new Map();
-        const ticketTypes_getAll = function (callbackFn) {
+        const ticketTypesFn_getAll = (callbackFn) => {
             const licenceTypeKey = licenceType_selectEle.value;
             if (licenceTypeKeyToTicketTypes.has(licenceTypeKey)) {
                 callbackFn(licenceTypeKeyToTicketTypes.get(licenceTypeKey));
@@ -511,13 +514,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
             else {
                 cityssm.postJSON("/licences/doGetTicketTypes", {
                     licenceTypeKey: licenceTypeKey
-                }, function (ticketTypes) {
+                }, (ticketTypes) => {
                     licenceTypeKeyToTicketTypes.set(licenceTypeKey, ticketTypes);
                     callbackFn(ticketTypes);
                 });
             }
         };
-        const ticketTypes_calculateTfoot = function () {
+        const ticketTypesFn_calculateTfoot = () => {
             let prizeValueTotal = 0;
             const prizeValueEles = ticketTypesPanelEle.getElementsByClassName("is-total-prizes-per-deal");
             for (const prizeValueEle of prizeValueEles) {
@@ -542,10 +545,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 "</tr>";
             document.getElementById("licence--totalPrizeValue").value = prizeValueTotal.toFixed(2);
         };
-        const deleteTicketType_openConfirm = function (buttonEvent) {
+        const deleteTicketTypeFn_openConfirm = (buttonEvent) => {
             const trEle = buttonEvent.currentTarget.closest("tr");
             const ticketType = trEle.getAttribute("data-ticket-type");
-            const doDeleteTicketType = function () {
+            const doDeleteTicketTypeFn = () => {
                 trEle.remove();
                 if (!isCreate) {
                     const addEle = formEle.querySelector("input[name='ticketType_toAdd'][value='" + ticketType + "']");
@@ -557,18 +560,18 @@ Object.defineProperty(exports, "__esModule", { value: true });
                             " type=\"hidden\" value=\"" + ticketType + "\" />");
                     }
                 }
-                ticketTypes_calculateTfoot();
-                setUnsavedChanges();
-                setDoRefreshAfterSave();
+                ticketTypesFn_calculateTfoot();
+                setUnsavedChangesFn();
+                setDoRefreshAfterSaveFn();
             };
-            cityssm.confirmModal("Delete Ticket Type?", "Are you sure you want to remove the " + ticketType + " ticket type for this licence?", "Yes, Delete", "danger", doDeleteTicketType);
+            cityssm.confirmModal("Delete Ticket Type?", "Are you sure you want to remove the " + ticketType + " ticket type for this licence?", "Yes, Delete", "danger", doDeleteTicketTypeFn);
         };
-        const amendUnitCount_openModal = function (buttonEvent) {
+        const amendUnitCountFn_openModal = (buttonEvent) => {
             const trEle = buttonEvent.currentTarget.closest("tr");
             const ticketType = trEle.getAttribute("data-ticket-type");
             let ticketTypeObj;
             let amendUnitCount_closeModalFn;
-            const amendUnitCount_closeAndUpdate = function (formEvent) {
+            const amendUnitCountFn_closeAndUpdate = (formEvent) => {
                 formEvent.preventDefault();
                 const unitCount = parseInt(document.getElementById("amendUnit_unitCount").value, 10);
                 const unitCountEle = trEle.querySelector("input[name='ticketType_unitCount']");
@@ -585,11 +588,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 licenceFeeEle.value = licenceFee;
                 licenceFeeEle.nextElementSibling.innerText = "$ " + licenceFee;
                 amendUnitCount_closeModalFn();
-                ticketTypes_calculateTfoot();
-                setUnsavedChanges();
-                setDoRefreshAfterSave();
+                ticketTypesFn_calculateTfoot();
+                setUnsavedChangesFn();
+                setDoRefreshAfterSaveFn();
             };
-            const amendUnitCount_calculateLicenceFee = function () {
+            const amendUnitCountFn_calculateLicenceFee = () => {
                 document.getElementById("amendUnit_licenceFee").value =
                     (ticketTypeObj.feePerUnit * parseInt(document.getElementById("amendUnit_unitCount").value, 10)).toFixed(2);
             };
@@ -600,31 +603,31 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     document.getElementById("amendUnit_unitCountCurrent").value = unitCountCurrent;
                     const unitCountEle = document.getElementById("amendUnit_unitCount");
                     unitCountEle.value = unitCountCurrent;
-                    ticketTypes_getAll(function (ticketTypes) {
+                    ticketTypesFn_getAll((ticketTypes) => {
                         ticketTypeObj = ticketTypes.find(ele => ele.ticketType === ticketType);
-                        unitCountEle.addEventListener("change", amendUnitCount_calculateLicenceFee);
-                        amendUnitCount_calculateLicenceFee();
+                        unitCountEle.addEventListener("change", amendUnitCountFn_calculateLicenceFee);
+                        amendUnitCountFn_calculateLicenceFee();
                     });
-                    modalEle.getElementsByTagName("form")[0].addEventListener("submit", amendUnitCount_closeAndUpdate);
+                    modalEle.getElementsByTagName("form")[0].addEventListener("submit", amendUnitCountFn_closeAndUpdate);
                 },
                 onshown(_modalEle, closeModalFn) {
                     amendUnitCount_closeModalFn = closeModalFn;
                 }
             });
         };
-        const amendDistributor_openModal = function (buttonEvent) {
+        const amendDistributorFn_openModal = (buttonEvent) => {
             let distributorLookup_closeModalFn;
             const distributorTdEle = buttonEvent.currentTarget.closest("td").previousElementSibling;
-            const distributorLookup_updateDistributor = function (locationButtonEvent) {
+            const distributorLookupFn_updateDistributor = (locationButtonEvent) => {
                 const locationButtonEle = locationButtonEvent.currentTarget;
                 distributorTdEle.getElementsByTagName("input")[0].value = locationButtonEle.getAttribute("data-location-id");
                 distributorTdEle.getElementsByTagName("span")[0].innerText = locationButtonEle.getAttribute("data-location-display-name");
                 distributorLookup_closeModalFn();
-                setUnsavedChanges();
+                setUnsavedChangesFn();
             };
             cityssm.openHtmlModal("licence-distributorLookup", {
                 onshow() {
-                    loadLocationList(function () {
+                    loadLocationListFn(() => {
                         const listEle = document.createElement("div");
                         listEle.className = "panel";
                         for (const locationObj of locationList) {
@@ -644,7 +647,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                                     "" :
                                     "<div class=\"column\">" + cityssm.escapeHTML(locationObj.locationAddress1) + "</div>") +
                                 "</div>";
-                            listItemEle.addEventListener("click", distributorLookup_updateDistributor);
+                            listItemEle.addEventListener("click", distributorLookupFn_updateDistributor);
                             listEle.insertAdjacentElement("beforeend", listItemEle);
                         }
                         const lookupContainerEle = document.getElementById("container--distributorLookup");
@@ -657,19 +660,19 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 }
             });
         };
-        const amendManufacturer_openModal = function (buttonEvent) {
+        const amendManufacturerFn_openModal = (buttonEvent) => {
             let manufacturerLookup_closeModalFn;
             const manufacturerTdEle = buttonEvent.currentTarget.closest("td").previousElementSibling;
-            const manufacturerLookup_updateManufacturer = function (locationButtonEvent) {
+            const manufacturerLookupFn_updateManufacturer = (locationButtonEvent) => {
                 const locationButtonEle = locationButtonEvent.currentTarget;
                 manufacturerTdEle.getElementsByTagName("input")[0].value = locationButtonEle.getAttribute("data-location-id");
                 manufacturerTdEle.getElementsByTagName("span")[0].innerText = locationButtonEle.getAttribute("data-location-display-name");
                 manufacturerLookup_closeModalFn();
-                setUnsavedChanges();
+                setUnsavedChangesFn();
             };
             cityssm.openHtmlModal("licence-manufacturerLookup", {
                 onshow() {
-                    loadLocationList(function () {
+                    loadLocationListFn(() => {
                         const listEle = document.createElement("div");
                         listEle.className = "panel";
                         for (const locationObj of locationList) {
@@ -689,7 +692,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                                     "" :
                                     "<div class=\"column\">" + cityssm.escapeHTML(locationObj.locationAddress1) + "</div>") +
                                 "</div>";
-                            listItemEle.addEventListener("click", manufacturerLookup_updateManufacturer);
+                            listItemEle.addEventListener("click", manufacturerLookupFn_updateManufacturer);
                             listEle.insertAdjacentElement("beforeend", listItemEle);
                         }
                         const lookupContainerEle = document.getElementById("container--manufacturerLookup");
@@ -702,13 +705,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 }
             });
         };
-        const addTicketType_openModal = function () {
+        const addTicketType_openModal = () => {
             let addTicketType_closeModalFn;
             let addTicketType_ticketTypeEle;
             let addTicketType_unitCountEle;
-            const addTicketType_addTicketType = function (formEvent) {
+            const addTicketTypeFn_addTicketType = (formEvent) => {
                 formEvent.preventDefault();
-                ticketTypes_addTr({
+                ticketTypesFn_addTr({
                     ticketType: document.getElementById("ticketTypeAdd--ticketType").value,
                     unitCount: parseInt(document.getElementById("ticketTypeAdd--unitCount").value, 10),
                     valuePerDeal: parseFloat(document.getElementById("ticketTypeAdd--valuePerDeal").value),
@@ -721,7 +724,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 }
                 addTicketType_closeModalFn();
             };
-            const addTicketType_refreshUnitCountChange = function () {
+            const addTicketTypeFn_refreshUnitCountChange = () => {
                 const unitCount = parseInt(addTicketType_unitCountEle.value, 10);
                 document.getElementById("ticketTypeAdd--prizesTotal").value =
                     (parseFloat(document.getElementById("ticketTypeAdd--prizesPerDeal").value) * unitCount).toFixed(2);
@@ -736,9 +739,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     (parseFloat(ticketTypeOptionEle.getAttribute("data-ticket-price")) * parseInt(ticketTypeOptionEle.getAttribute("data-ticket-count"), 10)).toFixed(2);
                 document.getElementById("ticketTypeAdd--prizesPerDeal").value = ticketTypeOptionEle.getAttribute("data-prizes-per-deal");
                 document.getElementById("ticketTypeAdd--feePerUnit").value = ticketTypeOptionEle.getAttribute("data-fee-per-unit");
-                addTicketType_refreshUnitCountChange();
+                addTicketTypeFn_refreshUnitCountChange();
             };
-            const addTicketType_populateTicketTypeSelect = function (ticketTypes) {
+            const addTicketTypeFn_populateTicketTypeSelect = (ticketTypes) => {
                 if (!ticketTypes || ticketTypes.length === 0) {
                     addTicketType_closeModalFn();
                     cityssm.alertModal("No ticket types available", "", "OK", "danger");
@@ -764,16 +767,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     addTicketType_ticketTypeEle = document.getElementById("ticketTypeAdd--ticketType");
                     addTicketType_ticketTypeEle.addEventListener("change", addTicketType_refreshTicketTypeChange);
                     addTicketType_unitCountEle = document.getElementById("ticketTypeAdd--unitCount");
-                    addTicketType_unitCountEle.addEventListener("change", addTicketType_refreshUnitCountChange);
-                    modalEle.getElementsByTagName("form")[0].addEventListener("submit", addTicketType_addTicketType);
+                    addTicketType_unitCountEle.addEventListener("change", addTicketTypeFn_refreshUnitCountChange);
+                    modalEle.getElementsByTagName("form")[0].addEventListener("submit", addTicketTypeFn_addTicketType);
                 },
                 onshown(_modalEle, closeModalFn) {
                     addTicketType_closeModalFn = closeModalFn;
-                    ticketTypes_getAll(addTicketType_populateTicketTypeSelect);
+                    ticketTypesFn_getAll(addTicketTypeFn_populateTicketTypeSelect);
                 }
             });
         };
-        const ticketTypes_addTr = function (obj) {
+        const ticketTypesFn_addTr = (obj) => {
             const ticketType = obj.ticketType;
             const trEle = document.createElement("tr");
             trEle.setAttribute("data-ticket-type", ticketType);
@@ -815,9 +818,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 "</div>" +
                 "</td>");
             trEle.getElementsByClassName("is-amend-ticket-type-unit-count-button")[0]
-                .addEventListener("click", amendUnitCount_openModal);
+                .addEventListener("click", amendUnitCountFn_openModal);
             trEle.getElementsByClassName("is-delete-ticket-type-button")[0]
-                .addEventListener("click", deleteTicketType_openConfirm);
+                .addEventListener("click", deleteTicketTypeFn_openConfirm);
             const licenceFee = obj.licenceFee;
             trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right is-nowrap\">" +
                 "<input class=\"is-licence-fee\" name=\"ticketType_licenceFee\" type=\"hidden\" value=\"" + licenceFee + "\" />" +
@@ -835,7 +838,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 "</button>" +
                 "</td>");
             trEle.getElementsByClassName("is-amend-ticket-type-manufacturer-button")[0]
-                .addEventListener("click", amendManufacturer_openModal);
+                .addEventListener("click", amendManufacturerFn_openModal);
             trEle.insertAdjacentHTML("beforeend", "<td>" +
                 "<input name=\"ticketType_distributorLocationID\" type=\"hidden\" value=\"\" />" +
                 "<span><span class=\"has-text-grey\">(Not Set)</span><span>" +
@@ -848,51 +851,51 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 "</button>" +
                 "</td>");
             trEle.getElementsByClassName("is-amend-ticket-type-distributor-button")[0]
-                .addEventListener("click", amendDistributor_openModal);
+                .addEventListener("click", amendDistributorFn_openModal);
             ticketTypesPanelEle.getElementsByTagName("tbody")[0].insertAdjacentElement("afterbegin", trEle);
-            ticketTypes_calculateTfoot();
-            setUnsavedChanges();
-            setDoRefreshAfterSave();
+            ticketTypesFn_calculateTfoot();
+            setUnsavedChangesFn();
+            setDoRefreshAfterSaveFn();
         };
-        ticketTypes_calculateTfoot();
+        ticketTypesFn_calculateTfoot();
         document.getElementById("is-add-ticket-type-button").addEventListener("click", addTicketType_openModal);
         const amendUnitButtonEles = ticketTypesPanelEle.getElementsByClassName("is-amend-ticket-type-unit-count-button");
         for (const amendUnitButtonEle of amendUnitButtonEles) {
-            amendUnitButtonEle.addEventListener("click", amendUnitCount_openModal);
+            amendUnitButtonEle.addEventListener("click", amendUnitCountFn_openModal);
         }
         const deleteButtonEles = ticketTypesPanelEle.getElementsByClassName("is-delete-ticket-type-button");
         for (const deleteButtonEle of deleteButtonEles) {
-            deleteButtonEle.addEventListener("click", deleteTicketType_openConfirm);
+            deleteButtonEle.addEventListener("click", deleteTicketTypeFn_openConfirm);
         }
         const amendDistributorButtonEles = ticketTypesPanelEle.getElementsByClassName("is-amend-ticket-type-distributor-button");
         for (const amendDistributorButtonEle of amendDistributorButtonEles) {
-            amendDistributorButtonEle.addEventListener("click", amendDistributor_openModal);
+            amendDistributorButtonEle.addEventListener("click", amendDistributorFn_openModal);
         }
         const amendManufacturerButtonEles = ticketTypesPanelEle.getElementsByClassName("is-amend-ticket-type-manufacturer-button");
         for (const amendManufacturerButtonEle of amendManufacturerButtonEles) {
-            amendManufacturerButtonEle.addEventListener("click", amendManufacturer_openModal);
+            amendManufacturerButtonEle.addEventListener("click", amendManufacturerFn_openModal);
         }
     }
     if (!isCreate) {
         const updateFeeButtonEle = document.getElementById("is-update-expected-licence-fee-button");
         if (updateFeeButtonEle) {
-            updateFeeButtonEle.addEventListener("click", function () {
+            updateFeeButtonEle.addEventListener("click", () => {
                 const licenceFeeEle = document.getElementById("licence--licenceFee");
                 licenceFeeEle.value = updateFeeButtonEle.getAttribute("data-licence-fee-expected");
                 licenceFeeEle.classList.remove("is-danger");
                 licenceFeeEle.closest(".field").getElementsByClassName("help")[0].remove();
                 updateFeeButtonEle.remove();
-                setUnsavedChanges();
-                setDoRefreshAfterSave();
+                setUnsavedChangesFn();
+                setDoRefreshAfterSaveFn();
             });
         }
-        document.getElementById("is-add-transaction-button").addEventListener("click", function () {
+        document.getElementById("is-add-transaction-button").addEventListener("click", () => {
             let addTransactionFormEle;
-            const addTransactionFn = function (formEvent) {
+            const addTransactionFn = (formEvent) => {
                 if (formEvent) {
                     formEvent.preventDefault();
                 }
-                cityssm.postJSON("/licences/doAddTransaction", addTransactionFormEle, function (responseJSON) {
+                cityssm.postJSON("/licences/doAddTransaction", addTransactionFormEle, (responseJSON) => {
                     if (responseJSON.success) {
                         window.location.reload(true);
                     }
@@ -900,7 +903,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
             };
             cityssm.openHtmlModal("licence-transactionAdd", {
                 onshow(modalEle) {
-                    llm.getDefaultConfigProperty("externalReceiptNumber_fieldLabel", function (fieldLabel) {
+                    llm.getDefaultConfigProperty("externalReceiptNumber_fieldLabel", (fieldLabel) => {
                         modalEle.querySelector("label[for='transactionAdd--externalReceiptNumber']").innerText = fieldLabel;
                     });
                     document.getElementById("transactionAdd--licenceID").value = licenceID;
@@ -917,7 +920,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     if (!isIssued) {
                         const addAndIssueButtonEle = document.getElementById("is-add-transaction-issue-licence-button");
                         addAndIssueButtonEle.classList.remove("is-hidden");
-                        addAndIssueButtonEle.addEventListener("click", function () {
+                        addAndIssueButtonEle.addEventListener("click", () => {
                             document.getElementById("transactionAdd--issueLicence").value = "true";
                             addTransactionFn();
                         });
@@ -927,16 +930,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
         });
         const voidTransactionButtonEle = document.getElementById("is-void-transaction-button");
         if (voidTransactionButtonEle) {
-            voidTransactionButtonEle.addEventListener("click", function () {
+            voidTransactionButtonEle.addEventListener("click", () => {
                 if (hasUnsavedChanges) {
                     cityssm.alertModal("Unsaved Changes", "Please save all unsaved changes before issuing this licence.", "OK", "warning");
                     return;
                 }
-                const voidFn = function () {
+                const voidFn = () => {
                     cityssm.postJSON("/licences/doVoidTransaction", {
                         licenceID: licenceID,
                         transactionIndex: voidTransactionButtonEle.getAttribute("data-transaction-index")
-                    }, function (responseJSON) {
+                    }, (responseJSON) => {
                         if (responseJSON.success) {
                             window.location.reload(true);
                         }
@@ -952,11 +955,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
     if (!isCreate) {
         const unissueLicenceButtonEle = document.getElementById("is-unissue-licence-button");
         if (unissueLicenceButtonEle) {
-            unissueLicenceButtonEle.addEventListener("click", function () {
-                const unissueFn = function () {
+            unissueLicenceButtonEle.addEventListener("click", () => {
+                const unissueFn = () => {
                     cityssm.postJSON("/licences/doUnissueLicence", {
                         licenceID: licenceID
-                    }, function (responseJSON) {
+                    }, (responseJSON) => {
                         if (responseJSON.success) {
                             window.location.reload(true);
                         }
@@ -966,11 +969,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
             });
         }
         else {
-            const issueLicenceFn = function () {
-                const issueFn = function () {
+            const issueLicenceFn = () => {
+                const issueFn = () => {
                     cityssm.postJSON("/licences/doIssueLicence", {
                         licenceID: licenceID
-                    }, function (responseJSON) {
+                    }, (responseJSON) => {
                         if (responseJSON.success) {
                             window.location.reload(true);
                         }
@@ -987,4 +990,4 @@ Object.defineProperty(exports, "__esModule", { value: true });
             document.getElementById("is-not-issued-tag").addEventListener("dblclick", issueLicenceFn);
         }
     }
-}());
+})();

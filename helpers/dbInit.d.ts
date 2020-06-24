@@ -1,2 +1,2 @@
-export declare function initUsersDB(): boolean;
-export declare function initLicencesDB(): boolean;
+export declare const initUsersDB: () => boolean;
+export declare const initLicencesDB: () => boolean;

@@ -1,2 +1,2 @@
 import { FieldData } from "../helpers/llmTypes";
-export declare function fieldDataArrayToObject(fieldDataArray: FieldData[]): any;
+export declare const fieldDataArrayToObject: (fieldDataArray: FieldData[]) => any;
