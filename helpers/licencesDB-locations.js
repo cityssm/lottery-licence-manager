@@ -239,7 +239,9 @@ exports.getInactiveLocations = (inactiveYears) => {
             " group by tt.manufacturerLocationID" +
             ") m on lo.locationID = m.manufacturerLocationID") +
         " where lo.recordDelete_timeMillis is null" +
-        " and max(ifnull(l.licences_endDateMax, 0), ifnull(d.distributor_endDateMax, 0), ifnull(m.manufacturer_endDateMax, 0)) <= ?" +
+        (" and max(ifnull(l.licences_endDateMax, 0)," +
+            " ifnull(d.distributor_endDateMax, 0)," +
+            " ifnull(m.manufacturer_endDateMax, 0)) <= ?") +
         " order by lo.locationName, lo.locationAddress1, lo.locationID")
         .all(cutoffDateInteger);
     db.close();
@@ -249,7 +251,8 @@ exports.getInactiveLocations = (inactiveYears) => {
         locationObj.recordUpdate_dateString = dateTimeFns.dateToString(new Date(locationObj.recordUpdate_timeMillis));
         locationObj.licences_endDateMaxString = dateTimeFns.dateIntegerToString(locationObj.licences_endDateMax || 0);
         locationObj.distributor_endDateMaxString = dateTimeFns.dateIntegerToString(locationObj.distributor_endDateMax || 0);
-        locationObj.manufacturer_endDateMaxString = dateTimeFns.dateIntegerToString(locationObj.manufacturer_endDateMax || 0);
+        locationObj.manufacturer_endDateMaxString =
+            dateTimeFns.dateIntegerToString(locationObj.manufacturer_endDateMax || 0);
     }
     return rows;
 };

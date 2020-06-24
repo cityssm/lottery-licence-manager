@@ -56,9 +56,8 @@ configSSM.licences.feeCalculationFn = (licenceObj) => {
     };
 };
 const licenceTypeNevada = configSSM.licenceTypes.find(licenceType => licenceType.licenceTypeKey === "NV");
-for (let ticketTypeIndex = 0; ticketTypeIndex < licenceTypeNevada.ticketTypes.length; ticketTypeIndex += 1) {
-    licenceTypeNevada.ticketTypes[ticketTypeIndex].feePerUnit =
-        Math.round(licenceTypeNevada.ticketTypes[ticketTypeIndex].prizesPerDeal * 0.03 * 100) / 100;
+for (const nevadaTicketType of licenceTypeNevada.ticketTypes) {
+    nevadaTicketType.feePerUnit = Math.round(nevadaTicketType.prizesPerDeal * 0.03 * 100) / 100;
 }
 licenceTypeNevada.licenceFields = [
     {

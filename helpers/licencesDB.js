@@ -850,7 +850,7 @@ exports.getActiveLicenceSummary = (reqBody, reqSession) => {
     });
     const startEndDateStart = dateTimeFns.dateStringToInteger(reqBody.startEndDateStartString);
     const startEndDateEnd = dateTimeFns.dateStringToInteger(reqBody.startEndDateEndString);
-    let sql = "select l.licenceID, l.externalLicenceNumber," +
+    const sql = "select l.licenceID, l.externalLicenceNumber," +
         " l.issueDate, l.startDate, l.endDate, l.licenceTypeKey," +
         " o.organizationID, o.organizationName," +
         " lo.locationID, lo.locationName, lo.locationAddress1," +
@@ -1013,7 +1013,8 @@ exports.getEvents = (reqBody, reqSession) => {
         lotteryEvent.eventDateString = dateTimeFns.dateIntegerToString(lotteryEvent.eventDate);
         lotteryEvent.startTimeString = dateTimeFns.timeIntegerToString(lotteryEvent.startTime || 0);
         lotteryEvent.endTimeString = dateTimeFns.timeIntegerToString(lotteryEvent.endTime || 0);
-        lotteryEvent.locationDisplayName = (lotteryEvent.locationName === "" ? lotteryEvent.locationAddress1 : lotteryEvent.locationName);
+        lotteryEvent.locationDisplayName =
+            (lotteryEvent.locationName === "" ? lotteryEvent.locationAddress1 : lotteryEvent.locationName);
         lotteryEvent.canUpdate = exports.canUpdateObject(lotteryEvent, reqSession);
         delete lotteryEvent.locationName;
         delete lotteryEvent.locationAddress1;

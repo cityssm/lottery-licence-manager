@@ -605,29 +605,30 @@ export const updateOrganizationRemark = (reqBody: llm.OrganizationRemark, reqSes
 /**
  * @returns TRUE if successful
  */
-export const deleteOrganizationRemark = (organizationID: number, remarkIndex: number, reqSession: Express.SessionData) => {
+export const deleteOrganizationRemark =
+  (organizationID: number, remarkIndex: number, reqSession: Express.SessionData) => {
 
-  const db = sqlite(dbPath);
+    const db = sqlite(dbPath);
 
-  const nowMillis = Date.now();
+    const nowMillis = Date.now();
 
-  const info = db.prepare("update OrganizationRemarks" +
-    " set recordDelete_userName = ?," +
-    " recordDelete_timeMillis = ?" +
-    " where organizationID = ?" +
-    " and remarkIndex = ?" +
-    " and recordDelete_timeMillis is null")
-    .run(
-      reqSession.user.userName,
-      nowMillis,
-      organizationID,
-      remarkIndex
-    );
+    const info = db.prepare("update OrganizationRemarks" +
+      " set recordDelete_userName = ?," +
+      " recordDelete_timeMillis = ?" +
+      " where organizationID = ?" +
+      " and remarkIndex = ?" +
+      " and recordDelete_timeMillis is null")
+      .run(
+        reqSession.user.userName,
+        nowMillis,
+        organizationID,
+        remarkIndex
+      );
 
-  db.close();
+    db.close();
 
-  return info.changes > 0;
-};
+    return info.changes > 0;
+  };
 
 
 /*
@@ -794,26 +795,27 @@ export const updateOrganizationBankRecord = (reqBody: llm.OrganizationBankRecord
   return info.changes > 0;
 };
 
-export const deleteOrganizationBankRecord = (organizationID: number, recordIndex: number, reqSession: Express.Session) => {
+export const deleteOrganizationBankRecord =
+  (organizationID: number, recordIndex: number, reqSession: Express.Session) => {
 
-  const db = sqlite(dbPath);
+    const db = sqlite(dbPath);
 
-  const nowMillis = Date.now();
+    const nowMillis = Date.now();
 
-  const info = db.prepare("update OrganizationBankRecords" +
-    " set recordDelete_userName = ?," +
-    " recordDelete_timeMillis = ?" +
-    " where organizationID = ?" +
-    " and recordIndex = ?" +
-    " and recordDelete_timeMillis is null")
-    .run(
-      reqSession.user.userName,
-      nowMillis,
-      organizationID,
-      recordIndex
-    );
+    const info = db.prepare("update OrganizationBankRecords" +
+      " set recordDelete_userName = ?," +
+      " recordDelete_timeMillis = ?" +
+      " where organizationID = ?" +
+      " and recordIndex = ?" +
+      " and recordDelete_timeMillis is null")
+      .run(
+        reqSession.user.userName,
+        nowMillis,
+        organizationID,
+        recordIndex
+      );
 
-  db.close();
+    db.close();
 
-  return info.changes > 0;
-};
+    return info.changes > 0;
+  };

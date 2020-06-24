@@ -90,8 +90,8 @@ declare const cityssm: cityssmGlobal;
       "</div>";
   };
 
-  const inputEles =
-    <NodeListOf<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>>formEle.querySelectorAll("input, select, textarea");
+  const inputEles = <NodeListOf<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>>
+    formEle.querySelectorAll("input, select, textarea");
 
   for (const inputEle of inputEles) {
     if (inputEle.name !== "") {

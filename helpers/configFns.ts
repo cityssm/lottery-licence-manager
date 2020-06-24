@@ -12,74 +12,72 @@ import * as config from "../data/config";
  * SET UP FALLBACK VALUES
  */
 
-const configFallbackValues = {
+const configFallbackValues = new Map<string, any>();
 
-  "application.applicationName": "Lottery Licence System",
-  "application.logoURL": "/images/bingoBalls.png",
-  "application.httpPort": 3000,
+configFallbackValues.set("application.applicationName", "Lottery Licence System");
+configFallbackValues.set("application.logoURL", "/images/bingoBalls.png");
+configFallbackValues.set("application.httpPort", 3000);
 
-  "session.cookieName": "lottery-licence-manager-user-sid",
-  "session.secret": "cityssm/lottery-licence-manager",
-  "session.maxAgeMillis": 60 * 60 * 1000,
-  "session.doKeepAlive": false,
+configFallbackValues.set("session.cookieName", "lottery-licence-manager-user-sid");
+configFallbackValues.set("session.secret", "cityssm/lottery-licence-manager");
+configFallbackValues.set("session.maxAgeMillis", 60 * 60 * 1000);
+configFallbackValues.set("session.doKeepAlive", false);
 
-  "admin.defaultPassword": "",
+configFallbackValues.set("admin.defaultPassword", "");
 
-  "user.createUpdateWindowMillis": 60 * 60 * 1000,
-  "user.defaultProperties": {
-    canCreate: false,
-    canUpdate: false,
-    isAdmin: false
-  },
+configFallbackValues.set("user.createUpdateWindowMillis", 60 * 60 * 1000);
+configFallbackValues.set("user.defaultProperties", {
+  canCreate: false,
+  canUpdate: false,
+  isAdmin: false
+});
 
-  "defaults.city": "",
-  "defaults.province": "",
+configFallbackValues.set("defaults.city", "");
+configFallbackValues.set("defaults.province", "");
 
-  "bankRecordTypes": <llm.ConfigBankRecordType[]>[
-    {
-      bankRecordType: "statement",
-      bankRecordTypeName: "Bank Statement"
-    }, {
-      bankRecordType: "cheques",
-      bankRecordTypeName: "Cheques"
-    }, {
-      bankRecordType: "receipts",
-      bankRecordTypeName: "Receipts"
-    }
-  ],
+configFallbackValues.set("bankRecordTypes", <llm.ConfigBankRecordType[]>[
+  {
+    bankRecordType: "statement",
+    bankRecordTypeName: "Bank Statement"
+  }, {
+    bankRecordType: "cheques",
+    bankRecordTypeName: "Cheques"
+  }, {
+    bankRecordType: "receipts",
+    bankRecordTypeName: "Receipts"
+  }
+]);
 
-  "licences.externalLicenceNumber.fieldLabel": "External Licence Number",
-  "licences.externalLicenceNumber.newCalculation": "",
-  "licences.externalLicenceNumber.isPreferredID": false,
+configFallbackValues.set("licences.externalLicenceNumber.fieldLabel", "External Licence Number");
+configFallbackValues.set("licences.externalLicenceNumber.newCalculation", "");
+configFallbackValues.set("licences.externalLicenceNumber.isPreferredID", false);
 
-  "licences.externalReceiptNumber.fieldLabel": "Receipt Number",
+configFallbackValues.set("licences.externalReceiptNumber.fieldLabel", "Receipt Number");
 
-  "licences.feeCalculationFn"() {
+configFallbackValues.set("licences.feeCalculationFn", () => {
 
-    return {
-      fee: 10,
-      message: "Using base licence fee.",
-      licenceHasErrors: false
-    };
+  return {
+    fee: 10,
+    message: "Using base licence fee.",
+    licenceHasErrors: false
+  };
 
-  },
+});
 
-  "licences.printTemplate": "licence-print",
+configFallbackValues.set("licences.printTemplate", "licence-print");
 
-  "licenceTypes": [],
+configFallbackValues.set("licenceTypes", []);
 
-  "amendments.displayCount": 5,
+configFallbackValues.set("amendments.displayCount", 5);
 
-  "amendments.trackLicenceFeeUpdate": true,
-  "amendments.trackDateTimeUpdate": true,
-  "amendments.trackOrganizationUpdate": true,
-  "amendments.trackLocationUpdate": true,
+configFallbackValues.set("amendments.trackLicenceFeeUpdate", true);
+configFallbackValues.set("amendments.trackDateTimeUpdate", true);
+configFallbackValues.set("amendments.trackOrganizationUpdate", true);
+configFallbackValues.set("amendments.trackLocationUpdate", true);
 
-  "amendments.trackTicketTypeNew": true,
-  "amendments.trackTicketTypeUpdate": true,
-  "amendments.trackTicketTypeDelete": true
-};
-
+configFallbackValues.set("amendments.trackTicketTypeNew", true);
+configFallbackValues.set("amendments.trackTicketTypeUpdate", true);
+configFallbackValues.set("amendments.trackTicketTypeDelete", true);
 
 
 export const getProperty = (propertyName: string): any => {
@@ -93,7 +91,7 @@ export const getProperty = (propertyName: string): any => {
     currentObj = currentObj[propertyNamePiece];
 
     if (!currentObj) {
-      return configFallbackValues[propertyName];
+      return configFallbackValues.get(propertyName);
     }
   }
 

@@ -5,7 +5,7 @@ import * as objectFns from "../helpers/objectFns";
 import * as configOntario from "./config-ontario";
 
 
-const configSSM: llm.Config = Object.assign ({}, configOntario);
+const configSSM: llm.Config = Object.assign({}, configOntario);
 
 
 /*
@@ -72,14 +72,18 @@ configSSM.licences.feeCalculationFn = (licenceObj: llm.LotteryLicence) => {
 
     if (licenceFieldData.discount1_tickets !== "" && licenceFieldData.discount1_cost !== "") {
 
-      const discountTicketCost = parseFloat(licenceFieldData.discount1_cost) / parseInt(licenceFieldData.discount1_tickets, 10);
+      const discountTicketCost =
+        parseFloat(licenceFieldData.discount1_cost) / parseInt(licenceFieldData.discount1_tickets, 10);
+
       ticketCost = Math.min(ticketCost, discountTicketCost);
 
     }
 
     if (licenceFieldData.discount2_tickets !== "" && licenceFieldData.discount2_cost !== "") {
 
-      const discountTicketCost = parseFloat(licenceFieldData.discount2_cost) / parseInt(licenceFieldData.discount2_tickets, 10);
+      const discountTicketCost =
+        parseFloat(licenceFieldData.discount2_cost) / parseInt(licenceFieldData.discount2_tickets, 10);
+
       ticketCost = Math.min(ticketCost, discountTicketCost);
 
     }
@@ -128,11 +132,8 @@ const licenceTypeNevada = configSSM.licenceTypes.find(licenceType => licenceType
  * For each ticket type, set a fee of 3% of the prizesPerDeal
  */
 
-for (let ticketTypeIndex = 0; ticketTypeIndex < licenceTypeNevada.ticketTypes.length; ticketTypeIndex += 1) {
-
-  licenceTypeNevada.ticketTypes[ticketTypeIndex].feePerUnit =
-    Math.round(licenceTypeNevada.ticketTypes[ticketTypeIndex].prizesPerDeal * 0.03 * 100) / 100;
-
+for (const nevadaTicketType of licenceTypeNevada.ticketTypes) {
+  nevadaTicketType.feePerUnit = Math.round(nevadaTicketType.prizesPerDeal * 0.03 * 100) / 100;
 }
 
 

@@ -1566,7 +1566,6 @@ export const getLicenceTypeSummary = (reqBody: any) => {
 
   for (const record of rows) {
 
-
     record.applicationDateString = dateTimeFns.dateIntegerToString(record.applicationDate);
     record.issueDateString = dateTimeFns.dateIntegerToString(record.issueDate);
 
@@ -1574,7 +1573,6 @@ export const getLicenceTypeSummary = (reqBody: any) => {
       record.locationName === "" ? record.locationAddress1 : record.locationName;
 
     record.licenceType = (configFns.getLicenceType(record.licenceTypeKey) || {}).licenceType || "";
-
   }
 
   return rows;
@@ -1592,7 +1590,7 @@ export const getActiveLicenceSummary = (reqBody: any, reqSession: Express.Sessio
   const startEndDateEnd = dateTimeFns.dateStringToInteger(reqBody.startEndDateEndString);
 
 
-  let sql = "select l.licenceID, l.externalLicenceNumber," +
+  const sql = "select l.licenceID, l.externalLicenceNumber," +
     " l.issueDate, l.startDate, l.endDate, l.licenceTypeKey," +
     " o.organizationID, o.organizationName," +
     " lo.locationID, lo.locationName, lo.locationAddress1," +
@@ -1879,7 +1877,8 @@ export const getEvents = (reqBody: {
     lotteryEvent.startTimeString = dateTimeFns.timeIntegerToString(lotteryEvent.startTime || 0);
     lotteryEvent.endTimeString = dateTimeFns.timeIntegerToString(lotteryEvent.endTime || 0);
 
-    lotteryEvent.locationDisplayName = (lotteryEvent.locationName === "" ? lotteryEvent.locationAddress1 : lotteryEvent.locationName);
+    lotteryEvent.locationDisplayName =
+      (lotteryEvent.locationName === "" ? lotteryEvent.locationAddress1 : lotteryEvent.locationName);
 
     lotteryEvent.canUpdate = canUpdateObject(lotteryEvent, reqSession);
 
