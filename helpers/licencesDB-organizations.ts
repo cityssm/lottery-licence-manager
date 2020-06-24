@@ -8,10 +8,10 @@ import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns";
  * ORGANIZATIONS
  */
 
-export function getOrganizations(reqBody: any, reqSession: Express.SessionData, includeOptions: {
+export const getOrganizations = (reqBody: any, reqSession: Express.SessionData, includeOptions: {
   limit: number,
   offset?: number
-}) {
+}) => {
 
   const db = sqlite(dbPath, {
     readonly: true
@@ -92,9 +92,9 @@ export function getOrganizations(reqBody: any, reqSession: Express.SessionData, 
 
   return rows;
 
-}
+};
 
-export function getOrganization(organizationID: number, reqSession: Express.SessionData): llm.Organization {
+export const getOrganization = (organizationID: number, reqSession: Express.SessionData): llm.Organization => {
 
   const db = sqlite(dbPath, {
     readonly: true
@@ -128,12 +128,12 @@ export function getOrganization(organizationID: number, reqSession: Express.Sess
 
   return organizationObj;
 
-}
+};
 
 /**
  * @returns New organizationID
  */
-export function createOrganization(reqBody: llm.Organization, reqSession: Express.SessionData) {
+export const createOrganization = (reqBody: llm.Organization, reqSession: Express.SessionData) => {
 
   const db = sqlite(dbPath);
 
@@ -164,12 +164,12 @@ export function createOrganization(reqBody: llm.Organization, reqSession: Expres
 
   return Number(info.lastInsertRowid);
 
-}
+};
 
 /**
  * @returns TRUE if successful
  */
-export function updateOrganization(reqBody: llm.Organization, reqSession: Express.SessionData): boolean {
+export const updateOrganization = (reqBody: llm.Organization, reqSession: Express.SessionData): boolean => {
 
   const db = sqlite(dbPath);
 
@@ -212,12 +212,12 @@ export function updateOrganization(reqBody: llm.Organization, reqSession: Expres
 
   return info.changes > 0;
 
-}
+};
 
 /**
  * @returns TRUE if successful
  */
-export function deleteOrganization(organizationID: number, reqSession: Express.SessionData): boolean {
+export const deleteOrganization = (organizationID: number, reqSession: Express.SessionData): boolean => {
 
   const db = sqlite(dbPath);
 
@@ -238,12 +238,12 @@ export function deleteOrganization(organizationID: number, reqSession: Express.S
 
   return info.changes > 0;
 
-}
+};
 
 /**
  * @returns TRUE if successful
  */
-export function restoreOrganization(organizationID: number, reqSession: Express.SessionData): boolean {
+export const restoreOrganization = (organizationID: number, reqSession: Express.SessionData): boolean => {
 
   const db = sqlite(dbPath);
 
@@ -266,9 +266,9 @@ export function restoreOrganization(organizationID: number, reqSession: Express.
 
   return info.changes > 0;
 
-}
+};
 
-export function getInactiveOrganizations(inactiveYears: number) {
+export const getInactiveOrganizations = (inactiveYears: number) => {
 
   const cutoffDate = new Date();
   cutoffDate.setFullYear(cutoffDate.getFullYear() - inactiveYears);
@@ -304,9 +304,9 @@ export function getInactiveOrganizations(inactiveYears: number) {
   }
 
   return rows;
-}
+};
 
-export function getDeletedOrganizations() {
+export const getDeletedOrganizations = () => {
 
   const addCalculatedFieldsFn = function(ele: llm.Organization) {
     ele.recordDelete_dateString = dateTimeFns.dateToString(new Date(ele.recordDelete_timeMillis));
@@ -328,7 +328,7 @@ export function getDeletedOrganizations() {
   organizations.forEach(addCalculatedFieldsFn);
 
   return organizations;
-}
+};
 
 
 /*
@@ -336,7 +336,7 @@ export function getDeletedOrganizations() {
  */
 
 
-export function addOrganizationRepresentative(organizationID: number, reqBody: llm.OrganizationRepresentative) {
+export const addOrganizationRepresentative = (organizationID: number, reqBody: llm.OrganizationRepresentative) => {
 
   const db = sqlite(dbPath);
 
@@ -383,9 +383,9 @@ export function addOrganizationRepresentative(organizationID: number, reqBody: l
     isDefault: newIsDefault === 1
   };
 
-}
+};
 
-export function updateOrganizationRepresentative(organizationID: number, reqBody: llm.OrganizationRepresentative) {
+export const updateOrganizationRepresentative = (organizationID: number, reqBody: llm.OrganizationRepresentative) => {
 
   const db = sqlite(dbPath);
 
@@ -425,12 +425,12 @@ export function updateOrganizationRepresentative(organizationID: number, reqBody
     representativeEmailAddress: reqBody.representativeEmailAddress,
     isDefault: Number(reqBody.isDefault) > 0
   };
-}
+};
 
 /**
  * @returns TRUE if successful
  */
-export function deleteOrganizationRepresentative(organizationID: number, representativeIndex: number) {
+export const deleteOrganizationRepresentative = (organizationID: number, representativeIndex: number) => {
 
   const db = sqlite(dbPath);
 
@@ -442,9 +442,9 @@ export function deleteOrganizationRepresentative(organizationID: number, represe
   db.close();
 
   return info.changes > 0;
-}
+};
 
-export function setDefaultOrganizationRepresentative(organizationID: number, representativeIndex: number) {
+export const setDefaultOrganizationRepresentative = (organizationID: number, representativeIndex: number) => {
 
   const db = sqlite(dbPath);
 
@@ -462,14 +462,14 @@ export function setDefaultOrganizationRepresentative(organizationID: number, rep
   db.close();
 
   return true;
-}
+};
 
 
 /*
  * ORGANIZATION REMARKS
  */
 
-export function getOrganizationRemarks(organizationID: number, reqSession: Express.SessionData) {
+export const getOrganizationRemarks = (organizationID: number, reqSession: Express.SessionData) => {
 
   const addCalculatedFieldsFn = function(ele: llm.OrganizationRemark) {
 
@@ -501,9 +501,9 @@ export function getOrganizationRemarks(organizationID: number, reqSession: Expre
   rows.forEach(addCalculatedFieldsFn);
 
   return rows;
-}
+};
 
-export function getOrganizationRemark(organizationID: number, remarkIndex: number, reqSession: Express.SessionData) {
+export const getOrganizationRemark = (organizationID: number, remarkIndex: number, reqSession: Express.SessionData) => {
 
   const db = sqlite(dbPath, {
     readonly: true
@@ -530,9 +530,9 @@ export function getOrganizationRemark(organizationID: number, remarkIndex: numbe
   remark.canUpdate = canUpdateObject(remark, reqSession);
 
   return remark;
-}
+};
 
-export function addOrganizationRemark(reqBody: llm.OrganizationRemark, reqSession: Express.SessionData) {
+export const addOrganizationRemark = (reqBody: llm.OrganizationRemark, reqSession: Express.SessionData) => {
 
   const db = sqlite(dbPath);
 
@@ -569,12 +569,12 @@ export function addOrganizationRemark(reqBody: llm.OrganizationRemark, reqSessio
   db.close();
 
   return newRemarkIndex;
-}
+};
 
 /**
  * @returns TRUE if successful
  */
-export function updateOrganizationRemark(reqBody: llm.OrganizationRemark, reqSession: Express.SessionData) {
+export const updateOrganizationRemark = (reqBody: llm.OrganizationRemark, reqSession: Express.SessionData) => {
 
   const db = sqlite(dbPath);
 
@@ -604,12 +604,12 @@ export function updateOrganizationRemark(reqBody: llm.OrganizationRemark, reqSes
   db.close();
 
   return info.changes > 0;
-}
+};
 
 /**
  * @returns TRUE if successful
  */
-export function deleteOrganizationRemark(organizationID: number, remarkIndex: number, reqSession: Express.SessionData) {
+export const deleteOrganizationRemark = (organizationID: number, remarkIndex: number, reqSession: Express.SessionData) => {
 
   const db = sqlite(dbPath);
 
@@ -631,14 +631,14 @@ export function deleteOrganizationRemark(organizationID: number, remarkIndex: nu
   db.close();
 
   return info.changes > 0;
-}
+};
 
 
 /*
  * ORGANIZATION BANK RECORDS
  */
 
-export function getOrganizationBankRecords(organizationID: number, accountNumber: string, bankingYear: number) {
+export const getOrganizationBankRecords = (organizationID: number, accountNumber: string, bankingYear: number) => {
 
   const addCalculatedFieldsFn = function(ele: llm.OrganizationBankRecord) {
     ele.recordDateString = dateTimeFns.dateIntegerToString(ele.recordDate);
@@ -665,9 +665,9 @@ export function getOrganizationBankRecords(organizationID: number, accountNumber
   rows.forEach(addCalculatedFieldsFn);
 
   return rows;
-}
+};
 
-export function getOrganizationBankRecordStats(organizationID: number) {
+export const getOrganizationBankRecordStats = (organizationID: number) => {
 
   const db = sqlite(dbPath, {
     readonly: true
@@ -687,9 +687,9 @@ export function getOrganizationBankRecordStats(organizationID: number) {
   db.close();
 
   return rows;
-}
+};
 
-export function addOrganizationBankRecord(reqBody: llm.OrganizationBankRecord, reqSession: Express.Session) {
+export const addOrganizationBankRecord = (reqBody: llm.OrganizationBankRecord, reqSession: Express.Session) => {
 
   // Check for a record with the same unique key
 
@@ -768,9 +768,9 @@ export function addOrganizationBankRecord(reqBody: llm.OrganizationBankRecord, r
   db.close();
 
   return info.changes > 0;
-}
+};
 
-export function updateOrganizationBankRecord(reqBody: llm.OrganizationBankRecord, reqSession: Express.Session) {
+export const updateOrganizationBankRecord = (reqBody: llm.OrganizationBankRecord, reqSession: Express.Session) => {
 
   const db = sqlite(dbPath);
 
@@ -798,9 +798,9 @@ export function updateOrganizationBankRecord(reqBody: llm.OrganizationBankRecord
   db.close();
 
   return info.changes > 0;
-}
+};
 
-export function deleteOrganizationBankRecord(organizationID: number, recordIndex: number, reqSession: Express.Session) {
+export const deleteOrganizationBankRecord = (organizationID: number, recordIndex: number, reqSession: Express.Session) => {
 
   const db = sqlite(dbPath);
 
@@ -822,4 +822,4 @@ export function deleteOrganizationBankRecord(organizationID: number, recordIndex
   db.close();
 
   return info.changes > 0;
-}
+};

@@ -1,21 +1,20 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-(function () {
+(() => {
     const canCreate = document.getElementsByTagName("main")[0].getAttribute("data-can-create") === "true";
     const remarksContainerEle = document.getElementById("container--remarks");
     if (canCreate) {
         const organizationID = parseInt(remarksContainerEle.getAttribute("data-organization-id"), 10);
-        let refreshRemarksFn;
-        const editRemarkFn = function (buttonEvent) {
+        const editRemarkFn = (buttonEvent) => {
             const remarkIndex = parseInt(buttonEvent.currentTarget.getAttribute("data-remark-index"), 10);
             llm.organizationRemarks.openEditRemarkModal(organizationID, remarkIndex, refreshRemarksFn);
         };
-        const deleteRemarkFn = function (buttonEvent) {
+        const deleteRemarkFn = (buttonEvent) => {
             const remarkIndex = parseInt(buttonEvent.currentTarget.getAttribute("data-remark-index"), 10);
             llm.organizationRemarks.deleteRemark(organizationID, remarkIndex, true, refreshRemarksFn);
         };
-        refreshRemarksFn = function () {
-            llm.organizationRemarks.getRemarksByOrganizationID(organizationID, function (remarkList) {
+        const refreshRemarksFn = () => {
+            llm.organizationRemarks.getRemarksByOrganizationID(organizationID, (remarkList) => {
                 cityssm.clearElement(remarksContainerEle);
                 if (remarkList.length === 0) {
                     remarksContainerEle.innerHTML = "<div class=\"panel-block\">" +
@@ -68,7 +67,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 }
             });
         };
-        document.getElementsByClassName("is-add-remark-button")[0].addEventListener("click", function (clickEvent) {
+        document.getElementsByClassName("is-add-remark-button")[0].addEventListener("click", (clickEvent) => {
             clickEvent.preventDefault();
             llm.organizationRemarks.openAddRemarkModal(organizationID, refreshRemarksFn);
         });
@@ -86,7 +85,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
         remarkSearchStrEle.value = "";
         const remarkDisplayCountEle = document.getElementById("remark--displayCount");
         const remarkBlockEles = remarksContainerEle.getElementsByClassName("is-remark-block");
-        remarkSearchStrEle.addEventListener("keyup", function () {
+        remarkSearchStrEle.addEventListener("keyup", () => {
             const searchStrSplit = remarkSearchStrEle.value
                 .trim()
                 .toLowerCase()
@@ -120,7 +119,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
     const bankRecordsAccountNumberFilterEle = document.getElementById("bankRecordFilter--accountNumber");
     const bankRecordsTableEle = document.getElementById("table--bankRecords");
     const organizationID = bankRecordsTableEle.getAttribute("data-organization-id");
-    function clearBankRecordsTable() {
+    const clearBankRecordsTableFn = () => {
         bankRecordsCache = {};
         bankRecordsTableEle.classList.remove("has-status-loaded");
         bankRecordsTableEle.classList.add("has-status-loading");
@@ -134,10 +133,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 "<small>No Record Recorded</small>";
             buttonEle.setAttribute("data-record-index", "");
         }
-    }
-    function getBankRecords() {
-        clearBankRecordsTable();
-        const processRecordsFn = function (bankRecords) {
+    };
+    const getBankRecordsFn = () => {
+        clearBankRecordsTableFn();
+        const processRecordsFn = (bankRecords) => {
             for (const bankRecord of bankRecords) {
                 bankRecordsCache[bankRecord.recordIndex] = bankRecord;
                 const buttonEle = bankRecordsTableEle
@@ -185,11 +184,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 accountNumber: bankRecordsAccountNumberFilterEle.value
             }, processRecordsFn);
         }
-    }
-    function loadBankRecordFilters() {
+    };
+    const loadBankRecordFiltersFn = () => {
         cityssm.postJSON("/organizations/doGetBankRecordStats", {
             organizationID
-        }, function (bankRecordStats) {
+        }, (bankRecordStats) => {
             const currentYear = new Date().getFullYear();
             let bankingYearMin = currentYear - 1;
             if (bankRecordStats.length === 0) {
@@ -211,28 +210,28 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     year +
                     "</option>");
             }
-            getBankRecords();
+            getBankRecordsFn();
         });
-    }
-    bankRecordsBankingYearFilterEle.addEventListener("change", getBankRecords);
-    bankRecordsAccountNumberFilterEle.addEventListener("change", getBankRecords);
+    };
+    bankRecordsBankingYearFilterEle.addEventListener("change", getBankRecordsFn);
+    bankRecordsAccountNumberFilterEle.addEventListener("change", getBankRecordsFn);
     if (canCreate) {
-        const openBankRecordEditModal = function (buttonEvent) {
+        const openBankRecordEditModalFn = (buttonEvent) => {
             let bankRecordEditCloseModalFn;
             let isUpdate = false;
             let lockKeyFields = false;
             let accountNumberIsBlank = true;
             const submitBankRecordEditFn = function (formEvent) {
                 formEvent.preventDefault();
-                cityssm.postJSON("/organizations/" + (isUpdate ? "doEditBankRecord" : "doAddBankRecord"), formEvent.currentTarget, function (resultJSON) {
+                cityssm.postJSON("/organizations/" + (isUpdate ? "doEditBankRecord" : "doAddBankRecord"), formEvent.currentTarget, (resultJSON) => {
                     if (resultJSON.success) {
                         bankRecordEditCloseModalFn();
                         if (isUpdate || (lockKeyFields && !accountNumberIsBlank)) {
-                            getBankRecords();
+                            getBankRecordsFn();
                         }
                         else {
                             bankRecordsFiltersLoaded = false;
-                            loadBankRecordFilters();
+                            loadBankRecordFiltersFn();
                         }
                     }
                     else {
@@ -247,9 +246,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     cityssm.postJSON("/organizations/doDeleteBankRecord", {
                         organizationID: organizationID,
                         recordIndex: recordIndex
-                    }, function () {
+                    }, () => {
                         bankRecordEditCloseModalFn();
-                        getBankRecords();
+                        getBankRecordsFn();
                     });
                 };
                 cityssm.confirmModal("Delete Bank Record?", "Are you sure you want to delete this bank record?", "Yes, Delete", "warning", deleteFn);
@@ -298,9 +297,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     const bankingMonthEle = document.getElementById("bankRecordEdit--bankingMonth");
                     bankingMonthEle.value = bankingMonth.toString();
                     const bankRecordTypeEle = document.getElementById("bankRecordEdit--bankRecordType");
-                    for (let index = 0; index < exports.config_bankRecordTypes.length; index += 1) {
-                        bankRecordTypeEle.insertAdjacentHTML("beforeend", "<option value=\"" + exports.config_bankRecordTypes[index].bankRecordType + "\">" +
-                            exports.config_bankRecordTypes[index].bankRecordTypeName +
+                    for (const config_bankRecordType of exports.config_bankRecordTypes) {
+                        bankRecordTypeEle.insertAdjacentHTML("beforeend", "<option value=\"" + config_bankRecordType.bankRecordType + "\">" +
+                            config_bankRecordType.bankRecordTypeName +
                             "</option>");
                     }
                     if (bankRecordType === "") {
@@ -343,16 +342,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
         };
         const buttonEles = bankRecordsTableEle.getElementsByTagName("button");
         for (const buttonEle of buttonEles) {
-            buttonEle.addEventListener("click", openBankRecordEditModal);
+            buttonEle.addEventListener("click", openBankRecordEditModalFn);
         }
-        document.getElementById("is-add-bank-record-button").addEventListener("click", openBankRecordEditModal);
+        document.getElementById("is-add-bank-record-button").addEventListener("click", openBankRecordEditModalFn);
     }
     llm.initializeTabs(document.getElementById("tabs--organization"), {
         onshown(tabContentEle) {
             if (tabContentEle.id === "organizationTabContent--bankRecords" && !bankRecordsFiltersLoaded) {
                 bankRecordsFiltersLoaded = true;
-                loadBankRecordFilters();
+                loadBankRecordFiltersFn();
             }
         }
     });
-}());
+})();

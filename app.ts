@@ -103,29 +103,23 @@ app.use(session({
 }));
 
 // Clear cookie if no corresponding session
-app.use(function(req, res, next) {
+app.use((req, res, next) => {
 
   if (req.cookies[sessionCookieName] && !req.session.user) {
-
     res.clearCookie(sessionCookieName);
-
   }
 
   next();
-
 });
 
 // Redirect logged in users
-const sessionChecker = function(req: express.Request, res: express.Response, next: express.NextFunction) {
+const sessionChecker = (req: express.Request, res: express.Response, next: express.NextFunction) => {
 
   if (req.session.user && req.cookies[sessionCookieName]) {
-
     return next();
-
   }
 
   return res.redirect("/login?redirect=" + req.originalUrl);
-
 };
 
 
@@ -135,7 +129,7 @@ const sessionChecker = function(req: express.Request, res: express.Response, nex
 
 
 // Make the user and config objects available to the templates
-app.use(function(req, res, next) {
+app.use((req, res, next) => {
 
   res.locals.buildNumber = packageJSON.version;
   res.locals.user = req.session.user;
@@ -145,14 +139,11 @@ app.use(function(req, res, next) {
   res.locals.htmlFns = htmlFns;
 
   next();
-
 });
 
 
-app.get("/", sessionChecker, function(_req, res) {
-
+app.get("/", sessionChecker, (_req, res) => {
   res.redirect("/dashboard");
-
 });
 
 app.use("/docs", routerDocs);
@@ -165,13 +156,13 @@ app.use("/events", sessionChecker, routerEvents);
 app.use("/reports", sessionChecker, routerReports);
 app.use("/admin", sessionChecker, routerAdmin);
 
-app.all("/keepAlive", function(_req, res) {
+app.all("/keepAlive", (_req, res) => {
   res.json(true);
 });
 
 app.use("/login", routerLogin);
 
-app.get("/logout", function(req, res) {
+app.get("/logout", (req, res) => {
 
   if (req.session.user && req.cookies[sessionCookieName]) {
 
@@ -183,21 +174,17 @@ app.get("/logout", function(req, res) {
   } else {
 
     res.redirect("/login");
-
   }
-
 });
 
 
 // Catch 404 and forward to error handler
-app.use(function(_req, _res, next) {
-
+app.use((_req, _res, next) => {
   next(createError(404));
-
 });
 
 // Error handler
-app.use(function(err: any, req: express.Request, res: express.Response, _next: express.NextFunction) {
+app.use((err: any, req: express.Request, res: express.Response, _next: express.NextFunction) => {
 
   // Set locals, only providing error in development
   res.locals.message = err.message;
@@ -206,7 +193,6 @@ app.use(function(err: any, req: express.Request, res: express.Response, _next: e
   // Render the error page
   res.status(err.status || 500);
   res.render("error");
-
 });
 
 

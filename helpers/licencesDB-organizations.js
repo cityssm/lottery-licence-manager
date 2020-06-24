@@ -4,7 +4,7 @@ exports.deleteOrganizationBankRecord = exports.updateOrganizationBankRecord = ex
 const licencesDB_1 = require("./licencesDB");
 const sqlite = require("better-sqlite3");
 const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
-function getOrganizations(reqBody, reqSession, includeOptions) {
+exports.getOrganizations = (reqBody, reqSession, includeOptions) => {
     const db = sqlite(licencesDB_1.dbPath, {
         readonly: true
     });
@@ -57,9 +57,8 @@ function getOrganizations(reqBody, reqSession, includeOptions) {
         delete ele.recordUpdate_timeMillis;
     }
     return rows;
-}
-exports.getOrganizations = getOrganizations;
-function getOrganization(organizationID, reqSession) {
+};
+exports.getOrganization = (organizationID, reqSession) => {
     const db = sqlite(licencesDB_1.dbPath, {
         readonly: true
     });
@@ -79,9 +78,8 @@ function getOrganization(organizationID, reqSession) {
     }
     db.close();
     return organizationObj;
-}
-exports.getOrganization = getOrganization;
-function createOrganization(reqBody, reqSession) {
+};
+exports.createOrganization = (reqBody, reqSession) => {
     const db = sqlite(licencesDB_1.dbPath);
     const nowMillis = Date.now();
     const info = db.prepare("insert into Organizations (" +
@@ -94,9 +92,8 @@ function createOrganization(reqBody, reqSession) {
         .run(reqBody.organizationName, reqBody.organizationAddress1, reqBody.organizationAddress2, reqBody.organizationCity, reqBody.organizationProvince, reqBody.organizationPostalCode, "", reqSession.user.userName, nowMillis, reqSession.user.userName, nowMillis);
     db.close();
     return Number(info.lastInsertRowid);
-}
-exports.createOrganization = createOrganization;
-function updateOrganization(reqBody, reqSession) {
+};
+exports.updateOrganization = (reqBody, reqSession) => {
     const db = sqlite(licencesDB_1.dbPath);
     const nowMillis = Date.now();
     const info = db.prepare("update Organizations" +
@@ -118,9 +115,8 @@ function updateOrganization(reqBody, reqSession) {
         .run(reqBody.organizationName, reqBody.organizationAddress1, reqBody.organizationAddress2, reqBody.organizationCity, reqBody.organizationProvince, reqBody.organizationPostalCode, reqBody.trustAccountNumber, dateTimeFns.dateStringToInteger(reqBody.fiscalStartDateString), dateTimeFns.dateStringToInteger(reqBody.fiscalEndDateString), reqBody.isEligibleForLicences, reqBody.organizationNote, reqSession.user.userName, nowMillis, reqBody.organizationID);
     db.close();
     return info.changes > 0;
-}
-exports.updateOrganization = updateOrganization;
-function deleteOrganization(organizationID, reqSession) {
+};
+exports.deleteOrganization = (organizationID, reqSession) => {
     const db = sqlite(licencesDB_1.dbPath);
     const nowMillis = Date.now();
     const info = db.prepare("update Organizations" +
@@ -131,9 +127,8 @@ function deleteOrganization(organizationID, reqSession) {
         .run(reqSession.user.userName, nowMillis, organizationID);
     db.close();
     return info.changes > 0;
-}
-exports.deleteOrganization = deleteOrganization;
-function restoreOrganization(organizationID, reqSession) {
+};
+exports.restoreOrganization = (organizationID, reqSession) => {
     const db = sqlite(licencesDB_1.dbPath);
     const nowMillis = Date.now();
     const info = db.prepare("update Organizations" +
@@ -146,9 +141,8 @@ function restoreOrganization(organizationID, reqSession) {
         .run(reqSession.user.userName, nowMillis, organizationID);
     db.close();
     return info.changes > 0;
-}
-exports.restoreOrganization = restoreOrganization;
-function getInactiveOrganizations(inactiveYears) {
+};
+exports.getInactiveOrganizations = (inactiveYears) => {
     const cutoffDate = new Date();
     cutoffDate.setFullYear(cutoffDate.getFullYear() - inactiveYears);
     const cutoffDateInteger = dateTimeFns.dateToInteger(cutoffDate);
@@ -176,9 +170,8 @@ function getInactiveOrganizations(inactiveYears) {
         organization.licences_endDateMaxString = dateTimeFns.dateIntegerToString(organization.licences_endDateMax || 0);
     }
     return rows;
-}
-exports.getInactiveOrganizations = getInactiveOrganizations;
-function getDeletedOrganizations() {
+};
+exports.getDeletedOrganizations = () => {
     const addCalculatedFieldsFn = function (ele) {
         ele.recordDelete_dateString = dateTimeFns.dateToString(new Date(ele.recordDelete_timeMillis));
     };
@@ -193,9 +186,8 @@ function getDeletedOrganizations() {
     db.close();
     organizations.forEach(addCalculatedFieldsFn);
     return organizations;
-}
-exports.getDeletedOrganizations = getDeletedOrganizations;
-function addOrganizationRepresentative(organizationID, reqBody) {
+};
+exports.addOrganizationRepresentative = (organizationID, reqBody) => {
     const db = sqlite(licencesDB_1.dbPath);
     const row = db.prepare("select count(representativeIndex) as indexCount," +
         " ifnull(max(representativeIndex), -1) as maxIndex" +
@@ -228,9 +220,8 @@ function addOrganizationRepresentative(organizationID, reqBody) {
         representativeEmailAddress: reqBody.representativeEmailAddress,
         isDefault: newIsDefault === 1
     };
-}
-exports.addOrganizationRepresentative = addOrganizationRepresentative;
-function updateOrganizationRepresentative(organizationID, reqBody) {
+};
+exports.updateOrganizationRepresentative = (organizationID, reqBody) => {
     const db = sqlite(licencesDB_1.dbPath);
     db.prepare("update OrganizationRepresentatives" +
         " set representativeName = ?," +
@@ -260,9 +251,8 @@ function updateOrganizationRepresentative(organizationID, reqBody) {
         representativeEmailAddress: reqBody.representativeEmailAddress,
         isDefault: Number(reqBody.isDefault) > 0
     };
-}
-exports.updateOrganizationRepresentative = updateOrganizationRepresentative;
-function deleteOrganizationRepresentative(organizationID, representativeIndex) {
+};
+exports.deleteOrganizationRepresentative = (organizationID, representativeIndex) => {
     const db = sqlite(licencesDB_1.dbPath);
     const info = db.prepare("delete from OrganizationRepresentatives" +
         " where organizationID = ?" +
@@ -270,9 +260,8 @@ function deleteOrganizationRepresentative(organizationID, representativeIndex) {
         .run(organizationID, representativeIndex);
     db.close();
     return info.changes > 0;
-}
-exports.deleteOrganizationRepresentative = deleteOrganizationRepresentative;
-function setDefaultOrganizationRepresentative(organizationID, representativeIndex) {
+};
+exports.setDefaultOrganizationRepresentative = (organizationID, representativeIndex) => {
     const db = sqlite(licencesDB_1.dbPath);
     db.prepare("update OrganizationRepresentatives" +
         " set isDefault = 0" +
@@ -285,9 +274,8 @@ function setDefaultOrganizationRepresentative(organizationID, representativeInde
         .run(organizationID, representativeIndex);
     db.close();
     return true;
-}
-exports.setDefaultOrganizationRepresentative = setDefaultOrganizationRepresentative;
-function getOrganizationRemarks(organizationID, reqSession) {
+};
+exports.getOrganizationRemarks = (organizationID, reqSession) => {
     const addCalculatedFieldsFn = function (ele) {
         ele.recordType = "remark";
         ele.remarkDateString = dateTimeFns.dateIntegerToString(ele.remarkDate || 0);
@@ -309,9 +297,8 @@ function getOrganizationRemarks(organizationID, reqSession) {
     db.close();
     rows.forEach(addCalculatedFieldsFn);
     return rows;
-}
-exports.getOrganizationRemarks = getOrganizationRemarks;
-function getOrganizationRemark(organizationID, remarkIndex, reqSession) {
+};
+exports.getOrganizationRemark = (organizationID, remarkIndex, reqSession) => {
     const db = sqlite(licencesDB_1.dbPath, {
         readonly: true
     });
@@ -330,9 +317,8 @@ function getOrganizationRemark(organizationID, remarkIndex, reqSession) {
     remark.remarkTimeString = dateTimeFns.timeIntegerToString(remark.remarkTime || 0);
     remark.canUpdate = licencesDB_1.canUpdateObject(remark, reqSession);
     return remark;
-}
-exports.getOrganizationRemark = getOrganizationRemark;
-function addOrganizationRemark(reqBody, reqSession) {
+};
+exports.addOrganizationRemark = (reqBody, reqSession) => {
     const db = sqlite(licencesDB_1.dbPath);
     const row = db.prepare("select ifnull(max(remarkIndex), -1) as maxIndex" +
         " from OrganizationRemarks" +
@@ -351,9 +337,8 @@ function addOrganizationRemark(reqBody, reqSession) {
         .run(reqBody.organizationID, newRemarkIndex, remarkDate, remarkTime, reqBody.remark, 0, reqSession.user.userName, rightNow.getTime(), reqSession.user.userName, rightNow.getTime());
     db.close();
     return newRemarkIndex;
-}
-exports.addOrganizationRemark = addOrganizationRemark;
-function updateOrganizationRemark(reqBody, reqSession) {
+};
+exports.updateOrganizationRemark = (reqBody, reqSession) => {
     const db = sqlite(licencesDB_1.dbPath);
     const nowMillis = Date.now();
     const info = db.prepare("update OrganizationRemarks" +
@@ -369,9 +354,8 @@ function updateOrganizationRemark(reqBody, reqSession) {
         .run(dateTimeFns.dateStringToInteger(reqBody.remarkDateString), dateTimeFns.timeStringToInteger(reqBody.remarkTimeString), reqBody.remark, reqBody.isImportant ? 1 : 0, reqSession.user.userName, nowMillis, reqBody.organizationID, reqBody.remarkIndex);
     db.close();
     return info.changes > 0;
-}
-exports.updateOrganizationRemark = updateOrganizationRemark;
-function deleteOrganizationRemark(organizationID, remarkIndex, reqSession) {
+};
+exports.deleteOrganizationRemark = (organizationID, remarkIndex, reqSession) => {
     const db = sqlite(licencesDB_1.dbPath);
     const nowMillis = Date.now();
     const info = db.prepare("update OrganizationRemarks" +
@@ -383,9 +367,8 @@ function deleteOrganizationRemark(organizationID, remarkIndex, reqSession) {
         .run(reqSession.user.userName, nowMillis, organizationID, remarkIndex);
     db.close();
     return info.changes > 0;
-}
-exports.deleteOrganizationRemark = deleteOrganizationRemark;
-function getOrganizationBankRecords(organizationID, accountNumber, bankingYear) {
+};
+exports.getOrganizationBankRecords = (organizationID, accountNumber, bankingYear) => {
     const addCalculatedFieldsFn = function (ele) {
         ele.recordDateString = dateTimeFns.dateIntegerToString(ele.recordDate);
     };
@@ -405,9 +388,8 @@ function getOrganizationBankRecords(organizationID, accountNumber, bankingYear) 
     db.close();
     rows.forEach(addCalculatedFieldsFn);
     return rows;
-}
-exports.getOrganizationBankRecords = getOrganizationBankRecords;
-function getOrganizationBankRecordStats(organizationID) {
+};
+exports.getOrganizationBankRecordStats = (organizationID) => {
     const db = sqlite(licencesDB_1.dbPath, {
         readonly: true
     });
@@ -422,9 +404,8 @@ function getOrganizationBankRecordStats(organizationID) {
         .all(organizationID);
     db.close();
     return rows;
-}
-exports.getOrganizationBankRecordStats = getOrganizationBankRecordStats;
-function addOrganizationBankRecord(reqBody, reqSession) {
+};
+exports.addOrganizationBankRecord = (reqBody, reqSession) => {
     const db = sqlite(licencesDB_1.dbPath);
     const record = db.prepare("select recordIndex, recordDelete_timeMillis" +
         " from OrganizationBankRecords" +
@@ -464,9 +445,8 @@ function addOrganizationBankRecord(reqBody, reqSession) {
         .run(reqBody.organizationID, newRecordIndex, reqBody.accountNumber, reqBody.bankingYear, reqBody.bankingMonth, reqBody.bankRecordType, reqBody.recordIsNA || 0, dateTimeFns.dateStringToInteger(reqBody.recordDateString), reqBody.recordNote, reqSession.user.userName, nowMillis, reqSession.user.userName, nowMillis);
     db.close();
     return info.changes > 0;
-}
-exports.addOrganizationBankRecord = addOrganizationBankRecord;
-function updateOrganizationBankRecord(reqBody, reqSession) {
+};
+exports.updateOrganizationBankRecord = (reqBody, reqSession) => {
     const db = sqlite(licencesDB_1.dbPath);
     const nowMillis = Date.now();
     const info = db.prepare("update OrganizationBankRecords" +
@@ -481,9 +461,8 @@ function updateOrganizationBankRecord(reqBody, reqSession) {
         .run(dateTimeFns.dateStringToInteger(reqBody.recordDateString), reqBody.recordIsNA || 0, reqBody.recordNote, reqSession.user.userName, nowMillis, reqBody.organizationID, reqBody.recordIndex);
     db.close();
     return info.changes > 0;
-}
-exports.updateOrganizationBankRecord = updateOrganizationBankRecord;
-function deleteOrganizationBankRecord(organizationID, recordIndex, reqSession) {
+};
+exports.deleteOrganizationBankRecord = (organizationID, recordIndex, reqSession) => {
     const db = sqlite(licencesDB_1.dbPath);
     const nowMillis = Date.now();
     const info = db.prepare("update OrganizationBankRecords" +
@@ -495,5 +474,4 @@ function deleteOrganizationBankRecord(organizationID, recordIndex, reqSession) {
         .run(reqSession.user.userName, nowMillis, organizationID, recordIndex);
     db.close();
     return info.changes > 0;
-}
-exports.deleteOrganizationBankRecord = deleteOrganizationBankRecord;
+};

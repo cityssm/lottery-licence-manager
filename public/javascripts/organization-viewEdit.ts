@@ -7,7 +7,7 @@ declare const llm: llmGlobal;
 import type * as llmTypes from "../../helpers/llmTypes";
 
 
-(function() {
+(() => {
 
   const canCreate = document.getElementsByTagName("main")[0].getAttribute("data-can-create") === "true";
 
@@ -23,25 +23,21 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
     const organizationID = parseInt(remarksContainerEle.getAttribute("data-organization-id"), 10);
 
-    let refreshRemarksFn: () => void;
-
-    const editRemarkFn = function(buttonEvent: Event) {
+    const editRemarkFn = (buttonEvent: Event) => {
 
       const remarkIndex = parseInt((<HTMLButtonElement>buttonEvent.currentTarget).getAttribute("data-remark-index"), 10);
       llm.organizationRemarks.openEditRemarkModal(organizationID, remarkIndex, refreshRemarksFn);
-
     };
 
-    const deleteRemarkFn = function(buttonEvent: Event) {
+    const deleteRemarkFn = (buttonEvent: Event) => {
 
       const remarkIndex = parseInt((<HTMLButtonElement>buttonEvent.currentTarget).getAttribute("data-remark-index"), 10);
       llm.organizationRemarks.deleteRemark(organizationID, remarkIndex, true, refreshRemarksFn);
-
     };
 
-    refreshRemarksFn = function() {
+    const refreshRemarksFn = () => {
 
-      llm.organizationRemarks.getRemarksByOrganizationID(organizationID, function(remarkList) {
+      llm.organizationRemarks.getRemarksByOrganizationID(organizationID, (remarkList) => {
 
         cityssm.clearElement(remarksContainerEle);
 
@@ -102,10 +98,9 @@ import type * as llmTypes from "../../helpers/llmTypes";
           }
         }
       });
-
     };
 
-    document.getElementsByClassName("is-add-remark-button")[0].addEventListener("click", function(clickEvent) {
+    document.getElementsByClassName("is-add-remark-button")[0].addEventListener("click", (clickEvent) => {
 
       clickEvent.preventDefault();
       llm.organizationRemarks.openAddRemarkModal(organizationID, refreshRemarksFn);
@@ -135,7 +130,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
     const remarkDisplayCountEle = document.getElementById("remark--displayCount");
     const remarkBlockEles = <HTMLCollectionOf<HTMLElement>>remarksContainerEle.getElementsByClassName("is-remark-block");
 
-    remarkSearchStrEle.addEventListener("keyup", function() {
+    remarkSearchStrEle.addEventListener("keyup", () => {
 
       const searchStrSplit = remarkSearchStrEle.value
         .trim()
@@ -191,7 +186,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
   const organizationID = bankRecordsTableEle.getAttribute("data-organization-id");
 
-  function clearBankRecordsTable() {
+  const clearBankRecordsTableFn = () => {
 
     bankRecordsCache = {};
 
@@ -212,13 +207,13 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
       buttonEle.setAttribute("data-record-index", "");
     }
-  }
+  };
 
-  function getBankRecords() {
+  const getBankRecordsFn = () => {
 
-    clearBankRecordsTable();
+    clearBankRecordsTableFn();
 
-    const processRecordsFn = function(bankRecords: llmTypes.OrganizationBankRecord[]) {
+    const processRecordsFn = (bankRecords: llmTypes.OrganizationBankRecord[]) => {
 
       for (const bankRecord of bankRecords) {
 
@@ -282,13 +277,13 @@ import type * as llmTypes from "../../helpers/llmTypes";
         accountNumber: bankRecordsAccountNumberFilterEle.value
       }, processRecordsFn);
     }
-  }
+  };
 
-  function loadBankRecordFilters() {
+  const loadBankRecordFiltersFn = () => {
 
     cityssm.postJSON("/organizations/doGetBankRecordStats", {
       organizationID
-    }, function(bankRecordStats: any[]) {
+    }, (bankRecordStats: any[]) => {
 
       const currentYear = new Date().getFullYear();
 
@@ -331,17 +326,17 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
       }
 
-      getBankRecords();
+      getBankRecordsFn();
 
     });
-  }
+  };
 
-  bankRecordsBankingYearFilterEle.addEventListener("change", getBankRecords);
-  bankRecordsAccountNumberFilterEle.addEventListener("change", getBankRecords);
+  bankRecordsBankingYearFilterEle.addEventListener("change", getBankRecordsFn);
+  bankRecordsAccountNumberFilterEle.addEventListener("change", getBankRecordsFn);
 
   if (canCreate) {
 
-    const openBankRecordEditModal = function(buttonEvent: Event) {
+    const openBankRecordEditModalFn = (buttonEvent: Event) => {
 
       let bankRecordEditCloseModalFn: () => void;
       let isUpdate = false;
@@ -355,7 +350,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
         cityssm.postJSON(
           "/organizations/" + (isUpdate ? "doEditBankRecord" : "doAddBankRecord"),
           formEvent.currentTarget,
-          function(resultJSON) {
+          (resultJSON: { success: boolean, message?: string }) => {
 
             if (resultJSON.success) {
 
@@ -363,12 +358,12 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
               if (isUpdate || (lockKeyFields && !accountNumberIsBlank)) {
 
-                getBankRecords();
+                getBankRecordsFn();
 
               } else {
 
                 bankRecordsFiltersLoaded = false;
-                loadBankRecordFilters();
+                loadBankRecordFiltersFn();
 
               }
 
@@ -392,10 +387,10 @@ import type * as llmTypes from "../../helpers/llmTypes";
           cityssm.postJSON("/organizations/doDeleteBankRecord", {
             organizationID: organizationID,
             recordIndex: recordIndex
-          }, function() {
+          }, () => {
 
             bankRecordEditCloseModalFn();
-            getBankRecords();
+            getBankRecordsFn();
           });
 
         };
@@ -485,12 +480,12 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
           const bankRecordTypeEle = <HTMLSelectElement>document.getElementById("bankRecordEdit--bankRecordType");
 
-          for (let index = 0; index < exports.config_bankRecordTypes.length; index += 1) {
+          for (const config_bankRecordType of exports.config_bankRecordTypes) {
 
             bankRecordTypeEle.insertAdjacentHTML(
               "beforeend",
-              "<option value=\"" + exports.config_bankRecordTypes[index].bankRecordType + "\">" +
-              exports.config_bankRecordTypes[index].bankRecordTypeName +
+              "<option value=\"" + config_bankRecordType.bankRecordType + "\">" +
+              config_bankRecordType.bankRecordTypeName +
               "</option>"
             );
 
@@ -513,9 +508,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
           recordDateStringEle.setAttribute("max", currentDateString);
 
           if (recordIsNA) {
-
             document.getElementById("bankRecordEdit--recordIsNA").setAttribute("checked", "checked");
-
           }
 
           (<HTMLTextAreaElement>document.getElementById("bankRecordEdit--recordNote")).value = recordNote;
@@ -526,7 +519,6 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
               accountNumberEle.setAttribute("readonly", "readonly");
               accountNumberEle.classList.add("is-readonly");
-
             }
 
             bankingYearEle.setAttribute("readonly", "readonly");
@@ -549,28 +541,23 @@ import type * as llmTypes from "../../helpers/llmTypes";
           } else {
 
             document.getElementById("bankRecordEdit--moreOptionsDropdown").remove();
-
           }
-
         },
         onshown(modalEle, closeModalFn) {
 
           bankRecordEditCloseModalFn = closeModalFn;
           modalEle.getElementsByTagName("form")[0].addEventListener("submit", submitBankRecordEditFn);
-
         }
-
       });
-
     };
 
     const buttonEles = bankRecordsTableEle.getElementsByTagName("button");
 
     for (const buttonEle of buttonEles) {
-      buttonEle.addEventListener("click", openBankRecordEditModal);
+      buttonEle.addEventListener("click", openBankRecordEditModalFn);
     }
 
-    document.getElementById("is-add-bank-record-button").addEventListener("click", openBankRecordEditModal);
+    document.getElementById("is-add-bank-record-button").addEventListener("click", openBankRecordEditModalFn);
   }
 
   /*
@@ -582,8 +569,8 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
       if (tabContentEle.id === "organizationTabContent--bankRecords" && !bankRecordsFiltersLoaded) {
         bankRecordsFiltersLoaded = true;
-        loadBankRecordFilters();
+        loadBankRecordFiltersFn();
       }
     }
   });
-}());
+})();

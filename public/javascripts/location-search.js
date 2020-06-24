@@ -1,13 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-(function () {
+(() => {
     const formEle = document.getElementById("form--searchFilters");
     const limitEle = document.getElementById("filter--limit");
     const offsetEle = document.getElementById("filter--offset");
     const searchResultsEle = document.getElementById("container--searchResults");
     const canCreate = document.getElementsByTagName("main")[0].getAttribute("data-can-create") === "true";
     let displayedLocationList = [];
-    function renderLocationTrEle(locationObj, locationIndex) {
+    const renderLocationTrEleFn = (locationObj, locationIndex) => {
         const trEle = document.createElement("tr");
         trEle.innerHTML = "<td></td>";
         const locationDisplayNameLinkEle = document.createElement("a");
@@ -35,7 +35,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
             (locationObj.locationIsManufacturer ?
                 "<span data-tooltip=\"Manufacturer\">" +
                     "<span class=\"tag is-success\">Yes</span><br />" +
-                    (locationObj.manufacturer_endDateMaxString === "" ? "<span class=\"has-text-grey\">Never Used</span>" : locationObj.manufacturer_endDateMaxString) +
+                    (locationObj.manufacturer_endDateMaxString === "" ?
+                        "<span class=\"has-text-grey\">Never Used</span>" :
+                        locationObj.manufacturer_endDateMaxString) +
                     "</span>" :
                 "<span class=\"sr-only\">No</span>") +
             "</td>");
@@ -43,12 +45,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
             (locationObj.locationIsDistributor ?
                 "<span data-tooltip=\"Distributor\">" +
                     "<span class=\"tag is-success\">Yes</span><br />" +
-                    (locationObj.distributor_endDateMaxString === "" ? "<span class=\"has-text-grey\">Never Used</span>" : locationObj.distributor_endDateMaxString) +
+                    (locationObj.distributor_endDateMaxString === "" ?
+                        "<span class=\"has-text-grey\">Never Used</span>" :
+                        locationObj.distributor_endDateMaxString) +
                     "</span>" :
                 "<span class=\"sr-only\">No</span>") +
             "</td>");
         if (canCreate) {
-            const canDeleteLocation = locationObj.canUpdate && locationObj.licences_count === 0 && locationObj.distributor_count === 0 && locationObj.manufacturer_count === 0;
+            const canDeleteLocation = locationObj.canUpdate && locationObj.licences_count === 0 &&
+                locationObj.distributor_count === 0 && locationObj.manufacturer_count === 0;
             trEle.insertAdjacentHTML("beforeend", "<td class=\"is-hidden-print has-text-right is-nowrap\">" +
                 (locationObj.canUpdate ?
                     "<a class=\"button is-small\" data-tooltip=\"Edit Location\" href=\"/locations/" + locationObj.locationID + "/edit\">" +
@@ -66,8 +71,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
             }
         }
         return trEle;
-    }
-    function getLocations() {
+    };
+    const getLocationsFn = () => {
         const currentLimit = parseInt(limitEle.value, 10);
         const currentOffset = parseInt(offsetEle.value, 10);
         displayedLocationList = [];
@@ -75,7 +80,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
             "<i class=\"fas fa-3x fa-circle-notch fa-spin\" aria-hidden=\"true\"></i><br />" +
             "<em>Loading locations...</em>" +
             "</p>";
-        cityssm.postJSON("/locations/doGetLocations", formEle, function (locationResults) {
+        cityssm.postJSON("/locations/doGetLocations", formEle, (locationResults) => {
             displayedLocationList = locationResults.locations;
             if (displayedLocationList.length === 0) {
                 searchResultsEle.innerHTML = "<div class=\"message is-info\">" +
@@ -99,7 +104,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 "</table>";
             const tbodyEle = searchResultsEle.getElementsByTagName("tbody")[0];
             displayedLocationList.forEach(function (location, locationIndex) {
-                const locationTrEle = renderLocationTrEle(location, locationIndex);
+                const locationTrEle = renderLocationTrEleFn(location, locationIndex);
                 tbodyEle.insertAdjacentElement("beforeend", locationTrEle);
             });
             searchResultsEle.insertAdjacentHTML("beforeend", "<div class=\"level is-block-print\">" +
@@ -124,7 +129,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     previousEle.addEventListener("click", function (clickEvent) {
                         clickEvent.preventDefault();
                         offsetEle.value = Math.max(0, currentOffset - currentLimit).toString();
-                        getLocations();
+                        getLocationsFn();
                     });
                     paginationEle.insertAdjacentElement("beforeend", previousEle);
                 }
@@ -135,38 +140,38 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     nextEle.addEventListener("click", function (clickEvent) {
                         clickEvent.preventDefault();
                         offsetEle.value = (currentOffset + currentLimit).toString();
-                        getLocations();
+                        getLocationsFn();
                     });
                     paginationEle.insertAdjacentElement("beforeend", nextEle);
                 }
                 searchResultsEle.getElementsByClassName("level")[0].insertAdjacentElement("beforeend", paginationEle);
             }
         });
-    }
-    function resetOffsetAndGetLocations() {
+    };
+    const resetOffsetAndGetLocationsFn = () => {
         offsetEle.value = "0";
-        getLocations();
-    }
-    function deleteLocationClickFn(clickEvent) {
+        getLocationsFn();
+    };
+    const deleteLocationClickFn = (clickEvent) => {
         clickEvent.preventDefault();
         const locationIndex = parseInt(clickEvent.currentTarget.getAttribute("data-location-index"), 10);
         const locationObj = displayedLocationList[locationIndex];
-        const deleteFn = function () {
+        const deleteFn = () => {
             cityssm.postJSON("/locations/doDelete", {
                 locationID: locationObj.locationID
-            }, function (responseJSON) {
+            }, (responseJSON) => {
                 if (responseJSON.success) {
-                    getLocations();
+                    getLocationsFn();
                 }
             });
         };
         cityssm.confirmModal("Delete Location", `Are you sure you want to delete ${cityssm.escapeHTML(locationObj.locationDisplayName)}?`, "Yes, Delete", "warning", deleteFn);
-    }
-    formEle.addEventListener("submit", function (formEvent) {
+    };
+    formEle.addEventListener("submit", (formEvent) => {
         formEvent.preventDefault();
     });
-    document.getElementById("filter--locationNameAddress").addEventListener("change", resetOffsetAndGetLocations);
-    document.getElementById("filter--locationIsDistributor").addEventListener("change", resetOffsetAndGetLocations);
-    document.getElementById("filter--locationIsManufacturer").addEventListener("change", resetOffsetAndGetLocations);
-    resetOffsetAndGetLocations();
-}());
+    document.getElementById("filter--locationNameAddress").addEventListener("change", resetOffsetAndGetLocationsFn);
+    document.getElementById("filter--locationIsDistributor").addEventListener("change", resetOffsetAndGetLocationsFn);
+    document.getElementById("filter--locationIsManufacturer").addEventListener("change", resetOffsetAndGetLocationsFn);
+    resetOffsetAndGetLocationsFn();
+})();

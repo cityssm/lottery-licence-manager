@@ -4,7 +4,7 @@ declare const cityssm: cityssmGlobal;
 import type * as llmTypes from "../../helpers/llmTypes";
 
 
-(function() {
+(() => {
 
   const formEle = <HTMLFormElement>document.getElementById("form--searchFilters");
 
@@ -19,7 +19,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
   let displayedLocationList: llmTypes.Location[] = [];
 
 
-  function renderLocationTrEle(locationObj: llmTypes.Location, locationIndex: number) {
+  const renderLocationTrEleFn = (locationObj: llmTypes.Location, locationIndex: number) => {
 
     const trEle = document.createElement("tr");
     trEle.innerHTML = "<td></td>";
@@ -64,7 +64,9 @@ import type * as llmTypes from "../../helpers/llmTypes";
       (locationObj.locationIsManufacturer ?
         "<span data-tooltip=\"Manufacturer\">" +
         "<span class=\"tag is-success\">Yes</span><br />" +
-        (locationObj.manufacturer_endDateMaxString === "" ? "<span class=\"has-text-grey\">Never Used</span>" : locationObj.manufacturer_endDateMaxString) +
+        (locationObj.manufacturer_endDateMaxString === "" ?
+          "<span class=\"has-text-grey\">Never Used</span>" :
+          locationObj.manufacturer_endDateMaxString) +
         "</span>" :
         "<span class=\"sr-only\">No</span>"
       ) +
@@ -78,7 +80,9 @@ import type * as llmTypes from "../../helpers/llmTypes";
       (locationObj.locationIsDistributor ?
         "<span data-tooltip=\"Distributor\">" +
         "<span class=\"tag is-success\">Yes</span><br />" +
-        (locationObj.distributor_endDateMaxString === "" ? "<span class=\"has-text-grey\">Never Used</span>" : locationObj.distributor_endDateMaxString) +
+        (locationObj.distributor_endDateMaxString === "" ?
+          "<span class=\"has-text-grey\">Never Used</span>" :
+          locationObj.distributor_endDateMaxString) +
         "</span>" :
         "<span class=\"sr-only\">No</span>"
       ) +
@@ -88,7 +92,8 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
     if (canCreate) {
 
-      const canDeleteLocation = locationObj.canUpdate && locationObj.licences_count === 0 && locationObj.distributor_count === 0 && locationObj.manufacturer_count === 0;
+      const canDeleteLocation = locationObj.canUpdate && locationObj.licences_count === 0 &&
+        locationObj.distributor_count === 0 && locationObj.manufacturer_count === 0;
 
       trEle.insertAdjacentHTML(
         "beforeend",
@@ -110,19 +115,16 @@ import type * as llmTypes from "../../helpers/llmTypes";
       );
 
       if (canDeleteLocation) {
-
         trEle.getElementsByClassName("is-delete-location-button")[0].addEventListener("click", deleteLocationClickFn);
-
       }
 
     }
 
     return trEle;
+  };
 
-  }
 
-
-  function getLocations() {
+  const getLocationsFn = () => {
 
     const currentLimit = parseInt(limitEle.value, 10);
     const currentOffset = parseInt(offsetEle.value, 10);
@@ -137,7 +139,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
     cityssm.postJSON(
       "/locations/doGetLocations",
       formEle,
-      function(locationResults) {
+      (locationResults: { count: number, locations: llmTypes.Location[] }) => {
 
         displayedLocationList = locationResults.locations;
 
@@ -151,7 +153,6 @@ import type * as llmTypes from "../../helpers/llmTypes";
             "</div>";
 
           return;
-
         }
 
         searchResultsEle.innerHTML = "<table class=\"table is-fullwidth is-striped is-hoverable\">" +
@@ -169,7 +170,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
         const tbodyEle = searchResultsEle.getElementsByTagName("tbody")[0];
 
         displayedLocationList.forEach(function(location, locationIndex) {
-          const locationTrEle = renderLocationTrEle(location, locationIndex);
+          const locationTrEle = renderLocationTrEleFn(location, locationIndex);
           tbodyEle.insertAdjacentElement("beforeend", locationTrEle);
         });
 
@@ -200,7 +201,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
               clickEvent.preventDefault();
               offsetEle.value = Math.max(0, currentOffset - currentLimit).toString();
-              getLocations();
+              getLocationsFn();
 
             });
 
@@ -217,7 +218,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
               clickEvent.preventDefault();
               offsetEle.value = (currentOffset + currentLimit).toString();
-              getLocations();
+              getLocationsFn();
 
             });
 
@@ -230,41 +231,36 @@ import type * as llmTypes from "../../helpers/llmTypes";
       }
     );
 
-  }
+  };
 
 
-  function resetOffsetAndGetLocations() {
+  const resetOffsetAndGetLocationsFn = () => {
 
     offsetEle.value = "0";
-    getLocations();
+    getLocationsFn();
+  };
 
-  }
 
-
-  function deleteLocationClickFn(clickEvent: Event) {
+  const deleteLocationClickFn = (clickEvent: Event) => {
 
     clickEvent.preventDefault();
 
     const locationIndex = parseInt((<HTMLButtonElement>clickEvent.currentTarget).getAttribute("data-location-index"), 10);
     const locationObj = displayedLocationList[locationIndex];
 
-    const deleteFn = function() {
+    const deleteFn = () => {
 
       cityssm.postJSON(
         "/locations/doDelete", {
           locationID: locationObj.locationID
         },
-        function(responseJSON) {
+        (responseJSON: { success: boolean }) => {
 
           if (responseJSON.success) {
-
-            getLocations();
-
+            getLocationsFn();
           }
-
         }
       );
-
     };
 
 
@@ -275,22 +271,19 @@ import type * as llmTypes from "../../helpers/llmTypes";
       "warning",
       deleteFn
     );
+  };
 
-  }
 
-
-  formEle.addEventListener("submit", function(formEvent) {
-
+  formEle.addEventListener("submit", (formEvent) => {
     formEvent.preventDefault();
-
   });
 
 
-  document.getElementById("filter--locationNameAddress").addEventListener("change", resetOffsetAndGetLocations);
-  document.getElementById("filter--locationIsDistributor").addEventListener("change", resetOffsetAndGetLocations);
-  document.getElementById("filter--locationIsManufacturer").addEventListener("change", resetOffsetAndGetLocations);
+  document.getElementById("filter--locationNameAddress").addEventListener("change", resetOffsetAndGetLocationsFn);
+  document.getElementById("filter--locationIsDistributor").addEventListener("change", resetOffsetAndGetLocationsFn);
+  document.getElementById("filter--locationIsManufacturer").addEventListener("change", resetOffsetAndGetLocationsFn);
 
 
-  resetOffsetAndGetLocations();
+  resetOffsetAndGetLocationsFn();
 
-}());
+})();

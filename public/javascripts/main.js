@@ -1,14 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const llm = {};
-llm.arrayToObject = function (array, objectKey) {
+llm.arrayToObject = (array, objectKey) => {
     const obj = {};
-    for (let arrayIndex = 0; arrayIndex < array.length; arrayIndex += 1) {
-        obj[array[arrayIndex][objectKey]] = array[arrayIndex];
+    for (const arrayEntry of array) {
+        obj[arrayEntry[objectKey]] = arrayEntry;
     }
     return obj;
 };
-llm.initializeDateRangeSelector = function (containerEle, changeFn) {
+llm.initializeDateRangeSelector = (containerEle, changeFn) => {
     const rangeTypeSelectEle = containerEle.querySelector("[data-field='rangeType']").getElementsByTagName("select")[0];
     const rangeSelectEle = containerEle.querySelector("[data-field='range']").getElementsByTagName("select")[0];
     const dateOptionEle = rangeSelectEle.querySelector("[data-range-type='']");
@@ -17,7 +17,7 @@ llm.initializeDateRangeSelector = function (containerEle, changeFn) {
     const monthOptgroupEle = rangeSelectEle.querySelector("[data-range-type='month']");
     const startDateEle = containerEle.querySelector("[data-field='start']").getElementsByTagName("input")[0];
     const endDateEle = containerEle.querySelector("[data-field='end']").getElementsByTagName("input")[0];
-    const setStartEndDatesFromRange = function () {
+    const setStartEndDatesFromRangeFn = () => {
         const rangeValue = rangeSelectEle.value;
         if (rangeValue === "") {
             return;
@@ -48,7 +48,7 @@ llm.initializeDateRangeSelector = function (containerEle, changeFn) {
             changeFn();
         }
     };
-    rangeTypeSelectEle.addEventListener("change", function () {
+    rangeTypeSelectEle.addEventListener("change", () => {
         const rangeType = rangeTypeSelectEle.value;
         if (rangeType === "") {
             rangeSelectEle.setAttribute("readonly", "readonly");
@@ -92,17 +92,17 @@ llm.initializeDateRangeSelector = function (containerEle, changeFn) {
             startDateEle.classList.add("is-readonly");
             endDateEle.setAttribute("readonly", "readonly");
             endDateEle.classList.add("is-readonly");
-            setStartEndDatesFromRange();
+            setStartEndDatesFromRangeFn();
         }
     });
-    rangeSelectEle.addEventListener("change", setStartEndDatesFromRange);
-    startDateEle.addEventListener("change", function () {
+    rangeSelectEle.addEventListener("change", setStartEndDatesFromRangeFn);
+    startDateEle.addEventListener("change", () => {
         endDateEle.setAttribute("min", startDateEle.value);
         changeFn();
     });
     endDateEle.addEventListener("change", changeFn);
 };
-llm.getDefaultConfigProperty = function (propertyName, propertyValueCallbackFn) {
+llm.getDefaultConfigProperty = (propertyName, propertyValueCallbackFn) => {
     try {
         const defaultConfigPropertiesString = window.localStorage.getItem("defaultConfigProperties");
         if (defaultConfigPropertiesString) {
@@ -113,23 +113,25 @@ llm.getDefaultConfigProperty = function (propertyName, propertyValueCallbackFn) 
     }
     catch (_e) {
     }
-    cityssm.postJSON("/dashboard/doGetDefaultConfigProperties", {}, function (defaultConfigProperties) {
+    cityssm.postJSON("/dashboard/doGetDefaultConfigProperties", {}, (defaultConfigProperties) => {
         try {
             window.localStorage.setItem("defaultConfigProperties", JSON.stringify(defaultConfigProperties));
         }
-        catch (e) {
+        catch (_e) {
         }
         propertyValueCallbackFn(defaultConfigProperties[propertyName]);
     });
 };
-llm.initializeTabs = function (tabsListEle, callbackFns) {
+llm.initializeTabs = (tabsListEle, callbackFns) => {
     if (!tabsListEle) {
         return;
     }
     const isPanelOrMenuListTabs = tabsListEle.classList.contains("panel-tabs") || tabsListEle.classList.contains("menu-list");
     const listItemEles = tabsListEle.getElementsByTagName(isPanelOrMenuListTabs ? "a" : "li");
-    const tabLinkEles = (isPanelOrMenuListTabs ? listItemEles : tabsListEle.getElementsByTagName("a"));
-    function tabClickFn(clickEvent) {
+    const tabLinkEles = (isPanelOrMenuListTabs ?
+        listItemEles :
+        tabsListEle.getElementsByTagName("a"));
+    const tabClickFn = (clickEvent) => {
         clickEvent.preventDefault();
         const tabLinkEle = clickEvent.currentTarget;
         const tabContentEle = document.getElementById(tabLinkEle.getAttribute("href").substring(1));
@@ -147,7 +149,7 @@ llm.initializeTabs = function (tabsListEle, callbackFns) {
         if (callbackFns && callbackFns.onshown) {
             callbackFns.onshown(tabContentEle);
         }
-    }
+    };
     for (const listItemEle of listItemEles) {
         (isPanelOrMenuListTabs ?
             listItemEle :

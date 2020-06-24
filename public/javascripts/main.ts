@@ -14,14 +14,12 @@ const llm: llmGlobal = {};
 /**
  * Converts an array of objects into an object, keyed by a property from each object
  */
-llm.arrayToObject = function(array, objectKey) {
+llm.arrayToObject = (array, objectKey) => {
 
   const obj = {};
 
-  for (let arrayIndex = 0; arrayIndex < array.length; arrayIndex += 1) {
-
-    obj[array[arrayIndex][objectKey]] = array[arrayIndex];
-
+  for (const arrayEntry of array) {
+    obj[arrayEntry[objectKey]] = arrayEntry;
   }
 
   return obj;
@@ -33,7 +31,7 @@ llm.arrayToObject = function(array, objectKey) {
  */
 
 
-llm.initializeDateRangeSelector = function(containerEle, changeFn) {
+llm.initializeDateRangeSelector = (containerEle, changeFn) => {
 
   const rangeTypeSelectEle = containerEle.querySelector("[data-field='rangeType']").getElementsByTagName("select")[0];
 
@@ -48,7 +46,7 @@ llm.initializeDateRangeSelector = function(containerEle, changeFn) {
 
   const endDateEle = containerEle.querySelector("[data-field='end']").getElementsByTagName("input")[0];
 
-  const setStartEndDatesFromRange = function() {
+  const setStartEndDatesFromRangeFn = () => {
 
     const rangeValue = rangeSelectEle.value;
 
@@ -103,7 +101,7 @@ llm.initializeDateRangeSelector = function(containerEle, changeFn) {
   };
 
 
-  rangeTypeSelectEle.addEventListener("change", function() {
+  rangeTypeSelectEle.addEventListener("change", () => {
 
     const rangeType = rangeTypeSelectEle.value;
 
@@ -171,13 +169,13 @@ llm.initializeDateRangeSelector = function(containerEle, changeFn) {
       endDateEle.setAttribute("readonly", "readonly");
       endDateEle.classList.add("is-readonly");
 
-      setStartEndDatesFromRange();
+      setStartEndDatesFromRangeFn();
     }
   });
 
-  rangeSelectEle.addEventListener("change", setStartEndDatesFromRange);
+  rangeSelectEle.addEventListener("change", setStartEndDatesFromRangeFn);
 
-  startDateEle.addEventListener("change", function() {
+  startDateEle.addEventListener("change", () => {
 
     endDateEle.setAttribute("min", startDateEle.value);
     changeFn();
@@ -192,7 +190,7 @@ llm.initializeDateRangeSelector = function(containerEle, changeFn) {
  * CONFIG DEFAULTS
  */
 
-llm.getDefaultConfigProperty = function(propertyName, propertyValueCallbackFn) {
+llm.getDefaultConfigProperty = (propertyName, propertyValueCallbackFn) => {
 
   // Check local storage
 
@@ -217,13 +215,12 @@ llm.getDefaultConfigProperty = function(propertyName, propertyValueCallbackFn) {
 
   cityssm.postJSON(
     "/dashboard/doGetDefaultConfigProperties", {},
-    function(defaultConfigProperties) {
+    (defaultConfigProperties) => {
 
       try {
-
         window.localStorage.setItem("defaultConfigProperties", JSON.stringify(defaultConfigProperties));
 
-      } catch (e) {
+      } catch (_e) {
         // Ignore
       }
 
@@ -237,18 +234,22 @@ llm.getDefaultConfigProperty = function(propertyName, propertyValueCallbackFn) {
  * TABS
  */
 
-llm.initializeTabs = function(tabsListEle, callbackFns) {
+llm.initializeTabs = (tabsListEle, callbackFns) => {
 
   if (!tabsListEle) {
     return;
   }
 
-  const isPanelOrMenuListTabs = tabsListEle.classList.contains("panel-tabs") || tabsListEle.classList.contains("menu-list");
+  const isPanelOrMenuListTabs =
+    tabsListEle.classList.contains("panel-tabs") || tabsListEle.classList.contains("menu-list");
 
   const listItemEles = tabsListEle.getElementsByTagName(isPanelOrMenuListTabs ? "a" : "li");
-  const tabLinkEles = <HTMLCollectionOf<HTMLAnchorElement>>(isPanelOrMenuListTabs ? listItemEles : tabsListEle.getElementsByTagName("a"));
 
-  function tabClickFn(clickEvent: Event) {
+  const tabLinkEles = <HTMLCollectionOf<HTMLAnchorElement>>(isPanelOrMenuListTabs ?
+    listItemEles :
+    tabsListEle.getElementsByTagName("a"));
+
+  const tabClickFn = (clickEvent: Event) => {
 
     clickEvent.preventDefault();
 
@@ -277,7 +278,7 @@ llm.initializeTabs = function(tabsListEle, callbackFns) {
     if (callbackFns && callbackFns.onshown) {
       callbackFns.onshown(tabContentEle);
     }
-  }
+  };
 
   for (const listItemEle of listItemEles) {
 
