@@ -40,7 +40,7 @@ configSSM.licences.externalReceiptNumber = {
   fieldLabel: "GP Receipt Number"
 };
 
-configSSM.licences.feeCalculationFn = function(licenceObj: llm.LotteryLicence) {
+configSSM.licences.feeCalculationFn = (licenceObj: llm.LotteryLicence) => {
 
   const totalPrizeValue = (licenceObj.totalPrizeValue || 0.0);
 

@@ -172,9 +172,6 @@ exports.getInactiveOrganizations = (inactiveYears) => {
     return rows;
 };
 exports.getDeletedOrganizations = () => {
-    const addCalculatedFieldsFn = function (ele) {
-        ele.recordDelete_dateString = dateTimeFns.dateToString(new Date(ele.recordDelete_timeMillis));
-    };
     const db = sqlite(licencesDB_1.dbPath, {
         readonly: true
     });
@@ -184,7 +181,9 @@ exports.getDeletedOrganizations = () => {
         " order by organizationName, recordDelete_timeMillis desc")
         .all();
     db.close();
-    organizations.forEach(addCalculatedFieldsFn);
+    for (const organization of organizations) {
+        organization.recordDelete_dateString = dateTimeFns.dateToString(new Date(organization.recordDelete_timeMillis));
+    }
     return organizations;
 };
 exports.addOrganizationRepresentative = (organizationID, reqBody) => {
@@ -276,16 +275,10 @@ exports.setDefaultOrganizationRepresentative = (organizationID, representativeIn
     return true;
 };
 exports.getOrganizationRemarks = (organizationID, reqSession) => {
-    const addCalculatedFieldsFn = function (ele) {
-        ele.recordType = "remark";
-        ele.remarkDateString = dateTimeFns.dateIntegerToString(ele.remarkDate || 0);
-        ele.remarkTimeString = dateTimeFns.timeIntegerToString(ele.remarkTime || 0);
-        ele.canUpdate = licencesDB_1.canUpdateObject(ele, reqSession);
-    };
     const db = sqlite(licencesDB_1.dbPath, {
         readonly: true
     });
-    const rows = db.prepare("select remarkIndex," +
+    const remarks = db.prepare("select remarkIndex," +
         " remarkDate, remarkTime," +
         " remark, isImportant," +
         " recordCreate_userName, recordCreate_timeMillis, recordUpdate_userName, recordUpdate_timeMillis" +
@@ -295,8 +288,13 @@ exports.getOrganizationRemarks = (organizationID, reqSession) => {
         " order by remarkDate desc, remarkTime desc")
         .all(organizationID);
     db.close();
-    rows.forEach(addCalculatedFieldsFn);
-    return rows;
+    for (const remark of remarks) {
+        remark.recordType = "remark";
+        remark.remarkDateString = dateTimeFns.dateIntegerToString(remark.remarkDate || 0);
+        remark.remarkTimeString = dateTimeFns.timeIntegerToString(remark.remarkTime || 0);
+        remark.canUpdate = licencesDB_1.canUpdateObject(remark, reqSession);
+    }
+    return remarks;
 };
 exports.getOrganizationRemark = (organizationID, remarkIndex, reqSession) => {
     const db = sqlite(licencesDB_1.dbPath, {
@@ -369,13 +367,10 @@ exports.deleteOrganizationRemark = (organizationID, remarkIndex, reqSession) => 
     return info.changes > 0;
 };
 exports.getOrganizationBankRecords = (organizationID, accountNumber, bankingYear) => {
-    const addCalculatedFieldsFn = function (ele) {
-        ele.recordDateString = dateTimeFns.dateIntegerToString(ele.recordDate);
-    };
     const db = sqlite(licencesDB_1.dbPath, {
         readonly: true
     });
-    const rows = db.prepare("select recordIndex," +
+    const bankRecords = db.prepare("select recordIndex," +
         " bankingMonth, bankRecordType," +
         " recordDate, recordNote, recordIsNA," +
         " recordCreate_userName, recordCreate_timeMillis, recordUpdate_userName, recordUpdate_timeMillis" +
@@ -386,8 +381,10 @@ exports.getOrganizationBankRecords = (organizationID, accountNumber, bankingYear
         " and bankingYear = ?")
         .all(organizationID, accountNumber, bankingYear);
     db.close();
-    rows.forEach(addCalculatedFieldsFn);
-    return rows;
+    for (const bankRecord of bankRecords) {
+        bankRecord.recordDateString = dateTimeFns.dateIntegerToString(bankRecord.recordDate);
+    }
+    return bankRecords;
 };
 exports.getOrganizationBankRecordStats = (organizationID) => {
     const db = sqlite(licencesDB_1.dbPath, {

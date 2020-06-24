@@ -308,10 +308,6 @@ export const getInactiveOrganizations = (inactiveYears: number) => {
 
 export const getDeletedOrganizations = () => {
 
-  const addCalculatedFieldsFn = function(ele: llm.Organization) {
-    ele.recordDelete_dateString = dateTimeFns.dateToString(new Date(ele.recordDelete_timeMillis));
-  };
-
   const db = sqlite(dbPath, {
     readonly: true
   });
@@ -325,7 +321,9 @@ export const getDeletedOrganizations = () => {
 
   db.close();
 
-  organizations.forEach(addCalculatedFieldsFn);
+  for (const organization of organizations) {
+    organization.recordDelete_dateString = dateTimeFns.dateToString(new Date(organization.recordDelete_timeMillis));
+  }
 
   return organizations;
 };
@@ -471,21 +469,11 @@ export const setDefaultOrganizationRepresentative = (organizationID: number, rep
 
 export const getOrganizationRemarks = (organizationID: number, reqSession: Express.SessionData) => {
 
-  const addCalculatedFieldsFn = function(ele: llm.OrganizationRemark) {
-
-    ele.recordType = "remark";
-
-    ele.remarkDateString = dateTimeFns.dateIntegerToString(ele.remarkDate || 0);
-    ele.remarkTimeString = dateTimeFns.timeIntegerToString(ele.remarkTime || 0);
-
-    ele.canUpdate = canUpdateObject(ele, reqSession);
-  };
-
   const db = sqlite(dbPath, {
     readonly: true
   });
 
-  const rows: llm.OrganizationRemark[] =
+  const remarks: llm.OrganizationRemark[] =
     db.prepare("select remarkIndex," +
       " remarkDate, remarkTime," +
       " remark, isImportant," +
@@ -498,9 +486,17 @@ export const getOrganizationRemarks = (organizationID: number, reqSession: Expre
 
   db.close();
 
-  rows.forEach(addCalculatedFieldsFn);
+  for (const remark of remarks) {
 
-  return rows;
+    remark.recordType = "remark";
+
+    remark.remarkDateString = dateTimeFns.dateIntegerToString(remark.remarkDate || 0);
+    remark.remarkTimeString = dateTimeFns.timeIntegerToString(remark.remarkTime || 0);
+
+    remark.canUpdate = canUpdateObject(remark, reqSession);
+  }
+
+  return remarks;
 };
 
 export const getOrganizationRemark = (organizationID: number, remarkIndex: number, reqSession: Express.SessionData) => {
@@ -640,15 +636,11 @@ export const deleteOrganizationRemark = (organizationID: number, remarkIndex: nu
 
 export const getOrganizationBankRecords = (organizationID: number, accountNumber: string, bankingYear: number) => {
 
-  const addCalculatedFieldsFn = function(ele: llm.OrganizationBankRecord) {
-    ele.recordDateString = dateTimeFns.dateIntegerToString(ele.recordDate);
-  };
-
   const db = sqlite(dbPath, {
     readonly: true
   });
 
-  const rows: llm.OrganizationBankRecord[] =
+  const bankRecords: llm.OrganizationBankRecord[] =
     db.prepare("select recordIndex," +
       " bankingMonth, bankRecordType," +
       " recordDate, recordNote, recordIsNA," +
@@ -662,9 +654,11 @@ export const getOrganizationBankRecords = (organizationID: number, accountNumber
 
   db.close();
 
-  rows.forEach(addCalculatedFieldsFn);
+  for (const bankRecord of bankRecords) {
+    bankRecord.recordDateString = dateTimeFns.dateIntegerToString(bankRecord.recordDate);
+  }
 
-  return rows;
+  return bankRecords;
 };
 
 export const getOrganizationBankRecordStats = (organizationID: number) => {

@@ -6,7 +6,7 @@ config.defaults = {
     province: "ON"
 };
 config.licences = {
-    feeCalculationFn: function (licenceObj) {
+    feeCalculationFn: (licenceObj) => {
         const totalPrizeValue = (licenceObj.totalPrizeValue || 0.0);
         const licenceFeeMin = 10;
         const calculatedLicenceFee = totalPrizeValue * 0.03;
@@ -306,7 +306,7 @@ config.licenceTypes = [
                 }
             }],
         printSettings: {
-            agco_additionalLicenceDetailsHTMLFn: function (licenceObj) {
+            agco_additionalLicenceDetailsHTMLFn: (licenceObj) => {
                 const ticketCountField = licenceObj.licenceFields.find(field => field.fieldKey === "RA-ticketCount");
                 const ticketCostField = licenceObj.licenceFields.find(field => field.fieldKey === "RA-ticketCost");
                 return (ticketCountField ? ticketCountField.fieldValue + " tickets; " : "") +

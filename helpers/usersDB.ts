@@ -8,7 +8,7 @@ import * as configFns from "./configFns";
 import { User, UserProperties } from "./llmTypes";
 
 
-export function getUser(userNameSubmitted: string, passwordPlain: string): User {
+export const getUser = (userNameSubmitted: string, passwordPlain: string): User => {
 
   const db = sqlite(dbPath);
 
@@ -118,9 +118,9 @@ export function getUser(userNameSubmitted: string, passwordPlain: string): User 
     userProperties
   };
 
-}
+};
 
-export function tryResetPassword(userName: string, oldPasswordPlain: string, newPasswordPlain: string) {
+export const tryResetPassword = (userName: string, oldPasswordPlain: string, newPasswordPlain: string) => {
 
   const db = sqlite(dbPath);
 
@@ -165,9 +165,9 @@ export function tryResetPassword(userName: string, oldPasswordPlain: string, new
     message: "Password updated successfully."
   };
 
-}
+};
 
-export function getAllUsers() {
+export const getAllUsers = () => {
 
   const db = sqlite(dbPath, {
     readonly: true
@@ -183,9 +183,9 @@ export function getAllUsers() {
   db.close();
 
   return rows;
-}
+};
 
-export function getUserProperties(userName: string) {
+export const getUserProperties = (userName: string) => {
 
   const db = sqlite(dbPath, {
     readonly: true
@@ -207,9 +207,9 @@ export function getUserProperties(userName: string) {
   db.close();
 
   return userProperties;
-}
+};
 
-export function createUser(reqBody: any) {
+export const createUser = (reqBody: any) => {
 
   const newPasswordPlain = stringFns.generatePassword();
   const hash = bcrypt.hashSync(reqBody.userName + "::" + newPasswordPlain, 10);
@@ -251,9 +251,9 @@ export function createUser(reqBody: any) {
   }
 
   return newPasswordPlain;
-}
+};
 
-export function updateUser(reqBody: any) {
+export const updateUser = (reqBody: any) => {
 
   const db = sqlite(dbPath);
 
@@ -272,9 +272,9 @@ export function updateUser(reqBody: any) {
 
   return info.changes;
 
-}
+};
 
-export function updateUserProperty(reqBody: any) {
+export const updateUserProperty = (reqBody: any) => {
 
   const db = sqlite(dbPath);
 
@@ -306,9 +306,9 @@ export function updateUserProperty(reqBody: any) {
   db.close();
 
   return info.changes;
-}
+};
 
-export function generateNewPassword(userName: string) {
+export const generateNewPassword = (userName: string) => {
 
   const newPasswordPlain: string = stringFns.generatePassword();
   const hash = bcrypt.hashSync(userName + "::" + newPasswordPlain, 10);
@@ -323,9 +323,9 @@ export function generateNewPassword(userName: string) {
   db.close();
 
   return newPasswordPlain;
-}
+};
 
-export function inactivateUser(userName: string) {
+export const inactivateUser = (userName: string) => {
 
   const db = sqlite(dbPath);
 
@@ -338,4 +338,4 @@ export function inactivateUser(userName: string) {
   db.close();
 
   return info.changes;
-}
+};

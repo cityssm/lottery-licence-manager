@@ -14,7 +14,7 @@ configSSM.licences.externalLicenceNumber.newCalculation = "range";
 configSSM.licences.externalReceiptNumber = {
     fieldLabel: "GP Receipt Number"
 };
-configSSM.licences.feeCalculationFn = function (licenceObj) {
+configSSM.licences.feeCalculationFn = (licenceObj) => {
     const totalPrizeValue = (licenceObj.totalPrizeValue || 0.0);
     const licenceFeeMin = 10;
     const calculatedLicenceFee = totalPrizeValue * 0.03;

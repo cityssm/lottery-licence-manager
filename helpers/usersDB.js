@@ -6,7 +6,7 @@ const sqlite = require("better-sqlite3");
 const bcrypt = require("bcrypt");
 const stringFns = require("@cityssm/expressjs-server-js/stringFns");
 const configFns = require("./configFns");
-function getUser(userNameSubmitted, passwordPlain) {
+exports.getUser = (userNameSubmitted, passwordPlain) => {
     const db = sqlite(dbPath);
     const row = db.prepare("select userName, passwordHash, isActive" +
         " from Users" +
@@ -69,9 +69,8 @@ function getUser(userNameSubmitted, passwordPlain) {
         userName: databaseUserName,
         userProperties
     };
-}
-exports.getUser = getUser;
-function tryResetPassword(userName, oldPasswordPlain, newPasswordPlain) {
+};
+exports.tryResetPassword = (userName, oldPasswordPlain, newPasswordPlain) => {
     const db = sqlite(dbPath);
     const row = db.prepare("select passwordHash from Users" +
         " where userName = ?" +
@@ -102,9 +101,8 @@ function tryResetPassword(userName, oldPasswordPlain, newPasswordPlain) {
         success: true,
         message: "Password updated successfully."
     };
-}
-exports.tryResetPassword = tryResetPassword;
-function getAllUsers() {
+};
+exports.getAllUsers = () => {
     const db = sqlite(dbPath, {
         readonly: true
     });
@@ -115,9 +113,8 @@ function getAllUsers() {
         .all();
     db.close();
     return rows;
-}
-exports.getAllUsers = getAllUsers;
-function getUserProperties(userName) {
+};
+exports.getUserProperties = (userName) => {
     const db = sqlite(dbPath, {
         readonly: true
     });
@@ -131,9 +128,8 @@ function getUserProperties(userName) {
     }
     db.close();
     return userProperties;
-}
-exports.getUserProperties = getUserProperties;
-function createUser(reqBody) {
+};
+exports.createUser = (reqBody) => {
     const newPasswordPlain = stringFns.generatePassword();
     const hash = bcrypt.hashSync(reqBody.userName + "::" + newPasswordPlain, 10);
     const db = sqlite(dbPath);
@@ -164,9 +160,8 @@ function createUser(reqBody) {
             .run(reqBody.userName, reqBody.firstName, reqBody.lastName, hash);
     }
     return newPasswordPlain;
-}
-exports.createUser = createUser;
-function updateUser(reqBody) {
+};
+exports.updateUser = (reqBody) => {
     const db = sqlite(dbPath);
     const info = db.prepare("update Users" +
         " set firstName = ?," +
@@ -176,9 +171,8 @@ function updateUser(reqBody) {
         .run(reqBody.firstName, reqBody.lastName, reqBody.userName);
     db.close();
     return info.changes;
-}
-exports.updateUser = updateUser;
-function updateUserProperty(reqBody) {
+};
+exports.updateUserProperty = (reqBody) => {
     const db = sqlite(dbPath);
     let info;
     if (reqBody.propertyValue === "") {
@@ -195,9 +189,8 @@ function updateUserProperty(reqBody) {
     }
     db.close();
     return info.changes;
-}
-exports.updateUserProperty = updateUserProperty;
-function generateNewPassword(userName) {
+};
+exports.generateNewPassword = (userName) => {
     const newPasswordPlain = stringFns.generatePassword();
     const hash = bcrypt.hashSync(userName + "::" + newPasswordPlain, 10);
     const db = sqlite(dbPath);
@@ -207,9 +200,8 @@ function generateNewPassword(userName) {
         .run(hash, userName);
     db.close();
     return newPasswordPlain;
-}
-exports.generateNewPassword = generateNewPassword;
-function inactivateUser(userName) {
+};
+exports.inactivateUser = (userName) => {
     const db = sqlite(dbPath);
     const info = db.prepare("update Users" +
         " set isActive = 0" +
@@ -218,5 +210,4 @@ function inactivateUser(userName) {
         .run(userName);
     db.close();
     return info.changes;
-}
-exports.inactivateUser = inactivateUser;
+};

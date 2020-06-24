@@ -11,7 +11,7 @@ import * as fs from "fs";
 import * as configFns from "../helpers/configFns";
 import { ConfigHTTPS } from "../helpers/llmTypes";
 
-function onError(error: Error) {
+const onError = (error: Error) => {
 
   if (error.syscall !== "listen") {
     throw error;
@@ -32,9 +32,9 @@ function onError(error: Error) {
     default:
       throw error;
   }
-}
+};
 
-function onListening(server: http.Server | https.Server) {
+const onListening = (server: http.Server | https.Server) => {
 
   const addr = server.address();
 
@@ -43,8 +43,7 @@ function onListening(server: http.Server | https.Server) {
     : "port " + addr.port;
 
   log.info("Listening on " + bind);
-
-}
+};
 
 /**
  * Initialize HTTP
@@ -59,7 +58,7 @@ if (httpPort) {
   httpServer.listen(httpPort);
 
   httpServer.on("error", onError);
-  httpServer.on("listening", function() {
+  httpServer.on("listening", () => {
     onListening(httpServer);
   });
 
@@ -84,7 +83,7 @@ if (httpsConfig) {
 
   httpsServer.on("error", onError);
 
-  httpsServer.on("listening", function() {
+  httpsServer.on("listening", () => {
     onListening(httpsServer);
   });
 

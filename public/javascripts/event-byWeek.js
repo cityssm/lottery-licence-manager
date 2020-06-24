@@ -51,7 +51,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 let fillerSize = 0;
                 let leftSideFiller = "";
                 if (licenceRecord.startDateString > responseJSON.startDateString) {
-                    fillerSize = cityssm.dateStringDifferenceInDays(responseJSON.startDateString, licenceRecord.startDateString);
+                    fillerSize =
+                        cityssm.dateStringDifferenceInDays(responseJSON.startDateString, licenceRecord.startDateString);
                     for (let fillerIndex = 0; fillerIndex < fillerSize; fillerIndex += 1) {
                         leftSideFiller += "<td></td>";
                     }

@@ -13,20 +13,6 @@ export const getLocations = (reqSession: Express.SessionData, queryOptions: {
   locationIsManufacturer: number
 }) => {
 
-  const addCalculatedFieldsFn = function(ele: llm.Location) {
-
-    ele.recordType = "location";
-
-    ele.locationDisplayName =
-      ele.locationName === "" ? ele.locationAddress1 : ele.locationName;
-
-    ele.licences_endDateMaxString = dateTimeFns.dateIntegerToString(ele.licences_endDateMax);
-    ele.distributor_endDateMaxString = dateTimeFns.dateIntegerToString(ele.distributor_endDateMax);
-    ele.manufacturer_endDateMaxString = dateTimeFns.dateIntegerToString(ele.manufacturer_endDateMax);
-
-    ele.canUpdate = canUpdateObject(ele, reqSession);
-  };
-
   const db = sqlite(dbPath, {
     readonly: true
   });
@@ -126,7 +112,20 @@ export const getLocations = (reqSession: Express.SessionData, queryOptions: {
 
   db.close();
 
-  rows.forEach(addCalculatedFieldsFn);
+  for (const ele of rows) {
+
+    ele.recordType = "location";
+
+    ele.locationDisplayName =
+      ele.locationName === "" ? ele.locationAddress1 : ele.locationName;
+
+    ele.licences_endDateMaxString = dateTimeFns.dateIntegerToString(ele.licences_endDateMax);
+    ele.distributor_endDateMaxString = dateTimeFns.dateIntegerToString(ele.distributor_endDateMax);
+    ele.manufacturer_endDateMaxString = dateTimeFns.dateIntegerToString(ele.manufacturer_endDateMax);
+
+    ele.canUpdate = canUpdateObject(ele, reqSession);
+  }
+
 
   return {
     count: (queryOptions.limit === -1 ? rows.length : count),
@@ -377,18 +376,6 @@ export const mergeLocations =
 
 export const getInactiveLocations = (inactiveYears: number) => {
 
-  const addCalculatedFieldsFn = function(locationObj: llm.Location) {
-
-    locationObj.locationDisplayName =
-      locationObj.locationName === "" ? locationObj.locationAddress1 : locationObj.locationName;
-
-    locationObj.recordUpdate_dateString = dateTimeFns.dateToString(new Date(locationObj.recordUpdate_timeMillis));
-
-    locationObj.licences_endDateMaxString = dateTimeFns.dateIntegerToString(locationObj.licences_endDateMax || 0);
-    locationObj.distributor_endDateMaxString = dateTimeFns.dateIntegerToString(locationObj.distributor_endDateMax || 0);
-    locationObj.manufacturer_endDateMaxString = dateTimeFns.dateIntegerToString(locationObj.manufacturer_endDateMax || 0);
-  };
-
   const cutoffDate = new Date();
   cutoffDate.setFullYear(cutoffDate.getFullYear() - inactiveYears);
 
@@ -434,7 +421,18 @@ export const getInactiveLocations = (inactiveYears: number) => {
 
   db.close();
 
-  rows.forEach(addCalculatedFieldsFn);
+  for (const locationObj of rows) {
+
+    locationObj.locationDisplayName =
+      locationObj.locationName === "" ? locationObj.locationAddress1 : locationObj.locationName;
+
+    locationObj.recordUpdate_dateString = dateTimeFns.dateToString(new Date(locationObj.recordUpdate_timeMillis));
+
+    locationObj.licences_endDateMaxString = dateTimeFns.dateIntegerToString(locationObj.licences_endDateMax || 0);
+    locationObj.distributor_endDateMaxString = dateTimeFns.dateIntegerToString(locationObj.distributor_endDateMax || 0);
+    locationObj.manufacturer_endDateMaxString = dateTimeFns.dateIntegerToString(locationObj.manufacturer_endDateMax || 0);
+  }
+
 
   return rows;
 };

@@ -12,7 +12,7 @@ config.defaults = {
 
 config.licences = {
 
-  feeCalculationFn: function(licenceObj: llm.LotteryLicence) {
+  feeCalculationFn: (licenceObj: llm.LotteryLicence) => {
 
     const totalPrizeValue = (licenceObj.totalPrizeValue || 0.0);
 
@@ -324,7 +324,7 @@ config.licenceTypes = [
       }
     }],
     printSettings: {
-      agco_additionalLicenceDetailsHTMLFn: function(licenceObj: llm.LotteryLicence): string {
+      agco_additionalLicenceDetailsHTMLFn: (licenceObj: llm.LotteryLicence): string => {
 
         const ticketCountField = licenceObj.licenceFields.find(field => field.fieldKey === "RA-ticketCount");
         const ticketCostField = licenceObj.licenceFields.find(field => field.fieldKey === "RA-ticketCost");
