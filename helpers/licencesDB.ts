@@ -361,6 +361,12 @@ let licenceTableStats: llm.LotteryLicenceStats = {
 
 let licenceTableStatsExpiryMillis = -1;
 
+let eventTableStats: llm.LotteryEventStats = {
+  eventYearMin: 1970
+};
+
+let eventTableStatsExpiryMillis = -1;
+
 export const getLicenceTableStats = () => {
 
   if (Date.now() < licenceTableStatsExpiryMillis) {
@@ -1826,11 +1832,6 @@ export const voidTransaction =
  * EVENTS
  */
 
-let eventTableStats: llm.LotteryEventStats = {
-  eventYearMin: 1970
-};
-
-let eventTableStatsExpiryMillis = -1;
 
 export const getEventTableStats = () => {
 

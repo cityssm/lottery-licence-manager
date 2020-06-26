@@ -195,6 +195,10 @@ let licenceTableStats = {
     endYearMax: new Date().getFullYear() + 1
 };
 let licenceTableStatsExpiryMillis = -1;
+let eventTableStats = {
+    eventYearMin: 1970
+};
+let eventTableStatsExpiryMillis = -1;
 exports.getLicenceTableStats = () => {
     if (Date.now() < licenceTableStatsExpiryMillis) {
         return licenceTableStats;
@@ -948,10 +952,6 @@ exports.voidTransaction = (licenceID, transactionIndex, reqSession) => {
     db.close();
     return changeCount > 0;
 };
-let eventTableStats = {
-    eventYearMin: 1970
-};
-let eventTableStatsExpiryMillis = -1;
 exports.getEventTableStats = () => {
     if (Date.now() < eventTableStatsExpiryMillis) {
         return eventTableStats;
