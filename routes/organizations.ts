@@ -709,7 +709,8 @@ router.post("/:organizationID/doSetDefaultRepresentative", (req, res) => {
   const organizationID = parseInt(req.params.organizationID, 10);
   const isDefaultRepresentativeIndex = req.body.isDefaultRepresentativeIndex;
 
-  const success = licencesDBOrganizations.setDefaultOrganizationRepresentative(organizationID, isDefaultRepresentativeIndex);
+  const success =
+    licencesDBOrganizations.setDefaultOrganizationRepresentative(organizationID, isDefaultRepresentativeIndex);
 
   res.json({
     success: success

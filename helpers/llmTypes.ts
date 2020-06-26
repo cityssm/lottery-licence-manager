@@ -59,7 +59,8 @@ export interface ConfigBankRecordType {
 }
 
 interface ConfigLicences {
-  feeCalculationFn: (licenceObj: LotteryLicence) => { fee: string | number, message: string, licenceHasErrors: boolean };
+  feeCalculationFn: (licenceObj: LotteryLicence) =>
+    { fee: string | number, message: string, licenceHasErrors: boolean };
   printTemplate: string;
   externalLicenceNumber?: ConfigExternalLicenceNumber;
   externalReceiptNumber?: ConfigExternalReceiptNumber;

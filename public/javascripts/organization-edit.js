@@ -102,7 +102,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
             document.getElementById("editOrganizationRepresentative--representativeEmailAddress").value =
                 editRepresentativeTrEle.getAttribute("data-representative-email-address");
             document.getElementById("editOrganizationRepresentative--isDefault").value =
-                document.getElementById("representative-isDefault--" + representativeIndex).checked ? "1" : "0";
+                document.getElementById("representative-isDefault--" + representativeIndex).checked ?
+                    "1" :
+                    "0";
             cityssm.showModal(editRepresentativeModalEle);
         };
         const insertRepresentativeRowFn = (representativeObj) => {

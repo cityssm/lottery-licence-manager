@@ -80,7 +80,7 @@ exports.getLicenceType = (licenceTypeKey) => {
 };
 exports.getLicenceTypeKeyToNameObject = () => {
     if (Object.keys(licenceTypeKeyNameObject).length === 0) {
-        let list = {};
+        const list = {};
         exports.getProperty("licenceTypes")
             .forEach((ele) => {
             if (ele.isActive) {

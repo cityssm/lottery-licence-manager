@@ -238,12 +238,12 @@ import type * as llmTypes from "../../helpers/llmTypes";
       };
 
       cityssm.openHtmlModal("locationMerge", {
-        onshow(modalEle) {
+        onshow(modalEle: HTMLElement): void {
 
           // Location name - target
 
-          const locationDisplayNameAndID_target_eles =
-            <HTMLCollectionOf<HTMLSpanElement>>modalEle.getElementsByClassName("mergeLocation--locationDisplayNameAndID_target");
+          const locationDisplayNameAndID_target_eles = <HTMLCollectionOf<HTMLSpanElement>>
+            modalEle.getElementsByClassName("mergeLocation--locationDisplayNameAndID_target");
 
           for (const locationDisplayNameAndID_target_ele of locationDisplayNameAndID_target_eles) {
             locationDisplayNameAndID_target_ele.innerText = locationDisplayNameAndID_target;
@@ -257,7 +257,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
           locationFilterEle.addEventListener("keyup", filterLocationsFn);
 
         },
-        onshown(_modalEle, closeModalFn) {
+        onshown(_modalEle: HTMLElement, closeModalFn: () => void): void {
 
           closeMergeLocationModalFn = closeModalFn;
 

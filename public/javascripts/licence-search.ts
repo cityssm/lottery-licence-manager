@@ -6,7 +6,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
 (() => {
 
-  let licenceType_keyToName = {};
+  const licenceType_keyToName = {};
 
   const formEle = <HTMLFormElement>document.getElementById("form--filters");
 
@@ -88,7 +88,9 @@ import type * as llmTypes from "../../helpers/llmTypes";
               "<a data-tooltip=\"View Location\" href=\"/locations/" + licenceObj.locationID + "\">" +
               cityssm.escapeHTML(licenceObj.locationDisplayName) +
               "</a>" +
-              (licenceObj.locationDisplayName === licenceObj.locationAddress1 ? "" : "<br /><small>" + cityssm.escapeHTML(licenceObj.locationAddress1) + "</small>") +
+              (licenceObj.locationDisplayName === licenceObj.locationAddress1 ?
+                "" :
+                "<br /><small>" + cityssm.escapeHTML(licenceObj.locationAddress1) + "</small>") +
               "</td>") +
 
             ("<td class=\"is-nowrap\">" +
@@ -103,13 +105,15 @@ import type * as llmTypes from "../../helpers/llmTypes";
             "<td class=\"has-text-right is-nowrap is-hidden-print\">" +
 
             (licenceObj.canUpdate ?
-              "<a class=\"button is-small\" data-tooltip=\"Edit Licence\" href=\"/licences/" + licenceObj.licenceID + "/edit\">" +
+              "<a class=\"button is-small\" data-tooltip=\"Edit Licence\"" +
+              " href=\"/licences/" + licenceObj.licenceID + "/edit\">" +
               "<span class=\"icon\"><i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i></span>" +
               "<span>Edit</span>" +
               "</a> " : "") +
 
             (licenceObj.issueDate ?
-              "<a class=\"button is-small\" data-tooltip=\"Print Licence\" href=\"/licences/" + licenceObj.licenceID + "/print\" download>" +
+              "<a class=\"button is-small\" data-tooltip=\"Print Licence\"" +
+              " href=\"/licences/" + licenceObj.licenceID + "/print\" download>" +
               "<i class=\"fas fa-print\" aria-hidden=\"true\"></i>" +
               "<span class=\"sr-only\">Print</span>" +
               "</a>" :

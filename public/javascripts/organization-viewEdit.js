@@ -204,7 +204,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     bankingYearMin = Math.min(bankRecordsStat.bankingYearMin, bankingYearMin);
                     const accountNumber = cityssm.escapeHTML(bankRecordsStat.accountNumber);
                     bankRecordsAccountNumberFilterEle.insertAdjacentHTML("beforeend", "<option value=\"" + accountNumber + "\">" +
-                        accountNumber + " (From " + bankRecordsStat.bankingYearMin + " to " + bankRecordsStat.bankingYearMax + ")" +
+                        accountNumber +
+                        " (From " + bankRecordsStat.bankingYearMin + " to " + bankRecordsStat.bankingYearMax + ")" +
                         "</option>");
                 }
             }

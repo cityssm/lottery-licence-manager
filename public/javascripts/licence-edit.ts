@@ -146,7 +146,8 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
     if (changeEvent) {
 
-      const currentTargetType = (changeEvent.currentTarget instanceof HTMLInputElement ? changeEvent.currentTarget.type : "");
+      const currentTargetType =
+        (changeEvent.currentTarget instanceof HTMLInputElement ? changeEvent.currentTarget.type : "");
 
       if (refreshInputTypes.includes(currentTargetType)) {
         setDoRefreshAfterSaveFn();
@@ -155,7 +156,8 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
   };
 
-  const inputEles = <NodeListOf<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>>formEle.querySelectorAll("input, select, textarea");
+  const inputEles = <NodeListOf<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>>
+    formEle.querySelectorAll("input, select, textarea");
 
   for (const inputEle of inputEles) {
     if (inputEle.name !== "") {
@@ -225,11 +227,13 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
       let displayLimit = 10;
 
-      for (let organizationIndex = 0; organizationIndex < organizationList.length && displayLimit > 0; organizationIndex += 1) {
+      for (const organizationObj of organizationList) {
+
+        if (displayLimit < 0) {
+          break;
+        }
 
         let doDisplayRecord = true;
-
-        const organizationObj = organizationList[organizationIndex];
 
         if (!organizationObj.isEligibleForLicences) {
           continue;
@@ -269,14 +273,13 @@ import type * as llmTypes from "../../helpers/llmTypes";
       cityssm.clearElement(organizationLookupResultsEle);
 
       organizationLookupResultsEle.insertAdjacentElement("beforeend", listEle);
-
     };
 
     const organizationLookupFn_openModal = () => {
 
       cityssm.openHtmlModal("licence-organizationLookup", {
 
-        onshow() {
+        onshow(): void {
 
           organizationLookupSearchStrEle = <HTMLInputElement>document.getElementById("organizationLookup--searchStr");
           organizationLookupSearchStrEle.addEventListener("keyup", organizationLookupFn_refreshResults);
@@ -307,13 +310,13 @@ import type * as llmTypes from "../../helpers/llmTypes";
           }
         },
 
-        onshown(_modalEle, closeModalFn) {
+        onshown(_modalEle: HTMLElement, closeModalFn: () => void): void {
 
           organizationLookupCloseModalFn = closeModalFn;
           organizationLookupSearchStrEle.focus();
         },
 
-        onremoved() {
+        onremoved(): void {
           document.getElementById("is-organization-lookup-button").focus();
         }
       });
@@ -448,7 +451,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
       cityssm.openHtmlModal("licence-locationLookup", {
 
-        onshow(modalEle) {
+        onshow(modalEle: HTMLElement): void {
 
           // Existing locations
 
@@ -503,11 +506,11 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
           llm.initializeTabs(modalEle.querySelector(".tabs ul"));
         },
-        onshown(_modalEle, closeModalFn) {
+        onshown(_modalEle: HTMLElement, closeModalFn: () => void): void {
           locationLookup_closeModalFn = closeModalFn;
           locationLookup_searchStrEle.focus();
         },
-        onremoved() {
+        onremoved(): void {
           document.getElementById("is-location-lookup-button").focus();
         }
       });
@@ -881,7 +884,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
   if (ticketTypesPanelEle) {
 
-    let licenceTypeKeyToTicketTypes: Map<string, llmTypes.ConfigTicketType[]> = new Map();
+    const licenceTypeKeyToTicketTypes: Map<string, llmTypes.ConfigTicketType[]> = new Map();
 
     const ticketTypesFn_getAll = (callbackFn: (ticketTypes: llmTypes.ConfigTicketType[]) => void) => {
 
@@ -1035,7 +1038,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
       };
 
       cityssm.openHtmlModal("licence-ticketTypeUnitAmend", {
-        onshow(modalEle) {
+        onshow(modalEle: HTMLElement): void {
 
           (<HTMLInputElement>document.getElementById("amendUnit_ticketType")).value = ticketType;
 
@@ -1058,7 +1061,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
           modalEle.getElementsByTagName("form")[0].addEventListener("submit", amendUnitCountFn_closeAndUpdate);
 
         },
-        onshown(_modalEle, closeModalFn) {
+        onshown(_modalEle: HTMLElement, closeModalFn: () => void): void {
           amendUnitCount_closeModalFn = closeModalFn;
         }
       });
@@ -1089,7 +1092,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
       cityssm.openHtmlModal("licence-distributorLookup", {
 
-        onshow() {
+        onshow(): void {
 
           loadLocationListFn(() => {
 
@@ -1130,7 +1133,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
             lookupContainerEle.insertAdjacentElement("beforeend", listEle);
           });
         },
-        onshown(_modalEle, closeModalFn) {
+        onshown(_modalEle: HTMLElement, closeModalFn: () => void): void {
           distributorLookup_closeModalFn = closeModalFn;
         }
       });
@@ -1160,7 +1163,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
       cityssm.openHtmlModal("licence-manufacturerLookup", {
 
-        onshow() {
+        onshow(): void {
 
           loadLocationListFn(() => {
 
@@ -1201,7 +1204,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
           });
 
         },
-        onshown(_modalEle, closeModalFn) {
+        onshown(_modalEle: HTMLElement, closeModalFn: () => void): void {
           manufacturerLookup_closeModalFn = closeModalFn;
         }
       });
@@ -1244,25 +1247,34 @@ import type * as llmTypes from "../../helpers/llmTypes";
         const unitCount = parseInt(addTicketType_unitCountEle.value, 10);
 
         (<HTMLInputElement>document.getElementById("ticketTypeAdd--prizesTotal")).value =
-          (parseFloat((<HTMLInputElement>document.getElementById("ticketTypeAdd--prizesPerDeal")).value) * unitCount).toFixed(2);
+          (parseFloat((<HTMLInputElement>document.getElementById("ticketTypeAdd--prizesPerDeal")).value) * unitCount)
+            .toFixed(2);
 
         (<HTMLInputElement>document.getElementById("ticketTypeAdd--licenceFee")).value =
-          (parseFloat((<HTMLInputElement>document.getElementById("ticketTypeAdd--feePerUnit")).value) * unitCount).toFixed(2);
+          (parseFloat((<HTMLInputElement>document.getElementById("ticketTypeAdd--feePerUnit")).value) * unitCount)
+            .toFixed(2);
       };
 
       const addTicketType_refreshTicketTypeChange = () => {
 
         const ticketTypeOptionEle = addTicketType_ticketTypeEle.selectedOptions[0];
 
-        (<HTMLInputElement>document.getElementById("ticketTypeAdd--ticketPrice")).value = ticketTypeOptionEle.getAttribute("data-ticket-price");
-        (<HTMLInputElement>document.getElementById("ticketTypeAdd--ticketCount")).value = ticketTypeOptionEle.getAttribute("data-ticket-count");
+        (<HTMLInputElement>document.getElementById("ticketTypeAdd--ticketPrice")).value =
+          ticketTypeOptionEle.getAttribute("data-ticket-price");
+
+        (<HTMLInputElement>document.getElementById("ticketTypeAdd--ticketCount")).value =
+          ticketTypeOptionEle.getAttribute("data-ticket-count");
 
         (<HTMLInputElement>document.getElementById("ticketTypeAdd--valuePerDeal")).value =
-          (parseFloat(ticketTypeOptionEle.getAttribute("data-ticket-price")) * parseInt(ticketTypeOptionEle.getAttribute("data-ticket-count"), 10)).toFixed(2);
+          (parseFloat(ticketTypeOptionEle.getAttribute("data-ticket-price")) *
+            parseInt(ticketTypeOptionEle.getAttribute("data-ticket-count"), 10))
+            .toFixed(2);
 
-        (<HTMLInputElement>document.getElementById("ticketTypeAdd--prizesPerDeal")).value = ticketTypeOptionEle.getAttribute("data-prizes-per-deal");
+        (<HTMLInputElement>document.getElementById("ticketTypeAdd--prizesPerDeal")).value =
+          ticketTypeOptionEle.getAttribute("data-prizes-per-deal");
 
-        (<HTMLInputElement>document.getElementById("ticketTypeAdd--feePerUnit")).value = ticketTypeOptionEle.getAttribute("data-fee-per-unit");
+        (<HTMLInputElement>document.getElementById("ticketTypeAdd--feePerUnit")).value =
+          ticketTypeOptionEle.getAttribute("data-fee-per-unit");
 
         addTicketTypeFn_refreshUnitCountChange();
       };
@@ -1290,7 +1302,10 @@ import type * as llmTypes from "../../helpers/llmTypes";
           optionEle.setAttribute("data-fee-per-unit", (ticketTypeObj.feePerUnit || 0).toFixed(2));
 
           optionEle.value = ticketTypeObj.ticketType;
-          optionEle.innerText = ticketTypeObj.ticketType + " (" + ticketTypeObj.ticketCount + " tickets, $" + ticketTypeObj.ticketPrice.toFixed(2) + " each)";
+
+          optionEle.innerText =
+            ticketTypeObj.ticketType +
+            " (" + ticketTypeObj.ticketCount + " tickets, $" + ticketTypeObj.ticketPrice.toFixed(2) + " each)";
 
           addTicketType_ticketTypeEle.insertAdjacentElement("beforeend", optionEle);
         }
@@ -1301,7 +1316,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
       cityssm.openHtmlModal("licence-ticketTypeAdd", {
 
-        onshow(modalEle) {
+        onshow(modalEle: HTMLElement): void {
 
           addTicketType_ticketTypeEle = <HTMLSelectElement>document.getElementById("ticketTypeAdd--ticketType");
           addTicketType_ticketTypeEle.addEventListener("change", addTicketType_refreshTicketTypeChange);
@@ -1312,7 +1327,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
           modalEle.getElementsByTagName("form")[0].addEventListener("submit", addTicketTypeFn_addTicketType);
         },
 
-        onshown(_modalEle, closeModalFn) {
+        onshown(_modalEle: HTMLElement, closeModalFn: () => void): void {
           addTicketType_closeModalFn = closeModalFn;
           ticketTypesFn_getAll(addTicketTypeFn_populateTicketTypeSelect);
         }
@@ -1397,7 +1412,8 @@ import type * as llmTypes from "../../helpers/llmTypes";
       const licenceFee = obj.licenceFee;
 
       trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right is-nowrap\">" +
-        "<input class=\"is-licence-fee\" name=\"ticketType_licenceFee\" type=\"hidden\" value=\"" + licenceFee + "\" />" +
+        "<input class=\"is-licence-fee\" name=\"ticketType_licenceFee\"" +
+        " type=\"hidden\" value=\"" + licenceFee + "\" />" +
         "<span>$ " + licenceFee + "</span>" +
         "</td>");
 
@@ -1529,7 +1545,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
       cityssm.openHtmlModal("licence-transactionAdd", {
 
-        onshow(modalEle) {
+        onshow(modalEle: HTMLElement): void {
 
           llm.getDefaultConfigProperty("externalReceiptNumber_fieldLabel", (fieldLabel: string) => {
             (<HTMLLabelElement>modalEle.querySelector("label[for='transactionAdd--externalReceiptNumber']")).innerText =

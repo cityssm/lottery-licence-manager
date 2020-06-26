@@ -118,9 +118,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 .toLowerCase()
                 .split(" ");
             let displayLimit = 10;
-            for (let organizationIndex = 0; organizationIndex < organizationList.length && displayLimit > 0; organizationIndex += 1) {
+            for (const organizationObj of organizationList) {
+                if (displayLimit < 0) {
+                    break;
+                }
                 let doDisplayRecord = true;
-                const organizationObj = organizationList[organizationIndex];
                 if (!organizationObj.isEligibleForLicences) {
                     continue;
                 }
@@ -505,7 +507,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
     }
     const ticketTypesPanelEle = document.getElementById("is-ticket-types-panel");
     if (ticketTypesPanelEle) {
-        let licenceTypeKeyToTicketTypes = new Map();
+        const licenceTypeKeyToTicketTypes = new Map();
         const ticketTypesFn_getAll = (callbackFn) => {
             const licenceTypeKey = licenceType_selectEle.value;
             if (licenceTypeKeyToTicketTypes.has(licenceTypeKey)) {
@@ -734,18 +736,26 @@ Object.defineProperty(exports, "__esModule", { value: true });
             const addTicketTypeFn_refreshUnitCountChange = () => {
                 const unitCount = parseInt(addTicketType_unitCountEle.value, 10);
                 document.getElementById("ticketTypeAdd--prizesTotal").value =
-                    (parseFloat(document.getElementById("ticketTypeAdd--prizesPerDeal").value) * unitCount).toFixed(2);
+                    (parseFloat(document.getElementById("ticketTypeAdd--prizesPerDeal").value) * unitCount)
+                        .toFixed(2);
                 document.getElementById("ticketTypeAdd--licenceFee").value =
-                    (parseFloat(document.getElementById("ticketTypeAdd--feePerUnit").value) * unitCount).toFixed(2);
+                    (parseFloat(document.getElementById("ticketTypeAdd--feePerUnit").value) * unitCount)
+                        .toFixed(2);
             };
             const addTicketType_refreshTicketTypeChange = () => {
                 const ticketTypeOptionEle = addTicketType_ticketTypeEle.selectedOptions[0];
-                document.getElementById("ticketTypeAdd--ticketPrice").value = ticketTypeOptionEle.getAttribute("data-ticket-price");
-                document.getElementById("ticketTypeAdd--ticketCount").value = ticketTypeOptionEle.getAttribute("data-ticket-count");
+                document.getElementById("ticketTypeAdd--ticketPrice").value =
+                    ticketTypeOptionEle.getAttribute("data-ticket-price");
+                document.getElementById("ticketTypeAdd--ticketCount").value =
+                    ticketTypeOptionEle.getAttribute("data-ticket-count");
                 document.getElementById("ticketTypeAdd--valuePerDeal").value =
-                    (parseFloat(ticketTypeOptionEle.getAttribute("data-ticket-price")) * parseInt(ticketTypeOptionEle.getAttribute("data-ticket-count"), 10)).toFixed(2);
-                document.getElementById("ticketTypeAdd--prizesPerDeal").value = ticketTypeOptionEle.getAttribute("data-prizes-per-deal");
-                document.getElementById("ticketTypeAdd--feePerUnit").value = ticketTypeOptionEle.getAttribute("data-fee-per-unit");
+                    (parseFloat(ticketTypeOptionEle.getAttribute("data-ticket-price")) *
+                        parseInt(ticketTypeOptionEle.getAttribute("data-ticket-count"), 10))
+                        .toFixed(2);
+                document.getElementById("ticketTypeAdd--prizesPerDeal").value =
+                    ticketTypeOptionEle.getAttribute("data-prizes-per-deal");
+                document.getElementById("ticketTypeAdd--feePerUnit").value =
+                    ticketTypeOptionEle.getAttribute("data-fee-per-unit");
                 addTicketTypeFn_refreshUnitCountChange();
             };
             const addTicketTypeFn_populateTicketTypeSelect = (ticketTypes) => {
@@ -764,7 +774,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     optionEle.setAttribute("data-prizes-per-deal", ticketTypeObj.prizesPerDeal.toFixed(2));
                     optionEle.setAttribute("data-fee-per-unit", (ticketTypeObj.feePerUnit || 0).toFixed(2));
                     optionEle.value = ticketTypeObj.ticketType;
-                    optionEle.innerText = ticketTypeObj.ticketType + " (" + ticketTypeObj.ticketCount + " tickets, $" + ticketTypeObj.ticketPrice.toFixed(2) + " each)";
+                    optionEle.innerText =
+                        ticketTypeObj.ticketType +
+                            " (" + ticketTypeObj.ticketCount + " tickets, $" + ticketTypeObj.ticketPrice.toFixed(2) + " each)";
                     addTicketType_ticketTypeEle.insertAdjacentElement("beforeend", optionEle);
                 }
                 addTicketType_refreshTicketTypeChange();
@@ -830,7 +842,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 .addEventListener("click", deleteTicketTypeFn_openConfirm);
             const licenceFee = obj.licenceFee;
             trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right is-nowrap\">" +
-                "<input class=\"is-licence-fee\" name=\"ticketType_licenceFee\" type=\"hidden\" value=\"" + licenceFee + "\" />" +
+                "<input class=\"is-licence-fee\" name=\"ticketType_licenceFee\"" +
+                " type=\"hidden\" value=\"" + licenceFee + "\" />" +
                 "<span>$ " + licenceFee + "</span>" +
                 "</td>");
             trEle.insertAdjacentHTML("beforeend", "<td>" +

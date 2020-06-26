@@ -110,13 +110,15 @@ const getApplicationSettingWithDB = (db: sqlite.Database, settingKey: string): s
 
 
 // tslint:disable-next-line:cyclomatic-complexity
-const getLicenceWithDB = (db: sqlite.Database, licenceID: number | string, reqSession: Express.SessionData, queryOptions: {
-  includeTicketTypes: boolean,
-  includeFields: boolean,
-  includeEvents: boolean,
-  includeAmendments: boolean,
-  includeTransactions: boolean
-}) => {
+const getLicenceWithDB = (db: sqlite.Database, licenceID: number | string,
+  reqSession: Express.SessionData,
+  queryOptions: {
+    includeTicketTypes: boolean,
+    includeFields: boolean,
+    includeEvents: boolean,
+    includeAmendments: boolean,
+    includeTransactions: boolean
+  }) => {
 
   const licenceObj: llm.LotteryLicence =
     db.prepare("select l.*," +
@@ -322,7 +324,7 @@ const addLicenceAmendmentWithDB = (db: sqlite.Database,
 };
 
 
-export const getRawRowsColumns = (sql: string, params: any[]): RawRowsColumnsReturn => {
+export const getRawRowsColumns = (sql: string, params: (string | number)[]): RawRowsColumnsReturn => {
 
   const db = sqlite(dbPath, {
     readonly: true
@@ -389,7 +391,7 @@ export const getLicenceTableStats = () => {
 export const getLicences = (reqBodyOrParamsObj: {
   externalLicenceNumber?: string,
   licenceTypeKey?: string,
-  organizationID?: string,
+  organizationID?: string | number,
   organizationName?: string,
   licenceStatus?: string,
   locationID?: number
@@ -1230,7 +1232,7 @@ export const updateLicence = (reqBody: LotteryLicenceForm, reqSession: Express.S
 
       if (ticketTypeObj_past &&
         configFns.getProperty("amendments.trackTicketTypeUpdate") &&
-        ticketTypeObj_past.unitCount !== parseInt(reqBody.ticketType_unitCount, 10)) {
+        ticketTypeObj_past.unitCount !== parseInt(<string>reqBody.ticketType_unitCount, 10)) {
 
         addLicenceAmendmentWithDB(
           db,
@@ -1540,7 +1542,11 @@ export const unissueLicence = (licenceID: number, reqSession: Express.SessionDat
 
 };
 
-export const getLicenceTypeSummary = (reqBody: any) => {
+export const getLicenceTypeSummary = (reqBody: {
+  applicationDateStartString?: string,
+  applicationDateEndString?: string,
+  licenceTypeKey?: string
+}) => {
 
   const db = sqlite(dbPath, {
     readonly: true
@@ -1609,7 +1615,10 @@ export const getLicenceTypeSummary = (reqBody: any) => {
 
 };
 
-export const getActiveLicenceSummary = (reqBody: any, reqSession: Express.SessionData) => {
+export const getActiveLicenceSummary = (reqBody: {
+  startEndDateStartString: string,
+  startEndDateEndString: string
+}, reqSession: Express.SessionData) => {
 
   const db = sqlite(dbPath, {
     readonly: true
@@ -1671,7 +1680,13 @@ export const getActiveLicenceSummary = (reqBody: any, reqSession: Express.Sessio
 /**
  * @returns The new transactionIndex
  */
-export const addTransaction = (reqBody: any, reqSession: Express.SessionData) => {
+export const addTransaction = (reqBody: {
+  licenceID: string,
+  transactionAmount: string,
+  transactionNote: string,
+  externalReceiptNumber: string,
+  issueLicence: "" | "true"
+}, reqSession: Express.SessionData) => {
 
   const db = sqlite(dbPath);
 
@@ -1963,7 +1978,10 @@ export const getRecentlyUpdateEvents = (reqSession: Express.SessionData) => {
   return events;
 };
 
-export const getOutstandingEvents = (reqBody: any, reqSession: Express.SessionData) => {
+export const getOutstandingEvents = (reqBody: {
+  eventDateType?: string,
+  licenceTypeKey?: string
+}, reqSession: Express.SessionData) => {
 
   const db = sqlite(dbPath, {
     readonly: true
@@ -2033,7 +2051,10 @@ export const getOutstandingEvents = (reqBody: any, reqSession: Express.SessionDa
   return events;
 };
 
-export const getEventFinancialSummary = (reqBody: any) => {
+export const getEventFinancialSummary = (reqBody: {
+  eventDateStartString: string,
+  eventDateEndString: string
+}) => {
 
   const db = sqlite(dbPath, {
     readonly: true
@@ -2168,7 +2189,20 @@ export const getPastEventBankingInformation = (licenceID: number) => {
 /**
  * @returns TRUE if successful
  */
-export const updateEvent = (reqBody: any, reqSession: Express.SessionData): boolean => {
+export const updateEvent = (reqBody: {
+  licenceID: string,
+  eventDate: string,
+  reportDateString: string,
+  bank_name: string,
+  bank_address: string,
+  bank_accountNumber: string,
+  bank_accountBalance: string,
+  costs_receipts: string,
+  costs_admin: string,
+  costs_prizesAwarded: string,
+  costs_amountDonated: string,
+  fieldKeys: string
+}, reqSession: Express.SessionData): boolean => {
 
   const db = sqlite(dbPath);
 
@@ -2304,7 +2338,7 @@ export const pokeEvent = (licenceID: number, eventDate: number, reqSession: Expr
 };
 
 
-export const getLicenceActivityByDateRange = (startDate: number, endDate: number, _reqBody: any) => {
+export const getLicenceActivityByDateRange = (startDate: number, endDate: number, _reqBody: {}) => {
 
   const db = sqlite(dbPath, {
     readonly: true

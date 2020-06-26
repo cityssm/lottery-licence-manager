@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 (() => {
-    let licenceType_keyToName = {};
+    const licenceType_keyToName = {};
     const formEle = document.getElementById("form--filters");
     const limitEle = document.getElementById("filter--limit");
     const offsetEle = document.getElementById("filter--offset");
@@ -59,7 +59,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
                             "<a data-tooltip=\"View Location\" href=\"/locations/" + licenceObj.locationID + "\">" +
                             cityssm.escapeHTML(licenceObj.locationDisplayName) +
                             "</a>" +
-                            (licenceObj.locationDisplayName === licenceObj.locationAddress1 ? "" : "<br /><small>" + cityssm.escapeHTML(licenceObj.locationAddress1) + "</small>") +
+                            (licenceObj.locationDisplayName === licenceObj.locationAddress1 ?
+                                "" :
+                                "<br /><small>" + cityssm.escapeHTML(licenceObj.locationAddress1) + "</small>") +
                             "</td>") +
                         ("<td class=\"is-nowrap\">" +
                             "<span class=\"has-cursor-default has-tooltip-right\" data-tooltip=\"Start Date\">" +
@@ -71,12 +73,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
                             "</td>") +
                         "<td class=\"has-text-right is-nowrap is-hidden-print\">" +
                         (licenceObj.canUpdate ?
-                            "<a class=\"button is-small\" data-tooltip=\"Edit Licence\" href=\"/licences/" + licenceObj.licenceID + "/edit\">" +
+                            "<a class=\"button is-small\" data-tooltip=\"Edit Licence\"" +
+                                " href=\"/licences/" + licenceObj.licenceID + "/edit\">" +
                                 "<span class=\"icon\"><i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i></span>" +
                                 "<span>Edit</span>" +
                                 "</a> " : "") +
                         (licenceObj.issueDate ?
-                            "<a class=\"button is-small\" data-tooltip=\"Print Licence\" href=\"/licences/" + licenceObj.licenceID + "/print\" download>" +
+                            "<a class=\"button is-small\" data-tooltip=\"Print Licence\"" +
+                                " href=\"/licences/" + licenceObj.licenceID + "/print\" download>" +
                                 "<i class=\"fas fa-print\" aria-hidden=\"true\"></i>" +
                                 "<span class=\"sr-only\">Print</span>" +
                                 "</a>" :

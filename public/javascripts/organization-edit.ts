@@ -213,7 +213,9 @@ import type * as llmTypes from "../../helpers/llmTypes";
         editRepresentativeTrEle.getAttribute("data-representative-email-address");
 
       (<HTMLInputElement>document.getElementById("editOrganizationRepresentative--isDefault")).value =
-        (<HTMLInputElement>document.getElementById("representative-isDefault--" + representativeIndex)).checked ? "1" : "0";
+        (<HTMLInputElement>document.getElementById("representative-isDefault--" + representativeIndex)).checked ?
+          "1" :
+          "0";
 
       cityssm.showModal(editRepresentativeModalEle);
 

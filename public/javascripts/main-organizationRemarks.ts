@@ -61,7 +61,7 @@ llm.organizationRemarks = (() => {
     };
 
     cityssm.openHtmlModal("remarkAdd", {
-      onshown(modalEle, closeModalFn) {
+      onshown(modalEle: HTMLElement, closeModalFn: () => void): void {
 
         (<HTMLInputElement>document.getElementById("addRemark--organizationID")).value = organizationID.toString();
         document.getElementById("addRemark--remark").focus();
@@ -101,7 +101,7 @@ llm.organizationRemarks = (() => {
     };
 
     cityssm.openHtmlModal("remarkEdit", {
-      onshow(modalEle) {
+      onshow(modalEle: HTMLElement): void {
 
         (<HTMLInputElement>document.getElementById("editRemark--organizationID")).value = organizationID.toString();
         (<HTMLInputElement>document.getElementById("editRemark--remarkIndex")).value = remarkIndex.toString();
@@ -123,7 +123,7 @@ llm.organizationRemarks = (() => {
         modalEle.getElementsByTagName("form")[0].addEventListener("submit", formFn_edit);
 
       },
-      onshown(_modalEle, closeModalFn) {
+      onshown(_modalEle: HTMLElement, closeModalFn: () => void): void {
 
         editRemarkCloseModalFn = closeModalFn;
         document.getElementById("editRemark--remark").focus();

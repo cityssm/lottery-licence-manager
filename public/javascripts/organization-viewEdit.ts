@@ -25,13 +25,17 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
     const editRemarkFn = (buttonEvent: Event) => {
 
-      const remarkIndex = parseInt((<HTMLButtonElement>buttonEvent.currentTarget).getAttribute("data-remark-index"), 10);
+      const remarkIndex =
+        parseInt((<HTMLButtonElement>buttonEvent.currentTarget).getAttribute("data-remark-index"), 10);
+
       llm.organizationRemarks.openEditRemarkModal(organizationID, remarkIndex, refreshRemarksFn);
     };
 
     const deleteRemarkFn = (buttonEvent: Event) => {
 
-      const remarkIndex = parseInt((<HTMLButtonElement>buttonEvent.currentTarget).getAttribute("data-remark-index"), 10);
+      const remarkIndex =
+        parseInt((<HTMLButtonElement>buttonEvent.currentTarget).getAttribute("data-remark-index"), 10);
+
       llm.organizationRemarks.deleteRemark(organizationID, remarkIndex, true, refreshRemarksFn);
     };
 
@@ -132,7 +136,9 @@ import type * as llmTypes from "../../helpers/llmTypes";
     remarkSearchStrEle.value = "";
 
     const remarkDisplayCountEle = document.getElementById("remark--displayCount");
-    const remarkBlockEles = <HTMLCollectionOf<HTMLElement>>remarksContainerEle.getElementsByClassName("is-remark-block");
+
+    const remarkBlockEles = <HTMLCollectionOf<HTMLElement>>
+      remarksContainerEle.getElementsByClassName("is-remark-block");
 
     remarkSearchStrEle.addEventListener("keyup", () => {
 
@@ -184,7 +190,8 @@ import type * as llmTypes from "../../helpers/llmTypes";
   let bankRecordsCache = {};
 
   const bankRecordsBankingYearFilterEle = <HTMLSelectElement>document.getElementById("bankRecordFilter--bankingYear");
-  const bankRecordsAccountNumberFilterEle = <HTMLSelectElement>document.getElementById("bankRecordFilter--accountNumber");
+  const bankRecordsAccountNumberFilterEle =
+    <HTMLSelectElement>document.getElementById("bankRecordFilter--accountNumber");
 
   const bankRecordsTableEle = <HTMLTableElement>document.getElementById("table--bankRecords");
 
@@ -287,52 +294,57 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
     cityssm.postJSON("/organizations/doGetBankRecordStats", {
       organizationID
-    }, (bankRecordStats: any[]) => {
+    },
+      (bankRecordStats: {
+        accountNumber: string,
+        bankingYearMin: number,
+        bankingYearMax: number
+      }[]) => {
 
-      const currentYear = new Date().getFullYear();
+        const currentYear = new Date().getFullYear();
 
-      let bankingYearMin = currentYear - 1;
+        let bankingYearMin = currentYear - 1;
 
-      // Account Number Select
+        // Account Number Select
 
-      if (bankRecordStats.length === 0) {
+        if (bankRecordStats.length === 0) {
 
-        bankRecordsAccountNumberFilterEle.innerHTML = "<option value=\"\">(No Accounts Recorded)</option>";
+          bankRecordsAccountNumberFilterEle.innerHTML = "<option value=\"\">(No Accounts Recorded)</option>";
 
-      } else {
+        } else {
 
-        bankRecordsAccountNumberFilterEle.innerHTML = "";
+          bankRecordsAccountNumberFilterEle.innerHTML = "";
 
-        for (const bankRecordsStat of bankRecordStats) {
+          for (const bankRecordsStat of bankRecordStats) {
 
-          bankingYearMin = Math.min(bankRecordsStat.bankingYearMin, bankingYearMin);
+            bankingYearMin = Math.min(bankRecordsStat.bankingYearMin, bankingYearMin);
 
-          const accountNumber = cityssm.escapeHTML(bankRecordsStat.accountNumber);
+            const accountNumber = cityssm.escapeHTML(bankRecordsStat.accountNumber);
 
-          bankRecordsAccountNumberFilterEle.insertAdjacentHTML(
-            "beforeend",
-            "<option value=\"" + accountNumber + "\">" +
-            accountNumber + " (From " + bankRecordsStat.bankingYearMin + " to " + bankRecordsStat.bankingYearMax + ")" +
-            "</option>"
-          );
+            bankRecordsAccountNumberFilterEle.insertAdjacentHTML(
+              "beforeend",
+              "<option value=\"" + accountNumber + "\">" +
+              accountNumber +
+              " (From " + bankRecordsStat.bankingYearMin + " to " + bankRecordsStat.bankingYearMax + ")" +
+              "</option>"
+            );
+          }
         }
-      }
 
-      // Banking Year Select
+        // Banking Year Select
 
-      bankRecordsBankingYearFilterEle.innerHTML = "";
+        bankRecordsBankingYearFilterEle.innerHTML = "";
 
-      for (let year = currentYear; year >= bankingYearMin; year -= 1) {
+        for (let year = currentYear; year >= bankingYearMin; year -= 1) {
 
-        bankRecordsBankingYearFilterEle.insertAdjacentHTML("beforeend", "<option value=\"" + year + "\">" +
-          year +
-          "</option>");
+          bankRecordsBankingYearFilterEle.insertAdjacentHTML("beforeend", "<option value=\"" + year + "\">" +
+            year +
+            "</option>");
+        }
 
-      }
+        getBankRecordsFn();
 
-      getBankRecordsFn();
-
-    });
+      });
   };
 
   bankRecordsBankingYearFilterEle.addEventListener("change", getBankRecordsFn);
@@ -467,7 +479,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
       cityssm.openHtmlModal("organization-bankRecordEdit", {
 
-        onshow() {
+        onshow(): void {
 
           (<HTMLInputElement>document.getElementById("bankRecordEdit--organizationID")).value = organizationID;
           (<HTMLInputElement>document.getElementById("bankRecordEdit--recordIndex")).value = recordIndex;
@@ -547,7 +559,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
             document.getElementById("bankRecordEdit--moreOptionsDropdown").remove();
           }
         },
-        onshown(modalEle, closeModalFn) {
+        onshown(modalEle: HTMLElement, closeModalFn: () => void): void {
 
           bankRecordEditCloseModalFn = closeModalFn;
           modalEle.getElementsByTagName("form")[0].addEventListener("submit", submitBankRecordEditFn);
@@ -569,7 +581,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
    */
 
   llm.initializeTabs(document.getElementById("tabs--organization"), {
-    onshown(tabContentEle) {
+    onshown(tabContentEle: HTMLElement): void {
 
       if (tabContentEle.id === "organizationTabContent--bankRecords" && !bankRecordsFiltersLoaded) {
         bankRecordsFiltersLoaded = true;

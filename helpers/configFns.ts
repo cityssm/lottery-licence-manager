@@ -12,6 +12,7 @@ import * as config from "../data/config";
  * SET UP FALLBACK VALUES
  */
 
+// tslint:disable-next-line:no-any
 const configFallbackValues = new Map<string, any>();
 
 configFallbackValues.set("application.applicationName", "Lottery Licence System");
@@ -80,6 +81,7 @@ configFallbackValues.set("amendments.trackTicketTypeUpdate", true);
 configFallbackValues.set("amendments.trackTicketTypeDelete", true);
 
 
+// tslint:disable-next-line:no-any
 export const getProperty = (propertyName: string): any => {
 
   const propertyNameSplit = propertyName.split(".");
@@ -132,7 +134,7 @@ export const getLicenceTypeKeyToNameObject = () => {
 
   if (Object.keys(licenceTypeKeyNameObject).length === 0) {
 
-    let list = {};
+    const list = {};
 
     (<llm.ConfigLicenceType[]>getProperty("licenceTypes"))
       .forEach((ele) => {
