@@ -4,7 +4,6 @@
 
 Organizations are the groups that hold lottery licences.
 
-
 ## Find an Organization with the Organization Search
 
 ![Organization Search](images/organization-search.png)
@@ -15,20 +14,20 @@ or on the home dashboard.
 
 The Organization Search page offers several filters to help find organization records.
 
-- Organization Name
-- Representative Name
-- Licence Eligibility (set to display eligible organizations only by default)
+-   Organization Name
+-   Representative Name
+-   Licence Eligibility (set to display eligible organizations only by default)
 
 Note that both the Organization Name and Representative Name fields
 are case insensitive and can take several search terms at the same time.
 
-For example, the organization record for *Johnny's Society for Pet Saving*
+For example, the organization record for _Johnny's Society for Pet Saving_
 can be found by searching for:
 
-- `pet saving john`
-- `pet society`
+-   `pet saving john`
+-   `pet society`
 
-*Johnny's Society for Pet Saving* would not be found however by searching for
+_Johnny's Society for Pet Saving_ would not be found however by searching for
 `johnnys pets` since neither term exists fully in the organization name.
 For that reach, it is recommended to use more generic searches when possible,
 and increase specificity if needed.
@@ -42,13 +41,12 @@ to trigger the refresh.
 Search results are displayed below the filters in a table,
 and include the following columns.
 
-- Organization Name, linked to the organization record.
-- Organization Note Indicator, if applicable.
-- Default Representative.
-- Organization Edit Link, depending on user permissions.
-- Active Licences or Last Active Licence Date.
-- New Licence Link.
-
+-   Organization Name, linked to the organization record.
+-   Organization Note Indicator, if applicable.
+-   Default Representative.
+-   Organization Edit Link, depending on user permissions.
+-   Active Licences or Last Active Licence Date.
+-   New Licence Link.
 
 ## Create a New Organization Record
 
@@ -58,11 +56,10 @@ When creating a new organization record, the only required piece of information
 is the organization name.  To create the record,
 click the green "Create New Organization and Continue" button.
 
-
 ## View and Update an Organization Record
 
-*Note that, although the update screens are described below,
-the read only screens behave similarly.*
+_Note that, although the update screens are described below,
+the read only screens behave similarly._
 
 ![Update an Organization Record](images/organization-edit.png)
 
@@ -78,7 +75,6 @@ one that is no longer needed.
 
 To delete an organization, expand the "Options" button, and select "Delete Organization".
 Deleted organizations can be recovered using the Organization Recovery page.
-
 
 ### Tab - Organization Representatives
 
@@ -97,7 +93,6 @@ Remove representatives using the corresponding "Delete" buttons.
 Export a CSV document (compatible with Microsoft Excel) of all active representatives
 using the "Export Representatives" button.
 
-
 ### Tab - Lottery Licences
 
 ![Lottery Licences](images/organization-edit-licences.png)
@@ -108,7 +103,6 @@ Licences that have been issued can be printed using the corresponding "Print" li
 A complete licence history for the organization can be exported as a CSV document
 using the "Export Licences" button.
 
-
 ### Tab - Remarks
 
 ![Organization Remarks](images/organization-edit-remarks.png)
@@ -118,7 +112,6 @@ Remarks can be marked as important to further highlight them in the list.
 
 A complete remark history for the organization can be exported as a CSV document
 using the "Export Remarks" button.
-
 
 ### Tab - Bank Records
 
@@ -132,7 +125,6 @@ Records can also be created using the teal "Add a Bank Record" button.
 A complete history of bank records for the organization can be exported as a CSV document
 using the "Export Bank Records" button.
 
-
 ## Cleanup Inactive Organizations
 
 ![Organization Cleanup](images/organization-cleanup.png)
@@ -142,7 +134,6 @@ removed from the system. It lists organizations with no recent licence activity.
 Organizations can be reviewed by clicking on their names, or quickly removed with
 the corresponding red "Delete" button.
 
-
 ## Recover Deleted Organizations
 
 ![Organization Recovery](images/organization-recovery.png)
@@ -150,8 +141,7 @@ the corresponding red "Delete" button.
 The Organization Recovery page lists organizations that have been deleted,
 along with the date they were deleted.  Organizations can be reviewed and restored.
 
-
 ## Related Documentation
 
-- [Lottery Licences](licences.md)
-- [Lottery Events](events.md)
+-   [Lottery Licences](licences.md)
+-   [Lottery Events](events.md)

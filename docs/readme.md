@@ -4,7 +4,6 @@
 
 **[Live Documentation Site on GitHub](https://cityssm.github.io/lottery-licence-manager/)**
 
-
 ## User Documentation
 
 **[Tips and Tricks](tipsTricks.md)**
@@ -28,7 +27,6 @@ What are location records?
 What are they used for?
 How do I find location records?
 How do I maintain location records?
-
 
 ## Administrator Documentation
 

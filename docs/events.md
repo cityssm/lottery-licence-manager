@@ -8,31 +8,29 @@ depends on your individual reporting requirements.
 
 Some suggestions, based on Sault Ste. Marie's requirements:
 
-- In the case of a lottery licence for a raffle with a period of ticket sales,
-  one event record should be created for each draw date.
+-   In the case of a lottery licence for a raffle with a period of ticket sales,
+    one event record should be created for each draw date.
 
-- In the case of a lottery licence for eight bingo events,
-  eight event records should be created, one for each event date.
+-   In the case of a lottery licence for eight bingo events,
+    eight event records should be created, one for each event date.
 
-- In the case of a lottery licence for one year of break-open (Nevada) ticket sales,
-  one event record should be made for the last date of sales.
-  If the ticket sales are extended for an additional year,
-  a second event should be added to the licence for the new licence end date.
+-   In the case of a lottery licence for one year of break-open (Nevada) ticket sales,
+    one event record should be made for the last date of sales.
+    If the ticket sales are extended for an additional year,
+    a second event should be added to the licence for the new licence end date.
 
 Lottery events are created on the lottery licence itself.
 
-
 ## View and Update a Lottery Event
 
-*Note that events are created from the licence edit view.*
+_Note that events are created from the licence edit view._
 
 ![Event Edit](images/event-edit.png)
 
 Event records include banking information, a cost breakdown,
 and custom fields that vary by the type of licence.
 
-Event records are considered *reported* when the Report Date field is populated.
-
+Event records are considered _reported_ when the Report Date field is populated.
 
 ## Admins Only!!!  Updating a Locked Event
 
@@ -54,9 +52,8 @@ Append `/poke` to the end, like this:
 
 After the page refreshes, the event record should have the option to edit.
 
-
 ## Related Documentation
 
-- [Organizations](organizations.md)
-- [Lottery Licences](licences.md)
-- [Locations](locations.md)
+-   [Organizations](organizations.md)
+-   [Lottery Licences](licences.md)
+-   [Locations](locations.md)

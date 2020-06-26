@@ -2,11 +2,10 @@
 
 # Lottery Licences
 
-*Note that many options in this application can be configured for your individual requirements.
+_Note that many options in this application can be configured for your individual requirements.
 For the purposes of documentation, lottery licences are described using the rules defined
 by the Alcohol and Gaming Corporation of Ontario (AGCO),
-and enforced within the City of Sault Ste. Marie.*
-
+and enforced within the City of Sault Ste. Marie._
 
 ## Finding a Lottery Licence with the Lottery Licence Search
 
@@ -18,23 +17,23 @@ You can find it in the navigation bar at the top of every page, or on the home d
 
 There are several filters to help with finding lottery licences.
 
-- Municipal Licence Number (a customized name for the External Licence Number field)
-- Licence Type
-- Organization Name
-- Licence Status (set to display active lottery licences only by default)
+-   Municipal Licence Number (a customized name for the External Licence Number field)
+-   Licence Type
+-   Organization Name
+-   Licence Status (set to display active lottery licences only by default)
 
-Search results are refreshed when you change the value of a search filter. If the refresh is not triggered automatically, press <kbd>Enter</kbd> to trigger the refresh.
+Search results are refreshed when you change the value of a search filter.
+If the refresh is not triggered automatically, press <kbd>Enter</kbd> to trigger the refresh.
 
 Search results are displayed below the filters in a table and include the following columns.
 
-- Licence Identifiers, linked to the lottery licence record.
-- Licence Type and Licence Details.
-- Organization Name, linked to the organization record.
-- Location, linked to the Location record.
-- Licence Date Range.
-- Licence Edit Link, depending on user permissions.
-- "Not Issued" Indicator or a Print Licence button.
-
+-   Licence Identifiers, linked to the lottery licence record.
+-   Licence Type and Licence Details.
+-   Organization Name, linked to the organization record.
+-   Location, linked to the Location record.
+-   Licence Date Range.
+-   Licence Edit Link, depending on user permissions.
+-   "Not Issued" Indicator or a Print Licence button.
 
 ## Create a New Lottery Licence
 
@@ -43,8 +42,8 @@ Search results are displayed below the filters in a table and include the follow
 New lottery licences can be created from the lottery licence side menu,
 from the main dashboard, or from an organization view.
 
-*Note that a corresponding organization record should exist prior to creating
-a lottery licence.*
+_Note that a corresponding organization record should exist prior to creating
+a lottery licence._
 
 Using the [config.js](admin-configJS.md) file, the Municipal Licence Number field can be automatically populated
 by using a range of numbers.
@@ -63,11 +62,10 @@ like a weekly bingo event for example.
 
 To save the new lottery licence, click the green "Create New Licence and Continue" button.
 
-
 ## View and Update a Lottery Licence
 
-*Note that, although the update screens are described below,
-the read only screens behave similarly.*
+_Note that, although the update screens are described below,
+the read only screens behave similarly._
 
 ![Licence Fee and Transactions](images/licence-edit-transactions.png)
 
@@ -85,7 +83,6 @@ found at the top of the page.
 
 Once a licence has been issued, further changes to the licence can be
 automatically tracked as amendments.
-
 
 ## Admins Only!!!  Updating a Locked Licence
 
@@ -107,9 +104,8 @@ Append `/poke` to the end, like this:
 
 After the page refreshes, the licence record should have the option to edit.
 
-
 ## Related Documentation
 
-- [Organizations](organizations.md)
-- [Lottery Events](events.md)
-- [Locations](locations.md)
+-   [Organizations](organizations.md)
+-   [Lottery Events](events.md)
+-   [Locations](locations.md)

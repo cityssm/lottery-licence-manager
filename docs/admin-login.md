@@ -26,9 +26,9 @@ for your admin credentials.**
 You should visit the User Management area
 to create a proper admin user with an encrypted password in the `users.db` database.
 
-- If you create a new user with `admin` as the user name,
-  that new user will override the default admin user, even if the `admin.defaultPassword` property is set.
+-   If you create a new user with `admin` as the user name,
+    that new user will override the default admin user, even if the `admin.defaultPassword` property is set.
 
-- If you are not creating a user with the user name `admin`,
-  it is recommended that your either remove the property from your `config.js` file altogether,
-  or set it to blank when you're done.
+-   If you are not creating a user with the user name `admin`,
+    it is recommended that your either remove the property from your `config.js` file altogether,
+    or set it to blank when you're done.
