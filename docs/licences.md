@@ -2,10 +2,12 @@
 
 # Lottery Licences
 
-_Note that many options in this application can be configured for your individual requirements.
+## Documentation Note
+
+Many options in this application can be configured for your individual requirements.
 For the purposes of documentation, lottery licences are described using the rules defined
 by the Alcohol and Gaming Corporation of Ontario (AGCO),
-and enforced within the City of Sault Ste. Marie._
+and enforced within the City of Sault Ste. Marie.
 
 ## Finding a Lottery Licence with the Lottery Licence Search
 
