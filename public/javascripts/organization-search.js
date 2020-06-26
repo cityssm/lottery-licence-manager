@@ -77,7 +77,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
                         "</span>";
                 }
                 else if (organizationObj.licences_endDateMax) {
-                    licenceHTML = "<span class=\"tag has-cursor-default is-info is-light\" data-tooltip=\"Last Licence End Date\">" +
+                    licenceHTML = "<span class=\"tag has-cursor-default is-info is-light\"" +
+                        " data-tooltip=\"Last Licence End Date\">" +
                         "<i class=\"fas fa-stop mr-2\" aria-hidden=\"true\"></i> " + organizationObj.licences_endDateMaxString +
                         "</span>";
                 }

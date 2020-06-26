@@ -37,7 +37,7 @@ declare const llm: llmGlobal;
       costs_adminSum: number
       costs_netProceedsSum: number,
       costs_prizesAwardedSum: number,
-      costs_amountDonatedSum: number,
+      costs_amountDonatedSum: number
     }[]) => {
 
       // Hide all rows

@@ -913,7 +913,8 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
       let prizeValueTotal = 0;
 
-      const prizeValueEles = <HTMLCollectionOf<HTMLInputElement>>ticketTypesPanelEle.getElementsByClassName("is-total-prizes-per-deal");
+      const prizeValueEles =
+        <HTMLCollectionOf<HTMLInputElement>>ticketTypesPanelEle.getElementsByClassName("is-total-prizes-per-deal");
 
       for (const prizeValueEle of prizeValueEles) {
         prizeValueTotal += parseFloat(prizeValueEle.value);
@@ -921,7 +922,8 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
       let licenceFeeTotal = 0;
 
-      const licenceFeeEles = <HTMLCollectionOf<HTMLInputElement>>ticketTypesPanelEle.getElementsByClassName("is-licence-fee");
+      const licenceFeeEles =
+        <HTMLCollectionOf<HTMLInputElement>>ticketTypesPanelEle.getElementsByClassName("is-licence-fee");
 
       for (const licenceFeeEle of licenceFeeEles) {
         licenceFeeTotal += parseFloat(licenceFeeEle.value);

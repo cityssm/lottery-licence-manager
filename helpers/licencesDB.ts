@@ -2166,7 +2166,8 @@ export const getPastEventBankingInformation = (licenceID: number) => {
   const bankInfoList = db.prepare("select bank_name, bank_address, bank_accountNumber," +
     " max(eventDate) as eventDateMax" +
     " from LotteryEvents" +
-    " where licenceID in (select licenceID from LotteryLicences where organizationID = ? and recordDelete_timeMillis is null)" +
+    (" where licenceID in (" +
+      "select licenceID from LotteryLicences where organizationID = ? and recordDelete_timeMillis is null)") +
     " and licenceID <> ?" +
     " and eventDate >= ?" +
     " and recordDelete_timeMillis is null" +

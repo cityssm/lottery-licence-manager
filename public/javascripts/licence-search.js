@@ -118,7 +118,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 if (currentLimit + currentOffset < licenceResults.count) {
                     const nextEle = document.createElement("a");
                     nextEle.className = "button ml-3";
-                    nextEle.innerHTML = "<span>Next Licences</span><span class=\"icon\"><i class=\"fas fa-chevron-right\" aria-hidden=\"true\"></i></span>";
+                    nextEle.innerHTML =
+                        "<span>Next Licences</span>" +
+                            "<span class=\"icon\"><i class=\"fas fa-chevron-right\" aria-hidden=\"true\"></i></span>";
                     nextEle.addEventListener("click", (clickEvent) => {
                         clickEvent.preventDefault();
                         offsetEle.value = (currentOffset + currentLimit).toString();

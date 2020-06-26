@@ -39,54 +39,54 @@ router.all("/:reportName", (req, res) => {
 
     case "locations-unused": {
 
-        sql = "select lo.locationID, lo.locationName," +
-          " lo.locationAddress1, lo.locationAddress2, lo.locationCity, lo.locationProvince," +
-          " l.licences_endDateMax, d.distributor_endDateMax, m.manufacturer_endDateMax" +
-          " from Locations lo" +
+      sql = "select lo.locationID, lo.locationName," +
+        " lo.locationAddress1, lo.locationAddress2, lo.locationCity, lo.locationProvince," +
+        " l.licences_endDateMax, d.distributor_endDateMax, m.manufacturer_endDateMax" +
+        " from Locations lo" +
 
-          (" left join (" +
-            "select locationID, max(endDate) as licences_endDateMax" +
-            " from LotteryLicences" +
-            " where recordDelete_timeMillis is null" +
-            " group by locationID" +
-            ") l on lo.locationID = l.locationID") +
+        (" left join (" +
+          "select locationID, max(endDate) as licences_endDateMax" +
+          " from LotteryLicences" +
+          " where recordDelete_timeMillis is null" +
+          " group by locationID" +
+          ") l on lo.locationID = l.locationID") +
 
-          (" left join (" +
-            "select t.distributorLocationID," +
-            " max(l.endDate) as distributor_endDateMax" +
-            " from LotteryLicenceTicketTypes t" +
-            " left join LotteryLicences l on t.licenceID = l.licenceID" +
-            " where t.recordDelete_timeMillis is null" +
-            " group by t.distributorLocationID" +
-            ") d on lo.locationID = d.distributorLocationID") +
+        (" left join (" +
+          "select t.distributorLocationID," +
+          " max(l.endDate) as distributor_endDateMax" +
+          " from LotteryLicenceTicketTypes t" +
+          " left join LotteryLicences l on t.licenceID = l.licenceID" +
+          " where t.recordDelete_timeMillis is null" +
+          " group by t.distributorLocationID" +
+          ") d on lo.locationID = d.distributorLocationID") +
 
-          (" left join (" +
-            "select t.manufacturerLocationID, max(l.endDate) as manufacturer_endDateMax" +
-            " from LotteryLicenceTicketTypes t" +
-            " left join LotteryLicences l on t.licenceID = l.licenceID" +
-            " where t.recordDelete_timeMillis is null" +
-            " group by t.manufacturerLocationID" +
-            ") m on lo.locationID = m.manufacturerLocationID") +
+        (" left join (" +
+          "select t.manufacturerLocationID, max(l.endDate) as manufacturer_endDateMax" +
+          " from LotteryLicenceTicketTypes t" +
+          " left join LotteryLicences l on t.licenceID = l.licenceID" +
+          " where t.recordDelete_timeMillis is null" +
+          " group by t.manufacturerLocationID" +
+          ") m on lo.locationID = m.manufacturerLocationID") +
 
-          " where lo.recordDelete_timeMillis is null" +
+        " where lo.recordDelete_timeMillis is null" +
 
-          " group by lo.locationID, lo.locationName," +
-          " lo.locationAddress1, lo.locationAddress2, lo.locationCity, lo.locationProvince," +
-          " l.licences_endDateMax, d.distributor_endDateMax, m.manufacturer_endDateMax" +
+        " group by lo.locationID, lo.locationName," +
+        " lo.locationAddress1, lo.locationAddress2, lo.locationCity, lo.locationProvince," +
+        " l.licences_endDateMax, d.distributor_endDateMax, m.manufacturer_endDateMax" +
 
-          (" having max(" +
-            "ifnull(l.licences_endDateMax, 0)," +
-            " ifnull(d.distributor_endDateMax, 0)," +
-            " ifnull(m.manufacturer_endDateMax, 0)) <= ?");
+        (" having max(" +
+          "ifnull(l.licences_endDateMax, 0)," +
+          " ifnull(d.distributor_endDateMax, 0)," +
+          " ifnull(m.manufacturer_endDateMax, 0)) <= ?");
 
-        const threeYearsAgo = new Date();
-        threeYearsAgo.setFullYear(threeYearsAgo.getFullYear() - 3);
+      const threeYearsAgo = new Date();
+      threeYearsAgo.setFullYear(threeYearsAgo.getFullYear() - 3);
 
-        params.push(dateTimeFns.dateToInteger(threeYearsAgo));
+      params.push(dateTimeFns.dateToInteger(threeYearsAgo));
 
-        break;
+      break;
 
-      }
+    }
 
     /*
      * Organizations
@@ -423,7 +423,9 @@ router.all("/:reportName", (req, res) => {
         " l.totalPrizeValue, l.licenceFee," +
         " e.bank_name, e.bank_address, e.bank_accountNumber, e.bank_accountBalance," +
         " e.costs_receipts, e.costs_admin, e.costs_prizesAwarded," +
-        " ifnull(e.costs_receipts, 0) - ifnull(e.costs_admin, 0) - ifnull(e.costs_prizesAwarded, 0) as costs_netProceeds," +
+        (" ifnull(e.costs_receipts, 0)" +
+          " - ifnull(e.costs_admin, 0)" +
+          " - ifnull(e.costs_prizesAwarded, 0) as costs_netProceeds,") +
         " e.costs_amountDonated" +
         " from LotteryEvents e" +
         " left join LotteryLicences l on e.licenceID = l.licenceID" +
