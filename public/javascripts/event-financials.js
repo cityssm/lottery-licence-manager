@@ -31,7 +31,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
             for (const licenceTypeSummaryObj of summary) {
                 const trEle = tbodyEle.querySelector("tr[data-licence-type-key='" + licenceTypeSummaryObj.licenceTypeKey + "']");
                 trEle.querySelector("[data-field='licenceCount']").innerText =
-                    licenceTypeSummaryObj.licenceCount;
+                    licenceTypeSummaryObj.licenceCount.toString();
                 licenceCount += licenceTypeSummaryObj.licenceCount;
                 trEle.querySelector("[data-field='eventCount']").innerHTML =
                     (licenceTypeSummaryObj.reportDateCount === licenceTypeSummaryObj.eventCount ?

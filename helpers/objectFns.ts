@@ -1,9 +1,9 @@
 import { FieldData } from "../helpers/llmTypes";
 
 
-export const fieldDataArrayToObject = (fieldDataArray: FieldData[]): any => {
+export const fieldDataArrayToObject = (fieldDataArray: FieldData[]): { [fieldKey: string]: string } => {
 
-  const fieldDataObject = {};
+  const fieldDataObject: { [fieldKey: string]: string } = {};
 
   for (const fieldData of fieldDataArray) {
     fieldDataObject[fieldData.fieldKey] = fieldData.fieldValue;

@@ -49,7 +49,7 @@ router.get("/licenceTypes", (_req, res) => {
 
   // Get licence table stats
 
-  const licenceTableStats: any = licencesDB.getLicenceTableStats();
+  const licenceTableStats = licencesDB.getLicenceTableStats();
 
   // Set application dates
 
@@ -92,7 +92,7 @@ router.get("/activeSummary", (_req, res) => {
 
   // Get licence table stats
 
-  const licenceTableStats: any = licencesDB.getLicenceTableStats();
+  const licenceTableStats = licencesDB.getLicenceTableStats();
 
   // Set start dates
 

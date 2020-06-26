@@ -18,14 +18,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 }
                 const trEle = document.createElement("tr");
                 trEle.insertAdjacentHTML("beforeend", "<td>" +
-                    "<a href=\"/licences/" + outstandingEventObj.licenceID + "\" data-tooltip=\"View Licence\" target=\"_blank\">" +
+                    "<a href=\"/licences/" + outstandingEventObj.licenceID + "\"" +
+                    " data-tooltip=\"View Licence\" target=\"_blank\">" +
                     outstandingEventObj.externalLicenceNumber + "<br / > " +
                     "<small>Licence #" + outstandingEventObj.licenceID + "</small>" +
                     "</a>" +
                     "</td>");
                 trEle.insertAdjacentHTML("beforeend", "<td>" + cityssm.escapeHTML(outstandingEventObj.licenceType) + "</td>");
                 trEle.insertAdjacentHTML("beforeend", "<td>" +
-                    "<a href=\"/events/" + outstandingEventObj.licenceID + "/" + outstandingEventObj.eventDate + "\" data-tooltip=\"View Event\" target=\"_blank\">" +
+                    "<a href=\"/events/" + outstandingEventObj.licenceID + "/" + outstandingEventObj.eventDate + "\"" +
+                    " data-tooltip=\"View Event\" target=\"_blank\">" +
                     outstandingEventObj.eventDateString +
                     "</a>" +
                     "</td>");

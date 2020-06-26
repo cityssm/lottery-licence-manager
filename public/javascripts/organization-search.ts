@@ -75,7 +75,12 @@ import type * as llmTypes from "../../helpers/llmTypes";
             "<td class=\"has-text-right\">" +
             (organizationObj.organizationNote === "" ?
               "" :
-              "<span class=\"tag has-cursor-default is-info is-light\" data-tooltip=\"" + cityssm.escapeHTML(organizationObj.organizationNote.length > 30 ? organizationObj.organizationNote.substring(0, 27) + "..." : organizationObj.organizationNote) + "\">" +
+              "<span class=\"tag has-cursor-default is-info is-light\"" +
+              " data-tooltip=\"" +
+              cityssm.escapeHTML(organizationObj.organizationNote.length > 30 ?
+                organizationObj.organizationNote.substring(0, 27) + "..." :
+                organizationObj.organizationNote) +
+              "\">" +
               "<i class=\"fas fa-sticky-note mr-2\" aria-hidden=\"true\"></i> Note" +
               "</span>"
             ) +
@@ -93,7 +98,8 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
             trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right is-hidden-print\">" +
               (organizationObj.canUpdate ?
-                "<a class=\"button is-small\" data-tooltip=\"Edit Organization\" href=\"/organizations/" + organizationObj.organizationID + "/edit\">" +
+                "<a class=\"button is-small\" data-tooltip=\"Edit Organization\"" +
+                " href=\"/organizations/" + organizationObj.organizationID + "/edit\">" +
                 "<span class=\"icon\"><i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i></span>" +
                 "<span>Edit</span>" +
                 "</a>" :
@@ -125,7 +131,8 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
             trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right is-hidden-print\">" +
               (organizationObj.isEligibleForLicences ?
-                "<a class=\"button is-small\" data-tooltip=\"Create a New Licence\" href=\"/licences/new/" + organizationObj.organizationID + "\">" +
+                "<a class=\"button is-small\" data-tooltip=\"Create a New Licence\"" +
+                " href=\"/licences/new/" + organizationObj.organizationID + "\">" +
                 "<span class=\"icon\"><i class=\"fas fa-certificate\" aria-hidden=\"true\"></i></span>" +
                 "<span>New</span>" +
                 "</a>" : "") +

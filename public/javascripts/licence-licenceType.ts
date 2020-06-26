@@ -22,7 +22,17 @@ declare const llm: llmGlobal;
       "</p>";
 
     cityssm.postJSON("/licences/doGetLicenceTypeSummary", formEle,
-      (licenceList: any[]) => {
+      (licenceList: {
+        licenceID: number,
+        externalLicenceNumber: string,
+        applicationDateString: string,
+        organizationName: string,
+        locationDisplayName: string,
+        totalPrizeValue: number,
+        licenceFee: number,
+        issueDate: number,
+        issueDateString: string
+      }[]) => {
 
         cityssm.clearElement(containerEle);
 

@@ -184,7 +184,8 @@ app.use((_req, _res, next) => {
 });
 
 // Error handler
-app.use((err: any, req: express.Request, res: express.Response, _next: express.NextFunction) => {
+app.use((err: { status: number, message: string },
+  req: express.Request, res: express.Response, _next: express.NextFunction) => {
 
   // Set locals, only providing error in development
   res.locals.message = err.message;

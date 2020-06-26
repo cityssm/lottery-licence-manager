@@ -183,7 +183,7 @@ declare const cityssm: cityssmGlobal;
 
       onshow: getPastBankInformationFn,
 
-      onshown(_modalEle, closeModalFn) {
+      onshown(_modalEle: HTMLElement, closeModalFn: () => void): void {
         bankInfoCloseModalFn = closeModalFn;
       }
     });

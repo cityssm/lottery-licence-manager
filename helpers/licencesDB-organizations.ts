@@ -8,7 +8,11 @@ import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns";
  * ORGANIZATIONS
  */
 
-export const getOrganizations = (reqBody: any, reqSession: Express.SessionData, includeOptions: {
+export const getOrganizations = (reqBody: {
+  organizationName?: string,
+  representativeName?: string,
+  isEligibleForLicences?: string
+}, reqSession: Express.SessionData, includeOptions: {
   limit: number,
   offset?: number
 }) => {
@@ -17,7 +21,7 @@ export const getOrganizations = (reqBody: any, reqSession: Express.SessionData, 
     readonly: true
   });
 
-  const sqlParams = [dateTimeFns.dateToInteger(new Date())];
+  const sqlParams: (string | number)[] = [dateTimeFns.dateToInteger(new Date())];
 
   let sql = "select o.organizationID, o.organizationName, o.isEligibleForLicences, o.organizationNote," +
     " r.representativeName," +

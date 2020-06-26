@@ -27,7 +27,30 @@ declare const cityssm: cityssmGlobal;
     cityssm.postJSON("/events/doGetEventsByWeek", {
       eventDate: eventDateFilterEle.value
     },
-      (responseJSON: { startDateString: string, endDateString: string, licences: any[], events: any[] }) => {
+      (responseJSON: {
+        startDateString: string, endDateString: string,
+        licences: {
+          licenceID: number,
+          externalLicenceNumber: string,
+          organizationName: string,
+          locationName: string,
+          locationAddress1: string,
+          licenceTypeKey: string,
+          startDateString: string,
+          endDateString: string
+        }[],
+        events: {
+          licenceID: number,
+          eventDate: number,
+          eventDateString: string,
+          externalLicenceNumber: string,
+          organizationName: string,
+          locationName: string,
+          locationAddress1: string,
+          licenceTypeKey: string,
+          startTimeString: string
+        }[]
+      }) => {
 
         if (responseJSON.licences.length === 0 && responseJSON.events.length === 0) {
 

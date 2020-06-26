@@ -2,7 +2,11 @@
 /// <reference types="compression" />
 /// <reference types="express-session" />
 import * as llm from "./llmTypes";
-export declare const getOrganizations: (reqBody: any, reqSession: Express.SessionData, includeOptions: {
+export declare const getOrganizations: (reqBody: {
+    organizationName?: string;
+    representativeName?: string;
+    isEligibleForLicences?: string;
+}, reqSession: Express.SessionData, includeOptions: {
     limit: number;
     offset?: number;
 }) => llm.Organization[];

@@ -57,7 +57,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     " href=\"/locations/" + locationObj.locationID + "\">" +
                     safeLocationDisplayName +
                     "</a>" +
-                    (locationObj.locationDisplayName === locationObj.locationAddress1 ? "" : "<br /><small>" + cityssm.escapeHTML(locationObj.locationAddress1) + "</small>") +
+                    (locationObj.locationDisplayName === locationObj.locationAddress1 ? "" : "<br />" +
+                        "<small>" + cityssm.escapeHTML(locationObj.locationAddress1) + "</small>") +
                     "</td>");
                 let dateMax = locationObj.licences_endDateMax;
                 let dateMaxString = locationObj.licences_endDateMaxString;
@@ -78,7 +79,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
                         "<span class=\"tag is-light is-danger\">No Licences</span>") +
                     "</td>");
                 trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-centered\">" +
-                    "<span data-tooltip=\"Updated by " + locationObj.recordUpdate_userName + "\">" + locationObj.recordUpdate_dateString + "</span>" +
+                    "<span data-tooltip=\"Updated by " + locationObj.recordUpdate_userName + "\">" +
+                    locationObj.recordUpdate_dateString +
+                    "</span>" +
                     "</td>");
                 trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right\">" +
                     "<button class=\"button is-small is-danger\"" +

@@ -27,7 +27,18 @@ declare const llm: llmGlobal;
     tableEle.classList.remove("has-status-view");
     tableEle.classList.add("has-status-loading");
 
-    cityssm.postJSON("/events/doGetFinancialSummary", formEle, (summary: any[]) => {
+    cityssm.postJSON("/events/doGetFinancialSummary", formEle, (summary: {
+      licenceTypeKey: string,
+      licenceCount: number,
+      eventCount: number,
+      reportDateCount: number,
+      licenceFeeSum: number,
+      costs_receiptsSum: number,
+      costs_adminSum: number
+      costs_netProceedsSum: number,
+      costs_prizesAwardedSum: number,
+      costs_amountDonatedSum: number,
+    }[]) => {
 
       // Hide all rows
 
@@ -49,10 +60,12 @@ declare const llm: llmGlobal;
 
       for (const licenceTypeSummaryObj of summary) {
 
-        const trEle = <HTMLTableRowElement>tbodyEle.querySelector("tr[data-licence-type-key='" + licenceTypeSummaryObj.licenceTypeKey + "']");
+        const trEle = <HTMLTableRowElement>
+          tbodyEle.querySelector("tr[data-licence-type-key='" + licenceTypeSummaryObj.licenceTypeKey + "']");
 
         (<HTMLSpanElement>trEle.querySelector("[data-field='licenceCount']")).innerText =
-          licenceTypeSummaryObj.licenceCount;
+          licenceTypeSummaryObj.licenceCount.toString();
+
         licenceCount += licenceTypeSummaryObj.licenceCount;
 
         trEle.querySelector("[data-field='eventCount']").innerHTML =

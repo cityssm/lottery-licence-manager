@@ -96,7 +96,8 @@ import type * as llmTypes from "../../helpers/llmTypes";
             " href=\"/locations/" + locationObj.locationID + "\">" +
             safeLocationDisplayName +
             "</a>" +
-            (locationObj.locationDisplayName === locationObj.locationAddress1 ? "" : "<br /><small>" + cityssm.escapeHTML(locationObj.locationAddress1) + "</small>") +
+            (locationObj.locationDisplayName === locationObj.locationAddress1 ? "" : "<br />" +
+              "<small>" + cityssm.escapeHTML(locationObj.locationAddress1) + "</small>") +
             "</td>");
 
           let dateMax = locationObj.licences_endDateMax;
@@ -125,7 +126,9 @@ import type * as llmTypes from "../../helpers/llmTypes";
             "</td>");
 
           trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-centered\">" +
-            "<span data-tooltip=\"Updated by " + locationObj.recordUpdate_userName + "\">" + locationObj.recordUpdate_dateString + "</span>" +
+            "<span data-tooltip=\"Updated by " + locationObj.recordUpdate_userName + "\">" +
+            locationObj.recordUpdate_dateString +
+            "</span>" +
             "</td>");
 
           trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right\">" +

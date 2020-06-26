@@ -18,6 +18,7 @@ router.get("/", (_req, res) => {
 });
 
 
+// tslint:disable-next-line:cyclomatic-complexity
 router.all("/:reportName", (req, res) => {
 
   const reportName = req.params.reportName;

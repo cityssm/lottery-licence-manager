@@ -5,6 +5,7 @@ export type llmGlobal = {
 
   arrayToObject?: (array: [], objectKey: string | number) => {},
 
+  // tslint:disable-next-line:no-any
   getDefaultConfigProperty?: (propertyName: string, propertyValueCallbackFn: (propertyValue: any) => void) => void,
 
   initializeDateRangeSelector?: (containerEle: HTMLElement, changeFn: () => void) => void,
