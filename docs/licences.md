@@ -44,8 +44,8 @@ Search results are displayed below the filters in a table and include the follow
 New lottery licences can be created from the lottery licence side menu,
 from the main dashboard, or from an organization view.
 
-_Note that a corresponding organization record should exist prior to creating
-a lottery licence._
+A corresponding organization record should exist prior to creating
+a lottery licence.
 
 Using the [config.js](admin-configJS.md) file, the Municipal Licence Number field can be automatically populated
 by using a range of numbers.
