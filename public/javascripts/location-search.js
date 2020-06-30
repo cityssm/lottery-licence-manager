@@ -63,7 +63,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     : "") +
                 (canDeleteLocation
                     ? " <button class=\"button is-small is-danger is-delete-location-button\"" +
-                        " data-tooltip=\"Delete Location\" data-location-index=\"" + locationIndex.toString() + "\" type=\"button\">" +
+                        " data-tooltip=\"Delete Location\"" +
+                        " data-location-index=\"" + locationIndex.toString() + "\" type=\"button\">" +
                         "<span class=\"icon\"><i class=\"fas fa-trash\" aria-hidden=\"true\"></i></span>" +
                         "</button>"
                     : "") +

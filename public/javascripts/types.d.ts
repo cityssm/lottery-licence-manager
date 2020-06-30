@@ -1,5 +1,5 @@
 import type * as llmTypes from "../../helpers/llmTypes";
-export declare type llmGlobal = {
+export interface llmGlobal {
     arrayToObject?: (array: [], objectKey: string | number) => {};
     getDefaultConfigProperty?: (propertyName: string, propertyValueCallbackFn: (propertyValue: any) => void) => void;
     initializeDateRangeSelector?: (containerEle: HTMLElement, changeFn: () => void) => void;
@@ -16,4 +16,4 @@ export declare type llmGlobal = {
             message: string;
         }) => void) => void;
     };
-};
+}

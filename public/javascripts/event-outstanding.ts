@@ -43,8 +43,12 @@ declare const cityssm: cityssmGlobal;
 
         trEle.insertAdjacentHTML("beforeend", "<td>" + cityssm.escapeHTML(outstandingEventObj.licenceType) + "</td>");
 
+        const eventURL = "/events/" +
+          outstandingEventObj.licenceID.toString() + "/" +
+          outstandingEventObj.eventDate.toString();
+
         trEle.insertAdjacentHTML("beforeend", "<td>" +
-          "<a href=\"/events/" + outstandingEventObj.licenceID.toString() + "/" + outstandingEventObj.eventDate.toString() + "\"" +
+          "<a href=\"" + eventURL + "\"" +
           " data-tooltip=\"View Event\" target=\"_blank\">" +
           outstandingEventObj.eventDateString +
           "</a>" +

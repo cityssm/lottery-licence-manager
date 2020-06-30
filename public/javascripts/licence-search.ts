@@ -79,7 +79,8 @@ declare const cityssm: cityssmGlobal;
             "</td>" +
 
             ("<td>" +
-              "<a data-tooltip=\"View Organization\" href=\"/organizations/" + licenceObj.organizationID.toString() + "\">" +
+              "<a data-tooltip=\"View Organization\"" +
+              " href=\"/organizations/" + licenceObj.organizationID.toString() + "\">" +
               cityssm.escapeHTML(licenceObj.organizationName) +
               "</a>" +
               "</td>") +

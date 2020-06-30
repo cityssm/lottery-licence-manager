@@ -1310,7 +1310,8 @@ declare const llm: llmGlobal;
 
           optionEle.innerText =
             ticketTypeObj.ticketType +
-            " (" + ticketTypeObj.ticketCount.toString() + " tickets, $" + ticketTypeObj.ticketPrice.toFixed(2) + " each)";
+            " (" + ticketTypeObj.ticketCount.toString() + " tickets," +
+            " $" + ticketTypeObj.ticketPrice.toFixed(2) + " each)";
 
           addTicketType_ticketTypeEle.insertAdjacentElement("beforeend", optionEle);
         }

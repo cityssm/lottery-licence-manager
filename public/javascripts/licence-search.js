@@ -51,7 +51,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
                         "<small>" + cityssm.escapeHTML(licenceObj.licenceDetails) + "</small>" +
                         "</td>" +
                         ("<td>" +
-                            "<a data-tooltip=\"View Organization\" href=\"/organizations/" + licenceObj.organizationID.toString() + "\">" +
+                            "<a data-tooltip=\"View Organization\"" +
+                            " href=\"/organizations/" + licenceObj.organizationID.toString() + "\">" +
                             cityssm.escapeHTML(licenceObj.organizationName) +
                             "</a>" +
                             "</td>") +

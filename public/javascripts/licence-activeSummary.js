@@ -44,7 +44,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
                         (exports.config_licenceTypes[licenceObj.licenceTypeKey] || licenceObj.licenceTypeKey) +
                         "</td>") +
                     ("<td>" +
-                        "<a href=\"/organizations/" + licenceObj.organizationID.toString() + "\" data-tooltip=\"View Organization\">" +
+                        "<a href=\"/organizations/" + licenceObj.organizationID.toString() + "\"" +
+                        " data-tooltip=\"View Organization\">" +
                         cityssm.escapeHTML(licenceObj.organizationName) +
                         "</a>" +
                         "</td>") +
