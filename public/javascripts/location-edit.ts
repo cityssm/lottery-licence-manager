@@ -1,7 +1,7 @@
 import type { cityssmGlobal } from "../../node_modules/@cityssm/bulma-webapp-js/src/types";
-declare const cityssm: cityssmGlobal;
-
 import type * as llmTypes from "../../helpers/llmTypes";
+
+declare const cityssm: cityssmGlobal;
 
 
 (() => {
@@ -24,7 +24,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
     cityssm.postJSON(
       (isCreate ? "/locations/doCreate" : "/locations/doUpdate"),
       formEle,
-      (responseJSON: { success: boolean, message?: string, locationID?: number }) => {
+      (responseJSON: { success: boolean; message?: string; locationID?: number }) => {
 
         if (responseJSON.success) {
 
@@ -34,7 +34,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
         if (responseJSON.success && isCreate) {
 
-          window.location.href = "/locations/" + responseJSON.locationID + "/edit";
+          window.location.href = "/locations/" + responseJSON.locationID.toString() + "/edit";
 
         } else {
 
@@ -107,9 +107,9 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
       const locationName_target = (<HTMLInputElement>document.getElementById("location--locationName")).value;
 
-      const locationDisplayNameAndID_target = (locationName_target === "" ?
-        (<HTMLInputElement>document.getElementById("location--locationAddress1")).value :
-        locationName_target) +
+      const locationDisplayNameAndID_target = (locationName_target === ""
+        ? (<HTMLInputElement>document.getElementById("location--locationAddress1")).value
+        : locationName_target) +
         ", #" + locationID;
 
       // init variables for modal
@@ -183,7 +183,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
           for (const filterString of filterSplit) {
 
-            if (locationObj.locationName.toLowerCase().indexOf(filterString) === -1) {
+            if (!locationObj.locationName.toLowerCase().includes(filterString)) {
               showLocation = false;
               break;
             }
@@ -209,25 +209,25 @@ import type * as llmTypes from "../../helpers/llmTypes";
               "</div>" +
               "</div>") +
             ("<div class=\"level-right\">" +
-              "#" + locationObj.locationID +
+              "#" + locationObj.locationID.toString() +
               "</div>") +
             "</div>" +
             "<div class=\"has-text-right\">" +
-            (locationObj.licences_count > 0 ?
-              " <span class=\"tag is-info has-tooltip-left\" data-tooltip=\"Licence Count\">" +
+            (locationObj.licences_count > 0
+              ? " <span class=\"tag is-info has-tooltip-left\" data-tooltip=\"Licence Count\">" +
               "<span class=\"icon\"><i class=\"fas fa-certificate\" aria-hidden=\"true\"></i></span>" +
-              " <span>" + locationObj.licences_count + "</span></span>" :
-              "") +
-            (locationObj.distributor_count > 0 ?
-              " <span class=\"tag is-info has-tooltip-left\" data-tooltip=\"Distributor Count\">" +
+              " <span>" + locationObj.licences_count.toString() + "</span></span>"
+              : "") +
+            (locationObj.distributor_count > 0
+              ? " <span class=\"tag is-info has-tooltip-left\" data-tooltip=\"Distributor Count\">" +
               "<span class=\"icon\"><i class=\"fas fa-truck-moving\" aria-hidden=\"true\"></i></span>" +
-              " <span>" + locationObj.distributor_count + "</span></span>" :
-              "") +
-            (locationObj.manufacturer_count > 0 ?
-              " <span class=\"tag is-info has-tooltip-left\" data-tooltip=\"Manufacturer Count\">" +
+              " <span>" + locationObj.distributor_count.toString() + "</span></span>"
+              : "") +
+            (locationObj.manufacturer_count > 0
+              ? " <span class=\"tag is-info has-tooltip-left\" data-tooltip=\"Manufacturer Count\">" +
               "<span class=\"icon\"><i class=\"fas fa-print\" aria-hidden=\"true\"></i></span>" +
-              " <span>" + locationObj.manufacturer_count + "</span></span>" :
-              "") +
+              " <span>" + locationObj.manufacturer_count.toString() + "</span></span>"
+              : "") +
             "</div>";
 
           listEle.insertAdjacentElement("beforeend", listItemEle);

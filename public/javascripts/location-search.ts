@@ -1,7 +1,7 @@
 import type { cityssmGlobal } from "../../node_modules/@cityssm/bulma-webapp-js/src/types";
-declare const cityssm: cityssmGlobal;
-
 import type * as llmTypes from "../../helpers/llmTypes";
+
+declare const cityssm: cityssmGlobal;
 
 
 (() => {
@@ -27,7 +27,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
     const locationDisplayNameLinkEle = document.createElement("a");
 
     locationDisplayNameLinkEle.innerText = locationObj.locationDisplayName;
-    locationDisplayNameLinkEle.href = "/locations/" + locationObj.locationID;
+    locationDisplayNameLinkEle.href = "/locations/" + locationObj.locationID.toString();
     trEle.getElementsByTagName("td")[0].insertAdjacentElement("beforeend", locationDisplayNameLinkEle);
 
     // Address
@@ -35,15 +35,15 @@ import type * as llmTypes from "../../helpers/llmTypes";
     const addressTdEle = document.createElement("td");
 
     addressTdEle.innerHTML =
-      (locationObj.locationAddress1 === "" ?
-        "" :
-        cityssm.escapeHTML(locationObj.locationAddress1) + "<br />") +
-      (locationObj.locationAddress2 === "" ?
-        "" :
-        "<small>" + cityssm.escapeHTML(locationObj.locationAddress2) + "</small><br />") +
-      (locationObj.locationCity === "" ?
-        "" :
-        "<small>" + cityssm.escapeHTML(locationObj.locationCity) + ", " + locationObj.locationProvince + "</small>");
+      (locationObj.locationAddress1 === ""
+        ? ""
+        : cityssm.escapeHTML(locationObj.locationAddress1) + "<br />") +
+      (locationObj.locationAddress2 === ""
+        ? ""
+        : "<small>" + cityssm.escapeHTML(locationObj.locationAddress2) + "</small><br />") +
+      (locationObj.locationCity === ""
+        ? ""
+        : "<small>" + cityssm.escapeHTML(locationObj.locationCity) + ", " + locationObj.locationProvince + "</small>");
 
     trEle.insertAdjacentElement("beforeend", addressTdEle);
 
@@ -51,9 +51,9 @@ import type * as llmTypes from "../../helpers/llmTypes";
     trEle.insertAdjacentHTML(
       "beforeend",
       "<td class=\"has-text-centered\">" +
-      (locationObj.licences_endDateMaxString === "" ?
-        "<span class=\"has-text-grey\">Not Used</span>" :
-        locationObj.licences_endDateMaxString) +
+      (locationObj.licences_endDateMaxString === ""
+        ? "<span class=\"has-text-grey\">Not Used</span>"
+        : locationObj.licences_endDateMaxString) +
       "</td>"
     );
 
@@ -61,14 +61,14 @@ import type * as llmTypes from "../../helpers/llmTypes";
     trEle.insertAdjacentHTML(
       "beforeend",
       "<td class=\"has-text-centered\">" +
-      (locationObj.locationIsManufacturer ?
-        "<span data-tooltip=\"Manufacturer\">" +
+      (locationObj.locationIsManufacturer
+        ? "<span data-tooltip=\"Manufacturer\">" +
         "<span class=\"tag is-success\">Yes</span><br />" +
-        (locationObj.manufacturer_endDateMaxString === "" ?
-          "<span class=\"has-text-grey\">Never Used</span>" :
-          locationObj.manufacturer_endDateMaxString) +
-        "</span>" :
-        "<span class=\"sr-only\">No</span>"
+        (locationObj.manufacturer_endDateMaxString === ""
+          ? "<span class=\"has-text-grey\">Never Used</span>"
+          : locationObj.manufacturer_endDateMaxString) +
+        "</span>"
+        : "<span class=\"sr-only\">No</span>"
       ) +
       "</td>"
     );
@@ -77,14 +77,14 @@ import type * as llmTypes from "../../helpers/llmTypes";
     trEle.insertAdjacentHTML(
       "beforeend",
       "<td class=\"has-text-centered\">" +
-      (locationObj.locationIsDistributor ?
-        "<span data-tooltip=\"Distributor\">" +
+      (locationObj.locationIsDistributor
+        ? "<span data-tooltip=\"Distributor\">" +
         "<span class=\"tag is-success\">Yes</span><br />" +
-        (locationObj.distributor_endDateMaxString === "" ?
-          "<span class=\"has-text-grey\">Never Used</span>" :
-          locationObj.distributor_endDateMaxString) +
-        "</span>" :
-        "<span class=\"sr-only\">No</span>"
+        (locationObj.distributor_endDateMaxString === ""
+          ? "<span class=\"has-text-grey\">Never Used</span>"
+          : locationObj.distributor_endDateMaxString) +
+        "</span>"
+        : "<span class=\"sr-only\">No</span>"
       ) +
       "</td>"
     );
@@ -99,19 +99,19 @@ import type * as llmTypes from "../../helpers/llmTypes";
         "beforeend",
         "<td class=\"is-hidden-print has-text-right is-nowrap\">" +
 
-        (locationObj.canUpdate ?
-          "<a class=\"button is-small\" data-tooltip=\"Edit Location\"" +
-          " href=\"/locations/" + locationObj.locationID + "/edit\">" +
+        (locationObj.canUpdate
+          ? "<a class=\"button is-small\" data-tooltip=\"Edit Location\"" +
+          " href=\"/locations/" + locationObj.locationID.toString() + "/edit\">" +
           "<span class=\"icon\"><i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i></span> <span>Edit</span>" +
-          "</a>" :
-          "") +
+          "</a>"
+          : "") +
 
-        (canDeleteLocation ?
-          " <button class=\"button is-small is-danger is-delete-location-button\"" +
-          " data-tooltip=\"Delete Location\" data-location-index=\"" + locationIndex + "\" type=\"button\">" +
+        (canDeleteLocation
+          ? " <button class=\"button is-small is-danger is-delete-location-button\"" +
+          " data-tooltip=\"Delete Location\" data-location-index=\"" + locationIndex.toString() + "\" type=\"button\">" +
           "<span class=\"icon\"><i class=\"fas fa-trash\" aria-hidden=\"true\"></i></span>" +
-          "</button>" :
-          "") +
+          "</button>"
+          : "") +
 
         "</td>"
       );
@@ -141,7 +141,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
     cityssm.postJSON(
       "/locations/doGetLocations",
       formEle,
-      (locationResults: { count: number, locations: llmTypes.Location[] }) => {
+      (locationResults: { count: number; locations: llmTypes.Location[] }) => {
 
         displayedLocationList = locationResults.locations;
 
@@ -179,11 +179,11 @@ import type * as llmTypes from "../../helpers/llmTypes";
         searchResultsEle.insertAdjacentHTML("beforeend", "<div class=\"level is-block-print\">" +
           "<div class=\"level-left has-text-weight-bold\">" +
           "Displaying locations " +
-          (currentOffset + 1) +
+          (currentOffset + 1).toString() +
           " to " +
-          Math.min(currentLimit + currentOffset, locationResults.count) +
+          Math.min(currentLimit + currentOffset, locationResults.count).toString() +
           " of " +
-          locationResults.count +
+          locationResults.count.toString() +
           "</div>" +
           "</div>");
 

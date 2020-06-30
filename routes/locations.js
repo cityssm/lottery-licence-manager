@@ -1,10 +1,11 @@
 "use strict";
 const express_1 = require("express");
-const router = express_1.Router();
 const configFns = require("../helpers/configFns");
 const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
 const licencesDB = require("../helpers/licencesDB");
 const licencesDBLocations = require("../helpers/licencesDB-locations");
+const userFns_1 = require("../helpers/userFns");
+const router = express_1.Router();
 router.get("/", (_req, res) => {
     res.render("location-search", {
         headTitle: "Locations"
@@ -15,17 +16,17 @@ router.post("/doGetLocations", (req, res) => {
         limit: req.body.limit || -1,
         offset: req.body.offset || 0,
         locationNameAddress: req.body.locationNameAddress,
-        locationIsDistributor: ("locationIsDistributor" in req.body && req.body.locationIsDistributor !== "" ?
-            parseInt(req.body.locationIsDistributor, 10) :
-            -1),
-        locationIsManufacturer: ("locationIsManufacturer" in req.body && req.body.locationIsManufacturer !== "" ?
-            parseInt(req.body.locationIsManufacturer, 10) :
-            -1)
+        locationIsDistributor: ("locationIsDistributor" in req.body && req.body.locationIsDistributor !== ""
+            ? parseInt(req.body.locationIsDistributor, 10)
+            : -1),
+        locationIsManufacturer: ("locationIsManufacturer" in req.body && req.body.locationIsManufacturer !== ""
+            ? parseInt(req.body.locationIsManufacturer, 10)
+            : -1)
     });
     res.json(locations);
 });
 router.get("/cleanup", (req, res) => {
-    if (!req.session.user.userProperties.canUpdate) {
+    if (!userFns_1.userCanUpdate(req)) {
         res.redirect("/locations/?error=accessDenied");
         return;
     }
@@ -38,103 +39,73 @@ router.post("/doGetInactive", (req, res) => {
     res.json(licencesDBLocations.getInactiveLocations(inactiveYears));
 });
 router.post("/doCreate", (req, res) => {
-    if (!req.session.user.userProperties.canCreate) {
-        res
-            .status(403)
-            .json({
-            success: false,
-            message: "Forbidden"
-        });
-        return;
+    if (!userFns_1.userCanCreate(req)) {
+        return userFns_1.forbiddenJSON(res);
     }
     const locationID = licencesDBLocations.createLocation(req.body, req.session);
-    res.json({
+    return res.json({
         success: true,
         locationID: locationID,
         locationDisplayName: (req.body.locationName === "" ? req.body.locationAddress1 : req.body.locationName)
     });
 });
 router.post("/doUpdate", (req, res) => {
-    if (!req.session.user.userProperties.canCreate) {
-        res
-            .status(403)
-            .json({
-            success: false,
-            message: "Forbidden"
-        });
-        return;
+    if (!userFns_1.userCanCreate(req)) {
+        return userFns_1.forbiddenJSON(res);
     }
     const changeCount = licencesDBLocations.updateLocation(req.body, req.session);
     if (changeCount) {
-        res.json({
+        return res.json({
             success: true,
             message: "Location updated successfully."
         });
     }
     else {
-        res.json({
+        return res.json({
             success: false,
             message: "Record Not Saved"
         });
     }
 });
 router.post("/doDelete", (req, res) => {
-    if (!req.session.user.userProperties.canCreate) {
-        res
-            .status(403)
-            .json({
-            success: false,
-            message: "Forbidden"
-        });
-        return;
+    if (!userFns_1.userCanCreate(req)) {
+        return userFns_1.forbiddenJSON(res);
     }
     const changeCount = licencesDBLocations.deleteLocation(req.body.locationID, req.session);
     if (changeCount) {
-        res.json({
+        return res.json({
             success: true,
             message: "Location deleted successfully."
         });
     }
     else {
-        res.json({
+        return res.json({
             success: false,
             message: "Location could not be deleted."
         });
     }
 });
 router.post("/doRestore", (req, res) => {
-    if (!req.session.user.userProperties.canUpdate) {
-        res
-            .status(403)
-            .json({
-            success: false,
-            message: "Forbidden"
-        });
-        return;
+    if (!userFns_1.userCanUpdate(req)) {
+        return userFns_1.forbiddenJSON(res);
     }
     const changeCount = licencesDBLocations.restoreLocation(req.body.locationID, req.session);
     if (changeCount) {
-        res.json({
+        return res.json({
             success: true,
             message: "Location restored successfully."
         });
     }
     else {
-        res.json({
+        return res.json({
             success: false,
             message: "Location could not be restored."
         });
     }
 });
 router.post("/doMerge", (req, res) => {
-    if (!req.session.user.userProperties.isAdmin) {
-        res
-            .status(403)
-            .json({
-            success: false,
-            message: "Forbidden"
-        });
-        return;
+    if (!userFns_1.userIsAdmin(req)) {
+        return userFns_1.forbiddenJSON(res);
     }
     const targetLocationID = req.body.targetLocationID;
     const sourceLocationID = req.body.sourceLocationID;
@@ -144,7 +115,7 @@ router.post("/doMerge", (req, res) => {
     });
 });
 router.get("/new", (req, res) => {
-    if (!req.session.user.userProperties.canCreate) {
+    if (!userFns_1.userCanCreate(req)) {
         res.redirect("/locations/?error=accessDenied-noCreate");
         return;
     }
@@ -180,8 +151,8 @@ router.get("/:locationID", (req, res) => {
 });
 router.get("/:locationID/edit", (req, res) => {
     const locationID = parseInt(req.params.locationID, 10);
-    if (!req.session.user.userProperties.canCreate) {
-        res.redirect("/locations/" + locationID + "/?error=accessDenied-noCreate");
+    if (!userFns_1.userCanCreate(req)) {
+        res.redirect("/locations/" + locationID.toString() + "/?error=accessDenied-noCreate");
         return;
     }
     const location = licencesDBLocations.getLocation(locationID, req.session);
@@ -190,7 +161,7 @@ router.get("/:locationID/edit", (req, res) => {
         return;
     }
     if (!location.canUpdate) {
-        res.redirect("/locations/" + locationID + "/?error=accessDenied-noUpdate");
+        res.redirect("/locations/" + locationID.toString() + "/?error=accessDenied-noUpdate");
         return;
     }
     const licences = licencesDB.getLicences({

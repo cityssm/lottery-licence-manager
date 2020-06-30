@@ -43,7 +43,8 @@ exports.getOrganizations = (reqBody, reqSession, includeOptions) => {
         " o.recordCreate_userName, o.recordCreate_timeMillis, o.recordUpdate_userName, o.recordUpdate_timeMillis" +
         " order by o.organizationName, o.organizationID";
     if (includeOptions.limit !== -1) {
-        sql += " limit " + includeOptions.limit + " offset " + includeOptions.offset;
+        sql += " limit " + includeOptions.limit.toString() +
+            " offset " + includeOptions.offset.toString();
     }
     const rows = db.prepare(sql).all(sqlParams);
     db.close();

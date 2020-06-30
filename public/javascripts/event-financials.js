@@ -34,10 +34,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     licenceTypeSummaryObj.licenceCount.toString();
                 licenceCount += licenceTypeSummaryObj.licenceCount;
                 trEle.querySelector("[data-field='eventCount']").innerHTML =
-                    (licenceTypeSummaryObj.reportDateCount === licenceTypeSummaryObj.eventCount ?
-                        "" :
-                        "<span class=\"has-text-danger\" data-tooltip=\"Events Unreported\">") +
-                        licenceTypeSummaryObj.reportDateCount + "/" + licenceTypeSummaryObj.eventCount +
+                    (licenceTypeSummaryObj.reportDateCount === licenceTypeSummaryObj.eventCount
+                        ? ""
+                        : "<span class=\"has-text-danger\" data-tooltip=\"Events Unreported\">") +
+                        licenceTypeSummaryObj.reportDateCount.toString() + "/" + licenceTypeSummaryObj.eventCount.toString() +
                         (licenceTypeSummaryObj.reportDateCount === licenceTypeSummaryObj.eventCount ? "" : "</span>");
                 reportDateCount += licenceTypeSummaryObj.reportDateCount;
                 eventCount += licenceTypeSummaryObj.eventCount;
@@ -63,9 +63,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
             }
             tfootEle.querySelector("[data-field='licenceCount']").innerText = licenceCount.toString();
             tfootEle.querySelector("[data-field='eventCount']").innerHTML =
-                (reportDateCount === eventCount ? "" : "<span class=\"has-text-danger\" data-tooltip=\"Events Unreported\">") +
-                    reportDateCount + "/" + eventCount +
-                    (reportDateCount === eventCount ? "" : "</span>");
+                (reportDateCount === eventCount
+                    ? ""
+                    : "<span class=\"has-text-danger\" data-tooltip=\"Events Unreported\">") +
+                    reportDateCount.toString() + "/" + eventCount.toString() +
+                    (reportDateCount === eventCount
+                        ? ""
+                        : "</span>");
             tfootEle.querySelector("[data-field='costs_receiptsSum']").innerText =
                 "$" + costs_receiptsSum.toFixed(2);
             tfootEle.querySelector("[data-field='costs_adminSum']").innerText =

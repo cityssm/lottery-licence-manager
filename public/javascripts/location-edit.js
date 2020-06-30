@@ -16,7 +16,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 cityssm.disableNavBlocker();
             }
             if (responseJSON.success && isCreate) {
-                window.location.href = "/locations/" + responseJSON.locationID + "/edit";
+                window.location.href = "/locations/" + responseJSON.locationID.toString() + "/edit";
             }
             else {
                 formMessageEle.innerHTML = "";
@@ -49,9 +49,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 return;
             }
             const locationName_target = document.getElementById("location--locationName").value;
-            const locationDisplayNameAndID_target = (locationName_target === "" ?
-                document.getElementById("location--locationAddress1").value :
-                locationName_target) +
+            const locationDisplayNameAndID_target = (locationName_target === ""
+                ? document.getElementById("location--locationAddress1").value
+                : locationName_target) +
                 ", #" + locationID;
             let locationID_source = "";
             let locationsList = [];
@@ -95,7 +95,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     }
                     let showLocation = true;
                     for (const filterString of filterSplit) {
-                        if (locationObj.locationName.toLowerCase().indexOf(filterString) === -1) {
+                        if (!locationObj.locationName.toLowerCase().includes(filterString)) {
                             showLocation = false;
                             break;
                         }
@@ -118,25 +118,25 @@ Object.defineProperty(exports, "__esModule", { value: true });
                             "</div>" +
                             "</div>") +
                         ("<div class=\"level-right\">" +
-                            "#" + locationObj.locationID +
+                            "#" + locationObj.locationID.toString() +
                             "</div>") +
                         "</div>" +
                         "<div class=\"has-text-right\">" +
-                        (locationObj.licences_count > 0 ?
-                            " <span class=\"tag is-info has-tooltip-left\" data-tooltip=\"Licence Count\">" +
+                        (locationObj.licences_count > 0
+                            ? " <span class=\"tag is-info has-tooltip-left\" data-tooltip=\"Licence Count\">" +
                                 "<span class=\"icon\"><i class=\"fas fa-certificate\" aria-hidden=\"true\"></i></span>" +
-                                " <span>" + locationObj.licences_count + "</span></span>" :
-                            "") +
-                        (locationObj.distributor_count > 0 ?
-                            " <span class=\"tag is-info has-tooltip-left\" data-tooltip=\"Distributor Count\">" +
+                                " <span>" + locationObj.licences_count.toString() + "</span></span>"
+                            : "") +
+                        (locationObj.distributor_count > 0
+                            ? " <span class=\"tag is-info has-tooltip-left\" data-tooltip=\"Distributor Count\">" +
                                 "<span class=\"icon\"><i class=\"fas fa-truck-moving\" aria-hidden=\"true\"></i></span>" +
-                                " <span>" + locationObj.distributor_count + "</span></span>" :
-                            "") +
-                        (locationObj.manufacturer_count > 0 ?
-                            " <span class=\"tag is-info has-tooltip-left\" data-tooltip=\"Manufacturer Count\">" +
+                                " <span>" + locationObj.distributor_count.toString() + "</span></span>"
+                            : "") +
+                        (locationObj.manufacturer_count > 0
+                            ? " <span class=\"tag is-info has-tooltip-left\" data-tooltip=\"Manufacturer Count\">" +
                                 "<span class=\"icon\"><i class=\"fas fa-print\" aria-hidden=\"true\"></i></span>" +
-                                " <span>" + locationObj.manufacturer_count + "</span></span>" :
-                            "") +
+                                " <span>" + locationObj.manufacturer_count.toString() + "</span></span>"
+                            : "") +
                         "</div>";
                     listEle.insertAdjacentElement("beforeend", listItemEle);
                 }

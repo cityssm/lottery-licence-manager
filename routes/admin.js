@@ -1,10 +1,11 @@
 "use strict";
 const express_1 = require("express");
-const router = express_1.Router();
 const licencesDB = require("../helpers/licencesDB");
 const usersDB = require("../helpers/usersDB");
+const userFns_1 = require("../helpers/userFns");
+const router = express_1.Router();
 router.get("/applicationSettings", (req, res) => {
-    if (!req.session.user.userProperties.isAdmin) {
+    if (!userFns_1.userIsAdmin(req)) {
         res.redirect("/dashboard/?error=accessDenied");
         return;
     }
@@ -15,14 +16,8 @@ router.get("/applicationSettings", (req, res) => {
     });
 });
 router.post("/doSaveApplicationSetting", (req, res) => {
-    if (!req.session.user.userProperties.isAdmin) {
-        res
-            .status(403)
-            .json({
-            success: false,
-            message: "Forbidden"
-        });
-        return;
+    if (!userFns_1.userIsAdmin(req)) {
+        return userFns_1.forbiddenJSON(res);
     }
     const settingKey = req.body.settingKey;
     const settingValue = req.body.settingValue;
@@ -32,7 +27,7 @@ router.post("/doSaveApplicationSetting", (req, res) => {
     });
 });
 router.get("/userManagement", (req, res) => {
-    if (!req.session.user.userProperties.isAdmin) {
+    if (!userFns_1.userIsAdmin(req)) {
         res.redirect("/dashboard/?error=accessDenied");
         return;
     }
@@ -43,14 +38,8 @@ router.get("/userManagement", (req, res) => {
     });
 });
 router.post("/doCreateUser", (req, res) => {
-    if (!req.session.user.userProperties.isAdmin) {
-        res
-            .status(403)
-            .json({
-            success: false,
-            message: "Forbidden"
-        });
-        return;
+    if (!userFns_1.userIsAdmin(req)) {
+        return userFns_1.forbiddenJSON(res);
     }
     const newPassword = usersDB.createUser(req.body);
     if (!newPassword) {
@@ -67,14 +56,8 @@ router.post("/doCreateUser", (req, res) => {
     }
 });
 router.post("/doUpdateUser", (req, res) => {
-    if (!req.session.user.userProperties.isAdmin) {
-        res
-            .status(403)
-            .json({
-            success: false,
-            message: "Forbidden"
-        });
-        return;
+    if (!userFns_1.userIsAdmin(req)) {
+        return userFns_1.forbiddenJSON(res);
     }
     const changeCount = usersDB.updateUser(req.body);
     res.json({
@@ -82,14 +65,8 @@ router.post("/doUpdateUser", (req, res) => {
     });
 });
 router.post("/doUpdateUserProperty", (req, res) => {
-    if (!req.session.user.userProperties.isAdmin) {
-        res
-            .status(403)
-            .json({
-            success: false,
-            message: "Forbidden"
-        });
-        return;
+    if (!userFns_1.userIsAdmin(req)) {
+        return userFns_1.forbiddenJSON(res);
     }
     const changeCount = usersDB.updateUserProperty(req.body);
     res.json({
@@ -97,14 +74,8 @@ router.post("/doUpdateUserProperty", (req, res) => {
     });
 });
 router.post("/doResetPassword", (req, res) => {
-    if (!req.session.user.userProperties.isAdmin) {
-        res
-            .status(403)
-            .json({
-            success: false,
-            message: "Forbidden"
-        });
-        return;
+    if (!userFns_1.userIsAdmin(req)) {
+        return userFns_1.forbiddenJSON(res);
     }
     const newPassword = usersDB.generateNewPassword(req.body.userName);
     res.json({
@@ -113,37 +84,19 @@ router.post("/doResetPassword", (req, res) => {
     });
 });
 router.post("/doGetUserProperties", (req, res) => {
-    if (!req.session.user.userProperties.isAdmin) {
-        res
-            .status(403)
-            .json({
-            success: false,
-            message: "Forbidden"
-        });
-        return;
+    if (!userFns_1.userIsAdmin(req)) {
+        return userFns_1.forbiddenJSON(res);
     }
     const userProperties = usersDB.getUserProperties(req.body.userName);
     res.json(userProperties);
 });
 router.post("/doDeleteUser", (req, res) => {
-    if (!req.session.user.userProperties.isAdmin) {
-        res
-            .status(403)
-            .json({
-            success: false,
-            message: "Forbidden"
-        });
-        return;
+    if (!userFns_1.userIsAdmin(req)) {
+        return userFns_1.forbiddenJSON(res);
     }
     const userNameToDelete = req.body.userName;
     if (userNameToDelete === req.session.user.userName) {
-        res
-            .status(403)
-            .json({
-            success: false,
-            message: "Forbidden"
-        });
-        return;
+        return userFns_1.forbiddenJSON(res);
     }
     const success = usersDB.inactivateUser(userNameToDelete);
     res.json({

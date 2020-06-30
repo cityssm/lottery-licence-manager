@@ -1,7 +1,7 @@
 import type { cityssmGlobal } from "../../node_modules/@cityssm/bulma-webapp-js/src/types";
-declare const cityssm: cityssmGlobal;
-
 import type { llmGlobal } from "./types";
+
+declare const cityssm: cityssmGlobal;
 declare const llm: llmGlobal;
 
 
@@ -22,17 +22,17 @@ declare const llm: llmGlobal;
       "</p>";
 
     cityssm.postJSON("/licences/doGetLicenceTypeSummary", formEle,
-      (licenceList: {
-        licenceID: number,
-        externalLicenceNumber: string,
-        applicationDateString: string,
-        organizationName: string,
-        locationDisplayName: string,
-        totalPrizeValue: number,
-        licenceFee: number,
-        issueDate: number,
-        issueDateString: string
-      }[]) => {
+      (licenceList: Array<{
+        licenceID: number;
+        externalLicenceNumber: string;
+        applicationDateString: string;
+        organizationName: string;
+        locationDisplayName: string;
+        totalPrizeValue: number;
+        licenceFee: number;
+        issueDate: number;
+        issueDateString: string;
+      }>) => {
 
         cityssm.clearElement(containerEle);
 
@@ -63,7 +63,7 @@ declare const llm: llmGlobal;
         let issueDateCount = 0;
         let totalPrizeValueSum = 0;
         let licenceFeeSum = 0;
-        //let transactionAmountSum = 0;
+        // let transactionAmountSum = 0;
 
         for (const licenceObj of licenceList) {
 
@@ -82,9 +82,9 @@ declare const llm: llmGlobal;
           trEle.insertAdjacentHTML(
             "beforeend",
             "<td>" +
-            "<a data-tooltip=\"View Licence\" href=\"/licences/" + licenceObj.licenceID + "\">" +
+            "<a data-tooltip=\"View Licence\" href=\"/licences/" + licenceObj.licenceID.toString() + "\">" +
             cityssm.escapeHTML(licenceObj.externalLicenceNumber) + "<br />" +
-            "<small>Licence #" + licenceObj.licenceID + "</small>" +
+            "<small>Licence #" + licenceObj.licenceID.toString() + "</small>" +
             "</a>" +
             "</td>"
           );
@@ -122,7 +122,7 @@ declare const llm: llmGlobal;
 
           totalPrizeValueSum += licenceObj.totalPrizeValue;
           licenceFeeSum += licenceObj.licenceFee;
-          //transactionAmountSum += licenceObj.transactionAmountSum;
+          // transactionAmountSum += licenceObj.transactionAmountSum;
         }
 
         tableEle.insertAdjacentElement("beforeend", tbodyEle);
@@ -131,10 +131,10 @@ declare const llm: llmGlobal;
 
         tfootEle.innerHTML = "<tr>" +
           "<th>" +
-          licenceList.length + " licence" + (licenceList.length === 1 ? "" : "s") +
+          licenceList.length.toString() + " licence" + (licenceList.length === 1 ? "" : "s") +
           "</th>" +
           "<th>" +
-          issueDateCount + " issued" +
+          issueDateCount.toString() + " issued" +
           "</th>" +
           "<td></td>" +
           "<td></td>" +

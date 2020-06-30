@@ -22,7 +22,7 @@ declare const cityssm: cityssmGlobal;
     cityssm.postJSON(
       "/events/doSave",
       formEle,
-      (responseJSON: { success: boolean, message?: string }) => {
+      (responseJSON: { success: boolean; message?: string }) => {
 
         if (responseJSON.success) {
 
@@ -90,6 +90,7 @@ declare const cityssm: cityssmGlobal;
       "</div>";
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
   const inputEles = <NodeListOf<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>>
     formEle.querySelectorAll("input, select, textarea");
 
@@ -108,13 +109,13 @@ declare const cityssm: cityssmGlobal;
     clickEvent.preventDefault();
 
     let bankInfoCloseModalFn: Function;
-    let savedBankInfoList: {
+    let savedBankInfoList: Array<{
       bank_name: string;
       bank_address: string;
       bank_accountNumber: string;
       eventDateMax: number;
       eventDateMaxString: string;
-    }[];
+    }>;
 
     const setPastBankInformationFn = (bankInfoClickEvent: Event) => {
 

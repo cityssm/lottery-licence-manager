@@ -1,7 +1,7 @@
 import type { cityssmGlobal } from "../../node_modules/@cityssm/bulma-webapp-js/src/types";
-declare const cityssm: cityssmGlobal;
-
 import type { llmGlobal } from "./types";
+
+declare const cityssm: cityssmGlobal;
 declare const llm: llmGlobal;
 
 
@@ -27,18 +27,18 @@ declare const llm: llmGlobal;
     tableEle.classList.remove("has-status-view");
     tableEle.classList.add("has-status-loading");
 
-    cityssm.postJSON("/events/doGetFinancialSummary", formEle, (summary: {
-      licenceTypeKey: string,
-      licenceCount: number,
-      eventCount: number,
-      reportDateCount: number,
-      licenceFeeSum: number,
-      costs_receiptsSum: number,
-      costs_adminSum: number
-      costs_netProceedsSum: number,
-      costs_prizesAwardedSum: number,
-      costs_amountDonatedSum: number
-    }[]) => {
+    cityssm.postJSON("/events/doGetFinancialSummary", formEle, (summary: Array<{
+      licenceTypeKey: string;
+      licenceCount: number;
+      eventCount: number;
+      reportDateCount: number;
+      licenceFeeSum: number;
+      costs_receiptsSum: number;
+      costs_adminSum: number;
+      costs_netProceedsSum: number;
+      costs_prizesAwardedSum: number;
+      costs_amountDonatedSum: number;
+    }>) => {
 
       // Hide all rows
 
@@ -60,32 +60,36 @@ declare const llm: llmGlobal;
 
       for (const licenceTypeSummaryObj of summary) {
 
-        const trEle = <HTMLTableRowElement>
+        const trEle: HTMLTableRowElement =
           tbodyEle.querySelector("tr[data-licence-type-key='" + licenceTypeSummaryObj.licenceTypeKey + "']");
 
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
         (<HTMLSpanElement>trEle.querySelector("[data-field='licenceCount']")).innerText =
           licenceTypeSummaryObj.licenceCount.toString();
 
         licenceCount += licenceTypeSummaryObj.licenceCount;
 
         trEle.querySelector("[data-field='eventCount']").innerHTML =
-          (licenceTypeSummaryObj.reportDateCount === licenceTypeSummaryObj.eventCount ?
-            "" :
-            "<span class=\"has-text-danger\" data-tooltip=\"Events Unreported\">") +
-          licenceTypeSummaryObj.reportDateCount + "/" + licenceTypeSummaryObj.eventCount +
+          (licenceTypeSummaryObj.reportDateCount === licenceTypeSummaryObj.eventCount
+            ? ""
+            : "<span class=\"has-text-danger\" data-tooltip=\"Events Unreported\">") +
+          licenceTypeSummaryObj.reportDateCount.toString() + "/" + licenceTypeSummaryObj.eventCount.toString() +
           (licenceTypeSummaryObj.reportDateCount === licenceTypeSummaryObj.eventCount ? "" : "</span>");
 
         reportDateCount += licenceTypeSummaryObj.reportDateCount;
         eventCount += licenceTypeSummaryObj.eventCount;
 
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
         (<HTMLSpanElement>trEle.querySelector("[data-field='costs_receiptsSum']")).innerText =
           "$" + licenceTypeSummaryObj.costs_receiptsSum.toFixed(2);
         costs_receiptsSum += licenceTypeSummaryObj.costs_receiptsSum;
 
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
         (<HTMLSpanElement>trEle.querySelector("[data-field='costs_adminSum']")).innerText =
           "$" + licenceTypeSummaryObj.costs_adminSum.toFixed(2);
         costs_adminSum += licenceTypeSummaryObj.costs_adminSum;
 
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
         (<HTMLSpanElement>trEle.querySelector("[data-field='costs_prizesAwardedSum']")).innerText =
           "$" + licenceTypeSummaryObj.costs_prizesAwardedSum.toFixed(2);
         costs_prizesAwardedSum += licenceTypeSummaryObj.costs_prizesAwardedSum;
@@ -94,10 +98,12 @@ declare const llm: llmGlobal;
           formatDollarsAsHTMLFn(licenceTypeSummaryObj.costs_netProceedsSum);
         costs_netProceedsSum += licenceTypeSummaryObj.costs_netProceedsSum;
 
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
         (<HTMLSpanElement>trEle.querySelector("[data-field='costs_amountDonatedSum']")).innerText =
           "$" + licenceTypeSummaryObj.costs_amountDonatedSum.toFixed(2);
         costs_amountDonatedSum += licenceTypeSummaryObj.costs_amountDonatedSum;
 
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
         (<HTMLSpanElement>trEle.querySelector("[data-field='licenceFeeSum']")).innerText =
           "$" + licenceTypeSummaryObj.licenceFeeSum.toFixed(2);
 
@@ -107,28 +113,39 @@ declare const llm: llmGlobal;
 
       }
 
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
       (<HTMLSpanElement>tfootEle.querySelector("[data-field='licenceCount']")).innerText = licenceCount.toString();
 
       tfootEle.querySelector("[data-field='eventCount']").innerHTML =
-        (reportDateCount === eventCount ? "" : "<span class=\"has-text-danger\" data-tooltip=\"Events Unreported\">") +
-        reportDateCount + "/" + eventCount +
-        (reportDateCount === eventCount ? "" : "</span>");
+        (reportDateCount === eventCount
+          ? ""
+          : "<span class=\"has-text-danger\" data-tooltip=\"Events Unreported\">") +
+        reportDateCount.toString() + "/" + eventCount.toString() +
+        (reportDateCount === eventCount
+          ? ""
+          : "</span>");
 
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
       (<HTMLSpanElement>tfootEle.querySelector("[data-field='costs_receiptsSum']")).innerText =
         "$" + costs_receiptsSum.toFixed(2);
 
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
       (<HTMLSpanElement>tfootEle.querySelector("[data-field='costs_adminSum']")).innerText =
         "$" + costs_adminSum.toFixed(2);
 
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
       (<HTMLSpanElement>tfootEle.querySelector("[data-field='costs_prizesAwardedSum']")).innerText =
         "$" + costs_prizesAwardedSum.toFixed(2);
 
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
       tfootEle.querySelector("[data-field='costs_netProceedsSum']").innerHTML =
         formatDollarsAsHTMLFn(costs_netProceedsSum);
 
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
       (<HTMLSpanElement>tfootEle.querySelector("[data-field='costs_amountDonatedSum']")).innerText =
         "$" + costs_amountDonatedSum.toFixed(2);
 
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
       (<HTMLSpanElement>tfootEle.querySelector("[data-field='licenceFeeSum']")).innerText =
         "$" + licenceFeeSum.toFixed(2);
 

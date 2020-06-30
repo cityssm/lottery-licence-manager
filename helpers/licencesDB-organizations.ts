@@ -9,19 +9,19 @@ import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns";
  */
 
 export const getOrganizations = (reqBody: {
-  organizationName?: string,
-  representativeName?: string,
-  isEligibleForLicences?: string
+  organizationName?: string;
+  representativeName?: string;
+  isEligibleForLicences?: string;
 }, reqSession: Express.SessionData, includeOptions: {
-  limit: number,
-  offset?: number
+  limit: number;
+  offset?: number;
 }) => {
 
   const db = sqlite(dbPath, {
     readonly: true
   });
 
-  const sqlParams: (string | number)[] = [dateTimeFns.dateToInteger(new Date())];
+  const sqlParams: Array<string | number> = [dateTimeFns.dateToInteger(new Date())];
 
   let sql = "select o.organizationID, o.organizationName, o.isEligibleForLicences, o.organizationNote," +
     " r.representativeName," +
@@ -72,7 +72,8 @@ export const getOrganizations = (reqBody: {
 
   if (includeOptions.limit !== -1) {
 
-    sql += " limit " + includeOptions.limit + " offset " + includeOptions.offset;
+    sql += " limit " + includeOptions.limit.toString() +
+      " offset " + includeOptions.offset.toString();
 
   }
 
@@ -348,7 +349,7 @@ export const addOrganizationRepresentative = (organizationID: number, reqBody: l
     " where organizationID = ?")
     .get(organizationID);
 
-  const newRepresentativeIndex = row.maxIndex + 1;
+  const newRepresentativeIndex = <number>row.maxIndex + 1;
   const newIsDefault = (row.indexCount === 0 ? 1 : 0);
 
   db.prepare("insert into OrganizationRepresentatives (" +
@@ -537,7 +538,7 @@ export const addOrganizationRemark = (reqBody: llm.OrganizationRemark, reqSessio
   const db = sqlite(dbPath);
 
   const row: {
-    maxIndex: number
+    maxIndex: number;
   } = db.prepare("select ifnull(max(remarkIndex), -1) as maxIndex" +
     " from OrganizationRemarks" +
     " where organizationID = ?")
@@ -738,7 +739,7 @@ export const addOrganizationBankRecord = (reqBody: llm.OrganizationBankRecord, r
     " where organizationID = ?")
     .get(reqBody.organizationID);
 
-  const newRecordIndex = row.maxIndex + 1;
+  const newRecordIndex = <number>row.maxIndex + 1;
 
   // Insert the record
 

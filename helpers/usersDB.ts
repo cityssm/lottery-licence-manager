@@ -1,4 +1,3 @@
-const dbPath = "data/users.db";
 import * as sqlite from "better-sqlite3";
 
 import * as bcrypt from "bcrypt";
@@ -6,6 +5,8 @@ import * as bcrypt from "bcrypt";
 import * as stringFns from "@cityssm/expressjs-server-js/stringFns";
 import * as configFns from "./configFns";
 import { User, UserProperties } from "./llmTypes";
+
+const dbPath = "data/users.db";
 
 
 export const getUser = (userNameSubmitted: string, passwordPlain: string): User => {
@@ -60,7 +61,7 @@ export const getUser = (userNameSubmitted: string, passwordPlain: string): User 
 
   // Check if the password matches
 
-  const databaseUserName = row.userName;
+  const databaseUserName = <string>row.userName;
 
   let passwordIsValid = false;
 
@@ -210,9 +211,9 @@ export const getUserProperties = (userName: string) => {
 };
 
 export const createUser = (reqBody: {
-  userName: string,
-  lastName: string,
-  firstName: string
+  userName: string;
+  lastName: string;
+  firstName: string;
 }) => {
 
   const newPasswordPlain = stringFns.generatePassword();
@@ -258,9 +259,9 @@ export const createUser = (reqBody: {
 };
 
 export const updateUser = (reqBody: {
-  userName: string,
-  lastName: string,
-  firstName: string
+  userName: string;
+  lastName: string;
+  firstName: string;
 }) => {
 
   const db = sqlite(dbPath);
@@ -283,9 +284,9 @@ export const updateUser = (reqBody: {
 };
 
 export const updateUserProperty = (reqBody: {
-  userName: string,
-  propertyName: string,
-  propertyValue: string
+  userName: string;
+  propertyName: string;
+  propertyValue: string;
 }) => {
 
   const db = sqlite(dbPath);

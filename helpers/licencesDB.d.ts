@@ -1,11 +1,11 @@
 /// <reference types="express-serve-static-core" />
 /// <reference types="compression" />
 /// <reference types="express-session" />
-export declare const dbPath = "data/licences.db";
 import * as llm from "./llmTypes";
 import { RawRowsColumnsReturn } from "@cityssm/expressjs-server-js/types";
+export declare const dbPath = "data/licences.db";
 export declare const canUpdateObject: (obj: llm.Record, reqSession: Express.SessionData) => boolean;
-export declare const getRawRowsColumns: (sql: string, params: (string | number)[]) => RawRowsColumnsReturn;
+export declare const getRawRowsColumns: (sql: string, params: Array<string | number>) => RawRowsColumnsReturn;
 export declare const getLicenceTableStats: () => llm.LotteryLicenceStats;
 export declare const getLicences: (reqBodyOrParamsObj: {
     externalLicenceNumber?: string;
@@ -24,7 +24,7 @@ export declare const getLicences: (reqBodyOrParamsObj: {
 };
 export declare const getLicence: (licenceID: number, reqSession: Express.SessionData) => llm.LotteryLicence;
 export declare const getNextExternalLicenceNumberFromRange: () => number;
-declare type LotteryLicenceForm = {
+interface LotteryLicenceForm {
     licenceID?: string;
     externalLicenceNumber: string;
     applicationDateString: string;
@@ -49,7 +49,7 @@ declare type LotteryLicenceForm = {
     eventDate: string | string[];
     fieldKeys: string;
     licenceFee?: string;
-};
+}
 export declare const createLicence: (reqBody: LotteryLicenceForm, reqSession: Express.SessionData) => number;
 export declare const updateLicence: (reqBody: LotteryLicenceForm, reqSession: Express.SessionData) => boolean;
 export declare const deleteLicence: (licenceID: number, reqSession: Express.SessionData) => boolean;

@@ -1,12 +1,12 @@
 import type { cityssmGlobal } from "../../node_modules/@cityssm/bulma-webapp-js/src/types";
-declare const cityssm: cityssmGlobal;
-
 import type * as llmTypes from "../../helpers/llmTypes";
+
+declare const cityssm: cityssmGlobal;
 
 
 (() => {
 
-  const licenceType_keyToName = {};
+  const licenceType_keyToName: { [licenceTypeKey: string]: string } = {};
 
   const formEle = <HTMLFormElement>document.getElementById("form--filters");
 
@@ -31,7 +31,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
     cityssm.postJSON(
       "/licences/doSearch",
       formEle,
-      (licenceResults: { count: number, licences: llmTypes.LotteryLicence[] }) => {
+      (licenceResults: { count: number; licences: llmTypes.LotteryLicence[] }) => {
 
         const licenceList = licenceResults.licences;
 
@@ -69,9 +69,9 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
           trEle.innerHTML =
             "<td>" +
-            "<a data-tooltip=\"View Licence\" href=\"/licences/" + licenceObj.licenceID + "\">" +
+            "<a data-tooltip=\"View Licence\" href=\"/licences/" + licenceObj.licenceID.toString() + "\">" +
             cityssm.escapeHTML(licenceObj.externalLicenceNumber) + "<br />" +
-            "<small>Licence #" + licenceObj.licenceID + "</small>" +
+            "<small>Licence #" + licenceObj.licenceID.toString() + "</small>" +
             "</a>" +
             "</td>" +
             "<td>" + (licenceType || licenceObj.licenceTypeKey) + "<br />" +
@@ -79,18 +79,18 @@ import type * as llmTypes from "../../helpers/llmTypes";
             "</td>" +
 
             ("<td>" +
-              "<a data-tooltip=\"View Organization\" href=\"/organizations/" + licenceObj.organizationID + "\">" +
+              "<a data-tooltip=\"View Organization\" href=\"/organizations/" + licenceObj.organizationID.toString() + "\">" +
               cityssm.escapeHTML(licenceObj.organizationName) +
               "</a>" +
               "</td>") +
 
             ("<td>" +
-              "<a data-tooltip=\"View Location\" href=\"/locations/" + licenceObj.locationID + "\">" +
+              "<a data-tooltip=\"View Location\" href=\"/locations/" + licenceObj.locationID.toString() + "\">" +
               cityssm.escapeHTML(licenceObj.locationDisplayName) +
               "</a>" +
-              (licenceObj.locationDisplayName === licenceObj.locationAddress1 ?
-                "" :
-                "<br /><small>" + cityssm.escapeHTML(licenceObj.locationAddress1) + "</small>") +
+              (licenceObj.locationDisplayName === licenceObj.locationAddress1
+                ? ""
+                : "<br /><small>" + cityssm.escapeHTML(licenceObj.locationAddress1) + "</small>") +
               "</td>") +
 
             ("<td class=\"is-nowrap\">" +
@@ -104,20 +104,21 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
             "<td class=\"has-text-right is-nowrap is-hidden-print\">" +
 
-            (licenceObj.canUpdate ?
-              "<a class=\"button is-small\" data-tooltip=\"Edit Licence\"" +
-              " href=\"/licences/" + licenceObj.licenceID + "/edit\">" +
+            (licenceObj.canUpdate
+              ? "<a class=\"button is-small\" data-tooltip=\"Edit Licence\"" +
+              " href=\"/licences/" + licenceObj.licenceID.toString() + "/edit\">" +
               "<span class=\"icon\"><i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i></span>" +
               "<span>Edit</span>" +
-              "</a> " : "") +
+              "</a> "
+              : "") +
 
-            (licenceObj.issueDate ?
-              "<a class=\"button is-small\" data-tooltip=\"Print Licence\"" +
-              " href=\"/licences/" + licenceObj.licenceID + "/print\" download>" +
+            (licenceObj.issueDate
+              ? "<a class=\"button is-small\" data-tooltip=\"Print Licence\"" +
+              " href=\"/licences/" + licenceObj.licenceID.toString() + "/print\" download>" +
               "<i class=\"fas fa-print\" aria-hidden=\"true\"></i>" +
               "<span class=\"sr-only\">Print</span>" +
-              "</a>" :
-              "<span class=\"tag is-warning\">Not Issued</span>") +
+              "</a>"
+              : "<span class=\"tag is-warning\">Not Issued</span>") +
             "</div>" +
 
             "</td>";
@@ -129,11 +130,11 @@ import type * as llmTypes from "../../helpers/llmTypes";
         searchResultsEle.insertAdjacentHTML("beforeend", "<div class=\"level is-block-print\">" +
           "<div class=\"level-left has-text-weight-bold\">" +
           "Displaying licences " +
-          (currentOffset + 1) +
+          (currentOffset + 1).toString() +
           " to " +
-          Math.min(currentLimit + currentOffset, licenceResults.count) +
+          Math.min(currentLimit + currentOffset, licenceResults.count).toString() +
           " of " +
-          licenceResults.count +
+          licenceResults.count.toString() +
           "</div>" +
           "</div>");
 

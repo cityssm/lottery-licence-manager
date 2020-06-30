@@ -1,7 +1,7 @@
 import type { cityssmGlobal } from "../../node_modules/@cityssm/bulma-webapp-js/src/types";
-declare const cityssm: cityssmGlobal;
-
 import type * as llmTypes from "../../helpers/llmTypes";
+
+declare const cityssm: cityssmGlobal;
 
 
 (() => {
@@ -24,8 +24,8 @@ import type * as llmTypes from "../../helpers/llmTypes";
           locationID
         },
         (responseJSON: {
-          success: boolean,
-          message: string
+          success: boolean;
+          message: string;
         }) => {
 
           if (responseJSON.success) {
@@ -93,7 +93,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
           trEle.insertAdjacentHTML("beforeend", "<td>" +
             "<a data-tooltip=\"View Location\"" +
-            " href=\"/locations/" + locationObj.locationID + "\">" +
+            " href=\"/locations/" + locationObj.locationID.toString() + "\">" +
             safeLocationDisplayName +
             "</a>" +
             (locationObj.locationDisplayName === locationObj.locationAddress1 ? "" : "<br />" +
@@ -120,9 +120,9 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
 
           trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-centered\">" +
-            (dateMax ?
-              dateMaxString + "<br /><span class=\"tag is-light is-info\">" + dateTag + "</span>" :
-              "<span class=\"tag is-light is-danger\">No Licences</span>") +
+            (dateMax
+              ? dateMaxString + "<br /><span class=\"tag is-light is-info\">" + dateTag + "</span>"
+              : "<span class=\"tag is-light is-danger\">No Licences</span>") +
             "</td>");
 
           trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-centered\">" +
@@ -134,7 +134,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
           trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right\">" +
             "<button class=\"button is-small is-danger\"" +
             " data-tooltip=\"Delete Location\"" +
-            " data-location-id=\"" + locationObj.locationID + "\"" +
+            " data-location-id=\"" + locationObj.locationID.toString() + "\"" +
             " data-location-display-name=\"" + safeLocationDisplayName + "\" type=\"button\">" +
             "<span class=\"icon\"><i class=\"fas fa-trash\" aria-hidden=\"true\"></i></span> <span>Delete</span>" +
             "</button>" +

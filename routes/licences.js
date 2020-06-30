@@ -1,13 +1,13 @@
 "use strict";
 const express_1 = require("express");
-const router = express_1.Router();
 const path = require("path");
 const ejs = require("ejs");
-const convertHTMLToPDF = require("pdf-puppeteer");
 const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
 const configFns = require("../helpers/configFns");
 const licencesDB = require("../helpers/licencesDB");
 const licencesDBOrganizations = require("../helpers/licencesDB-organizations");
+const convertHTMLToPDF = require("pdf-puppeteer");
+const router = express_1.Router();
 router.get("/", (_req, res) => {
     res.render("licence-search", {
         headTitle: "Lottery Licences"
@@ -274,9 +274,9 @@ router.get("/:licenceID", (req, res) => {
         return;
     }
     const organization = licencesDBOrganizations.getOrganization(licence.organizationID, req.session);
-    const headTitle = configFns.getProperty("licences.externalLicenceNumber.isPreferredID") ?
-        "Licence " + licence.externalLicenceNumber :
-        "Licence #" + licenceID;
+    const headTitle = configFns.getProperty("licences.externalLicenceNumber.isPreferredID")
+        ? "Licence " + licence.externalLicenceNumber
+        : "Licence #" + licenceID.toString();
     res.render("licence-view", {
         headTitle: headTitle,
         licence: licence,
@@ -286,7 +286,7 @@ router.get("/:licenceID", (req, res) => {
 router.get("/:licenceID/edit", (req, res) => {
     const licenceID = parseInt(req.params.licenceID, 10);
     if (!req.session.user.userProperties.canCreate) {
-        res.redirect("/licences/" + licenceID + "/?error=accessDenied");
+        res.redirect("/licences/" + licenceID.toString() + "/?error=accessDenied");
         return;
     }
     const licence = licencesDB.getLicence(licenceID, req.session);
@@ -295,13 +295,13 @@ router.get("/:licenceID/edit", (req, res) => {
         return;
     }
     else if (!licence.canUpdate) {
-        res.redirect("/licences/" + licenceID + "/?error=accessDenied");
+        res.redirect("/licences/" + licenceID.toString() + "/?error=accessDenied");
         return;
     }
     const organization = licencesDBOrganizations.getOrganization(licence.organizationID, req.session);
     const feeCalculation = configFns.getProperty("licences.feeCalculationFn")(licence);
     res.render("licence-edit", {
-        headTitle: "Licence #" + licenceID + " Update",
+        headTitle: "Licence #" + licenceID.toString() + " Update",
         isCreate: false,
         licence: licence,
         organization: organization,
@@ -329,7 +329,8 @@ router.get("/:licenceID/print", (req, res, next) => {
             return next(ejsErr);
         }
         convertHTMLToPDF(ejsData, (pdf) => {
-            res.setHeader("Content-Disposition", "attachment; filename=licence-" + licenceID + "-" + licence.recordUpdate_timeMillis + ".pdf");
+            res.setHeader("Content-Disposition", "attachment;" +
+                " filename=licence-" + licenceID.toString() + "-" + licence.recordUpdate_timeMillis.toString() + ".pdf");
             res.setHeader("Content-Type", "application/pdf");
             res.send(pdf);
         }, {
@@ -345,6 +346,6 @@ router.get("/:licenceID/poke", (req, res) => {
     if (req.session.user.userProperties.isAdmin) {
         licencesDB.pokeLicence(licenceID, req.session);
     }
-    res.redirect("/licences/" + licenceID);
+    res.redirect("/licences/" + licenceID.toString());
 });
 module.exports = router;

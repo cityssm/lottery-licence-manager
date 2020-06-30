@@ -1,9 +1,9 @@
 "use strict";
 const express_1 = require("express");
-const router = express_1.Router();
 const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
 const licencesDB = require("../helpers/licencesDB");
 const licencesDBOrganizations = require("../helpers/licencesDB-organizations");
+const router = express_1.Router();
 router.get("/", (_req, res) => {
     const eventTableStats = licencesDB.getEventTableStats();
     res.render("event-search", {
@@ -146,7 +146,7 @@ router.get("/:licenceID/:eventDate/edit", (req, res) => {
     const licenceID = parseInt(req.params.licenceID, 10);
     const eventDate = parseInt(req.params.eventDate, 10);
     if (!req.session.user.userProperties.canUpdate) {
-        res.redirect("/events/" + licenceID + "/" + eventDate + "/?error=accessDenied");
+        res.redirect("/events/" + licenceID.toString() + "/" + eventDate.toString() + "/?error=accessDenied");
         return;
     }
     const eventObj = licencesDB.getEvent(licenceID, eventDate, req.session);
@@ -155,7 +155,7 @@ router.get("/:licenceID/:eventDate/edit", (req, res) => {
         return;
     }
     if (!eventObj.canUpdate) {
-        res.redirect("/events/" + licenceID + "/" + eventDate + "/?error=accessDenied");
+        res.redirect("/events/" + licenceID.toString() + "/" + eventDate.toString() + "/?error=accessDenied");
         return;
     }
     const licence = licencesDB.getLicence(licenceID, req.session);
@@ -173,6 +173,6 @@ router.get("/:licenceID/:eventDate/poke", (req, res) => {
     if (req.session.user.userProperties.isAdmin) {
         licencesDB.pokeEvent(licenceID, eventDate, req.session);
     }
-    res.redirect("/events/" + licenceID + "/" + eventDate);
+    res.redirect("/events/" + licenceID.toString() + "/" + eventDate.toString());
 });
 module.exports = router;

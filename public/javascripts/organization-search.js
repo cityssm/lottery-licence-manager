@@ -42,16 +42,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     organizationNameLinkEle.setAttribute("data-tooltip", "View Organization");
                 }
                 organizationNameLinkEle.innerText = organizationObj.organizationName;
-                organizationNameLinkEle.href = "/organizations/" + organizationObj.organizationID;
+                organizationNameLinkEle.href = "/organizations/" + organizationObj.organizationID.toString();
                 trEle.getElementsByTagName("td")[0].insertAdjacentElement("beforeend", organizationNameLinkEle);
                 trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right\">" +
-                    (organizationObj.organizationNote === "" ?
-                        "" :
-                        "<span class=\"tag has-cursor-default is-info is-light\"" +
+                    (organizationObj.organizationNote === ""
+                        ? ""
+                        : "<span class=\"tag has-cursor-default is-info is-light\"" +
                             " data-tooltip=\"" +
-                            cityssm.escapeHTML(organizationObj.organizationNote.length > 30 ?
-                                organizationObj.organizationNote.substring(0, 27) + "..." :
-                                organizationObj.organizationNote) +
+                            cityssm.escapeHTML(organizationObj.organizationNote.length > 30
+                                ? organizationObj.organizationNote.substring(0, 27) + "..."
+                                : organizationObj.organizationNote) +
                             "\">" +
                             "<i class=\"fas fa-sticky-note mr-2\" aria-hidden=\"true\"></i> Note" +
                             "</span>") +
@@ -61,19 +61,20 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     "</td>");
                 if (canCreate) {
                     trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right is-hidden-print\">" +
-                        (organizationObj.canUpdate ?
-                            "<a class=\"button is-small\" data-tooltip=\"Edit Organization\"" +
-                                " href=\"/organizations/" + organizationObj.organizationID + "/edit\">" +
+                        (organizationObj.canUpdate
+                            ? "<a class=\"button is-small\" data-tooltip=\"Edit Organization\"" +
+                                " href=\"/organizations/" + organizationObj.organizationID.toString() + "/edit\">" +
                                 "<span class=\"icon\"><i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i></span>" +
                                 "<span>Edit</span>" +
-                                "</a>" :
-                            "") +
+                                "</a>"
+                            : "") +
                         "</td>");
                 }
                 let licenceHTML = "";
                 if (organizationObj.licences_activeCount > 0) {
                     licenceHTML = "<span class=\"tag has-cursor-default is-info\" data-tooltip=\"Number of Active Licences\">" +
-                        "<i class=\"fas fa-certificate mr-2\" aria-hidden=\"true\"></i> " + organizationObj.licences_activeCount +
+                        "<i class=\"fas fa-certificate mr-2\" aria-hidden=\"true\"></i> " +
+                        organizationObj.licences_activeCount.toString() +
                         "</span>";
                 }
                 else if (organizationObj.licences_endDateMax) {
@@ -85,12 +86,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 trEle.insertAdjacentHTML("beforeend", "<td>" + licenceHTML + "</td>");
                 if (canCreate) {
                     trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right is-hidden-print\">" +
-                        (organizationObj.isEligibleForLicences ?
-                            "<a class=\"button is-small\" data-tooltip=\"Create a New Licence\"" +
-                                " href=\"/licences/new/" + organizationObj.organizationID + "\">" +
+                        (organizationObj.isEligibleForLicences
+                            ? "<a class=\"button is-small\" data-tooltip=\"Create a New Licence\"" +
+                                " href=\"/licences/new/" + organizationObj.organizationID.toString() + "\">" +
                                 "<span class=\"icon\"><i class=\"fas fa-certificate\" aria-hidden=\"true\"></i></span>" +
                                 "<span>New</span>" +
-                                "</a>" : "") +
+                                "</a>"
+                            : "") +
                         "</td>");
                 }
                 tbodyEle.insertAdjacentElement("beforeend", trEle);

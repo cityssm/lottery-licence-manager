@@ -1,10 +1,9 @@
 import type { cityssmGlobal } from "../../node_modules/@cityssm/bulma-webapp-js/src/types";
-declare const cityssm: cityssmGlobal;
-
 import type { llmGlobal } from "./types";
-declare const llm: llmGlobal;
-
 import * as llmTypes from "../../helpers/llmTypes";
+
+declare const cityssm: cityssmGlobal;
+declare const llm: llmGlobal;
 
 
 (() => {
@@ -57,26 +56,26 @@ import * as llmTypes from "../../helpers/llmTypes";
           const trEle = document.createElement("tr");
 
           trEle.innerHTML = ("<td>" +
-            "<a href=\"/licences/" + licenceObj.licenceID + "\" data-tooltip=\"View Licence\">" +
+            "<a href=\"/licences/" + licenceObj.licenceID.toString() + "\" data-tooltip=\"View Licence\">" +
             cityssm.escapeHTML(licenceObj.externalLicenceNumber) + "<br />" +
-            "<small>Licence #" + licenceObj.licenceID + "</small>" +
+            "<small>Licence #" + licenceObj.licenceID.toString() + "</small>" +
             "</a>" +
             "</td>") +
             ("<td>" +
-              (exports.config_licenceTypes[licenceObj.licenceTypeKey] || licenceObj.licenceTypeKey) +
+              (<string>exports.config_licenceTypes[licenceObj.licenceTypeKey] || licenceObj.licenceTypeKey) +
               "</td>") +
             ("<td>" +
-              "<a href=\"/organizations/" + licenceObj.organizationID + "\" data-tooltip=\"View Organization\">" +
+              "<a href=\"/organizations/" + licenceObj.organizationID.toString() + "\" data-tooltip=\"View Organization\">" +
               cityssm.escapeHTML(licenceObj.organizationName) +
               "</a>" +
               "</td>") +
             ("<td>" +
-              "<a href=\"/locations/" + licenceObj.locationID + "\" data-tooltip=\"View Location\">" +
+              "<a href=\"/locations/" + licenceObj.locationID.toString() + "\" data-tooltip=\"View Location\">" +
               cityssm.escapeHTML(licenceObj.locationDisplayName) +
               "</a>" +
-              (licenceObj.locationDisplayName === licenceObj.locationName ?
-                "<br /><small>" + cityssm.escapeHTML(licenceObj.locationAddress1) + "</small>" :
-                "") +
+              (licenceObj.locationDisplayName === licenceObj.locationName
+                ? "<br /><small>" + cityssm.escapeHTML(licenceObj.locationAddress1) + "</small>"
+                : "") +
               "</td>") +
             ("<td class=\"is-nowrap\">" + licenceObj.issueDateString + "</td>") +
             ("<td class=\"is-nowrap\">" +

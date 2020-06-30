@@ -1,11 +1,7 @@
 import { Router } from "express";
-const router = Router();
 
 import * as path from "path";
 import * as ejs from "ejs";
-
-// tslint:disable-next-line
-const convertHTMLToPDF = require("pdf-puppeteer");
 
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns";
 import * as configFns from "../helpers/configFns";
@@ -13,6 +9,11 @@ import * as configFns from "../helpers/configFns";
 import * as licencesDB from "../helpers/licencesDB";
 import * as licencesDBOrganizations from "../helpers/licencesDB-organizations";
 import { Organization } from "../helpers/llmTypes";
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const convertHTMLToPDF = require("pdf-puppeteer");
+
+const router = Router();
 
 
 /*
@@ -472,9 +473,9 @@ router.get("/:licenceID", (req, res) => {
   const organization = licencesDBOrganizations.getOrganization(licence.organizationID, req.session);
 
   const headTitle =
-    configFns.getProperty("licences.externalLicenceNumber.isPreferredID") ?
-      "Licence " + licence.externalLicenceNumber :
-      "Licence #" + licenceID;
+    configFns.getProperty("licences.externalLicenceNumber.isPreferredID")
+      ? "Licence " + licence.externalLicenceNumber
+      : "Licence #" + licenceID.toString();
 
   res.render("licence-view", {
     headTitle: headTitle,
@@ -491,7 +492,7 @@ router.get("/:licenceID/edit", (req, res) => {
 
   if (!req.session.user.userProperties.canCreate) {
 
-    res.redirect("/licences/" + licenceID + "/?error=accessDenied");
+    res.redirect("/licences/" + licenceID.toString() + "/?error=accessDenied");
     return;
 
   }
@@ -505,7 +506,7 @@ router.get("/:licenceID/edit", (req, res) => {
 
   } else if (!licence.canUpdate) {
 
-    res.redirect("/licences/" + licenceID + "/?error=accessDenied");
+    res.redirect("/licences/" + licenceID.toString() + "/?error=accessDenied");
     return;
 
   }
@@ -516,7 +517,7 @@ router.get("/:licenceID/edit", (req, res) => {
   const feeCalculation = configFns.getProperty("licences.feeCalculationFn")(licence);
 
   res.render("licence-edit", {
-    headTitle: "Licence #" + licenceID + " Update",
+    headTitle: "Licence #" + licenceID.toString() + " Update",
     isCreate: false,
     licence: licence,
     organization: organization,
@@ -562,10 +563,11 @@ router.get("/:licenceID/print", (req, res, next) => {
 
       convertHTMLToPDF(ejsData, (pdf) => {
 
-        res.setHeader(
-          "Content-Disposition",
-          "attachment; filename=licence-" + licenceID + "-" + licence.recordUpdate_timeMillis + ".pdf"
+        res.setHeader("Content-Disposition",
+          "attachment;" +
+          " filename=licence-" + licenceID.toString() + "-" + licence.recordUpdate_timeMillis.toString() + ".pdf"
         );
+
         res.setHeader("Content-Type", "application/pdf");
 
         res.send(pdf);
@@ -590,7 +592,7 @@ router.get("/:licenceID/poke", (req, res) => {
     licencesDB.pokeLicence(licenceID, req.session);
   }
 
-  res.redirect("/licences/" + licenceID);
+  res.redirect("/licences/" + licenceID.toString());
 });
 
 

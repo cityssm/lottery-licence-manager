@@ -13,7 +13,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 cityssm.disableNavBlocker();
             }
             if (responseJSON.success && isCreate) {
-                window.location.href = "/organizations/" + responseJSON.organizationID + "/edit";
+                window.location.href = "/organizations/" + responseJSON.organizationID.toString() + "/edit";
             }
             else {
                 formMessageEle.innerHTML = "";
@@ -102,9 +102,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
             document.getElementById("editOrganizationRepresentative--representativeEmailAddress").value =
                 editRepresentativeTrEle.getAttribute("data-representative-email-address");
             document.getElementById("editOrganizationRepresentative--isDefault").value =
-                document.getElementById("representative-isDefault--" + representativeIndex).checked ?
-                    "1" :
-                    "0";
+                document.getElementById("representative-isDefault--" + representativeIndex).checked
+                    ? "1"
+                    : "0";
             cityssm.showModal(editRepresentativeModalEle);
         };
         const insertRepresentativeRowFn = (representativeObj) => {
@@ -122,10 +122,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
             trEle.insertAdjacentHTML("beforeend", "<td>" +
                 "<div class=\"field\">" +
                 "<input class=\"is-checkradio is-info\"" +
-                " id=\"representative-isDefault--" + representativeObj.representativeIndex + "\"" +
+                " id=\"representative-isDefault--" + representativeObj.representativeIndex.toString() + "\"" +
                 " name=\"representative-isDefault\" type=\"radio\"" +
                 (representativeObj.isDefault ? " checked" : "") + " />&nbsp;" +
-                "<label for=\"representative-isDefault--" + representativeObj.representativeIndex + "\"></label>" +
+                "<label for=\"representative-isDefault--" + representativeObj.representativeIndex.toString() + "\"></label>" +
                 "</div>" +
                 "</td>");
             trEle.getElementsByTagName("input")[0].addEventListener("change", updateDefaultRepresentativeFn);

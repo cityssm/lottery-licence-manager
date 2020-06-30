@@ -1,4 +1,3 @@
-export const dbPath = "data/licences.db";
 import * as sqlite from "better-sqlite3";
 
 import * as llm from "./llmTypes";
@@ -6,6 +5,8 @@ import * as configFns from "./configFns";
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns";
 
 import { RawRowsColumnsReturn } from "@cityssm/expressjs-server-js/types";
+
+export const dbPath = "data/licences.db";
 
 
 /*
@@ -37,7 +38,7 @@ export const canUpdateObject = (obj: llm.Record, reqSession: Express.SessionData
   } else if (userProperties.canCreate &&
     (obj.recordCreate_userName === reqSession.user.userName ||
       obj.recordUpdate_userName === reqSession.user.userName) &&
-    obj.recordUpdate_timeMillis + configFns.getProperty("user.createUpdateWindowMillis") > Date.now()) {
+    obj.recordUpdate_timeMillis + <number>configFns.getProperty("user.createUpdateWindowMillis") > Date.now()) {
 
     // Users with only create permission can update their own records within the time window
     canUpdate = true;
@@ -46,7 +47,7 @@ export const canUpdateObject = (obj: llm.Record, reqSession: Express.SessionData
 
   // If recently updated, send back permission
 
-  if (obj.recordUpdate_timeMillis + configFns.getProperty("user.createUpdateWindowMillis") > Date.now()) {
+  if (obj.recordUpdate_timeMillis + <number>configFns.getProperty("user.createUpdateWindowMillis") > Date.now()) {
 
     return canUpdate;
 
@@ -66,18 +67,15 @@ export const canUpdateObject = (obj: llm.Record, reqSession: Express.SessionData
         const lockDateInteger = dateTimeFns.dateToInteger(lockDate);
 
         if ((<llm.LotteryLicence>obj).endDate < lockDateInteger) {
-
           canUpdate = false;
-
         }
+
         break;
 
       case "event":
 
         if ((<llm.LotteryEvent>obj).bank_name !== "" && (<llm.LotteryEvent>obj).costs_receipts) {
-
           canUpdate = false;
-
         }
 
         break;
@@ -113,11 +111,11 @@ const getApplicationSettingWithDB = (db: sqlite.Database, settingKey: string): s
 const getLicenceWithDB = (db: sqlite.Database, licenceID: number | string,
   reqSession: Express.SessionData,
   queryOptions: {
-    includeTicketTypes: boolean,
-    includeFields: boolean,
-    includeEvents: boolean,
-    includeAmendments: boolean,
-    includeTransactions: boolean
+    includeTicketTypes: boolean;
+    includeFields: boolean;
+    includeEvents: boolean;
+    includeAmendments: boolean;
+    includeTransactions: boolean;
   }) => {
 
   const licenceObj: llm.LotteryLicence =
@@ -175,13 +173,13 @@ const getLicenceWithDB = (db: sqlite.Database, licenceID: number | string,
 
       for (const ticketTypeObj of ticketTypesList) {
 
-        ticketTypeObj.distributorLocationDisplayName = ticketTypeObj.distributorLocationName === "" ?
-          ticketTypeObj.distributorLocationAddress1 :
-          ticketTypeObj.distributorLocationName;
+        ticketTypeObj.distributorLocationDisplayName = ticketTypeObj.distributorLocationName === ""
+          ? ticketTypeObj.distributorLocationAddress1
+          : ticketTypeObj.distributorLocationName;
 
-        ticketTypeObj.manufacturerLocationDisplayName = ticketTypeObj.manufacturerLocationName === "" ?
-          ticketTypeObj.manufacturerLocationAddress1 :
-          ticketTypeObj.manufacturerLocationName;
+        ticketTypeObj.manufacturerLocationDisplayName = ticketTypeObj.manufacturerLocationName === ""
+          ? ticketTypeObj.manufacturerLocationAddress1
+          : ticketTypeObj.manufacturerLocationName;
 
       }
 
@@ -222,9 +220,9 @@ const getLicenceWithDB = (db: sqlite.Database, licenceID: number | string,
 
         eventObj.eventDateString = dateTimeFns.dateIntegerToString(eventObj.eventDate);
 
-        eventObj.costs_netProceeds = (eventObj.costs_receipts || 0)
-          - (eventObj.costs_admin || 0)
-          - (eventObj.costs_prizesAwarded || 0);
+        eventObj.costs_netProceeds = (eventObj.costs_receipts || 0) -
+          (eventObj.costs_admin || 0) -
+          (eventObj.costs_prizesAwarded || 0);
       }
 
       licenceObj.events = eventList;
@@ -257,11 +255,12 @@ const getLicenceWithDB = (db: sqlite.Database, licenceID: number | string,
 
     if ("includeTransactions" in queryOptions && queryOptions.includeTransactions) {
 
-      const transactions = db.prepare("select * from LotteryLicenceTransactions" +
-        " where licenceID = ?" +
-        " and recordDelete_timeMillis is null" +
-        " order by transactionDate, transactionTime, transactionIndex")
-        .all(licenceID);
+      const transactions: llm.LotteryLicenceTransaction[] =
+        db.prepare("select * from LotteryLicenceTransactions" +
+          " where licenceID = ?" +
+          " and recordDelete_timeMillis is null" +
+          " order by transactionDate, transactionTime, transactionIndex")
+          .all(licenceID);
 
       let licenceTransactionTotal = 0;
 
@@ -287,7 +286,9 @@ const addLicenceAmendmentWithDB = (db: sqlite.Database,
   licenceID: number | string, amendmentType: string, amendment: string, isHidden: number,
   reqSession: Express.SessionData) => {
 
-  const amendmentIndexRecord = db.prepare("select amendmentIndex" +
+  const amendmentIndexRecord: {
+    amendmentIndex: number;
+  } = db.prepare("select amendmentIndex" +
     " from LotteryLicenceAmendments" +
     " where licenceID = ?" +
     " order by amendmentIndex desc" +
@@ -324,7 +325,7 @@ const addLicenceAmendmentWithDB = (db: sqlite.Database,
 };
 
 
-export const getRawRowsColumns = (sql: string, params: (string | number)[]): RawRowsColumnsReturn => {
+export const getRawRowsColumns = (sql: string, params: Array<string | number>): RawRowsColumnsReturn => {
 
   const db = sqlite(dbPath, {
     readonly: true
@@ -395,18 +396,18 @@ export const getLicenceTableStats = () => {
 
 // tslint:disable-next-line:cyclomatic-complexity
 export const getLicences = (reqBodyOrParamsObj: {
-  externalLicenceNumber?: string,
-  licenceTypeKey?: string,
-  organizationID?: string | number,
-  organizationName?: string,
-  licenceStatus?: string,
-  locationID?: number
+  externalLicenceNumber?: string;
+  licenceTypeKey?: string;
+  organizationID?: string | number;
+  organizationName?: string;
+  licenceStatus?: string;
+  locationID?: number;
 },
   reqSession: Express.SessionData,
   includeOptions: {
-    includeOrganization: boolean,
-    limit: number,
-    offset?: number
+    includeOrganization: boolean;
+    limit: number;
+    offset?: number;
   }) => {
 
   if (reqBodyOrParamsObj.organizationName && reqBodyOrParamsObj.organizationName !== "") {
@@ -500,9 +501,9 @@ export const getLicences = (reqBodyOrParamsObj: {
   }
 
   let sql = "select l.licenceID, l.organizationID," +
-    (includeOptions.includeOrganization ?
-      " o.organizationName," :
-      "") +
+    (includeOptions.includeOrganization
+      ? " o.organizationName,"
+      : "") +
     " l.applicationDate, l.licenceTypeKey," +
     " l.startDate, l.startTime, l.endDate, l.endTime," +
     " l.locationID, lo.locationName, lo.locationAddress1," +
@@ -511,16 +512,16 @@ export const getLicences = (reqBodyOrParamsObj: {
     " l.recordCreate_userName, l.recordCreate_timeMillis, l.recordUpdate_userName, l.recordUpdate_timeMillis" +
     " from LotteryLicences l" +
     " left join Locations lo on l.locationID = lo.locationID" +
-    (includeOptions.includeOrganization ?
-      " left join Organizations o on l.organizationID = o.organizationID" :
-      ""
+    (includeOptions.includeOrganization
+      ? " left join Organizations o on l.organizationID = o.organizationID"
+      : ""
     ) +
     sqlWhereClause +
     " order by l.endDate desc, l.startDate desc, l.licenceID";
 
   if (includeOptions.limit !== -1) {
-    sql += " limit " + includeOptions.limit +
-      " offset " + includeOptions.offset;
+    sql += " limit " + includeOptions.limit.toString() +
+      " offset " + includeOptions.offset.toString();
   }
 
   const rows: llm.LotteryLicence[] =
@@ -602,55 +603,50 @@ export const getNextExternalLicenceNumberFromRange = () => {
 
   }
 
-  const maxExternalLicenceNumber = row.maxExternalLicenceNumberInteger;
+  const maxExternalLicenceNumber = <number>row.maxExternalLicenceNumberInteger;
 
   if (!maxExternalLicenceNumber) {
-
     return rangeStart;
-
   }
 
   const newExternalLicenceNumber = maxExternalLicenceNumber + 1;
 
   if (newExternalLicenceNumber > rangeEnd) {
-
     return -1;
-
   }
 
-  return Number(newExternalLicenceNumber);
-
+  return newExternalLicenceNumber;
 };
 
-type LotteryLicenceForm = {
-  licenceID?: string,
-  externalLicenceNumber: string,
-  applicationDateString: string,
-  organizationID: string,
-  municipality: string,
-  locationID: string,
-  startDateString: string,
-  endDateString: string,
-  startTimeString: string,
-  endTimeString: string,
-  licenceDetails: string,
-  termsConditions: string,
-  licenceTypeKey: string,
-  totalPrizeValue: string,
+interface LotteryLicenceForm {
+  licenceID?: string;
+  externalLicenceNumber: string;
+  applicationDateString: string;
+  organizationID: string;
+  municipality: string;
+  locationID: string;
+  startDateString: string;
+  endDateString: string;
+  startTimeString: string;
+  endTimeString: string;
+  licenceDetails: string;
+  termsConditions: string;
+  licenceTypeKey: string;
+  totalPrizeValue: string;
 
-  ticketType_ticketType: string | string[],
-  ticketType_unitCount: string | string[],
-  ticketType_licenceFee: string | string[],
-  ticketType_manufacturerLocationID: string | string[],
-  ticketType_distributorLocationID: string | string[],
+  ticketType_ticketType: string | string[];
+  ticketType_unitCount: string | string[];
+  ticketType_licenceFee: string | string[];
+  ticketType_manufacturerLocationID: string | string[];
+  ticketType_distributorLocationID: string | string[];
 
-  ticketType_toAdd?: string | string[],
-  ticketType_toDelete?: string | string[],
+  ticketType_toAdd?: string | string[];
+  ticketType_toDelete?: string | string[];
 
-  eventDate: string | string[],
-  fieldKeys: string,
-  licenceFee?: string
-};
+  eventDate: string | string[];
+  fieldKeys: string;
+  licenceFee?: string;
+}
 
 /**
  * @returns New licenceID
@@ -756,13 +752,13 @@ export const createLicence = (reqBody: LotteryLicenceForm, reqSession: Express.S
           licenceID,
           ticketType,
 
-          (reqBody.ticketType_distributorLocationID[ticketTypeIndex] === "" ?
-            null :
-            reqBody.ticketType_distributorLocationID[ticketTypeIndex]),
+          (reqBody.ticketType_distributorLocationID[ticketTypeIndex] === ""
+            ? null
+            : reqBody.ticketType_distributorLocationID[ticketTypeIndex]),
 
-          (reqBody.ticketType_manufacturerLocationID[ticketTypeIndex] === "" ?
-            null :
-            reqBody.ticketType_manufacturerLocationID[ticketTypeIndex]),
+          (reqBody.ticketType_manufacturerLocationID[ticketTypeIndex] === ""
+            ? null
+            : reqBody.ticketType_manufacturerLocationID[ticketTypeIndex]),
 
           reqBody.ticketType_unitCount[ticketTypeIndex],
           reqBody.ticketType_licenceFee[ticketTypeIndex],
@@ -946,18 +942,18 @@ export const updateLicence = (reqBody: LotteryLicenceForm, reqSession: Express.S
         pastLicenceObj.endTime !== endTime_now)) {
 
       const amendment = (
-        (pastLicenceObj.startDate !== startDate_now ?
-          `Start Date: ${pastLicenceObj.startDate} -> ${startDate_now}` + "\n" :
-          "") +
-        (pastLicenceObj.endDate !== endDate_now ?
-          `End Date: ${pastLicenceObj.endDate} -> ${endDate_now}` + "\n" :
-          "") +
-        (pastLicenceObj.startTime !== startTime_now ?
-          `Start Time: ${pastLicenceObj.startTime} -> ${startTime_now}` + "\n" :
-          "") +
-        (pastLicenceObj.endTime !== endTime_now ?
-          `End Time: ${pastLicenceObj.endTime} -> ${endTime_now}` + "\n" :
-          "")).trim();
+        (pastLicenceObj.startDate !== startDate_now
+          ? `Start Date: ${pastLicenceObj.startDate} -> ${startDate_now}` + "\n"
+          : "") +
+        (pastLicenceObj.endDate !== endDate_now
+          ? `End Date: ${pastLicenceObj.endDate} -> ${endDate_now}` + "\n"
+          : "") +
+        (pastLicenceObj.startTime !== startTime_now
+          ? `Start Time: ${pastLicenceObj.startTime} -> ${startTime_now}` + "\n"
+          : "") +
+        (pastLicenceObj.endTime !== endTime_now
+          ? `End Time: ${pastLicenceObj.endTime} -> ${endTime_now}` + "\n"
+          : "")).trim();
 
       addLicenceAmendmentWithDB(
         db,
@@ -1245,7 +1241,7 @@ export const updateLicence = (reqBody: LotteryLicenceForm, reqSession: Express.S
           reqBody.licenceID,
           "Ticket Type Change",
           (reqBody.ticketType_ticketType + " Units: " +
-            ticketTypeObj_past.unitCount + " -> " + reqBody.ticketType_unitCount),
+            ticketTypeObj_past.unitCount.toString() + " -> " + reqBody.ticketType_unitCount.toString()),
           0,
           reqSession
         );
@@ -1269,13 +1265,13 @@ export const updateLicence = (reqBody: LotteryLicenceForm, reqSession: Express.S
         " and ticketType = ?" +
         " and recordDelete_timeMillis is null")
         .run(
-          (reqBody.ticketType_distributorLocationID[ticketTypeIndex] === "" ?
-            null :
-            reqBody.ticketType_distributorLocationID[ticketTypeIndex]),
+          (reqBody.ticketType_distributorLocationID[ticketTypeIndex] === ""
+            ? null
+            : reqBody.ticketType_distributorLocationID[ticketTypeIndex]),
 
-          (reqBody.ticketType_manufacturerLocationID[ticketTypeIndex] === "" ?
-            null :
-            reqBody.ticketType_manufacturerLocationID[ticketTypeIndex]),
+          (reqBody.ticketType_manufacturerLocationID[ticketTypeIndex] === ""
+            ? null
+            : reqBody.ticketType_manufacturerLocationID[ticketTypeIndex]),
 
           reqBody.ticketType_unitCount[ticketTypeIndex],
           reqBody.ticketType_licenceFee[ticketTypeIndex],
@@ -1299,7 +1295,7 @@ export const updateLicence = (reqBody: LotteryLicenceForm, reqSession: Express.S
             reqBody.licenceID,
             "Ticket Type Change",
             (ticketType + " Units: " +
-              ticketTypeObj_past.unitCount + " -> " + reqBody.ticketType_unitCount[ticketTypeIndex]),
+              ticketTypeObj_past.unitCount.toString() + " -> " + reqBody.ticketType_unitCount[ticketTypeIndex]),
             0,
             reqSession
           );
@@ -1549,9 +1545,9 @@ export const unissueLicence = (licenceID: number, reqSession: Express.SessionDat
 };
 
 export const getLicenceTypeSummary = (reqBody: {
-  applicationDateStartString?: string,
-  applicationDateEndString?: string,
-  licenceTypeKey?: string
+  applicationDateStartString?: string;
+  applicationDateEndString?: string;
+  licenceTypeKey?: string;
 }) => {
 
   const db = sqlite(dbPath, {
@@ -1622,8 +1618,8 @@ export const getLicenceTypeSummary = (reqBody: {
 };
 
 export const getActiveLicenceSummary = (reqBody: {
-  startEndDateStartString: string,
-  startEndDateEndString: string
+  startEndDateStartString: string;
+  startEndDateEndString: string;
 }, reqSession: Express.SessionData) => {
 
   const db = sqlite(dbPath, {
@@ -1687,11 +1683,11 @@ export const getActiveLicenceSummary = (reqBody: {
  * @returns The new transactionIndex
  */
 export const addTransaction = (reqBody: {
-  licenceID: string,
-  transactionAmount: string,
-  transactionNote: string,
-  externalReceiptNumber: string,
-  issueLicence: "" | "true"
+  licenceID: string;
+  transactionAmount: string;
+  transactionNote: string;
+  externalReceiptNumber: string;
+  issueLicence: "" | "true";
 }, reqSession: Express.SessionData) => {
 
   const db = sqlite(dbPath);
@@ -1709,7 +1705,7 @@ export const addTransaction = (reqBody: {
     " where licenceID = ?")
     .get(reqBody.licenceID);
 
-  const newTransactionIndex: number = row.maxIndex + 1;
+  const newTransactionIndex: number = <number>row.maxIndex + 1;
 
   const rightNow = new Date();
 
@@ -1859,10 +1855,10 @@ export const getEventTableStats = () => {
 };
 
 export const getEvents = (reqBody: {
-  externalLicenceNumber?: string,
-  licenceTypeKey?: string,
-  organizationName?: string,
-  eventYear?: string
+  externalLicenceNumber?: string;
+  licenceTypeKey?: string;
+  organizationName?: string;
+  eventYear?: string;
 }, reqSession: Express.SessionData) => {
 
   const db = sqlite(dbPath, {
@@ -1980,8 +1976,8 @@ export const getRecentlyUpdateEvents = (reqSession: Express.SessionData) => {
 };
 
 export const getOutstandingEvents = (reqBody: {
-  eventDateType?: string,
-  licenceTypeKey?: string
+  eventDateType?: string;
+  licenceTypeKey?: string;
 }, reqSession: Express.SessionData) => {
 
   const db = sqlite(dbPath, {
@@ -2006,8 +2002,8 @@ export const getOutstandingEvents = (reqBody: {
     " and l.recordDelete_timeMillis is null" +
     (" and (" +
       "e.reportDate is null or e.reportDate = 0" +
-      //" or e.bank_name is null or e.bank_name = ''" +
-      //" or e.costs_receipts is null or e.costs_receipts = 0" +
+      // " or e.bank_name is null or e.bank_name = ''" +
+      // " or e.costs_receipts is null or e.costs_receipts = 0" +
       ")");
 
   if (reqBody.licenceTypeKey && reqBody.licenceTypeKey !== "") {
@@ -2053,8 +2049,8 @@ export const getOutstandingEvents = (reqBody: {
 };
 
 export const getEventFinancialSummary = (reqBody: {
-  eventDateStartString: string,
-  eventDateEndString: string
+  eventDateStartString: string;
+  eventDateEndString: string;
 }) => {
 
   const db = sqlite(dbPath, {
@@ -2132,9 +2128,9 @@ export const getEvent = (licenceID: number, eventDate: number, reqSession: Expre
     eventObj.startTimeString = dateTimeFns.timeIntegerToString(eventObj.startTime || 0);
     eventObj.endTimeString = dateTimeFns.timeIntegerToString(eventObj.endTime || 0);
 
-    eventObj.costs_netProceeds = (eventObj.costs_receipts || 0)
-      - (eventObj.costs_admin || 0)
-      - (eventObj.costs_prizesAwarded || 0);
+    eventObj.costs_netProceeds = (eventObj.costs_receipts || 0) -
+      (eventObj.costs_admin || 0) -
+      (eventObj.costs_prizesAwarded || 0);
 
     eventObj.canUpdate = canUpdateObject(eventObj, reqSession);
 
@@ -2192,18 +2188,18 @@ export const getPastEventBankingInformation = (licenceID: number) => {
  * @returns TRUE if successful
  */
 export const updateEvent = (reqBody: {
-  licenceID: string,
-  eventDate: string,
-  reportDateString: string,
-  bank_name: string,
-  bank_address: string,
-  bank_accountNumber: string,
-  bank_accountBalance: string,
-  costs_receipts: string,
-  costs_admin: string,
-  costs_prizesAwarded: string,
-  costs_amountDonated: string,
-  fieldKeys: string
+  licenceID: string;
+  eventDate: string;
+  reportDateString: string;
+  bank_name: string;
+  bank_address: string;
+  bank_accountNumber: string;
+  bank_accountBalance: string;
+  costs_receipts: string;
+  costs_admin: string;
+  costs_prizesAwarded: string;
+  costs_amountDonated: string;
+  fieldKeys: string;
 }, reqSession: Express.SessionData): boolean => {
 
   const db = sqlite(dbPath);

@@ -1,8 +1,7 @@
 import type { cityssmGlobal } from "../../node_modules/@cityssm/bulma-webapp-js/src/types";
-declare const cityssm: cityssmGlobal;
-
 import type { llmGlobal } from "./types";
 
+declare const cityssm: cityssmGlobal;
 const llm: llmGlobal = {};
 
 
@@ -38,9 +37,9 @@ llm.initializeDateRangeSelector = (containerEle, changeFn) => {
   const rangeSelectEle = containerEle.querySelector("[data-field='range']").getElementsByTagName("select")[0];
 
   const dateOptionEle = rangeSelectEle.querySelector("[data-range-type='']");
-  const yearOptgroupEle = <HTMLOptGroupElement>rangeSelectEle.querySelector("[data-range-type='year']");
-  const quarterOptgroupEle = <HTMLOptGroupElement>rangeSelectEle.querySelector("[data-range-type='quarter']");
-  const monthOptgroupEle = <HTMLOptGroupElement>rangeSelectEle.querySelector("[data-range-type='month']");
+  const yearOptgroupEle: HTMLOptGroupElement = rangeSelectEle.querySelector("[data-range-type='year']");
+  const quarterOptgroupEle: HTMLOptGroupElement = rangeSelectEle.querySelector("[data-range-type='quarter']");
+  const monthOptgroupEle: HTMLOptGroupElement = rangeSelectEle.querySelector("[data-range-type='month']");
 
   const startDateEle = containerEle.querySelector("[data-field='start']").getElementsByTagName("input")[0];
 
@@ -72,11 +71,13 @@ llm.initializeDateRangeSelector = (containerEle, changeFn) => {
 
       const jsQuarterStartMonth = (parseInt(range[2], 10) - 1) * 3;
 
-      startDateString = range[0] + "-" + ("0" + (jsQuarterStartMonth + 1)).slice(-2) + "-01";
+      startDateString = range[0] + "-" + ("0" + (jsQuarterStartMonth + 1).toString()).slice(-2) + "-01";
 
       const endDate = new Date(parseInt(range[0], 10), jsQuarterStartMonth + 3, 0);
 
-      endDateString = range[0] + "-" + ("0" + (endDate.getMonth() + 1)).slice(-2) + "-" + endDate.getDate();
+      endDateString = range[0] + "-" +
+        ("0" + (endDate.getMonth() + 1).toString()).slice(-2) + "-" +
+        endDate.getDate().toString();
 
     } else {
 
@@ -84,11 +85,13 @@ llm.initializeDateRangeSelector = (containerEle, changeFn) => {
 
       const jsQuarterStartMonth = (parseInt(range[1], 10) - 1);
 
-      startDateString = range[0] + "-" + ("0" + (jsQuarterStartMonth + 1)).slice(-2) + "-01";
+      startDateString = range[0] + "-" + ("0" + (jsQuarterStartMonth + 1).toString()).slice(-2) + "-01";
 
       const endDate = new Date(parseInt(range[0], 10), jsQuarterStartMonth + 1, 0);
 
-      endDateString = range[0] + "-" + ("0" + (endDate.getMonth() + 1)).slice(-2) + "-" + endDate.getDate();
+      endDateString = range[0] + "-" +
+        ("0" + (endDate.getMonth() + 1).toString()).slice(-2) + "-" +
+        endDate.getDate().toString();
     }
 
     startDateEle.value = startDateString;
@@ -245,9 +248,9 @@ llm.initializeTabs = (tabsListEle, callbackFns) => {
 
   const listItemEles = tabsListEle.getElementsByTagName(isPanelOrMenuListTabs ? "a" : "li");
 
-  const tabLinkEles = <HTMLCollectionOf<HTMLAnchorElement>>(isPanelOrMenuListTabs ?
-    listItemEles :
-    tabsListEle.getElementsByTagName("a"));
+  const tabLinkEles = <HTMLCollectionOf<HTMLAnchorElement>>(isPanelOrMenuListTabs
+    ? listItemEles
+    : tabsListEle.getElementsByTagName("a"));
 
   const tabClickFn = (clickEvent: Event) => {
 
@@ -275,15 +278,15 @@ llm.initializeTabs = (tabsListEle, callbackFns) => {
 
     tabContentEle.classList.add("is-active");
 
-    if (callbackFns && callbackFns.onshown) {
+    if (callbackFns?.onshown) {
       callbackFns.onshown(tabContentEle);
     }
   };
 
   for (const listItemEle of listItemEles) {
 
-    (isPanelOrMenuListTabs ?
-      listItemEle :
-      listItemEle.getElementsByTagName("a")[0]).addEventListener("click", tabClickFn);
+    (isPanelOrMenuListTabs
+      ? listItemEle
+      : listItemEle.getElementsByTagName("a")[0]).addEventListener("click", tabClickFn);
   }
 };

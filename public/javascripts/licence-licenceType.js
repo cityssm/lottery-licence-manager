@@ -38,9 +38,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 trEle.insertAdjacentHTML("beforeend", "<td>" + licenceObj.applicationDateString + "</td>");
                 trEle.insertAdjacentHTML("beforeend", "<td>" + licenceObj.issueDateString + "</td>");
                 trEle.insertAdjacentHTML("beforeend", "<td>" +
-                    "<a data-tooltip=\"View Licence\" href=\"/licences/" + licenceObj.licenceID + "\">" +
+                    "<a data-tooltip=\"View Licence\" href=\"/licences/" + licenceObj.licenceID.toString() + "\">" +
                     cityssm.escapeHTML(licenceObj.externalLicenceNumber) + "<br />" +
-                    "<small>Licence #" + licenceObj.licenceID + "</small>" +
+                    "<small>Licence #" + licenceObj.licenceID.toString() + "</small>" +
                     "</a>" +
                     "</td>");
                 trEle.insertAdjacentHTML("beforeend", "<td>" + cityssm.escapeHTML(licenceObj.organizationName) + "</td>");
@@ -58,10 +58,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
             const tfootEle = document.createElement("tfoot");
             tfootEle.innerHTML = "<tr>" +
                 "<th>" +
-                licenceList.length + " licence" + (licenceList.length === 1 ? "" : "s") +
+                licenceList.length.toString() + " licence" + (licenceList.length === 1 ? "" : "s") +
                 "</th>" +
                 "<th>" +
-                issueDateCount + " issued" +
+                issueDateCount.toString() + " issued" +
                 "</th>" +
                 "<td></td>" +
                 "<td></td>" +

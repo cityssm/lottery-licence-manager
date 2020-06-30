@@ -1,10 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateApplicationSetting = exports.getApplicationSetting = exports.getApplicationSettings = exports.getLicenceActivityByDateRange = exports.pokeEvent = exports.deleteEvent = exports.updateEvent = exports.getPastEventBankingInformation = exports.getEvent = exports.getEventFinancialSummary = exports.getOutstandingEvents = exports.getRecentlyUpdateEvents = exports.getEvents = exports.getEventTableStats = exports.voidTransaction = exports.addTransaction = exports.getActiveLicenceSummary = exports.getLicenceTypeSummary = exports.unissueLicence = exports.issueLicence = exports.pokeLicence = exports.getDistinctTermsConditions = exports.deleteLicence = exports.updateLicence = exports.createLicence = exports.getNextExternalLicenceNumberFromRange = exports.getLicence = exports.getLicences = exports.getLicenceTableStats = exports.getRawRowsColumns = exports.canUpdateObject = exports.dbPath = void 0;
-exports.dbPath = "data/licences.db";
 const sqlite = require("better-sqlite3");
 const configFns = require("./configFns");
 const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
+exports.dbPath = "data/licences.db";
 exports.canUpdateObject = (obj, reqSession) => {
     const userProperties = reqSession.user.userProperties;
     let canUpdate = false;
@@ -93,12 +93,12 @@ const getLicenceWithDB = (db, licenceID, reqSession, queryOptions) => {
                 " order by t.ticketType")
                 .all(licenceID);
             for (const ticketTypeObj of ticketTypesList) {
-                ticketTypeObj.distributorLocationDisplayName = ticketTypeObj.distributorLocationName === "" ?
-                    ticketTypeObj.distributorLocationAddress1 :
-                    ticketTypeObj.distributorLocationName;
-                ticketTypeObj.manufacturerLocationDisplayName = ticketTypeObj.manufacturerLocationName === "" ?
-                    ticketTypeObj.manufacturerLocationAddress1 :
-                    ticketTypeObj.manufacturerLocationName;
+                ticketTypeObj.distributorLocationDisplayName = ticketTypeObj.distributorLocationName === ""
+                    ? ticketTypeObj.distributorLocationAddress1
+                    : ticketTypeObj.distributorLocationName;
+                ticketTypeObj.manufacturerLocationDisplayName = ticketTypeObj.manufacturerLocationName === ""
+                    ? ticketTypeObj.manufacturerLocationAddress1
+                    : ticketTypeObj.manufacturerLocationName;
             }
             licenceObj.licenceTicketTypes = ticketTypesList;
         }
@@ -119,9 +119,9 @@ const getLicenceWithDB = (db, licenceID, reqSession, queryOptions) => {
                 .all(licenceID);
             for (const eventObj of eventList) {
                 eventObj.eventDateString = dateTimeFns.dateIntegerToString(eventObj.eventDate);
-                eventObj.costs_netProceeds = (eventObj.costs_receipts || 0)
-                    - (eventObj.costs_admin || 0)
-                    - (eventObj.costs_prizesAwarded || 0);
+                eventObj.costs_netProceeds = (eventObj.costs_receipts || 0) -
+                    (eventObj.costs_admin || 0) -
+                    (eventObj.costs_prizesAwarded || 0);
             }
             licenceObj.events = eventList;
         }
@@ -279,9 +279,9 @@ exports.getLicences = (reqBodyOrParamsObj, reqSession, includeOptions) => {
             .cnt;
     }
     let sql = "select l.licenceID, l.organizationID," +
-        (includeOptions.includeOrganization ?
-            " o.organizationName," :
-            "") +
+        (includeOptions.includeOrganization
+            ? " o.organizationName,"
+            : "") +
         " l.applicationDate, l.licenceTypeKey," +
         " l.startDate, l.startTime, l.endDate, l.endTime," +
         " l.locationID, lo.locationName, lo.locationAddress1," +
@@ -290,14 +290,14 @@ exports.getLicences = (reqBodyOrParamsObj, reqSession, includeOptions) => {
         " l.recordCreate_userName, l.recordCreate_timeMillis, l.recordUpdate_userName, l.recordUpdate_timeMillis" +
         " from LotteryLicences l" +
         " left join Locations lo on l.locationID = lo.locationID" +
-        (includeOptions.includeOrganization ?
-            " left join Organizations o on l.organizationID = o.organizationID" :
-            "") +
+        (includeOptions.includeOrganization
+            ? " left join Organizations o on l.organizationID = o.organizationID"
+            : "") +
         sqlWhereClause +
         " order by l.endDate desc, l.startDate desc, l.licenceID";
     if (includeOptions.limit !== -1) {
-        sql += " limit " + includeOptions.limit +
-            " offset " + includeOptions.offset;
+        sql += " limit " + includeOptions.limit.toString() +
+            " offset " + includeOptions.offset.toString();
     }
     const rows = db.prepare(sql)
         .all(sqlParams);
@@ -357,7 +357,7 @@ exports.getNextExternalLicenceNumberFromRange = () => {
     if (newExternalLicenceNumber > rangeEnd) {
         return -1;
     }
-    return Number(newExternalLicenceNumber);
+    return newExternalLicenceNumber;
 };
 exports.createLicence = (reqBody, reqSession) => {
     const db = sqlite(exports.dbPath);
@@ -407,11 +407,11 @@ exports.createLicence = (reqBody, reqSession) => {
                 " unitCount, licenceFee," +
                 " recordCreate_userName, recordCreate_timeMillis, recordUpdate_userName, recordUpdate_timeMillis)" +
                 " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
-                .run(licenceID, ticketType, (reqBody.ticketType_distributorLocationID[ticketTypeIndex] === "" ?
-                null :
-                reqBody.ticketType_distributorLocationID[ticketTypeIndex]), (reqBody.ticketType_manufacturerLocationID[ticketTypeIndex] === "" ?
-                null :
-                reqBody.ticketType_manufacturerLocationID[ticketTypeIndex]), reqBody.ticketType_unitCount[ticketTypeIndex], reqBody.ticketType_licenceFee[ticketTypeIndex], reqSession.user.userName, nowMillis, reqSession.user.userName, nowMillis);
+                .run(licenceID, ticketType, (reqBody.ticketType_distributorLocationID[ticketTypeIndex] === ""
+                ? null
+                : reqBody.ticketType_distributorLocationID[ticketTypeIndex]), (reqBody.ticketType_manufacturerLocationID[ticketTypeIndex] === ""
+                ? null
+                : reqBody.ticketType_manufacturerLocationID[ticketTypeIndex]), reqBody.ticketType_unitCount[ticketTypeIndex], reqBody.ticketType_licenceFee[ticketTypeIndex], reqSession.user.userName, nowMillis, reqSession.user.userName, nowMillis);
         });
     }
     if (typeof (reqBody.eventDate) === "string") {
@@ -505,18 +505,18 @@ exports.updateLicence = (reqBody, reqSession) => {
                 pastLicenceObj.endDate !== endDate_now ||
                 pastLicenceObj.startTime !== startTime_now ||
                 pastLicenceObj.endTime !== endTime_now)) {
-            const amendment = ((pastLicenceObj.startDate !== startDate_now ?
-                `Start Date: ${pastLicenceObj.startDate} -> ${startDate_now}` + "\n" :
-                "") +
-                (pastLicenceObj.endDate !== endDate_now ?
-                    `End Date: ${pastLicenceObj.endDate} -> ${endDate_now}` + "\n" :
-                    "") +
-                (pastLicenceObj.startTime !== startTime_now ?
-                    `Start Time: ${pastLicenceObj.startTime} -> ${startTime_now}` + "\n" :
-                    "") +
-                (pastLicenceObj.endTime !== endTime_now ?
-                    `End Time: ${pastLicenceObj.endTime} -> ${endTime_now}` + "\n" :
-                    "")).trim();
+            const amendment = ((pastLicenceObj.startDate !== startDate_now
+                ? `Start Date: ${pastLicenceObj.startDate} -> ${startDate_now}` + "\n"
+                : "") +
+                (pastLicenceObj.endDate !== endDate_now
+                    ? `End Date: ${pastLicenceObj.endDate} -> ${endDate_now}` + "\n"
+                    : "") +
+                (pastLicenceObj.startTime !== startTime_now
+                    ? `Start Time: ${pastLicenceObj.startTime} -> ${startTime_now}` + "\n"
+                    : "") +
+                (pastLicenceObj.endTime !== endTime_now
+                    ? `End Time: ${pastLicenceObj.endTime} -> ${endTime_now}` + "\n"
+                    : "")).trim();
             addLicenceAmendmentWithDB(db, reqBody.licenceID, "Date Update", amendment, 0, reqSession);
         }
         if (pastLicenceObj.organizationID !== parseInt(reqBody.organizationID, 10) &&
@@ -644,7 +644,7 @@ exports.updateLicence = (reqBody, reqSession) => {
                 configFns.getProperty("amendments.trackTicketTypeUpdate") &&
                 ticketTypeObj_past.unitCount !== parseInt(reqBody.ticketType_unitCount, 10)) {
                 addLicenceAmendmentWithDB(db, reqBody.licenceID, "Ticket Type Change", (reqBody.ticketType_ticketType + " Units: " +
-                    ticketTypeObj_past.unitCount + " -> " + reqBody.ticketType_unitCount), 0, reqSession);
+                    ticketTypeObj_past.unitCount.toString() + " -> " + reqBody.ticketType_unitCount.toString()), 0, reqSession);
             }
         }
     }
@@ -660,18 +660,18 @@ exports.updateLicence = (reqBody, reqSession) => {
                 " where licenceID = ?" +
                 " and ticketType = ?" +
                 " and recordDelete_timeMillis is null")
-                .run((reqBody.ticketType_distributorLocationID[ticketTypeIndex] === "" ?
-                null :
-                reqBody.ticketType_distributorLocationID[ticketTypeIndex]), (reqBody.ticketType_manufacturerLocationID[ticketTypeIndex] === "" ?
-                null :
-                reqBody.ticketType_manufacturerLocationID[ticketTypeIndex]), reqBody.ticketType_unitCount[ticketTypeIndex], reqBody.ticketType_licenceFee[ticketTypeIndex], reqSession.user.userName, nowMillis, reqBody.licenceID, ticketType);
+                .run((reqBody.ticketType_distributorLocationID[ticketTypeIndex] === ""
+                ? null
+                : reqBody.ticketType_distributorLocationID[ticketTypeIndex]), (reqBody.ticketType_manufacturerLocationID[ticketTypeIndex] === ""
+                ? null
+                : reqBody.ticketType_manufacturerLocationID[ticketTypeIndex]), reqBody.ticketType_unitCount[ticketTypeIndex], reqBody.ticketType_licenceFee[ticketTypeIndex], reqSession.user.userName, nowMillis, reqBody.licenceID, ticketType);
             if (pastLicenceObj.trackUpdatesAsAmendments) {
                 const ticketTypeObj_past = pastLicenceObj.licenceTicketTypes.find((ele) => ele.ticketType === ticketType);
                 if (ticketTypeObj_past &&
                     configFns.getProperty("amendments.trackTicketTypeUpdate") &&
                     ticketTypeObj_past.unitCount !== parseInt(reqBody.ticketType_unitCount[ticketTypeIndex], 10)) {
                     addLicenceAmendmentWithDB(db, reqBody.licenceID, "Ticket Type Change", (ticketType + " Units: " +
-                        ticketTypeObj_past.unitCount + " -> " + reqBody.ticketType_unitCount[ticketTypeIndex]), 0, reqSession);
+                        ticketTypeObj_past.unitCount.toString() + " -> " + reqBody.ticketType_unitCount[ticketTypeIndex]), 0, reqSession);
                 }
             }
         });
@@ -1157,9 +1157,9 @@ exports.getEvent = (licenceID, eventDate, reqSession) => {
         eventObj.reportDateString = dateTimeFns.dateIntegerToString(eventObj.reportDate);
         eventObj.startTimeString = dateTimeFns.timeIntegerToString(eventObj.startTime || 0);
         eventObj.endTimeString = dateTimeFns.timeIntegerToString(eventObj.endTime || 0);
-        eventObj.costs_netProceeds = (eventObj.costs_receipts || 0)
-            - (eventObj.costs_admin || 0)
-            - (eventObj.costs_prizesAwarded || 0);
+        eventObj.costs_netProceeds = (eventObj.costs_receipts || 0) -
+            (eventObj.costs_admin || 0) -
+            (eventObj.costs_prizesAwarded || 0);
         eventObj.canUpdate = exports.canUpdateObject(eventObj, reqSession);
         const rows = db.prepare("select fieldKey, fieldValue" +
             " from LotteryEventFields" +

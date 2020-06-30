@@ -1,4 +1,5 @@
 import type { cityssmGlobal } from "../../node_modules/@cityssm/bulma-webapp-js/src/types";
+
 declare const cityssm: cityssmGlobal;
 
 
@@ -10,10 +11,10 @@ declare const cityssm: cityssmGlobal;
   const showLicencesCheckboxEle = <HTMLInputElement>document.getElementById("filter--showLicences");
   const eventContainerEle = document.getElementById("container--events");
 
-  const dayNames = exports.config_days;
+  const dayNames = <string[]>exports.config_days;
   delete exports.config_days;
 
-  const licenceTypes = exports.config_licenceTypes;
+  const licenceTypes = <{ [licenceTypeKey: string]: string }>exports.config_licenceTypes;
   delete exports.config_licenceTypes;
 
   const refreshEventsFn = () => {
@@ -28,28 +29,29 @@ declare const cityssm: cityssmGlobal;
       eventDate: eventDateFilterEle.value
     },
       (responseJSON: {
-        startDateString: string, endDateString: string,
-        licences: {
-          licenceID: number,
-          externalLicenceNumber: string,
-          organizationName: string,
-          locationName: string,
-          locationAddress1: string,
-          licenceTypeKey: string,
-          startDateString: string,
-          endDateString: string
-        }[],
-        events: {
-          licenceID: number,
-          eventDate: number,
-          eventDateString: string,
-          externalLicenceNumber: string,
-          organizationName: string,
-          locationName: string,
-          locationAddress1: string,
-          licenceTypeKey: string,
-          startTimeString: string
-        }[]
+        startDateString: string;
+        endDateString: string;
+        licences: Array<{
+          licenceID: number;
+          externalLicenceNumber: string;
+          organizationName: string;
+          locationName: string;
+          locationAddress1: string;
+          licenceTypeKey: string;
+          startDateString: string;
+          endDateString: string;
+        }>;
+        events: Array<{
+          licenceID: number;
+          eventDate: number;
+          eventDateString: string;
+          externalLicenceNumber: string;
+          organizationName: string;
+          locationName: string;
+          locationAddress1: string;
+          licenceTypeKey: string;
+          startTimeString: string;
+        }>;
       }) => {
 
         if (responseJSON.licences.length === 0 && responseJSON.events.length === 0) {
@@ -78,9 +80,9 @@ declare const cityssm: cityssmGlobal;
           const headerDateString = cityssm.dateToString(headerDate);
 
           headerTheadHTML += "<th class=\"has-text-centered" +
-            (headerDateString === currentDateString ?
-              " has-background-primary has-text-white" :
-              " has-background-white-ter") + "\">" +
+            (headerDateString === currentDateString
+              ? " has-background-primary has-text-white"
+              : " has-background-white-ter") + "\">" +
             dayNames[weekDayIndex] + "<br />" +
             headerDateString +
             "</th>";
@@ -142,10 +144,10 @@ declare const cityssm: cityssmGlobal;
 
           licenceTbodyEle.insertAdjacentHTML("beforeend", "<tr>" +
             leftSideFiller +
-            "<td colspan=\"" + licenceColspan + "\">" +
+            "<td colspan=\"" + licenceColspan.toString() + "\">" +
             "<a class=\"button has-text-left is-small is-block has-height-auto is-wrap is-primary is-light\"" +
             " data-tooltip=\"View Licence\"" +
-            " href=\"/licences/" + licenceRecord.licenceID + "\">" +
+            " href=\"/licences/" + licenceRecord.licenceID.toString() + "\">" +
 
             ("<div class=\"columns mb-0 is-variable is-1\">" +
               "<div class=\"column pb-2 is-narrow\">" +
@@ -153,7 +155,7 @@ declare const cityssm: cityssmGlobal;
               "</div>" +
               "<div class=\"column pb-2 has-text-weight-semibold\">" +
               licenceRecord.externalLicenceNumber + "<br />" +
-              (licenceType ? licenceType : licenceRecord.licenceTypeKey) +
+              (licenceType || licenceRecord.licenceTypeKey) +
               "</div>" +
               "</div>") +
 
@@ -181,9 +183,9 @@ declare const cityssm: cityssmGlobal;
               "</div>" +
               "<div class=\"column\">" +
               licenceRecord.startDateString +
-              (licenceRecord.startDateString === licenceRecord.endDateString ?
-                "" :
-                " to " + licenceRecord.endDateString) +
+              (licenceRecord.startDateString === licenceRecord.endDateString
+                ? ""
+                : " to " + licenceRecord.endDateString) +
               "</div>" +
               "</div>") +
 
@@ -217,7 +219,7 @@ declare const cityssm: cityssmGlobal;
             "beforeend",
             "<a class=\"button mb-2 has-text-left is-small is-block has-height-auto is-wrap is-link is-light\"" +
             " data-tooltip=\"View Event\"" +
-            " href=\"/events/" + eventRecord.licenceID + "/" + eventRecord.eventDate + "\">" +
+            " href=\"/events/" + eventRecord.licenceID.toString() + "/" + eventRecord.eventDate.toString() + "\">" +
 
             ("<div class=\"columns mb-0 is-variable is-1\">" +
               "<div class=\"column pb-2 is-narrow\">" +
@@ -234,7 +236,7 @@ declare const cityssm: cityssmGlobal;
               "</div>" +
               "<div class=\"column pb-2 has-text-weight-semibold\">" +
               eventRecord.externalLicenceNumber + "<br />" +
-              (licenceType ? licenceType : eventRecord.licenceTypeKey) +
+              (licenceType || eventRecord.licenceTypeKey) +
               "</div>" +
               "</div>") +
 

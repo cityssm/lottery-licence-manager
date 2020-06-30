@@ -7,8 +7,6 @@ import * as logger from "morgan";
 
 import * as session from "express-session";
 import * as sqlite3 from "connect-sqlite3";
-const SQLiteStore = sqlite3(session);
-
 
 import * as packageJSON from "./package.json";
 
@@ -27,13 +25,17 @@ import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns";
 import * as stringFns from "@cityssm/expressjs-server-js/stringFns";
 import * as htmlFns from "@cityssm/expressjs-server-js/htmlFns";
 
+import * as dbInit from "./helpers/dbInit";
+
+
+const SQLiteStore = sqlite3(session);
+
 
 /*
  * INITALIZE THE DATABASES
  */
 
 
-import * as dbInit from "./helpers/dbInit";
 dbInit.initUsersDB();
 dbInit.initLicencesDB();
 
@@ -184,7 +186,7 @@ app.use((_req, _res, next) => {
 });
 
 // Error handler
-app.use((err: { status: number, message: string },
+app.use((err: { status: number; message: string },
   req: express.Request, res: express.Response, _next: express.NextFunction) => {
 
   // Set locals, only providing error in development

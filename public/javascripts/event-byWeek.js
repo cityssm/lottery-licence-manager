@@ -32,9 +32,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
             for (let weekDayIndex = 0; weekDayIndex <= 6; weekDayIndex += 1) {
                 const headerDateString = cityssm.dateToString(headerDate);
                 headerTheadHTML += "<th class=\"has-text-centered" +
-                    (headerDateString === currentDateString ?
-                        " has-background-primary has-text-white" :
-                        " has-background-white-ter") + "\">" +
+                    (headerDateString === currentDateString
+                        ? " has-background-primary has-text-white"
+                        : " has-background-white-ter") + "\">" +
                     dayNames[weekDayIndex] + "<br />" +
                     headerDateString +
                     "</th>";
@@ -68,17 +68,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 const licenceType = licenceTypes[licenceRecord.licenceTypeKey];
                 licenceTbodyEle.insertAdjacentHTML("beforeend", "<tr>" +
                     leftSideFiller +
-                    "<td colspan=\"" + licenceColspan + "\">" +
+                    "<td colspan=\"" + licenceColspan.toString() + "\">" +
                     "<a class=\"button has-text-left is-small is-block has-height-auto is-wrap is-primary is-light\"" +
                     " data-tooltip=\"View Licence\"" +
-                    " href=\"/licences/" + licenceRecord.licenceID + "\">" +
+                    " href=\"/licences/" + licenceRecord.licenceID.toString() + "\">" +
                     ("<div class=\"columns mb-0 is-variable is-1\">" +
                         "<div class=\"column pb-2 is-narrow\">" +
                         "<i class=\"fas fa-fw fa-certificate\" aria-hidden=\"true\"></i>" +
                         "</div>" +
                         "<div class=\"column pb-2 has-text-weight-semibold\">" +
                         licenceRecord.externalLicenceNumber + "<br />" +
-                        (licenceType ? licenceType : licenceRecord.licenceTypeKey) +
+                        (licenceType || licenceRecord.licenceTypeKey) +
                         "</div>" +
                         "</div>") +
                     ("<div class=\"columns mb-0 is-variable is-1\">" +
@@ -103,9 +103,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
                         "</div>" +
                         "<div class=\"column\">" +
                         licenceRecord.startDateString +
-                        (licenceRecord.startDateString === licenceRecord.endDateString ?
-                            "" :
-                            " to " + licenceRecord.endDateString) +
+                        (licenceRecord.startDateString === licenceRecord.endDateString
+                            ? ""
+                            : " to " + licenceRecord.endDateString) +
                         "</div>" +
                         "</div>") +
                     "</a>" +
@@ -128,7 +128,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 const tdIndex = cityssm.dateStringToDate(eventRecord.eventDateString).getDay();
                 eventTdEles[tdIndex].insertAdjacentHTML("beforeend", "<a class=\"button mb-2 has-text-left is-small is-block has-height-auto is-wrap is-link is-light\"" +
                     " data-tooltip=\"View Event\"" +
-                    " href=\"/events/" + eventRecord.licenceID + "/" + eventRecord.eventDate + "\">" +
+                    " href=\"/events/" + eventRecord.licenceID.toString() + "/" + eventRecord.eventDate.toString() + "\">" +
                     ("<div class=\"columns mb-0 is-variable is-1\">" +
                         "<div class=\"column pb-2 is-narrow\">" +
                         "<i class=\"fas fa-fw fa-clock\" aria-hidden=\"true\"></i>" +
@@ -143,7 +143,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                         "</div>" +
                         "<div class=\"column pb-2 has-text-weight-semibold\">" +
                         eventRecord.externalLicenceNumber + "<br />" +
-                        (licenceType ? licenceType : eventRecord.licenceTypeKey) +
+                        (licenceType || eventRecord.licenceTypeKey) +
                         "</div>" +
                         "</div>") +
                     ("<div class=\"columns mb-0 is-variable is-1\">" +

@@ -42,26 +42,26 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 const trEle = document.createElement("tr");
                 trEle.innerHTML =
                     "<td>" +
-                        "<a data-tooltip=\"View Licence\" href=\"/licences/" + licenceObj.licenceID + "\">" +
+                        "<a data-tooltip=\"View Licence\" href=\"/licences/" + licenceObj.licenceID.toString() + "\">" +
                         cityssm.escapeHTML(licenceObj.externalLicenceNumber) + "<br />" +
-                        "<small>Licence #" + licenceObj.licenceID + "</small>" +
+                        "<small>Licence #" + licenceObj.licenceID.toString() + "</small>" +
                         "</a>" +
                         "</td>" +
                         "<td>" + (licenceType || licenceObj.licenceTypeKey) + "<br />" +
                         "<small>" + cityssm.escapeHTML(licenceObj.licenceDetails) + "</small>" +
                         "</td>" +
                         ("<td>" +
-                            "<a data-tooltip=\"View Organization\" href=\"/organizations/" + licenceObj.organizationID + "\">" +
+                            "<a data-tooltip=\"View Organization\" href=\"/organizations/" + licenceObj.organizationID.toString() + "\">" +
                             cityssm.escapeHTML(licenceObj.organizationName) +
                             "</a>" +
                             "</td>") +
                         ("<td>" +
-                            "<a data-tooltip=\"View Location\" href=\"/locations/" + licenceObj.locationID + "\">" +
+                            "<a data-tooltip=\"View Location\" href=\"/locations/" + licenceObj.locationID.toString() + "\">" +
                             cityssm.escapeHTML(licenceObj.locationDisplayName) +
                             "</a>" +
-                            (licenceObj.locationDisplayName === licenceObj.locationAddress1 ?
-                                "" :
-                                "<br /><small>" + cityssm.escapeHTML(licenceObj.locationAddress1) + "</small>") +
+                            (licenceObj.locationDisplayName === licenceObj.locationAddress1
+                                ? ""
+                                : "<br /><small>" + cityssm.escapeHTML(licenceObj.locationAddress1) + "</small>") +
                             "</td>") +
                         ("<td class=\"is-nowrap\">" +
                             "<span class=\"has-cursor-default has-tooltip-right\" data-tooltip=\"Start Date\">" +
@@ -72,19 +72,20 @@ Object.defineProperty(exports, "__esModule", { value: true });
                             "</span>" +
                             "</td>") +
                         "<td class=\"has-text-right is-nowrap is-hidden-print\">" +
-                        (licenceObj.canUpdate ?
-                            "<a class=\"button is-small\" data-tooltip=\"Edit Licence\"" +
-                                " href=\"/licences/" + licenceObj.licenceID + "/edit\">" +
+                        (licenceObj.canUpdate
+                            ? "<a class=\"button is-small\" data-tooltip=\"Edit Licence\"" +
+                                " href=\"/licences/" + licenceObj.licenceID.toString() + "/edit\">" +
                                 "<span class=\"icon\"><i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i></span>" +
                                 "<span>Edit</span>" +
-                                "</a> " : "") +
-                        (licenceObj.issueDate ?
-                            "<a class=\"button is-small\" data-tooltip=\"Print Licence\"" +
-                                " href=\"/licences/" + licenceObj.licenceID + "/print\" download>" +
+                                "</a> "
+                            : "") +
+                        (licenceObj.issueDate
+                            ? "<a class=\"button is-small\" data-tooltip=\"Print Licence\"" +
+                                " href=\"/licences/" + licenceObj.licenceID.toString() + "/print\" download>" +
                                 "<i class=\"fas fa-print\" aria-hidden=\"true\"></i>" +
                                 "<span class=\"sr-only\">Print</span>" +
-                                "</a>" :
-                            "<span class=\"tag is-warning\">Not Issued</span>") +
+                                "</a>"
+                            : "<span class=\"tag is-warning\">Not Issued</span>") +
                         "</div>" +
                         "</td>";
                 tbodyEle.insertAdjacentElement("beforeend", trEle);
@@ -92,11 +93,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
             searchResultsEle.insertAdjacentHTML("beforeend", "<div class=\"level is-block-print\">" +
                 "<div class=\"level-left has-text-weight-bold\">" +
                 "Displaying licences " +
-                (currentOffset + 1) +
+                (currentOffset + 1).toString() +
                 " to " +
-                Math.min(currentLimit + currentOffset, licenceResults.count) +
+                Math.min(currentLimit + currentOffset, licenceResults.count).toString() +
                 " of " +
-                licenceResults.count +
+                licenceResults.count.toString() +
                 "</div>" +
                 "</div>");
             if (currentLimit < licenceResults.count) {

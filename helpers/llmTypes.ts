@@ -319,7 +319,9 @@ export interface LotteryLicenceTicketType extends Record {
 export interface LotteryLicenceTransaction extends Record {
   transactionIndex: number;
   transactionDate: number;
+  transactionDateString?: string;
   transactionTime: number;
+  transactionTimeString?: string;
   externalReceiptNumber: string;
   transactionAmount: number;
   transactionNote: string;

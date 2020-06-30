@@ -1,10 +1,12 @@
 import { Router } from "express";
-const router = Router();
 
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns";
 
 import * as licencesDB from "../helpers/licencesDB";
 import * as licencesDBOrganizations from "../helpers/licencesDB-organizations";
+
+const router = Router();
+
 
 /*
  * Event Calendar
@@ -265,7 +267,7 @@ router.get("/:licenceID/:eventDate/edit", (req, res) => {
 
   if (!req.session.user.userProperties.canUpdate) {
 
-    res.redirect("/events/" + licenceID + "/" + eventDate + "/?error=accessDenied");
+    res.redirect("/events/" + licenceID.toString() + "/" + eventDate.toString() + "/?error=accessDenied");
     return;
 
   }
@@ -281,7 +283,7 @@ router.get("/:licenceID/:eventDate/edit", (req, res) => {
 
   if (!eventObj.canUpdate) {
 
-    res.redirect("/events/" + licenceID + "/" + eventDate + "/?error=accessDenied");
+    res.redirect("/events/" + licenceID.toString() + "/" + eventDate.toString() + "/?error=accessDenied");
     return;
 
   }
@@ -305,12 +307,10 @@ router.get("/:licenceID/:eventDate/poke", (req, res) => {
   const eventDate = parseInt(req.params.eventDate, 10);
 
   if (req.session.user.userProperties.isAdmin) {
-
     licencesDB.pokeEvent(licenceID, eventDate, req.session);
-
   }
 
-  res.redirect("/events/" + licenceID + "/" + eventDate);
+  res.redirect("/events/" + licenceID.toString() + "/" + eventDate.toString());
 
 });
 

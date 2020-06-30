@@ -1,10 +1,9 @@
 import type { cityssmGlobal } from "../../node_modules/@cityssm/bulma-webapp-js/src/types";
-declare const cityssm: cityssmGlobal;
-
 import type { llmGlobal } from "./types";
-declare const llm: llmGlobal;
-
 import type * as llmTypes from "../../helpers/llmTypes";
+
+declare const cityssm: cityssmGlobal;
+declare const llm: llmGlobal;
 
 
 llm.organizationRemarks = (() => {
@@ -34,9 +33,9 @@ llm.organizationRemarks = (() => {
 
 
   const doAddRemark = (formEle: HTMLFormElement, callbackFn: (response: {
-    success: boolean,
-    message: string,
-    remarkIndex: number
+    success: boolean;
+    message: string;
+    remarkIndex: number;
   }) => void) => {
 
     cityssm.postJSON("/organizations/doAddRemark", formEle, callbackFn);
@@ -75,8 +74,8 @@ llm.organizationRemarks = (() => {
   };
 
   const doEditRemark = (formEle: HTMLFormElement, callbackFn: (response: {
-    success: boolean,
-    message: string
+    success: boolean;
+    message: string;
   }) => void) => {
 
     cityssm.postJSON("/organizations/doEditRemark", formEle, callbackFn);
@@ -132,8 +131,8 @@ llm.organizationRemarks = (() => {
   };
 
   const doDeleteRemark = (organiztionID: number, remarkIndex: number, callbackFn: (response: {
-    success: boolean,
-    message: string
+    success: boolean;
+    message: string;
   }) => void) => {
 
     cityssm.postJSON(
@@ -147,8 +146,8 @@ llm.organizationRemarks = (() => {
 
   const deleteRemark = (organizationID: number, remarkIndex: number, doConfirm: boolean,
     deleteCallbackFn: (response: {
-      success: boolean,
-      message: string
+      success: boolean;
+      message: string;
     }) => void) => {
 
     if (doConfirm) {

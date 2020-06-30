@@ -28,7 +28,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
             const tbodyEle = document.createElement("tbody");
             for (const eventObj of eventList) {
                 const licenceType = exports.config_licenceTypes[eventObj.licenceTypeKey] || eventObj.licenceTypeKey;
-                const eventURL = "/events/" + eventObj.licenceID + "/" + eventObj.eventDate;
+                const eventURL = "/events/" + eventObj.licenceID.toString() + "/" + eventObj.eventDate.toString();
                 const trEle = document.createElement("tr");
                 trEle.innerHTML =
                     ("<td>" +
@@ -38,7 +38,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                         "</td>") +
                         ("<td>" +
                             cityssm.escapeHTML(eventObj.externalLicenceNumber) + "<br />" +
-                            "<small>Licence #" + eventObj.licenceID + "</small>" +
+                            "<small>Licence #" + eventObj.licenceID.toString() + "</small>" +
                             "</td>") +
                         ("<td>" +
                             cityssm.escapeHTML(eventObj.organizationName) +
@@ -54,11 +54,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
                             "</small>" +
                             "</td>") +
                         ("<td class=\"is-hidden-print has-text-right\">" +
-                            (eventObj.canUpdate ?
-                                "<a class=\"button is-small\" href=\"" + eventURL + "/edit\">" +
+                            (eventObj.canUpdate
+                                ? "<a class=\"button is-small\" href=\"" + eventURL + "/edit\">" +
                                     "<span class=\"icon\"><i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i></span>" +
                                     "<span>Edit</span>" +
-                                    "</a>" : "") +
+                                    "</a>"
+                                : "") +
                             "</td>");
                 tbodyEle.appendChild(trEle);
             }

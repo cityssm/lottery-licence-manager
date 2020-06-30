@@ -1,10 +1,9 @@
 import type { cityssmGlobal } from "../../node_modules/@cityssm/bulma-webapp-js/src/types";
-declare const cityssm: cityssmGlobal;
-
 import type { llmGlobal } from "./types";
-declare const llm: llmGlobal;
-
 import type * as llmTypes from "../../helpers/llmTypes";
+
+declare const cityssm: cityssmGlobal;
+declare const llm: llmGlobal;
 
 
 (() => {
@@ -51,7 +50,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
     formMessageEle.innerHTML = "Saving... <i class=\"fas fa-circle-notch fa-spin\" aria-hidden=\"true\"></i>";
 
     cityssm.postJSON("/licences/doSave", formEle,
-      (responseJSON: { success: boolean, message?: string, licenceID?: number }) => {
+      (responseJSON: { success: boolean; message?: string; licenceID?: number }) => {
 
         if (responseJSON.success) {
 
@@ -62,7 +61,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
         if (responseJSON.success && isCreate) {
 
-          window.location.href = "/licences/" + responseJSON.licenceID + "/edit";
+          window.location.href = "/licences/" + responseJSON.licenceID.toString() + "/edit";
 
         } else if (responseJSON.success && doRefreshAfterSave) {
 
@@ -156,6 +155,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
   const inputEles = <NodeListOf<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>>
     formEle.querySelectorAll("input, select, textarea");
 
@@ -243,7 +243,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
         for (const searchStringPiece of searchStringSplit) {
 
-          if (organizationName.indexOf(searchStringPiece) === -1) {
+          if (!organizationName.includes(searchStringPiece)) {
 
             doDisplayRecord = false;
             break;
@@ -409,7 +409,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
         for (const searchStringPiece of searchStringSplit) {
 
-          if (locationName.indexOf(searchStringPiece) === -1) {
+          if (!locationName.includes(searchStringPiece)) {
             doDisplayRecord = false;
             break;
           }
@@ -431,9 +431,9 @@ import type * as llmTypes from "../../helpers/llmTypes";
             "</div>" +
             "<div class=\"column\">" + cityssm.escapeHTML(locationObj.locationDisplayName) + "</div>" +
 
-            (locationObj.locationName === "" ?
-              "" :
-              "<div class=\"column\">" + cityssm.escapeHTML(locationObj.locationAddress1) + "</div>") +
+            (locationObj.locationName === ""
+              ? ""
+              : "<div class=\"column\">" + cityssm.escapeHTML(locationObj.locationAddress1) + "</div>") +
 
             "</div>";
 
@@ -602,9 +602,11 @@ import type * as llmTypes from "../../helpers/llmTypes";
                 cityssm.escapeHTML(termsConditionsObj.termsConditions) +
                 "</p>" +
                 "<p class=\"has-text-right\">" +
-                (termsConditionsObj.termsConditionsCount > 1 ?
-                  "<span class=\"tag is-light\">Used " + termsConditionsObj.termsConditionsCount + " times</span>" :
-                  "") +
+                (termsConditionsObj.termsConditionsCount > 1
+                  ? "<span class=\"tag is-light\">" +
+                  "Used " + termsConditionsObj.termsConditionsCount.toString() + " times" +
+                  "</span>"
+                  : "") +
                 "<span class=\"tag is-info has-tooltip-left\" data-tooltip=\"Most Recent Licence Start Date\">" +
                 termsConditionsObj.startDateMaxString +
                 "</span>" +
@@ -773,13 +775,13 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
         if (eventDate instanceof Date) {
 
-          eventDateString = eventDate.getFullYear() + "-" +
-            ("00" + (eventDate.getMonth() + 1)).slice(-2) + "-" +
-            ("00" + eventDate.getDate()).slice(-2);
+          eventDateString = eventDate.getFullYear().toString() + "-" +
+            ("00" + (eventDate.getMonth() + 1).toString()).slice(-2) + "-" +
+            ("00" + eventDate.getDate().toString()).slice(-2);
 
         } else if (eventDate.constructor === String) {
 
-          eventDateString = <string>eventDate;
+          eventDateString = eventDate;
 
         } else if (eventDate instanceof Event) {
 
@@ -1004,7 +1006,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
         const unitCount = parseInt((<HTMLInputElement>document.getElementById("amendUnit_unitCount")).value, 10);
 
-        const unitCountEle = <HTMLInputElement>trEle.querySelector("input[name='ticketType_unitCount']");
+        const unitCountEle: HTMLInputElement = trEle.querySelector("input[name='ticketType_unitCount']");
         unitCountEle.value = unitCount.toString();
         (<HTMLSpanElement>unitCountEle.nextElementSibling).innerText = unitCount.toString();
 
@@ -1020,7 +1022,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
         const licenceFee = (<HTMLInputElement>document.getElementById("amendUnit_licenceFee")).value;
 
-        const licenceFeeEle = <HTMLInputElement>trEle.querySelector("input[name='ticketType_licenceFee']");
+        const licenceFeeEle: HTMLInputElement = trEle.querySelector("input[name='ticketType_licenceFee']");
         licenceFeeEle.value = licenceFee;
         (<HTMLSpanElement>licenceFeeEle.nextElementSibling).innerText = "$ " + licenceFee;
 
@@ -1044,6 +1046,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
           (<HTMLInputElement>document.getElementById("amendUnit_ticketType")).value = ticketType;
 
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
           const unitCountCurrent = (<HTMLInputElement>trEle.querySelector("input[name='ticketType_unitCount']")).value;
 
           (<HTMLInputElement>document.getElementById("amendUnit_unitCountCurrent")).value = unitCountCurrent;
@@ -1118,9 +1121,9 @@ import type * as llmTypes from "../../helpers/llmTypes";
                 "</div>" +
                 "<div class=\"column\">" + cityssm.escapeHTML(locationObj.locationDisplayName) + "</div>" +
 
-                (locationObj.locationName === "" ?
-                  "" :
-                  "<div class=\"column\">" + cityssm.escapeHTML(locationObj.locationAddress1) + "</div>") +
+                (locationObj.locationName === ""
+                  ? ""
+                  : "<div class=\"column\">" + cityssm.escapeHTML(locationObj.locationAddress1) + "</div>") +
 
                 "</div>";
 
@@ -1189,9 +1192,9 @@ import type * as llmTypes from "../../helpers/llmTypes";
                 "</div>" +
                 "<div class=\"column\">" + cityssm.escapeHTML(locationObj.locationDisplayName) + "</div>" +
 
-                (locationObj.locationName === "" ?
-                  "" :
-                  "<div class=\"column\">" + cityssm.escapeHTML(locationObj.locationAddress1) + "</div>") +
+                (locationObj.locationName === ""
+                  ? ""
+                  : "<div class=\"column\">" + cityssm.escapeHTML(locationObj.locationAddress1) + "</div>") +
 
                 "</div>";
 
@@ -1307,7 +1310,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
           optionEle.innerText =
             ticketTypeObj.ticketType +
-            " (" + ticketTypeObj.ticketCount + " tickets, $" + ticketTypeObj.ticketPrice.toFixed(2) + " each)";
+            " (" + ticketTypeObj.ticketCount.toString() + " tickets, $" + ticketTypeObj.ticketPrice.toFixed(2) + " each)";
 
           addTicketType_ticketTypeEle.insertAdjacentElement("beforeend", optionEle);
         }
@@ -1338,11 +1341,11 @@ import type * as llmTypes from "../../helpers/llmTypes";
     };
 
     const ticketTypesFn_addTr = (obj: {
-      ticketType: string,
-      unitCount: number,
-      licenceFee: number,
-      prizesPerDeal: number,
-      valuePerDeal: number
+      ticketType: string;
+      unitCount: number;
+      licenceFee: number;
+      prizesPerDeal: number;
+      valuePerDeal: number;
     }) => {
 
       const ticketType = obj.ticketType;
@@ -1360,8 +1363,8 @@ import type * as llmTypes from "../../helpers/llmTypes";
       const unitCount = obj.unitCount;
 
       trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right\">" +
-        "<input name=\"ticketType_unitCount\" type=\"hidden\" value=\"" + unitCount + "\" />" +
-        "<span>" + unitCount + "</span>" +
+        "<input name=\"ticketType_unitCount\" type=\"hidden\" value=\"" + unitCount.toString() + "\" />" +
+        "<span>" + unitCount.toString() + "</span>" +
         "</td>");
 
       // Value per deal
@@ -1370,7 +1373,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
       const totalValuePerDeal = (valuePerDeal * unitCount).toFixed(2);
 
       trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right is-nowrap\">" +
-        "<span data-tooltip=\"$" + valuePerDeal + " value per deal\">$ " + totalValuePerDeal + "</span>" +
+        "<span data-tooltip=\"$" + valuePerDeal.toFixed(2) + " value per deal\">$ " + totalValuePerDeal + "</span>" +
         "</td>");
 
       // Prizes per deal
@@ -1378,9 +1381,12 @@ import type * as llmTypes from "../../helpers/llmTypes";
       const prizesPerDeal = obj.prizesPerDeal;
       const totalPrizesPerDeal = (prizesPerDeal * unitCount).toFixed(2);
 
-      trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right is-nowrap\">" +
-        "<input class=\"is-total-prizes-per-deal\" type=\"hidden\" value=\"" + totalPrizesPerDeal + "\" />" +
-        "<span data-tooltip=\"$" + prizesPerDeal + " prizes per deal\">$ " + totalPrizesPerDeal + "</span>" +
+      trEle.insertAdjacentHTML("beforeend",
+        "<td class=\"has-text-right is-nowrap\">" +
+        "<input class=\"is-total-prizes-per-deal\" type=\"hidden\" value=\"" + totalPrizesPerDeal.toString() + "\" />" +
+        "<span data-tooltip=\"$" + prizesPerDeal.toFixed(2) + " prizes per deal\">" +
+        "$" + totalPrizesPerDeal +
+        "</span>" +
         "</td>");
 
       // Amend / delete
@@ -1415,8 +1421,8 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
       trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right is-nowrap\">" +
         "<input class=\"is-licence-fee\" name=\"ticketType_licenceFee\"" +
-        " type=\"hidden\" value=\"" + licenceFee + "\" />" +
-        "<span>$ " + licenceFee + "</span>" +
+        " type=\"hidden\" value=\"" + licenceFee.toString() + "\" />" +
+        "<span>$" + licenceFee.toFixed(2) + "</span>" +
         "</td>");
 
       // Manufacturer
@@ -1550,6 +1556,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
         onshow(modalEle: HTMLElement): void {
 
           llm.getDefaultConfigProperty("externalReceiptNumber_fieldLabel", (fieldLabel: string) => {
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
             (<HTMLLabelElement>modalEle.querySelector("label[for='transactionAdd--externalReceiptNumber']")).innerText =
               fieldLabel;
           });

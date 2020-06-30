@@ -31,15 +31,19 @@ llm.initializeDateRangeSelector = (containerEle, changeFn) => {
         }
         else if (range[1] === "q") {
             const jsQuarterStartMonth = (parseInt(range[2], 10) - 1) * 3;
-            startDateString = range[0] + "-" + ("0" + (jsQuarterStartMonth + 1)).slice(-2) + "-01";
+            startDateString = range[0] + "-" + ("0" + (jsQuarterStartMonth + 1).toString()).slice(-2) + "-01";
             const endDate = new Date(parseInt(range[0], 10), jsQuarterStartMonth + 3, 0);
-            endDateString = range[0] + "-" + ("0" + (endDate.getMonth() + 1)).slice(-2) + "-" + endDate.getDate();
+            endDateString = range[0] + "-" +
+                ("0" + (endDate.getMonth() + 1).toString()).slice(-2) + "-" +
+                endDate.getDate().toString();
         }
         else {
             const jsQuarterStartMonth = (parseInt(range[1], 10) - 1);
-            startDateString = range[0] + "-" + ("0" + (jsQuarterStartMonth + 1)).slice(-2) + "-01";
+            startDateString = range[0] + "-" + ("0" + (jsQuarterStartMonth + 1).toString()).slice(-2) + "-01";
             const endDate = new Date(parseInt(range[0], 10), jsQuarterStartMonth + 1, 0);
-            endDateString = range[0] + "-" + ("0" + (endDate.getMonth() + 1)).slice(-2) + "-" + endDate.getDate();
+            endDateString = range[0] + "-" +
+                ("0" + (endDate.getMonth() + 1).toString()).slice(-2) + "-" +
+                endDate.getDate().toString();
         }
         startDateEle.value = startDateString;
         endDateEle.setAttribute("min", startDateString);
@@ -128,9 +132,9 @@ llm.initializeTabs = (tabsListEle, callbackFns) => {
     }
     const isPanelOrMenuListTabs = tabsListEle.classList.contains("panel-tabs") || tabsListEle.classList.contains("menu-list");
     const listItemEles = tabsListEle.getElementsByTagName(isPanelOrMenuListTabs ? "a" : "li");
-    const tabLinkEles = (isPanelOrMenuListTabs ?
-        listItemEles :
-        tabsListEle.getElementsByTagName("a"));
+    const tabLinkEles = (isPanelOrMenuListTabs
+        ? listItemEles
+        : tabsListEle.getElementsByTagName("a"));
     const tabClickFn = (clickEvent) => {
         clickEvent.preventDefault();
         const tabLinkEle = clickEvent.currentTarget;
@@ -146,13 +150,13 @@ llm.initializeTabs = (tabsListEle, callbackFns) => {
             tabContentEle.classList.remove("is-active");
         }
         tabContentEle.classList.add("is-active");
-        if (callbackFns && callbackFns.onshown) {
+        if (callbackFns === null || callbackFns === void 0 ? void 0 : callbackFns.onshown) {
             callbackFns.onshown(tabContentEle);
         }
     };
     for (const listItemEle of listItemEles) {
-        (isPanelOrMenuListTabs ?
-            listItemEle :
-            listItemEle.getElementsByTagName("a")[0]).addEventListener("click", tabClickFn);
+        (isPanelOrMenuListTabs
+            ? listItemEle
+            : listItemEle.getElementsByTagName("a")[0]).addEventListener("click", tabClickFn);
     }
 };

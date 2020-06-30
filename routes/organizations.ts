@@ -1,11 +1,14 @@
 import { Router } from "express";
-const router = Router();
 
 import * as configFns from "../helpers/configFns";
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns";
 
 import * as licencesDB from "../helpers/licencesDB";
 import * as licencesDBOrganizations from "../helpers/licencesDB-organizations";
+
+import { userCanCreate, userCanUpdate, userIsAdmin, forbiddenJSON } from "../helpers/userFns";
+
+const router = Router();
 
 
 /*
@@ -48,7 +51,7 @@ router.all("/doGetAll", (req, res) => {
 
 router.get("/cleanup", (req, res) => {
 
-  if (!req.session.user.userProperties.canUpdate) {
+  if (!userCanUpdate(req)) {
 
     res.redirect("/organizations/?error=accessDenied");
     return;
@@ -77,7 +80,7 @@ router.post("/doGetInactive", (req, res) => {
 
 router.get("/recovery", (req, res) => {
 
-  if (!req.session.user.userProperties.isAdmin) {
+  if (!userIsAdmin(req)) {
 
     res.redirect("/organizations/?error=accessDenied");
     return;
@@ -104,7 +107,6 @@ router.post("/doGetRemarks", (req, res) => {
   const organizationID = req.body.organizationID;
 
   res.json(licencesDBOrganizations.getOrganizationRemarks(organizationID, req.session));
-
 });
 
 
@@ -120,17 +122,8 @@ router.post("/doGetRemark", (req, res) => {
 
 router.post("/doAddRemark", (req, res) => {
 
-  if (!req.session.user.userProperties.canCreate) {
-
-    res
-      .status(403)
-      .json({
-        success: false,
-        message: "Forbidden"
-      });
-
-    return;
-
+  if (!userCanCreate(req)) {
+    return forbiddenJSON(res);
   }
 
   const remarkIndex = licencesDBOrganizations.addOrganizationRemark(req.body, req.session);
@@ -146,17 +139,8 @@ router.post("/doAddRemark", (req, res) => {
 
 router.post("/doEditRemark", (req, res) => {
 
-  if (!req.session.user.userProperties.canCreate) {
-
-    res
-      .status(403)
-      .json({
-        success: false,
-        message: "Forbidden"
-      });
-
-    return;
-
+  if (!userCanCreate(req)) {
+    return forbiddenJSON(res);
   }
 
   const success = licencesDBOrganizations.updateOrganizationRemark(req.body, req.session);
@@ -174,25 +158,14 @@ router.post("/doEditRemark", (req, res) => {
       success: false,
       message: "Remark could not be updated."
     });
-
   }
-
 });
 
 
 router.post("/doDeleteRemark", (req, res) => {
 
-  if (!req.session.user.userProperties.canCreate) {
-
-    res
-      .status(403)
-      .json({
-        success: false,
-        message: "Forbidden"
-      });
-
-    return;
-
+  if (!userCanCreate(req)) {
+    return forbiddenJSON(res);
   }
 
   const organizationID = req.body.organizationID;
@@ -245,31 +218,22 @@ router.post("/doGetBankRecordStats", (req, res) => {
 
 router.post("/doAddBankRecord", (req, res) => {
 
-  if (!req.session.user.userProperties.canCreate) {
-
-    res
-      .status(403)
-      .json({
-        success: false,
-        message: "Forbidden"
-      });
-
-    return;
-
+  if (!userCanCreate(req)) {
+    return forbiddenJSON(res);
   }
 
   const success = licencesDBOrganizations.addOrganizationBankRecord(req.body, req.session);
 
   if (success) {
 
-    res.json({
+    return res.json({
       success: true,
       message: "Record added successfully."
     });
 
   } else {
 
-    res.json({
+    return res.json({
       success: false,
       message: "Please make sure that the record you are trying to create does not already exist."
     });
@@ -281,31 +245,22 @@ router.post("/doAddBankRecord", (req, res) => {
 
 router.post("/doEditBankRecord", (req, res) => {
 
-  if (!req.session.user.userProperties.canCreate) {
-
-    res
-      .status(403)
-      .json({
-        success: false,
-        message: "Forbidden"
-      });
-
-    return;
-
+  if (!userCanCreate(req)) {
+    return forbiddenJSON(res);
   }
 
   const success = licencesDBOrganizations.updateOrganizationBankRecord(req.body, req.session);
 
   if (success) {
 
-    res.json({
+    return res.json({
       success: true,
       message: "Record updated successfully."
     });
 
   } else {
 
-    res.json({
+    return res.json({
       success: false,
       message: "Please try again."
     });
@@ -317,17 +272,8 @@ router.post("/doEditBankRecord", (req, res) => {
 
 router.post("/doDeleteBankRecord", (req, res) => {
 
-  if (!req.session.user.userProperties.canCreate) {
-
-    res
-      .status(403)
-      .json({
-        success: false,
-        message: "Forbidden"
-      });
-
-    return;
-
+  if (!userCanCreate(req)) {
+    return forbiddenJSON(res);
   }
 
   const success =
@@ -349,7 +295,7 @@ router.post("/doDeleteBankRecord", (req, res) => {
 
 router.get("/new", (req, res) => {
 
-  if (!req.session.user.userProperties.canCreate) {
+  if (!userCanCreate(req)) {
 
     res.redirect("/organizations/?error=accessDenied");
     return;
@@ -371,17 +317,8 @@ router.get("/new", (req, res) => {
 
 router.post("/doSave", (req, res) => {
 
-  if (!req.session.user.userProperties.canCreate) {
-
-    res
-      .status(403)
-      .json({
-        success: false,
-        message: "Forbidden"
-      });
-
-    return;
-
+  if (!userCanCreate(req)) {
+    return forbiddenJSON(res);
   }
 
   if (req.body.organizationID === "") {
@@ -399,52 +336,41 @@ router.post("/doSave", (req, res) => {
 
     if (success) {
 
-      res.json({
+      return res.json({
         success: true,
         message: "Organization updated successfully."
       });
 
     } else {
 
-      res.json({
+      return res.json({
         success: false,
         message: "Record Not Saved"
       });
 
     }
-
   }
-
 });
 
 
 router.post("/doDelete", (req, res) => {
 
-  if (!req.session.user.userProperties.canCreate) {
-
-    res
-      .status(403)
-      .json({
-        success: false,
-        message: "Forbidden"
-      });
-
-    return;
-
+  if (!userCanCreate(req)) {
+    return forbiddenJSON(res);
   }
 
   const success = licencesDBOrganizations.deleteOrganization(req.body.organizationID, req.session);
 
   if (success) {
 
-    res.json({
+    return res.json({
       success: true,
       message: "Organization deleted successfully."
     });
 
   } else {
 
-    res.json({
+    return res.json({
       success: false,
       message: "Organization could not be deleted."
     });
@@ -456,31 +382,22 @@ router.post("/doDelete", (req, res) => {
 
 router.post("/doRestore", (req, res) => {
 
-  if (!req.session.user.userProperties.canUpdate) {
-
-    res
-      .status(403)
-      .json({
-        success: false,
-        message: "Forbidden"
-      });
-
-    return;
-
+  if (!userCanUpdate(req)) {
+    return forbiddenJSON(res);
   }
 
   const success = licencesDBOrganizations.restoreOrganization(req.body.organizationID, req.session);
 
   if (success) {
 
-    res.json({
+    return res.json({
       success: true,
       message: "Organization restored successfully."
     });
 
   } else {
 
-    res.json({
+    return res.json({
       success: false,
       message: "Organization could not be restored."
     });
@@ -541,9 +458,9 @@ router.get("/:organizationID/edit", (req, res) => {
 
   const organizationID = parseInt(req.params.organizationID, 10);
 
-  if (!req.session.user.userProperties.canCreate) {
+  if (!userCanCreate(req)) {
 
-    res.redirect("/organizations/" + organizationID + "/?error=accessDenied-noCreate");
+    res.redirect("/organizations/" + organizationID.toString() + "/?error=accessDenied-noCreate");
     return;
 
   }
@@ -559,7 +476,7 @@ router.get("/:organizationID/edit", (req, res) => {
 
   if (!organization.canUpdate) {
 
-    res.redirect("/organizations/" + organizationID + "/?error=accessDenied-noUpdate");
+    res.redirect("/organizations/" + organizationID.toString() + "/?error=accessDenied-noUpdate");
     return;
 
   }
@@ -592,17 +509,8 @@ router.get("/:organizationID/edit", (req, res) => {
 
 router.post("/:organizationID/doAddOrganizationRepresentative", (req, res) => {
 
-  if (!req.session.user.userProperties.canCreate) {
-
-    res
-      .status(403)
-      .json({
-        success: false,
-        message: "Forbidden"
-      });
-
-    return;
-
+  if (!userCanCreate(req)) {
+    return forbiddenJSON(res);
   }
 
   const organizationID = parseInt(req.params.organizationID, 10);
@@ -629,17 +537,8 @@ router.post("/:organizationID/doAddOrganizationRepresentative", (req, res) => {
 
 router.post("/:organizationID/doEditOrganizationRepresentative", (req, res) => {
 
-  if (!req.session.user.userProperties.canCreate) {
-
-    res
-      .status(403)
-      .json({
-        success: false,
-        message: "Forbidden"
-      });
-
-    return;
-
+  if (!userCanCreate(req)) {
+    return forbiddenJSON(res);
   }
 
   const organizationID = parseInt(req.params.organizationID, 10);
@@ -666,17 +565,8 @@ router.post("/:organizationID/doEditOrganizationRepresentative", (req, res) => {
 
 router.post("/:organizationID/doDeleteOrganizationRepresentative", (req, res) => {
 
-  if (!req.session.user.userProperties.canCreate) {
-
-    res
-      .status(403)
-      .json({
-        success: false,
-        message: "Forbidden"
-      });
-
-    return;
-
+  if (!userCanCreate(req)) {
+    return forbiddenJSON(res);
   }
 
   const organizationID = parseInt(req.params.organizationID, 10);
@@ -693,17 +583,8 @@ router.post("/:organizationID/doDeleteOrganizationRepresentative", (req, res) =>
 
 router.post("/:organizationID/doSetDefaultRepresentative", (req, res) => {
 
-  if (!req.session.user.userProperties.canCreate) {
-
-    res
-      .status(403)
-      .json({
-        success: false,
-        message: "Forbidden"
-      });
-
-    return;
-
+  if (!userCanCreate(req)) {
+    return forbiddenJSON(res);
   }
 
   const organizationID = parseInt(req.params.organizationID, 10);

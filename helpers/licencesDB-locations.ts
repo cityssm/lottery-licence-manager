@@ -6,11 +6,11 @@ import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns";
 
 
 export const getLocations = (reqSession: Express.SessionData, queryOptions: {
-  limit: number,
-  offset?: number,
-  locationNameAddress: string,
-  locationIsDistributor: number,
-  locationIsManufacturer: number
+  limit: number;
+  offset?: number;
+  locationNameAddress: string;
+  locationIsDistributor: number;
+  locationIsManufacturer: number;
 }) => {
 
   const db = sqlite(dbPath, {
@@ -104,7 +104,8 @@ export const getLocations = (reqSession: Express.SessionData, queryOptions: {
     " order by case when lo.locationName = '' then lo.locationAddress1 else lo.locationName end";
 
   if (queryOptions.limit !== -1) {
-    sql += " limit " + queryOptions.limit + " offset " + queryOptions.offset;
+    sql += " limit " + queryOptions.limit.toString() +
+      " offset " + queryOptions.offset.toString();
   }
 
   const rows: llm.Location[] =

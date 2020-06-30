@@ -28,35 +28,37 @@ Object.defineProperty(exports, "__esModule", { value: true });
                         remarksContainerEle.insertAdjacentHTML("beforeend", "<div class=\"panel-block is-block\">" +
                             "<div class=\"columns is-mobile\">" +
                             "<div class=\"column is-narrow\">" +
-                            (remark.isImportant ?
-                                "<i class=\"fas fa-fw fa-star\" aria-hidden=\"true\"></i>" :
-                                "<i class=\"far fa-fw fa-comment\" aria-hidden=\"true\"></i>") +
+                            (remark.isImportant
+                                ? "<i class=\"fas fa-fw fa-star\" aria-hidden=\"true\"></i>"
+                                : "<i class=\"far fa-fw fa-comment\" aria-hidden=\"true\"></i>") +
                             "</div>" +
                             "<div class=\"column\">" +
                             "<p class=\"has-newline-chars\">" + cityssm.escapeHTML(remark.remark) + "</p>" +
                             "<p class=\"is-size-7\">" +
-                            (remark.recordCreate_timeMillis === remark.recordUpdate_timeMillis ?
-                                "" :
-                                "<i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i> ") +
+                            (remark.recordCreate_timeMillis === remark.recordUpdate_timeMillis
+                                ? ""
+                                : "<i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i> ") +
                             remark.recordUpdate_userName + " - " + remark.remarkDateString + " " + remark.remarkTimeString +
                             "</p>" +
                             "</div>" +
-                            (remark.canUpdate ?
-                                "<div class=\"column is-narrow\">" +
+                            (remark.canUpdate
+                                ? "<div class=\"column is-narrow\">" +
                                     "<div class=\"buttons is-right has-addons\">" +
                                     ("<button class=\"button is-small is-edit-remark-button\"" +
-                                        " data-remark-index=\"" + remark.remarkIndex + "\" data-tooltip=\"Edit Remark\" type=\"button\">" +
+                                        " data-remark-index=\"" + remark.remarkIndex.toString() + "\"" +
+                                        " data-tooltip=\"Edit Remark\" type=\"button\">" +
                                         "<span class=\"icon is-small\"><i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i></span>" +
                                         "<span>Edit</span>" +
                                         "</button>") +
                                     ("<button class=\"button is-small has-text-danger is-delete-remark-button\"" +
-                                        " data-remark-index=\"" + remark.remarkIndex + "\" data-tooltip=\"Delete Remark\" type=\"button\">" +
+                                        " data-remark-index=\"" + remark.remarkIndex.toString() + "\"" +
+                                        " data-tooltip=\"Delete Remark\" type=\"button\">" +
                                         "<i class=\"fas fa-trash\" aria-hidden=\"true\"></i>" +
                                         "<span class=\"sr-only\">Delete</span>" +
                                         "</button>") +
                                     "</div>" +
-                                    "</div>" :
-                                "") +
+                                    "</div>"
+                                : "") +
                             "</div>" +
                             "</div>");
                     }
@@ -101,7 +103,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     .toLowerCase();
                 let showRemark = true;
                 for (const searchStrPiece of searchStrSplit) {
-                    if (remark.indexOf(searchStrPiece) === -1) {
+                    if (!remark.includes(searchStrPiece)) {
                         showRemark = false;
                         displayCount -= 1;
                         break;
@@ -144,7 +146,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
             for (const bankRecord of bankRecords) {
                 bankRecordsCache[bankRecord.recordIndex] = bankRecord;
                 const buttonEle = bankRecordsTableEle
-                    .querySelector("[data-banking-month='" + bankRecord.bankingMonth + "']")
+                    .querySelector("[data-banking-month='" + bankRecord.bankingMonth.toString() + "']")
                     .querySelector("[data-bank-record-type='" + bankRecord.bankRecordType + "']");
                 if (!buttonEle) {
                     continue;
@@ -156,9 +158,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
                         "<i class=\"fas fa-times\" aria-hidden=\"true\"></i>" +
                             "<br />" +
                             "<small>Not Applicable</small>" +
-                            (bankRecord.recordNote === "" ?
-                                "" :
-                                " <span class=\"ml-2\" data-tooltip=\"" + cityssm.escapeHTML(bankRecord.recordNote) + "\">" +
+                            (bankRecord.recordNote === ""
+                                ? ""
+                                : " <span class=\"ml-2\" data-tooltip=\"" + cityssm.escapeHTML(bankRecord.recordNote) + "\">" +
                                     "<i class=\"fas fa-sticky-note\" aria-hidden=\"true\"></i>" +
                                     "</span>");
                 }
@@ -168,9 +170,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
                         "<i class=\"fas fa-check\" aria-hidden=\"true\"></i>" +
                             "<br />" +
                             "<small>Recorded " + bankRecord.recordDateString + "</small>" +
-                            (bankRecord.recordNote === "" ?
-                                "" :
-                                " <span class=\"ml-2\" data-tooltip=\"" + cityssm.escapeHTML(bankRecord.recordNote) + "\">" +
+                            (bankRecord.recordNote === ""
+                                ? ""
+                                : " <span class=\"ml-2\" data-tooltip=\"" + cityssm.escapeHTML(bankRecord.recordNote) + "\">" +
                                     "<i class=\"fas fa-sticky-note\" aria-hidden=\"true\"></i>" +
                                     "</span>");
                 }
@@ -205,14 +207,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     const accountNumber = cityssm.escapeHTML(bankRecordsStat.accountNumber);
                     bankRecordsAccountNumberFilterEle.insertAdjacentHTML("beforeend", "<option value=\"" + accountNumber + "\">" +
                         accountNumber +
-                        " (From " + bankRecordsStat.bankingYearMin + " to " + bankRecordsStat.bankingYearMax + ")" +
+                        " (From " + bankRecordsStat.bankingYearMin.toString() + " to " + bankRecordsStat.bankingYearMax.toString() + ")" +
                         "</option>");
                 }
             }
             bankRecordsBankingYearFilterEle.innerHTML = "";
             for (let year = currentYear; year >= bankingYearMin; year -= 1) {
-                bankRecordsBankingYearFilterEle.insertAdjacentHTML("beforeend", "<option value=\"" + year + "\">" +
-                    year +
+                bankRecordsBankingYearFilterEle.insertAdjacentHTML("beforeend", "<option value=\"" + year.toString() + "\">" +
+                    year.toString() +
                     "</option>");
             }
             getBankRecordsFn();

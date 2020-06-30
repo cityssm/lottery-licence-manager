@@ -1,9 +1,9 @@
 "use strict";
 const express_1 = require("express");
-const router = express_1.Router();
 const licencesDB = require("../helpers/licencesDB");
 const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
 const stringFns_1 = require("@cityssm/expressjs-server-js/stringFns");
+const router = express_1.Router();
 router.get("/", (_req, res) => {
     const rightNow = new Date();
     res.render("report-search", {
@@ -299,7 +299,7 @@ router.all("/:reportName", (req, res) => {
     }
     const rowsColumnsObj = licencesDB.getRawRowsColumns(sql, params);
     const csv = stringFns_1.rawToCSV(rowsColumnsObj);
-    res.setHeader("Content-Disposition", "attachment; filename=" + reportName + "-" + Date.now() + ".csv");
+    res.setHeader("Content-Disposition", "attachment; filename=" + reportName + "-" + Date.now().toString() + ".csv");
     res.setHeader("Content-Type", "text/csv");
     res.send(csv);
 });

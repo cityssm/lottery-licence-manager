@@ -12,61 +12,61 @@ Object.defineProperty(exports, "__esModule", { value: true });
         trEle.innerHTML = "<td></td>";
         const locationDisplayNameLinkEle = document.createElement("a");
         locationDisplayNameLinkEle.innerText = locationObj.locationDisplayName;
-        locationDisplayNameLinkEle.href = "/locations/" + locationObj.locationID;
+        locationDisplayNameLinkEle.href = "/locations/" + locationObj.locationID.toString();
         trEle.getElementsByTagName("td")[0].insertAdjacentElement("beforeend", locationDisplayNameLinkEle);
         const addressTdEle = document.createElement("td");
         addressTdEle.innerHTML =
-            (locationObj.locationAddress1 === "" ?
-                "" :
-                cityssm.escapeHTML(locationObj.locationAddress1) + "<br />") +
-                (locationObj.locationAddress2 === "" ?
-                    "" :
-                    "<small>" + cityssm.escapeHTML(locationObj.locationAddress2) + "</small><br />") +
-                (locationObj.locationCity === "" ?
-                    "" :
-                    "<small>" + cityssm.escapeHTML(locationObj.locationCity) + ", " + locationObj.locationProvince + "</small>");
+            (locationObj.locationAddress1 === ""
+                ? ""
+                : cityssm.escapeHTML(locationObj.locationAddress1) + "<br />") +
+                (locationObj.locationAddress2 === ""
+                    ? ""
+                    : "<small>" + cityssm.escapeHTML(locationObj.locationAddress2) + "</small><br />") +
+                (locationObj.locationCity === ""
+                    ? ""
+                    : "<small>" + cityssm.escapeHTML(locationObj.locationCity) + ", " + locationObj.locationProvince + "</small>");
         trEle.insertAdjacentElement("beforeend", addressTdEle);
         trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-centered\">" +
-            (locationObj.licences_endDateMaxString === "" ?
-                "<span class=\"has-text-grey\">Not Used</span>" :
-                locationObj.licences_endDateMaxString) +
+            (locationObj.licences_endDateMaxString === ""
+                ? "<span class=\"has-text-grey\">Not Used</span>"
+                : locationObj.licences_endDateMaxString) +
             "</td>");
         trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-centered\">" +
-            (locationObj.locationIsManufacturer ?
-                "<span data-tooltip=\"Manufacturer\">" +
+            (locationObj.locationIsManufacturer
+                ? "<span data-tooltip=\"Manufacturer\">" +
                     "<span class=\"tag is-success\">Yes</span><br />" +
-                    (locationObj.manufacturer_endDateMaxString === "" ?
-                        "<span class=\"has-text-grey\">Never Used</span>" :
-                        locationObj.manufacturer_endDateMaxString) +
-                    "</span>" :
-                "<span class=\"sr-only\">No</span>") +
+                    (locationObj.manufacturer_endDateMaxString === ""
+                        ? "<span class=\"has-text-grey\">Never Used</span>"
+                        : locationObj.manufacturer_endDateMaxString) +
+                    "</span>"
+                : "<span class=\"sr-only\">No</span>") +
             "</td>");
         trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-centered\">" +
-            (locationObj.locationIsDistributor ?
-                "<span data-tooltip=\"Distributor\">" +
+            (locationObj.locationIsDistributor
+                ? "<span data-tooltip=\"Distributor\">" +
                     "<span class=\"tag is-success\">Yes</span><br />" +
-                    (locationObj.distributor_endDateMaxString === "" ?
-                        "<span class=\"has-text-grey\">Never Used</span>" :
-                        locationObj.distributor_endDateMaxString) +
-                    "</span>" :
-                "<span class=\"sr-only\">No</span>") +
+                    (locationObj.distributor_endDateMaxString === ""
+                        ? "<span class=\"has-text-grey\">Never Used</span>"
+                        : locationObj.distributor_endDateMaxString) +
+                    "</span>"
+                : "<span class=\"sr-only\">No</span>") +
             "</td>");
         if (canCreate) {
             const canDeleteLocation = locationObj.canUpdate && locationObj.licences_count === 0 &&
                 locationObj.distributor_count === 0 && locationObj.manufacturer_count === 0;
             trEle.insertAdjacentHTML("beforeend", "<td class=\"is-hidden-print has-text-right is-nowrap\">" +
-                (locationObj.canUpdate ?
-                    "<a class=\"button is-small\" data-tooltip=\"Edit Location\"" +
-                        " href=\"/locations/" + locationObj.locationID + "/edit\">" +
+                (locationObj.canUpdate
+                    ? "<a class=\"button is-small\" data-tooltip=\"Edit Location\"" +
+                        " href=\"/locations/" + locationObj.locationID.toString() + "/edit\">" +
                         "<span class=\"icon\"><i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i></span> <span>Edit</span>" +
-                        "</a>" :
-                    "") +
-                (canDeleteLocation ?
-                    " <button class=\"button is-small is-danger is-delete-location-button\"" +
-                        " data-tooltip=\"Delete Location\" data-location-index=\"" + locationIndex + "\" type=\"button\">" +
+                        "</a>"
+                    : "") +
+                (canDeleteLocation
+                    ? " <button class=\"button is-small is-danger is-delete-location-button\"" +
+                        " data-tooltip=\"Delete Location\" data-location-index=\"" + locationIndex.toString() + "\" type=\"button\">" +
                         "<span class=\"icon\"><i class=\"fas fa-trash\" aria-hidden=\"true\"></i></span>" +
-                        "</button>" :
-                    "") +
+                        "</button>"
+                    : "") +
                 "</td>");
             if (canDeleteLocation) {
                 trEle.getElementsByClassName("is-delete-location-button")[0].addEventListener("click", deleteLocationClickFn);
@@ -112,11 +112,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
             searchResultsEle.insertAdjacentHTML("beforeend", "<div class=\"level is-block-print\">" +
                 "<div class=\"level-left has-text-weight-bold\">" +
                 "Displaying locations " +
-                (currentOffset + 1) +
+                (currentOffset + 1).toString() +
                 " to " +
-                Math.min(currentLimit + currentOffset, locationResults.count) +
+                Math.min(currentLimit + currentOffset, locationResults.count).toString() +
                 " of " +
-                locationResults.count +
+                locationResults.count.toString() +
                 "</div>" +
                 "</div>");
             if (currentLimit < locationResults.count) {

@@ -28,7 +28,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 hasUnsavedChanges = false;
             }
             if (responseJSON.success && isCreate) {
-                window.location.href = "/licences/" + responseJSON.licenceID + "/edit";
+                window.location.href = "/licences/" + responseJSON.licenceID.toString() + "/edit";
             }
             else if (responseJSON.success && doRefreshAfterSave) {
                 window.location.reload(true);
@@ -128,7 +128,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 }
                 const organizationName = organizationObj.organizationName.toLowerCase();
                 for (const searchStringPiece of searchStringSplit) {
-                    if (organizationName.indexOf(searchStringPiece) === -1) {
+                    if (!organizationName.includes(searchStringPiece)) {
                         doDisplayRecord = false;
                         break;
                     }
@@ -226,7 +226,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 let doDisplayRecord = true;
                 const locationName = locationObj.locationName.toLowerCase();
                 for (const searchStringPiece of searchStringSplit) {
-                    if (locationName.indexOf(searchStringPiece) === -1) {
+                    if (!locationName.includes(searchStringPiece)) {
                         doDisplayRecord = false;
                         break;
                     }
@@ -243,9 +243,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
                         "<i class=\"fas fa-map-marker-alt\" aria-hidden=\"true\"></i>" +
                         "</div>" +
                         "<div class=\"column\">" + cityssm.escapeHTML(locationObj.locationDisplayName) + "</div>" +
-                        (locationObj.locationName === "" ?
-                            "" :
-                            "<div class=\"column\">" + cityssm.escapeHTML(locationObj.locationAddress1) + "</div>") +
+                        (locationObj.locationName === ""
+                            ? ""
+                            : "<div class=\"column\">" + cityssm.escapeHTML(locationObj.locationAddress1) + "</div>") +
                         "</div>";
                     listItemEle.addEventListener("click", locationLookupFn_setLocationFromExisting);
                     listEle.insertAdjacentElement("beforeend", listItemEle);
@@ -344,9 +344,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
                             cityssm.escapeHTML(termsConditionsObj.termsConditions) +
                             "</p>" +
                             "<p class=\"has-text-right\">" +
-                            (termsConditionsObj.termsConditionsCount > 1 ?
-                                "<span class=\"tag is-light\">Used " + termsConditionsObj.termsConditionsCount + " times</span>" :
-                                "") +
+                            (termsConditionsObj.termsConditionsCount > 1
+                                ? "<span class=\"tag is-light\">" +
+                                    "Used " + termsConditionsObj.termsConditionsCount.toString() + " times" +
+                                    "</span>"
+                                : "") +
                             "<span class=\"tag is-info has-tooltip-left\" data-tooltip=\"Most Recent Licence Start Date\">" +
                             termsConditionsObj.startDateMaxString +
                             "</span>" +
@@ -437,9 +439,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
             let eventDateString = "";
             if (eventDate) {
                 if (eventDate instanceof Date) {
-                    eventDateString = eventDate.getFullYear() + "-" +
-                        ("00" + (eventDate.getMonth() + 1)).slice(-2) + "-" +
-                        ("00" + eventDate.getDate()).slice(-2);
+                    eventDateString = eventDate.getFullYear().toString() + "-" +
+                        ("00" + (eventDate.getMonth() + 1).toString()).slice(-2) + "-" +
+                        ("00" + eventDate.getDate().toString()).slice(-2);
                 }
                 else if (eventDate.constructor === String) {
                     eventDateString = eventDate;
@@ -650,9 +652,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
                                 "<i class=\"fas fa-map-marker-alt\" aria-hidden=\"true\"></i>" +
                                 "</div>" +
                                 "<div class=\"column\">" + cityssm.escapeHTML(locationObj.locationDisplayName) + "</div>" +
-                                (locationObj.locationName === "" ?
-                                    "" :
-                                    "<div class=\"column\">" + cityssm.escapeHTML(locationObj.locationAddress1) + "</div>") +
+                                (locationObj.locationName === ""
+                                    ? ""
+                                    : "<div class=\"column\">" + cityssm.escapeHTML(locationObj.locationAddress1) + "</div>") +
                                 "</div>";
                             listItemEle.addEventListener("click", distributorLookupFn_updateDistributor);
                             listEle.insertAdjacentElement("beforeend", listItemEle);
@@ -696,9 +698,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
                                 "<i class=\"fas fa-map-marker-alt\" aria-hidden=\"true\"></i>" +
                                 "</div>" +
                                 "<div class=\"column\">" + cityssm.escapeHTML(locationObj.locationDisplayName) + "</div>" +
-                                (locationObj.locationName === "" ?
-                                    "" :
-                                    "<div class=\"column\">" + cityssm.escapeHTML(locationObj.locationAddress1) + "</div>") +
+                                (locationObj.locationName === ""
+                                    ? ""
+                                    : "<div class=\"column\">" + cityssm.escapeHTML(locationObj.locationAddress1) + "</div>") +
                                 "</div>";
                             listItemEle.addEventListener("click", manufacturerLookupFn_updateManufacturer);
                             listEle.insertAdjacentElement("beforeend", listItemEle);
@@ -776,7 +778,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     optionEle.value = ticketTypeObj.ticketType;
                     optionEle.innerText =
                         ticketTypeObj.ticketType +
-                            " (" + ticketTypeObj.ticketCount + " tickets, $" + ticketTypeObj.ticketPrice.toFixed(2) + " each)";
+                            " (" + ticketTypeObj.ticketCount.toString() + " tickets, $" + ticketTypeObj.ticketPrice.toFixed(2) + " each)";
                     addTicketType_ticketTypeEle.insertAdjacentElement("beforeend", optionEle);
                 }
                 addTicketType_refreshTicketTypeChange();
@@ -805,19 +807,21 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 "</td>");
             const unitCount = obj.unitCount;
             trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right\">" +
-                "<input name=\"ticketType_unitCount\" type=\"hidden\" value=\"" + unitCount + "\" />" +
-                "<span>" + unitCount + "</span>" +
+                "<input name=\"ticketType_unitCount\" type=\"hidden\" value=\"" + unitCount.toString() + "\" />" +
+                "<span>" + unitCount.toString() + "</span>" +
                 "</td>");
             const valuePerDeal = obj.valuePerDeal;
             const totalValuePerDeal = (valuePerDeal * unitCount).toFixed(2);
             trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right is-nowrap\">" +
-                "<span data-tooltip=\"$" + valuePerDeal + " value per deal\">$ " + totalValuePerDeal + "</span>" +
+                "<span data-tooltip=\"$" + valuePerDeal.toFixed(2) + " value per deal\">$ " + totalValuePerDeal + "</span>" +
                 "</td>");
             const prizesPerDeal = obj.prizesPerDeal;
             const totalPrizesPerDeal = (prizesPerDeal * unitCount).toFixed(2);
             trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right is-nowrap\">" +
-                "<input class=\"is-total-prizes-per-deal\" type=\"hidden\" value=\"" + totalPrizesPerDeal + "\" />" +
-                "<span data-tooltip=\"$" + prizesPerDeal + " prizes per deal\">$ " + totalPrizesPerDeal + "</span>" +
+                "<input class=\"is-total-prizes-per-deal\" type=\"hidden\" value=\"" + totalPrizesPerDeal.toString() + "\" />" +
+                "<span data-tooltip=\"$" + prizesPerDeal.toFixed(2) + " prizes per deal\">" +
+                "$" + totalPrizesPerDeal +
+                "</span>" +
                 "</td>");
             trEle.insertAdjacentHTML("beforeend", "<td class=\"is-hidden-print\">" +
                 "<div class=\"field has-addons\">" +
@@ -843,8 +847,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
             const licenceFee = obj.licenceFee;
             trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right is-nowrap\">" +
                 "<input class=\"is-licence-fee\" name=\"ticketType_licenceFee\"" +
-                " type=\"hidden\" value=\"" + licenceFee + "\" />" +
-                "<span>$ " + licenceFee + "</span>" +
+                " type=\"hidden\" value=\"" + licenceFee.toString() + "\" />" +
+                "<span>$" + licenceFee.toFixed(2) + "</span>" +
                 "</td>");
             trEle.insertAdjacentHTML("beforeend", "<td>" +
                 "<input name=\"ticketType_manufacturerLocationID\" type=\"hidden\" value=\"\" />" +

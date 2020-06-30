@@ -1,7 +1,7 @@
 import type { cityssmGlobal } from "../../node_modules/@cityssm/bulma-webapp-js/src/types";
-declare const cityssm: cityssmGlobal;
-
 import type * as llmTypes from "../../helpers/llmTypes";
+
+declare const cityssm: cityssmGlobal;
 
 
 (() => {
@@ -22,7 +22,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
     cityssm.postJSON(
       "/organizations/doSave",
       formEle,
-      (responseJSON: { success: boolean, organizationID?: number, message?: string }) => {
+      (responseJSON: { success: boolean; organizationID?: number; message?: string }) => {
 
         if (responseJSON.success) {
 
@@ -32,7 +32,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
         if (responseJSON.success && isCreate) {
 
-          window.location.href = "/organizations/" + responseJSON.organizationID + "/edit";
+          window.location.href = "/organizations/" + responseJSON.organizationID.toString() + "/edit";
 
         } else {
 
@@ -213,9 +213,9 @@ import type * as llmTypes from "../../helpers/llmTypes";
         editRepresentativeTrEle.getAttribute("data-representative-email-address");
 
       (<HTMLInputElement>document.getElementById("editOrganizationRepresentative--isDefault")).value =
-        (<HTMLInputElement>document.getElementById("representative-isDefault--" + representativeIndex)).checked ?
-          "1" :
-          "0";
+        (<HTMLInputElement>document.getElementById("representative-isDefault--" + representativeIndex)).checked
+          ? "1"
+          : "0";
 
       cityssm.showModal(editRepresentativeModalEle);
 
@@ -239,10 +239,10 @@ import type * as llmTypes from "../../helpers/llmTypes";
       trEle.insertAdjacentHTML("beforeend", "<td>" +
         "<div class=\"field\">" +
         "<input class=\"is-checkradio is-info\"" +
-        " id=\"representative-isDefault--" + representativeObj.representativeIndex + "\"" +
+        " id=\"representative-isDefault--" + representativeObj.representativeIndex.toString() + "\"" +
         " name=\"representative-isDefault\" type=\"radio\"" +
         (representativeObj.isDefault ? " checked" : "") + " />&nbsp;" +
-        "<label for=\"representative-isDefault--" + representativeObj.representativeIndex + "\"></label>" +
+        "<label for=\"representative-isDefault--" + representativeObj.representativeIndex.toString() + "\"></label>" +
         "</div>" +
         "</td>");
 
@@ -360,7 +360,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
       cityssm.postJSON(
         "/organizations/" + organizationID + "/doAddOrganizationRepresentative",
         formEvent.currentTarget,
-        (responseJSON: { success: boolean, organizationRepresentative: llmTypes.OrganizationRepresentative }) => {
+        (responseJSON: { success: boolean; organizationRepresentative: llmTypes.OrganizationRepresentative }) => {
 
           if (responseJSON.success) {
 

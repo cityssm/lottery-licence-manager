@@ -1,11 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.inactivateUser = exports.generateNewPassword = exports.updateUserProperty = exports.updateUser = exports.createUser = exports.getUserProperties = exports.getAllUsers = exports.tryResetPassword = exports.getUser = void 0;
-const dbPath = "data/users.db";
 const sqlite = require("better-sqlite3");
 const bcrypt = require("bcrypt");
 const stringFns = require("@cityssm/expressjs-server-js/stringFns");
 const configFns = require("./configFns");
+const dbPath = "data/users.db";
 exports.getUser = (userNameSubmitted, passwordPlain) => {
     const db = sqlite(dbPath);
     const row = db.prepare("select userName, passwordHash, isActive" +

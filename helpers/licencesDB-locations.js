@@ -70,7 +70,8 @@ exports.getLocations = (reqSession, queryOptions) => {
         " lo.locationIsDistributor, lo.locationIsManufacturer" +
         " order by case when lo.locationName = '' then lo.locationAddress1 else lo.locationName end";
     if (queryOptions.limit !== -1) {
-        sql += " limit " + queryOptions.limit + " offset " + queryOptions.offset;
+        sql += " limit " + queryOptions.limit.toString() +
+            " offset " + queryOptions.offset.toString();
     }
     const rows = db.prepare(sql).all(sqlParams);
     db.close();

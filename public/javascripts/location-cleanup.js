@@ -54,7 +54,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 const safeLocationDisplayName = cityssm.escapeHTML(locationObj.locationDisplayName);
                 trEle.insertAdjacentHTML("beforeend", "<td>" +
                     "<a data-tooltip=\"View Location\"" +
-                    " href=\"/locations/" + locationObj.locationID + "\">" +
+                    " href=\"/locations/" + locationObj.locationID.toString() + "\">" +
                     safeLocationDisplayName +
                     "</a>" +
                     (locationObj.locationDisplayName === locationObj.locationAddress1 ? "" : "<br />" +
@@ -74,9 +74,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     dateTag = "Manufacturer";
                 }
                 trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-centered\">" +
-                    (dateMax ?
-                        dateMaxString + "<br /><span class=\"tag is-light is-info\">" + dateTag + "</span>" :
-                        "<span class=\"tag is-light is-danger\">No Licences</span>") +
+                    (dateMax
+                        ? dateMaxString + "<br /><span class=\"tag is-light is-info\">" + dateTag + "</span>"
+                        : "<span class=\"tag is-light is-danger\">No Licences</span>") +
                     "</td>");
                 trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-centered\">" +
                     "<span data-tooltip=\"Updated by " + locationObj.recordUpdate_userName + "\">" +
@@ -86,7 +86,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right\">" +
                     "<button class=\"button is-small is-danger\"" +
                     " data-tooltip=\"Delete Location\"" +
-                    " data-location-id=\"" + locationObj.locationID + "\"" +
+                    " data-location-id=\"" + locationObj.locationID.toString() + "\"" +
                     " data-location-display-name=\"" + safeLocationDisplayName + "\" type=\"button\">" +
                     "<span class=\"icon\"><i class=\"fas fa-trash\" aria-hidden=\"true\"></i></span> <span>Delete</span>" +
                     "</button>" +

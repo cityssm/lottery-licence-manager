@@ -1,7 +1,7 @@
 import type { cityssmGlobal } from "../../node_modules/@cityssm/bulma-webapp-js/src/types";
-declare const cityssm: cityssmGlobal;
-
 import type * as llmTypes from "../../helpers/llmTypes";
+
+declare const cityssm: cityssmGlobal;
 
 
 (() => {
@@ -44,9 +44,9 @@ import type * as llmTypes from "../../helpers/llmTypes";
 
         for (const eventObj of eventList) {
 
-          const licenceType = exports.config_licenceTypes[eventObj.licenceTypeKey] || eventObj.licenceTypeKey;
+          const licenceType: string = exports.config_licenceTypes[eventObj.licenceTypeKey] || eventObj.licenceTypeKey;
 
-          const eventURL = "/events/" + eventObj.licenceID + "/" + eventObj.eventDate;
+          const eventURL = "/events/" + eventObj.licenceID.toString() + "/" + eventObj.eventDate.toString();
 
           const trEle = document.createElement("tr");
 
@@ -58,7 +58,7 @@ import type * as llmTypes from "../../helpers/llmTypes";
               "</td>") +
             ("<td>" +
               cityssm.escapeHTML(eventObj.externalLicenceNumber) + "<br />" +
-              "<small>Licence #" + eventObj.licenceID + "</small>" +
+              "<small>Licence #" + eventObj.licenceID.toString() + "</small>" +
               "</td>") +
             ("<td>" +
               cityssm.escapeHTML(eventObj.organizationName) +
@@ -74,11 +74,12 @@ import type * as llmTypes from "../../helpers/llmTypes";
               "</small>" +
               "</td>") +
             ("<td class=\"is-hidden-print has-text-right\">" +
-              (eventObj.canUpdate ?
-                "<a class=\"button is-small\" href=\"" + eventURL + "/edit\">" +
+              (eventObj.canUpdate
+                ? "<a class=\"button is-small\" href=\"" + eventURL + "/edit\">" +
                 "<span class=\"icon\"><i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i></span>" +
                 "<span>Edit</span>" +
-                "</a>" : "") +
+                "</a>"
+                : "") +
               "</td>");
 
           tbodyEle.appendChild(trEle);
