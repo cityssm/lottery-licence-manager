@@ -11,7 +11,12 @@ import * as fs from "fs";
 import * as configFns from "../helpers/configFns";
 
 
-const onError = (error: Error) => {
+interface ServerError extends Error {
+  syscall: string;
+  code: string;
+}
+
+const onError = (error: ServerError) => {
 
   if (error.syscall !== "listen") {
     throw error;
@@ -32,6 +37,7 @@ const onError = (error: Error) => {
       process.exit(1);
       // break;
 
+    // eslint-disable-next-line no-fallthrough
     default:
       throw error;
   }
