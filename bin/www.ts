@@ -19,15 +19,18 @@ const onError = (error: Error) => {
 
   // handle specific listen errors with friendly messages
   switch (error.code) {
+
+    // eslint-disable-next-line no-fallthrough
     case "EACCES":
       log.error("Requires elevated privileges");
       process.exit(1);
-    // break;
+      // break;
 
+    // eslint-disable-next-line no-fallthrough
     case "EADDRINUSE":
       log.error("Port is already in use.");
       process.exit(1);
-    // break;
+      // break;
 
     default:
       throw error;

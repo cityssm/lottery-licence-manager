@@ -9,7 +9,7 @@ const publicJavascriptsMinFn = () => {
 
   return gulp.src("public/javascripts/!(*.min).js", { allowEmpty: true })
     .pipe(minify({ noSource: true, ext: { min: ".min.js" } }))
-    .pipe(gulp.dest('public/javascripts'));
+    .pipe(gulp.dest("public/javascripts"));
 };
 
 
