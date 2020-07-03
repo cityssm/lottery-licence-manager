@@ -42,9 +42,9 @@ interface ConfigAdmin {
 interface ConfigUser {
   createUpdateWindowMillis: number;
   defaultProperties: {
-    canCreate: boolean,
-    canUpdate: boolean,
-    isAdmin: boolean
+    canCreate: boolean;
+    canUpdate: boolean;
+    isAdmin: boolean;
   };
 }
 
@@ -60,7 +60,7 @@ export interface ConfigBankRecordType {
 
 interface ConfigLicences {
   feeCalculationFn: (licenceObj: LotteryLicence) =>
-    { fee: string | number, message: string, licenceHasErrors: boolean };
+    { fee: string | number; message: string; licenceHasErrors: boolean };
   printTemplate: string;
   externalLicenceNumber?: ConfigExternalLicenceNumber;
   externalReceiptNumber?: ConfigExternalReceiptNumber;

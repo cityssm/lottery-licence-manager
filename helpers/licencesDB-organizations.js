@@ -206,7 +206,7 @@ exports.addOrganizationRepresentative = (organizationID, reqBody) => {
         " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
         .run(organizationID, newRepresentativeIndex, reqBody.representativeName, reqBody.representativeTitle, reqBody.representativeAddress1, reqBody.representativeAddress2, reqBody.representativeCity, reqBody.representativeProvince, reqBody.representativePostalCode, reqBody.representativePhoneNumber, reqBody.representativeEmailAddress, newIsDefault);
     db.close();
-    return {
+    const representativeObj = {
         organizationID,
         representativeIndex: newRepresentativeIndex,
         representativeName: reqBody.representativeName,
@@ -220,6 +220,7 @@ exports.addOrganizationRepresentative = (organizationID, reqBody) => {
         representativeEmailAddress: reqBody.representativeEmailAddress,
         isDefault: newIsDefault === 1
     };
+    return representativeObj;
 };
 exports.updateOrganizationRepresentative = (organizationID, reqBody) => {
     const db = sqlite(licencesDB_1.dbPath);
@@ -237,7 +238,7 @@ exports.updateOrganizationRepresentative = (organizationID, reqBody) => {
         " and representativeIndex = ?")
         .run(reqBody.representativeName, reqBody.representativeTitle, reqBody.representativeAddress1, reqBody.representativeAddress2, reqBody.representativeCity, reqBody.representativeProvince, reqBody.representativePostalCode, reqBody.representativePhoneNumber, reqBody.representativeEmailAddress, organizationID, reqBody.representativeIndex);
     db.close();
-    return {
+    const representativeObj = {
         organizationID,
         representativeIndex: reqBody.representativeIndex,
         representativeName: reqBody.representativeName,
@@ -251,6 +252,7 @@ exports.updateOrganizationRepresentative = (organizationID, reqBody) => {
         representativeEmailAddress: reqBody.representativeEmailAddress,
         isDefault: Number(reqBody.isDefault) > 0
     };
+    return representativeObj;
 };
 exports.deleteOrganizationRepresentative = (organizationID, representativeIndex) => {
     const db = sqlite(licencesDB_1.dbPath);

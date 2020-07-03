@@ -61,7 +61,7 @@ export const getUser = (userNameSubmitted: string, passwordPlain: string): User 
 
   // Check if the password matches
 
-  const databaseUserName = <string>row.userName;
+  const databaseUserName = row.userName as string;
 
   let passwordIsValid = false;
 

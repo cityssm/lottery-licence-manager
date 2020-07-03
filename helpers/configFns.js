@@ -35,7 +35,7 @@ configFallbackValues.set("licences.externalLicenceNumber.fieldLabel", "External 
 configFallbackValues.set("licences.externalLicenceNumber.newCalculation", "");
 configFallbackValues.set("licences.externalLicenceNumber.isPreferredID", false);
 configFallbackValues.set("licences.externalReceiptNumber.fieldLabel", "Receipt Number");
-configFallbackValues.set("licences.feeCalculationFn", () => {
+configFallbackValues.set("licences.feeCalculationFn", (_licenceObj) => {
     return {
         fee: 10,
         message: "Using base licence fee.",
@@ -52,7 +52,7 @@ configFallbackValues.set("amendments.trackLocationUpdate", true);
 configFallbackValues.set("amendments.trackTicketTypeNew", true);
 configFallbackValues.set("amendments.trackTicketTypeUpdate", true);
 configFallbackValues.set("amendments.trackTicketTypeDelete", true);
-exports.getProperty = (propertyName) => {
+function getProperty(propertyName) {
     const propertyNameSplit = propertyName.split(".");
     let currentObj = config;
     for (const propertyNamePiece of propertyNameSplit) {
@@ -64,15 +64,16 @@ exports.getProperty = (propertyName) => {
         }
     }
     return currentObj;
-};
-exports.keepAliveMillis = exports.getProperty("session.doKeepAlive") ?
-    Math.max(exports.getProperty("session.maxAgeMillis") / 2, exports.getProperty("session.maxAgeMillis") - (10 * 60 * 1000)) :
-    0;
+}
+exports.getProperty = getProperty;
+exports.keepAliveMillis = getProperty("session.doKeepAlive")
+    ? Math.max(getProperty("session.maxAgeMillis") / 2, getProperty("session.maxAgeMillis") - (10 * 60 * 1000))
+    : 0;
 const licenceTypeCache = new Map();
 let licenceTypeKeyNameObject = {};
 exports.getLicenceType = (licenceTypeKey) => {
     if (!licenceTypeCache.has(licenceTypeKey)) {
-        const licenceType = exports.getProperty("licenceTypes")
+        const licenceType = getProperty("licenceTypes")
             .find((ele) => ele.licenceTypeKey === licenceTypeKey);
         licenceTypeCache.set(licenceTypeKey, licenceType);
     }
@@ -81,7 +82,7 @@ exports.getLicenceType = (licenceTypeKey) => {
 exports.getLicenceTypeKeyToNameObject = () => {
     if (Object.keys(licenceTypeKeyNameObject).length === 0) {
         const list = {};
-        exports.getProperty("licenceTypes")
+        getProperty("licenceTypes")
             .forEach((ele) => {
             if (ele.isActive) {
                 list[ele.licenceTypeKey] = ele.licenceType;

@@ -349,7 +349,7 @@ export const addOrganizationRepresentative = (organizationID: number, reqBody: l
     " where organizationID = ?")
     .get(organizationID);
 
-  const newRepresentativeIndex = <number>row.maxIndex + 1;
+  const newRepresentativeIndex = row.maxIndex as number + 1;
   const newIsDefault = (row.indexCount === 0 ? 1 : 0);
 
   db.prepare("insert into OrganizationRepresentatives (" +
@@ -371,7 +371,7 @@ export const addOrganizationRepresentative = (organizationID: number, reqBody: l
 
   db.close();
 
-  return <llm.OrganizationRepresentative>{
+  const representativeObj: llm.OrganizationRepresentative = {
     organizationID,
     representativeIndex: newRepresentativeIndex,
     representativeName: reqBody.representativeName,
@@ -386,6 +386,7 @@ export const addOrganizationRepresentative = (organizationID: number, reqBody: l
     isDefault: newIsDefault === 1
   };
 
+  return representativeObj;
 };
 
 export const updateOrganizationRepresentative = (organizationID: number, reqBody: llm.OrganizationRepresentative) => {
@@ -414,7 +415,7 @@ export const updateOrganizationRepresentative = (organizationID: number, reqBody
 
   db.close();
 
-  return <llm.OrganizationRepresentative>{
+  const representativeObj: llm.OrganizationRepresentative = {
     organizationID,
     representativeIndex: reqBody.representativeIndex,
     representativeName: reqBody.representativeName,
@@ -428,6 +429,8 @@ export const updateOrganizationRepresentative = (organizationID: number, reqBody
     representativeEmailAddress: reqBody.representativeEmailAddress,
     isDefault: Number(reqBody.isDefault) > 0
   };
+
+  return representativeObj;
 };
 
 /**
@@ -739,7 +742,7 @@ export const addOrganizationBankRecord = (reqBody: llm.OrganizationBankRecord, r
     " where organizationID = ?")
     .get(reqBody.organizationID);
 
-  const newRecordIndex = <number>row.maxIndex + 1;
+  const newRecordIndex = row.maxIndex as number + 1;
 
   // Insert the record
 

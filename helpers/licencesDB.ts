@@ -1,8 +1,8 @@
 import * as sqlite from "better-sqlite3";
 
-import * as llm from "./llmTypes";
 import * as configFns from "./configFns";
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns";
+import * as llm from "./llmTypes";
 
 import { RawRowsColumnsReturn } from "@cityssm/expressjs-server-js/types";
 
@@ -38,7 +38,7 @@ export const canUpdateObject = (obj: llm.Record, reqSession: Express.SessionData
   } else if (userProperties.canCreate &&
     (obj.recordCreate_userName === reqSession.user.userName ||
       obj.recordUpdate_userName === reqSession.user.userName) &&
-    obj.recordUpdate_timeMillis + <number>configFns.getProperty("user.createUpdateWindowMillis") > Date.now()) {
+    obj.recordUpdate_timeMillis + configFns.getProperty("user.createUpdateWindowMillis") > Date.now()) {
 
     // Users with only create permission can update their own records within the time window
     canUpdate = true;
@@ -47,7 +47,7 @@ export const canUpdateObject = (obj: llm.Record, reqSession: Express.SessionData
 
   // If recently updated, send back permission
 
-  if (obj.recordUpdate_timeMillis + <number>configFns.getProperty("user.createUpdateWindowMillis") > Date.now()) {
+  if (obj.recordUpdate_timeMillis + configFns.getProperty("user.createUpdateWindowMillis") > Date.now()) {
 
     return canUpdate;
 
@@ -66,7 +66,7 @@ export const canUpdateObject = (obj: llm.Record, reqSession: Express.SessionData
 
         const lockDateInteger = dateTimeFns.dateToInteger(lockDate);
 
-        if ((<llm.LotteryLicence>obj).endDate < lockDateInteger) {
+        if ((obj as llm.LotteryLicence).endDate < lockDateInteger) {
           canUpdate = false;
         }
 
@@ -74,7 +74,7 @@ export const canUpdateObject = (obj: llm.Record, reqSession: Express.SessionData
 
       case "event":
 
-        if ((<llm.LotteryEvent>obj).bank_name !== "" && (<llm.LotteryEvent>obj).costs_receipts) {
+        if ((obj as llm.LotteryEvent).bank_name !== "" && (obj as llm.LotteryEvent).costs_receipts) {
           canUpdate = false;
         }
 
@@ -603,7 +603,7 @@ export const getNextExternalLicenceNumberFromRange = () => {
 
   }
 
-  const maxExternalLicenceNumber = <number>row.maxExternalLicenceNumberInteger;
+  const maxExternalLicenceNumber = row.maxExternalLicenceNumberInteger as number;
 
   if (!maxExternalLicenceNumber) {
     return rangeStart;
@@ -1234,7 +1234,7 @@ export const updateLicence = (reqBody: LotteryLicenceForm, reqSession: Express.S
 
       if (ticketTypeObj_past &&
         configFns.getProperty("amendments.trackTicketTypeUpdate") &&
-        ticketTypeObj_past.unitCount !== parseInt(<string>reqBody.ticketType_unitCount, 10)) {
+        ticketTypeObj_past.unitCount !== parseInt(reqBody.ticketType_unitCount as string, 10)) {
 
         addLicenceAmendmentWithDB(
           db,
@@ -1705,7 +1705,7 @@ export const addTransaction = (reqBody: {
     " where licenceID = ?")
     .get(reqBody.licenceID);
 
-  const newTransactionIndex: number = <number>row.maxIndex + 1;
+  const newTransactionIndex: number = row.maxIndex as number + 1;
 
   const rightNow = new Date();
 
@@ -2345,8 +2345,8 @@ export const getLicenceActivityByDateRange = (startDate: number, endDate: number
   const activity = {
     startDateString: dateTimeFns.dateIntegerToString(startDate),
     endDateString: dateTimeFns.dateIntegerToString(endDate),
-    licences: <llm.LotteryLicence[]>null,
-    events: <llm.LotteryEvent[]>null
+    licences: null as llm.LotteryLicence[],
+    events: null as llm.LotteryEvent[]
   };
 
   // Get licences
