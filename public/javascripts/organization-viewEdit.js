@@ -251,8 +251,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 const recordIndex = deleteButtonEvent.currentTarget.getAttribute("data-record-index");
                 const deleteFn = () => {
                     cityssm.postJSON("/organizations/doDeleteBankRecord", {
-                        organizationID: organizationID,
-                        recordIndex: recordIndex
+                        organizationID,
+                        recordIndex
                     }, () => {
                         bankRecordEditCloseModalFn();
                         getBankRecordsFn();

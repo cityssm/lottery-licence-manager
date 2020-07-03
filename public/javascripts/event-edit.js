@@ -24,8 +24,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
         clickEvent.preventDefault();
         cityssm.confirmModal("Delete Event?", "Are you sure you want to delete this event?", "Yes, Delete", "danger", () => {
             cityssm.postJSON("/events/doDelete", {
-                licenceID: licenceID,
-                eventDate: eventDate
+                licenceID,
+                eventDate
             }, (responseJSON) => {
                 if (responseJSON.success) {
                     cityssm.disableNavBlocker();
@@ -67,7 +67,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
         const getPastBankInformationFn = () => {
             const containerEle = document.getElementById("container--bankInformationLookup");
             cityssm.postJSON("/events/doGetPastBankInformation", {
-                licenceID: licenceID
+                licenceID
             }, (bankInfoList) => {
                 savedBankInfoList = bankInfoList;
                 const listEle = document.createElement("div");
@@ -76,16 +76,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     const listItemEle = document.createElement("a");
                     listItemEle.className = "panel-block is-block";
                     listItemEle.setAttribute("data-list-index", index.toString());
-                    listItemEle.innerHTML = "<div class=\"columns\">" +
-                        "<div class=\"column\">" + cityssm.escapeHTML(record.bank_name) + "</div>" +
-                        "<div class=\"column\">" + cityssm.escapeHTML(record.bank_address) + "</div>" +
-                        "<div class=\"column\">" + cityssm.escapeHTML(record.bank_accountNumber) + "</div>" +
-                        "</div>" +
-                        "<div class=\"has-text-right\">" +
-                        "<span class=\"tag is-info\" data-tooltip=\"Last Used Event Date\">" +
-                        record.eventDateMaxString +
-                        "</span>" +
-                        "</div>";
+                    listItemEle.innerHTML = `<div class="columns">
+            <div class="column">${cityssm.escapeHTML(record.bank_name)}</div>
+            <div class="column">${cityssm.escapeHTML(record.bank_address)}</div>
+            <div class="column">${cityssm.escapeHTML(record.bank_accountNumber)}</div>
+            </div>
+            <div class="has-text-right">
+            <span class="tag is-info" data-tooltip="Last Used Event Date">
+            ${record.eventDateMaxString}
+            </span>
+            </div>`;
                     listItemEle.addEventListener("click", setPastBankInformationFn);
                     listEle.insertAdjacentElement("beforeend", listItemEle);
                 });

@@ -10,7 +10,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
         const deleteFn = () => {
             const organizationID = buttonEle.getAttribute("data-organization-id");
             cityssm.postJSON("/organizations/doDelete", {
-                organizationID: organizationID
+                organizationID
             }, (responseJSON) => {
                 if (responseJSON.success) {
                     cityssm.alertModal(responseJSON.message, "", "OK", "success");
@@ -21,7 +21,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 }
             });
         };
-        cityssm.confirmModal("Delete Organization?", "Are you sure you want delete " + organizationName + "?", "Yes, Delete", "danger", deleteFn);
+        cityssm.confirmModal("Delete Organization?", `Are you sure you want delete ${cityssm.escapeHTML(organizationName)}?`, "Yes, Delete", "danger", deleteFn);
     };
     const getInactiveOrganizationsFn = () => {
         searchResultsEle.innerHTML = "<p class=\"has-text-centered has-text-grey-lighter\">" +

@@ -3,13 +3,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 llm.organizationRemarks = (() => {
     const getRemarksByOrganizationID = (organizationID, callbackFn) => {
         cityssm.postJSON("/organizations/doGetRemarks", {
-            organizationID: organizationID
+            organizationID
         }, callbackFn);
     };
     const getRemarkByID = (organizationID, remarkIndex, callbackFn) => {
         cityssm.postJSON("/organizations/doGetRemark", {
-            organizationID: organizationID,
-            remarkIndex: remarkIndex
+            organizationID,
+            remarkIndex
         }, callbackFn);
     };
     const doAddRemark = (formEle, callbackFn) => {
@@ -71,10 +71,10 @@ llm.organizationRemarks = (() => {
             }
         });
     };
-    const doDeleteRemark = (organiztionID, remarkIndex, callbackFn) => {
+    const doDeleteRemark = (organizationID, remarkIndex, callbackFn) => {
         cityssm.postJSON("/organizations/doDeleteRemark", {
-            organizationID: organiztionID,
-            remarkIndex: remarkIndex
+            organizationID,
+            remarkIndex
         }, callbackFn);
     };
     const deleteRemark = (organizationID, remarkIndex, doConfirm, deleteCallbackFn) => {

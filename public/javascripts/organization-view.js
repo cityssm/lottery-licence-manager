@@ -8,7 +8,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
             const organizationID = buttonEle.getAttribute("data-organization-id");
             const restoreFn = () => {
                 cityssm.postJSON("/organizations/doRestore", {
-                    organizationID: organizationID
+                    organizationID
                 }, (responseJSON) => {
                     if (responseJSON.success) {
                         window.location.href = "/organizations/" + organizationID + "?_" + Date.now().toString();

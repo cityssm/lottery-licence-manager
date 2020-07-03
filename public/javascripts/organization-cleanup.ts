@@ -23,7 +23,7 @@ declare const cityssm: cityssmGlobal;
       const organizationID = buttonEle.getAttribute("data-organization-id");
 
       cityssm.postJSON("/organizations/doDelete", {
-        organizationID: organizationID
+        organizationID
       },
         (responseJSON: { success: boolean; message: string }) => {
 
@@ -40,7 +40,7 @@ declare const cityssm: cityssmGlobal;
 
     cityssm.confirmModal(
       "Delete Organization?",
-      "Are you sure you want delete " + organizationName + "?",
+      `Are you sure you want delete ${cityssm.escapeHTML(organizationName)}?`,
       "Yes, Delete",
       "danger",
       deleteFn

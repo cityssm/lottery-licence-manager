@@ -404,8 +404,8 @@ declare const llm: llmGlobal;
         const deleteFn = () => {
 
           cityssm.postJSON("/organizations/doDeleteBankRecord", {
-            organizationID: organizationID,
-            recordIndex: recordIndex
+            organizationID,
+            recordIndex
           }, () => {
 
             bankRecordEditCloseModalFn();

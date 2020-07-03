@@ -20,7 +20,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 }
             });
         };
-        cityssm.confirmModal("Delete Location?", "Are you sure you want delete " + locationDisplayName + "?", "Yes, Delete", "danger", deleteFn);
+        cityssm.confirmModal("Delete Location?", `Are you sure you want delete ${cityssm.escapeHTML(locationDisplayName)}?`, "Yes, Delete", "danger", deleteFn);
     };
     const getInactiveLocationsFn = () => {
         searchResultsEle.innerHTML = "<p class=\"has-text-centered has-text-grey-lighter\">" +

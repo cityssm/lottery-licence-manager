@@ -48,7 +48,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
             clickEvent.preventDefault();
             const deleteFn = () => {
                 cityssm.postJSON("/licences/doDelete", {
-                    licenceID: licenceID
+                    licenceID
                 }, (responseJSON) => {
                     if (responseJSON.success) {
                         cityssm.disableNavBlocker();
@@ -518,7 +518,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
             }
             else {
                 cityssm.postJSON("/licences/doGetTicketTypes", {
-                    licenceTypeKey: licenceTypeKey
+                    licenceTypeKey
                 }, (ticketTypes) => {
                     licenceTypeKeyToTicketTypes.set(licenceTypeKey, ticketTypes);
                     callbackFn(ticketTypes);
@@ -613,7 +613,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     const unitCountEle = document.getElementById("amendUnit_unitCount");
                     unitCountEle.value = unitCountCurrent;
                     ticketTypesFn_getAll((ticketTypes) => {
-                        ticketTypeObj = ticketTypes.find(ele => ele.ticketType === ticketType);
+                        ticketTypeObj = ticketTypes.find((ele) => ele.ticketType === ticketType);
                         unitCountEle.addEventListener("change", amendUnitCountFn_calculateLicenceFee);
                         amendUnitCountFn_calculateLicenceFee();
                     });
@@ -965,7 +965,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 }
                 const voidFn = () => {
                     cityssm.postJSON("/licences/doVoidTransaction", {
-                        licenceID: licenceID,
+                        licenceID,
                         transactionIndex: voidTransactionButtonEle.getAttribute("data-transaction-index")
                     }, (responseJSON) => {
                         if (responseJSON.success) {
@@ -986,7 +986,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
             unissueLicenceButtonEle.addEventListener("click", () => {
                 const unissueFn = () => {
                     cityssm.postJSON("/licences/doUnissueLicence", {
-                        licenceID: licenceID
+                        licenceID
                     }, (responseJSON) => {
                         if (responseJSON.success) {
                             window.location.reload(true);
@@ -1000,7 +1000,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
             const issueLicenceFn = () => {
                 const issueFn = () => {
                     cityssm.postJSON("/licences/doIssueLicence", {
-                        licenceID: licenceID
+                        licenceID
                     }, (responseJSON) => {
                         if (responseJSON.success) {
                             window.location.reload(true);

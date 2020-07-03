@@ -24,16 +24,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     "<small>Licence #" + outstandingEventObj.licenceID.toString() + "</small>" +
                     "</a>" +
                     "</td>");
-                trEle.insertAdjacentHTML("beforeend", "<td>" + cityssm.escapeHTML(outstandingEventObj.licenceType) + "</td>");
+                trEle.insertAdjacentHTML("beforeend", `<td>${cityssm.escapeHTML(outstandingEventObj.licenceType)}</td>`);
                 const eventURL = "/events/" +
                     outstandingEventObj.licenceID.toString() + "/" +
                     outstandingEventObj.eventDate.toString();
-                trEle.insertAdjacentHTML("beforeend", "<td>" +
-                    "<a href=\"" + eventURL + "\"" +
-                    " data-tooltip=\"View Event\" target=\"_blank\">" +
-                    outstandingEventObj.eventDateString +
-                    "</a>" +
-                    "</td>");
+                trEle.insertAdjacentHTML("beforeend", `<td>
+          <a href="${eventURL}" data-tooltip="View Event" target="_blank">
+          ${outstandingEventObj.eventDateString}
+          </a>
+          </td>`);
                 trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-centered\">" +
                     (outstandingEventObj.reportDate === null || outstandingEventObj.reportDate === 0
                         ? "<span class=\"icon\" data-tooltip=\"Report Date Not Recorded\">" +

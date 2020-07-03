@@ -41,18 +41,17 @@ declare const cityssm: cityssmGlobal;
           "</a>" +
           "</td>");
 
-        trEle.insertAdjacentHTML("beforeend", "<td>" + cityssm.escapeHTML(outstandingEventObj.licenceType) + "</td>");
+        trEle.insertAdjacentHTML("beforeend", `<td>${cityssm.escapeHTML(outstandingEventObj.licenceType)}</td>`);
 
         const eventURL = "/events/" +
           outstandingEventObj.licenceID.toString() + "/" +
           outstandingEventObj.eventDate.toString();
 
-        trEle.insertAdjacentHTML("beforeend", "<td>" +
-          "<a href=\"" + eventURL + "\"" +
-          " data-tooltip=\"View Event\" target=\"_blank\">" +
-          outstandingEventObj.eventDateString +
-          "</a>" +
-          "</td>");
+        trEle.insertAdjacentHTML("beforeend", `<td>
+          <a href="${eventURL}" data-tooltip="View Event" target="_blank">
+          ${outstandingEventObj.eventDateString}
+          </a>
+          </td>`);
 
         trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-centered\">" +
           (outstandingEventObj.reportDate === null || outstandingEventObj.reportDate === 0

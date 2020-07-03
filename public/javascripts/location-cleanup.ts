@@ -40,7 +40,7 @@ declare const cityssm: cityssmGlobal;
 
     cityssm.confirmModal(
       "Delete Location?",
-      "Are you sure you want delete " + locationDisplayName + "?",
+      `Are you sure you want delete ${cityssm.escapeHTML(locationDisplayName)}?`,
       "Yes, Delete",
       "danger",
       deleteFn

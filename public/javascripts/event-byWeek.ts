@@ -56,11 +56,12 @@ declare const cityssm: cityssmGlobal;
 
         if (responseJSON.licences.length === 0 && responseJSON.events.length === 0) {
 
-          eventContainerEle.innerHTML = "<div class=\"message is-info\">" +
-            "<p class=\"message-body\">There are no licences or events with activity between " +
-            responseJSON.startDateString + " and " + responseJSON.endDateString + "." +
-            "</p>" +
-            "</div>";
+          eventContainerEle.innerHTML = `<div class="message is-info">
+            <p class="message-body">
+            There are no licences or events with activity between
+            ${responseJSON.startDateString} and ${responseJSON.endDateString}.
+            </p>
+            </div>`;
 
           return;
 
@@ -235,7 +236,7 @@ declare const cityssm: cityssmGlobal;
               "<i class=\"fas fa-fw fa-certificate\" aria-hidden=\"true\"></i>" +
               "</div>" +
               "<div class=\"column pb-2 has-text-weight-semibold\">" +
-              eventRecord.externalLicenceNumber + "<br />" +
+              cityssm.escapeHTML(eventRecord.externalLicenceNumber) + "<br />" +
               (licenceType || eventRecord.licenceTypeKey) +
               "</div>" +
               "</div>") +
@@ -245,7 +246,10 @@ declare const cityssm: cityssmGlobal;
               "<i class=\"fas fa-fw fa-map-marker-alt\" aria-hidden=\"true\"></i>" +
               "</div>" +
               "<div class=\"column pb-2\">" +
-              (eventRecord.locationName === "" ? eventRecord.locationAddress1 : eventRecord.locationName) +
+              cityssm.escapeHTML(
+                eventRecord.locationName === ""
+                  ? eventRecord.locationAddress1
+                  : eventRecord.locationName) +
               "</div>" +
               "</div>") +
 
@@ -254,7 +258,7 @@ declare const cityssm: cityssmGlobal;
               "<i class=\"fas fa-fw fa-users\" aria-hidden=\"true\"></i>" +
               "</div>" +
               "<div class=\"column pb-2\">" +
-              eventRecord.organizationName +
+              cityssm.escapeHTML(eventRecord.organizationName) +
               "</div>" +
               "</div>") +
 

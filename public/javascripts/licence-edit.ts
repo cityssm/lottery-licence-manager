@@ -94,7 +94,7 @@ declare const llm: llmGlobal;
       const deleteFn = () => {
         cityssm.postJSON(
           "/licences/doDelete", {
-            licenceID: licenceID
+            licenceID
           },
           (responseJSON: { success: boolean }) => {
 
@@ -901,7 +901,7 @@ declare const llm: llmGlobal;
 
         cityssm.postJSON(
           "/licences/doGetTicketTypes", {
-            licenceTypeKey: licenceTypeKey
+            licenceTypeKey
           },
           (ticketTypes: llmTypes.ConfigTicketType[]) => {
 
@@ -1057,7 +1057,7 @@ declare const llm: llmGlobal;
 
           ticketTypesFn_getAll((ticketTypes: llmTypes.ConfigTicketType[]) => {
 
-            ticketTypeObj = ticketTypes.find(ele => ele.ticketType === ticketType);
+            ticketTypeObj = ticketTypes.find((ele) => ele.ticketType === ticketType);
 
             unitCountEle.addEventListener("change", amendUnitCountFn_calculateLicenceFee);
             amendUnitCountFn_calculateLicenceFee();
@@ -1620,7 +1620,7 @@ declare const llm: llmGlobal;
 
           cityssm.postJSON(
             "/licences/doVoidTransaction", {
-              licenceID: licenceID,
+              licenceID,
               transactionIndex: voidTransactionButtonEle.getAttribute("data-transaction-index")
             },
             (responseJSON: { success: true }) => {
@@ -1666,7 +1666,7 @@ declare const llm: llmGlobal;
 
           cityssm.postJSON(
             "/licences/doUnissueLicence", {
-              licenceID: licenceID
+              licenceID
             },
             (responseJSON) => {
 
@@ -1694,7 +1694,7 @@ declare const llm: llmGlobal;
 
           cityssm.postJSON(
             "/licences/doIssueLicence", {
-              licenceID: licenceID
+              licenceID
             },
             (responseJSON: { success: boolean }) => {
 

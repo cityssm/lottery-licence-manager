@@ -13,7 +13,7 @@ llm.organizationRemarks = (() => {
 
     cityssm.postJSON(
       "/organizations/doGetRemarks", {
-        organizationID: organizationID
+        organizationID
       },
       callbackFn
     );
@@ -24,8 +24,8 @@ llm.organizationRemarks = (() => {
 
     cityssm.postJSON(
       "/organizations/doGetRemark", {
-        organizationID: organizationID,
-        remarkIndex: remarkIndex
+        organizationID,
+        remarkIndex
       },
       callbackFn
     );
@@ -130,15 +130,15 @@ llm.organizationRemarks = (() => {
     });
   };
 
-  const doDeleteRemark = (organiztionID: number, remarkIndex: number, callbackFn: (response: {
+  const doDeleteRemark = (organizationID: number, remarkIndex: number, callbackFn: (response: {
     success: boolean;
     message: string;
   }) => void) => {
 
     cityssm.postJSON(
       "/organizations/doDeleteRemark", {
-        organizationID: organiztionID,
-        remarkIndex: remarkIndex
+        organizationID,
+        remarkIndex
       },
       callbackFn
     );

@@ -18,7 +18,7 @@ declare const cityssm: cityssmGlobal;
 
         cityssm.postJSON(
           "/organizations/doRestore", {
-            organizationID: organizationID
+            organizationID
           },
           (responseJSON: { success: boolean }) => {
 

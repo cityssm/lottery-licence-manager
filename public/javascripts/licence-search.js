@@ -41,28 +41,28 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 const licenceType = licenceType_keyToName[licenceObj.licenceTypeKey];
                 const trEle = document.createElement("tr");
                 trEle.innerHTML =
-                    "<td>" +
+                    ("<td>" +
                         "<a data-tooltip=\"View Licence\" href=\"/licences/" + licenceObj.licenceID.toString() + "\">" +
                         cityssm.escapeHTML(licenceObj.externalLicenceNumber) + "<br />" +
                         "<small>Licence #" + licenceObj.licenceID.toString() + "</small>" +
                         "</a>" +
-                        "</td>" +
-                        "<td>" + (licenceType || licenceObj.licenceTypeKey) + "<br />" +
-                        "<small>" + cityssm.escapeHTML(licenceObj.licenceDetails) + "</small>" +
-                        "</td>" +
-                        ("<td>" +
-                            "<a data-tooltip=\"View Organization\"" +
-                            " href=\"/organizations/" + licenceObj.organizationID.toString() + "\">" +
-                            cityssm.escapeHTML(licenceObj.organizationName) +
-                            "</a>" +
+                        "</td>") +
+                        ("<td>" + (licenceType || licenceObj.licenceTypeKey) + "<br />" +
+                            "<small>" + cityssm.escapeHTML(licenceObj.licenceDetails) + "</small>" +
                             "</td>") +
+                        (`<td>
+              <a data-tooltip="View Organization"
+                href="/organizations/${licenceObj.organizationID.toString()}">
+              ${cityssm.escapeHTML(licenceObj.organizationName)}
+              </a>
+              </td>`) +
                         ("<td>" +
                             "<a data-tooltip=\"View Location\" href=\"/locations/" + licenceObj.locationID.toString() + "\">" +
                             cityssm.escapeHTML(licenceObj.locationDisplayName) +
                             "</a>" +
                             (licenceObj.locationDisplayName === licenceObj.locationAddress1
                                 ? ""
-                                : "<br /><small>" + cityssm.escapeHTML(licenceObj.locationAddress1) + "</small>") +
+                                : `<br /><small>${cityssm.escapeHTML(licenceObj.locationAddress1)}</small>`) +
                             "</td>") +
                         ("<td class=\"is-nowrap\">" +
                             "<span class=\"has-cursor-default has-tooltip-right\" data-tooltip=\"Start Date\">" +

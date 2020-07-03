@@ -506,16 +506,16 @@ exports.updateLicence = (reqBody, reqSession) => {
                 pastLicenceObj.startTime !== startTime_now ||
                 pastLicenceObj.endTime !== endTime_now)) {
             const amendment = ((pastLicenceObj.startDate !== startDate_now
-                ? `Start Date: ${pastLicenceObj.startDate} -> ${startDate_now.toString()}` + "\n"
+                ? `Start Date: ${pastLicenceObj.startDate.toString()} -> ${startDate_now.toString()}` + "\n"
                 : "") +
                 (pastLicenceObj.endDate !== endDate_now
-                    ? `End Date: ${pastLicenceObj.endDate} -> ${endDate_now.toString()}` + "\n"
+                    ? `End Date: ${pastLicenceObj.endDate.toString()} -> ${endDate_now.toString()}` + "\n"
                     : "") +
                 (pastLicenceObj.startTime !== startTime_now
-                    ? `Start Time: ${pastLicenceObj.startTime} -> ${startTime_now.toString()}` + "\n"
+                    ? `Start Time: ${pastLicenceObj.startTime.toString()} -> ${startTime_now.toString()}` + "\n"
                     : "") +
                 (pastLicenceObj.endTime !== endTime_now
-                    ? `End Time: ${pastLicenceObj.endTime} -> ${endTime_now.toString()}` + "\n"
+                    ? `End Time: ${pastLicenceObj.endTime.toString()} -> ${endTime_now.toString()}` + "\n"
                     : "")).trim();
             addLicenceAmendmentWithDB(db, reqBody.licenceID, "Date Update", amendment, 0, reqSession);
         }
