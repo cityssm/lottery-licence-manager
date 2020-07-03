@@ -24,7 +24,7 @@ router.get("/applicationSettings", (req, res) => {
 
   res.render("admin-applicationSettings", {
     headTitle: "Application Settings",
-    applicationSettings: applicationSettings
+    applicationSettings
   });
 
 });
@@ -42,7 +42,7 @@ router.post("/doSaveApplicationSetting", (req, res) => {
   const success = licencesDB.updateApplicationSetting(settingKey, settingValue, req.session);
 
   res.json({
-    success: success
+    success
   });
 
 });
@@ -64,7 +64,7 @@ router.get("/userManagement", (req, res) => {
 
   res.render("admin-userManagement", {
     headTitle: "User Management",
-    users: users
+    users
   });
 
 });
@@ -89,7 +89,7 @@ router.post("/doCreateUser", (req, res) => {
 
     res.json({
       success: true,
-      newPassword: newPassword
+      newPassword
     });
 
   }
@@ -137,7 +137,7 @@ router.post("/doResetPassword", (req, res) => {
 
   res.json({
     success: true,
-    newPassword: newPassword
+    newPassword
   });
 
 });
@@ -173,7 +173,7 @@ router.post("/doDeleteUser", (req, res) => {
   const success = usersDB.inactivateUser(userNameToDelete);
 
   res.json({
-    success: success
+    success
   });
 
 });

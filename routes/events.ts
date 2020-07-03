@@ -5,6 +5,7 @@ import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns";
 import * as licencesDB from "../helpers/licencesDB";
 import * as licencesDBOrganizations from "../helpers/licencesDB-organizations";
 
+
 const router = Router();
 
 
@@ -18,7 +19,7 @@ router.get("/", (_req, res) => {
 
   res.render("event-search", {
     headTitle: "Lottery Events",
-    eventTableStats: eventTableStats
+    eventTableStats
   });
 
 });
@@ -69,7 +70,7 @@ router.get("/recent", (req, res) => {
 
   res.render("event-recent", {
     headTitle: "Recently Updated Events",
-    records: records
+    records
   });
 
 });
@@ -123,8 +124,8 @@ router.get("/financials", (_req, res) => {
     headTitle: "Financial Summary",
     pageContainerIsFullWidth: true,
     eventYearMin: (eventTableStats.eventYearMin || new Date().getFullYear() + 1),
-    eventDateStartString: eventDateStartString,
-    eventDateEndString: eventDateEndString
+    eventDateStartString,
+    eventDateEndString
   });
 
 });
@@ -253,8 +254,8 @@ router.get("/:licenceID/:eventDate", (req, res) => {
   res.render("event-view", {
     headTitle: "Event View",
     event: eventObj,
-    licence: licence,
-    organization: organization
+    licence,
+    organization
   });
 
 });
@@ -294,8 +295,8 @@ router.get("/:licenceID/:eventDate/edit", (req, res) => {
   res.render("event-edit", {
     headTitle: "Event Update",
     event: eventObj,
-    licence: licence,
-    organization: organization
+    licence,
+    organization
   });
 
 });

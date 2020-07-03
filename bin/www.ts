@@ -9,7 +9,7 @@ import * as https from "https";
 import * as fs from "fs";
 
 import * as configFns from "../helpers/configFns";
-import { ConfigHTTPS } from "../helpers/llmTypes";
+
 
 const onError = (error: Error) => {
 
@@ -40,7 +40,7 @@ const onListening = (server: http.Server | https.Server) => {
 
   const bind = typeof addr === "string"
     ? "pipe " + addr
-    : "port " + addr.port;
+    : "port " + addr.port.toString();
 
   log.info("Listening on " + bind);
 };
@@ -62,14 +62,14 @@ if (httpPort) {
     onListening(httpServer);
   });
 
-  log.info("HTTP listening on " + httpPort);
+  log.info("HTTP listening on " + httpPort.toString());
 }
 
 /**
  * Initialize HTTPS
  */
 
-const httpsConfig = <ConfigHTTPS>configFns.getProperty("application.https");
+const httpsConfig = configFns.getProperty("application.https");
 
 if (httpsConfig) {
 
@@ -87,6 +87,6 @@ if (httpsConfig) {
     onListening(httpsServer);
   });
 
-  log.info("HTTPS listening on " + httpsConfig.port);
+  log.info("HTTPS listening on " + httpsConfig.port.toString());
 
 }

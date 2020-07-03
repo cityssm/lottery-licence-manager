@@ -32,8 +32,8 @@ router.get("/licenceTypes", (_req, res) => {
     res.render("licence-licenceType", {
         headTitle: "Licence Type Summary",
         applicationYearMin: (licenceTableStats.applicationYearMin || new Date().getFullYear()),
-        applicationDateStartString: applicationDateStartString,
-        applicationDateEndString: applicationDateEndString
+        applicationDateStartString,
+        applicationDateEndString
     });
 });
 router.post("/doGetLicenceTypeSummary", (req, res) => {
@@ -50,8 +50,8 @@ router.get("/activeSummary", (_req, res) => {
     res.render("licence-activeSummary", {
         headTitle: "Active Licence Summary",
         startYearMin: (licenceTableStats.startYearMin || new Date().getFullYear()),
-        startDateStartString: startDateStartString,
-        startDateEndString: startDateEndString
+        startDateStartString,
+        startDateEndString
     });
 });
 router.post("/doGetActiveLicenceSummary", (req, res) => {
@@ -83,7 +83,7 @@ router.get([
         headTitle: "Licence Create",
         isCreate: true,
         licence: {
-            externalLicenceNumber: externalLicenceNumber,
+            externalLicenceNumber,
             applicationDateString: currentDateAsString,
             municipality: configFns.getProperty("defaults.city"),
             startDateString: currentDateAsString,
@@ -95,7 +95,7 @@ router.get([
             licenceTicketTypes: [],
             events: []
         },
-        organization: organization
+        organization
     });
 });
 router.post("/doGetDistinctTermsConditions", (req, res) => {
@@ -278,9 +278,9 @@ router.get("/:licenceID", (req, res) => {
         ? "Licence " + licence.externalLicenceNumber
         : "Licence #" + licenceID.toString();
     res.render("licence-view", {
-        headTitle: headTitle,
-        licence: licence,
-        organization: organization
+        headTitle,
+        licence,
+        organization
     });
 });
 router.get("/:licenceID/edit", (req, res) => {
@@ -303,9 +303,9 @@ router.get("/:licenceID/edit", (req, res) => {
     res.render("licence-edit", {
         headTitle: "Licence #" + licenceID.toString() + " Update",
         isCreate: false,
-        licence: licence,
-        organization: organization,
-        feeCalculation: feeCalculation
+        licence,
+        organization,
+        feeCalculation
     });
 });
 router.get("/:licenceID/print", (req, res, next) => {
@@ -321,9 +321,9 @@ router.get("/:licenceID/print", (req, res, next) => {
     }
     const organization = licencesDBOrganizations.getOrganization(licence.organizationID, req.session);
     ejs.renderFile(path.join(__dirname, "../reports/", configFns.getProperty("licences.printTemplate")), {
-        configFns: configFns,
-        licence: licence,
-        organization: organization
+        configFns,
+        licence,
+        organization
     }, {}, (ejsErr, ejsData) => {
         if (ejsErr) {
             return next(ejsErr);

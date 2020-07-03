@@ -99,6 +99,8 @@ export function getProperty(propertyName: "application.applicationName"): string
 export function getProperty(propertyName: "application.logoURL"): string;
 export function getProperty(propertyName: "application.httpPort"): number;
 
+export function getProperty(propertyName: "application.https"): llm.ConfigHTTPS;
+
 export function getProperty(propertyName: "bankRecordTypes"): llm.ConfigBankRecordType[];
 
 export function getProperty(propertyName: "defaults.city"): string;

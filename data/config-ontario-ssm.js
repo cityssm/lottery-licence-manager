@@ -19,13 +19,14 @@ configSSM.licences.feeCalculationFn = (licenceObj) => {
     const licenceFeeMin = 10;
     const calculatedLicenceFee = totalPrizeValue * 0.03;
     let fee = Math.max(licenceFeeMin, calculatedLicenceFee);
-    let message = (fee === licenceFeeMin ?
-        "Base minimum licence fee." :
-        "3% of $" + licenceObj.totalPrizeValue.toFixed(2));
+    let message = (fee === licenceFeeMin
+        ? "Base minimum licence fee."
+        : "3% of $" + licenceObj.totalPrizeValue.toFixed(2));
     let licenceHasErrors = false;
     if (licenceObj.licenceTypeKey === "BI") {
         fee = totalPrizeValue * 0.03 * licenceObj.events.length;
-        message = "3% of $" + licenceObj.totalPrizeValue.toFixed(2) + " times " + licenceObj.events.length + " events";
+        message = "3% of $" + licenceObj.totalPrizeValue.toFixed(2) +
+            " times " + licenceObj.events.length.toString() + " events";
     }
     else if (licenceObj.licenceTypeKey === "RA") {
         const licenceFieldData = objectFns.fieldDataArrayToObject(licenceObj.licenceFields);
@@ -46,13 +47,13 @@ configSSM.licences.feeCalculationFn = (licenceObj) => {
         const minPrizeValue = minPotentialTakeIn * 0.2;
         if (totalPrizeValue < minPrizeValue) {
             licenceHasErrors = true;
-            message = "Total Prize Value must be a minimum of $" + minPrizeValue + ".";
+            message = "Total Prize Value must be a minimum of $" + minPrizeValue.toFixed(2) + ".";
         }
     }
     return {
         fee: fee.toFixed(2),
-        message: message,
-        licenceHasErrors: licenceHasErrors
+        message,
+        licenceHasErrors
     };
 };
 const licenceTypeNevada = configSSM.licenceTypes.find(licenceType => licenceType.licenceTypeKey === "NV");

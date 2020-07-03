@@ -16,6 +16,7 @@ module.exports = {
       maxEOF: 1
     }],
     "no-prototype-builtins": "off",
+    "object-shorthand": "error",
     "padded-blocks": "off",
     quotes: ["error", "double"],
     semi: ["error", "always"],

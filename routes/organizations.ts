@@ -8,6 +8,7 @@ import * as licencesDBOrganizations from "../helpers/licencesDB-organizations";
 
 import { userCanCreate, userCanUpdate, userIsAdmin, forbiddenJSON } from "../helpers/userFns";
 
+
 const router = Router();
 
 
@@ -91,7 +92,7 @@ router.get("/recovery", (req, res) => {
 
   res.render("organization-recovery", {
     headTitle: "Organization Recovery",
-    organizations: organizations
+    organizations
   });
 
 });
@@ -131,7 +132,7 @@ router.post("/doAddRemark", (req, res) => {
   res.json({
     success: true,
     message: "Remark added successfully.",
-    remarkIndex: remarkIndex
+    remarkIndex
   });
 
 });
@@ -427,7 +428,7 @@ router.get("/:organizationID", (req, res) => {
 
   const licences = licencesDB.getLicences(
     {
-      organizationID: organizationID
+      organizationID
     },
     req.session,
     {
@@ -440,9 +441,9 @@ router.get("/:organizationID", (req, res) => {
   res.render("organization-view", {
     headTitle: organization.organizationName,
     isViewOnly: true,
-    organization: organization,
-    licences: licences,
-    remarks: remarks,
+    organization,
+    licences,
+    remarks,
     currentDateInteger: dateTimeFns.dateToInteger(new Date())
   });
 
@@ -483,7 +484,7 @@ router.get("/:organizationID/edit", (req, res) => {
 
   const licences = licencesDB.getLicences(
     {
-      organizationID: organizationID
+      organizationID
     },
     req.session,
     {
@@ -498,9 +499,9 @@ router.get("/:organizationID/edit", (req, res) => {
     headTitle: "Organization Update",
     isViewOnly: false,
     isCreate: false,
-    organization: organization,
-    licences: licences,
-    remarks: remarks,
+    organization,
+    licences,
+    remarks,
     currentDateInteger: dateTimeFns.dateToInteger(new Date())
   });
 
@@ -575,7 +576,7 @@ router.post("/:organizationID/doDeleteOrganizationRepresentative", (req, res) =>
   const success = licencesDBOrganizations.deleteOrganizationRepresentative(organizationID, representativeIndex);
 
   res.json({
-    success: success
+    success
   });
 
 });
@@ -594,7 +595,7 @@ router.post("/:organizationID/doSetDefaultRepresentative", (req, res) => {
     licencesDBOrganizations.setDefaultOrganizationRepresentative(organizationID, isDefaultRepresentativeIndex);
 
   res.json({
-    success: success
+    success
   });
 
 });

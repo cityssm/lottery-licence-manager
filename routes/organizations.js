@@ -43,7 +43,7 @@ router.get("/recovery", (req, res) => {
     const organizations = licencesDBOrganizations.getDeletedOrganizations();
     res.render("organization-recovery", {
         headTitle: "Organization Recovery",
-        organizations: organizations
+        organizations
     });
 });
 router.post("/doGetRemarks", (req, res) => {
@@ -63,7 +63,7 @@ router.post("/doAddRemark", (req, res) => {
     res.json({
         success: true,
         message: "Remark added successfully.",
-        remarkIndex: remarkIndex
+        remarkIndex
     });
 });
 router.post("/doEditRemark", (req, res) => {
@@ -254,7 +254,7 @@ router.get("/:organizationID", (req, res) => {
         return;
     }
     const licences = licencesDB.getLicences({
-        organizationID: organizationID
+        organizationID
     }, req.session, {
         includeOrganization: false,
         limit: -1
@@ -263,9 +263,9 @@ router.get("/:organizationID", (req, res) => {
     res.render("organization-view", {
         headTitle: organization.organizationName,
         isViewOnly: true,
-        organization: organization,
-        licences: licences,
-        remarks: remarks,
+        organization,
+        licences,
+        remarks,
         currentDateInteger: dateTimeFns.dateToInteger(new Date())
     });
 });
@@ -285,7 +285,7 @@ router.get("/:organizationID/edit", (req, res) => {
         return;
     }
     const licences = licencesDB.getLicences({
-        organizationID: organizationID
+        organizationID
     }, req.session, {
         includeOrganization: false,
         limit: -1
@@ -295,9 +295,9 @@ router.get("/:organizationID/edit", (req, res) => {
         headTitle: "Organization Update",
         isViewOnly: false,
         isCreate: false,
-        organization: organization,
-        licences: licences,
-        remarks: remarks,
+        organization,
+        licences,
+        remarks,
         currentDateInteger: dateTimeFns.dateToInteger(new Date())
     });
 });
@@ -345,7 +345,7 @@ router.post("/:organizationID/doDeleteOrganizationRepresentative", (req, res) =>
     const representativeIndex = req.body.representativeIndex;
     const success = licencesDBOrganizations.deleteOrganizationRepresentative(organizationID, representativeIndex);
     res.json({
-        success: success
+        success
     });
 });
 router.post("/:organizationID/doSetDefaultRepresentative", (req, res) => {
@@ -356,7 +356,7 @@ router.post("/:organizationID/doSetDefaultRepresentative", (req, res) => {
     const isDefaultRepresentativeIndex = req.body.isDefaultRepresentativeIndex;
     const success = licencesDBOrganizations.setDefaultOrganizationRepresentative(organizationID, isDefaultRepresentativeIndex);
     res.json({
-        success: success
+        success
     });
 });
 module.exports = router;

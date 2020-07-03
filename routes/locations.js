@@ -45,7 +45,7 @@ router.post("/doCreate", (req, res) => {
     const locationID = licencesDBLocations.createLocation(req.body, req.session);
     return res.json({
         success: true,
-        locationID: locationID,
+        locationID,
         locationDisplayName: (req.body.locationName === "" ? req.body.locationAddress1 : req.body.locationName)
     });
 });
@@ -111,7 +111,7 @@ router.post("/doMerge", (req, res) => {
     const sourceLocationID = req.body.sourceLocationID;
     const success = licencesDBLocations.mergeLocations(targetLocationID, sourceLocationID, req.session);
     res.json({
-        success: success
+        success
     });
 });
 router.get("/new", (req, res) => {
@@ -137,15 +137,15 @@ router.get("/:locationID", (req, res) => {
         return;
     }
     const licences = licencesDB.getLicences({
-        locationID: locationID
+        locationID
     }, req.session, {
         includeOrganization: true,
         limit: -1
     }).licences;
     res.render("location-view", {
         headTitle: location.locationDisplayName,
-        location: location,
-        licences: licences,
+        location,
+        licences,
         currentDateInteger: dateTimeFns.dateToInteger(new Date())
     });
 });
@@ -165,15 +165,15 @@ router.get("/:locationID/edit", (req, res) => {
         return;
     }
     const licences = licencesDB.getLicences({
-        locationID: locationID
+        locationID
     }, req.session, {
         includeOrganization: true,
         limit: -1
     }).licences;
     res.render("location-edit", {
         headTitle: location.locationDisplayName,
-        location: location,
-        licences: licences,
+        location,
+        licences,
         currentDateInteger: dateTimeFns.dateToInteger(new Date()),
         isCreate: false
     });

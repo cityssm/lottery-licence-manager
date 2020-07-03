@@ -49,9 +49,9 @@ configSSM.licences.feeCalculationFn = (licenceObj: llm.LotteryLicence) => {
   const calculatedLicenceFee = totalPrizeValue * 0.03;
 
   let fee = Math.max(licenceFeeMin, calculatedLicenceFee);
-  let message = (fee === licenceFeeMin ?
-    "Base minimum licence fee." :
-    "3% of $" + licenceObj.totalPrizeValue.toFixed(2));
+  let message = (fee === licenceFeeMin
+    ? "Base minimum licence fee."
+    : "3% of $" + licenceObj.totalPrizeValue.toFixed(2));
   let licenceHasErrors = false;
 
   // Check the total prize value
@@ -60,7 +60,8 @@ configSSM.licences.feeCalculationFn = (licenceObj: llm.LotteryLicence) => {
 
     fee = totalPrizeValue * 0.03 * licenceObj.events.length;
 
-    message = "3% of $" + licenceObj.totalPrizeValue.toFixed(2) + " times " + licenceObj.events.length + " events";
+    message = "3% of $" + licenceObj.totalPrizeValue.toFixed(2) +
+      " times " + licenceObj.events.length.toString() + " events";
 
   } else if (licenceObj.licenceTypeKey === "RA") {
 
@@ -106,7 +107,7 @@ configSSM.licences.feeCalculationFn = (licenceObj: llm.LotteryLicence) => {
     if (totalPrizeValue < minPrizeValue) {
 
       licenceHasErrors = true;
-      message = "Total Prize Value must be a minimum of $" + minPrizeValue + ".";
+      message = "Total Prize Value must be a minimum of $" + minPrizeValue.toFixed(2) + ".";
 
     }
 
@@ -114,8 +115,8 @@ configSSM.licences.feeCalculationFn = (licenceObj: llm.LotteryLicence) => {
 
   return {
     fee: fee.toFixed(2),
-    message: message,
-    licenceHasErrors: licenceHasErrors
+    message,
+    licenceHasErrors
   };
 
 };

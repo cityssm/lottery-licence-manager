@@ -943,16 +943,16 @@ export const updateLicence = (reqBody: LotteryLicenceForm, reqSession: Express.S
 
       const amendment = (
         (pastLicenceObj.startDate !== startDate_now
-          ? `Start Date: ${pastLicenceObj.startDate} -> ${startDate_now}` + "\n"
+          ? `Start Date: ${pastLicenceObj.startDate} -> ${startDate_now.toString()}` + "\n"
           : "") +
         (pastLicenceObj.endDate !== endDate_now
-          ? `End Date: ${pastLicenceObj.endDate} -> ${endDate_now}` + "\n"
+          ? `End Date: ${pastLicenceObj.endDate} -> ${endDate_now.toString()}` + "\n"
           : "") +
         (pastLicenceObj.startTime !== startTime_now
-          ? `Start Time: ${pastLicenceObj.startTime} -> ${startTime_now}` + "\n"
+          ? `Start Time: ${pastLicenceObj.startTime} -> ${startTime_now.toString()}` + "\n"
           : "") +
         (pastLicenceObj.endTime !== endTime_now
-          ? `End Time: ${pastLicenceObj.endTime} -> ${endTime_now}` + "\n"
+          ? `End Time: ${pastLicenceObj.endTime} -> ${endTime_now.toString()}` + "\n"
           : "")).trim();
 
       addLicenceAmendmentWithDB(

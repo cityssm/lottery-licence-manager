@@ -11,6 +11,7 @@ export declare function getProperty(propertyName: "amendments.trackTicketTypeDel
 export declare function getProperty(propertyName: "application.applicationName"): string;
 export declare function getProperty(propertyName: "application.logoURL"): string;
 export declare function getProperty(propertyName: "application.httpPort"): number;
+export declare function getProperty(propertyName: "application.https"): llm.ConfigHTTPS;
 export declare function getProperty(propertyName: "bankRecordTypes"): llm.ConfigBankRecordType[];
 export declare function getProperty(propertyName: "defaults.city"): string;
 export declare function getProperty(propertyName: "defaults.province"): string;

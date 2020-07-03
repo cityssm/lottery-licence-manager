@@ -22,16 +22,16 @@ config.licences = {
 
     const fee = Math.max(licenceFeeMin, calculatedLicenceFee);
 
-    const message = (fee === licenceFeeMin ?
-      "Base minimum licence fee." :
-      "3% of $" + licenceObj.totalPrizeValue.toFixed(2));
+    const message = (fee === licenceFeeMin
+      ? "Base minimum licence fee."
+      : "3% of $" + licenceObj.totalPrizeValue.toFixed(2));
 
     const licenceHasErrors = false;
 
     return {
       fee: fee.toFixed(2),
-      message: message,
-      licenceHasErrors: licenceHasErrors
+      message,
+      licenceHasErrors
     };
 
   },
