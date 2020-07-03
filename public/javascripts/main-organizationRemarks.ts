@@ -1,4 +1,4 @@
-import type { cityssmGlobal } from "../../node_modules/@cityssm/bulma-webapp-js/src/types";
+import type { cityssmGlobal } from "@cityssm/bulma-webapp-js/src/types";
 import type { llmGlobal } from "./types";
 import type * as llmTypes from "../../helpers/llmTypes";
 
@@ -49,7 +49,7 @@ llm.organizationRemarks = (() => {
 
       formEvent.preventDefault();
 
-      doAddRemark(<HTMLFormElement>formEvent.currentTarget, () => {
+      doAddRemark(formEvent.currentTarget as HTMLFormElement, () => {
 
         addRemarkCloseModalFn();
 
@@ -62,7 +62,7 @@ llm.organizationRemarks = (() => {
     cityssm.openHtmlModal("remarkAdd", {
       onshown(modalEle: HTMLElement, closeModalFn: () => void): void {
 
-        (<HTMLInputElement>document.getElementById("addRemark--organizationID")).value = organizationID.toString();
+        (document.getElementById("addRemark--organizationID") as HTMLInputElement).value = organizationID.toString();
         document.getElementById("addRemark--remark").focus();
 
         modalEle.getElementsByTagName("form")[0].addEventListener("submit", addFormFn);
@@ -89,7 +89,7 @@ llm.organizationRemarks = (() => {
 
       formEvent.preventDefault();
 
-      doEditRemark(<HTMLFormElement>formEvent.currentTarget, () => {
+      doEditRemark(formEvent.currentTarget as HTMLFormElement, () => {
 
         editRemarkCloseModalFn();
 
@@ -102,17 +102,17 @@ llm.organizationRemarks = (() => {
     cityssm.openHtmlModal("remarkEdit", {
       onshow(modalEle: HTMLElement): void {
 
-        (<HTMLInputElement>document.getElementById("editRemark--organizationID")).value = organizationID.toString();
-        (<HTMLInputElement>document.getElementById("editRemark--remarkIndex")).value = remarkIndex.toString();
+        (document.getElementById("editRemark--organizationID") as HTMLInputElement).value = organizationID.toString();
+        (document.getElementById("editRemark--remarkIndex") as HTMLInputElement).value = remarkIndex.toString();
 
         getRemarkByID(organizationID, remarkIndex, (remark) => {
 
-          const remarkEle = <HTMLTextAreaElement>document.getElementById("editRemark--remark");
+          const remarkEle = document.getElementById("editRemark--remark") as HTMLTextAreaElement;
           remarkEle.value = remark.remark;
           remarkEle.removeAttribute("placeholder");
 
-          (<HTMLInputElement>document.getElementById("editRemark--remarkDateString")).value = remark.remarkDateString;
-          (<HTMLInputElement>document.getElementById("editRemark--remarkTimeString")).value = remark.remarkTimeString;
+          (document.getElementById("editRemark--remarkDateString") as HTMLInputElement).value = remark.remarkDateString;
+          (document.getElementById("editRemark--remarkTimeString") as HTMLInputElement).value = remark.remarkTimeString;
 
           if (remark.isImportant) {
             document.getElementById("editRemark--isImportant").setAttribute("checked", "checked");

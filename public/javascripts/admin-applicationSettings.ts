@@ -1,11 +1,11 @@
-import type { cityssmGlobal } from "../../node_modules/@cityssm/bulma-webapp-js/src/types";
+import type { cityssmGlobal } from "@cityssm/bulma-webapp-js/src/types";
 declare const cityssm: cityssmGlobal;
 
 
 (() => {
 
-  const getMessageEle = (formEle: HTMLFormElement | HTMLInputElement): HTMLElement => {
-    return <HTMLElement>formEle.closest("tr").getElementsByClassName("formMessage")[0];
+  const getMessageEle = (formEle: HTMLFormElement | HTMLInputElement) => {
+    return formEle.closest("tr").getElementsByClassName("formMessage")[0] as HTMLElement;
   };
 
   /*
@@ -16,7 +16,7 @@ declare const cityssm: cityssmGlobal;
 
     formEvent.preventDefault();
 
-    const formEle = <HTMLFormElement>formEvent.currentTarget;
+    const formEle = formEvent.currentTarget as HTMLFormElement;
     const messageEle = getMessageEle(formEle);
 
     messageEle.innerHTML = "Saving... <i class=\"fas fa-circle-notch fa-spin\" aria-hidden=\"true\"></i>";
@@ -39,12 +39,12 @@ declare const cityssm: cityssmGlobal;
   };
 
   const changeFn = (inputEvent: Event) => {
-    getMessageEle(<HTMLInputElement>inputEvent.currentTarget).innerHTML =
+    getMessageEle(inputEvent.currentTarget as HTMLInputElement).innerHTML =
       "<span class=\"has-text-info\">Unsaved Changes</span>";
   };
 
 
-  const formEles = <HTMLCollectionOf<HTMLFormElement>>document.getElementsByClassName("form--applicationSetting");
+  const formEles = document.getElementsByClassName("form--applicationSetting") as HTMLCollectionOf<HTMLFormElement>;
 
   for (const formEle of formEles) {
     formEle.addEventListener("submit", submitFn);

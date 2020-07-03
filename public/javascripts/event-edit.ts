@@ -1,16 +1,16 @@
-import type { cityssmGlobal } from "../../node_modules/@cityssm/bulma-webapp-js/src/types";
+import type { cityssmGlobal } from "@cityssm/bulma-webapp-js/src/types";
 declare const cityssm: cityssmGlobal;
 
 
 (() => {
 
-  const eventDateNavEle = <HTMLSelectElement>document.getElementById("eventNav--eventDate");
+  const eventDateNavEle = document.getElementById("eventNav--eventDate") as HTMLSelectElement;
 
-  const formEle = <HTMLFormElement>document.getElementById("form--event");
+  const formEle = document.getElementById("form--event") as HTMLFormElement;
   const formMessageEle = document.getElementById("container--form-message");
 
-  const licenceID = (<HTMLInputElement>document.getElementById("event--licenceID")).value;
-  const eventDate = (<HTMLInputElement>document.getElementById("event--eventDate")).value;
+  const licenceID = (document.getElementById("event--licenceID") as HTMLInputElement).value;
+  const eventDate = (document.getElementById("event--eventDate") as HTMLInputElement).value;
 
 
   formEle.addEventListener("submit", (formEvent) => {
@@ -91,8 +91,8 @@ declare const cityssm: cityssmGlobal;
   };
 
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-  const inputEles = <NodeListOf<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>>
-    formEle.querySelectorAll("input, select, textarea");
+  const inputEles = formEle.querySelectorAll("input, select, textarea") as
+    NodeListOf<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>;
 
   for (const inputEle of inputEles) {
     if (inputEle.name !== "") {
@@ -122,13 +122,13 @@ declare const cityssm: cityssmGlobal;
       bankInfoClickEvent.preventDefault();
 
       const listIndex =
-        parseInt((<HTMLAnchorElement>bankInfoClickEvent.currentTarget).getAttribute("data-list-index"), 10);
+        parseInt((bankInfoClickEvent.currentTarget as HTMLAnchorElement).getAttribute("data-list-index"), 10);
 
       const record = savedBankInfoList[listIndex];
 
-      (<HTMLInputElement>document.getElementById("event--bank_name")).value = record.bank_name;
-      (<HTMLInputElement>document.getElementById("event--bank_address")).value = record.bank_address;
-      (<HTMLInputElement>document.getElementById("event--bank_accountNumber")).value = record.bank_accountNumber;
+      (document.getElementById("event--bank_name") as HTMLInputElement).value = record.bank_name;
+      (document.getElementById("event--bank_address") as HTMLInputElement).value = record.bank_address;
+      (document.getElementById("event--bank_accountNumber") as HTMLInputElement).value = record.bank_accountNumber;
 
       setUnsavedChangesFn();
 
@@ -193,12 +193,12 @@ declare const cityssm: cityssmGlobal;
 
   // Net Proceeds Calculation
 
-  const costs_receipts_ele = <HTMLInputElement>document.getElementById("event--costs_receipts");
-  const costs_admin_ele = <HTMLInputElement>document.getElementById("event--costs_admin");
-  const costs_prizesAwarded_ele = <HTMLInputElement>document.getElementById("event--costs_prizesAwarded");
+  const costs_receipts_ele = document.getElementById("event--costs_receipts") as HTMLInputElement;
+  const costs_admin_ele = document.getElementById("event--costs_admin") as HTMLInputElement;
+  const costs_prizesAwarded_ele = document.getElementById("event--costs_prizesAwarded") as HTMLInputElement;
 
-  const costs_netProceeds_ele = <HTMLInputElement>document.getElementById("event--costs_netProceeds");
-  const costs_amountDonated_ele = <HTMLInputElement>document.getElementById("event--costs_amountDonated");
+  const costs_netProceeds_ele = document.getElementById("event--costs_netProceeds") as HTMLInputElement;
+  const costs_amountDonated_ele = document.getElementById("event--costs_amountDonated") as HTMLInputElement;
 
   const refreshNetProceedsFn = () => {
 

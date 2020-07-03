@@ -1,4 +1,4 @@
-import type { cityssmGlobal } from "../../node_modules/@cityssm/bulma-webapp-js/src/types";
+import type { cityssmGlobal } from "@cityssm/bulma-webapp-js/src/types";
 import type { llmGlobal } from "./types";
 
 declare const cityssm: cityssmGlobal;
@@ -134,7 +134,7 @@ llm.initializeDateRangeSelector = (containerEle, changeFn) => {
       if (rangeType === "year") {
 
         yearOptgroupEle.classList.remove("is-hidden");
-        rangeSelectEle.value = (<HTMLOptionElement>yearOptgroupEle.children[0]).value;
+        rangeSelectEle.value = (yearOptgroupEle.children[0] as HTMLOptionElement).value;
 
       } else {
 
@@ -145,7 +145,7 @@ llm.initializeDateRangeSelector = (containerEle, changeFn) => {
       if (rangeType === "quarter") {
 
         quarterOptgroupEle.classList.remove("is-hidden");
-        rangeSelectEle.value = (<HTMLOptionElement>quarterOptgroupEle.children[0]).value;
+        rangeSelectEle.value = (quarterOptgroupEle.children[0] as HTMLOptionElement).value;
 
       } else {
 
@@ -156,7 +156,7 @@ llm.initializeDateRangeSelector = (containerEle, changeFn) => {
       if (rangeType === "month") {
 
         monthOptgroupEle.classList.remove("is-hidden");
-        rangeSelectEle.value = (<HTMLOptionElement>monthOptgroupEle.children[0]).value;
+        rangeSelectEle.value = (monthOptgroupEle.children[0] as HTMLOptionElement).value;
 
       } else {
 
@@ -248,15 +248,14 @@ llm.initializeTabs = (tabsListEle, callbackFns) => {
 
   const listItemEles = tabsListEle.getElementsByTagName(isPanelOrMenuListTabs ? "a" : "li");
 
-  const tabLinkEles = <HTMLCollectionOf<HTMLAnchorElement>>(isPanelOrMenuListTabs
-    ? listItemEles
-    : tabsListEle.getElementsByTagName("a"));
+  const tabLinkEles = (isPanelOrMenuListTabs ? listItemEles : tabsListEle.getElementsByTagName("a")) as
+    HTMLCollectionOf<HTMLAnchorElement>;
 
   const tabClickFn = (clickEvent: Event) => {
 
     clickEvent.preventDefault();
 
-    const tabLinkEle = <HTMLAnchorElement>clickEvent.currentTarget;
+    const tabLinkEle = clickEvent.currentTarget as HTMLAnchorElement;
     const tabContentEle = document.getElementById(tabLinkEle.getAttribute("href").substring(1));
 
     for (let index = 0; index < listItemEles.length; index += 1) {
@@ -278,7 +277,7 @@ llm.initializeTabs = (tabsListEle, callbackFns) => {
 
     tabContentEle.classList.add("is-active");
 
-    if (callbackFns?.onshown) {
+    if (callbackFns ?.onshown) {
       callbackFns.onshown(tabContentEle);
     }
   };

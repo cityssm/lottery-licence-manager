@@ -1,5 +1,6 @@
-import type { cityssmGlobal } from "../../node_modules/@cityssm/bulma-webapp-js/src/types";
+import type { cityssmGlobal } from "@cityssm/bulma-webapp-js/src/types";
 import type { llmGlobal } from "./types";
+import type * as llmTypes from "../../helpers/llmTypes";
 
 declare const cityssm: cityssmGlobal;
 declare const llm: llmGlobal;
@@ -51,7 +52,7 @@ declare const llm: llmGlobal;
 
     clickEvent.preventDefault();
 
-    const deleteButtonEle = <HTMLButtonElement>clickEvent.currentTarget;
+    const deleteButtonEle = clickEvent.currentTarget as HTMLButtonElement;
 
     const userNameToDelete = deleteButtonEle.getAttribute("data-user-name");
     const trEle = deleteButtonEle.closest("tr");
@@ -90,7 +91,7 @@ declare const llm: llmGlobal;
 
   const updateUserModalEle = document.getElementById("is-update-user-modal");
   const updateUserUserNameSpanEles =
-    <HTMLCollectionOf<HTMLSpanElement>>updateUserModalEle.getElementsByClassName("container--userName");
+    updateUserModalEle.getElementsByClassName("container--userName") as HTMLCollectionOf<HTMLSpanElement>;
 
   llm.initializeTabs(updateUserModalEle.getElementsByClassName("tabs")[0].getElementsByTagName("ul")[0]);
 
@@ -98,7 +99,7 @@ declare const llm: llmGlobal;
 
     formEvent.preventDefault();
 
-    const formEle = <HTMLFormElement>formEvent.currentTarget;
+    const formEle = formEvent.currentTarget as HTMLFormElement;
 
     cityssm.postJSON(
       "/admin/doUpdateUserProperty",
@@ -123,7 +124,7 @@ declare const llm: llmGlobal;
 
   const keyupFn_markSettingUnsaved = (keyupEvent: Event) => {
 
-    const inputEle = <HTMLInputElement>keyupEvent.currentTarget;
+    const inputEle = keyupEvent.currentTarget as HTMLInputElement;
 
     inputEle.classList.add("is-danger");
     inputEle.classList.remove("is-primary");
@@ -140,7 +141,7 @@ declare const llm: llmGlobal;
 
     clickEvent.preventDefault();
 
-    const linkEle = <HTMLAnchorElement>clickEvent.currentTarget;
+    const linkEle = clickEvent.currentTarget as HTMLAnchorElement;
 
     const userName = linkEle.getAttribute("data-user-name");
     const firstName = linkEle.getAttribute("data-first-name");
@@ -154,9 +155,9 @@ declare const llm: llmGlobal;
 
     // Name form
 
-    (<HTMLInputElement>document.getElementById("updateUser--userName")).value = userName;
-    (<HTMLInputElement>document.getElementById("updateUser--firstName")).value = firstName;
-    (<HTMLInputElement>document.getElementById("updateUser--lastName")).value = lastName;
+    (document.getElementById("updateUser--userName") as HTMLInputElement).value = userName;
+    (document.getElementById("updateUser--firstName") as HTMLInputElement).value = firstName;
+    (document.getElementById("updateUser--lastName") as HTMLInputElement).value = lastName;
 
     // Properties form
 
@@ -168,7 +169,7 @@ declare const llm: llmGlobal;
       "/admin/doGetUserProperties", {
         userName: userName
       },
-      (userPropertiesJSON) => {
+      (userPropertiesJSON: llmTypes.UserProperties) => {
 
         let propertyIndex = 0;
 
@@ -221,7 +222,7 @@ declare const llm: llmGlobal;
 
 
     // Password form
-    (<HTMLInputElement>document.getElementById("resetPassword--userName")).value = userName;
+    (document.getElementById("resetPassword--userName") as HTMLInputElement).value = userName;
 
     document.getElementById("resetPassword--newPassword")
       .closest(".message")

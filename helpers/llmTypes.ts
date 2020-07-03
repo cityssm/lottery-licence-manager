@@ -216,20 +216,20 @@ export interface Organization extends Record {
   licences_endDateMaxString?: string;
 }
 
-export type OrganizationRepresentative = {
-  organizationID: number
-  representativeIndex: number,
-  representativeName: string,
-  representativeTitle: string,
-  representativeAddress1: string,
-  representativeAddress2: string,
-  representativeCity: string,
-  representativeProvince: string,
-  representativePostalCode: string,
-  representativePhoneNumber: string,
-  representativeEmailAddress: string,
-  isDefault: boolean | string
-};
+export interface OrganizationRepresentative {
+  organizationID: number;
+  representativeIndex: number;
+  representativeName: string;
+  representativeTitle: string;
+  representativeAddress1: string;
+  representativeAddress2: string;
+  representativeCity: string;
+  representativeProvince: string;
+  representativePostalCode: string;
+  representativePhoneNumber: string;
+  representativeEmailAddress: string;
+  isDefault: boolean | string;
+}
 
 export interface OrganizationRemark extends Record {
 

@@ -155,7 +155,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
         const organizationLookupFn_openModal = () => {
             cityssm.openHtmlModal("licence-organizationLookup", {
                 onshow() {
-                    organizationLookupSearchStrEle = document.getElementById("organizationLookup--searchStr");
+                    organizationLookupSearchStrEle =
+                        document.getElementById("organizationLookup--searchStr");
                     organizationLookupSearchStrEle.addEventListener("keyup", organizationLookupFn_refreshResults);
                     organizationLookupResultsEle = document.getElementById("container--organizationLookup");
                     if (organizationList.length === 0) {
@@ -625,7 +626,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
         };
         const amendDistributorFn_openModal = (buttonEvent) => {
             let distributorLookup_closeModalFn;
-            const distributorTdEle = buttonEvent.currentTarget.closest("td").previousElementSibling;
+            const distributorTdEle = buttonEvent.currentTarget
+                .closest("td").previousElementSibling;
             const distributorLookupFn_updateDistributor = (locationButtonEvent) => {
                 const locationButtonEle = locationButtonEvent.currentTarget;
                 distributorTdEle.getElementsByTagName("input")[0].value = locationButtonEle.getAttribute("data-location-id");

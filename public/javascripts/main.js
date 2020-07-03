@@ -132,9 +132,7 @@ llm.initializeTabs = (tabsListEle, callbackFns) => {
     }
     const isPanelOrMenuListTabs = tabsListEle.classList.contains("panel-tabs") || tabsListEle.classList.contains("menu-list");
     const listItemEles = tabsListEle.getElementsByTagName(isPanelOrMenuListTabs ? "a" : "li");
-    const tabLinkEles = (isPanelOrMenuListTabs
-        ? listItemEles
-        : tabsListEle.getElementsByTagName("a"));
+    const tabLinkEles = (isPanelOrMenuListTabs ? listItemEles : tabsListEle.getElementsByTagName("a"));
     const tabClickFn = (clickEvent) => {
         clickEvent.preventDefault();
         const tabLinkEle = clickEvent.currentTarget;

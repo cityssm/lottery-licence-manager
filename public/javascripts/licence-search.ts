@@ -1,4 +1,4 @@
-import type { cityssmGlobal } from "../../node_modules/@cityssm/bulma-webapp-js/src/types";
+import type { cityssmGlobal } from "@cityssm/bulma-webapp-js/src/types";
 import type * as llmTypes from "../../helpers/llmTypes";
 
 declare const cityssm: cityssmGlobal;
@@ -8,10 +8,10 @@ declare const cityssm: cityssmGlobal;
 
   const licenceType_keyToName: { [licenceTypeKey: string]: string } = {};
 
-  const formEle = <HTMLFormElement>document.getElementById("form--filters");
+  const formEle = document.getElementById("form--filters") as HTMLFormElement;
 
-  const limitEle = <HTMLInputElement>document.getElementById("filter--limit");
-  const offsetEle = <HTMLInputElement>document.getElementById("filter--offset");
+  const limitEle = document.getElementById("filter--limit") as HTMLInputElement;
+  const offsetEle = document.getElementById("filter--offset") as HTMLInputElement;
 
   const searchResultsEle = document.getElementById("container--searchResults");
 

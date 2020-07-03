@@ -4,7 +4,7 @@ import type * as llm from "../helpers/llmTypes";
 
 export const userIsAdmin = (req: Request) => {
 
-  const user = <llm.User>req.session.user;
+  const user = req.session.user as llm.User;
 
   if (!user) {
     return false;
@@ -16,7 +16,7 @@ export const userIsAdmin = (req: Request) => {
 
 export const userCanUpdate = (req: Request) => {
 
-  const user = <llm.User>req.session.user;
+  const user = req.session.user as llm.User;
 
   if (!user) {
     return false;
@@ -28,7 +28,7 @@ export const userCanUpdate = (req: Request) => {
 
 export const userCanCreate = (req: Request) => {
 
-  const user = <llm.User>req.session.user;
+  const user = req.session.user as llm.User;
 
   if (!user) {
     return false;

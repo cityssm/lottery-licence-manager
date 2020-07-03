@@ -81,26 +81,25 @@ Object.defineProperty(exports, "__esModule", { value: true });
         const openEditRepresentativeModalFn = (clickEvent) => {
             editRepresentativeTrEle = clickEvent.currentTarget.closest("tr");
             const representativeIndex = editRepresentativeTrEle.getAttribute("data-representative-index");
-            document.getElementById("editOrganizationRepresentative--representativeIndex").value =
-                representativeIndex;
-            document.getElementById("editOrganizationRepresentative--representativeName").value =
-                editRepresentativeTrEle.getAttribute("data-representative-name");
-            document.getElementById("editOrganizationRepresentative--representativeTitle").value =
-                editRepresentativeTrEle.getAttribute("data-representative-title");
-            document.getElementById("editOrganizationRepresentative--representativeAddress1").value =
-                editRepresentativeTrEle.getAttribute("data-representative-address-1");
-            document.getElementById("editOrganizationRepresentative--representativeAddress2").value =
-                editRepresentativeTrEle.getAttribute("data-representative-address-2");
-            document.getElementById("editOrganizationRepresentative--representativeCity").value =
-                editRepresentativeTrEle.getAttribute("data-representative-city");
-            document.getElementById("editOrganizationRepresentative--representativeProvince").value =
-                editRepresentativeTrEle.getAttribute("data-representative-province");
-            document.getElementById("editOrganizationRepresentative--representativePostalCode").value =
-                editRepresentativeTrEle.getAttribute("data-representative-postal-code");
-            document.getElementById("editOrganizationRepresentative--representativePhoneNumber").value =
-                editRepresentativeTrEle.getAttribute("data-representative-phone-number");
-            document.getElementById("editOrganizationRepresentative--representativeEmailAddress").value =
-                editRepresentativeTrEle.getAttribute("data-representative-email-address");
+            document.getElementById("editOrganizationRepresentative--representativeIndex")
+                .value = representativeIndex;
+            document.getElementById("editOrganizationRepresentative--representativeName").value = editRepresentativeTrEle.getAttribute("data-representative-name");
+            document.getElementById("editOrganizationRepresentative--representativeTitle")
+                .value = editRepresentativeTrEle.getAttribute("data-representative-title");
+            document.getElementById("editOrganizationRepresentative--representativeAddress1")
+                .value = editRepresentativeTrEle.getAttribute("data-representative-address-1");
+            document.getElementById("editOrganizationRepresentative--representativeAddress2")
+                .value = editRepresentativeTrEle.getAttribute("data-representative-address-2");
+            document.getElementById("editOrganizationRepresentative--representativeCity")
+                .value = editRepresentativeTrEle.getAttribute("data-representative-city");
+            document.getElementById("editOrganizationRepresentative--representativeProvince")
+                .value = editRepresentativeTrEle.getAttribute("data-representative-province");
+            document.getElementById("editOrganizationRepresentative--representativePostalCode")
+                .value = editRepresentativeTrEle.getAttribute("data-representative-postal-code");
+            document.getElementById("editOrganizationRepresentative--representativePhoneNumber")
+                .value = editRepresentativeTrEle.getAttribute("data-representative-phone-number");
+            document.getElementById("editOrganizationRepresentative--representativeEmailAddress")
+                .value = editRepresentativeTrEle.getAttribute("data-representative-email-address");
             document.getElementById("editOrganizationRepresentative--isDefault").value =
                 document.getElementById("representative-isDefault--" + representativeIndex).checked
                     ? "1"

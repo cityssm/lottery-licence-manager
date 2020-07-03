@@ -1,4 +1,4 @@
-import type { cityssmGlobal } from "../../node_modules/@cityssm/bulma-webapp-js/src/types";
+import type { cityssmGlobal } from "@cityssm/bulma-webapp-js/src/types";
 import type * as llmTypes from "../../helpers/llmTypes";
 
 declare const cityssm: cityssmGlobal;
@@ -6,10 +6,12 @@ declare const cityssm: cityssmGlobal;
 
 (() => {
 
-  const filterExternalLicenceNumberEle = <HTMLInputElement>document.getElementById("filter--externalLicenceNumber");
-  const filterLicenceTypeKeyEle = <HTMLSelectElement>document.getElementById("filter--licenceTypeKey");
-  const filterOrganizationNameEle = <HTMLSelectElement>document.getElementById("filter--organizationName");
-  const filterYearEle = <HTMLSelectElement>document.getElementById("filter--year");
+  const filterExternalLicenceNumberEle =
+    document.getElementById("filter--externalLicenceNumber") as HTMLInputElement;
+
+  const filterLicenceTypeKeyEle = document.getElementById("filter--licenceTypeKey") as HTMLSelectElement;
+  const filterOrganizationNameEle = document.getElementById("filter--organizationName") as HTMLSelectElement;
+  const filterYearEle = document.getElementById("filter--year") as HTMLSelectElement;
 
   const resultsEle = document.getElementById("container--events");
 

@@ -1,4 +1,4 @@
-import type { cityssmGlobal } from "../../node_modules/@cityssm/bulma-webapp-js/src/types";
+import type { cityssmGlobal } from "@cityssm/bulma-webapp-js/src/types";
 import type * as llmTypes from "../../helpers/llmTypes";
 
 declare const cityssm: cityssmGlobal;
@@ -6,9 +6,9 @@ declare const cityssm: cityssmGlobal;
 
 (() => {
 
-  const formEle = <HTMLFormElement>document.getElementById("form--organization");
+  const formEle = document.getElementById("form--organization") as HTMLFormElement;
   const formMessageEle = document.getElementById("container--form-message");
-  const organizationID = (<HTMLInputElement>document.getElementById("organization--organizationID")).value;
+  const organizationID = (document.getElementById("organization--organizationID") as HTMLInputElement).value;
   const isCreate = organizationID === "";
 
   // Main record update
@@ -25,9 +25,7 @@ declare const cityssm: cityssmGlobal;
       (responseJSON: { success: boolean; organizationID?: number; message?: string }) => {
 
         if (responseJSON.success) {
-
           cityssm.disableNavBlocker();
-
         }
 
         if (responseJSON.success && isCreate) {
@@ -108,7 +106,7 @@ declare const cityssm: cityssmGlobal;
 
     const updateDefaultRepresentativeFn = (changeEvent: Event) => {
 
-      const defaultRepresentativeIndex = (<HTMLInputElement>changeEvent.currentTarget).value;
+      const defaultRepresentativeIndex = (changeEvent.currentTarget as HTMLInputElement).value;
 
       cityssm.postJSON(
         "/organizations/" + organizationID + "/doSetDefaultRepresentative", {
@@ -135,7 +133,7 @@ declare const cityssm: cityssmGlobal;
 
       clickEvent.preventDefault();
 
-      const trEle = (<HTMLButtonElement>clickEvent.currentTarget).closest("tr");
+      const trEle = (clickEvent.currentTarget as HTMLButtonElement).closest("tr");
 
       const representativeName = trEle.getAttribute("data-representative-name");
 
@@ -171,49 +169,51 @@ declare const cityssm: cityssmGlobal;
 
     // Add / edit
 
-    const editRepresentativeModalEle = <HTMLElement>document.getElementsByClassName("is-edit-representative-modal")[0];
+    const editRepresentativeModalEle =
+      document.getElementsByClassName("is-edit-representative-modal")[0] as HTMLElement;
+
     const editRepresentativeFormEle = editRepresentativeModalEle.getElementsByTagName("form")[0];
 
     let editRepresentativeTrEle: HTMLTableRowElement;
 
     const openEditRepresentativeModalFn = (clickEvent: Event) => {
 
-      editRepresentativeTrEle = (<HTMLButtonElement>clickEvent.currentTarget).closest("tr");
+      editRepresentativeTrEle = (clickEvent.currentTarget as HTMLButtonElement).closest("tr");
 
       const representativeIndex = editRepresentativeTrEle.getAttribute("data-representative-index");
 
-      (<HTMLInputElement>document.getElementById("editOrganizationRepresentative--representativeIndex")).value =
-        representativeIndex;
+      (document.getElementById("editOrganizationRepresentative--representativeIndex") as HTMLInputElement)
+        .value = representativeIndex;
 
-      (<HTMLInputElement>document.getElementById("editOrganizationRepresentative--representativeName")).value =
-        editRepresentativeTrEle.getAttribute("data-representative-name");
+      (document.getElementById("editOrganizationRepresentative--representativeName") as HTMLInputElement
+      ).value = editRepresentativeTrEle.getAttribute("data-representative-name");
 
-      (<HTMLInputElement>document.getElementById("editOrganizationRepresentative--representativeTitle")).value =
-        editRepresentativeTrEle.getAttribute("data-representative-title");
+      (document.getElementById("editOrganizationRepresentative--representativeTitle") as HTMLInputElement)
+        .value = editRepresentativeTrEle.getAttribute("data-representative-title");
 
-      (<HTMLInputElement>document.getElementById("editOrganizationRepresentative--representativeAddress1")).value =
-        editRepresentativeTrEle.getAttribute("data-representative-address-1");
+      (document.getElementById("editOrganizationRepresentative--representativeAddress1") as HTMLInputElement)
+        .value = editRepresentativeTrEle.getAttribute("data-representative-address-1");
 
-      (<HTMLInputElement>document.getElementById("editOrganizationRepresentative--representativeAddress2")).value =
-        editRepresentativeTrEle.getAttribute("data-representative-address-2");
+      (document.getElementById("editOrganizationRepresentative--representativeAddress2") as HTMLInputElement)
+        .value = editRepresentativeTrEle.getAttribute("data-representative-address-2");
 
-      (<HTMLInputElement>document.getElementById("editOrganizationRepresentative--representativeCity")).value =
-        editRepresentativeTrEle.getAttribute("data-representative-city");
+      (document.getElementById("editOrganizationRepresentative--representativeCity") as HTMLInputElement)
+        .value = editRepresentativeTrEle.getAttribute("data-representative-city");
 
-      (<HTMLInputElement>document.getElementById("editOrganizationRepresentative--representativeProvince")).value =
-        editRepresentativeTrEle.getAttribute("data-representative-province");
+      (document.getElementById("editOrganizationRepresentative--representativeProvince") as HTMLInputElement)
+        .value = editRepresentativeTrEle.getAttribute("data-representative-province");
 
-      (<HTMLInputElement>document.getElementById("editOrganizationRepresentative--representativePostalCode")).value =
-        editRepresentativeTrEle.getAttribute("data-representative-postal-code");
+      (document.getElementById("editOrganizationRepresentative--representativePostalCode") as HTMLInputElement)
+        .value = editRepresentativeTrEle.getAttribute("data-representative-postal-code");
 
-      (<HTMLInputElement>document.getElementById("editOrganizationRepresentative--representativePhoneNumber")).value =
-        editRepresentativeTrEle.getAttribute("data-representative-phone-number");
+      (document.getElementById("editOrganizationRepresentative--representativePhoneNumber") as HTMLInputElement)
+        .value = editRepresentativeTrEle.getAttribute("data-representative-phone-number");
 
-      (<HTMLInputElement>document.getElementById("editOrganizationRepresentative--representativeEmailAddress")).value =
-        editRepresentativeTrEle.getAttribute("data-representative-email-address");
+      (document.getElementById("editOrganizationRepresentative--representativeEmailAddress") as HTMLInputElement)
+        .value = editRepresentativeTrEle.getAttribute("data-representative-email-address");
 
-      (<HTMLInputElement>document.getElementById("editOrganizationRepresentative--isDefault")).value =
-        (<HTMLInputElement>document.getElementById("representative-isDefault--" + representativeIndex)).checked
+      (document.getElementById("editOrganizationRepresentative--isDefault") as HTMLInputElement).value =
+        (document.getElementById("representative-isDefault--" + representativeIndex) as HTMLInputElement).checked
           ? "1"
           : "0";
 
@@ -334,7 +334,7 @@ declare const cityssm: cityssmGlobal;
 
     // Add
 
-    const addRepresentativeModalEle = <HTMLElement>document.getElementsByClassName("is-add-representative-modal")[0];
+    const addRepresentativeModalEle = document.getElementsByClassName("is-add-representative-modal")[0] as HTMLElement;
     const addRepresentativeFormEle = addRepresentativeModalEle.getElementsByTagName("form")[0];
 
     // Open add
@@ -388,20 +388,20 @@ declare const cityssm: cityssmGlobal;
 
         clickEvent.preventDefault();
 
-        (<HTMLInputElement>document.getElementById("addOrganizationRepresentative--representativeAddress1")).value =
-          (<HTMLInputElement>document.getElementById("organization--organizationAddress1")).value;
+        (document.getElementById("addOrganizationRepresentative--representativeAddress1") as HTMLInputElement).value =
+          (document.getElementById("organization--organizationAddress1") as HTMLInputElement).value;
 
-        (<HTMLInputElement>document.getElementById("addOrganizationRepresentative--representativeAddress2")).value =
-          (<HTMLInputElement>document.getElementById("organization--organizationAddress2")).value;
+        (document.getElementById("addOrganizationRepresentative--representativeAddress2") as HTMLInputElement).value =
+          (document.getElementById("organization--organizationAddress2") as HTMLInputElement).value;
 
-        (<HTMLInputElement>document.getElementById("addOrganizationRepresentative--representativeCity")).value =
-          (<HTMLInputElement>document.getElementById("organization--organizationCity")).value;
+        (document.getElementById("addOrganizationRepresentative--representativeCity") as HTMLInputElement).value =
+          (document.getElementById("organization--organizationCity") as HTMLInputElement).value;
 
-        (<HTMLInputElement>document.getElementById("addOrganizationRepresentative--representativeProvince")).value =
-          (<HTMLInputElement>document.getElementById("organization--organizationProvince")).value;
+        (document.getElementById("addOrganizationRepresentative--representativeProvince") as HTMLInputElement).value =
+          (document.getElementById("organization--organizationProvince") as HTMLInputElement).value;
 
-        (<HTMLInputElement>document.getElementById("addOrganizationRepresentative--representativePostalCode")).value =
-          (<HTMLInputElement>document.getElementById("organization--organizationPostalCode")).value;
+        (document.getElementById("addOrganizationRepresentative--representativePostalCode") as HTMLInputElement).value =
+          (document.getElementById("organization--organizationPostalCode") as HTMLInputElement).value;
 
       });
 

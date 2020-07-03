@@ -2,7 +2,7 @@
 
   // Switch dates nav
 
-  const eventDateSelectEle = <HTMLSelectElement>document.getElementById("eventNav--eventDate");
+  const eventDateSelectEle = document.getElementById("eventNav--eventDate") as HTMLSelectElement;
 
   if (eventDateSelectEle) {
 

@@ -1,4 +1,4 @@
-import type { cityssmGlobal } from "../../node_modules/@cityssm/bulma-webapp-js/src/types";
+import type { cityssmGlobal } from "@cityssm/bulma-webapp-js/src/types";
 
 declare const cityssm: cityssmGlobal;
 
@@ -7,14 +7,14 @@ declare const cityssm: cityssmGlobal;
 
   const currentDateString = cityssm.dateToString(new Date());
 
-  const eventDateFilterEle = <HTMLInputElement>document.getElementById("filter--eventDate");
-  const showLicencesCheckboxEle = <HTMLInputElement>document.getElementById("filter--showLicences");
+  const eventDateFilterEle = document.getElementById("filter--eventDate") as HTMLInputElement;
+  const showLicencesCheckboxEle = document.getElementById("filter--showLicences") as HTMLInputElement;
   const eventContainerEle = document.getElementById("container--events");
 
-  const dayNames = <string[]>exports.config_days;
+  const dayNames = exports.config_days as string[];
   delete exports.config_days;
 
-  const licenceTypes = <{ [licenceTypeKey: string]: string }>exports.config_licenceTypes;
+  const licenceTypes = exports.config_licenceTypes as { [licenceTypeKey: string]: string };
   delete exports.config_licenceTypes;
 
   const refreshEventsFn = () => {

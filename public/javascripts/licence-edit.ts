@@ -1,4 +1,4 @@
-import type { cityssmGlobal } from "../../node_modules/@cityssm/bulma-webapp-js/src/types";
+import type { cityssmGlobal } from "@cityssm/bulma-webapp-js/src/types";
 import type { llmGlobal } from "./types";
 import type * as llmTypes from "../../helpers/llmTypes";
 
@@ -12,9 +12,9 @@ declare const llm: llmGlobal;
    * FORM
    */
 
-  const formEle = <HTMLFormElement>document.getElementById("form--licence");
+  const formEle = document.getElementById("form--licence") as HTMLFormElement;
   const formMessageEle = document.getElementById("container--form-message");
-  const licenceID = (<HTMLInputElement>document.getElementById("licence--licenceID")).value;
+  const licenceID = (document.getElementById("licence--licenceID") as HTMLInputElement).value;
 
   const isCreate = licenceID === "";
   const isIssued = formEle.getAttribute("data-licence-is-issued") === "true";
@@ -156,8 +156,8 @@ declare const llm: llmGlobal;
   };
 
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-  const inputEles = <NodeListOf<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>>
-    formEle.querySelectorAll("input, select, textarea");
+  const inputEles = formEle.querySelectorAll("input, select, textarea") as
+    NodeListOf<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>;
 
   for (const inputEle of inputEles) {
     if (inputEle.name !== "") {
@@ -201,12 +201,12 @@ declare const llm: llmGlobal;
 
       clickEvent.preventDefault();
 
-      const organizationEle = <HTMLAnchorElement>clickEvent.currentTarget;
+      const organizationEle = clickEvent.currentTarget as HTMLAnchorElement;
 
-      (<HTMLInputElement>document.getElementById("licence--organizationID")).value =
+      (document.getElementById("licence--organizationID") as HTMLInputElement).value =
         organizationEle.getAttribute("data-organization-id");
 
-      (<HTMLInputElement>document.getElementById("licence--organizationName")).value =
+      (document.getElementById("licence--organizationName") as HTMLInputElement).value =
         organizationEle.getAttribute("data-organization-name");
 
       organizationLookupCloseModalFn();
@@ -281,7 +281,8 @@ declare const llm: llmGlobal;
 
         onshow(): void {
 
-          organizationLookupSearchStrEle = <HTMLInputElement>document.getElementById("organizationLookup--searchStr");
+          organizationLookupSearchStrEle =
+            document.getElementById("organizationLookup--searchStr") as HTMLInputElement;
           organizationLookupSearchStrEle.addEventListener("keyup", organizationLookupFn_refreshResults);
 
           organizationLookupResultsEle = document.getElementById("container--organizationLookup");
@@ -363,8 +364,8 @@ declare const llm: llmGlobal;
 
     const locationLookupFn_setLocation = (locationIDString: string, locationDisplayName: string) => {
 
-      (<HTMLInputElement>document.getElementById("licence--locationID")).value = locationIDString;
-      (<HTMLInputElement>document.getElementById("licence--locationDisplayName")).value = locationDisplayName;
+      (document.getElementById("licence--locationID") as HTMLInputElement).value = locationIDString;
+      (document.getElementById("licence--locationDisplayName") as HTMLInputElement).value = locationDisplayName;
 
     };
 
@@ -372,7 +373,7 @@ declare const llm: llmGlobal;
 
       clickEvent.preventDefault();
 
-      const locationEle = <HTMLAnchorElement>clickEvent.currentTarget;
+      const locationEle = clickEvent.currentTarget as HTMLAnchorElement;
 
       locationLookupFn_setLocation(
         locationEle.getAttribute("data-location-id"),
@@ -455,7 +456,7 @@ declare const llm: llmGlobal;
 
           // Existing locations
 
-          locationLookup_searchStrEle = <HTMLInputElement>document.getElementById("locationLookup--searchStr");
+          locationLookup_searchStrEle = document.getElementById("locationLookup--searchStr") as HTMLInputElement;
           locationLookup_searchStrEle.addEventListener("keyup", locationLookupFn_refreshResults);
 
           locationLookup_resultsEle = document.getElementById("container--locationLookup");
@@ -472,7 +473,7 @@ declare const llm: llmGlobal;
           llm.getDefaultConfigProperty("city", (defaultCity: string) => {
 
             if (defaultCity) {
-              (<HTMLInputElement>document.getElementById("newLocation--locationCity")).value = defaultCity;
+              (document.getElementById("newLocation--locationCity") as HTMLInputElement).value = defaultCity;
             }
 
           });
@@ -480,7 +481,7 @@ declare const llm: llmGlobal;
           llm.getDefaultConfigProperty("province", (defaultProvince: string) => {
 
             if (defaultProvince) {
-              (<HTMLInputElement>document.getElementById("newLocation--locationProvince")).value = defaultProvince;
+              (document.getElementById("newLocation--locationProvince") as HTMLInputElement).value = defaultProvince;
             }
 
           });
@@ -537,9 +538,9 @@ declare const llm: llmGlobal;
       clickEvent.preventDefault();
 
       const termsConditionsIndex =
-        parseInt((<HTMLInputElement>clickEvent.currentTarget).getAttribute("data-terms-conditions-index"), 10);
+        parseInt((clickEvent.currentTarget as HTMLInputElement).getAttribute("data-terms-conditions-index"), 10);
 
-      const termsConditionsEle = <HTMLTextAreaElement>document.getElementById("licence--termsConditions");
+      const termsConditionsEle = document.getElementById("licence--termsConditions") as HTMLTextAreaElement;
       termsConditionsEle.value = termsConditionsList[termsConditionsIndex].termsConditions;
 
       cityssm.hideModal(termsConditionsLookupModalEle);
@@ -554,7 +555,7 @@ declare const llm: llmGlobal;
       termsConditionsList = [];
       cityssm.clearElement(termsConditionsLookupResultsEle);
 
-      const organizationID = (<HTMLInputElement>document.getElementById("licence--organizationID")).value;
+      const organizationID = (document.getElementById("licence--organizationID") as HTMLInputElement).value;
 
       if (organizationID === "") {
 
@@ -639,7 +640,7 @@ declare const llm: llmGlobal;
    * LICENCE TYPE
    */
 
-  const licenceType_selectEle = <HTMLSelectElement>document.getElementById("licence--licenceTypeKey");
+  const licenceType_selectEle = document.getElementById("licence--licenceTypeKey") as HTMLSelectElement;
 
   if (isCreate) {
 
@@ -711,8 +712,8 @@ declare const llm: llmGlobal;
 
   {
 
-    const startDateEle = <HTMLInputElement>document.getElementById("licence--startDateString");
-    const endDateEle = <HTMLInputElement>document.getElementById("licence--endDateString");
+    const startDateEle = document.getElementById("licence--startDateString") as HTMLInputElement;
+    const endDateEle = document.getElementById("licence--endDateString") as HTMLInputElement;
 
     const dateFn_setMin = () => {
 
@@ -745,7 +746,7 @@ declare const llm: llmGlobal;
     document.getElementById("licence--applicationDateString").addEventListener("change", (changeEvent) => {
 
       startDateEle.setAttribute("min",
-        (<HTMLInputElement>changeEvent.currentTarget).value);
+        (changeEvent.currentTarget as HTMLInputElement).value);
 
     });
 
@@ -760,7 +761,7 @@ declare const llm: llmGlobal;
 
     const eventFn_remove = (clickEvent: Event) => {
 
-      (<HTMLButtonElement>clickEvent.currentTarget).closest(".panel-block").remove();
+      (clickEvent.currentTarget as HTMLButtonElement).closest(".panel-block").remove();
 
       doRefreshAfterSave = true;
       setUnsavedChangesFn();
@@ -789,9 +790,9 @@ declare const llm: llmGlobal;
 
             eventDate.preventDefault();
 
-            const sourceEleID = (<HTMLElement>eventDate.currentTarget).getAttribute("data-source");
+            const sourceEleID = (eventDate.currentTarget as HTMLElement).getAttribute("data-source");
 
-            eventDateString = (<HTMLInputElement>document.getElementById(sourceEleID)).value;
+            eventDateString = (document.getElementById(sourceEleID) as HTMLInputElement).value;
 
           } catch (_e) {
             // Ignore
@@ -835,8 +836,8 @@ declare const llm: llmGlobal;
 
     document.getElementsByClassName("is-calculate-events-button")[0].addEventListener("click", () => {
 
-      const eventCount = parseInt((<HTMLInputElement>document.getElementById("eventCalc--eventCount")).value, 10);
-      const dayInterval = parseInt((<HTMLInputElement>document.getElementById("eventCalc--dayInterval")).value, 10);
+      const eventCount = parseInt((document.getElementById("eventCalc--eventCount") as HTMLInputElement).value, 10);
+      const dayInterval = parseInt((document.getElementById("eventCalc--dayInterval") as HTMLInputElement).value, 10);
 
       let dateSplit = endDateEle.value.split("-");
 
@@ -916,7 +917,7 @@ declare const llm: llmGlobal;
       let prizeValueTotal = 0;
 
       const prizeValueEles =
-        <HTMLCollectionOf<HTMLInputElement>>ticketTypesPanelEle.getElementsByClassName("is-total-prizes-per-deal");
+        ticketTypesPanelEle.getElementsByClassName("is-total-prizes-per-deal") as HTMLCollectionOf<HTMLInputElement>;
 
       for (const prizeValueEle of prizeValueEles) {
         prizeValueTotal += parseFloat(prizeValueEle.value);
@@ -925,7 +926,7 @@ declare const llm: llmGlobal;
       let licenceFeeTotal = 0;
 
       const licenceFeeEles =
-        <HTMLCollectionOf<HTMLInputElement>>ticketTypesPanelEle.getElementsByClassName("is-licence-fee");
+        ticketTypesPanelEle.getElementsByClassName("is-licence-fee") as HTMLCollectionOf<HTMLInputElement>;
 
       for (const licenceFeeEle of licenceFeeEles) {
         licenceFeeTotal += parseFloat(licenceFeeEle.value);
@@ -944,14 +945,14 @@ declare const llm: llmGlobal;
         "<td class=\"is-hidden-print\"></td>" +
         "</tr>";
 
-      (<HTMLInputElement>document.getElementById("licence--totalPrizeValue")).value = prizeValueTotal.toFixed(2);
+      (document.getElementById("licence--totalPrizeValue") as HTMLInputElement).value = prizeValueTotal.toFixed(2);
 
     };
 
 
     const deleteTicketTypeFn_openConfirm = (buttonEvent: Event) => {
 
-      const trEle = (<HTMLButtonElement>buttonEvent.currentTarget).closest("tr");
+      const trEle = (buttonEvent.currentTarget as HTMLButtonElement).closest("tr");
       const ticketType = trEle.getAttribute("data-ticket-type");
 
       const doDeleteTicketTypeFn = () => {
@@ -993,7 +994,7 @@ declare const llm: llmGlobal;
 
     const amendUnitCountFn_openModal = (buttonEvent: Event) => {
 
-      const trEle = (<HTMLButtonElement>buttonEvent.currentTarget).closest("tr");
+      const trEle = (buttonEvent.currentTarget as HTMLButtonElement).closest("tr");
 
       const ticketType = trEle.getAttribute("data-ticket-type");
       let ticketTypeObj: llmTypes.ConfigTicketType;
@@ -1004,27 +1005,27 @@ declare const llm: llmGlobal;
 
         formEvent.preventDefault();
 
-        const unitCount = parseInt((<HTMLInputElement>document.getElementById("amendUnit_unitCount")).value, 10);
+        const unitCount = parseInt((document.getElementById("amendUnit_unitCount") as HTMLInputElement).value, 10);
 
         const unitCountEle: HTMLInputElement = trEle.querySelector("input[name='ticketType_unitCount']");
         unitCountEle.value = unitCount.toString();
-        (<HTMLSpanElement>unitCountEle.nextElementSibling).innerText = unitCount.toString();
+        (unitCountEle.nextElementSibling as HTMLSpanElement).innerText = unitCount.toString();
 
-        const totalValueEle = <HTMLInputElement>trEle.getElementsByClassName("is-total-value-per-deal")[0];
+        const totalValueEle = trEle.getElementsByClassName("is-total-value-per-deal")[0] as HTMLInputElement;
         totalValueEle.value = (ticketTypeObj.ticketPrice * ticketTypeObj.ticketCount * unitCount).toFixed(2);
-        (<HTMLSpanElement>totalValueEle.nextElementSibling).innerText =
+        (totalValueEle.nextElementSibling as HTMLSpanElement).innerText =
           "$" + (ticketTypeObj.ticketPrice * ticketTypeObj.ticketCount * unitCount).toFixed(2);
 
-        const totalPrizesEle = <HTMLInputElement>trEle.getElementsByClassName("is-total-prizes-per-deal")[0];
+        const totalPrizesEle = trEle.getElementsByClassName("is-total-prizes-per-deal")[0] as HTMLInputElement;
         totalPrizesEle.value = (ticketTypeObj.prizesPerDeal * unitCount).toFixed(2);
-        (<HTMLSpanElement>totalPrizesEle.nextElementSibling).innerText =
+        (totalPrizesEle.nextElementSibling as HTMLSpanElement).innerText =
           "$" + (ticketTypeObj.prizesPerDeal * unitCount).toFixed(2);
 
-        const licenceFee = (<HTMLInputElement>document.getElementById("amendUnit_licenceFee")).value;
+        const licenceFee = (document.getElementById("amendUnit_licenceFee") as HTMLInputElement).value;
 
         const licenceFeeEle: HTMLInputElement = trEle.querySelector("input[name='ticketType_licenceFee']");
         licenceFeeEle.value = licenceFee;
-        (<HTMLSpanElement>licenceFeeEle.nextElementSibling).innerText = "$ " + licenceFee;
+        (licenceFeeEle.nextElementSibling as HTMLSpanElement).innerText = "$ " + licenceFee;
 
         amendUnitCount_closeModalFn();
 
@@ -1035,23 +1036,23 @@ declare const llm: llmGlobal;
 
       const amendUnitCountFn_calculateLicenceFee = () => {
 
-        (<HTMLInputElement>document.getElementById("amendUnit_licenceFee")).value =
+        (document.getElementById("amendUnit_licenceFee") as HTMLInputElement).value =
           (ticketTypeObj.feePerUnit *
-            parseInt((<HTMLInputElement>document.getElementById("amendUnit_unitCount")).value, 10))
+            parseInt((document.getElementById("amendUnit_unitCount") as HTMLInputElement).value, 10))
             .toFixed(2);
       };
 
       cityssm.openHtmlModal("licence-ticketTypeUnitAmend", {
         onshow(modalEle: HTMLElement): void {
 
-          (<HTMLInputElement>document.getElementById("amendUnit_ticketType")).value = ticketType;
+          (document.getElementById("amendUnit_ticketType") as HTMLInputElement).value = ticketType;
 
           // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-          const unitCountCurrent = (<HTMLInputElement>trEle.querySelector("input[name='ticketType_unitCount']")).value;
+          const unitCountCurrent = (trEle.querySelector("input[name='ticketType_unitCount']") as HTMLInputElement).value;
 
-          (<HTMLInputElement>document.getElementById("amendUnit_unitCountCurrent")).value = unitCountCurrent;
+          (document.getElementById("amendUnit_unitCountCurrent") as HTMLInputElement).value = unitCountCurrent;
 
-          const unitCountEle = <HTMLInputElement>document.getElementById("amendUnit_unitCount");
+          const unitCountEle = document.getElementById("amendUnit_unitCount") as HTMLInputElement;
           unitCountEle.value = unitCountCurrent;
 
           ticketTypesFn_getAll((ticketTypes: llmTypes.ConfigTicketType[]) => {
@@ -1077,12 +1078,12 @@ declare const llm: llmGlobal;
 
       let distributorLookup_closeModalFn: () => void;
 
-      const distributorTdEle =
-        <HTMLTableCellElement>(<HTMLButtonElement>buttonEvent.currentTarget).closest("td").previousElementSibling;
+      const distributorTdEle = (buttonEvent.currentTarget as HTMLButtonElement)
+        .closest("td").previousElementSibling as HTMLTableCellElement;
 
       const distributorLookupFn_updateDistributor = (locationButtonEvent: Event) => {
 
-        const locationButtonEle = <HTMLButtonElement>locationButtonEvent.currentTarget;
+        const locationButtonEle = locationButtonEvent.currentTarget as HTMLButtonElement;
 
         distributorTdEle.getElementsByTagName("input")[0].value = locationButtonEle.getAttribute("data-location-id");
 
@@ -1150,11 +1151,11 @@ declare const llm: llmGlobal;
       let manufacturerLookup_closeModalFn: () => void;
 
       const manufacturerTdEle =
-        <HTMLTableCellElement>(<HTMLButtonElement>buttonEvent.currentTarget).closest("td").previousElementSibling;
+        (buttonEvent.currentTarget as HTMLButtonElement).closest("td").previousElementSibling as HTMLTableCellElement;
 
       const manufacturerLookupFn_updateManufacturer = (locationButtonEvent: Event) => {
 
-        const locationButtonEle = <HTMLButtonElement>locationButtonEvent.currentTarget;
+        const locationButtonEle = locationButtonEvent.currentTarget as HTMLButtonElement;
 
         manufacturerTdEle.getElementsByTagName("input")[0].value = locationButtonEle.getAttribute("data-location-id");
 
@@ -1227,11 +1228,11 @@ declare const llm: llmGlobal;
         formEvent.preventDefault();
 
         ticketTypesFn_addTr({
-          ticketType: (<HTMLInputElement>document.getElementById("ticketTypeAdd--ticketType")).value,
-          unitCount: parseInt((<HTMLInputElement>document.getElementById("ticketTypeAdd--unitCount")).value, 10),
-          valuePerDeal: parseFloat((<HTMLInputElement>document.getElementById("ticketTypeAdd--valuePerDeal")).value),
-          prizesPerDeal: parseFloat((<HTMLInputElement>document.getElementById("ticketTypeAdd--prizesPerDeal")).value),
-          licenceFee: parseFloat((<HTMLInputElement>document.getElementById("ticketTypeAdd--licenceFee")).value)
+          ticketType: (document.getElementById("ticketTypeAdd--ticketType") as HTMLInputElement).value,
+          unitCount: parseInt((document.getElementById("ticketTypeAdd--unitCount") as HTMLInputElement).value, 10),
+          valuePerDeal: parseFloat((document.getElementById("ticketTypeAdd--valuePerDeal") as HTMLInputElement).value),
+          prizesPerDeal: parseFloat((document.getElementById("ticketTypeAdd--prizesPerDeal") as HTMLInputElement).value),
+          licenceFee: parseFloat((document.getElementById("ticketTypeAdd--licenceFee") as HTMLInputElement).value)
         });
 
         if (!isCreate) {
@@ -1240,7 +1241,7 @@ declare const llm: llmGlobal;
             "beforeend",
             "<input class=\"is-removed-after-save\" name=\"ticketType_toAdd\"" +
             " type=\"hidden\"" +
-            " value=\"" + (<HTMLSelectElement>document.getElementById("ticketTypeAdd--ticketType")).value + "\" />"
+            " value=\"" + (document.getElementById("ticketTypeAdd--ticketType") as HTMLSelectElement).value + "\" />"
           );
         }
 
@@ -1251,12 +1252,12 @@ declare const llm: llmGlobal;
 
         const unitCount = parseInt(addTicketType_unitCountEle.value, 10);
 
-        (<HTMLInputElement>document.getElementById("ticketTypeAdd--prizesTotal")).value =
-          (parseFloat((<HTMLInputElement>document.getElementById("ticketTypeAdd--prizesPerDeal")).value) * unitCount)
+        (document.getElementById("ticketTypeAdd--prizesTotal") as HTMLInputElement).value =
+          (parseFloat((document.getElementById("ticketTypeAdd--prizesPerDeal") as HTMLInputElement).value) * unitCount)
             .toFixed(2);
 
-        (<HTMLInputElement>document.getElementById("ticketTypeAdd--licenceFee")).value =
-          (parseFloat((<HTMLInputElement>document.getElementById("ticketTypeAdd--feePerUnit")).value) * unitCount)
+        (document.getElementById("ticketTypeAdd--licenceFee") as HTMLInputElement).value =
+          (parseFloat((document.getElementById("ticketTypeAdd--feePerUnit") as HTMLInputElement).value) * unitCount)
             .toFixed(2);
       };
 
@@ -1264,21 +1265,21 @@ declare const llm: llmGlobal;
 
         const ticketTypeOptionEle = addTicketType_ticketTypeEle.selectedOptions[0];
 
-        (<HTMLInputElement>document.getElementById("ticketTypeAdd--ticketPrice")).value =
+        (document.getElementById("ticketTypeAdd--ticketPrice") as HTMLInputElement).value =
           ticketTypeOptionEle.getAttribute("data-ticket-price");
 
-        (<HTMLInputElement>document.getElementById("ticketTypeAdd--ticketCount")).value =
+        (document.getElementById("ticketTypeAdd--ticketCount") as HTMLInputElement).value =
           ticketTypeOptionEle.getAttribute("data-ticket-count");
 
-        (<HTMLInputElement>document.getElementById("ticketTypeAdd--valuePerDeal")).value =
+        (document.getElementById("ticketTypeAdd--valuePerDeal") as HTMLInputElement).value =
           (parseFloat(ticketTypeOptionEle.getAttribute("data-ticket-price")) *
             parseInt(ticketTypeOptionEle.getAttribute("data-ticket-count"), 10))
             .toFixed(2);
 
-        (<HTMLInputElement>document.getElementById("ticketTypeAdd--prizesPerDeal")).value =
+        (document.getElementById("ticketTypeAdd--prizesPerDeal") as HTMLInputElement).value =
           ticketTypeOptionEle.getAttribute("data-prizes-per-deal");
 
-        (<HTMLInputElement>document.getElementById("ticketTypeAdd--feePerUnit")).value =
+        (document.getElementById("ticketTypeAdd--feePerUnit") as HTMLInputElement).value =
           ticketTypeOptionEle.getAttribute("data-fee-per-unit");
 
         addTicketTypeFn_refreshUnitCountChange();
@@ -1324,10 +1325,10 @@ declare const llm: llmGlobal;
 
         onshow(modalEle: HTMLElement): void {
 
-          addTicketType_ticketTypeEle = <HTMLSelectElement>document.getElementById("ticketTypeAdd--ticketType");
+          addTicketType_ticketTypeEle = document.getElementById("ticketTypeAdd--ticketType") as HTMLSelectElement;
           addTicketType_ticketTypeEle.addEventListener("change", addTicketType_refreshTicketTypeChange);
 
-          addTicketType_unitCountEle = <HTMLInputElement>document.getElementById("ticketTypeAdd--unitCount");
+          addTicketType_unitCountEle = document.getElementById("ticketTypeAdd--unitCount") as HTMLInputElement;
           addTicketType_unitCountEle.addEventListener("change", addTicketTypeFn_refreshUnitCountChange);
 
           modalEle.getElementsByTagName("form")[0].addEventListener("submit", addTicketTypeFn_addTicketType);
@@ -1517,7 +1518,7 @@ declare const llm: llmGlobal;
 
       updateFeeButtonEle.addEventListener("click", () => {
 
-        const licenceFeeEle = <HTMLInputElement>document.getElementById("licence--licenceFee");
+        const licenceFeeEle = document.getElementById("licence--licenceFee") as HTMLInputElement;
 
         licenceFeeEle.value = updateFeeButtonEle.getAttribute("data-licence-fee-expected");
         licenceFeeEle.classList.remove("is-danger");
@@ -1558,13 +1559,13 @@ declare const llm: llmGlobal;
 
           llm.getDefaultConfigProperty("externalReceiptNumber_fieldLabel", (fieldLabel: string) => {
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-            (<HTMLLabelElement>modalEle.querySelector("label[for='transactionAdd--externalReceiptNumber']")).innerText =
+            (modalEle.querySelector("label[for='transactionAdd--externalReceiptNumber']") as HTMLLabelElement).innerText =
               fieldLabel;
           });
 
-          (<HTMLInputElement>document.getElementById("transactionAdd--licenceID")).value = licenceID;
+          (document.getElementById("transactionAdd--licenceID") as HTMLInputElement).value = licenceID;
 
-          const licenceFee = parseFloat((<HTMLInputElement>document.getElementById("licence--licenceFee")).value);
+          const licenceFee = parseFloat((document.getElementById("licence--licenceFee") as HTMLInputElement).value);
 
           const transactionTotalEle = document.getElementById("licence--transactionTotal");
           const transactionTotal = parseFloat(transactionTotalEle ? transactionTotalEle.innerText : "0");
@@ -1575,7 +1576,7 @@ declare const llm: llmGlobal;
           const discrepancy = (licenceFee - transactionTotal).toFixed(2);
 
           document.getElementById("transactionAdd--discrepancy").innerText = discrepancy;
-          (<HTMLInputElement>document.getElementById("transactionAdd--transactionAmount")).value = discrepancy;
+          (document.getElementById("transactionAdd--transactionAmount") as HTMLInputElement).value = discrepancy;
 
           addTransactionFormEle = modalEle.getElementsByTagName("form")[0];
 
@@ -1589,7 +1590,7 @@ declare const llm: llmGlobal;
 
             addAndIssueButtonEle.addEventListener("click", () => {
 
-              (<HTMLInputElement>document.getElementById("transactionAdd--issueLicence")).value = "true";
+              (document.getElementById("transactionAdd--issueLicence") as HTMLInputElement).value = "true";
               addTransactionFn();
             });
           }

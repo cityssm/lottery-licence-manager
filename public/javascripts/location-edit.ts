@@ -1,4 +1,4 @@
-import type { cityssmGlobal } from "../../node_modules/@cityssm/bulma-webapp-js/src/types";
+import type { cityssmGlobal } from "@cityssm/bulma-webapp-js/src/types";
 import type * as llmTypes from "../../helpers/llmTypes";
 
 declare const cityssm: cityssmGlobal;
@@ -6,9 +6,9 @@ declare const cityssm: cityssmGlobal;
 
 (() => {
 
-  const formEle = <HTMLFormElement>document.getElementById("form--location");
+  const formEle = document.getElementById("form--location") as HTMLFormElement;
   const formMessageEle = document.getElementById("container--form-message");
-  const locationID = (<HTMLInputElement>document.getElementById("location--locationID")).value;
+  const locationID = (document.getElementById("location--locationID") as HTMLInputElement).value;
 
   let hasUnsavedChanges = false;
 
@@ -105,10 +105,10 @@ declare const cityssm: cityssmGlobal;
 
       // get location display name
 
-      const locationName_target = (<HTMLInputElement>document.getElementById("location--locationName")).value;
+      const locationName_target = (document.getElementById("location--locationName") as HTMLInputElement).value;
 
       const locationDisplayNameAndID_target = (locationName_target === ""
-        ? (<HTMLInputElement>document.getElementById("location--locationAddress1")).value
+        ? (document.getElementById("location--locationAddress1") as HTMLInputElement).value
         : locationName_target) +
         ", #" + locationID;
 
@@ -144,7 +144,7 @@ declare const cityssm: cityssmGlobal;
 
         clickEvent.preventDefault();
 
-        const sourceLocationLinkEle = <HTMLAnchorElement>clickEvent.currentTarget;
+        const sourceLocationLinkEle = clickEvent.currentTarget as HTMLAnchorElement;
 
         locationID_source = sourceLocationLinkEle.getAttribute("data-location-id");
         const locationDisplayName_source = sourceLocationLinkEle.getAttribute("data-location-display-name");
@@ -242,8 +242,9 @@ declare const cityssm: cityssmGlobal;
 
           // Location name - target
 
-          const locationDisplayNameAndID_target_eles = <HTMLCollectionOf<HTMLSpanElement>>
-            modalEle.getElementsByClassName("mergeLocation--locationDisplayNameAndID_target");
+          const locationDisplayNameAndID_target_eles =
+            modalEle.getElementsByClassName("mergeLocation--locationDisplayNameAndID_target") as
+            HTMLCollectionOf<HTMLSpanElement>;
 
           for (const locationDisplayNameAndID_target_ele of locationDisplayNameAndID_target_eles) {
             locationDisplayNameAndID_target_ele.innerText = locationDisplayNameAndID_target;
@@ -311,10 +312,10 @@ declare const cityssm: cityssmGlobal;
   // Location Name is required for manufacturers and distributors
 
   const locationIsDistributorCheckboxEle =
-    <HTMLInputElement>document.getElementById("location--locationIsDistributor");
+    document.getElementById("location--locationIsDistributor") as HTMLInputElement;
 
   const locationIsManufacturerCheckboxEle =
-    <HTMLInputElement>document.getElementById("location--locationIsManufacturer");
+    document.getElementById("location--locationIsManufacturer") as HTMLInputElement;
 
   const setLocationNameRequiredFn = () => {
 

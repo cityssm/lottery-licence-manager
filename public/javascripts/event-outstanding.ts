@@ -1,4 +1,4 @@
-import type { cityssmGlobal } from "../../node_modules/@cityssm/bulma-webapp-js/src/types";
+import type { cityssmGlobal } from "@cityssm/bulma-webapp-js/src/types";
 import type * as llmTypes from "../../helpers/llmTypes";
 
 declare const cityssm: cityssmGlobal;
@@ -6,7 +6,7 @@ declare const cityssm: cityssmGlobal;
 
 (() => {
 
-  const formEle = <HTMLFormElement>document.getElementById("form--outstandingEvents");
+  const formEle = document.getElementById("form--outstandingEvents") as HTMLFormElement;
   const tbodyEle = document.getElementById("tbody--outstandingEvents");
 
   const getOutstandingEventsFn = () => {

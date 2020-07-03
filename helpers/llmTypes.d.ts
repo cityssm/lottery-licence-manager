@@ -170,7 +170,7 @@ export interface Organization extends Record {
     licences_endDateMax?: number;
     licences_endDateMaxString?: string;
 }
-export declare type OrganizationRepresentative = {
+export interface OrganizationRepresentative {
     organizationID: number;
     representativeIndex: number;
     representativeName: string;
@@ -183,7 +183,7 @@ export declare type OrganizationRepresentative = {
     representativePhoneNumber: string;
     representativeEmailAddress: string;
     isDefault: boolean | string;
-};
+}
 export interface OrganizationRemark extends Record {
     recordType: "remark";
     organizationID: number;

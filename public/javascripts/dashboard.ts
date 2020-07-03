@@ -1,4 +1,4 @@
-import type { cityssmGlobal } from "../../node_modules/@cityssm/bulma-webapp-js/src/types";
+import type { cityssmGlobal } from "@cityssm/bulma-webapp-js/src/types";
 declare const cityssm: cityssmGlobal;
 
 
@@ -39,7 +39,7 @@ declare const cityssm: cityssmGlobal;
 
     const toggleVisibilityFn = (buttonEvent: Event) => {
 
-      const inputEle = (<HTMLButtonElement>buttonEvent.currentTarget)
+      const inputEle = (buttonEvent.currentTarget as HTMLButtonElement)
         .closest(".field").getElementsByClassName("input")[0];
 
       inputEle.setAttribute(

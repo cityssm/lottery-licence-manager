@@ -1,4 +1,4 @@
-import type { cityssmGlobal } from "../../node_modules/@cityssm/bulma-webapp-js/src/types";
+import type { cityssmGlobal } from "@cityssm/bulma-webapp-js/src/types";
 import type * as llmTypes from "../../helpers/llmTypes";
 
 declare const cityssm: cityssmGlobal;
@@ -6,13 +6,13 @@ declare const cityssm: cityssmGlobal;
 
 (() => {
 
-  const inactiveYearsFilterEle = <HTMLSelectElement>document.getElementById("filter--inactiveYears");
+  const inactiveYearsFilterEle = document.getElementById("filter--inactiveYears") as HTMLSelectElement;
 
   const searchResultsEle = document.getElementById("container--searchResults");
 
   const confirmDeleteLocationFn = (clickEvent: Event) => {
 
-    const buttonEle = <HTMLButtonElement>clickEvent.currentTarget;
+    const buttonEle = clickEvent.currentTarget as HTMLButtonElement;
     const locationDisplayName = cityssm.escapeHTML(buttonEle.getAttribute("data-location-display-name"));
 
     const deleteFn = () => {

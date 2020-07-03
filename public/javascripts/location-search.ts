@@ -1,4 +1,4 @@
-import type { cityssmGlobal } from "../../node_modules/@cityssm/bulma-webapp-js/src/types";
+import type { cityssmGlobal } from "@cityssm/bulma-webapp-js/src/types";
 import type * as llmTypes from "../../helpers/llmTypes";
 
 declare const cityssm: cityssmGlobal;
@@ -6,10 +6,10 @@ declare const cityssm: cityssmGlobal;
 
 (() => {
 
-  const formEle = <HTMLFormElement>document.getElementById("form--searchFilters");
+  const formEle = document.getElementById("form--searchFilters") as HTMLFormElement;
 
-  const limitEle = <HTMLInputElement>document.getElementById("filter--limit");
-  const offsetEle = <HTMLInputElement>document.getElementById("filter--offset");
+  const limitEle = document.getElementById("filter--limit") as HTMLInputElement;
+  const offsetEle = document.getElementById("filter--offset") as HTMLInputElement;
 
   const searchResultsEle = document.getElementById("container--searchResults");
 
@@ -249,7 +249,7 @@ declare const cityssm: cityssmGlobal;
     clickEvent.preventDefault();
 
     const locationIndex =
-      parseInt((<HTMLButtonElement>clickEvent.currentTarget).getAttribute("data-location-index"), 10);
+      parseInt((clickEvent.currentTarget as HTMLButtonElement).getAttribute("data-location-index"), 10);
 
     const locationObj = displayedLocationList[locationIndex];
 

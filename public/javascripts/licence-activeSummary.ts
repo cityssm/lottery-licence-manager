@@ -1,4 +1,4 @@
-import type { cityssmGlobal } from "../../node_modules/@cityssm/bulma-webapp-js/src/types";
+import type { cityssmGlobal } from "@cityssm/bulma-webapp-js/src/types";
 import type { llmGlobal } from "./types";
 import * as llmTypes from "../../helpers/llmTypes";
 
@@ -62,7 +62,7 @@ declare const llm: llmGlobal;
             "</a>" +
             "</td>") +
             ("<td>" +
-              (<string>exports.config_licenceTypes[licenceObj.licenceTypeKey] || licenceObj.licenceTypeKey) +
+              (exports.config_licenceTypes[licenceObj.licenceTypeKey] as string || licenceObj.licenceTypeKey) +
               "</td>") +
             ("<td>" +
               "<a href=\"/organizations/" + licenceObj.organizationID.toString() + "\"" +

@@ -1,4 +1,4 @@
-import type { cityssmGlobal } from "../../node_modules/@cityssm/bulma-webapp-js/src/types";
+import type { cityssmGlobal } from "@cityssm/bulma-webapp-js/src/types";
 import type { llmGlobal } from "./types";
 import type * as llmTypes from "../../helpers/llmTypes";
 
@@ -25,7 +25,7 @@ declare const llm: llmGlobal;
     const editRemarkFn = (buttonEvent: Event) => {
 
       const remarkIndex =
-        parseInt((<HTMLButtonElement>buttonEvent.currentTarget).getAttribute("data-remark-index"), 10);
+        parseInt((buttonEvent.currentTarget as HTMLButtonElement).getAttribute("data-remark-index"), 10);
 
       llm.organizationRemarks.openEditRemarkModal(organizationID, remarkIndex, refreshRemarksFn);
     };
@@ -33,7 +33,7 @@ declare const llm: llmGlobal;
     const deleteRemarkFn = (buttonEvent: Event) => {
 
       const remarkIndex =
-        parseInt((<HTMLButtonElement>buttonEvent.currentTarget).getAttribute("data-remark-index"), 10);
+        parseInt((buttonEvent.currentTarget as HTMLButtonElement).getAttribute("data-remark-index"), 10);
 
       llm.organizationRemarks.deleteRemark(organizationID, remarkIndex, true, refreshRemarksFn);
     };
@@ -130,7 +130,7 @@ declare const llm: llmGlobal;
 
   // Filter remarks
 
-  const remarkSearchStrEle = <HTMLInputElement>document.getElementById("remark--searchStr");
+  const remarkSearchStrEle = document.getElementById("remark--searchStr") as HTMLInputElement;
 
   if (remarkSearchStrEle) {
 
@@ -138,8 +138,8 @@ declare const llm: llmGlobal;
 
     const remarkDisplayCountEle = document.getElementById("remark--displayCount");
 
-    const remarkBlockEles = <HTMLCollectionOf<HTMLElement>>
-      remarksContainerEle.getElementsByClassName("is-remark-block");
+    const remarkBlockEles =
+      remarksContainerEle.getElementsByClassName("is-remark-block") as HTMLCollectionOf<HTMLElement>;
 
     remarkSearchStrEle.addEventListener("keyup", () => {
 
@@ -152,7 +152,7 @@ declare const llm: llmGlobal;
 
       for (const remarkBlockEle of remarkBlockEles) {
 
-        const remark = (<HTMLElement>remarkBlockEle.getElementsByClassName("is-remark")[0]).innerText
+        const remark = (remarkBlockEle.getElementsByClassName("is-remark")[0] as HTMLElement).innerText
           .trim()
           .toLowerCase();
 
@@ -190,11 +190,13 @@ declare const llm: llmGlobal;
 
   let bankRecordsCache = {};
 
-  const bankRecordsBankingYearFilterEle = <HTMLSelectElement>document.getElementById("bankRecordFilter--bankingYear");
-  const bankRecordsAccountNumberFilterEle =
-    <HTMLSelectElement>document.getElementById("bankRecordFilter--accountNumber");
+  const bankRecordsBankingYearFilterEle =
+    document.getElementById("bankRecordFilter--bankingYear") as HTMLSelectElement;
 
-  const bankRecordsTableEle = <HTMLTableElement>document.getElementById("table--bankRecords");
+  const bankRecordsAccountNumberFilterEle =
+    document.getElementById("bankRecordFilter--accountNumber") as HTMLSelectElement;
+
+  const bankRecordsTableEle = document.getElementById("table--bankRecords") as HTMLTableElement;
 
   const organizationID = bankRecordsTableEle.getAttribute("data-organization-id");
 
@@ -397,7 +399,7 @@ declare const llm: llmGlobal;
 
         deleteButtonEvent.preventDefault();
 
-        const recordIndex = (<HTMLButtonElement>deleteButtonEvent.currentTarget).getAttribute("data-record-index");
+        const recordIndex = (deleteButtonEvent.currentTarget as HTMLButtonElement).getAttribute("data-record-index");
 
         const deleteFn = () => {
 
@@ -423,7 +425,7 @@ declare const llm: llmGlobal;
       };
 
       // Get the button
-      const buttonEle = <HTMLButtonElement>buttonEvent.currentTarget;
+      const buttonEle = buttonEvent.currentTarget as HTMLButtonElement;
 
       // Set defaults
       let recordIndex = "";
@@ -482,22 +484,22 @@ declare const llm: llmGlobal;
 
         onshow(): void {
 
-          (<HTMLInputElement>document.getElementById("bankRecordEdit--organizationID")).value = organizationID;
-          (<HTMLInputElement>document.getElementById("bankRecordEdit--recordIndex")).value = recordIndex;
+          (document.getElementById("bankRecordEdit--organizationID") as HTMLInputElement).value = organizationID;
+          (document.getElementById("bankRecordEdit--recordIndex") as HTMLInputElement).value = recordIndex;
 
-          const accountNumberEle = <HTMLInputElement>document.getElementById("bankRecordEdit--accountNumber");
+          const accountNumberEle = document.getElementById("bankRecordEdit--accountNumber") as HTMLInputElement;
           accountNumberEle.value = accountNumber;
 
-          const bankingYearEle = <HTMLInputElement>document.getElementById("bankRecordEdit--bankingYear");
+          const bankingYearEle = document.getElementById("bankRecordEdit--bankingYear") as HTMLInputElement;
           bankingYearEle.value = bankingYear.toString();
           bankingYearEle.setAttribute("max", currentYear.toString());
 
-          const bankingMonthEle = <HTMLInputElement>document.getElementById("bankRecordEdit--bankingMonth");
+          const bankingMonthEle = document.getElementById("bankRecordEdit--bankingMonth") as HTMLInputElement;
           bankingMonthEle.value = bankingMonth.toString();
 
-          const bankRecordTypeEle = <HTMLSelectElement>document.getElementById("bankRecordEdit--bankRecordType");
+          const bankRecordTypeEle = document.getElementById("bankRecordEdit--bankRecordType") as HTMLSelectElement;
 
-          for (const config_bankRecordType of (<llmTypes.ConfigBankRecordType[]>exports.config_bankRecordTypes)) {
+          for (const config_bankRecordType of (exports.config_bankRecordTypes as llmTypes.ConfigBankRecordType[])) {
 
             bankRecordTypeEle.insertAdjacentHTML(
               "beforeend",
@@ -519,7 +521,7 @@ declare const llm: llmGlobal;
 
           bankRecordTypeEle.value = bankRecordType;
 
-          const recordDateStringEle = <HTMLInputElement>document.getElementById("bankRecordEdit--recordDateString");
+          const recordDateStringEle = document.getElementById("bankRecordEdit--recordDateString") as HTMLInputElement;
 
           recordDateStringEle.value = recordDateString;
           recordDateStringEle.setAttribute("max", currentDateString);
@@ -528,7 +530,7 @@ declare const llm: llmGlobal;
             document.getElementById("bankRecordEdit--recordIsNA").setAttribute("checked", "checked");
           }
 
-          (<HTMLTextAreaElement>document.getElementById("bankRecordEdit--recordNote")).value = recordNote;
+          (document.getElementById("bankRecordEdit--recordNote") as HTMLTextAreaElement).value = recordNote;
 
           if (lockKeyFields) {
 

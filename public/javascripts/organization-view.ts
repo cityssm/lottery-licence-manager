@@ -1,4 +1,4 @@
-import type { cityssmGlobal } from "../../node_modules/@cityssm/bulma-webapp-js/src/types";
+import type { cityssmGlobal } from "@cityssm/bulma-webapp-js/src/types";
 declare const cityssm: cityssmGlobal;
 
 
@@ -23,7 +23,7 @@ declare const cityssm: cityssmGlobal;
           (responseJSON: { success: boolean }) => {
 
             if (responseJSON.success) {
-              window.location.href = "/organizations/" + organizationID + "?_" + Date.now();
+              window.location.href = "/organizations/" + organizationID + "?_" + Date.now().toString();
             }
           }
         );

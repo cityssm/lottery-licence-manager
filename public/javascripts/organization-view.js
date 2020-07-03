@@ -11,7 +11,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     organizationID: organizationID
                 }, (responseJSON) => {
                     if (responseJSON.success) {
-                        window.location.href = "/organizations/" + organizationID + "?_" + Date.now();
+                        window.location.href = "/organizations/" + organizationID + "?_" + Date.now().toString();
                     }
                 });
             };
