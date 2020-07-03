@@ -55,7 +55,7 @@ declare const cityssm: cityssmGlobal;
 
       cityssm.postJSON(
         "/organizations/doDelete", {
-          organizationID: organizationID
+          organizationID
         },
         (responseJSON: { success: boolean }) => {
 

@@ -24,7 +24,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
     if (!isCreate) {
         const deleteOrganizationFn = () => {
             cityssm.postJSON("/organizations/doDelete", {
-                organizationID: organizationID
+                organizationID
             }, (responseJSON) => {
                 if (responseJSON.success) {
                     window.location.href = "/organizations";

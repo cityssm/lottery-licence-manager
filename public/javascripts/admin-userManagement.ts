@@ -167,7 +167,7 @@ declare const llm: llmGlobal;
 
     cityssm.postJSON(
       "/admin/doGetUserProperties", {
-        userName: userName
+        userName
       },
       (userPropertiesJSON: llmTypes.UserProperties) => {
 

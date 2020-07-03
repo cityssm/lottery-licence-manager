@@ -307,8 +307,8 @@ config.licenceTypes = [
             }],
         printSettings: {
             agco_additionalLicenceDetailsHTMLFn: (licenceObj) => {
-                const ticketCountField = licenceObj.licenceFields.find(field => field.fieldKey === "RA-ticketCount");
-                const ticketCostField = licenceObj.licenceFields.find(field => field.fieldKey === "RA-ticketCost");
+                const ticketCountField = licenceObj.licenceFields.find((field) => field.fieldKey === "RA-ticketCount");
+                const ticketCostField = licenceObj.licenceFields.find((field) => field.fieldKey === "RA-ticketCost");
                 return (ticketCountField ? ticketCountField.fieldValue + " tickets; " : "") +
                     (ticketCostField ? "$" + ticketCostField.fieldValue + " per ticket" : "");
             }

@@ -126,7 +126,7 @@ configSSM.licences.feeCalculationFn = (licenceObj: llm.LotteryLicence) => {
  * SAULT STE MARIE SPECIFICS FOR NEVADA LICENSING
  */
 
-const licenceTypeNevada = configSSM.licenceTypes.find(licenceType => licenceType.licenceTypeKey === "NV");
+const licenceTypeNevada = configSSM.licenceTypes.find((licenceType) => licenceType.licenceTypeKey === "NV");
 
 
 /*

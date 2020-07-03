@@ -11,6 +11,7 @@ module.exports = {
   ],
   extends: "standard-with-typescript",
   rules: {
+    "arrow-parens": ["error", "always"],
     "no-multiple-empty-lines": ["error", {
       max: 2,
       maxEOF: 1
