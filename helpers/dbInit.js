@@ -102,6 +102,23 @@ exports.initLicencesDB = () => {
             " primary key (organizationID, remarkIndex)," +
             " foreign key (organizationID) references Organizations (organizationID)" +
             ") without rowid").run();
+        licencesDB.prepare("create table if not exists OrganizationReminders (" +
+            "organizationID integer not null," +
+            " reminderIndex integer not null," +
+            " reminderTypeKey varchar(15) not null," +
+            " dueDate integer," +
+            " dismissedDate integer not null," +
+            " reminderStatus varchar(20)," +
+            " reminderNote text," +
+            " recordCreate_userName varchar(30) not null," +
+            " recordCreate_timeMillis integer not null," +
+            " recordUpdate_userName varchar(30) not null," +
+            " recordUpdate_timeMillis integer not null," +
+            " recordDelete_userName varchar(30)," +
+            " recordDelete_timeMillis integer," +
+            " primary key (organizationID, reminderIndex)," +
+            " foreign key (organizationID) references Organizations (organizationID)" +
+            ") without rowid").run();
         licencesDB.prepare("create table if not exists OrganizationBankRecords (" +
             "organizationID integer not null," +
             " recordIndex integer not null," +

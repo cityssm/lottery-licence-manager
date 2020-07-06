@@ -147,6 +147,17 @@
           </a>
         </li>
         <li role="presentation">
+          <a id="organizationTab--reminders" role="tab" href="#organizationTabContent--reminders">
+            <span class="icon"><i class="fas fa-bell" aria-hidden="true"></i></span>
+            <span>Reminders</span>
+            <% if (reminders.length > 0) { %>
+              <span class="tag is-info is-rounded ml-3">
+                <%= reminders.length %>
+              </span>
+            <% } %>
+          </a>
+        </li>
+        <li role="presentation">
           <a id="organizationTab--bankRecords" role="tab" href="#organizationTabContent--bankRecords">
             <span class="icon"><i class="fas fa-file-invoice-dollar" aria-hidden="true"></i></span>
             <span>Bank Records</span>
@@ -239,6 +250,9 @@
       </div>
       <div class="tab-content" id="organizationTabContent--remarks" role="tabpanel" aria-labelledby="organizationTab--remarks">
         <%- include('_organization-view_edit-remarks'); -%>
+      </div>
+      <div class="tab-content" id="organizationTabContent--reminders" role="tabpanel" aria-labelledby="organizationTab--reminders">
+        <%- include('_organization-view_edit-reminders'); -%>
       </div>
       <div class="tab-content" id="organizationTabContent--bankRecords" role="tabpanel" aria-labelledby="organizationTab--bankRecords">
         <%- include('_organization-view_edit-bankRecords'); -%>

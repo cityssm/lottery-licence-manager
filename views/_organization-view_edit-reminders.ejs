@@ -1,0 +1,75 @@
+<div class="panel">
+  <div class="panel-heading">
+    <div class="level">
+      <div class="level-left">
+        <h2 class="has-text-weight-bold">Reminders</h2>
+      </div>
+      <div class="level-right has-text-weight-normal is-hidden-print">
+        <% if (user.userProperties.canCreate) { %>
+          <div class="control is-hidden-status-view">
+            <button class="button is-primary is-small is-add-reminder-button" type="button">
+              <span class="icon is-small">
+                <i class="fas fa-comment" aria-hidden="true"></i>
+              </span>
+              <span>Add a Reminder</span>
+            </button>
+          </div>
+        <% } %>
+        <div class="control">
+          <a class="button is-small" href="/reports/reminders-byOrganization?organizationID=<%= organization.organizationID %>" download>
+            <span class="icon is-small">
+              <i class="fas fa-file-download" aria-hidden="true"></i>
+            </span>
+            <span>Export Reminders</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="container--reminders" data-organization-id="<%= organization.organizationID %>">
+    <%
+      if (reminders.length === 0) {
+    %>
+      <div class="panel-block is-block">
+        <div class="message is-info">
+          <p class="message-body">
+            There are no reminders associated with <%= organization.organizationName %>.
+          </p>
+        </div>
+      </div>
+    <%
+      } else {
+        for (let reminderIndex = 0; reminderIndex < reminders.length; reminderIndex += 1) {
+          const reminder = reminders[reminderIndex];
+          const reminderType = configFns.getReminderType(reminder.reminderTypeKey);
+    %>
+      <div class="panel-block is-block is-reminder-block">
+        <div class="columns">
+          <div class="column">
+            <%= (reminderType ? reminderType.reminderType : reminder.reminderTypeKey) %>
+          </div>
+          <div class="column">
+            <% if (reminder.dueDateString === "") { %>
+              <span class="has-text-grey">(No Due Date Set)</span>
+            <% } else { %>
+              <%= reminder.dueDateString %>
+            <% } %>
+          </div>
+          <div class="column">
+            <% if (reminder.dismissedDateString === "") { %>
+              <span class="has-text-grey">(Active)</span>
+            <% } else { %>
+              <%= reminder.dismissedDateString %>
+            <% } %>
+          </div>
+          <div class="column">
+            <%= reminder.reminderStatus %>
+          </div>
+        </div>
+      </div>
+    <%
+        }
+      }
+    %>
+  </div>
+</div>

@@ -638,6 +638,42 @@ export const deleteOrganizationRemark =
     return info.changes > 0;
   };
 
+/*
+ * Organization Reminders
+ */
+
+export const getOrganizationReminders = (organizationID: number, reqSession: Express.SessionData) => {
+
+  const db = sqlite(dbPath, {
+    readonly: true
+  });
+
+  const reminders: llm.OrganizationReminder[] =
+    db.prepare("select reminderIndex," +
+      " reminderTypeKey, dueDate, dismissedDate," +
+      " reminderStatus, reminderNote," +
+      " recordCreate_userName, recordCreate_timeMillis, recordUpdate_userName, recordUpdate_timeMillis" +
+      " from OrganizationReminders" +
+      " where recordDelete_timeMillis is null" +
+      " and organizationID = ?" +
+      " order by dueDate desc, dismissedDate desc")
+      .all(organizationID);
+
+  db.close();
+
+  for (const reminder of reminders) {
+
+    reminder.recordType = "reminder";
+
+    reminder.dueDateString = dateTimeFns.dateIntegerToString(reminder.dueDate || 0);
+    reminder.dismissedDateString = dateTimeFns.dateIntegerToString(reminder.dismissedDate || 0);
+
+    reminder.canUpdate = canUpdateObject(reminder, reqSession);
+  }
+
+  return reminders;
+};
+
 
 /*
  * ORGANIZATION BANK RECORDS

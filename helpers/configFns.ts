@@ -36,6 +36,8 @@ configFallbackValues.set("user.defaultProperties", {
 configFallbackValues.set("defaults.city", "");
 configFallbackValues.set("defaults.province", "");
 
+configFallbackValues.set("reminderCategories", []);
+
 configFallbackValues.set("bankRecordTypes", [
   {
     bankRecordType: "statement",
@@ -118,6 +120,8 @@ export function getProperty(propertyName: "licences.printTemplate"): string;
 
 export function getProperty(propertyName: "licenceTypes"): llm.ConfigLicenceType[];
 
+export function getProperty(propertyName: "reminderCategories"): llm.ConfigReminderCategory[];
+
 export function getProperty(propertyName: "session.cookieName"): string;
 export function getProperty(propertyName: "session.doKeepAlive"): boolean;
 export function getProperty(propertyName: "session.maxAgeMillis"): number;
@@ -155,8 +159,31 @@ export const keepAliveMillis =
 
 
 /*
+ * REMINDER TYPES
+ */
+
+const reminderTypeCache = new Map<string, llm.ConfigReminderType>();
+
+export const getReminderType = (reminderTypeKey: string): llm.ConfigReminderType => {
+
+  if (reminderTypeCache.size === 0) {
+
+    for (const reminderCategory of getProperty("reminderCategories")) {
+      for (const reminderType of reminderCategory.reminderTypes) {
+        reminderType.reminderCategory = reminderCategory.reminderCategory;
+        reminderTypeCache.set(reminderType.reminderTypeKey, reminderType);
+      }
+    }
+  }
+
+  return reminderTypeCache.get(reminderTypeKey);
+};
+
+
+/*
  * LICENCE TYPES
  */
+
 
 const licenceTypeCache = new Map<string, llm.ConfigLicenceType>();
 let licenceTypeKeyNameObject = {};

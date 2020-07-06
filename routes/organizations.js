@@ -260,12 +260,14 @@ router.get("/:organizationID", (req, res) => {
         limit: -1
     }).licences || [];
     const remarks = licencesDBOrganizations.getOrganizationRemarks(organizationID, req.session) || [];
+    const reminders = licencesDBOrganizations.getOrganizationReminders(organizationID, req.session) || [];
     res.render("organization-view", {
         headTitle: organization.organizationName,
         isViewOnly: true,
         organization,
         licences,
         remarks,
+        reminders,
         currentDateInteger: dateTimeFns.dateToInteger(new Date())
     });
 });

@@ -5,6 +5,60 @@ config.defaults = {
     city: "",
     province: "ON"
 };
+config.reminderCategories = [
+    {
+        reminderCategory: "Annual Eligibility Documents",
+        categoryDescription: "To be submitted at the beginning on an organization's fiscal year.",
+        isActive: true,
+        reminderTypes: [
+            {
+                reminderTypeKey: "DOC_MANDATE",
+                reminderType: "Organization Mandate",
+                reminderStatuses: ["Received", "Not Applicable"],
+                isActive: true
+            }, {
+                reminderTypeKey: "DOC_BOARD",
+                reminderType: "Board of Directors List",
+                reminderStatuses: ["Received", "Incomplete"],
+                isActive: true
+            }, {
+                reminderTypeKey: "DOC_BUDGET",
+                reminderType: "Projected Budget",
+                reminderStatuses: ["Received", "Incomplete"],
+                isActive: true
+            }, {
+                reminderTypeKey: "DOC_FINSTMT",
+                reminderType: "Financial Statement",
+                reminderStatuses: ["Received", "Incomplete"],
+                isActive: true
+            }, {
+                reminderTypeKey: "DOC_MEMBERS",
+                reminderType: "Bona Fide Members List",
+                reminderStatuses: ["Received", "Incomplete", "Not Applicable"],
+                isActive: true
+            }, {
+                reminderTypeKey: "DOC_ROSTER",
+                reminderType: "Team Roster",
+                reminderStatuses: ["Received", "Incomplete", "Not Applicable"],
+                isActive: true
+            }, {
+                reminderTypeKey: "DOC_SCHOOLBD",
+                reminderType: "School Board Budget",
+                reminderStatuses: ["Received", "Incomplete", "Not Applicable"],
+                isActive: true
+            }
+        ]
+    }, {
+        reminderCategory: "Other Reminders",
+        isActive: true,
+        reminderTypes: [{
+                reminderTypeKey: "OTHER",
+                reminderType: "Reminder",
+                reminderStatuses: ["Dismissed"],
+                isActive: true
+            }]
+    }
+];
 config.licences = {
     feeCalculationFn: (licenceObj) => {
         const totalPrizeValue = (licenceObj.totalPrizeValue || 0.0);

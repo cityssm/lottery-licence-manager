@@ -115,6 +115,19 @@ router.all("/:reportName", (req, res) => {
                 " and organizationID = ?";
             params = [req.query.organizationID];
             break;
+        case "reminders-all":
+            sql = "select * from OrganizationReminders";
+            break;
+        case "reminders-byOrganization":
+            sql = "select organizationID, reminderIndex," +
+                " reminderTypeKey, dueDate, dismissedDate," +
+                " reminderStatus, reminderNote," +
+                " recordCreate_userName, recordCreate_timeMillis, recordUpdate_userName, recordUpdate_timeMillis" +
+                " from OrganizationReminders" +
+                " where recordDelete_timeMillis is null" +
+                " and organizationID = ?";
+            params = [req.query.organizationID];
+            break;
         case "bankRecords-all":
             sql = "select * from OrganizationBankRecords";
             break;

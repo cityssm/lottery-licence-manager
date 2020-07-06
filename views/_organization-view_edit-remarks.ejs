@@ -54,8 +54,7 @@
       </div>
     <%
       } else {
-        for (let remarkIndex = 0; remarkIndex < remarks.length; remarkIndex += 1) {
-          const remark = remarks[remarkIndex];
+        for (const remark of remarks) {
     %>
           <div class="panel-block is-block is-remark-block">
             <div class="columns is-mobile">

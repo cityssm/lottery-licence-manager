@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteOrganizationBankRecord = exports.updateOrganizationBankRecord = exports.addOrganizationBankRecord = exports.getOrganizationBankRecordStats = exports.getOrganizationBankRecords = exports.deleteOrganizationRemark = exports.updateOrganizationRemark = exports.addOrganizationRemark = exports.getOrganizationRemark = exports.getOrganizationRemarks = exports.setDefaultOrganizationRepresentative = exports.deleteOrganizationRepresentative = exports.updateOrganizationRepresentative = exports.addOrganizationRepresentative = exports.getDeletedOrganizations = exports.getInactiveOrganizations = exports.restoreOrganization = exports.deleteOrganization = exports.updateOrganization = exports.createOrganization = exports.getOrganization = exports.getOrganizations = void 0;
+exports.deleteOrganizationBankRecord = exports.updateOrganizationBankRecord = exports.addOrganizationBankRecord = exports.getOrganizationBankRecordStats = exports.getOrganizationBankRecords = exports.getOrganizationReminders = exports.deleteOrganizationRemark = exports.updateOrganizationRemark = exports.addOrganizationRemark = exports.getOrganizationRemark = exports.getOrganizationRemarks = exports.setDefaultOrganizationRepresentative = exports.deleteOrganizationRepresentative = exports.updateOrganizationRepresentative = exports.addOrganizationRepresentative = exports.getDeletedOrganizations = exports.getInactiveOrganizations = exports.restoreOrganization = exports.deleteOrganization = exports.updateOrganization = exports.createOrganization = exports.getOrganization = exports.getOrganizations = void 0;
 const licencesDB_1 = require("./licencesDB");
 const sqlite = require("better-sqlite3");
 const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
@@ -368,6 +368,28 @@ exports.deleteOrganizationRemark = (organizationID, remarkIndex, reqSession) => 
         .run(reqSession.user.userName, nowMillis, organizationID, remarkIndex);
     db.close();
     return info.changes > 0;
+};
+exports.getOrganizationReminders = (organizationID, reqSession) => {
+    const db = sqlite(licencesDB_1.dbPath, {
+        readonly: true
+    });
+    const reminders = db.prepare("select reminderIndex," +
+        " reminderTypeKey, dueDate, dismissedDate," +
+        " reminderStatus, reminderNote," +
+        " recordCreate_userName, recordCreate_timeMillis, recordUpdate_userName, recordUpdate_timeMillis" +
+        " from OrganizationReminders" +
+        " where recordDelete_timeMillis is null" +
+        " and organizationID = ?" +
+        " order by dueDate desc, dismissedDate desc")
+        .all(organizationID);
+    db.close();
+    for (const reminder of reminders) {
+        reminder.recordType = "reminder";
+        reminder.dueDateString = dateTimeFns.dateIntegerToString(reminder.dueDate || 0);
+        reminder.dismissedDateString = dateTimeFns.dateIntegerToString(reminder.dismissedDate || 0);
+        reminder.canUpdate = licencesDB_1.canUpdateObject(reminder, reqSession);
+    }
+    return reminders;
 };
 exports.getOrganizationBankRecords = (organizationID, accountNumber, bankingYear) => {
     const db = sqlite(licencesDB_1.dbPath, {

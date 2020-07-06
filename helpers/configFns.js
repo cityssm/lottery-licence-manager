@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getLicenceTypeKeyToNameObject = exports.getLicenceType = exports.keepAliveMillis = exports.getProperty = void 0;
+exports.getLicenceTypeKeyToNameObject = exports.getLicenceType = exports.getReminderType = exports.keepAliveMillis = exports.getProperty = void 0;
 const config = require("../data/config");
 const configFallbackValues = new Map();
 configFallbackValues.set("application.applicationName", "Lottery Licence System");
@@ -19,6 +19,7 @@ configFallbackValues.set("user.defaultProperties", {
 });
 configFallbackValues.set("defaults.city", "");
 configFallbackValues.set("defaults.province", "");
+configFallbackValues.set("reminderCategories", []);
 configFallbackValues.set("bankRecordTypes", [
     {
         bankRecordType: "statement",
@@ -69,6 +70,18 @@ exports.getProperty = getProperty;
 exports.keepAliveMillis = getProperty("session.doKeepAlive")
     ? Math.max(getProperty("session.maxAgeMillis") / 2, getProperty("session.maxAgeMillis") - (10 * 60 * 1000))
     : 0;
+const reminderTypeCache = new Map();
+exports.getReminderType = (reminderTypeKey) => {
+    if (reminderTypeCache.size === 0) {
+        for (const reminderCategory of getProperty("reminderCategories")) {
+            for (const reminderType of reminderCategory.reminderTypes) {
+                reminderType.reminderCategory = reminderCategory.reminderCategory;
+                reminderTypeCache.set(reminderType.reminderTypeKey, reminderType);
+            }
+        }
+    }
+    return reminderTypeCache.get(reminderTypeKey);
+};
 const licenceTypeCache = new Map();
 let licenceTypeKeyNameObject = {};
 exports.getLicenceType = (licenceTypeKey) => {

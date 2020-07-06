@@ -26,6 +26,7 @@ export declare function getProperty(propertyName: "licences.feeCalculationFn"): 
 };
 export declare function getProperty(propertyName: "licences.printTemplate"): string;
 export declare function getProperty(propertyName: "licenceTypes"): llm.ConfigLicenceType[];
+export declare function getProperty(propertyName: "reminderCategories"): llm.ConfigReminderCategory[];
 export declare function getProperty(propertyName: "session.cookieName"): string;
 export declare function getProperty(propertyName: "session.doKeepAlive"): boolean;
 export declare function getProperty(propertyName: "session.maxAgeMillis"): number;
@@ -33,5 +34,6 @@ export declare function getProperty(propertyName: "session.secret"): string;
 export declare function getProperty(propertyName: "user.createUpdateWindowMillis"): number;
 export declare function getProperty(propertyName: "user.defaultProperties"): llm.UserProperties;
 export declare const keepAliveMillis: number;
+export declare const getReminderType: (reminderTypeKey: string) => llm.ConfigReminderType;
 export declare const getLicenceType: (licenceTypeKey: string) => llm.ConfigLicenceType;
 export declare const getLicenceTypeKeyToNameObject: () => {};

@@ -8,6 +8,7 @@ export interface Config {
   admin?: ConfigAdmin;
   user?: ConfigUser;
   defaults?: ConfigDefaults;
+  reminderCategories?: ConfigReminderCategory[];
   bankRecordTypes?: ConfigBankRecordType[];
   licences?: ConfigLicences;
   licenceTypes?: ConfigLicenceType[];
@@ -53,8 +54,23 @@ interface ConfigDefaults {
   province: string;
 }
 
+export interface ConfigReminderCategory {
+  reminderCategory: string;
+  categoryDescription?: string;
+  isActive: boolean;
+  reminderTypes: ConfigReminderType[];
+}
+
+export interface ConfigReminderType {
+  reminderTypeKey: string;
+  reminderCategory?: string;
+  reminderType: string;
+  reminderStatuses?: string[];
+  isActive: boolean;
+}
+
 export interface ConfigBankRecordType {
-  bankRecordType: "statement" | "cheques" | "receipts";
+  bankRecordType: string;
   bankRecordTypeName: string;
 }
 
@@ -136,7 +152,7 @@ interface ConfigAmendments {
 
 
 export interface Record {
-  recordType: "location" | "organization" | "remark" | "bankRecord" | "licence" | "event";
+  recordType: "location" | "organization" | "remark" | "reminder" | "bankRecord" | "licence" | "event";
 
   recordCreate_userName: string;
   recordCreate_timeMillis: number;
@@ -243,6 +259,21 @@ export interface OrganizationRemark extends Record {
   remarkTimeString: string;
   remark: string;
   isImportant: boolean;
+}
+
+export interface OrganizationReminder extends Record {
+
+  recordType: "reminder";
+
+  organizationID: number;
+  reminderIndex: number;
+  reminderTypeKey: string;
+  dueDate: number;
+  dueDateString: string;
+  dismissedDate: number;
+  dismissedDateString: string;
+  reminderStatus: string;
+  reminderNote: string;
 }
 
 export interface OrganizationBankRecord extends Record {
