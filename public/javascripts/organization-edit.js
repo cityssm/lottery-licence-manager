@@ -3,8 +3,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 (() => {
     const formEle = document.getElementById("form--organization");
     const formMessageEle = document.getElementById("container--form-message");
-    const organizationID = document.getElementById("organization--organizationID").value;
-    const isCreate = organizationID === "";
+    const organizationIDString = document.getElementById("organization--organizationID").value;
+    const isCreate = organizationIDString === "";
+    const organizationID = (organizationIDString === "" ? null : parseInt(organizationIDString));
     formEle.addEventListener("submit", (formEvent) => {
         formEvent.preventDefault();
         formMessageEle.innerHTML = "Saving... <i class=\"fas fa-circle-notch fa-spin\" aria-hidden=\"true\"></i>";
@@ -48,7 +49,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
         showNoRepresentativesWarning();
         const updateDefaultRepresentativeFn = (changeEvent) => {
             const defaultRepresentativeIndex = changeEvent.currentTarget.value;
-            cityssm.postJSON("/organizations/" + organizationID + "/doSetDefaultRepresentative", {
+            cityssm.postJSON("/organizations/" + organizationIDString + "/doSetDefaultRepresentative", {
                 isDefaultRepresentativeIndex: defaultRepresentativeIndex
             }, () => { });
         };
@@ -60,8 +61,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
             clickEvent.preventDefault();
             const trEle = clickEvent.currentTarget.closest("tr");
             const representativeName = trEle.getAttribute("data-representative-name");
-            cityssm.confirmModal("Delete a Representative?", "<p>Are you sure you want to delete the representative \"" + representativeName + "\"?</p>", "Yes, Delete", "danger", () => {
-                cityssm.postJSON("/organizations/" + organizationID + "/doDeleteOrganizationRepresentative", {
+            cityssm.confirmModal("Delete a Representative?", `<p>Are you sure you want to delete the representative "${cityssm.escapeHTML(representativeName)}"?</p>`, "Yes, Delete", "danger", () => {
+                cityssm.postJSON("/organizations/" + organizationIDString + "/doDeleteOrganizationRepresentative", {
                     representativeIndex: trEle.getAttribute("data-representative-index")
                 }, (responseJSON) => {
                     if (responseJSON.success) {
@@ -174,7 +175,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
         }
         editRepresentativeFormEle.addEventListener("submit", (formEvent) => {
             formEvent.preventDefault();
-            cityssm.postJSON("/organizations/" + organizationID + "/doEditOrganizationRepresentative", formEvent.currentTarget, (responseJSON) => {
+            cityssm.postJSON("/organizations/" + organizationIDString + "/doEditOrganizationRepresentative", formEvent.currentTarget, (responseJSON) => {
                 if (responseJSON.success) {
                     editRepresentativeTrEle.remove();
                     editRepresentativeTrEle = null;
@@ -196,7 +197,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
         }
         addRepresentativeFormEle.addEventListener("submit", (formEvent) => {
             formEvent.preventDefault();
-            cityssm.postJSON("/organizations/" + organizationID + "/doAddOrganizationRepresentative", formEvent.currentTarget, (responseJSON) => {
+            cityssm.postJSON("/organizations/" + organizationIDString + "/doAddOrganizationRepresentative", formEvent.currentTarget, (responseJSON) => {
                 if (responseJSON.success) {
                     const emptyWarningEle = representativeTbodyEle.getElementsByClassName("is-empty-warning");
                     if (emptyWarningEle.length > 0) {
@@ -221,6 +222,79 @@ Object.defineProperty(exports, "__esModule", { value: true });
             document.getElementById("addOrganizationRepresentative--representativePostalCode").value =
                 document.getElementById("organization--organizationPostalCode").value;
         });
+        const deleteReminderClickFn = (buttonEvent) => {
+            buttonEvent.preventDefault();
+        };
+        const editReminderClickFn = (buttonEvent) => {
+            buttonEvent.preventDefault();
+        };
+        const renderReminderAsTableRow = (reminder) => {
+            const reminderType = llm.organizationReminders.getReminderType(reminder.reminderTypeKey);
+            const trEle = document.createElement("tr");
+            let reminderDateInnerHTML = "";
+            if (reminder.reminderDateString === "") {
+                reminderDateInnerHTML = "<span class=\"has-text-grey\">(No Reminder Set)</span>";
+            }
+            else if (reminder.dismissedDateString !== "") {
+                reminderDateInnerHTML = "<span class=\"has-text-grey is-linethrough\">" +
+                    reminder.reminderDateString +
+                    "</span>";
+            }
+            else {
+                reminderDateInnerHTML = reminder.reminderDateString;
+            }
+            trEle.innerHTML = ("<td>" +
+                (reminderType
+                    ? reminderType.reminderType + "<br />" +
+                        "<span class=\"is-size-7\">" + reminderType.reminderCategory + "</span>"
+                    : reminder.reminderTypeKey) +
+                "</td>") +
+                "<td>" + reminder.reminderStatus + "</td>" +
+                ("<td class=\"has-text-centered\">" +
+                    (reminder.dismissedDateString === ""
+                        ? "<span class=\"has-text-grey\">(Active)</span>"
+                        : reminder.dismissedDateString) +
+                    "</td>") +
+                ("<td class=\"has-text-centered\">" +
+                    reminderDateInnerHTML +
+                    "</td>") +
+                ("<td class=\"is-hidden-print\">" +
+                    "<div class=\"buttons is-right has-addons is-hidden-status-view\">" +
+                    "<button class=\"button is-small is-edit-reminder-button\"" +
+                    " data-reminder-index=\"" + reminder.reminderIndex.toString() + "\"" +
+                    " data-tooltip=\"Edit Reminder\" type=\"button\">" +
+                    "<span class=\"icon is-small\">" +
+                    "<i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i>" +
+                    "</span>" +
+                    "<span>Edit</span>" +
+                    "</button>" +
+                    "<button class=\"button is-small has-text-danger is-delete-reminder-button\"" +
+                    " data-reminder-index=\"" + reminder.reminderIndex.toString() + "\"" +
+                    " data-tooltip=\"Delete Reminder\" type=\"button\">" +
+                    "<i class=\"fas fa-trash\" aria-hidden=\"true\"></i>" +
+                    "<span class=\"sr-only\">Delete</span>" +
+                    "</button>" +
+                    "</div>" +
+                    "</td>");
+            trEle.getElementsByClassName("is-edit-reminder-button")[0].addEventListener("click", editReminderClickFn);
+            trEle.getElementsByClassName("is-delete-reminder-button")[0].addEventListener("click", deleteReminderClickFn);
+            return trEle;
+        };
+        document.getElementById("is-add-reminder-button").addEventListener("click", (clickEvent) => {
+            clickEvent.preventDefault();
+            llm.organizationReminders.openAddReminderModal(organizationID, (reminderObj) => {
+                const trEle = renderReminderAsTableRow(reminderObj);
+                document.getElementById("container--reminders").insertAdjacentElement("afterbegin", trEle);
+            });
+        });
+        const editReminderButtonEles = document.getElementsByClassName("is-edit-reminder-button");
+        for (const buttonEle of editReminderButtonEles) {
+            buttonEle.addEventListener("click", editReminderClickFn);
+        }
+        const deleteReminderButtonEles = document.getElementsByClassName("is-delete-reminder-button");
+        for (const buttonEle of deleteReminderButtonEles) {
+            buttonEle.addEventListener("click", deleteReminderClickFn);
+        }
     }
     const setUnsavedChangesFn = () => {
         cityssm.enableNavBlocker();

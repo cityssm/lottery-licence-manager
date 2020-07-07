@@ -1,15 +1,22 @@
 import type { cityssmGlobal } from "@cityssm/bulma-webapp-js/src/types";
+import type { llmGlobal } from "./types";
 import type * as llmTypes from "../../helpers/llmTypes";
 
 declare const cityssm: cityssmGlobal;
+declare const llm: llmGlobal;
 
 
 (() => {
 
   const formEle = document.getElementById("form--organization") as HTMLFormElement;
   const formMessageEle = document.getElementById("container--form-message");
-  const organizationID = (document.getElementById("organization--organizationID") as HTMLInputElement).value;
-  const isCreate = organizationID === "";
+
+  const organizationIDString =
+    (document.getElementById("organization--organizationID") as HTMLInputElement).value;
+
+  const isCreate = organizationIDString === "";
+
+  const organizationID = (organizationIDString === "" ? null : parseInt(organizationIDString));
 
   // Main record update
 
@@ -109,7 +116,7 @@ declare const cityssm: cityssmGlobal;
       const defaultRepresentativeIndex = (changeEvent.currentTarget as HTMLInputElement).value;
 
       cityssm.postJSON(
-        "/organizations/" + organizationID + "/doSetDefaultRepresentative", {
+        "/organizations/" + organizationIDString + "/doSetDefaultRepresentative", {
           isDefaultRepresentativeIndex: defaultRepresentativeIndex
         },
         () => { }
@@ -139,13 +146,13 @@ declare const cityssm: cityssmGlobal;
 
       cityssm.confirmModal(
         "Delete a Representative?",
-        "<p>Are you sure you want to delete the representative \"" + representativeName + "\"?</p>",
+        `<p>Are you sure you want to delete the representative "${cityssm.escapeHTML(representativeName)}"?</p>`,
         "Yes, Delete",
         "danger",
         () => {
 
           cityssm.postJSON(
-            "/organizations/" + organizationID + "/doDeleteOrganizationRepresentative", {
+            "/organizations/" + organizationIDString + "/doDeleteOrganizationRepresentative", {
               representativeIndex: trEle.getAttribute("data-representative-index")
             },
             (responseJSON: { success: boolean }) => {
@@ -314,7 +321,7 @@ declare const cityssm: cityssmGlobal;
       formEvent.preventDefault();
 
       cityssm.postJSON(
-        "/organizations/" + organizationID + "/doEditOrganizationRepresentative",
+        "/organizations/" + organizationIDString + "/doEditOrganizationRepresentative",
         formEvent.currentTarget,
         (responseJSON) => {
 
@@ -358,7 +365,7 @@ declare const cityssm: cityssmGlobal;
       formEvent.preventDefault();
 
       cityssm.postJSON(
-        "/organizations/" + organizationID + "/doAddOrganizationRepresentative",
+        "/organizations/" + organizationIDString + "/doAddOrganizationRepresentative",
         formEvent.currentTarget,
         (responseJSON: { success: boolean; organizationRepresentative: llmTypes.OrganizationRepresentative }) => {
 
@@ -405,6 +412,108 @@ declare const cityssm: cityssmGlobal;
 
       });
 
+
+    /*
+     * Reminders
+     */
+
+
+    const deleteReminderClickFn = (buttonEvent: Event) => {
+      buttonEvent.preventDefault();
+    };
+
+    const editReminderClickFn = (buttonEvent: Event) => {
+      buttonEvent.preventDefault();
+    };
+
+    const renderReminderAsTableRow = (reminder: llmTypes.OrganizationReminder) => {
+
+      const reminderType = llm.organizationReminders.getReminderType(reminder.reminderTypeKey);
+
+      const trEle = document.createElement("tr");
+
+      let reminderDateInnerHTML = "";
+
+      if (reminder.reminderDateString === "") {
+
+        reminderDateInnerHTML = "<span class=\"has-text-grey\">(No Reminder Set)</span>";
+
+      } else if (reminder.dismissedDateString !== "") {
+
+        reminderDateInnerHTML = "<span class=\"has-text-grey is-linethrough\">" +
+          reminder.reminderDateString +
+          "</span>";
+
+      } else {
+        reminderDateInnerHTML = reminder.reminderDateString;
+      }
+
+      trEle.innerHTML = ("<td>" +
+        (reminderType
+          ? reminderType.reminderType + "<br />" +
+          "<span class=\"is-size-7\">" + reminderType.reminderCategory + "</span>"
+          : reminder.reminderTypeKey) +
+        "</td>") +
+        "<td>" + reminder.reminderStatus + "</td>" +
+        ("<td class=\"has-text-centered\">" +
+          (reminder.dismissedDateString === ""
+            ? "<span class=\"has-text-grey\">(Active)</span>"
+            : reminder.dismissedDateString) +
+          "</td>") +
+        ("<td class=\"has-text-centered\">" +
+          reminderDateInnerHTML +
+          "</td>") +
+        ("<td class=\"is-hidden-print\">" +
+          "<div class=\"buttons is-right has-addons is-hidden-status-view\">" +
+          "<button class=\"button is-small is-edit-reminder-button\"" +
+          " data-reminder-index=\"" + reminder.reminderIndex.toString() + "\"" +
+          " data-tooltip=\"Edit Reminder\" type=\"button\">" +
+          "<span class=\"icon is-small\">" +
+          "<i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i>" +
+          "</span>" +
+          "<span>Edit</span>" +
+          "</button>" +
+          "<button class=\"button is-small has-text-danger is-delete-reminder-button\"" +
+          " data-reminder-index=\"" + reminder.reminderIndex.toString() + "\"" +
+          " data-tooltip=\"Delete Reminder\" type=\"button\">" +
+          "<i class=\"fas fa-trash\" aria-hidden=\"true\"></i>" +
+          "<span class=\"sr-only\">Delete</span>" +
+          "</button>" +
+          "</div>" +
+          "</td>");
+
+      trEle.getElementsByClassName("is-edit-reminder-button")[0].addEventListener("click",
+        editReminderClickFn);
+
+      trEle.getElementsByClassName("is-delete-reminder-button")[0].addEventListener("click",
+        deleteReminderClickFn);
+
+      return trEle;
+    };
+
+
+    document.getElementById("is-add-reminder-button").addEventListener("click", (clickEvent) => {
+
+      clickEvent.preventDefault();
+      llm.organizationReminders.openAddReminderModal(organizationID, (reminderObj) => {
+
+        const trEle = renderReminderAsTableRow(reminderObj);
+
+        document.getElementById("container--reminders").insertAdjacentElement("afterbegin", trEle);
+      });
+    });
+
+    const editReminderButtonEles = document.getElementsByClassName("is-edit-reminder-button");
+
+    for (const buttonEle of editReminderButtonEles) {
+      buttonEle.addEventListener("click", editReminderClickFn);
+    }
+
+    const deleteReminderButtonEles = document.getElementsByClassName("is-delete-reminder-button");
+
+    for (const buttonEle of deleteReminderButtonEles) {
+      buttonEle.addEventListener("click", deleteReminderClickFn);
+    }
   }
 
 

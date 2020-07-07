@@ -650,13 +650,13 @@ export const getOrganizationReminders = (organizationID: number, reqSession: Exp
 
   const reminders: llm.OrganizationReminder[] =
     db.prepare("select reminderIndex," +
-      " reminderTypeKey, dueDate, dismissedDate," +
+      " reminderTypeKey, reminderDate, dismissedDate," +
       " reminderStatus, reminderNote," +
       " recordCreate_userName, recordCreate_timeMillis, recordUpdate_userName, recordUpdate_timeMillis" +
       " from OrganizationReminders" +
       " where recordDelete_timeMillis is null" +
       " and organizationID = ?" +
-      " order by dueDate desc, dismissedDate desc")
+      " order by reminderDate desc, dismissedDate desc")
       .all(organizationID);
 
   db.close();
@@ -665,7 +665,7 @@ export const getOrganizationReminders = (organizationID: number, reqSession: Exp
 
     reminder.recordType = "reminder";
 
-    reminder.dueDateString = dateTimeFns.dateIntegerToString(reminder.dueDate || 0);
+    reminder.reminderDateString = dateTimeFns.dateIntegerToString(reminder.reminderDate || 0);
     reminder.dismissedDateString = dateTimeFns.dateIntegerToString(reminder.dismissedDate || 0);
 
     reminder.canUpdate = canUpdateObject(reminder, reqSession);
@@ -674,6 +674,95 @@ export const getOrganizationReminders = (organizationID: number, reqSession: Exp
   return reminders;
 };
 
+export const getOrganizationReminder = (organizationID: number, reminderIndex: number, reqSession: Express.SessionData) => {
+
+  const db = sqlite(dbPath, {
+    readonly: true
+  });
+
+  const reminder: llm.OrganizationReminder =
+    db.prepare("select * from OrganizationReminders" +
+      " where recordDelete_timeMillis is null" +
+      " and organizationID = ?" +
+      " and remarkIndex = ?")
+      .get(organizationID, reminderIndex);
+
+  db.close();
+
+  if (reminder) {
+
+    reminder.recordType = "reminder";
+
+    reminder.reminderDateString = dateTimeFns.dateIntegerToString(reminder.reminderDate || 0);
+    reminder.dismissedDateString = dateTimeFns.dateIntegerToString(reminder.dismissedDate || 0);
+
+    reminder.canUpdate = canUpdateObject(reminder, reqSession);
+  }
+
+  return reminder;
+};
+
+
+export const addOrganizationReminder = (reqBody: {
+  organizationID: string;
+  reminderTypeKey: string;
+  reminderDateString?: string;
+  reminderStatus: string;
+  reminderNote: string;
+}, reqSession: Express.SessionData) => {
+
+  const db = sqlite(dbPath);
+
+  const row: { maxIndex: number } = db.prepare("select ifnull(max(reminderIndex), -1) as maxIndex" +
+    " from OrganizationReminders" +
+    " where organizationID = ?")
+    .get(reqBody.organizationID);
+
+  const newReminderIndex = row.maxIndex + 1;
+
+  const nowMillis = Date.now();
+
+  db.prepare("insert into OrganizationReminders" +
+    " (organizationID, reminderIndex, reminderTypeKey, reminderDate," +
+    " reminderStatus, reminderNote," +
+    " recordCreate_userName, recordCreate_timeMillis, recordUpdate_userName, recordUpdate_timeMillis)" +
+    " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
+    .run(reqBody.organizationID,
+      newReminderIndex,
+      reqBody.reminderTypeKey,
+      (reqBody.reminderDateString === ""
+        ? null
+        : dateTimeFns.dateStringToInteger(reqBody.reminderDateString)),
+      reqBody.reminderStatus,
+      reqBody.reminderNote,
+      reqSession.user.userName,
+      nowMillis,
+      reqSession.user.userName,
+      nowMillis
+    );
+
+  db.close();
+
+  const reminder: llm.OrganizationReminder = {
+    recordType: "reminder",
+    canUpdate: true,
+    organizationID: parseInt(reqBody.organizationID),
+    reminderIndex: newReminderIndex,
+    reminderTypeKey: reqBody.reminderTypeKey,
+    reminderDate: dateTimeFns.dateStringToInteger(reqBody.reminderDateString),
+    reminderDateString: reqBody.reminderDateString,
+    dismissedDate: null,
+    dismissedDateString: "",
+    reminderStatus: reqBody.reminderStatus,
+    reminderNote: reqBody.reminderNote,
+    recordCreate_userName: reqSession.user.userName,
+    recordCreate_timeMillis: nowMillis,
+    recordUpdate_userName: reqSession.user.userName,
+    recordUpdate_timeMillis: nowMillis
+  };
+
+  return reminder;
+};
 
 /*
  * ORGANIZATION BANK RECORDS

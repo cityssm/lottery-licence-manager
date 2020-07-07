@@ -79,6 +79,7 @@ router.post("/doGetInactive", (req, res) => {
  * RECOVERY
  */
 
+
 router.get("/recovery", (req, res) => {
 
   if (!userIsAdmin(req)) {
@@ -194,6 +195,45 @@ router.post("/doDeleteRemark", (req, res) => {
 
 
 /*
+ * REMINDERS
+ */
+
+
+router.post("/doGetReminders", (req, res) => {
+
+  const organizationID = req.body.organizationID;
+
+  res.json(licencesDBOrganizations.getOrganizationReminders(organizationID, req.session));
+});
+
+
+router.post("/doGetReminder", (req, res) => {
+
+  const organizationID = req.body.organizationID;
+  const reminderIndex = req.body.reminderIndex;
+
+  res.json(licencesDBOrganizations.getOrganizationReminder(organizationID, reminderIndex, req.session));
+});
+
+
+router.post("/doAddReminder", (req, res) => {
+
+  const reminder = licencesDBOrganizations.addOrganizationReminder(req.body, req.session);
+
+  if (reminder) {
+    return res.json({
+      success: true,
+      reminder
+    });
+  } else {
+    return res.json({
+      success: false
+    });
+  }
+});
+
+
+/*
  * BANK RECORDS
  */
 
@@ -292,6 +332,11 @@ router.post("/doDeleteBankRecord", (req, res) => {
     });
   }
 });
+
+
+/*
+ * ORGANIZATION MAINTENANCE
+ */
 
 
 router.get("/new", (req, res) => {
@@ -498,6 +543,8 @@ router.get("/:organizationID/edit", (req, res) => {
 
   const remarks = licencesDBOrganizations.getOrganizationRemarks(organizationID, req.session) || [];
 
+  const reminders = licencesDBOrganizations.getOrganizationReminders(organizationID, req.session) || [];
+
   res.render("organization-edit", {
     headTitle: "Organization Update",
     isViewOnly: false,
@@ -505,6 +552,7 @@ router.get("/:organizationID/edit", (req, res) => {
     organization,
     licences,
     remarks,
+    reminders,
     currentDateInteger: dateTimeFns.dateToInteger(new Date())
   });
 

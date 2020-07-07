@@ -107,7 +107,7 @@ exports.initLicencesDB = () => {
             " reminderIndex integer not null," +
             " reminderTypeKey varchar(15) not null," +
             " dueDate integer," +
-            " dismissedDate integer not null," +
+            " dismissedDate integer," +
             " reminderStatus varchar(20)," +
             " reminderNote text," +
             " recordCreate_userName varchar(30) not null," +

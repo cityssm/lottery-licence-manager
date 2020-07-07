@@ -145,7 +145,7 @@ export const initLicencesDB = () => {
 
       " reminderTypeKey varchar(15) not null," +
       " dueDate integer," +
-      " dismissedDate integer not null," +
+      " dismissedDate integer," +
       " reminderStatus varchar(20)," +
       " reminderNote text," +
 

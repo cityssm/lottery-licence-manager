@@ -27,6 +27,14 @@ export declare const addOrganizationRemark: (reqBody: llm.OrganizationRemark, re
 export declare const updateOrganizationRemark: (reqBody: llm.OrganizationRemark, reqSession: Express.SessionData) => boolean;
 export declare const deleteOrganizationRemark: (organizationID: number, remarkIndex: number, reqSession: Express.SessionData) => boolean;
 export declare const getOrganizationReminders: (organizationID: number, reqSession: Express.SessionData) => llm.OrganizationReminder[];
+export declare const getOrganizationReminder: (organizationID: number, reminderIndex: number, reqSession: Express.SessionData) => llm.OrganizationReminder;
+export declare const addOrganizationReminder: (reqBody: {
+    organizationID: string;
+    reminderTypeKey: string;
+    reminderDateString?: string;
+    reminderStatus: string;
+    reminderNote: string;
+}, reqSession: Express.SessionData) => llm.OrganizationReminder;
 export declare const getOrganizationBankRecords: (organizationID: number, accountNumber: string, bankingYear: number) => llm.OrganizationBankRecord[];
 export declare const getOrganizationBankRecordStats: (organizationID: number) => any[];
 export declare const addOrganizationBankRecord: (reqBody: llm.OrganizationBankRecord, reqSession: Express.Session) => boolean;

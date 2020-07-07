@@ -1,0 +1,56 @@
+<div class="modal">
+  <div class="modal-background"></div>
+  <div class="modal-card">
+    <header class="modal-card-head">
+      <p class="modal-card-title">Add a New Reminder</p>
+      <button class="delete is-close-modal-button" aria-label="close"></button>
+    </header>
+    <section class="modal-card-body">
+      <form id="form--addReminder">
+        <input id="addReminder--organizationID" name="organizationID" type="hidden" />
+        <div class="field">
+          <label class="label" for="addReminder--reminderTypeKey">Reminder Type</label>
+          <div class="control is-expanded">
+            <div class="select is-loading is-fullwidth">
+              <select id="addReminder--reminderTypeKey" name="reminderTypeKey" required>
+                <option value="">(Select a Reminder Type)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="columns">
+          <div class="column is-5">
+            <div class="field">
+              <label class="label" for="addReminder--reminderDateString">Reminder Date</label>
+              <div class="control">
+                <input class="input" id="addReminder--reminderDateString" name="reminderDateString" type="date" />
+              </div>
+            </div>
+          </div>
+          <div class="column">
+            <div class="field">
+              <label class="label" for="addReminder--reminderStatus">Status</label>
+              <div class="control is-expanded">
+                <div class="select is-fullwidth">
+                  <select id="addReminder--reminderStatus" name="reminderStatus">
+                    <option value="">(Not Set)</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="field mb-4">
+          <label class="label" for="addReminder--reminderNote">Reminder Note</label>
+          <div class="control">
+            <textarea class="textarea" id="addReminder--reminderNote" name="reminderNote"></textarea>
+          </div>
+        </div>
+      </form>
+    </section>
+    <footer class="modal-card-foot justify-flex-end">
+      <button class="button is-close-modal-button" type="button">Cancel</button>
+      <button class="button is-success" type="submit" form="form--addReminder">Add Reminder</button>
+    </footer>
+  </div>
+</div>

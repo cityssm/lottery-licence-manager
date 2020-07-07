@@ -20,7 +20,8 @@ router.all("/doGetDefaultConfigProperties", (_req, res) => {
         city: configFns.getProperty("defaults.city"),
         province: configFns.getProperty("defaults.province"),
         externalLicenceNumber_fieldLabel: configFns.getProperty("licences.externalLicenceNumber.fieldLabel"),
-        externalReceiptNumber_fieldLabel: configFns.getProperty("licences.externalReceiptNumber.fieldLabel")
+        externalReceiptNumber_fieldLabel: configFns.getProperty("licences.externalReceiptNumber.fieldLabel"),
+        reminderCategories: configFns.getProperty("reminderCategories")
     });
 });
 module.exports = router;

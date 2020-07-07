@@ -66,6 +66,7 @@ export interface ConfigReminderType {
   reminderCategory?: string;
   reminderType: string;
   reminderStatuses?: string[];
+  hasUndismissedLimit: boolean;
   isActive: boolean;
 }
 
@@ -154,14 +155,16 @@ interface ConfigAmendments {
 export interface Record {
   recordType: "location" | "organization" | "remark" | "reminder" | "bankRecord" | "licence" | "event";
 
+  success?: true;
+
   recordCreate_userName: string;
   recordCreate_timeMillis: number;
-  recordCreate_dateString: string;
+  recordCreate_dateString?: string;
 
   recordUpdate_userName: string;
   recordUpdate_timeMillis: number;
-  recordUpdate_dateString: string;
-  recordUpdate_timeString: string;
+  recordUpdate_dateString?: string;
+  recordUpdate_timeString?: string;
 
   recordDelete_userName?: string;
   recordDelete_timeMillis?: number;
@@ -268,8 +271,8 @@ export interface OrganizationReminder extends Record {
   organizationID: number;
   reminderIndex: number;
   reminderTypeKey: string;
-  dueDate: number;
-  dueDateString: string;
+  reminderDate: number;
+  reminderDateString: string;
   dismissedDate: number;
   dismissedDateString: string;
   reminderStatus: string;

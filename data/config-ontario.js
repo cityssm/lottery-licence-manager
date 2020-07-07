@@ -15,36 +15,43 @@ config.reminderCategories = [
                 reminderTypeKey: "DOC_MANDATE",
                 reminderType: "Organization Mandate",
                 reminderStatuses: ["Received", "Not Applicable"],
+                hasUndismissedLimit: true,
                 isActive: true
             }, {
                 reminderTypeKey: "DOC_BOARD",
                 reminderType: "Board of Directors List",
                 reminderStatuses: ["Received", "Incomplete"],
+                hasUndismissedLimit: true,
                 isActive: true
             }, {
                 reminderTypeKey: "DOC_BUDGET",
                 reminderType: "Projected Budget",
                 reminderStatuses: ["Received", "Incomplete"],
+                hasUndismissedLimit: true,
                 isActive: true
             }, {
                 reminderTypeKey: "DOC_FINSTMT",
                 reminderType: "Financial Statement",
                 reminderStatuses: ["Received", "Incomplete"],
+                hasUndismissedLimit: true,
                 isActive: true
             }, {
                 reminderTypeKey: "DOC_MEMBERS",
                 reminderType: "Bona Fide Members List",
                 reminderStatuses: ["Received", "Incomplete", "Not Applicable"],
+                hasUndismissedLimit: true,
                 isActive: true
             }, {
                 reminderTypeKey: "DOC_ROSTER",
                 reminderType: "Team Roster",
                 reminderStatuses: ["Received", "Incomplete", "Not Applicable"],
+                hasUndismissedLimit: true,
                 isActive: true
             }, {
                 reminderTypeKey: "DOC_SCHOOLBD",
                 reminderType: "School Board Budget",
                 reminderStatuses: ["Received", "Incomplete", "Not Applicable"],
+                hasUndismissedLimit: true,
                 isActive: true
             }
         ]
@@ -55,6 +62,7 @@ config.reminderCategories = [
                 reminderTypeKey: "OTHER",
                 reminderType: "Reminder",
                 reminderStatuses: ["Dismissed"],
+                hasUndismissedLimit: false,
                 isActive: true
             }]
     }
