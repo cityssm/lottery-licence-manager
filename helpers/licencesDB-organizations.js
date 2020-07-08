@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteOrganizationBankRecord = exports.updateOrganizationBankRecord = exports.addOrganizationBankRecord = exports.getOrganizationBankRecordStats = exports.getOrganizationBankRecords = exports.addOrganizationReminder = exports.getOrganizationReminder = exports.getOrganizationReminders = exports.deleteOrganizationRemark = exports.updateOrganizationRemark = exports.addOrganizationRemark = exports.getOrganizationRemark = exports.getOrganizationRemarks = exports.setDefaultOrganizationRepresentative = exports.deleteOrganizationRepresentative = exports.updateOrganizationRepresentative = exports.addOrganizationRepresentative = exports.getDeletedOrganizations = exports.getInactiveOrganizations = exports.restoreOrganization = exports.deleteOrganization = exports.updateOrganization = exports.createOrganization = exports.getOrganization = exports.getOrganizations = void 0;
+exports.deleteOrganizationBankRecord = exports.updateOrganizationBankRecord = exports.addOrganizationBankRecord = exports.getOrganizationBankRecordStats = exports.getOrganizationBankRecords = exports.deleteOrganizationReminder = exports.updateOrganizationReminder = exports.addOrganizationReminder = exports.getOrganizationReminder = exports.getOrganizationReminders = exports.deleteOrganizationRemark = exports.updateOrganizationRemark = exports.addOrganizationRemark = exports.getOrganizationRemark = exports.getOrganizationRemarks = exports.setDefaultOrganizationRepresentative = exports.deleteOrganizationRepresentative = exports.updateOrganizationRepresentative = exports.addOrganizationRepresentative = exports.getDeletedOrganizations = exports.getInactiveOrganizations = exports.restoreOrganization = exports.deleteOrganization = exports.updateOrganization = exports.createOrganization = exports.getOrganization = exports.getOrganizations = void 0;
 const licencesDB_1 = require("./licencesDB");
 const sqlite = require("better-sqlite3");
 const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
@@ -398,7 +398,7 @@ exports.getOrganizationReminder = (organizationID, reminderIndex, reqSession) =>
     const reminder = db.prepare("select * from OrganizationReminders" +
         " where recordDelete_timeMillis is null" +
         " and organizationID = ?" +
-        " and remarkIndex = ?")
+        " and reminderIndex = ?")
         .get(organizationID, reminderIndex);
     db.close();
     if (reminder) {
@@ -444,6 +444,40 @@ exports.addOrganizationReminder = (reqBody, reqSession) => {
         recordUpdate_timeMillis: nowMillis
     };
     return reminder;
+};
+exports.updateOrganizationReminder = (reqBody, reqSession) => {
+    const db = sqlite(licencesDB_1.dbPath);
+    const nowMillis = Date.now();
+    const info = db.prepare("update OrganizationReminders" +
+        " set reminderTypeKey = ?," +
+        " reminderDate = ?," +
+        " reminderStatus = ?," +
+        " reminderNote = ?," +
+        " dismissedDate = ?," +
+        " recordUpdate_userName = ?," +
+        " recordUpdate_timeMillis = ?" +
+        " where organizationID = ?" +
+        " and reminderIndex = ?" +
+        " and recordDelete_timeMillis is null")
+        .run(reqBody.reminderTypeKey, (reqBody.reminderDateString === ""
+        ? null
+        : dateTimeFns.dateStringToInteger(reqBody.reminderDateString)), reqBody.reminderStatus, reqBody.reminderNote, (reqBody.dismissedDateString === ""
+        ? null
+        : dateTimeFns.dateStringToInteger(reqBody.dismissedDateString)), reqSession.user.userName, nowMillis, reqBody.organizationID, reqBody.reminderIndex);
+    db.close();
+    return info.changes > 0;
+};
+exports.deleteOrganizationReminder = (organizationID, reminderIndex, reqSession) => {
+    const db = sqlite(licencesDB_1.dbPath);
+    const info = db.prepare("update OrganizationReminders" +
+        " set recordDelete_userName = ?," +
+        " recordDelete_timeMillis = ?" +
+        " where organizationID = ?" +
+        " and reminderIndex = ?" +
+        " and recordDelete_timeMillis is null")
+        .run(reqSession.user.userName, Date.now(), organizationID, reminderIndex);
+    db.close();
+    return info.changes > 0;
 };
 exports.getOrganizationBankRecords = (organizationID, accountNumber, bankingYear) => {
     const db = sqlite(licencesDB_1.dbPath, {

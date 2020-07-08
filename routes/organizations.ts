@@ -218,6 +218,10 @@ router.post("/doGetReminder", (req, res) => {
 
 router.post("/doAddReminder", (req, res) => {
 
+  if (!userCanCreate(req)) {
+    return forbiddenJSON(res);
+  }
+
   const reminder = licencesDBOrganizations.addOrganizationReminder(req.body, req.session);
 
   if (reminder) {
@@ -230,6 +234,43 @@ router.post("/doAddReminder", (req, res) => {
       success: false
     });
   }
+});
+
+
+router.post("/doEditReminder", (req, res) => {
+
+  if (!userCanCreate(req)) {
+    return forbiddenJSON(res);
+  }
+
+  const success = licencesDBOrganizations.updateOrganizationReminder(req.body, req.session);
+
+  if (success) {
+
+    const reminder =
+      licencesDBOrganizations.getOrganizationReminder(req.body.organizationID, req.body.reminderIndex, req.session);
+
+    return res.json({
+      success: true,
+      reminder
+    });
+
+  } else {
+    res.json({ success: false });
+  }
+});
+
+
+router.post("/doDeleteReminder", (req, res) => {
+
+  if (!userCanCreate(req)) {
+    return forbiddenJSON(res);
+  }
+
+  const success = licencesDBOrganizations
+    .deleteOrganizationReminder(req.body.organizationID, req.body.reminderIndex, req.session);
+
+  return res.json({ success });
 });
 
 

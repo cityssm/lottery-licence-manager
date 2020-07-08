@@ -674,6 +674,7 @@ export const getOrganizationReminders = (organizationID: number, reqSession: Exp
   return reminders;
 };
 
+
 export const getOrganizationReminder = (organizationID: number, reminderIndex: number, reqSession: Express.SessionData) => {
 
   const db = sqlite(dbPath, {
@@ -684,7 +685,7 @@ export const getOrganizationReminder = (organizationID: number, reminderIndex: n
     db.prepare("select * from OrganizationReminders" +
       " where recordDelete_timeMillis is null" +
       " and organizationID = ?" +
-      " and remarkIndex = ?")
+      " and reminderIndex = ?")
       .get(organizationID, reminderIndex);
 
   db.close();
@@ -762,6 +763,71 @@ export const addOrganizationReminder = (reqBody: {
   };
 
   return reminder;
+};
+
+
+export const updateOrganizationReminder = (reqBody: {
+  organizationID: string;
+  reminderIndex: string;
+  reminderTypeKey: string;
+  reminderDateString?: string;
+  reminderStatus: string;
+  reminderNote: string;
+  dismissedDateString: string;
+}, reqSession: Express.SessionData) => {
+
+  const db = sqlite(dbPath);
+
+  const nowMillis = Date.now();
+
+  const info = db.prepare("update OrganizationReminders" +
+    " set reminderTypeKey = ?," +
+    " reminderDate = ?," +
+    " reminderStatus = ?," +
+    " reminderNote = ?," +
+    " dismissedDate = ?," +
+    " recordUpdate_userName = ?," +
+    " recordUpdate_timeMillis = ?" +
+    " where organizationID = ?" +
+    " and reminderIndex = ?" +
+    " and recordDelete_timeMillis is null")
+    .run(
+      reqBody.reminderTypeKey,
+      (reqBody.reminderDateString === ""
+        ? null
+        : dateTimeFns.dateStringToInteger(reqBody.reminderDateString)),
+      reqBody.reminderStatus,
+      reqBody.reminderNote,
+      (reqBody.dismissedDateString === ""
+        ? null
+        : dateTimeFns.dateStringToInteger(reqBody.dismissedDateString)),
+      reqSession.user.userName,
+      nowMillis,
+      reqBody.organizationID,
+      reqBody.reminderIndex
+    );
+
+  db.close();
+
+  return info.changes > 0;
+};
+
+
+export const deleteOrganizationReminder = (organizationID: number, reminderIndex: number, reqSession: Express.SessionData) => {
+
+  const db = sqlite(dbPath);
+
+  const info = db.prepare("update OrganizationReminders" +
+    " set recordDelete_userName = ?," +
+    " recordDelete_timeMillis = ?" +
+    " where organizationID = ?" +
+    " and reminderIndex = ?" +
+    " and recordDelete_timeMillis is null")
+    .run(reqSession.user.userName, Date.now(), organizationID, reminderIndex);
+
+  db.close();
+
+  return info.changes > 0;
 };
 
 /*

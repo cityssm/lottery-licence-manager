@@ -1,0 +1,61 @@
+<div class="modal">
+  <div class="modal-background"></div>
+  <div class="modal-card">
+    <header class="modal-card-head">
+      <p class="modal-card-title">Edit a Reminder</p>
+      <button class="delete is-close-modal-button" aria-label="close"></button>
+    </header>
+    <section class="modal-card-body">
+      <form id="form--editReminder">
+        <input id="editReminder--organizationID" name="organizationID" type="hidden" />
+        <input id="editReminder--reminderIndex" name="reminderIndex" type="hidden" />
+        <div class="field">
+          <label class="label" for="editReminder--reminderTypeKey">Reminder Type</label>
+          <div class="control is-expanded">
+            <div class="select is-loading is-fullwidth">
+              <select id="editReminder--reminderTypeKey" name="reminderTypeKey" required></select>
+            </div>
+          </div>
+        </div>
+        <div class="columns">
+          <div class="column is-5">
+            <div class="field">
+              <label class="label" for="editReminder--reminderDateString">Reminder Date</label>
+              <div class="control">
+                <input class="input" id="editReminder--reminderDateString" name="reminderDateString" type="date" />
+              </div>
+            </div>
+          </div>
+          <div class="column">
+            <div class="field">
+              <label class="label" for="editReminder--reminderStatus">Status</label>
+              <div class="control is-expanded">
+                <div class="select is-fullwidth">
+                  <select id="editReminder--reminderStatus" name="reminderStatus">
+                    <option value="">(Not Set)</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="field">
+          <label class="label" for="editReminder--reminderNote">Reminder Note</label>
+          <div class="control">
+            <textarea class="textarea" id="editReminder--reminderNote" name="reminderNote"></textarea>
+          </div>
+        </div>
+        <div class="field mb-4">
+          <label class="label" for="editReminder--dismissedDateString">Dismissed Date</label>
+          <div class="control">
+            <input class="input" id="editReminder--dismissedDateString" name="dismissedDateString" type="date" />
+          </div>
+        </div>
+      </form>
+    </section>
+    <footer class="modal-card-foot justify-flex-end">
+      <button class="button is-close-modal-button" type="button">Cancel</button>
+      <button class="button is-success" type="submit" form="form--editReminder">Update Reminder</button>
+    </footer>
+  </div>
+</div>

@@ -46,7 +46,7 @@ export interface llmGlobal {
       updateCallbackFn: (reminderObj: llmTypes.OrganizationReminder) => void) => void;
 
     openEditReminderModal: (organizationID: number, reminderIndex: number,
-      updateCallbackFn: () => void) => void;
+      updateCallbackFn: (reminderObj?: llmTypes.OrganizationReminder) => void) => void;
 
     deleteReminder: (organizationID: number, reminderIndex: number, doConfirm: boolean,
       deleteCallbackFn: (response: {

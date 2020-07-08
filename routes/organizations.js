@@ -114,6 +114,9 @@ router.post("/doGetReminder", (req, res) => {
     res.json(licencesDBOrganizations.getOrganizationReminder(organizationID, reminderIndex, req.session));
 });
 router.post("/doAddReminder", (req, res) => {
+    if (!userFns_1.userCanCreate(req)) {
+        return userFns_1.forbiddenJSON(res);
+    }
     const reminder = licencesDBOrganizations.addOrganizationReminder(req.body, req.session);
     if (reminder) {
         return res.json({
@@ -126,6 +129,30 @@ router.post("/doAddReminder", (req, res) => {
             success: false
         });
     }
+});
+router.post("/doEditReminder", (req, res) => {
+    if (!userFns_1.userCanCreate(req)) {
+        return userFns_1.forbiddenJSON(res);
+    }
+    const success = licencesDBOrganizations.updateOrganizationReminder(req.body, req.session);
+    if (success) {
+        const reminder = licencesDBOrganizations.getOrganizationReminder(req.body.organizationID, req.body.reminderIndex, req.session);
+        return res.json({
+            success: true,
+            reminder
+        });
+    }
+    else {
+        res.json({ success: false });
+    }
+});
+router.post("/doDeleteReminder", (req, res) => {
+    if (!userFns_1.userCanCreate(req)) {
+        return userFns_1.forbiddenJSON(res);
+    }
+    const success = licencesDBOrganizations
+        .deleteOrganizationReminder(req.body.organizationID, req.body.reminderIndex, req.session);
+    return res.json({ success });
 });
 router.post("/doGetBankRecords", (req, res) => {
     const organizationID = req.body.organizationID;
