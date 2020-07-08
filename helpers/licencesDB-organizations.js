@@ -429,7 +429,7 @@ exports.addOrganizationReminder = (reqBody, reqSession) => {
     const reminder = {
         recordType: "reminder",
         canUpdate: true,
-        organizationID: parseInt(reqBody.organizationID),
+        organizationID: parseInt(reqBody.organizationID, 10),
         reminderIndex: newReminderIndex,
         reminderTypeKey: reqBody.reminderTypeKey,
         reminderDate: dateTimeFns.dateStringToInteger(reqBody.reminderDateString),

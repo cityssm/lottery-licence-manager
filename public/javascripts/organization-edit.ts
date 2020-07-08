@@ -16,7 +16,7 @@ declare const llm: llmGlobal;
 
   const isCreate = organizationIDString === "";
 
-  const organizationID = (organizationIDString === "" ? null : parseInt(organizationIDString));
+  const organizationID = (organizationIDString === "" ? null : parseInt(organizationIDString, 10));
 
   // Main record update
 
@@ -423,7 +423,7 @@ declare const llm: llmGlobal;
 
       const buttonEle = buttonEvent.currentTarget as HTMLButtonElement;
 
-      const reminderIndex = parseInt(buttonEle.getAttribute("data-reminder-index"));
+      const reminderIndex = parseInt(buttonEle.getAttribute("data-reminder-index"), 10);
 
       llm.organizationReminders.deleteReminder(organizationID, reminderIndex, true, (responseJSON) => {
 
@@ -438,7 +438,7 @@ declare const llm: llmGlobal;
 
       const buttonEle = buttonEvent.currentTarget as HTMLButtonElement;
 
-      const reminderIndex = parseInt(buttonEle.getAttribute("data-reminder-index"));
+      const reminderIndex = parseInt(buttonEle.getAttribute("data-reminder-index"), 10);
 
       llm.organizationReminders.openEditReminderModal(organizationID, reminderIndex, (reminderObj) => {
 

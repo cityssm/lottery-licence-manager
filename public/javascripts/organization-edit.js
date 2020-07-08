@@ -5,7 +5,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
     const formMessageEle = document.getElementById("container--form-message");
     const organizationIDString = document.getElementById("organization--organizationID").value;
     const isCreate = organizationIDString === "";
-    const organizationID = (organizationIDString === "" ? null : parseInt(organizationIDString));
+    const organizationID = (organizationIDString === "" ? null : parseInt(organizationIDString, 10));
     formEle.addEventListener("submit", (formEvent) => {
         formEvent.preventDefault();
         formMessageEle.innerHTML = "Saving... <i class=\"fas fa-circle-notch fa-spin\" aria-hidden=\"true\"></i>";
@@ -225,7 +225,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
         const deleteReminderClickFn = (buttonEvent) => {
             buttonEvent.preventDefault();
             const buttonEle = buttonEvent.currentTarget;
-            const reminderIndex = parseInt(buttonEle.getAttribute("data-reminder-index"));
+            const reminderIndex = parseInt(buttonEle.getAttribute("data-reminder-index"), 10);
             llm.organizationReminders.deleteReminder(organizationID, reminderIndex, true, (responseJSON) => {
                 if (responseJSON.success) {
                     buttonEle.closest("tr").remove();
@@ -235,7 +235,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
         const editReminderClickFn = (buttonEvent) => {
             buttonEvent.preventDefault();
             const buttonEle = buttonEvent.currentTarget;
-            const reminderIndex = parseInt(buttonEle.getAttribute("data-reminder-index"));
+            const reminderIndex = parseInt(buttonEle.getAttribute("data-reminder-index"), 10);
             llm.organizationReminders.openEditReminderModal(organizationID, reminderIndex, (reminderObj) => {
                 const oldTrEle = buttonEle.closest("tr");
                 const newTrEle = renderReminderAsTableRow(reminderObj);
