@@ -269,6 +269,8 @@ export interface OrganizationReminder extends Record {
   recordType: "reminder";
 
   organizationID: number;
+  organizationName?: string;
+
   reminderIndex: number;
   reminderTypeKey: string;
   reminderDate: number;

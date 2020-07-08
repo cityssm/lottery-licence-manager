@@ -26,6 +26,7 @@ export declare const getOrganizationRemark: (organizationID: number, remarkIndex
 export declare const addOrganizationRemark: (reqBody: llm.OrganizationRemark, reqSession: Express.SessionData) => number;
 export declare const updateOrganizationRemark: (reqBody: llm.OrganizationRemark, reqSession: Express.SessionData) => boolean;
 export declare const deleteOrganizationRemark: (organizationID: number, remarkIndex: number, reqSession: Express.SessionData) => boolean;
+export declare const getUndismissedOrganizationReminders: (reqSession: Express.SessionData) => llm.OrganizationReminder[];
 export declare const getOrganizationReminders: (organizationID: number, reqSession: Express.SessionData) => llm.OrganizationReminder[];
 export declare const getOrganizationReminder: (organizationID: number, reminderIndex: number, reqSession: Express.SessionData) => llm.OrganizationReminder;
 export declare const addOrganizationReminder: (reqBody: {

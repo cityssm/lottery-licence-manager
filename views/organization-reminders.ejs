@@ -1,0 +1,145 @@
+<%- include('_header'); -%>
+
+<div class="columns is-variable is-4-mobile is-4-tablet is-block-print" id="is-site-layout">
+  <%- include("_sideMenu-organizations"); -%>
+  <div class="column">
+    <nav class="breadcrumb">
+      <ul>
+        <li><a href="/dashboard">Home</a></li>
+        <li>
+          <a href="/organizations">
+            <span class="icon is-small"><i class="fas fa-users" aria-hidden="true"></i></span>
+            <span>Organizations</span>
+          </a>
+        </li>
+        <li class="is-active"><a href="#" aria-current="page">Active Reminders</a></li>
+      </ul>
+    </nav>
+
+    <h1 class="title is-1">
+      Active Organization Reminders
+    </h1>
+
+    <%
+      let reminders_noDate = "";
+      let reminders_past = "";
+      let reminders_upcoming = "";
+
+      let count_noDate = 0;
+      let count_past = 0;
+      let count_upcoming = 0;
+
+      let currentDateInteger = dateTimeFns.dateToInteger(new Date());
+
+      for (const reminder of reminders) {
+
+        const reminderType = configFns.getReminderType(reminder.reminderTypeKey);
+
+        const trHTML = "<tr>" +
+          "<td>" +
+          (reminder.reminderDateString === ""
+            ? "(No Reminder Set)"
+            : reminder.reminderDateString) +
+          "</td>" +
+          "<td>" +
+            "<a data-tooltip=\"View Organziation\" href=\"/organizations/" + reminder.organizationID + "\">" +
+            stringFns.escapeHTML(reminder.organizationName) +
+            "</a>" +
+          "</td>" +
+          "<td>" +
+          (reminderType
+            ? stringFns.escapeHTML(reminderType.reminderType)
+            : reminder.reminderTypeKey) +
+          "</td>" +
+          "<td>" +
+          (reminder.reminderStatus
+            ? stringFns.escapeHTML(reminder.reminderStatus)
+            : "") +
+          "</td>" +
+          "</tr>";
+
+        if (reminder.reminderDate == null) {
+          reminders_noDate += trHTML;
+          count_noDate += 1;
+
+        } else if (reminder.reminderDate < currentDateInteger) {
+          reminders_past += trHTML;
+          count_past += 1;
+
+        } else {
+          reminders_upcoming += trHTML;
+          count_upcoming += 1;
+        }
+      }
+
+      const theadHTML = "<thead><tr>" +
+        "<th>Reminder Date</th>" +
+        "<th>Organization</th>" +
+        "<th>Reminder Type</th>" +
+        "<th>Status</th>" +
+        "</tr></thead>";
+    %>
+
+    <% if (count_past > 0) { %>
+      <h2 class="title is-3">
+        <a class="remindersTableToggle" data-table="past" href="#">
+          <i class="fas fa-caret-down" aria-hidden="true"></i>
+          Expired Reminders
+          <span class="tag is-danger is-medium">
+            <%= count_past %>
+          </span>
+        </a>
+      </h2>
+      <table class="table is-fullwidth is-striped is-hoverable is-hidden" id="remindersTable--past">
+        <%- theadHTML %>
+        <tbody>
+          <%- reminders_past %>
+        </tbody>
+      </table>
+    <% } %>
+
+    <% if (count_upcoming > 0) { %>
+      <h2 class="title is-3">
+        <a class="remindersTableToggle" data-table="upcoming" href="#">
+          <i class="fas fa-caret-down" aria-hidden="true"></i>
+          Upcoming Reminders
+          <span class="tag is-info is-medium">
+            <%= count_upcoming %>
+          </span>
+        </a>
+      </h2>
+      <table class="table is-fullwidth is-striped is-hoverable" id="remindersTable--upcoming">
+        <%- theadHTML %>
+        <tbody>
+          <%- reminders_upcoming %>
+        </tbody>
+      </table>
+    <% } %>
+
+    <% if (count_noDate > 0) { %>
+      <h2 class="title is-3">
+        <a class="remindersTableToggle" data-table="noDate" href="#">
+          <i class="fas fa-caret-down" aria-hidden="true"></i>
+          No Reminder Date Set
+          <span class="tag is-warning is-medium">
+            <%= count_noDate %>
+          </span>
+        </a>
+      </h2>
+      <table class="table is-fullwidth is-striped is-hoverable is-hidden" id="remindersTable--noDate">
+        <%- theadHTML %>
+        <tbody>
+          <%- reminders_noDate %>
+        </tbody>
+      </table>
+    <% } %>
+
+  </div>
+</div>
+
+<%- include('_footerA'); -%>
+
+
+<script src="/javascripts/organization-reminders.min.js"></script>
+
+<%- include('_footerB'); -%>

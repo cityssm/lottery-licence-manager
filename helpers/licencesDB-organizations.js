@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteOrganizationBankRecord = exports.updateOrganizationBankRecord = exports.addOrganizationBankRecord = exports.getOrganizationBankRecordStats = exports.getOrganizationBankRecords = exports.deleteOrganizationReminder = exports.updateOrganizationReminder = exports.addOrganizationReminder = exports.getOrganizationReminder = exports.getOrganizationReminders = exports.deleteOrganizationRemark = exports.updateOrganizationRemark = exports.addOrganizationRemark = exports.getOrganizationRemark = exports.getOrganizationRemarks = exports.setDefaultOrganizationRepresentative = exports.deleteOrganizationRepresentative = exports.updateOrganizationRepresentative = exports.addOrganizationRepresentative = exports.getDeletedOrganizations = exports.getInactiveOrganizations = exports.restoreOrganization = exports.deleteOrganization = exports.updateOrganization = exports.createOrganization = exports.getOrganization = exports.getOrganizations = void 0;
+exports.deleteOrganizationBankRecord = exports.updateOrganizationBankRecord = exports.addOrganizationBankRecord = exports.getOrganizationBankRecordStats = exports.getOrganizationBankRecords = exports.deleteOrganizationReminder = exports.updateOrganizationReminder = exports.addOrganizationReminder = exports.getOrganizationReminder = exports.getOrganizationReminders = exports.getUndismissedOrganizationReminders = exports.deleteOrganizationRemark = exports.updateOrganizationRemark = exports.addOrganizationRemark = exports.getOrganizationRemark = exports.getOrganizationRemarks = exports.setDefaultOrganizationRepresentative = exports.deleteOrganizationRepresentative = exports.updateOrganizationRepresentative = exports.addOrganizationRepresentative = exports.getDeletedOrganizations = exports.getInactiveOrganizations = exports.restoreOrganization = exports.deleteOrganization = exports.updateOrganization = exports.createOrganization = exports.getOrganization = exports.getOrganizations = void 0;
 const licencesDB_1 = require("./licencesDB");
 const sqlite = require("better-sqlite3");
 const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
@@ -368,6 +368,29 @@ exports.deleteOrganizationRemark = (organizationID, remarkIndex, reqSession) => 
         .run(reqSession.user.userName, nowMillis, organizationID, remarkIndex);
     db.close();
     return info.changes > 0;
+};
+exports.getUndismissedOrganizationReminders = (reqSession) => {
+    const db = sqlite(licencesDB_1.dbPath, {
+        readonly: true
+    });
+    const reminders = db.prepare("select r.organizationID, o.organizationName, r.reminderIndex," +
+        " r.reminderTypeKey, r.reminderDate," +
+        " r.reminderStatus, r.reminderNote," +
+        " r.recordUpdate_userName, r.recordUpdate_timeMillis" +
+        " from OrganizationReminders r" +
+        " left join Organizations o on r.organizationID = o.organizationID" +
+        " where r.recordDelete_timeMillis is null" +
+        " and o.recordDelete_timeMillis is null" +
+        " and r.dismissedDate is null" +
+        " order by r.reminderDate, o.organizationName, r.reminderTypeKey")
+        .all();
+    db.close();
+    for (const reminder of reminders) {
+        reminder.recordType = "reminder";
+        reminder.reminderDateString = dateTimeFns.dateIntegerToString(reminder.reminderDate || 0);
+        reminder.canUpdate = licencesDB_1.canUpdateObject(reminder, reqSession);
+    }
+    return reminders;
 };
 exports.getOrganizationReminders = (organizationID, reqSession) => {
     const db = sqlite(licencesDB_1.dbPath, {

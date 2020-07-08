@@ -23,11 +23,19 @@
         </li>
       <% } %>
     </ul>
-    <% if (user.userProperties.canUpdate) { %>
-      <p class="menu-label">
-        Reports
-      </p>
-      <ul class="menu-list">
+    <p class="menu-label">
+      Reports
+    </p>
+    <ul class="menu-list">
+      <li>
+        <a class="<%= (headTitle === "Organization Reminders" ? "is-active" : "") %>" href="/organizations/reminders">
+          <span class="icon">
+            <i class="fas fa-lightbulb" aria-hidden="true"></i>
+          </span>
+          Active Reminders
+        </a>
+      </li>
+      <% if (user.userProperties.canUpdate) { %>
         <li>
           <a class="<%= (headTitle === "Organization Cleanup" ? "is-active" : "") %>" href="/organizations/cleanup">
             <span class="icon">
@@ -46,8 +54,8 @@
             </a>
           </li>
         <% } %>
+      <% } %>
       </ul>
-    <% } %>
     <p class="menu-label">
       Help
     </p>

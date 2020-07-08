@@ -46,6 +46,22 @@ router.all("/doGetAll", (req, res) => {
 
 
 /*
+ * ACTIVE REMINDERS
+ */
+
+
+router.get("/reminders", (req, res) => {
+
+  const reminders = licencesDBOrganizations.getUndismissedOrganizationReminders(req.session);
+
+  res.render("organization-reminders", {
+    headTitle: "Organization Reminders",
+    reminders
+  });
+});
+
+
+/*
  * CLEANUP
  */
 

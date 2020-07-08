@@ -22,6 +22,13 @@ router.all("/doGetAll", (req, res) => {
         limit: -1
     }));
 });
+router.get("/reminders", (req, res) => {
+    const reminders = licencesDBOrganizations.getUndismissedOrganizationReminders(req.session);
+    res.render("organization-reminders", {
+        headTitle: "Organization Reminders",
+        reminders
+    });
+});
 router.get("/cleanup", (req, res) => {
     if (!userFns_1.userCanUpdate(req)) {
         res.redirect("/organizations/?error=accessDenied");

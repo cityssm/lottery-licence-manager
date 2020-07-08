@@ -389,6 +389,7 @@ export const addOrganizationRepresentative = (organizationID: number, reqBody: l
   return representativeObj;
 };
 
+
 export const updateOrganizationRepresentative = (organizationID: number, reqBody: llm.OrganizationRepresentative) => {
 
   const db = sqlite(dbPath);
@@ -433,9 +434,12 @@ export const updateOrganizationRepresentative = (organizationID: number, reqBody
   return representativeObj;
 };
 
+
 /**
  * @returns TRUE if successful
  */
+
+
 export const deleteOrganizationRepresentative = (organizationID: number, representativeIndex: number) => {
 
   const db = sqlite(dbPath);
@@ -449,6 +453,7 @@ export const deleteOrganizationRepresentative = (organizationID: number, represe
 
   return info.changes > 0;
 };
+
 
 export const setDefaultOrganizationRepresentative = (organizationID: number, representativeIndex: number) => {
 
@@ -474,6 +479,7 @@ export const setDefaultOrganizationRepresentative = (organizationID: number, rep
 /*
  * ORGANIZATION REMARKS
  */
+
 
 export const getOrganizationRemarks = (organizationID: number, reqSession: Express.SessionData) => {
 
@@ -638,9 +644,45 @@ export const deleteOrganizationRemark =
     return info.changes > 0;
   };
 
+
 /*
  * Organization Reminders
  */
+
+
+export const getUndismissedOrganizationReminders = (reqSession: Express.SessionData) => {
+
+  const db = sqlite(dbPath, {
+    readonly: true
+  });
+
+  const reminders: llm.OrganizationReminder[] =
+    db.prepare("select r.organizationID, o.organizationName, r.reminderIndex," +
+      " r.reminderTypeKey, r.reminderDate," +
+      " r.reminderStatus, r.reminderNote," +
+      " r.recordUpdate_userName, r.recordUpdate_timeMillis" +
+      " from OrganizationReminders r" +
+      " left join Organizations o on r.organizationID = o.organizationID" +
+      " where r.recordDelete_timeMillis is null" +
+      " and o.recordDelete_timeMillis is null" +
+      " and r.dismissedDate is null" +
+      " order by r.reminderDate, o.organizationName, r.reminderTypeKey")
+      .all();
+
+  db.close();
+
+  for (const reminder of reminders) {
+
+    reminder.recordType = "reminder";
+
+    reminder.reminderDateString = dateTimeFns.dateIntegerToString(reminder.reminderDate || 0);
+
+    reminder.canUpdate = canUpdateObject(reminder, reqSession);
+  }
+
+  return reminders;
+};
+
 
 export const getOrganizationReminders = (organizationID: number, reqSession: Express.SessionData) => {
 
@@ -830,9 +872,11 @@ export const deleteOrganizationReminder = (organizationID: number, reminderIndex
   return info.changes > 0;
 };
 
+
 /*
  * ORGANIZATION BANK RECORDS
  */
+
 
 export const getOrganizationBankRecords = (organizationID: number, accountNumber: string, bankingYear: number) => {
 
@@ -861,6 +905,7 @@ export const getOrganizationBankRecords = (organizationID: number, accountNumber
   return bankRecords;
 };
 
+
 export const getOrganizationBankRecordStats = (organizationID: number) => {
 
   const db = sqlite(dbPath, {
@@ -882,6 +927,7 @@ export const getOrganizationBankRecordStats = (organizationID: number) => {
 
   return rows;
 };
+
 
 export const addOrganizationBankRecord = (reqBody: llm.OrganizationBankRecord, reqSession: Express.Session) => {
 
@@ -964,6 +1010,7 @@ export const addOrganizationBankRecord = (reqBody: llm.OrganizationBankRecord, r
   return info.changes > 0;
 };
 
+
 export const updateOrganizationBankRecord = (reqBody: llm.OrganizationBankRecord, reqSession: Express.Session) => {
 
   const db = sqlite(dbPath);
@@ -993,6 +1040,7 @@ export const updateOrganizationBankRecord = (reqBody: llm.OrganizationBankRecord
 
   return info.changes > 0;
 };
+
 
 export const deleteOrganizationBankRecord =
   (organizationID: number, recordIndex: number, reqSession: Express.Session) => {
