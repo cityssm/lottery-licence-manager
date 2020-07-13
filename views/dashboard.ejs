@@ -126,29 +126,6 @@
         <% } %>
       </div>
     <% } %>
-
-    <h4 class="title is-6">Active Records</h4>
-
-    <div class="columns is-mobile">
-      <div class="column">
-        <a data-tooltip="View Licences" href="/licences">
-          <span class="tag is-large is-info"><%= stats.licenceStats.licenceCount %></span><br />
-          <%= stats.licenceStats.licenceCount === 1 ? " Licence" : " Licences" %>
-        </a>
-      </div>
-      <div class="column">
-        <a data-tooltip="Organizations with Active Licences" href="/organizations">
-          <span class="tag is-large is-info"><%= stats.licenceStats.distinctOrganizationCount %></span><br />
-          <%= stats.licenceStats.distinctOrganizationCount === 1 ? " Organization" : " Organizations" %>
-        </a>
-      </div>
-      <div class="column">
-        <a data-tooltip="Locations with Active Licences" href="/locations">
-          <span class="tag is-large is-info"><%= stats.licenceStats.distinctLocationCount %></span><br />
-          <%= stats.licenceStats.distinctLocationCount === 1 ? " Location" : " Locations" %>
-        </a>
-      </div>
-    </div>
   </div>
   <div class="column">
     <div class="columns">
@@ -162,6 +139,7 @@
               <div class="media-content has-text-black">
                 <h2 class="title is-4 is-marginless">
                   <a href="/organizations">Organizations</a>
+                  <span class="tag is-info is-pulled-right"><%= stats.licenceStats.distinctOrganizationCount %> Active</span>
                 </h2>
                 <p>View and maintain organizations that hold lottery licences.</p>
               </div>
@@ -228,6 +206,7 @@
               <div class="media-content has-text-black">
                 <h2 class="title is-4 is-marginless">
                   <a href="/licences">Lottery Licences</a>
+                  <span class="tag is-info is-pulled-right"><%= stats.licenceStats.licenceCount %> Active</span>
                 </h2>
                 <p>View and maintain lottery licences.</p>
               </div>
@@ -261,6 +240,7 @@
               <div class="media-content has-text-black">
                 <h2 class="title is-4 is-marginless">
                   <a href="/events">Lottery Events</a>
+                  <span class="tag is-info is-pulled-right"><%= stats.licenceStats.distinctLocationCount %> Active</span>
                 </h2>
                 <p>View and update events.</p>
               </div>
