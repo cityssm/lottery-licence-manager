@@ -38,6 +38,14 @@ exports.getOrganizations = (reqBody, reqSession, includeOptions) => {
         sql += " and o.isEligibleForLicences = ?";
         sqlParams.push(reqBody.isEligibleForLicences);
     }
+    if (reqBody.organizationIsActive && reqBody.organizationIsActive !== "") {
+        const currentDate = dateTimeFns.dateToInteger(new Date());
+        sql += " and o.organizationID in (" +
+            "select lx.organizationID from LotteryLicences lx" +
+            " where lx.recordDelete_timeMillis is null" +
+            " and lx.issueDate is not null and lx.endDate >= ?)";
+        sqlParams.push(currentDate);
+    }
     sql += " group by o.organizationID, o.organizationName, o.isEligibleForLicences, o.organizationNote," +
         " r.representativeName," +
         " o.recordCreate_userName, o.recordCreate_timeMillis, o.recordUpdate_userName, o.recordUpdate_timeMillis" +

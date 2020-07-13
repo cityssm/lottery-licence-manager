@@ -35,7 +35,11 @@
 
         const reminderType = configFns.getReminderType(reminder.reminderTypeKey);
 
-        const trHTML = "<tr>" +
+        const trHTML = "<tr" +
+          (reminder.reminderDate === currentDateInteger
+            ? " class=\"has-background-primary-light\""
+            : "") +
+          ">" +
           "<td>" +
           (reminder.reminderDateString === ""
             ? "(No Reminder Set)"

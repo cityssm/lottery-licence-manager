@@ -1,11 +1,14 @@
 "use strict";
 const express_1 = require("express");
 const configFns = require("../helpers/configFns");
+const licencesDB = require("../helpers/licencesDB");
 const usersDB = require("../helpers/usersDB");
 const router = express_1.Router();
 router.get("/", (_req, res) => {
+    const stats = licencesDB.getDashboardStats();
     res.render("dashboard", {
-        headTitle: "Dashboard"
+        headTitle: "Dashboard",
+        stats
     });
 });
 router.post("/doChangePassword", (req, res) => {

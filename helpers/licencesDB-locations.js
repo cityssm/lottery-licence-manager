@@ -18,13 +18,21 @@ exports.getLocations = (reqSession, queryOptions) => {
             sqlParams.push(locationPiece);
         }
     }
-    if ("locationIsDistributor" in queryOptions && queryOptions.locationIsDistributor !== -1) {
+    if (queryOptions.locationIsDistributor !== -1) {
         sqlWhereClause += " and lo.locationIsDistributor = ?";
         sqlParams.push(queryOptions.locationIsDistributor);
     }
-    if ("locationIsManufacturer" in queryOptions && queryOptions.locationIsManufacturer !== -1) {
+    if (queryOptions.locationIsManufacturer !== -1) {
         sqlWhereClause += " and lo.locationIsManufacturer = ?";
         sqlParams.push(queryOptions.locationIsManufacturer);
+    }
+    if (queryOptions.locationIsActive !== "") {
+        const currentDate = dateTimeFns.dateToInteger(new Date());
+        sqlWhereClause += " and (lo.locationID in (" +
+            "select lx.locationID from LotteryLicences lx" +
+            " where lx.recordDelete_timeMillis is null" +
+            " and lx.issueDate is not null and lx.endDate >= ?))";
+        sqlParams.push(currentDate);
     }
     let count = 0;
     if (queryOptions.limit !== -1) {
@@ -65,9 +73,6 @@ exports.getLocations = (reqSession, queryOptions) => {
             " group by t.manufacturerLocationID" +
             ") m on lo.locationID = m.manufacturerLocationID") +
         sqlWhereClause +
-        " group by lo.locationID, lo.locationName," +
-        " lo.locationAddress1, lo.locationAddress2, lo.locationCity, lo.locationProvince," +
-        " lo.locationIsDistributor, lo.locationIsManufacturer" +
         " order by case when lo.locationName = '' then lo.locationAddress1 else lo.locationName end";
     if (queryOptions.limit !== -1) {
         sql += " limit " + queryOptions.limit.toString() +

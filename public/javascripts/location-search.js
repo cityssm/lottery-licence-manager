@@ -178,5 +178,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
     document.getElementById("filter--locationNameAddress").addEventListener("change", resetOffsetAndGetLocationsFn);
     document.getElementById("filter--locationIsDistributor").addEventListener("change", resetOffsetAndGetLocationsFn);
     document.getElementById("filter--locationIsManufacturer").addEventListener("change", resetOffsetAndGetLocationsFn);
+    document.getElementById("filter--locationIsActive").addEventListener("change", resetOffsetAndGetLocationsFn);
     resetOffsetAndGetLocationsFn();
 })();

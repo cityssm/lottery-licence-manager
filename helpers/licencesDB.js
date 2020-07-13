@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateApplicationSetting = exports.getApplicationSetting = exports.getApplicationSettings = exports.getLicenceActivityByDateRange = exports.pokeEvent = exports.deleteEvent = exports.updateEvent = exports.getPastEventBankingInformation = exports.getEvent = exports.getEventFinancialSummary = exports.getOutstandingEvents = exports.getRecentlyUpdateEvents = exports.getEvents = exports.getEventTableStats = exports.voidTransaction = exports.addTransaction = exports.getActiveLicenceSummary = exports.getLicenceTypeSummary = exports.unissueLicence = exports.issueLicence = exports.pokeLicence = exports.getDistinctTermsConditions = exports.deleteLicence = exports.updateLicence = exports.createLicence = exports.getNextExternalLicenceNumberFromRange = exports.getLicence = exports.getLicences = exports.getLicenceTableStats = exports.getRawRowsColumns = exports.canUpdateObject = exports.dbPath = void 0;
+exports.updateApplicationSetting = exports.getApplicationSetting = exports.getApplicationSettings = exports.getLicenceActivityByDateRange = exports.pokeEvent = exports.deleteEvent = exports.updateEvent = exports.getPastEventBankingInformation = exports.getEvent = exports.getEventFinancialSummary = exports.getOutstandingEvents = exports.getRecentlyUpdateEvents = exports.getEvents = exports.getEventTableStats = exports.voidTransaction = exports.addTransaction = exports.getActiveLicenceSummary = exports.getLicenceTypeSummary = exports.unissueLicence = exports.issueLicence = exports.pokeLicence = exports.getDistinctTermsConditions = exports.deleteLicence = exports.updateLicence = exports.createLicence = exports.getNextExternalLicenceNumberFromRange = exports.getLicence = exports.getLicences = exports.getLicenceTableStats = exports.getDashboardStats = exports.getRawRowsColumns = exports.canUpdateObject = exports.dbPath = void 0;
 const sqlite = require("better-sqlite3");
 const configFns = require("./configFns");
 const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
@@ -188,6 +188,95 @@ exports.getRawRowsColumns = (sql, params) => {
         rows,
         columns
     };
+};
+exports.getDashboardStats = () => {
+    const windowDate = new Date();
+    const currentDateInteger = dateTimeFns.dateToInteger(windowDate);
+    windowDate.setDate(windowDate.getDate() + 7);
+    const windowEndDateInteger = dateTimeFns.dateToInteger(windowDate);
+    windowDate.setDate(windowDate.getDate() - 14);
+    const windowStartDateInteger = dateTimeFns.dateToInteger(windowDate);
+    const db = sqlite(exports.dbPath, {
+        readonly: true
+    });
+    const licenceStats = db.prepare("select ifnull(count(licenceID), 0) as licenceCount," +
+        " ifnull(count(distinct organizationID), 0) as distinctOrganizationCount," +
+        " ifnull(count(distinct locationID), 0) as distinctLocationCount" +
+        " from LotteryLicences" +
+        " where recordDelete_timeMillis is NULL" +
+        " and issueDate is not NULL" +
+        " and endDate >= ?")
+        .get(currentDateInteger);
+    const eventStats = db.prepare("select ifnull(sum(case when eventDate = ? then 1 else 0 end), 0) as todayCount," +
+        " ifnull(sum(case when eventDate < ? then 1 else 0 end), 0) as pastCount," +
+        " ifnull(sum(case when eventDate > ? then 1 else 0 end), 0) as upcomingCount" +
+        " from LotteryEvents" +
+        " where recordDelete_timeMillis is NULL" +
+        " and eventDate >= ?" +
+        " and eventDate <= ?")
+        .get(currentDateInteger, currentDateInteger, currentDateInteger, windowStartDateInteger, windowEndDateInteger);
+    let events = [];
+    if (eventStats.todayCount > 0 || eventStats.upcomingCount > 0) {
+        events = db.prepare("select e.eventDate, l.licenceID, l.externalLicenceNumber," +
+            " l.licenceTypeKey," +
+            " lo.locationName, lo.locationAddress1," +
+            " o.organizationName" +
+            " from LotteryEvents e" +
+            " left join LotteryLicences l on e.licenceID = l.licenceID" +
+            " left join Locations lo on l.locationID = lo.locationID" +
+            " left join Organizations o on l.organizationID = o.organizationID" +
+            " where e.recordDelete_timeMillis is null" +
+            " and l.recordDelete_timeMillis is null" +
+            " and e.eventDate >= ?" +
+            " and e.eventDate <= ?" +
+            " order by e.eventDate, l.startTime")
+            .all(currentDateInteger, windowEndDateInteger);
+        for (const eventRecord of events) {
+            eventRecord.eventDateString = dateTimeFns.dateIntegerToString(eventRecord.eventDate);
+            eventRecord.locationDisplayName =
+                (eventRecord.locationName === "" ? eventRecord.locationAddress1 : eventRecord.locationName);
+        }
+    }
+    const reminderStats = db.prepare("select ifnull(sum(case when reminderDate = ? then 1 else 0 end), 0) as todayCount," +
+        " ifnull(sum(case when reminderDate < ? then 1 else 0 end), 0) as pastCount," +
+        " ifnull(sum(case when reminderDate > ? then 1 else 0 end), 0) as upcomingCount" +
+        " from OrganizationReminders" +
+        " where recordDelete_timeMillis is NULL" +
+        " and dismissedDate is null" +
+        " and reminderDate <= ?")
+        .get(currentDateInteger, currentDateInteger, currentDateInteger, windowEndDateInteger);
+    let reminders = [];
+    if (reminderStats.todayCount > 0 || reminderStats.upcomingCount > 0) {
+        reminders = db.prepare("select r.organizationID, o.organizationName," +
+            " r.reminderTypeKey, r.reminderDate" +
+            " from OrganizationReminders r" +
+            " left join Organizations o on r.organizationID = o.organizationID" +
+            " where r.recordDelete_timeMillis is null" +
+            " and o.recordDelete_timeMillis is null" +
+            " and r.dismissedDate is null" +
+            " and r.reminderDate >= ?" +
+            " and r.reminderDate <= ?" +
+            " order by r.reminderDate, o.organizationName, r.reminderTypeKey")
+            .all(currentDateInteger, windowEndDateInteger);
+        for (const reminder of reminders) {
+            reminder.reminderDateString = dateTimeFns.dateIntegerToString(reminder.reminderDate);
+        }
+    }
+    db.close();
+    const result = {
+        currentDate: currentDateInteger,
+        currentDateString: dateTimeFns.dateIntegerToString(currentDateInteger),
+        windowStartDate: windowStartDateInteger,
+        windowStartDateString: dateTimeFns.dateIntegerToString(windowStartDateInteger),
+        windowEndDate: windowEndDateInteger,
+        windowEndDateString: dateTimeFns.dateIntegerToString(windowEndDateInteger),
+        licenceStats,
+        eventStats,
+        events,
+        reminderStats,
+        reminders
+    };
+    return result;
 };
 let licenceTableStats = {
     applicationYearMin: 1990,

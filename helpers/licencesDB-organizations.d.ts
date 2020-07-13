@@ -6,6 +6,7 @@ export declare const getOrganizations: (reqBody: {
     organizationName?: string;
     representativeName?: string;
     isEligibleForLicences?: string;
+    organizationIsActive?: string;
 }, reqSession: Express.SessionData, includeOptions: {
     limit: number;
     offset?: number;

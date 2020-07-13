@@ -31,7 +31,8 @@ router.post("/doGetLocations", (req, res) => {
       : -1),
     locationIsManufacturer: ("locationIsManufacturer" in req.body && req.body.locationIsManufacturer !== ""
       ? parseInt(req.body.locationIsManufacturer, 10)
-      : -1)
+      : -1),
+    locationIsActive: req.body.locationIsActive || ""
   });
 
   res.json(locations);

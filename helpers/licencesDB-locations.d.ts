@@ -5,9 +5,10 @@ import * as llm from "./llmTypes";
 export declare const getLocations: (reqSession: Express.SessionData, queryOptions: {
     limit: number;
     offset?: number;
-    locationNameAddress: string;
+    locationNameAddress?: string;
     locationIsDistributor: number;
     locationIsManufacturer: number;
+    locationIsActive: string;
 }) => {
     count: number;
     locations: llm.Location[];

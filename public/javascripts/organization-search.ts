@@ -154,7 +154,7 @@ declare const cityssm: cityssmGlobal;
     formEvent.preventDefault();
   });
 
-  const inputEles = formEle.querySelectorAll(".input, .select");
+  const inputEles = formEle.querySelectorAll("input, select");
 
   for (const inputEle of inputEles) {
     inputEle.addEventListener("change", doOrganizationSearchFn);

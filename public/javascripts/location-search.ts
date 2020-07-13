@@ -287,6 +287,7 @@ declare const cityssm: cityssmGlobal;
   document.getElementById("filter--locationNameAddress").addEventListener("change", resetOffsetAndGetLocationsFn);
   document.getElementById("filter--locationIsDistributor").addEventListener("change", resetOffsetAndGetLocationsFn);
   document.getElementById("filter--locationIsManufacturer").addEventListener("change", resetOffsetAndGetLocationsFn);
+  document.getElementById("filter--locationIsActive").addEventListener("change", resetOffsetAndGetLocationsFn);
 
 
   resetOffsetAndGetLocationsFn();

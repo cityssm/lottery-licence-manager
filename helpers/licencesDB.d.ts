@@ -6,6 +6,31 @@ import { RawRowsColumnsReturn } from "@cityssm/expressjs-server-js/types";
 export declare const dbPath = "data/licences.db";
 export declare const canUpdateObject: (obj: llm.Record, reqSession: Express.SessionData) => boolean;
 export declare const getRawRowsColumns: (sql: string, params: Array<string | number>) => RawRowsColumnsReturn;
+export declare const getDashboardStats: () => {
+    currentDate: number;
+    currentDateString: string;
+    windowStartDate: number;
+    windowStartDateString: string;
+    windowEndDate: number;
+    windowEndDateString: string;
+    licenceStats: {
+        licenceCount: number;
+        distinctOrganizationCount: number;
+        distinctLocationCount: number;
+    };
+    eventStats: {
+        todayCount: number;
+        pastCount: number;
+        upcomingCount: number;
+    };
+    events: llm.LotteryEvent[];
+    reminderStats: {
+        todayCount: number;
+        pastCount: number;
+        upcomingCount: number;
+    };
+    reminders: llm.OrganizationReminder[];
+};
 export declare const getLicenceTableStats: () => llm.LotteryLicenceStats;
 export declare const getLicences: (reqBodyOrParamsObj: {
     externalLicenceNumber?: string;

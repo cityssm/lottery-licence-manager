@@ -25,250 +25,375 @@
   </div>
 <% } %>
 
-<div class="columns">
-  <div class="column">
-    <div class="card">
-      <div class="card-content">
-        <div class="media">
-          <div class="media-left">
-            <i class="fas fa-3x fa-fw fa-users" aria-hidden="true"></i>
-          </div>
-          <div class="media-content has-text-black">
-            <h2 class="title is-4 is-marginless">
-              <a href="/organizations">Organizations</a>
-            </h2>
-            <p>View and maintain organizations that hold lottery licences.</p>
-          </div>
-        </div>
-      </div>
-      <div class="card-footer">
-        <a class="card-footer-item" href="/organizations">
-          <span class="icon">
-            <i class="fas fa-search" aria-hidden="true"></i>
-          </span>
-          <span>Find</span>
+<div class="columns is-multiline">
+  <div class="column is-full-tablet is-one-third-widescreen has-text-centered">
+    <h4 class="title is-6">Reminders</h4>
+
+    <div class="columns is-mobile">
+      <div class="column">
+        <a data-tooltip="View Reminders" href="/organizations/reminders">
+          <span class="tag is-large is-warning"><%= stats.reminderStats.todayCount %></span><br />
+          Due Today
         </a>
-        <% if (user.userProperties.canCreate) { %>
-          <a class="card-footer-item" href="/organizations/new">
-            <span class="icon">
-              <i class="fas fa-plus" aria-hidden="true"></i>
-            </span>
-            <span>Create</span>
-          </a>
+      </div>
+      <div class="column">
+        <a data-tooltip="Undismissed Reminders" href="/organizations/reminders">
+          <span class="tag is-large is-danger"><%= stats.reminderStats.pastCount %></span><br />
+          Missed
+        </a>
+      </div>
+      <div class="column">
+        <a data-tooltip="Upcoming Reminders" href="/organizations/reminders">
+          <span class="tag is-large is-info"><%= stats.reminderStats.upcomingCount %></span><br />
+          Upcoming
+        </a>
+      </div>
+    </div>
+
+    <% if (stats.reminders.length > 0) { %>
+      <div class="panel has-text-left">
+        <% for (const reminder of stats.reminders) { %>
+          <%
+            const reminderType = configFns.getReminderType(reminder.reminderTypeKey);
+          %>
+          <div class="panel-block is-block">
+            <div>
+              <a class="has-tooltip-right" data-tooltip="View Organization" href="/organizations/<%= reminder.organizationID %>"><%= reminder.organizationName %></a>
+            </div>
+            <div class="columns is-mobile">
+              <div class="column">
+                <span class="icon">
+                  <i class="fas fa-lightbulb" aria-hidden="true"></i>
+                </span>
+                <%= (reminderType ? reminderType.reminderType : reminder.reminderTypeKey) %>
+              </div>
+              <div class="column is-narrow">
+                <%= reminder.reminderDateString %>
+              </div>
+            </div>
+          </div>
         <% } %>
       </div>
-    </div>
-  </div>
-  <div class="column">
-    <div class="card">
-      <div class="card-content">
-        <div class="media">
-          <div class="media-left">
-            <i class="fas fa-3x fa-fw fa-map-marker-alt" aria-hidden="true"></i>
-          </div>
-          <div class="media-content has-text-black">
-            <h2 class="title is-4 is-marginless">
-              <a href="/locations">Locations</a>
-            </h2>
-            <p>View and maintain the locations where lottery events can take place.</p>
-          </div>
-        </div>
-      </div>
-      <div class="card-footer">
-        <a class="card-footer-item" href="/locations">
-          <span class="icon">
-            <i class="fas fa-search" aria-hidden="true"></i>
-          </span>
-          <span>Find</span>
+    <% } %>
+
+    <h4 class="title is-6">Events</h4>
+
+    <div class="columns is-mobile">
+      <div class="column">
+        <a data-tooltip="View Events" href="/events">
+          <span class="tag is-large is-info"><%= stats.eventStats.todayCount %></span><br />
+          Today
         </a>
-        <% if (user.userProperties.canCreate) { %>
-          <a class="card-footer-item" href="/locations/new">
-            <span class="icon">
-              <i class="fas fa-plus" aria-hidden="true"></i>
-            </span>
-            <span>Create</span>
-          </a>
+      </div>
+      <div class="column">
+        <a data-tooltip="Events from <%= stats.windowStartDateString %>" href="/events">
+          <span class="tag is-large is-warning"><%= stats.eventStats.pastCount %></span><br />
+          Recently Past
+        </a>
+      </div>
+      <div class="column">
+        <a data-tooltip="Events to <%= stats.windowEndDateString %>" href="/events">
+          <span class="tag is-large is-info"><%= stats.eventStats.upcomingCount %></span><br />
+          Upcoming
+        </a>
+      </div>
+    </div>
+
+    <% if (stats.events.length > 0) { %>
+      <div class="panel has-text-left">
+        <% for (const eventRecord of stats.events) { %>
+          <%
+            const licenceType = configFns.getLicenceType(eventRecord.licenceTypeKey);
+          %>
+          <div class="panel-block is-block">
+            <div>
+              <a class="has-tooltip-right" data-tooltip="View Event" href="/events/<%= eventRecord.licenceID %>/<%= eventRecord.eventDate %>">
+                <%= eventRecord.organizationName %>
+              </a>
+            </div>
+            <div class="columns is-mobile">
+              <div class="column">
+                <span class="icon">
+                  <i class="fas fa-calendar" aria-hidden="true"></i>
+                </span>
+                <%= (licenceType ? licenceType.licenceType : eventRecord.licenceTypeKey) %>
+              </div>
+              <div class="column is-narrow">
+                <%= eventRecord.eventDateString %>
+              </div>
+            </div>
+          </div>
         <% } %>
       </div>
+    <% } %>
+
+    <h4 class="title is-6">Active Records</h4>
+
+    <div class="columns is-mobile">
+      <div class="column">
+        <a data-tooltip="View Licences" href="/licences">
+          <span class="tag is-large is-info"><%= stats.licenceStats.licenceCount %></span><br />
+          <%= stats.licenceStats.licenceCount === 1 ? " Licence" : " Licences" %>
+        </a>
+      </div>
+      <div class="column">
+        <a data-tooltip="Organizations with Active Licences" href="/organizations">
+          <span class="tag is-large is-info"><%= stats.licenceStats.distinctOrganizationCount %></span><br />
+          <%= stats.licenceStats.distinctOrganizationCount === 1 ? " Organization" : " Organizations" %>
+        </a>
+      </div>
+      <div class="column">
+        <a data-tooltip="Locations with Active Licences" href="/locations">
+          <span class="tag is-large is-info"><%= stats.licenceStats.distinctLocationCount %></span><br />
+          <%= stats.licenceStats.distinctLocationCount === 1 ? " Location" : " Locations" %>
+        </a>
+      </div>
     </div>
+  </div>
+  <div class="column">
+    <div class="columns">
+      <div class="column">
+        <div class="card">
+          <div class="card-content">
+            <div class="media">
+              <div class="media-left">
+                <i class="fas fa-3x fa-fw fa-users" aria-hidden="true"></i>
+              </div>
+              <div class="media-content has-text-black">
+                <h2 class="title is-4 is-marginless">
+                  <a href="/organizations">Organizations</a>
+                </h2>
+                <p>View and maintain organizations that hold lottery licences.</p>
+              </div>
+            </div>
+          </div>
+          <div class="card-footer">
+            <a class="card-footer-item" href="/organizations">
+              <span class="icon">
+                <i class="fas fa-search" aria-hidden="true"></i>
+              </span>
+              <span>Find</span>
+            </a>
+            <a class="card-footer-item" href="/organizations/reminders">
+              <span class="icon">
+                <i class="fas fa-lightbulb" aria-hidden="true"></i>
+              </span>
+              <span>Reminders</span>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="column">
+        <div class="card">
+          <div class="card-content">
+            <div class="media">
+              <div class="media-left">
+                <i class="fas fa-3x fa-fw fa-map-marker-alt" aria-hidden="true"></i>
+              </div>
+              <div class="media-content has-text-black">
+                <h2 class="title is-4 is-marginless">
+                  <a href="/locations">Locations</a>
+                </h2>
+                <p>View and maintain the locations where lottery events can take place.</p>
+              </div>
+            </div>
+          </div>
+          <div class="card-footer">
+            <a class="card-footer-item" href="/locations">
+              <span class="icon">
+                <i class="fas fa-search" aria-hidden="true"></i>
+              </span>
+              <span>Find</span>
+            </a>
+            <% if (user.userProperties.canCreate) { %>
+              <a class="card-footer-item" href="/locations/new">
+                <span class="icon">
+                  <i class="fas fa-plus" aria-hidden="true"></i>
+                </span>
+                <span>Create</span>
+              </a>
+            <% } %>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="columns">
+      <div class="column">
+        <div class="card">
+          <div class="card-content">
+            <div class="media">
+              <div class="media-left">
+                <i class="fas fa-3x fa-fw fa-certificate" aria-hidden="true"></i>
+              </div>
+              <div class="media-content has-text-black">
+                <h2 class="title is-4 is-marginless">
+                  <a href="/licences">Lottery Licences</a>
+                </h2>
+                <p>View and maintain lottery licences.</p>
+              </div>
+            </div>
+          </div>
+          <div class="card-footer">
+            <a class="card-footer-item" href="/licences">
+              <span class="icon">
+                <i class="fas fa-search" aria-hidden="true"></i>
+              </span>
+              <span>Find</span>
+            </a>
+            <% if (user.userProperties.canCreate) { %>
+              <a class="card-footer-item" href="/licences/new">
+                <span class="icon">
+                  <i class="fas fa-plus" aria-hidden="true"></i>
+                </span>
+                <span>Create</span>
+              </a>
+            <% } %>
+          </div>
+        </div>
+      </div>
+      <div class="column">
+        <div class="card">
+          <div class="card-content">
+            <div class="media">
+              <div class="media-left">
+                <i class="fas fa-3x fa-fw fa-calendar" aria-hidden="true"></i>
+              </div>
+              <div class="media-content has-text-black">
+                <h2 class="title is-4 is-marginless">
+                  <a href="/events">Lottery Events</a>
+                </h2>
+                <p>View and update events.</p>
+              </div>
+            </div>
+          </div>
+          <div class="card-footer">
+            <a class="card-footer-item" href="/events">
+              <span class="icon">
+                <i class="fas fa-search" aria-hidden="true"></i>
+              </span>
+              <span>Find</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="columns">
+      <div class="column">
+        <div class="card">
+          <div class="card-content">
+            <div class="media">
+              <div class="media-left">
+                <i class="fas fa-3x fa-fw fa-file" aria-hidden="true"></i>
+              </div>
+              <div class="media-content has-text-black">
+                <h2 class="title is-4 is-marginless">
+                  <a href="/reports">Report Library</a>
+                </h2>
+                <p>Produce reports and export data.</p>
+              </div>
+            </div>
+          </div>
+          <div class="card-footer">
+            <a class="card-footer-item" href="/reports">
+              <span class="icon">
+                <i class="fas fa-search" aria-hidden="true"></i>
+              </span>
+              Find
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="column">
+        <div class="card">
+          <div class="card-content">
+            <div class="media">
+              <div class="media-left">
+                <i class="fas fa-3x fa-fw fa-question-circle" aria-hidden="true"></i>
+              </div>
+              <div class="media-content has-text-black">
+                <h2 class="title is-4 is-marginless">
+                  <a href="/docs" target="_blank">Help Documentation</a>
+                </h2>
+                <p>Instructions on how to use this application.</p>
+              </div>
+            </div>
+          </div>
+          <div class="card-footer">
+            <a class="card-footer-item" href="/docs" target="_blank">
+              <span class="icon">
+                <i class="fas fa-question-circle" aria-hidden="true"></i>
+              </span>
+              Help
+            </a>
+            <a class="card-footer-item has-tooltip-bottom" data-tooltip="Latest Updates, Issue Tracker, Say Hello (Opens in New Window)" href="https://github.com/cityssm/lottery-licence-manager" target="_blank" rel="noreferrer">
+              <span class="icon">
+                <i class="fab fa-github" aria-hidden="true"></i>
+              </span>
+              GitHub
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <% if (user.userProperties.isAdmin) { %>
+      <h2 class="title is-3">Administrator Tools</h2>
+
+      <div class="columns">
+        <div class="column">
+          <div class="card">
+            <div class="card-content">
+              <div class="media">
+                <div class="media-left">
+                  <i class="fas fa-3x fa-fw fa-cogs" aria-hidden="true"></i>
+                </div>
+                <div class="media-content has-text-black">
+                  <h2 class="title is-4 is-marginless">
+                    <a href="/admin/applicationSettings">Application Settings</a>
+                  </h2>
+                  <p>Settings that affect the <%= configFns.getProperty("application.applicationName") %> application.</p>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <a class="card-footer-item" href="/admin/applicationSettings">
+                <span class="icon">
+                  <i class="fas fa-cog" aria-hidden="true"></i>
+                </span>
+                Adjust Settings
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="column">
+          <div class="card">
+            <div class="card-content">
+              <div class="media">
+                <div class="media-left">
+                  <i class="fas fa-3x fa-fw fa-user-cog" aria-hidden="true"></i>
+                </div>
+                <div class="media-content has-text-black">
+                  <h2 class="title is-4 is-marginless">
+                    <a href="/admin/userManagement">User Management</a>
+                  </h2>
+                  <p>Add users. Remove users. Grant permissions.</p>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <a class="card-footer-item" href="/admin/userManagement">
+                <span class="icon">
+                  <i class="fas fa-cog" aria-hidden="true"></i>
+                </span>
+                Maintain Users
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% } %>
   </div>
 </div>
-<div class="columns">
-  <div class="column">
-    <div class="card">
-      <div class="card-content">
-        <div class="media">
-          <div class="media-left">
-            <i class="fas fa-3x fa-fw fa-certificate" aria-hidden="true"></i>
-          </div>
-          <div class="media-content has-text-black">
-            <h2 class="title is-4 is-marginless">
-              <a href="/licences">Lottery Licences</a>
-            </h2>
-            <p>View and maintain lottery licences.</p>
-          </div>
-        </div>
-      </div>
-      <div class="card-footer">
-        <a class="card-footer-item" href="/licences">
-          <span class="icon">
-            <i class="fas fa-search" aria-hidden="true"></i>
-          </span>
-          <span>Find</span>
-        </a>
-        <% if (user.userProperties.canCreate) { %>
-          <a class="card-footer-item" href="/licences/new">
-            <span class="icon">
-              <i class="fas fa-plus" aria-hidden="true"></i>
-            </span>
-            <span>Create</span>
-          </a>
-        <% } %>
-      </div>
-    </div>
-  </div>
-  <div class="column">
-    <div class="card">
-      <div class="card-content">
-        <div class="media">
-          <div class="media-left">
-            <i class="fas fa-3x fa-fw fa-calendar" aria-hidden="true"></i>
-          </div>
-          <div class="media-content has-text-black">
-            <h2 class="title is-4 is-marginless">
-              <a href="/events">Lottery Events</a>
-            </h2>
-            <p>View and update events.</p>
-          </div>
-        </div>
-      </div>
-      <div class="card-footer">
-        <a class="card-footer-item" href="/events">
-          <span class="icon">
-            <i class="fas fa-search" aria-hidden="true"></i>
-          </span>
-          <span>Find</span>
-        </a>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="columns">
-  <div class="column">
-    <div class="card">
-      <div class="card-content">
-        <div class="media">
-          <div class="media-left">
-            <i class="fas fa-3x fa-fw fa-file" aria-hidden="true"></i>
-          </div>
-          <div class="media-content has-text-black">
-            <h2 class="title is-4 is-marginless">
-              <a href="/reports">Report Library</a>
-            </h2>
-            <p>Produce reports and export data.</p>
-          </div>
-        </div>
-      </div>
-      <div class="card-footer">
-        <a class="card-footer-item" href="/reports">
-          <span class="icon">
-            <i class="fas fa-search" aria-hidden="true"></i>
-          </span>
-          Find
-        </a>
-      </div>
-    </div>
-  </div>
-  <div class="column">
-    <div class="card">
-      <div class="card-content">
-        <div class="media">
-          <div class="media-left">
-            <i class="fas fa-3x fa-fw fa-question-circle" aria-hidden="true"></i>
-          </div>
-          <div class="media-content has-text-black">
-            <h2 class="title is-4 is-marginless">
-              <a href="/docs" target="_blank">Help Documentation</a>
-            </h2>
-            <p>Instructions on how to use this application.</p>
-          </div>
-        </div>
-      </div>
-      <div class="card-footer">
-        <a class="card-footer-item" href="/docs" target="_blank">
-          <span class="icon">
-            <i class="fas fa-question-circle" aria-hidden="true"></i>
-          </span>
-          Help
-        </a>
-        <a class="card-footer-item has-tooltip-bottom" data-tooltip="Latest Updates, Issue Tracker, Say Hello (Opens in New Window)" href="https://github.com/cityssm/lottery-licence-manager" target="_blank" rel="noreferrer">
-          <span class="icon">
-            <i class="fab fa-github" aria-hidden="true"></i>
-          </span>
-          GitHub
-        </a>
-      </div>
-    </div>
-  </div>
-</div>
-
-<% if (user.userProperties.isAdmin) { %>
-  <h2 class="title is-3">Administrator Tools</h2>
-
-  <div class="columns">
-    <div class="column">
-      <div class="card">
-        <div class="card-content">
-          <div class="media">
-            <div class="media-left">
-              <i class="fas fa-3x fa-fw fa-cogs" aria-hidden="true"></i>
-            </div>
-            <div class="media-content has-text-black">
-              <h2 class="title is-4 is-marginless">
-                <a href="/admin/applicationSettings">Application Settings</a>
-              </h2>
-              <p>Settings that affect the <%= configFns.getProperty("application.applicationName") %> application.</p>
-            </div>
-          </div>
-        </div>
-        <div class="card-footer">
-          <a class="card-footer-item" href="/admin/applicationSettings">
-            <span class="icon">
-              <i class="fas fa-cog" aria-hidden="true"></i>
-            </span>
-            Adjust Settings
-          </a>
-        </div>
-      </div>
-    </div>
-    <div class="column">
-      <div class="card">
-        <div class="card-content">
-          <div class="media">
-            <div class="media-left">
-              <i class="fas fa-3x fa-fw fa-user-cog" aria-hidden="true"></i>
-            </div>
-            <div class="media-content has-text-black">
-              <h2 class="title is-4 is-marginless">
-                <a href="/admin/userManagement">User Management</a>
-              </h2>
-              <p>Add users. Remove users. Grant permissions.</p>
-            </div>
-          </div>
-        </div>
-        <div class="card-footer">
-          <a class="card-footer-item" href="/admin/userManagement">
-            <span class="icon">
-              <i class="fas fa-cog" aria-hidden="true"></i>
-            </span>
-            Maintain Users
-          </a>
-        </div>
-      </div>
-    </div>
-  </div>
-<% } %>
 
 <% if (!user.userProperties.isDefaultAdmin) { %>
   <div class="modal" id="is-change-password-modal">

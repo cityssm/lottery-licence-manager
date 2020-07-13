@@ -133,9 +133,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
         for (const buttonEle of buttonEles) {
             buttonEle.classList.remove("is-success");
             buttonEle.classList.remove("is-info");
-            buttonEle.innerHTML = "<span class=\"icon\">" +
-                "<i class=\"fas fa-minus has-text-grey-lighter\" aria-hidden=\"true\"></i>" +
-                "</span><br />" +
+            buttonEle.innerHTML = "<i class=\"fas fa-minus has-text-grey-lighter\" aria-hidden=\"true\"></i>" +
+                "<br />" +
                 "<small>No Record Recorded</small>";
             buttonEle.setAttribute("data-record-index", "");
         }

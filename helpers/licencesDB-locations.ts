@@ -8,9 +8,10 @@ import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns";
 export const getLocations = (reqSession: Express.SessionData, queryOptions: {
   limit: number;
   offset?: number;
-  locationNameAddress: string;
+  locationNameAddress?: string;
   locationIsDistributor: number;
   locationIsManufacturer: number;
+  locationIsActive: string;
 }) => {
 
   const db = sqlite(dbPath, {
@@ -35,18 +36,30 @@ export const getLocations = (reqSession: Express.SessionData, queryOptions: {
     }
   }
 
-  if ("locationIsDistributor" in queryOptions && queryOptions.locationIsDistributor !== -1) {
+  if (queryOptions.locationIsDistributor !== -1) {
 
     sqlWhereClause += " and lo.locationIsDistributor = ?";
     sqlParams.push(queryOptions.locationIsDistributor);
 
   }
 
-  if ("locationIsManufacturer" in queryOptions && queryOptions.locationIsManufacturer !== -1) {
+  if (queryOptions.locationIsManufacturer !== -1) {
 
     sqlWhereClause += " and lo.locationIsManufacturer = ?";
     sqlParams.push(queryOptions.locationIsManufacturer);
 
+  }
+
+  if (queryOptions.locationIsActive !== "") {
+
+    const currentDate = dateTimeFns.dateToInteger(new Date());
+
+    sqlWhereClause += " and (lo.locationID in (" +
+      "select lx.locationID from LotteryLicences lx" +
+      " where lx.recordDelete_timeMillis is null" +
+      " and lx.issueDate is not null and lx.endDate >= ?))";
+
+    sqlParams.push(currentDate);
   }
 
   // if limit is used, get the count
@@ -98,9 +111,6 @@ export const getLocations = (reqSession: Express.SessionData, queryOptions: {
 
     sqlWhereClause +
 
-    " group by lo.locationID, lo.locationName," +
-    " lo.locationAddress1, lo.locationAddress2, lo.locationCity, lo.locationProvince," +
-    " lo.locationIsDistributor, lo.locationIsManufacturer" +
     " order by case when lo.locationName = '' then lo.locationAddress1 else lo.locationName end";
 
   if (queryOptions.limit !== -1) {
@@ -135,6 +145,7 @@ export const getLocations = (reqSession: Express.SessionData, queryOptions: {
 
 };
 
+
 export const getLocation = (locationID: number, reqSession: Express.SessionData) => {
 
   const db = sqlite(dbPath, {
@@ -159,6 +170,7 @@ export const getLocation = (locationID: number, reqSession: Express.SessionData)
   return locationObj;
 
 };
+
 
 /**
  * @returns New locationID
@@ -194,6 +206,7 @@ export const createLocation = (reqBody: llm.Location, reqSession: Express.Sessio
   return Number(info.lastInsertRowid);
 
 };
+
 
 /**
  * @returns TRUE if successful
@@ -237,6 +250,7 @@ export const updateLocation = (reqBody: llm.Location, reqSession: Express.Sessio
 
 };
 
+
 /**
  * @returns TRUE if successful
  */
@@ -262,6 +276,7 @@ export const deleteLocation = (locationID: number, reqSession: Express.SessionDa
   return info.changes > 0;
 
 };
+
 
 /**
  * @returns TRUE if successful
@@ -290,6 +305,7 @@ export const restoreLocation = (locationID: number, reqSession: Express.SessionD
   return info.changes > 0;
 
 };
+
 
 /**
  * @returns TRUE if successful

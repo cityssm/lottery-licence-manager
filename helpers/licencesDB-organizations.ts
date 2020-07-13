@@ -12,6 +12,7 @@ export const getOrganizations = (reqBody: {
   organizationName?: string;
   representativeName?: string;
   isEligibleForLicences?: string;
+  organizationIsActive?: string;
 }, reqSession: Express.SessionData, includeOptions: {
   limit: number;
   offset?: number;
@@ -65,6 +66,18 @@ export const getOrganizations = (reqBody: {
 
   }
 
+  if (reqBody.organizationIsActive && reqBody.organizationIsActive !== "") {
+
+    const currentDate = dateTimeFns.dateToInteger(new Date());
+
+    sql += " and o.organizationID in (" +
+      "select lx.organizationID from LotteryLicences lx" +
+      " where lx.recordDelete_timeMillis is null" +
+      " and lx.issueDate is not null and lx.endDate >= ?)";
+
+    sqlParams.push(currentDate);
+  }
+
   sql += " group by o.organizationID, o.organizationName, o.isEligibleForLicences, o.organizationNote," +
     " r.representativeName," +
     " o.recordCreate_userName, o.recordCreate_timeMillis, o.recordUpdate_userName, o.recordUpdate_timeMillis" +
@@ -98,6 +111,7 @@ export const getOrganizations = (reqBody: {
   return rows;
 
 };
+
 
 export const getOrganization = (organizationID: number, reqSession: Express.SessionData): llm.Organization => {
 
@@ -135,6 +149,7 @@ export const getOrganization = (organizationID: number, reqSession: Express.Sess
 
 };
 
+
 /**
  * @returns New organizationID
  */
@@ -170,6 +185,7 @@ export const createOrganization = (reqBody: llm.Organization, reqSession: Expres
   return Number(info.lastInsertRowid);
 
 };
+
 
 /**
  * @returns TRUE if successful
@@ -219,6 +235,7 @@ export const updateOrganization = (reqBody: llm.Organization, reqSession: Expres
 
 };
 
+
 /**
  * @returns TRUE if successful
  */
@@ -244,6 +261,7 @@ export const deleteOrganization = (organizationID: number, reqSession: Express.S
   return info.changes > 0;
 
 };
+
 
 /**
  * @returns TRUE if successful
@@ -272,6 +290,7 @@ export const restoreOrganization = (organizationID: number, reqSession: Express.
   return info.changes > 0;
 
 };
+
 
 export const getInactiveOrganizations = (inactiveYears: number) => {
 
@@ -310,6 +329,7 @@ export const getInactiveOrganizations = (inactiveYears: number) => {
 
   return rows;
 };
+
 
 export const getDeletedOrganizations = () => {
 
@@ -390,49 +410,50 @@ export const addOrganizationRepresentative = (organizationID: number, reqBody: l
 };
 
 
-export const updateOrganizationRepresentative = (organizationID: number, reqBody: llm.OrganizationRepresentative) => {
+export const updateOrganizationRepresentative =
+  (organizationID: number, reqBody: llm.OrganizationRepresentative) => {
 
-  const db = sqlite(dbPath);
+    const db = sqlite(dbPath);
 
-  db.prepare("update OrganizationRepresentatives" +
-    " set representativeName = ?," +
-    " representativeTitle = ?," +
-    " representativeAddress1 = ?," +
-    " representativeAddress2 = ?," +
-    " representativeCity = ?," +
-    " representativeProvince = ?," +
-    " representativePostalCode = ?," +
-    " representativePhoneNumber = ?," +
-    " representativeEmailAddress = ?" +
-    " where organizationID = ?" +
-    " and representativeIndex = ?")
-    .run(
-      reqBody.representativeName, reqBody.representativeTitle,
-      reqBody.representativeAddress1, reqBody.representativeAddress2,
-      reqBody.representativeCity, reqBody.representativeProvince, reqBody.representativePostalCode,
-      reqBody.representativePhoneNumber, reqBody.representativeEmailAddress,
-      organizationID, reqBody.representativeIndex
-    );
+    db.prepare("update OrganizationRepresentatives" +
+      " set representativeName = ?," +
+      " representativeTitle = ?," +
+      " representativeAddress1 = ?," +
+      " representativeAddress2 = ?," +
+      " representativeCity = ?," +
+      " representativeProvince = ?," +
+      " representativePostalCode = ?," +
+      " representativePhoneNumber = ?," +
+      " representativeEmailAddress = ?" +
+      " where organizationID = ?" +
+      " and representativeIndex = ?")
+      .run(
+        reqBody.representativeName, reqBody.representativeTitle,
+        reqBody.representativeAddress1, reqBody.representativeAddress2,
+        reqBody.representativeCity, reqBody.representativeProvince, reqBody.representativePostalCode,
+        reqBody.representativePhoneNumber, reqBody.representativeEmailAddress,
+        organizationID, reqBody.representativeIndex
+      );
 
-  db.close();
+    db.close();
 
-  const representativeObj: llm.OrganizationRepresentative = {
-    organizationID,
-    representativeIndex: reqBody.representativeIndex,
-    representativeName: reqBody.representativeName,
-    representativeTitle: reqBody.representativeTitle,
-    representativeAddress1: reqBody.representativeAddress1,
-    representativeAddress2: reqBody.representativeAddress2,
-    representativeCity: reqBody.representativeCity,
-    representativeProvince: reqBody.representativeProvince,
-    representativePostalCode: reqBody.representativePostalCode,
-    representativePhoneNumber: reqBody.representativePhoneNumber,
-    representativeEmailAddress: reqBody.representativeEmailAddress,
-    isDefault: Number(reqBody.isDefault) > 0
+    const representativeObj: llm.OrganizationRepresentative = {
+      organizationID,
+      representativeIndex: reqBody.representativeIndex,
+      representativeName: reqBody.representativeName,
+      representativeTitle: reqBody.representativeTitle,
+      representativeAddress1: reqBody.representativeAddress1,
+      representativeAddress2: reqBody.representativeAddress2,
+      representativeCity: reqBody.representativeCity,
+      representativeProvince: reqBody.representativeProvince,
+      representativePostalCode: reqBody.representativePostalCode,
+      representativePhoneNumber: reqBody.representativePhoneNumber,
+      representativeEmailAddress: reqBody.representativeEmailAddress,
+      isDefault: Number(reqBody.isDefault) > 0
+    };
+
+    return representativeObj;
   };
-
-  return representativeObj;
-};
 
 
 /**
@@ -513,34 +534,37 @@ export const getOrganizationRemarks = (organizationID: number, reqSession: Expre
   return remarks;
 };
 
-export const getOrganizationRemark = (organizationID: number, remarkIndex: number, reqSession: Express.SessionData) => {
 
-  const db = sqlite(dbPath, {
-    readonly: true
-  });
+export const getOrganizationRemark =
+  (organizationID: number, remarkIndex: number, reqSession: Express.SessionData) => {
 
-  const remark: llm.OrganizationRemark =
-    db.prepare("select" +
-      " remarkDate, remarkTime," +
-      " remark, isImportant," +
-      " recordCreate_userName, recordCreate_timeMillis, recordUpdate_userName, recordUpdate_timeMillis" +
-      " from OrganizationRemarks" +
-      " where recordDelete_timeMillis is null" +
-      " and organizationID = ?" +
-      " and remarkIndex = ?")
-      .get(organizationID, remarkIndex);
+    const db = sqlite(dbPath, {
+      readonly: true
+    });
 
-  db.close();
+    const remark: llm.OrganizationRemark =
+      db.prepare("select" +
+        " remarkDate, remarkTime," +
+        " remark, isImportant," +
+        " recordCreate_userName, recordCreate_timeMillis, recordUpdate_userName, recordUpdate_timeMillis" +
+        " from OrganizationRemarks" +
+        " where recordDelete_timeMillis is null" +
+        " and organizationID = ?" +
+        " and remarkIndex = ?")
+        .get(organizationID, remarkIndex);
 
-  remark.recordType = "remark";
+    db.close();
 
-  remark.remarkDateString = dateTimeFns.dateIntegerToString(remark.remarkDate || 0);
-  remark.remarkTimeString = dateTimeFns.timeIntegerToString(remark.remarkTime || 0);
+    remark.recordType = "remark";
 
-  remark.canUpdate = canUpdateObject(remark, reqSession);
+    remark.remarkDateString = dateTimeFns.dateIntegerToString(remark.remarkDate || 0);
+    remark.remarkTimeString = dateTimeFns.timeIntegerToString(remark.remarkTime || 0);
 
-  return remark;
-};
+    remark.canUpdate = canUpdateObject(remark, reqSession);
+
+    return remark;
+  };
+
 
 export const addOrganizationRemark = (reqBody: llm.OrganizationRemark, reqSession: Express.SessionData) => {
 
@@ -581,6 +605,7 @@ export const addOrganizationRemark = (reqBody: llm.OrganizationRemark, reqSessio
   return newRemarkIndex;
 };
 
+
 /**
  * @returns TRUE if successful
  */
@@ -615,6 +640,7 @@ export const updateOrganizationRemark = (reqBody: llm.OrganizationRemark, reqSes
 
   return info.changes > 0;
 };
+
 
 /**
  * @returns TRUE if successful
@@ -717,33 +743,34 @@ export const getOrganizationReminders = (organizationID: number, reqSession: Exp
 };
 
 
-export const getOrganizationReminder = (organizationID: number, reminderIndex: number, reqSession: Express.SessionData) => {
+export const getOrganizationReminder =
+  (organizationID: number, reminderIndex: number, reqSession: Express.SessionData) => {
 
-  const db = sqlite(dbPath, {
-    readonly: true
-  });
+    const db = sqlite(dbPath, {
+      readonly: true
+    });
 
-  const reminder: llm.OrganizationReminder =
-    db.prepare("select * from OrganizationReminders" +
-      " where recordDelete_timeMillis is null" +
-      " and organizationID = ?" +
-      " and reminderIndex = ?")
-      .get(organizationID, reminderIndex);
+    const reminder: llm.OrganizationReminder =
+      db.prepare("select * from OrganizationReminders" +
+        " where recordDelete_timeMillis is null" +
+        " and organizationID = ?" +
+        " and reminderIndex = ?")
+        .get(organizationID, reminderIndex);
 
-  db.close();
+    db.close();
 
-  if (reminder) {
+    if (reminder) {
 
-    reminder.recordType = "reminder";
+      reminder.recordType = "reminder";
 
-    reminder.reminderDateString = dateTimeFns.dateIntegerToString(reminder.reminderDate || 0);
-    reminder.dismissedDateString = dateTimeFns.dateIntegerToString(reminder.dismissedDate || 0);
+      reminder.reminderDateString = dateTimeFns.dateIntegerToString(reminder.reminderDate || 0);
+      reminder.dismissedDateString = dateTimeFns.dateIntegerToString(reminder.dismissedDate || 0);
 
-    reminder.canUpdate = canUpdateObject(reminder, reqSession);
-  }
+      reminder.canUpdate = canUpdateObject(reminder, reqSession);
+    }
 
-  return reminder;
-};
+    return reminder;
+  };
 
 
 export const addOrganizationReminder = (reqBody: {
@@ -855,22 +882,23 @@ export const updateOrganizationReminder = (reqBody: {
 };
 
 
-export const deleteOrganizationReminder = (organizationID: number, reminderIndex: number, reqSession: Express.SessionData) => {
+export const deleteOrganizationReminder =
+  (organizationID: number, reminderIndex: number, reqSession: Express.SessionData) => {
 
-  const db = sqlite(dbPath);
+    const db = sqlite(dbPath);
 
-  const info = db.prepare("update OrganizationReminders" +
-    " set recordDelete_userName = ?," +
-    " recordDelete_timeMillis = ?" +
-    " where organizationID = ?" +
-    " and reminderIndex = ?" +
-    " and recordDelete_timeMillis is null")
-    .run(reqSession.user.userName, Date.now(), organizationID, reminderIndex);
+    const info = db.prepare("update OrganizationReminders" +
+      " set recordDelete_userName = ?," +
+      " recordDelete_timeMillis = ?" +
+      " where organizationID = ?" +
+      " and reminderIndex = ?" +
+      " and recordDelete_timeMillis is null")
+      .run(reqSession.user.userName, Date.now(), organizationID, reminderIndex);
 
-  db.close();
+    db.close();
 
-  return info.changes > 0;
-};
+    return info.changes > 0;
+  };
 
 
 /*
