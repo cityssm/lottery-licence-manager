@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteOrganizationBankRecord = exports.updateOrganizationBankRecord = exports.addOrganizationBankRecord = exports.getOrganizationBankRecordStats = exports.getOrganizationBankRecords = exports.deleteOrganizationReminder = exports.updateOrganizationReminder = exports.addOrganizationReminder = exports.getOrganizationReminder = exports.getOrganizationReminders = exports.getUndismissedOrganizationReminders = exports.deleteOrganizationRemark = exports.updateOrganizationRemark = exports.addOrganizationRemark = exports.getOrganizationRemark = exports.getOrganizationRemarks = exports.setDefaultOrganizationRepresentative = exports.deleteOrganizationRepresentative = exports.updateOrganizationRepresentative = exports.addOrganizationRepresentative = exports.getDeletedOrganizations = exports.getInactiveOrganizations = exports.restoreOrganization = exports.deleteOrganization = exports.updateOrganization = exports.createOrganization = exports.getOrganization = exports.getOrganizations = void 0;
+exports.deleteOrganizationBankRecord = exports.updateOrganizationBankRecord = exports.addOrganizationBankRecord = exports.getOrganizationBankRecordStats = exports.getOrganizationBankRecords = exports.deleteOrganizationReminder = exports.dismissOrganizationReminder = exports.updateOrganizationReminder = exports.addOrganizationReminder = exports.getOrganizationReminder = exports.getOrganizationReminders = exports.getUndismissedOrganizationReminders = exports.deleteOrganizationRemark = exports.updateOrganizationRemark = exports.addOrganizationRemark = exports.getOrganizationRemark = exports.getOrganizationRemarks = exports.setDefaultOrganizationRepresentative = exports.deleteOrganizationRepresentative = exports.updateOrganizationRepresentative = exports.addOrganizationRepresentative = exports.getDeletedOrganizations = exports.getInactiveOrganizations = exports.restoreOrganization = exports.deleteOrganization = exports.updateOrganization = exports.createOrganization = exports.getOrganization = exports.getOrganizations = void 0;
 const licencesDB_1 = require("./licencesDB");
 const sqlite = require("better-sqlite3");
 const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
@@ -495,6 +495,21 @@ exports.updateOrganizationReminder = (reqBody, reqSession) => {
         : dateTimeFns.dateStringToInteger(reqBody.reminderDateString)), reqBody.reminderStatus, reqBody.reminderNote, (reqBody.dismissedDateString === ""
         ? null
         : dateTimeFns.dateStringToInteger(reqBody.dismissedDateString)), reqSession.user.userName, nowMillis, reqBody.organizationID, reqBody.reminderIndex);
+    db.close();
+    return info.changes > 0;
+};
+exports.dismissOrganizationReminder = (organizationID, reminderIndex, reqSession) => {
+    const currentDate = new Date();
+    const db = sqlite(licencesDB_1.dbPath);
+    const info = db.prepare("update OrganizationReminders" +
+        " set dismissedDate = ?," +
+        " recordUpdate_userName = ?," +
+        " recordUpdate_timeMillis = ?" +
+        " where organizationID = ?" +
+        " and reminderIndex = ?" +
+        " and dismissedDate is null" +
+        " and recordDelete_timeMillis is null")
+        .run(dateTimeFns.dateToInteger(currentDate), reqSession.user.userName, currentDate.getTime(), organizationID, reminderIndex);
     db.close();
     return info.changes > 0;
 };

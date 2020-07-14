@@ -39,6 +39,7 @@ export declare const getLicences: (reqBodyOrParamsObj: {
     organizationName?: string;
     licenceStatus?: string;
     locationID?: number;
+    locationName?: string;
 }, reqSession: Express.SessionData, includeOptions: {
     includeOrganization: boolean;
     limit: number;

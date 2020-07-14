@@ -42,11 +42,11 @@
           ">" +
           "<td>" +
           (reminder.reminderDateString === ""
-            ? "(No Reminder Set)"
+            ? "(No Date Set)"
             : reminder.reminderDateString) +
           "</td>" +
           "<td>" +
-            "<a data-tooltip=\"View Organziation\" href=\"/organizations/" + reminder.organizationID + "\">" +
+            "<a data-tooltip=\"View Organization\" href=\"/organizations/" + reminder.organizationID + "\">" +
             stringFns.escapeHTML(reminder.organizationName) +
             "</a>" +
           "</td>" +
@@ -77,8 +77,8 @@
       }
 
       const theadHTML = "<thead><tr>" +
-        "<th>Reminder Date</th>" +
-        "<th>Organization</th>" +
+        "<th class=\"has-width-1 is-nowrap\">Reminder Date</th>" +
+        "<th class=\"is-half-width\">Organization</th>" +
         "<th>Reminder Type</th>" +
         "<th>Status</th>" +
         "</tr></thead>";

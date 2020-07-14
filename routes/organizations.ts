@@ -277,6 +277,40 @@ router.post("/doEditReminder", (req, res) => {
 });
 
 
+router.post("/doDismissReminder", (req, res) => {
+
+  if (!userCanCreate(req)) {
+    return forbiddenJSON(res);
+  }
+
+  const organizationID = req.body.organizationID;
+  const reminderIndex = req.body.reminderIndex;
+
+  const success = licencesDBOrganizations.dismissOrganizationReminder(organizationID, reminderIndex, req.session);
+
+  if (success) {
+
+    const reminder =
+      licencesDBOrganizations.getOrganizationReminder(req.body.organizationID, req.body.reminderIndex, req.session);
+
+    res.json({
+      success: true,
+      message: "Reminder dismissed.",
+      reminder
+    });
+
+  } else {
+
+    res.json({
+      success: false,
+      message: "Reminder could not be dismissed."
+    });
+
+  }
+
+});
+
+
 router.post("/doDeleteReminder", (req, res) => {
 
   if (!userCanCreate(req)) {

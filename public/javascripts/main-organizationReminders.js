@@ -217,6 +217,22 @@ llm.organizationReminders = (() => {
         };
         loadReminderTypeCache(openModalFn);
     };
+    const doDismissReminder = (organizationID, reminderIndex, callbackFn) => {
+        cityssm.postJSON("/organizations/doDismissReminder", {
+            organizationID,
+            reminderIndex
+        }, callbackFn);
+    };
+    const dismissReminder = (organizationID, reminderIndex, doConfirm, dismissCallbackFn) => {
+        if (doConfirm) {
+            cityssm.confirmModal("Dismiss Reminder?", "Are you sure you want to dismiss this reminder?", "Yes, Dismiss", "warning", () => {
+                doDismissReminder(organizationID, reminderIndex, dismissCallbackFn);
+            });
+        }
+        else {
+            doDismissReminder(organizationID, reminderIndex, dismissCallbackFn);
+        }
+    };
     const doDeleteReminder = (organizationID, reminderIndex, callbackFn) => {
         cityssm.postJSON("/organizations/doDeleteReminder", {
             organizationID,
@@ -234,10 +250,12 @@ llm.organizationReminders = (() => {
         }
     };
     return {
+        loadReminderTypeCache,
         getRemindersByOrganizationID,
         getReminderByID,
         openAddReminderModal,
         openEditReminderModal,
+        dismissReminder,
         deleteReminder,
         getReminderType
     };

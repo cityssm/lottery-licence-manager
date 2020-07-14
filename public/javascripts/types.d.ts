@@ -17,10 +17,16 @@ export interface llmGlobal {
         }) => void) => void;
     };
     organizationReminders?: {
+        loadReminderTypeCache: (callbackFn: () => void) => void;
         getRemindersByOrganizationID: (organizationID: number, callbackFn: (reminderList: llmTypes.OrganizationReminder[]) => void) => void;
         getReminderByID: (organizationID: number, reminderIndex: number, callbackFn: (reminder: llmTypes.OrganizationReminder) => void) => void;
         openAddReminderModal: (organizationID: number, updateCallbackFn: (reminderObj: llmTypes.OrganizationReminder) => void) => void;
         openEditReminderModal: (organizationID: number, reminderIndex: number, updateCallbackFn: (reminderObj?: llmTypes.OrganizationReminder) => void) => void;
+        dismissReminder: (organizationID: number, reminderIndex: number, doConfirm: boolean, deleteCallbackFn: (response: {
+            success: boolean;
+            message: string;
+            reminder?: llmTypes.OrganizationReminder;
+        }) => void) => void;
         deleteReminder: (organizationID: number, reminderIndex: number, doConfirm: boolean, deleteCallbackFn: (response: {
             success: boolean;
             message: string;

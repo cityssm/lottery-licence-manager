@@ -358,11 +358,20 @@ exports.getLicences = (reqBodyOrParamsObj, reqSession, includeOptions) => {
         sqlParams.push(reqBodyOrParamsObj.locationID);
         sqlParams.push(reqBodyOrParamsObj.locationID);
     }
+    if (reqBodyOrParamsObj.locationName && reqBodyOrParamsObj.locationName !== "") {
+        const locationNamePieces = reqBodyOrParamsObj.locationName.toLowerCase().split(" ");
+        for (const locationNamePiece of locationNamePieces) {
+            sqlWhereClause += " and (instr(lower(lo.locationName), ?) or instr(lower(lo.locationAddress1), ?))";
+            sqlParams.push(locationNamePiece);
+            sqlParams.push(locationNamePiece);
+        }
+    }
     let count = 0;
     if (includeOptions.limit !== -1) {
         count = db.prepare("select ifnull(count(*), 0) as cnt" +
             " from LotteryLicences l" +
             " left join Organizations o on l.organizationID = o.organizationID" +
+            " left join Locations lo on l.locationID = lo.locationID" +
             sqlWhereClause)
             .get(sqlParams)
             .cnt;

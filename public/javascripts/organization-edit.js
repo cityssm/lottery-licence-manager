@@ -232,6 +232,21 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 }
             });
         };
+        const dismissReminderClickFn = (buttonEvent) => {
+            buttonEvent.preventDefault();
+            const buttonEle = buttonEvent.currentTarget;
+            const reminderIndex = parseInt(buttonEle.getAttribute("data-reminder-index"), 10);
+            llm.organizationReminders.dismissReminder(organizationID, reminderIndex, true, (responseJSON) => {
+                if (responseJSON.success) {
+                    llm.organizationReminders.loadReminderTypeCache(() => {
+                        const oldTrEle = buttonEle.closest("tr");
+                        const newTrEle = renderReminderAsTableRow(responseJSON.reminder);
+                        oldTrEle.insertAdjacentElement("afterend", newTrEle);
+                        oldTrEle.remove();
+                    });
+                }
+            });
+        };
         const editReminderClickFn = (buttonEvent) => {
             buttonEvent.preventDefault();
             const buttonEle = buttonEvent.currentTarget;
@@ -267,7 +282,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 "<td>" + reminder.reminderStatus + "</td>" +
                 ("<td class=\"has-text-centered\">" +
                     (reminder.dismissedDateString === ""
-                        ? "<span class=\"has-text-grey\">(Active)</span>"
+                        ? "<span class=\"has-text-grey\">(Active)</span><br />" +
+                            "<button class=\"button is-small is-light is-success is-dismiss-reminder-button mt-1\" data-reminder-index=\"" + reminder.reminderIndex.toString() + "\">" +
+                            "<span class=\"icon is-small\"><i class=\"fas fa-check\" aria-hidden=\"true\"></i></span>" +
+                            "<span>Dismiss</span>" +
+                            "</button>"
                         : reminder.dismissedDateString) +
                     "</td>") +
                 ("<td class=\"has-text-centered\">" +
@@ -291,6 +310,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
                         "</button>") +
                     "</div>" +
                     "</td>");
+            if (reminder.dismissedDateString === "") {
+                trEle.getElementsByClassName("is-dismiss-reminder-button")[0].addEventListener("click", dismissReminderClickFn);
+            }
             trEle.getElementsByClassName("is-edit-reminder-button")[0].addEventListener("click", editReminderClickFn);
             trEle.getElementsByClassName("is-delete-reminder-button")[0].addEventListener("click", deleteReminderClickFn);
             return trEle;
@@ -302,6 +324,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 document.getElementById("container--reminders").insertAdjacentElement("afterbegin", trEle);
             });
         });
+        const dismissReminderButtonEles = document.getElementsByClassName("is-dismiss-reminder-button");
+        for (const buttonEle of dismissReminderButtonEles) {
+            buttonEle.addEventListener("click", dismissReminderClickFn);
+        }
         const editReminderButtonEles = document.getElementsByClassName("is-edit-reminder-button");
         for (const buttonEle of editReminderButtonEles) {
             buttonEle.addEventListener("click", editReminderClickFn);

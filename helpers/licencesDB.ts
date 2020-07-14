@@ -542,6 +542,7 @@ export const getLicences = (reqBodyOrParamsObj: {
   organizationName?: string;
   licenceStatus?: string;
   locationID?: number;
+  locationName?: string;
 },
   reqSession: Express.SessionData,
   includeOptions: {
@@ -626,6 +627,17 @@ export const getLicences = (reqBodyOrParamsObj: {
     sqlParams.push(reqBodyOrParamsObj.locationID);
   }
 
+  if (reqBodyOrParamsObj.locationName && reqBodyOrParamsObj.locationName !== "") {
+
+    const locationNamePieces = reqBodyOrParamsObj.locationName.toLowerCase().split(" ");
+
+    for (const locationNamePiece of locationNamePieces) {
+      sqlWhereClause += " and (instr(lower(lo.locationName), ?) or instr(lower(lo.locationAddress1), ?))";
+      sqlParams.push(locationNamePiece);
+      sqlParams.push(locationNamePiece);
+    }
+  }
+
   // if a limit is used, get the count
 
   let count = 0;
@@ -635,6 +647,7 @@ export const getLicences = (reqBodyOrParamsObj: {
     count = db.prepare("select ifnull(count(*), 0) as cnt" +
       " from LotteryLicences l" +
       " left join Organizations o on l.organizationID = o.organizationID" +
+      " left join Locations lo on l.locationID = lo.locationID" +
       sqlWhereClause)
       .get(sqlParams)
       .cnt;

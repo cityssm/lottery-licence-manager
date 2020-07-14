@@ -36,6 +36,8 @@ export interface llmGlobal {
 
   organizationReminders?: {
 
+    loadReminderTypeCache: (callbackFn: () => void) => void;
+
     getRemindersByOrganizationID: (organizationID: number,
       callbackFn: (reminderList: llmTypes.OrganizationReminder[]) => void) => void;
 
@@ -47,6 +49,13 @@ export interface llmGlobal {
 
     openEditReminderModal: (organizationID: number, reminderIndex: number,
       updateCallbackFn: (reminderObj?: llmTypes.OrganizationReminder) => void) => void;
+
+    dismissReminder: (organizationID: number, reminderIndex: number, doConfirm: boolean,
+      deleteCallbackFn: (response: {
+        success: boolean;
+        message: string;
+        reminder?: llmTypes.OrganizationReminder;
+      }) => void) => void;
 
     deleteReminder: (organizationID: number, reminderIndex: number, doConfirm: boolean,
       deleteCallbackFn: (response: {

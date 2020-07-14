@@ -433,6 +433,31 @@ declare const llm: llmGlobal;
       });
     };
 
+    const dismissReminderClickFn = (buttonEvent: Event) => {
+      buttonEvent.preventDefault();
+
+      const buttonEle = buttonEvent.currentTarget as HTMLButtonElement;
+
+      const reminderIndex = parseInt(buttonEle.getAttribute("data-reminder-index"), 10);
+
+      llm.organizationReminders.dismissReminder(organizationID, reminderIndex, true, (responseJSON) => {
+
+        if (responseJSON.success) {
+
+          llm.organizationReminders.loadReminderTypeCache(() => {
+
+            const oldTrEle = buttonEle.closest("tr");
+
+            const newTrEle = renderReminderAsTableRow(responseJSON.reminder);
+
+            oldTrEle.insertAdjacentElement("afterend", newTrEle);
+
+            oldTrEle.remove();
+          });
+        }
+      });
+    };
+
     const editReminderClickFn = (buttonEvent: Event) => {
       buttonEvent.preventDefault();
 
@@ -483,7 +508,11 @@ declare const llm: llmGlobal;
         "<td>" + reminder.reminderStatus + "</td>" +
         ("<td class=\"has-text-centered\">" +
           (reminder.dismissedDateString === ""
-            ? "<span class=\"has-text-grey\">(Active)</span>"
+            ? "<span class=\"has-text-grey\">(Active)</span><br />" +
+            "<button class=\"button is-small is-light is-success is-dismiss-reminder-button mt-1\" data-reminder-index=\"" + reminder.reminderIndex.toString() + "\">" +
+            "<span class=\"icon is-small\"><i class=\"fas fa-check\" aria-hidden=\"true\"></i></span>" +
+            "<span>Dismiss</span>" +
+            "</button>"
             : reminder.dismissedDateString) +
           "</td>") +
         ("<td class=\"has-text-centered\">" +
@@ -508,6 +537,11 @@ declare const llm: llmGlobal;
           "</div>" +
           "</td>");
 
+      if (reminder.dismissedDateString === "") {
+        trEle.getElementsByClassName("is-dismiss-reminder-button")[0].addEventListener("click",
+          dismissReminderClickFn);
+      }
+
       trEle.getElementsByClassName("is-edit-reminder-button")[0].addEventListener("click",
         editReminderClickFn);
 
@@ -528,6 +562,12 @@ declare const llm: llmGlobal;
         document.getElementById("container--reminders").insertAdjacentElement("afterbegin", trEle);
       });
     });
+
+    const dismissReminderButtonEles = document.getElementsByClassName("is-dismiss-reminder-button");
+
+    for (const buttonEle of dismissReminderButtonEles) {
+      buttonEle.addEventListener("click", dismissReminderClickFn);
+    }
 
     const editReminderButtonEles = document.getElementsByClassName("is-edit-reminder-button");
 

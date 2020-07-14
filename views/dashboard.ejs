@@ -139,7 +139,7 @@
               <div class="media-content has-text-black">
                 <h2 class="title is-4 is-marginless">
                   <a href="/organizations">Organizations</a>
-                  <span class="tag is-info is-pulled-right"><%= stats.licenceStats.distinctOrganizationCount %> Active</span>
+                  <span class="tag is-info is-pulled-right has-tooltip-left" data-tooltip="Holds an Active Licences"><%= stats.licenceStats.distinctOrganizationCount %> Active</span>
                 </h2>
                 <p>View and maintain organizations that hold lottery licences.</p>
               </div>
@@ -171,7 +171,7 @@
               <div class="media-content has-text-black">
                 <h2 class="title is-4 is-marginless">
                   <a href="/locations">Locations</a>
-                  <span class="tag is-info is-pulled-right"><%= stats.licenceStats.distinctLocationCount %> Active</span>
+                  <span class="tag is-info is-pulled-right has-tooltip-left" data-tooltip="Used on Active Licences"><%= stats.licenceStats.distinctLocationCount %> Active</span>
                 </h2>
                 <p>View and maintain the locations where lottery events can take place.</p>
               </div>
