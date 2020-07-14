@@ -171,6 +171,7 @@
               <div class="media-content has-text-black">
                 <h2 class="title is-4 is-marginless">
                   <a href="/locations">Locations</a>
+                  <span class="tag is-info is-pulled-right"><%= stats.licenceStats.distinctLocationCount %> Active</span>
                 </h2>
                 <p>View and maintain the locations where lottery events can take place.</p>
               </div>
@@ -240,7 +241,7 @@
               <div class="media-content has-text-black">
                 <h2 class="title is-4 is-marginless">
                   <a href="/events">Lottery Events</a>
-                  <span class="tag is-info is-pulled-right"><%= stats.licenceStats.distinctLocationCount %> Active</span>
+                  <span class="tag is-info is-pulled-right"><%= stats.eventStats.todayCount %> Today</span>
                 </h2>
                 <p>View and update events.</p>
               </div>
