@@ -2023,6 +2023,7 @@ export const getEvents = (reqBody: {
   externalLicenceNumber?: string;
   licenceTypeKey?: string;
   organizationName?: string;
+  locationName?: string;
   eventYear?: string;
 }, reqSession: Express.SessionData) => {
 
@@ -2064,6 +2065,18 @@ export const getEvents = (reqBody: {
     for (const organizationNamePiece of organizationNamePieces) {
       sql += " and instr(lower(o.organizationName), ?)";
       sqlParams.push(organizationNamePiece);
+    }
+  }
+
+  if (reqBody.locationName !== "") {
+
+    const locationNamePieces = reqBody.locationName.toLowerCase().split(" ");
+
+    for (const locationNamePiece of locationNamePieces) {
+      sql += " and (instr(lower(lo.locationName), ?) or instr(lower(lo.locationAddress1), ?))";
+
+      sqlParams.push(locationNamePiece);
+      sqlParams.push(locationNamePiece);
     }
   }
 

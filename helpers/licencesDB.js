@@ -1102,6 +1102,14 @@ exports.getEvents = (reqBody, reqSession) => {
             sqlParams.push(organizationNamePiece);
         }
     }
+    if (reqBody.locationName !== "") {
+        const locationNamePieces = reqBody.locationName.toLowerCase().split(" ");
+        for (const locationNamePiece of locationNamePieces) {
+            sql += " and (instr(lower(lo.locationName), ?) or instr(lower(lo.locationAddress1), ?))";
+            sqlParams.push(locationNamePiece);
+            sqlParams.push(locationNamePiece);
+        }
+    }
     sql += " order by e.eventDate, l.startTime";
     const events = db.prepare(sql)
         .all(sqlParams);

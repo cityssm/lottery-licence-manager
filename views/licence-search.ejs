@@ -62,9 +62,15 @@
           </div>
           <div class="column">
             <div class="field">
-              <label class="label" for="filter--locationName">Location Name or Address</label>
+              <label class="label" for="filter--licenceStatus">Status</label>
               <div class="control has-icons-left">
-                <input class="input" id="filter--locationName" name="locationName" type="text" />
+                <div class="select is-fullwidth">
+                  <select id="filter--licenceStatus" name="licenceStatus">
+                    <option value="">(All Statuses)</option>
+                    <option value="active">Active</option>
+                    <option value="past">Past</option>
+                  </select>
+                </div>
                 <span class="icon is-small is-left">
                   <i class="fas fa-filter" aria-hidden="true"></i>
                 </span>
@@ -86,15 +92,9 @@
           </div>
           <div class="column">
             <div class="field">
-              <label class="label" for="filter--licenceStatus">Status</label>
+              <label class="label" for="filter--locationName">Location Name or Address</label>
               <div class="control has-icons-left">
-                <div class="select is-fullwidth">
-                  <select id="filter--licenceStatus" name="licenceStatus">
-                    <option value="">(All Statuses)</option>
-                    <option value="active">Active</option>
-                    <option value="past">Past</option>
-                  </select>
-                </div>
+                <input class="input" id="filter--locationName" name="locationName" type="text" />
                 <span class="icon is-small is-left">
                   <i class="fas fa-filter" aria-hidden="true"></i>
                 </span>

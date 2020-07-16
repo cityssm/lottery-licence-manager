@@ -10,7 +10,8 @@ declare const cityssm: cityssmGlobal;
     document.getElementById("filter--externalLicenceNumber") as HTMLInputElement;
 
   const filterLicenceTypeKeyEle = document.getElementById("filter--licenceTypeKey") as HTMLSelectElement;
-  const filterOrganizationNameEle = document.getElementById("filter--organizationName") as HTMLSelectElement;
+  const filterOrganizationNameEle = document.getElementById("filter--organizationName") as HTMLInputElement;
+  const filterLocationNameEle = document.getElementById("filter--locationName") as HTMLInputElement;
   const filterYearEle = document.getElementById("filter--year") as HTMLSelectElement;
 
   const resultsEle = document.getElementById("container--events");
@@ -27,6 +28,7 @@ declare const cityssm: cityssmGlobal;
         externalLicenceNumber: filterExternalLicenceNumberEle.value,
         licenceTypeKey: filterLicenceTypeKeyEle.value,
         organizationName: filterOrganizationNameEle.value,
+        locationName: filterLocationNameEle.value,
         eventYear: filterYearEle.value
       },
       (eventList: llmTypes.LotteryEvent[]) => {
@@ -113,6 +115,7 @@ declare const cityssm: cityssmGlobal;
   filterExternalLicenceNumberEle.addEventListener("change", getEventsFn);
   filterLicenceTypeKeyEle.addEventListener("change", getEventsFn);
   filterOrganizationNameEle.addEventListener("change", getEventsFn);
+  filterLocationNameEle.addEventListener("change", getEventsFn);
   filterYearEle.addEventListener("change", getEventsFn);
 
   getEventsFn();

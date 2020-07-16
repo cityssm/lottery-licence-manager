@@ -4,6 +4,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
     const filterExternalLicenceNumberEle = document.getElementById("filter--externalLicenceNumber");
     const filterLicenceTypeKeyEle = document.getElementById("filter--licenceTypeKey");
     const filterOrganizationNameEle = document.getElementById("filter--organizationName");
+    const filterLocationNameEle = document.getElementById("filter--locationName");
     const filterYearEle = document.getElementById("filter--year");
     const resultsEle = document.getElementById("container--events");
     const getEventsFn = () => {
@@ -15,6 +16,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
             externalLicenceNumber: filterExternalLicenceNumberEle.value,
             licenceTypeKey: filterLicenceTypeKeyEle.value,
             organizationName: filterOrganizationNameEle.value,
+            locationName: filterLocationNameEle.value,
             eventYear: filterYearEle.value
         }, (eventList) => {
             if (eventList.length === 0) {
@@ -83,6 +85,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
     filterExternalLicenceNumberEle.addEventListener("change", getEventsFn);
     filterLicenceTypeKeyEle.addEventListener("change", getEventsFn);
     filterOrganizationNameEle.addEventListener("change", getEventsFn);
+    filterLocationNameEle.addEventListener("change", getEventsFn);
     filterYearEle.addEventListener("change", getEventsFn);
     getEventsFn();
 })();

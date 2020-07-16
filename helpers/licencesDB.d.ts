@@ -105,6 +105,7 @@ export declare const getEvents: (reqBody: {
     externalLicenceNumber?: string;
     licenceTypeKey?: string;
     organizationName?: string;
+    locationName?: string;
     eventYear?: string;
 }, reqSession: Express.SessionData) => llm.LotteryEvent[];
 export declare const getRecentlyUpdateEvents: (reqSession: Express.SessionData) => llm.LotteryEvent[];
