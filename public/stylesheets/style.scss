@@ -44,6 +44,9 @@ fieldset:enabled .is-hidden-enabled {
 
 #is-login-page {
   overflow: auto;
+  background-image: url('/images/login.jpg');
+  background-position: top center;
+  background-size: cover;
 
   body > .columns {
     min-height: 100vh;
