@@ -411,7 +411,7 @@ exports.getOrganizationReminders = (organizationID, reqSession) => {
         " from OrganizationReminders" +
         " where recordDelete_timeMillis is null" +
         " and organizationID = ?" +
-        " order by reminderDate desc, dismissedDate desc")
+        " order by case when dismissedDate is null then 0 else 1 end, reminderDate desc, dismissedDate desc")
         .all(organizationID);
     db.close();
     for (const reminder of reminders) {

@@ -113,6 +113,13 @@ Remarks can be marked as important to further highlight them in the list.
 A complete remark history for the organization can be exported as a CSV document
 using the "Export Remarks" button.
 
+### Tab - Reminders
+
+![Organization Reminders](images/organization-edit-reminders.png)
+
+The reminders section can be used for any type of reminders,
+like annual report submissions.
+
 ### Tab - Bank Records
 
 ![Organization Remarks](images/organization-edit-bankRecords.png)

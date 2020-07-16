@@ -8,9 +8,11 @@ when these files are initialized.  You can get started by using the default admi
 
 In your `data/config.js` file, set the following property:
 
-    config.admin = {
-      defaultPassword: "password"
-    };
+```javascript
+config.admin = {
+  defaultPassword: "password"
+};
+```
 
 As with all changes to the `config.js` file, you will have to restart Node
 before the change takes effect.

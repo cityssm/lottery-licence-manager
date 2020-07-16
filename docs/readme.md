@@ -6,6 +6,8 @@
 
 ## User Documentation
 
+![Lottery licence Manager Dashboard](images/dashboard.png)
+
 **[Tips and Tricks](tipsTricks.md)**
 
 **[Organizations](organizations.md)**<br />
