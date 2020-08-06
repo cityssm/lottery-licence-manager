@@ -871,7 +871,7 @@ export const createLicence = (reqBody: LotteryLicenceForm, reqSession: Express.S
 
   // Ticket types
 
-  if (reqBody.ticketType_ticketType.constructor === String) {
+  if (typeof (reqBody.ticketType_ticketType) === "string") {
 
     db.prepare("insert into LotteryLicenceTicketTypes (" +
       "licenceID, ticketType," +
@@ -892,7 +892,7 @@ export const createLicence = (reqBody: LotteryLicenceForm, reqSession: Express.S
         nowMillis
       );
 
-  } else if (reqBody.ticketType_ticketType.constructor === Array) {
+  } else if (typeof (reqBody.ticketType_ticketType) === "object") {
 
     reqBody.ticketType_ticketType.forEach((ticketType: string, ticketTypeIndex: number) => {
 
@@ -1359,7 +1359,7 @@ export const updateLicence = (reqBody: LotteryLicenceForm, reqSession: Express.S
 
   // Do updates
 
-  if (reqBody.ticketType_ticketType.constructor === String) {
+  if (typeof (reqBody.ticketType_ticketType) === "string") {
 
     db.prepare("update LotteryLicenceTicketTypes" +
       " set distributorLocationID = ?," +
@@ -1405,7 +1405,7 @@ export const updateLicence = (reqBody: LotteryLicenceForm, reqSession: Express.S
 
     }
 
-  } else if (reqBody.ticketType_ticketType.constructor === Array) {
+  } else if (typeof (reqBody.ticketType_ticketType) === "object") {
 
     reqBody.ticketType_ticketType.forEach((ticketType: string, ticketTypeIndex: number) => {
 

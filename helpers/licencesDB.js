@@ -488,7 +488,7 @@ exports.createLicence = (reqBody, reqSession) => {
             " values (?, ?, ?)")
             .run(licenceID, fieldKey, fieldValue);
     }
-    if (reqBody.ticketType_ticketType.constructor === String) {
+    if (typeof (reqBody.ticketType_ticketType) === "string") {
         db.prepare("insert into LotteryLicenceTicketTypes (" +
             "licenceID, ticketType," +
             " distributorLocationID, manufacturerLocationID," +
@@ -497,7 +497,7 @@ exports.createLicence = (reqBody, reqSession) => {
             " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
             .run(licenceID, reqBody.ticketType_ticketType, (reqBody.ticketType_distributorLocationID === "" ? null : reqBody.ticketType_distributorLocationID), (reqBody.ticketType_manufacturerLocationID === "" ? null : reqBody.ticketType_manufacturerLocationID), reqBody.ticketType_unitCount, reqBody.ticketType_licenceFee, reqSession.user.userName, nowMillis, reqSession.user.userName, nowMillis);
     }
-    else if (reqBody.ticketType_ticketType.constructor === Array) {
+    else if (typeof (reqBody.ticketType_ticketType) === "object") {
         reqBody.ticketType_ticketType.forEach((ticketType, ticketTypeIndex) => {
             db.prepare("insert into LotteryLicenceTicketTypes (" +
                 "licenceID, ticketType," +
@@ -723,7 +723,7 @@ exports.updateLicence = (reqBody, reqSession) => {
             }
         }
     }
-    if (reqBody.ticketType_ticketType.constructor === String) {
+    if (typeof (reqBody.ticketType_ticketType) === "string") {
         db.prepare("update LotteryLicenceTicketTypes" +
             " set distributorLocationID = ?," +
             " manufacturerLocationID = ?," +
@@ -746,7 +746,7 @@ exports.updateLicence = (reqBody, reqSession) => {
             }
         }
     }
-    else if (reqBody.ticketType_ticketType.constructor === Array) {
+    else if (typeof (reqBody.ticketType_ticketType) === "object") {
         reqBody.ticketType_ticketType.forEach((ticketType, ticketTypeIndex) => {
             db.prepare("update LotteryLicenceTicketTypes" +
                 " set distributorLocationID = ?," +
