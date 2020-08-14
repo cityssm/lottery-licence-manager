@@ -47,17 +47,17 @@
           "</td>" +
           "<td>" +
             "<a data-tooltip=\"View Organization\" href=\"/organizations/" + reminder.organizationID + "\">" +
-            stringFns.escapeHTML(reminder.organizationName) +
+            htmlFns.escapeHTML(reminder.organizationName) +
             "</a>" +
           "</td>" +
           "<td>" +
           (reminderType
-            ? stringFns.escapeHTML(reminderType.reminderType)
+            ? htmlFns.escapeHTML(reminderType.reminderType)
             : reminder.reminderTypeKey) +
           "</td>" +
           "<td>" +
           (reminder.reminderStatus
-            ? stringFns.escapeHTML(reminder.reminderStatus)
+            ? htmlFns.escapeHTML(reminder.reminderStatus)
             : "") +
           "</td>" +
           "</tr>";
