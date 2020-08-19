@@ -1,3 +1,5 @@
+import * as log from "fancy-log";
+
 import * as llm from "../helpers/llmTypes";
 
 
@@ -5,7 +7,14 @@ import * as llm from "../helpers/llmTypes";
  * LOAD CONFIGURATION
  */
 
-import * as config from "../data/config";
+let config = "";
+
+try {
+  config = require("../data/config");
+} catch (_e) {
+  log.warn("Using data/config-example.js");
+  config = require("../data/config-example");
+}
 
 
 /*

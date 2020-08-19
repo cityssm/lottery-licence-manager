@@ -1,7 +1,15 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getLicenceTypeKeyToNameObject = exports.getLicenceType = exports.getReminderType = exports.keepAliveMillis = exports.getProperty = void 0;
-const config = require("../data/config");
+const log = require("fancy-log");
+let config = "";
+try {
+    config = require("../data/config");
+}
+catch (_e) {
+    log.warn("Using data/config-example.js");
+    config = require("../data/config-example");
+}
 const configFallbackValues = new Map();
 configFallbackValues.set("application.applicationName", "Lottery Licence System");
 configFallbackValues.set("application.logoURL", "/images/bingoBalls.png");

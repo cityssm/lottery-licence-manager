@@ -1,12 +1,15 @@
+.nyc_output/
+coverage/
+node_modules/
 
 app.min.js
 data/*.db
+data/*.db-journal
 data/*.min.js
 data/config.js
 data/config.d.ts
 data/config.ts
 helpers/*.min.js
-node_modules/
 public/images-custom/*
 routes/*.min.js
 *.pem

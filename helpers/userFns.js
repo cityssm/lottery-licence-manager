@@ -2,21 +2,24 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.forbiddenJSON = exports.userCanCreate = exports.userCanUpdate = exports.userIsAdmin = void 0;
 exports.userIsAdmin = (req) => {
-    const user = req.session.user;
+    var _a;
+    const user = (_a = req.session) === null || _a === void 0 ? void 0 : _a.user;
     if (!user) {
         return false;
     }
     return user.userProperties.isAdmin;
 };
 exports.userCanUpdate = (req) => {
-    const user = req.session.user;
+    var _a;
+    const user = (_a = req.session) === null || _a === void 0 ? void 0 : _a.user;
     if (!user) {
         return false;
     }
     return user.userProperties.canUpdate;
 };
 exports.userCanCreate = (req) => {
-    const user = req.session.user;
+    var _a;
+    const user = (_a = req.session) === null || _a === void 0 ? void 0 : _a.user;
     if (!user) {
         return false;
     }
