@@ -1,4 +1,4 @@
-import { User, UserProperties } from "./llmTypes";
+import { User, UserProperties } from "../types/recordTypes";
 export declare const getUser: (userNameSubmitted: string, passwordPlain: string) => User;
 export declare const tryResetPassword: (userName: string, oldPasswordPlain: string, newPasswordPlain: string) => {
     success: boolean;

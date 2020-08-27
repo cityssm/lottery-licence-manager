@@ -3,7 +3,13 @@ import { Router } from "express";
 import * as configFns from "../helpers/configFns";
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns";
 
-import * as licencesDB from "../helpers/licencesDB";
+import * as permissionHandlers from "../handlers/permissions";
+
+import * as handler_doGetLocations from "../handlers/locations-post/doGetLocations";
+
+import * as handler_view from "../handlers/locations-get/view";
+import * as handler_edit from "../handlers/locations-get/edit";
+
 import * as licencesDBLocations from "../helpers/licencesDB-locations";
 
 import { userCanCreate, userCanUpdate, userIsAdmin, forbiddenJSON } from "../helpers/userFns";
@@ -20,24 +26,8 @@ router.get("/", (_req, res) => {
 });
 
 
-router.post("/doGetLocations", (req, res) => {
-
-  const locations = licencesDBLocations.getLocations(req.session, {
-    limit: req.body.limit || -1,
-    offset: req.body.offset || 0,
-    locationNameAddress: req.body.locationNameAddress,
-    locationIsDistributor: ("locationIsDistributor" in req.body && req.body.locationIsDistributor !== ""
-      ? parseInt(req.body.locationIsDistributor, 10)
-      : -1),
-    locationIsManufacturer: ("locationIsManufacturer" in req.body && req.body.locationIsManufacturer !== ""
-      ? parseInt(req.body.locationIsManufacturer, 10)
-      : -1),
-    locationIsActive: req.body.locationIsActive || ""
-  });
-
-  res.json(locations);
-
-});
+router.post("/doGetLocations",
+  handler_doGetLocations.handler);
 
 
 // Cleanup
@@ -203,79 +193,12 @@ router.get("/new", (req, res) => {
 });
 
 
-router.get("/:locationID", (req, res) => {
-
-  const locationID = parseInt(req.params.locationID, 10);
-
-  const location = licencesDBLocations.getLocation(locationID, req.session);
-
-  if (!location) {
-
-    res.redirect("/locations/?error=locationNotFound");
-    return;
-
-  }
-
-  const licences = licencesDB.getLicences({
-    locationID
-  }, req.session, {
-      includeOrganization: true,
-      limit: -1
-    }).licences;
-
-  res.render("location-view", {
-    headTitle: location.locationDisplayName,
-    location,
-    licences,
-    currentDateInteger: dateTimeFns.dateToInteger(new Date())
-  });
-
-});
+router.get("/:locationID", handler_view.handler);
 
 
-router.get("/:locationID/edit", (req, res) => {
-
-  const locationID = parseInt(req.params.locationID, 10);
-
-  if (!userCanCreate(req)) {
-
-    res.redirect("/locations/" + locationID.toString() + "/?error=accessDenied-noCreate");
-    return;
-
-  }
-
-  const location = licencesDBLocations.getLocation(locationID, req.session);
-
-  if (!location) {
-
-    res.redirect("/locations/?error=locationNotFound");
-    return;
-
-  }
-
-  if (!location.canUpdate) {
-
-    res.redirect("/locations/" + locationID.toString() + "/?error=accessDenied-noUpdate");
-    return;
-
-  }
-
-  const licences = licencesDB.getLicences({
-    locationID
-  }, req.session, {
-      includeOrganization: true,
-      limit: -1
-    }).licences;
-
-  res.render("location-edit", {
-    headTitle: location.locationDisplayName,
-    location,
-    licences,
-    currentDateInteger: dateTimeFns.dateToInteger(new Date()),
-    isCreate: false
-  });
-
-});
+router.get("/:locationID/edit",
+  permissionHandlers.createGetHandler,
+  handler_edit.handler);
 
 
 export = router;

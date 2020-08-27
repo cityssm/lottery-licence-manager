@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
         formEvent.preventDefault();
         cityssm.postJSON("/admin/doCreateUser", formEvent.currentTarget, (responseJSON) => {
             if (responseJSON.success) {
-                window.location.reload(true);
+                window.location.reload();
             }
         });
     });
@@ -138,7 +138,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
         formEvent.preventDefault();
         cityssm.postJSON("/admin/doUpdateUser", formEvent.currentTarget, (responseJSON) => {
             if (responseJSON.success) {
-                window.location.reload(true);
+                window.location.reload();
             }
         });
     });

@@ -64,7 +64,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     sourceLocationID: locationID_source
                 }, (responseJSON) => {
                     if (responseJSON.success) {
-                        window.location.reload(true);
+                        window.location.reload();
                     }
                     else {
                         cityssm.alertModal("Merge Not Completed", "Please try again.", "OK", "danger");

@@ -1,9 +1,8 @@
 /// <reference types="express-serve-static-core" />
 /// <reference types="compression" />
 /// <reference types="express-session" />
-import * as llm from "./llmTypes";
+import type * as llm from "../types/recordTypes";
 import { RawRowsColumnsReturn } from "@cityssm/expressjs-server-js/types";
-export declare const dbPath = "data/licences.db";
 export declare const canUpdateObject: (obj: llm.Record, reqSession: Express.SessionData) => boolean;
 export declare const getRawRowsColumns: (sql: string, params: Array<string | number>) => RawRowsColumnsReturn;
 export declare const getDashboardStats: () => {
@@ -31,58 +30,13 @@ export declare const getDashboardStats: () => {
     };
     reminders: llm.OrganizationReminder[];
 };
+export declare const resetEventTableStats: () => void;
+export declare const resetLicenceTableStats: () => void;
 export declare const getLicenceTableStats: () => llm.LotteryLicenceStats;
-export declare const getLicences: (reqBodyOrParamsObj: {
-    externalLicenceNumber?: string;
-    licenceTypeKey?: string;
-    organizationID?: string | number;
-    organizationName?: string;
-    licenceStatus?: string;
-    locationID?: number;
-    locationName?: string;
-}, reqSession: Express.SessionData, includeOptions: {
-    includeOrganization: boolean;
-    limit: number;
-    offset?: number;
-}) => {
-    count: number;
-    licences: llm.LotteryLicence[];
-};
-export declare const getLicence: (licenceID: number, reqSession: Express.SessionData) => llm.LotteryLicence;
-export declare const getNextExternalLicenceNumberFromRange: () => number;
-interface LotteryLicenceForm {
-    licenceID?: string;
-    externalLicenceNumber: string;
-    applicationDateString: string;
-    organizationID: string;
-    municipality: string;
-    locationID: string;
-    startDateString: string;
-    endDateString: string;
-    startTimeString: string;
-    endTimeString: string;
-    licenceDetails: string;
-    termsConditions: string;
-    licenceTypeKey: string;
-    totalPrizeValue: string;
-    ticketType_ticketType: string | string[];
-    ticketType_unitCount: string | string[];
-    ticketType_licenceFee: string | string[];
-    ticketType_manufacturerLocationID: string | string[];
-    ticketType_distributorLocationID: string | string[];
-    ticketType_toAdd?: string | string[];
-    ticketType_toDelete?: string | string[];
-    eventDate: string | string[];
-    fieldKeys: string;
-    licenceFee?: string;
-}
-export declare const createLicence: (reqBody: LotteryLicenceForm, reqSession: Express.SessionData) => number;
-export declare const updateLicence: (reqBody: LotteryLicenceForm, reqSession: Express.SessionData) => boolean;
 export declare const deleteLicence: (licenceID: number, reqSession: Express.SessionData) => boolean;
 export declare const getDistinctTermsConditions: (organizationID: number) => llm.TermsConditionsStat[];
 export declare const pokeLicence: (licenceID: number, reqSession: Express.SessionData) => boolean;
 export declare const issueLicence: (licenceID: number, reqSession: Express.SessionData) => boolean;
-export declare const unissueLicence: (licenceID: number, reqSession: Express.SessionData) => boolean;
 export declare const getLicenceTypeSummary: (reqBody: {
     applicationDateStartString?: string;
     applicationDateEndString?: string;
@@ -92,14 +46,6 @@ export declare const getActiveLicenceSummary: (reqBody: {
     startEndDateStartString: string;
     startEndDateEndString: string;
 }, reqSession: Express.SessionData) => llm.LotteryLicence[];
-export declare const addTransaction: (reqBody: {
-    licenceID: string;
-    transactionAmount: string;
-    transactionNote: string;
-    externalReceiptNumber: string;
-    issueLicence: "" | "true";
-}, reqSession: Express.SessionData) => number;
-export declare const voidTransaction: (licenceID: number, transactionIndex: number, reqSession: Express.SessionData) => boolean;
 export declare const getEventTableStats: () => llm.LotteryEventStats;
 export declare const getEvents: (reqBody: {
     externalLicenceNumber?: string;
@@ -117,7 +63,6 @@ export declare const getEventFinancialSummary: (reqBody: {
     eventDateStartString: string;
     eventDateEndString: string;
 }) => any[];
-export declare const getEvent: (licenceID: number, eventDate: number, reqSession: Express.SessionData) => llm.LotteryEvent;
 export declare const getPastEventBankingInformation: (licenceID: number) => any[];
 export declare const updateEvent: (reqBody: {
     licenceID: string;
@@ -142,6 +87,4 @@ export declare const getLicenceActivityByDateRange: (startDate: number, endDate:
     events: llm.LotteryEvent[];
 };
 export declare const getApplicationSettings: () => any[];
-export declare const getApplicationSetting: (settingKey: string) => string;
 export declare const updateApplicationSetting: (settingKey: string, settingValue: string, reqSession: Express.SessionData) => boolean;
-export {};

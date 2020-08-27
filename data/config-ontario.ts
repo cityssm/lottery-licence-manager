@@ -1,7 +1,9 @@
-import * as llm from "../helpers/llmTypes";
+import * as recordTypes from "../types/recordTypes";
+import * as configTypes from "../types/configTypes";
+
 import { ticketTypes as nevadaTicketTypes } from "./_agco-approvedBreakOpenTicketTypes";
 
-const config: llm.Config = {};
+const config: configTypes.Config = {};
 
 
 config.defaults = {
@@ -75,7 +77,7 @@ config.reminderCategories = [
 
 config.licences = {
 
-  feeCalculationFn: (licenceObj: llm.LotteryLicence) => {
+  feeCalculationFn: (licenceObj: recordTypes.LotteryLicence) => {
 
     const totalPrizeValue = (licenceObj.totalPrizeValue || 0.0);
 
@@ -387,7 +389,7 @@ config.licenceTypes = [
       }
     }],
     printSettings: {
-      agco_additionalLicenceDetailsHTMLFn: (licenceObj: llm.LotteryLicence): string => {
+      agco_additionalLicenceDetailsHTMLFn: (licenceObj: recordTypes.LotteryLicence): string => {
 
         const ticketCountField = licenceObj.licenceFields.find((field) => field.fieldKey === "RA-ticketCount");
         const ticketCostField = licenceObj.licenceFields.find((field) => field.fieldKey === "RA-ticketCost");

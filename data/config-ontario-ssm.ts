@@ -1,11 +1,12 @@
-import * as llm from "../helpers/llmTypes";
+import * as recordTypes from "../types/recordTypes";
+import * as configTypes from "../types/configTypes";
 
 import * as objectFns from "../helpers/objectFns";
 
 import * as configOntario from "./config-ontario";
 
 
-const configSSM: llm.Config = Object.assign({}, configOntario);
+const configSSM: configTypes.Config = Object.assign({}, configOntario);
 
 
 /*
@@ -40,7 +41,7 @@ configSSM.licences.externalReceiptNumber = {
   fieldLabel: "GP Receipt Number"
 };
 
-configSSM.licences.feeCalculationFn = (licenceObj: llm.LotteryLicence) => {
+configSSM.licences.feeCalculationFn = (licenceObj: recordTypes.LotteryLicence) => {
 
   const totalPrizeValue = (licenceObj.totalPrizeValue || 0.0);
 

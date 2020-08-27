@@ -1,3 +1,3 @@
-import * as llm from "../helpers/llmTypes";
-declare const config: llm.Config;
+import * as configTypes from "../types/configTypes";
+declare const config: configTypes.Config;
 export = config;

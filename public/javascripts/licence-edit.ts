@@ -1,6 +1,8 @@
 import type { cityssmGlobal } from "@cityssm/bulma-webapp-js/src/types";
 import type { llmGlobal } from "./types";
-import type * as llmTypes from "../../helpers/llmTypes";
+
+import type * as recordTypes from "../../types/recordTypes";
+import type * as configTypes from "../../types/configTypes";
 
 declare const cityssm: cityssmGlobal;
 declare const llm: llmGlobal;
@@ -65,7 +67,7 @@ declare const llm: llmGlobal;
 
         } else if (responseJSON.success && doRefreshAfterSave) {
 
-          window.location.reload(true);
+          window.location.reload();
 
         } else {
 
@@ -191,7 +193,7 @@ declare const llm: llmGlobal;
 
   {
 
-    let organizationList: llmTypes.Organization[] = [];
+    let organizationList: recordTypes.Organization[] = [];
 
     let organizationLookupCloseModalFn: () => void;
     let organizationLookupSearchStrEle: HTMLInputElement;
@@ -292,7 +294,7 @@ declare const llm: llmGlobal;
             cityssm.postJSON(
               "/organizations/doGetAll",
               null,
-              (organizationListRes: llmTypes.Organization[]) => {
+              (organizationListRes: recordTypes.Organization[]) => {
 
                 organizationList = organizationListRes;
                 organizationLookupSearchStrEle.removeAttribute("disabled");
@@ -333,7 +335,7 @@ declare const llm: llmGlobal;
    * LOCATION LOOKUP
    */
 
-  let locationList: llmTypes.Location[] = [];
+  let locationList: recordTypes.Location[] = [];
 
   const loadLocationListFn = (callbackFn: () => void) => {
 
@@ -528,7 +530,7 @@ declare const llm: llmGlobal;
 
   {
 
-    let termsConditionsList: llmTypes.TermsConditionsStat[] = [];
+    let termsConditionsList: recordTypes.TermsConditionsStat[] = [];
 
     const termsConditionsLookupModalEle = document.getElementById("is-termsConditions-lookup-modal");
     const termsConditionsLookupResultsEle = document.getElementById("container--termsConditionsPrevious");
@@ -578,7 +580,7 @@ declare const llm: llmGlobal;
         "/licences/doGetDistinctTermsConditions", {
           organizationID
         },
-        (termsConditionsListRes: llmTypes.TermsConditionsStat[]) => {
+        (termsConditionsListRes: recordTypes.TermsConditionsStat[]) => {
 
           termsConditionsList = termsConditionsListRes;
 
@@ -887,9 +889,9 @@ declare const llm: llmGlobal;
 
   if (ticketTypesPanelEle) {
 
-    const licenceTypeKeyToTicketTypes: Map<string, llmTypes.ConfigTicketType[]> = new Map();
+    const licenceTypeKeyToTicketTypes: Map<string, configTypes.ConfigTicketType[]> = new Map();
 
-    const ticketTypesFn_getAll = (callbackFn: (ticketTypes: llmTypes.ConfigTicketType[]) => void) => {
+    const ticketTypesFn_getAll = (callbackFn: (ticketTypes: configTypes.ConfigTicketType[]) => void) => {
 
       const licenceTypeKey = licenceType_selectEle.value;
 
@@ -903,7 +905,7 @@ declare const llm: llmGlobal;
           "/licences/doGetTicketTypes", {
             licenceTypeKey
           },
-          (ticketTypes: llmTypes.ConfigTicketType[]) => {
+          (ticketTypes: configTypes.ConfigTicketType[]) => {
 
             licenceTypeKeyToTicketTypes.set(licenceTypeKey, ticketTypes);
             callbackFn(ticketTypes);
@@ -997,7 +999,7 @@ declare const llm: llmGlobal;
       const trEle = (buttonEvent.currentTarget as HTMLButtonElement).closest("tr");
 
       const ticketType = trEle.getAttribute("data-ticket-type");
-      let ticketTypeObj: llmTypes.ConfigTicketType;
+      let ticketTypeObj: configTypes.ConfigTicketType;
 
       let amendUnitCount_closeModalFn: () => void;
 
@@ -1055,7 +1057,7 @@ declare const llm: llmGlobal;
           const unitCountEle = document.getElementById("amendUnit_unitCount") as HTMLInputElement;
           unitCountEle.value = unitCountCurrent;
 
-          ticketTypesFn_getAll((ticketTypes: llmTypes.ConfigTicketType[]) => {
+          ticketTypesFn_getAll((ticketTypes: configTypes.ConfigTicketType[]) => {
 
             ticketTypeObj = ticketTypes.find((ele) => ele.ticketType === ticketType);
 
@@ -1285,7 +1287,7 @@ declare const llm: llmGlobal;
         addTicketTypeFn_refreshUnitCountChange();
       };
 
-      const addTicketTypeFn_populateTicketTypeSelect = (ticketTypes: llmTypes.ConfigTicketType[]) => {
+      const addTicketTypeFn_populateTicketTypeSelect = (ticketTypes: configTypes.ConfigTicketType[]) => {
 
         if (!ticketTypes || ticketTypes.length === 0) {
 
@@ -1547,7 +1549,7 @@ declare const llm: llmGlobal;
           (responseJSON: { success: boolean }) => {
 
             if (responseJSON.success) {
-              window.location.reload(true);
+              window.location.reload();
             }
           }
         );
@@ -1626,7 +1628,7 @@ declare const llm: llmGlobal;
             (responseJSON: { success: true }) => {
 
               if (responseJSON.success) {
-                window.location.reload(true);
+                window.location.reload();
               }
             }
           );
@@ -1671,7 +1673,7 @@ declare const llm: llmGlobal;
             (responseJSON) => {
 
               if (responseJSON.success) {
-                window.location.reload(true);
+                window.location.reload();
               }
             }
           );
@@ -1699,7 +1701,7 @@ declare const llm: llmGlobal;
             (responseJSON: { success: boolean }) => {
 
               if (responseJSON.success) {
-                window.location.reload(true);
+                window.location.reload();
               }
             }
           );

@@ -1,4 +1,5 @@
-import type * as llmTypes from "../../helpers/llmTypes";
+import type * as recordTypes from "../../types/recordTypes";
+import type * as configTypes from "../../types/configTypes";
 export interface llmGlobal {
     arrayToObject?: (array: [], objectKey: string | number) => {};
     getDefaultConfigProperty?: (propertyName: string, propertyValueCallbackFn: (propertyValue: any) => void) => void;
@@ -7,8 +8,8 @@ export interface llmGlobal {
         onshown?: (tabContentEle: HTMLElement) => void;
     }) => void;
     organizationRemarks?: {
-        getRemarksByOrganizationID: (organizationID: number, callbackFn: (remarkList: llmTypes.OrganizationRemark[]) => void) => void;
-        getRemarkByID: (organizationID: number, remarkIndex: number, callbackFn: (remark: llmTypes.OrganizationRemark) => void) => void;
+        getRemarksByOrganizationID: (organizationID: number, callbackFn: (remarkList: recordTypes.OrganizationRemark[]) => void) => void;
+        getRemarkByID: (organizationID: number, remarkIndex: number, callbackFn: (remark: recordTypes.OrganizationRemark) => void) => void;
         openAddRemarkModal: (organizationID: number, updateCallbackFn: () => void) => void;
         openEditRemarkModal: (organizationID: number, remarkIndex: number, updateCallbackFn: () => void) => void;
         deleteRemark: (organizationID: number, remarkIndex: number, doConfirm: boolean, deleteCallbackFn: (response: {
@@ -18,19 +19,19 @@ export interface llmGlobal {
     };
     organizationReminders?: {
         loadReminderTypeCache: (callbackFn: () => void) => void;
-        getRemindersByOrganizationID: (organizationID: number, callbackFn: (reminderList: llmTypes.OrganizationReminder[]) => void) => void;
-        getReminderByID: (organizationID: number, reminderIndex: number, callbackFn: (reminder: llmTypes.OrganizationReminder) => void) => void;
-        openAddReminderModal: (organizationID: number, updateCallbackFn: (reminderObj: llmTypes.OrganizationReminder) => void) => void;
-        openEditReminderModal: (organizationID: number, reminderIndex: number, updateCallbackFn: (reminderObj?: llmTypes.OrganizationReminder) => void) => void;
+        getRemindersByOrganizationID: (organizationID: number, callbackFn: (reminderList: recordTypes.OrganizationReminder[]) => void) => void;
+        getReminderByID: (organizationID: number, reminderIndex: number, callbackFn: (reminder: recordTypes.OrganizationReminder) => void) => void;
+        openAddReminderModal: (organizationID: number, updateCallbackFn: (reminderObj: recordTypes.OrganizationReminder) => void) => void;
+        openEditReminderModal: (organizationID: number, reminderIndex: number, updateCallbackFn: (reminderObj?: recordTypes.OrganizationReminder) => void) => void;
         dismissReminder: (organizationID: number, reminderIndex: number, doConfirm: boolean, deleteCallbackFn: (response: {
             success: boolean;
             message: string;
-            reminder?: llmTypes.OrganizationReminder;
+            reminder?: recordTypes.OrganizationReminder;
         }) => void) => void;
         deleteReminder: (organizationID: number, reminderIndex: number, doConfirm: boolean, deleteCallbackFn: (response: {
             success: boolean;
             message: string;
         }) => void) => void;
-        getReminderType: (reminderTypeKey: string) => llmTypes.ConfigReminderType;
+        getReminderType: (reminderTypeKey: string) => configTypes.ConfigReminderType;
     };
 }

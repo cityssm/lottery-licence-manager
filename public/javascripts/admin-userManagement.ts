@@ -1,6 +1,6 @@
 import type { cityssmGlobal } from "@cityssm/bulma-webapp-js/src/types";
 import type { llmGlobal } from "./types";
-import type * as llmTypes from "../../helpers/llmTypes";
+import type * as llmTypes from "../../types/recordTypes";
 
 declare const cityssm: cityssmGlobal;
 declare const llm: llmGlobal;
@@ -24,7 +24,7 @@ declare const llm: llmGlobal;
       (responseJSON: { success: boolean }) => {
 
         if (responseJSON.success) {
-          window.location.reload(true);
+          window.location.reload();
         }
       }
     );
@@ -256,7 +256,7 @@ declare const llm: llmGlobal;
         (responseJSON: { success: boolean }) => {
 
           if (responseJSON.success) {
-            window.location.reload(true);
+            window.location.reload();
           }
         }
       );

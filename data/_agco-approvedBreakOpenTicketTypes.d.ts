@@ -1,2 +1,2 @@
-import { ConfigTicketType } from "../helpers/llmTypes";
+import { ConfigTicketType } from "../types/configTypes";
 export declare const ticketTypes: ConfigTicketType[];

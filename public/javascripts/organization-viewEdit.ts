@@ -1,6 +1,8 @@
 import type { cityssmGlobal } from "@cityssm/bulma-webapp-js/src/types";
 import type { llmGlobal } from "./types";
-import type * as llmTypes from "../../helpers/llmTypes";
+
+import type * as recordTypes from "../../types/recordTypes";
+import type * as configTypes from "../../types/configTypes";
 
 declare const cityssm: cityssmGlobal;
 declare const llm: llmGlobal;
@@ -226,7 +228,7 @@ declare const llm: llmGlobal;
 
     clearBankRecordsTableFn();
 
-    const processRecordsFn = (bankRecords: llmTypes.OrganizationBankRecord[]) => {
+    const processRecordsFn = (bankRecords: recordTypes.OrganizationBankRecord[]) => {
 
       for (const bankRecord of bankRecords) {
 
@@ -498,7 +500,7 @@ declare const llm: llmGlobal;
 
           const bankRecordTypeEle = document.getElementById("bankRecordEdit--bankRecordType") as HTMLSelectElement;
 
-          for (const config_bankRecordType of (exports.config_bankRecordTypes as llmTypes.ConfigBankRecordType[])) {
+          for (const config_bankRecordType of (exports.config_bankRecordTypes as configTypes.ConfigBankRecordType[])) {
 
             bankRecordTypeEle.insertAdjacentHTML(
               "beforeend",

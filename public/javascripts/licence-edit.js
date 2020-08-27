@@ -31,7 +31,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 window.location.href = "/licences/" + responseJSON.licenceID.toString() + "/edit";
             }
             else if (responseJSON.success && doRefreshAfterSave) {
-                window.location.reload(true);
+                window.location.reload();
             }
             else {
                 formMessageEle.innerHTML = "";
@@ -924,7 +924,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 }
                 cityssm.postJSON("/licences/doAddTransaction", addTransactionFormEle, (responseJSON) => {
                     if (responseJSON.success) {
-                        window.location.reload(true);
+                        window.location.reload();
                     }
                 });
             };
@@ -969,7 +969,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                         transactionIndex: voidTransactionButtonEle.getAttribute("data-transaction-index")
                     }, (responseJSON) => {
                         if (responseJSON.success) {
-                            window.location.reload(true);
+                            window.location.reload();
                         }
                     });
                 };
@@ -989,7 +989,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                         licenceID
                     }, (responseJSON) => {
                         if (responseJSON.success) {
-                            window.location.reload(true);
+                            window.location.reload();
                         }
                     });
                 };
@@ -1003,7 +1003,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                         licenceID
                     }, (responseJSON) => {
                         if (responseJSON.success) {
-                            window.location.reload(true);
+                            window.location.reload();
                         }
                     });
                 };

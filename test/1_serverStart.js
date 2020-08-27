@@ -4,7 +4,7 @@ exports.fakeAdminRequest = exports.fakeViewOnlyRequest = exports.fakeRequest = e
 const assert = require("assert");
 const http = require("http");
 const app = require("../app");
-const licencesDB_1 = require("../helpers/licencesDB");
+const getLicences_1 = require("../helpers/licencesDB/getLicences");
 const usersDB_1 = require("../helpers/usersDB");
 exports.fakeViewOnlySession = {
     id: "",
@@ -112,7 +112,7 @@ describe("lottery-licence-manager", () => {
         assert.ok(serverStarted);
     });
     it("Ensure licences.db exists", () => {
-        assert.ok(licencesDB_1.getLicences({}, exports.fakeViewOnlySession, { includeOrganization: false, limit: 1, offset: 0 }));
+        assert.ok(getLicences_1.getLicences({}, exports.fakeViewOnlySession, { includeOrganization: false, limit: 1, offset: 0 }));
     });
     it("Ensure users.db exists", () => {
         assert.ok(usersDB_1.getAllUsers());

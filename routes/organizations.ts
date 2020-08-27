@@ -1,9 +1,21 @@
 import { Router } from "express";
 
 import * as configFns from "../helpers/configFns";
-import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns";
 
-import * as licencesDB from "../helpers/licencesDB";
+import * as permissionHandlers from "../handlers/permissions";
+
+import * as handler_cleanup from "../handlers/organizations-get/cleanup";
+import * as handler_view from "../handlers/organizations-get/view";
+import * as handler_edit from "../handlers/organizations-get/edit";
+
+import * as handler_doSearch from "../handlers/organizations-post/doSearch";
+import * as handler_doGetAll from "../handlers/organizations-all/doGetAll";
+
+import * as handler_doGetRemarks from "../handlers/organizations-post/doGetRemarks";
+
+import * as handler_reminders from "../handlers/organizations-get/reminders";
+import * as handler_doGetReminders from "../handlers/organizations-post/doGetReminders";
+
 import * as licencesDBOrganizations from "../helpers/licencesDB-organizations";
 
 import { userCanCreate, userCanUpdate, userIsAdmin, forbiddenJSON } from "../helpers/userFns";
@@ -26,23 +38,12 @@ router.get("/", (_req, res) => {
 });
 
 
-router.post("/doSearch", (req, res) => {
-
-  res.json(licencesDBOrganizations.getOrganizations(req.body, req.session, {
-    limit: 100,
-    offset: 0
-  }));
-
-});
+router.post("/doSearch",
+  handler_doSearch.handler);
 
 
-router.all("/doGetAll", (req, res) => {
-
-  res.json(licencesDBOrganizations.getOrganizations({}, req.session, {
-    limit: -1
-  }));
-
-});
+router.all("/doGetAll",
+  handler_doGetAll.handler);
 
 
 /*
@@ -50,15 +51,8 @@ router.all("/doGetAll", (req, res) => {
  */
 
 
-router.get("/reminders", (req, res) => {
-
-  const reminders = licencesDBOrganizations.getUndismissedOrganizationReminders(req.session);
-
-  res.render("organization-reminders", {
-    headTitle: "Organization Reminders",
-    reminders
-  });
-});
+router.get("/reminders",
+  handler_reminders.handler);
 
 
 /*
@@ -66,20 +60,9 @@ router.get("/reminders", (req, res) => {
  */
 
 
-router.get("/cleanup", (req, res) => {
-
-  if (!userCanUpdate(req)) {
-
-    res.redirect("/organizations/?error=accessDenied");
-    return;
-
-  }
-
-  res.render("organization-cleanup", {
-    headTitle: "Organization Cleanup"
-  });
-
-});
+router.get("/cleanup",
+  permissionHandlers.updateGetHandler,
+  handler_cleanup.handler);
 
 
 router.post("/doGetInactive", (req, res) => {
@@ -120,12 +103,7 @@ router.get("/recovery", (req, res) => {
  */
 
 
-router.post("/doGetRemarks", (req, res) => {
-
-  const organizationID = req.body.organizationID;
-
-  res.json(licencesDBOrganizations.getOrganizationRemarks(organizationID, req.session));
-});
+router.post("/doGetRemarks", handler_doGetRemarks.handler);
 
 
 router.post("/doGetRemark", (req, res) => {
@@ -215,12 +193,7 @@ router.post("/doDeleteRemark", (req, res) => {
  */
 
 
-router.post("/doGetReminders", (req, res) => {
-
-  const organizationID = req.body.organizationID;
-
-  res.json(licencesDBOrganizations.getOrganizationReminders(organizationID, req.session));
-});
+router.post("/doGetReminders", handler_doGetReminders.handler);
 
 
 router.post("/doGetReminder", (req, res) => {
@@ -549,44 +522,8 @@ router.post("/doRestore", (req, res) => {
  */
 
 
-router.get("/:organizationID", (req, res) => {
-
-  const organizationID = parseInt(req.params.organizationID, 10);
-
-  const organization = licencesDBOrganizations.getOrganization(organizationID, req.session);
-
-  if (!organization) {
-
-    res.redirect("/organizations/?error=organizationNotFound");
-    return;
-
-  }
-
-  const licences = licencesDB.getLicences(
-    {
-      organizationID
-    },
-    req.session,
-    {
-      includeOrganization: false,
-      limit: -1
-    }).licences || [];
-
-  const remarks = licencesDBOrganizations.getOrganizationRemarks(organizationID, req.session) || [];
-
-  const reminders = licencesDBOrganizations.getOrganizationReminders(organizationID, req.session) || [];
-
-  res.render("organization-view", {
-    headTitle: organization.organizationName,
-    isViewOnly: true,
-    organization,
-    licences,
-    remarks,
-    reminders,
-    currentDateInteger: dateTimeFns.dateToInteger(new Date())
-  });
-
-});
+router.get("/:organizationID",
+  handler_view.handler);
 
 
 /*
@@ -594,60 +531,9 @@ router.get("/:organizationID", (req, res) => {
  */
 
 
-router.get("/:organizationID/edit", (req, res) => {
-
-  const organizationID = parseInt(req.params.organizationID, 10);
-
-  if (!userCanCreate(req)) {
-
-    res.redirect("/organizations/" + organizationID.toString() + "/?error=accessDenied-noCreate");
-    return;
-
-  }
-
-  const organization = licencesDBOrganizations.getOrganization(organizationID, req.session);
-
-  if (!organization) {
-
-    res.redirect("/organizations/?error=organizationNotFound");
-    return;
-
-  }
-
-  if (!organization.canUpdate) {
-
-    res.redirect("/organizations/" + organizationID.toString() + "/?error=accessDenied-noUpdate");
-    return;
-
-  }
-
-  const licences = licencesDB.getLicences(
-    {
-      organizationID
-    },
-    req.session,
-    {
-      includeOrganization: false,
-      limit: -1
-    }
-  ).licences || [];
-
-  const remarks = licencesDBOrganizations.getOrganizationRemarks(organizationID, req.session) || [];
-
-  const reminders = licencesDBOrganizations.getOrganizationReminders(organizationID, req.session) || [];
-
-  res.render("organization-edit", {
-    headTitle: "Organization Update",
-    isViewOnly: false,
-    isCreate: false,
-    organization,
-    licences,
-    remarks,
-    reminders,
-    currentDateInteger: dateTimeFns.dateToInteger(new Date())
-  });
-
-});
+router.get("/:organizationID/edit",
+  permissionHandlers.createGetHandler,
+  handler_edit.handler);
 
 
 router.post("/:organizationID/doAddOrganizationRepresentative", (req, res) => {

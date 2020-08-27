@@ -3,7 +3,7 @@ import * as assert from "assert";
 import * as http from "http";
 import * as app from "../app";
 
-import { getLicences } from "../helpers/licencesDB";
+import { getLicences } from "../helpers/licencesDB/getLicences";
 import { getAllUsers } from "../helpers/usersDB";
 
 import type { Request } from "express";

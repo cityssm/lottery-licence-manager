@@ -1,8 +1,10 @@
 "use strict";
 const express_1 = require("express");
 const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
+const permissionHandlers = require("../handlers/permissions");
+const handler_view = require("../handlers/events-get/view");
+const handler_edit = require("../handlers/events-get/edit");
 const licencesDB = require("../helpers/licencesDB");
-const licencesDBOrganizations = require("../helpers/licencesDB-organizations");
 const router = express_1.Router();
 router.get("/", (_req, res) => {
     const eventTableStats = licencesDB.getEventTableStats();
@@ -125,48 +127,8 @@ router.post("/doDelete", (req, res) => {
         }
     }
 });
-router.get("/:licenceID/:eventDate", (req, res) => {
-    const licenceID = parseInt(req.params.licenceID, 10);
-    const eventDate = parseInt(req.params.eventDate, 10);
-    const eventObj = licencesDB.getEvent(licenceID, eventDate, req.session);
-    if (!eventObj) {
-        res.redirect("/events/?error=eventNotFound");
-        return;
-    }
-    const licence = licencesDB.getLicence(licenceID, req.session);
-    const organization = licencesDBOrganizations.getOrganization(licence.organizationID, req.session);
-    res.render("event-view", {
-        headTitle: "Event View",
-        event: eventObj,
-        licence,
-        organization
-    });
-});
-router.get("/:licenceID/:eventDate/edit", (req, res) => {
-    const licenceID = parseInt(req.params.licenceID, 10);
-    const eventDate = parseInt(req.params.eventDate, 10);
-    if (!req.session.user.userProperties.canUpdate) {
-        res.redirect("/events/" + licenceID.toString() + "/" + eventDate.toString() + "/?error=accessDenied");
-        return;
-    }
-    const eventObj = licencesDB.getEvent(licenceID, eventDate, req.session);
-    if (!eventObj) {
-        res.redirect("/events/?error=eventNotFound");
-        return;
-    }
-    if (!eventObj.canUpdate) {
-        res.redirect("/events/" + licenceID.toString() + "/" + eventDate.toString() + "/?error=accessDenied");
-        return;
-    }
-    const licence = licencesDB.getLicence(licenceID, req.session);
-    const organization = licencesDBOrganizations.getOrganization(licence.organizationID, req.session);
-    res.render("event-edit", {
-        headTitle: "Event Update",
-        event: eventObj,
-        licence,
-        organization
-    });
-});
+router.get("/:licenceID/:eventDate", handler_view.handler);
+router.get("/:licenceID/:eventDate/edit", permissionHandlers.updateGetHandler, handler_edit.handler);
 router.get("/:licenceID/:eventDate/poke", (req, res) => {
     const licenceID = parseInt(req.params.licenceID, 10);
     const eventDate = parseInt(req.params.eventDate, 10);

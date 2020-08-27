@@ -4,7 +4,7 @@ import * as bcrypt from "bcrypt";
 
 import * as stringFns from "@cityssm/expressjs-server-js/stringFns";
 import * as configFns from "./configFns";
-import { User, UserProperties } from "./llmTypes";
+import { User, UserProperties } from "../types/recordTypes";
 
 const dbPath = "data/users.db";
 

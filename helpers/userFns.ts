@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import type * as llm from "../helpers/llmTypes";
+import type * as llm from "../types/recordTypes";
 
 
 export const userIsAdmin = (req: Request) => {

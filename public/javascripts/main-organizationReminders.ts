@@ -1,6 +1,8 @@
 import type { cityssmGlobal } from "@cityssm/bulma-webapp-js/src/types";
 import type { llmGlobal } from "./types";
-import type * as llmTypes from "../../helpers/llmTypes";
+
+import type * as recordTypes from "../../types/recordTypes";
+import type * as configTypes from "../../types/configTypes";
 
 declare const cityssm: cityssmGlobal;
 declare const llm: llmGlobal;
@@ -8,15 +10,15 @@ declare const llm: llmGlobal;
 
 llm.organizationReminders = (() => {
 
-  let reminderCategories: llmTypes.ConfigReminderCategory[];
-  const reminderTypeCache = new Map<string, llmTypes.ConfigReminderType>();
+  let reminderCategories: configTypes.ConfigReminderCategory[];
+  const reminderTypeCache = new Map<string, configTypes.ConfigReminderType>();
 
   const loadReminderTypeCache = (callbackFn?: () => void) => {
 
     if (reminderTypeCache.size === 0) {
 
       llm.getDefaultConfigProperty("reminderCategories",
-        (reminderCategoriesResult: llmTypes.ConfigReminderCategory[]) => {
+        (reminderCategoriesResult: configTypes.ConfigReminderCategory[]) => {
 
           reminderCategories = reminderCategoriesResult;
 
@@ -43,7 +45,7 @@ llm.organizationReminders = (() => {
   };
 
   const getRemindersByOrganizationID = (organizationID: number,
-    callbackFn: (reminderList: llmTypes.OrganizationReminder[]) => void) => {
+    callbackFn: (reminderList: recordTypes.OrganizationReminder[]) => void) => {
 
     cityssm.postJSON(
       "/organizations/doGetReminders", {
@@ -54,7 +56,7 @@ llm.organizationReminders = (() => {
   };
 
   const getReminderByID = (organizationID: number, reminderIndex: number,
-    callbackFn: (reminder: llmTypes.OrganizationReminder) => void) => {
+    callbackFn: (reminder: recordTypes.OrganizationReminder) => void) => {
 
     cityssm.postJSON(
       "/organizations/doGetReminder", {
@@ -67,7 +69,7 @@ llm.organizationReminders = (() => {
 
 
   const openAddReminderModal = (organizationID: number,
-    updateCallbackFn: (reminderObj: llmTypes.OrganizationReminder) => void) => {
+    updateCallbackFn: (reminderObj: recordTypes.OrganizationReminder) => void) => {
 
     let addReminderCloseModalFn: () => void;
 
@@ -182,7 +184,7 @@ llm.organizationReminders = (() => {
 
 
   const openEditReminderModal = (organizationID: number, reminderIndex: number,
-    updateCallbackFn: (reminderObj: llmTypes.OrganizationReminder) => void) => {
+    updateCallbackFn: (reminderObj: recordTypes.OrganizationReminder) => void) => {
 
     let editReminderCloseModalFn: () => void;
 
@@ -195,7 +197,7 @@ llm.organizationReminders = (() => {
         formEvent.currentTarget,
         (responseJSON: {
           success: boolean;
-          reminder: llmTypes.OrganizationReminder;
+          reminder: recordTypes.OrganizationReminder;
         }) => {
 
           if (responseJSON.success) {
@@ -365,7 +367,7 @@ llm.organizationReminders = (() => {
   const doDismissReminder = (organizationID: number, reminderIndex: number, callbackFn: (response: {
     success: boolean;
     message: string;
-    reminder: llmTypes.OrganizationReminder;
+    reminder: recordTypes.OrganizationReminder;
   }) => void) => {
 
     cityssm.postJSON(

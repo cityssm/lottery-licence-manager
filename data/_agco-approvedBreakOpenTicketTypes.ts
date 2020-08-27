@@ -1,4 +1,4 @@
-import { ConfigTicketType } from "../helpers/llmTypes";
+import { ConfigTicketType } from "../types/configTypes";
 
 /*
  * Source

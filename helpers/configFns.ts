@@ -1,6 +1,7 @@
 import * as log from "fancy-log";
 
-import * as llm from "../helpers/llmTypes";
+import * as configTypes from "../types/configTypes";
+import * as recordTypes from "../types/recordTypes";
 
 
 /*
@@ -58,7 +59,7 @@ configFallbackValues.set("bankRecordTypes", [
     bankRecordType: "receipts",
     bankRecordTypeName: "Receipts"
   }
-] as llm.ConfigBankRecordType[]);
+] as configTypes.ConfigBankRecordType[]);
 
 configFallbackValues.set("licences.externalLicenceNumber.fieldLabel", "External Licence Number");
 configFallbackValues.set("licences.externalLicenceNumber.newCalculation", "");
@@ -66,7 +67,7 @@ configFallbackValues.set("licences.externalLicenceNumber.isPreferredID", false);
 
 configFallbackValues.set("licences.externalReceiptNumber.fieldLabel", "Receipt Number");
 
-configFallbackValues.set("licences.feeCalculationFn", (_licenceObj: llm.LotteryLicence) => {
+configFallbackValues.set("licences.feeCalculationFn", (_licenceObj: recordTypes.LotteryLicence) => {
 
   return {
     fee: 10,
@@ -110,9 +111,9 @@ export function getProperty(propertyName: "application.applicationName"): string
 export function getProperty(propertyName: "application.logoURL"): string;
 export function getProperty(propertyName: "application.httpPort"): number;
 
-export function getProperty(propertyName: "application.https"): llm.ConfigHTTPS;
+export function getProperty(propertyName: "application.https"): configTypes.ConfigHTTPS;
 
-export function getProperty(propertyName: "bankRecordTypes"): llm.ConfigBankRecordType[];
+export function getProperty(propertyName: "bankRecordTypes"): configTypes.ConfigBankRecordType[];
 
 export function getProperty(propertyName: "defaults.city"): string;
 export function getProperty(propertyName: "defaults.province"): string;
@@ -123,13 +124,13 @@ export function getProperty(propertyName: "licences.externalLicenceNumber.isPref
 
 export function getProperty(propertyName: "licences.externalReceiptNumber.fieldLabel"): string;
 
-export function getProperty(propertyName: "licences.feeCalculationFn"): (licenceObj: llm.LotteryLicence) => { fee: number; message: string; licenceHasErrors: boolean };
+export function getProperty(propertyName: "licences.feeCalculationFn"): (licenceObj: recordTypes.LotteryLicence) => { fee: number; message: string; licenceHasErrors: boolean };
 
 export function getProperty(propertyName: "licences.printTemplate"): string;
 
-export function getProperty(propertyName: "licenceTypes"): llm.ConfigLicenceType[];
+export function getProperty(propertyName: "licenceTypes"): configTypes.ConfigLicenceType[];
 
-export function getProperty(propertyName: "reminderCategories"): llm.ConfigReminderCategory[];
+export function getProperty(propertyName: "reminderCategories"): configTypes.ConfigReminderCategory[];
 
 export function getProperty(propertyName: "session.cookieName"): string;
 export function getProperty(propertyName: "session.doKeepAlive"): boolean;
@@ -137,7 +138,7 @@ export function getProperty(propertyName: "session.maxAgeMillis"): number;
 export function getProperty(propertyName: "session.secret"): string;
 
 export function getProperty(propertyName: "user.createUpdateWindowMillis"): number;
-export function getProperty(propertyName: "user.defaultProperties"): llm.UserProperties;
+export function getProperty(propertyName: "user.defaultProperties"): recordTypes.UserProperties;
 
 export function getProperty(propertyName: string): any {
 
@@ -171,9 +172,9 @@ export const keepAliveMillis =
  * REMINDER TYPES
  */
 
-const reminderTypeCache = new Map<string, llm.ConfigReminderType>();
+const reminderTypeCache = new Map<string, configTypes.ConfigReminderType>();
 
-export const getReminderType = (reminderTypeKey: string): llm.ConfigReminderType => {
+export const getReminderType = (reminderTypeKey: string): configTypes.ConfigReminderType => {
 
   if (reminderTypeCache.size === 0) {
 
@@ -194,10 +195,10 @@ export const getReminderType = (reminderTypeKey: string): llm.ConfigReminderType
  */
 
 
-const licenceTypeCache = new Map<string, llm.ConfigLicenceType>();
+const licenceTypeCache = new Map<string, configTypes.ConfigLicenceType>();
 let licenceTypeKeyNameObject = {};
 
-export const getLicenceType = (licenceTypeKey: string): llm.ConfigLicenceType => {
+export const getLicenceType = (licenceTypeKey: string): configTypes.ConfigLicenceType => {
 
   if (!licenceTypeCache.has(licenceTypeKey)) {
 

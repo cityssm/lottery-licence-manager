@@ -1,8 +1,15 @@
 "use strict";
 const express_1 = require("express");
 const configFns = require("../helpers/configFns");
-const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
-const licencesDB = require("../helpers/licencesDB");
+const permissionHandlers = require("../handlers/permissions");
+const handler_cleanup = require("../handlers/organizations-get/cleanup");
+const handler_view = require("../handlers/organizations-get/view");
+const handler_edit = require("../handlers/organizations-get/edit");
+const handler_doSearch = require("../handlers/organizations-post/doSearch");
+const handler_doGetAll = require("../handlers/organizations-all/doGetAll");
+const handler_doGetRemarks = require("../handlers/organizations-post/doGetRemarks");
+const handler_reminders = require("../handlers/organizations-get/reminders");
+const handler_doGetReminders = require("../handlers/organizations-post/doGetReminders");
 const licencesDBOrganizations = require("../helpers/licencesDB-organizations");
 const userFns_1 = require("../helpers/userFns");
 const router = express_1.Router();
@@ -11,33 +18,10 @@ router.get("/", (_req, res) => {
         headTitle: "Organizations"
     });
 });
-router.post("/doSearch", (req, res) => {
-    res.json(licencesDBOrganizations.getOrganizations(req.body, req.session, {
-        limit: 100,
-        offset: 0
-    }));
-});
-router.all("/doGetAll", (req, res) => {
-    res.json(licencesDBOrganizations.getOrganizations({}, req.session, {
-        limit: -1
-    }));
-});
-router.get("/reminders", (req, res) => {
-    const reminders = licencesDBOrganizations.getUndismissedOrganizationReminders(req.session);
-    res.render("organization-reminders", {
-        headTitle: "Organization Reminders",
-        reminders
-    });
-});
-router.get("/cleanup", (req, res) => {
-    if (!userFns_1.userCanUpdate(req)) {
-        res.redirect("/organizations/?error=accessDenied");
-        return;
-    }
-    res.render("organization-cleanup", {
-        headTitle: "Organization Cleanup"
-    });
-});
+router.post("/doSearch", handler_doSearch.handler);
+router.all("/doGetAll", handler_doGetAll.handler);
+router.get("/reminders", handler_reminders.handler);
+router.get("/cleanup", permissionHandlers.updateGetHandler, handler_cleanup.handler);
 router.post("/doGetInactive", (req, res) => {
     const inactiveYears = parseInt(req.body.inactiveYears, 10);
     res.json(licencesDBOrganizations.getInactiveOrganizations(inactiveYears));
@@ -53,10 +37,7 @@ router.get("/recovery", (req, res) => {
         organizations
     });
 });
-router.post("/doGetRemarks", (req, res) => {
-    const organizationID = req.body.organizationID;
-    res.json(licencesDBOrganizations.getOrganizationRemarks(organizationID, req.session));
-});
+router.post("/doGetRemarks", handler_doGetRemarks.handler);
 router.post("/doGetRemark", (req, res) => {
     const organizationID = req.body.organizationID;
     const remarkIndex = req.body.remarkIndex;
@@ -111,10 +92,7 @@ router.post("/doDeleteRemark", (req, res) => {
         });
     }
 });
-router.post("/doGetReminders", (req, res) => {
-    const organizationID = req.body.organizationID;
-    res.json(licencesDBOrganizations.getOrganizationReminders(organizationID, req.session));
-});
+router.post("/doGetReminders", handler_doGetReminders.handler);
 router.post("/doGetReminder", (req, res) => {
     const organizationID = req.body.organizationID;
     const reminderIndex = req.body.reminderIndex;
@@ -325,65 +303,8 @@ router.post("/doRestore", (req, res) => {
         });
     }
 });
-router.get("/:organizationID", (req, res) => {
-    const organizationID = parseInt(req.params.organizationID, 10);
-    const organization = licencesDBOrganizations.getOrganization(organizationID, req.session);
-    if (!organization) {
-        res.redirect("/organizations/?error=organizationNotFound");
-        return;
-    }
-    const licences = licencesDB.getLicences({
-        organizationID
-    }, req.session, {
-        includeOrganization: false,
-        limit: -1
-    }).licences || [];
-    const remarks = licencesDBOrganizations.getOrganizationRemarks(organizationID, req.session) || [];
-    const reminders = licencesDBOrganizations.getOrganizationReminders(organizationID, req.session) || [];
-    res.render("organization-view", {
-        headTitle: organization.organizationName,
-        isViewOnly: true,
-        organization,
-        licences,
-        remarks,
-        reminders,
-        currentDateInteger: dateTimeFns.dateToInteger(new Date())
-    });
-});
-router.get("/:organizationID/edit", (req, res) => {
-    const organizationID = parseInt(req.params.organizationID, 10);
-    if (!userFns_1.userCanCreate(req)) {
-        res.redirect("/organizations/" + organizationID.toString() + "/?error=accessDenied-noCreate");
-        return;
-    }
-    const organization = licencesDBOrganizations.getOrganization(organizationID, req.session);
-    if (!organization) {
-        res.redirect("/organizations/?error=organizationNotFound");
-        return;
-    }
-    if (!organization.canUpdate) {
-        res.redirect("/organizations/" + organizationID.toString() + "/?error=accessDenied-noUpdate");
-        return;
-    }
-    const licences = licencesDB.getLicences({
-        organizationID
-    }, req.session, {
-        includeOrganization: false,
-        limit: -1
-    }).licences || [];
-    const remarks = licencesDBOrganizations.getOrganizationRemarks(organizationID, req.session) || [];
-    const reminders = licencesDBOrganizations.getOrganizationReminders(organizationID, req.session) || [];
-    res.render("organization-edit", {
-        headTitle: "Organization Update",
-        isViewOnly: false,
-        isCreate: false,
-        organization,
-        licences,
-        remarks,
-        reminders,
-        currentDateInteger: dateTimeFns.dateToInteger(new Date())
-    });
-});
+router.get("/:organizationID", handler_view.handler);
+router.get("/:organizationID/edit", permissionHandlers.createGetHandler, handler_edit.handler);
 router.post("/:organizationID/doAddOrganizationRepresentative", (req, res) => {
     if (!userFns_1.userCanCreate(req)) {
         return userFns_1.forbiddenJSON(res);
