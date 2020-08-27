@@ -1,7 +1,7 @@
 import { Router } from "express";
 
 import * as configFns from "../helpers/configFns";
-import * as licencesDB from "../helpers/licencesDB";
+import * as licencesDB_getDashboardStats from "../helpers/licencesDB/getDashboardStats";
 import * as usersDB from "../helpers/usersDB";
 
 const router = Router();
@@ -9,7 +9,7 @@ const router = Router();
 
 router.get("/", (_req, res) => {
 
-  const stats = licencesDB.getDashboardStats();
+  const stats = licencesDB_getDashboardStats.getDashboardStats();
 
   res.render("dashboard", {
     headTitle: "Dashboard",

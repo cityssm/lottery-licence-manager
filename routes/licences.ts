@@ -11,9 +11,12 @@ import * as handler_view from "../handlers/licences-get/view";
 import * as handler_new from "../handlers/licences-get/new";
 import * as handler_edit from "../handlers/licences-get/edit";
 import * as handler_print from "../handlers/licences-get/print";
+import * as handler_poke from "../handlers/licences-get/poke";
 
 import * as handler_doSave from "../handlers/licences-post/doSave";
+import * as handler_doIssueLicence from "../handlers/licences-post/doIssueLicence";
 import * as handler_doUnissueLicence from "../handlers/licences-post/doUnissueLicence";
+import * as handler_doDelete from "../handlers/licences-post/doDelete";
 
 import * as handler_doAddTransaction from "../handlers/licences-post/doAddTransaction";
 import * as handler_doVoidTransaction from "../handlers/licences-post/doVoidTransaction";
@@ -182,40 +185,9 @@ router.post("/doVoidTransaction",
   handler_doVoidTransaction.handler);
 
 
-router.post("/doIssueLicence", (req, res) => {
-
-  if (!req.session.user.userProperties.canCreate) {
-
-    res
-      .status(403)
-      .json({
-        success: false,
-        message: "Forbidden"
-      });
-
-    return;
-
-  }
-
-  const success = licencesDB.issueLicence(req.body.licenceID, req.session);
-
-  if (success) {
-
-    res.json({
-      success: true,
-      message: "Licence Issued Successfully"
-    });
-
-  } else {
-
-    res.json({
-      success: false,
-      message: "Licence Not Issued"
-    });
-
-  }
-
-});
+router.post("/doIssueLicence",
+  permissionHandlers.createPostHandler,
+  handler_doIssueLicence.handler);
 
 
 router.post("/doUnissueLicence",
@@ -223,72 +195,26 @@ router.post("/doUnissueLicence",
   handler_doUnissueLicence.handler);
 
 
-router.post("/doDelete", (req, res) => {
-
-  if (!req.session.user.userProperties.canCreate) {
-
-    res
-      .status(403)
-      .json({
-        success: false,
-        message: "Forbidden"
-      });
-
-    return;
-
-  }
-
-  if (req.body.licenceID === "") {
-
-    res.json({
-      success: false,
-      message: "Licence ID Unavailable"
-    });
-
-  } else {
-
-    const changeCount = licencesDB.deleteLicence(req.body.licenceID, req.session);
-
-    if (changeCount) {
-
-      res.json({
-        success: true,
-        message: "Licence Deleted"
-      });
-
-    } else {
-
-      res.json({
-        success: false,
-        message: "Licence Not Deleted"
-      });
-
-    }
-
-  }
-
-});
+router.post("/doDelete",
+  permissionHandlers.createPostHandler,
+  handler_doDelete.handler);
 
 
-router.get("/:licenceID", handler_view.handler);
+router.get("/:licenceID",
+  handler_view.handler);
 
 
-router.get("/:licenceID/edit", handler_edit.handler);
+router.get("/:licenceID/edit",
+  handler_edit.handler);
 
 
-router.get("/:licenceID/print", handler_print.handler);
+router.get("/:licenceID/print",
+  handler_print.handler);
 
 
-router.get("/:licenceID/poke", (req, res) => {
-
-  const licenceID = parseInt(req.params.licenceID, 10);
-
-  if (req.session.user.userProperties.isAdmin) {
-    licencesDB.pokeLicence(licenceID, req.session);
-  }
-
-  res.redirect("/licences/" + licenceID.toString());
-});
+router.get("/:licenceID/poke",
+  permissionHandlers.adminGetHandler,
+  handler_poke.handler);
 
 
 export = router;

@@ -8,8 +8,11 @@ const handler_view = require("../handlers/licences-get/view");
 const handler_new = require("../handlers/licences-get/new");
 const handler_edit = require("../handlers/licences-get/edit");
 const handler_print = require("../handlers/licences-get/print");
+const handler_poke = require("../handlers/licences-get/poke");
 const handler_doSave = require("../handlers/licences-post/doSave");
+const handler_doIssueLicence = require("../handlers/licences-post/doIssueLicence");
 const handler_doUnissueLicence = require("../handlers/licences-post/doUnissueLicence");
+const handler_doDelete = require("../handlers/licences-post/doDelete");
 const handler_doAddTransaction = require("../handlers/licences-post/doAddTransaction");
 const handler_doVoidTransaction = require("../handlers/licences-post/doVoidTransaction");
 const licencesDB = require("../helpers/licencesDB");
@@ -78,71 +81,11 @@ router.post("/doGetTicketTypes", (req, res) => {
 router.post("/doSave", permissionHandlers.createPostHandler, handler_doSave.handler);
 router.post("/doAddTransaction", permissionHandlers.createPostHandler, handler_doAddTransaction.handler);
 router.post("/doVoidTransaction", permissionHandlers.createPostHandler, handler_doVoidTransaction.handler);
-router.post("/doIssueLicence", (req, res) => {
-    if (!req.session.user.userProperties.canCreate) {
-        res
-            .status(403)
-            .json({
-            success: false,
-            message: "Forbidden"
-        });
-        return;
-    }
-    const success = licencesDB.issueLicence(req.body.licenceID, req.session);
-    if (success) {
-        res.json({
-            success: true,
-            message: "Licence Issued Successfully"
-        });
-    }
-    else {
-        res.json({
-            success: false,
-            message: "Licence Not Issued"
-        });
-    }
-});
+router.post("/doIssueLicence", permissionHandlers.createPostHandler, handler_doIssueLicence.handler);
 router.post("/doUnissueLicence", permissionHandlers.createPostHandler, handler_doUnissueLicence.handler);
-router.post("/doDelete", (req, res) => {
-    if (!req.session.user.userProperties.canCreate) {
-        res
-            .status(403)
-            .json({
-            success: false,
-            message: "Forbidden"
-        });
-        return;
-    }
-    if (req.body.licenceID === "") {
-        res.json({
-            success: false,
-            message: "Licence ID Unavailable"
-        });
-    }
-    else {
-        const changeCount = licencesDB.deleteLicence(req.body.licenceID, req.session);
-        if (changeCount) {
-            res.json({
-                success: true,
-                message: "Licence Deleted"
-            });
-        }
-        else {
-            res.json({
-                success: false,
-                message: "Licence Not Deleted"
-            });
-        }
-    }
-});
+router.post("/doDelete", permissionHandlers.createPostHandler, handler_doDelete.handler);
 router.get("/:licenceID", handler_view.handler);
 router.get("/:licenceID/edit", handler_edit.handler);
 router.get("/:licenceID/print", handler_print.handler);
-router.get("/:licenceID/poke", (req, res) => {
-    const licenceID = parseInt(req.params.licenceID, 10);
-    if (req.session.user.userProperties.isAdmin) {
-        licencesDB.pokeLicence(licenceID, req.session);
-    }
-    res.redirect("/licences/" + licenceID.toString());
-});
+router.get("/:licenceID/poke", permissionHandlers.adminGetHandler, handler_poke.handler);
 module.exports = router;

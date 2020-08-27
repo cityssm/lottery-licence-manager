@@ -5,38 +5,10 @@ import type * as llm from "../types/recordTypes";
 import { RawRowsColumnsReturn } from "@cityssm/expressjs-server-js/types";
 export declare const canUpdateObject: (obj: llm.Record, reqSession: Express.SessionData) => boolean;
 export declare const getRawRowsColumns: (sql: string, params: Array<string | number>) => RawRowsColumnsReturn;
-export declare const getDashboardStats: () => {
-    currentDate: number;
-    currentDateString: string;
-    windowStartDate: number;
-    windowStartDateString: string;
-    windowEndDate: number;
-    windowEndDateString: string;
-    licenceStats: {
-        licenceCount: number;
-        distinctOrganizationCount: number;
-        distinctLocationCount: number;
-    };
-    eventStats: {
-        todayCount: number;
-        pastCount: number;
-        upcomingCount: number;
-    };
-    events: llm.LotteryEvent[];
-    reminderStats: {
-        todayCount: number;
-        pastCount: number;
-        upcomingCount: number;
-    };
-    reminders: llm.OrganizationReminder[];
-};
 export declare const resetEventTableStats: () => void;
 export declare const resetLicenceTableStats: () => void;
 export declare const getLicenceTableStats: () => llm.LotteryLicenceStats;
-export declare const deleteLicence: (licenceID: number, reqSession: Express.SessionData) => boolean;
 export declare const getDistinctTermsConditions: (organizationID: number) => llm.TermsConditionsStat[];
-export declare const pokeLicence: (licenceID: number, reqSession: Express.SessionData) => boolean;
-export declare const issueLicence: (licenceID: number, reqSession: Express.SessionData) => boolean;
 export declare const getLicenceTypeSummary: (reqBody: {
     applicationDateStartString?: string;
     applicationDateEndString?: string;

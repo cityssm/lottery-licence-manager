@@ -1,11 +1,11 @@
 "use strict";
 const express_1 = require("express");
 const configFns = require("../helpers/configFns");
-const licencesDB = require("../helpers/licencesDB");
+const licencesDB_getDashboardStats = require("../helpers/licencesDB/getDashboardStats");
 const usersDB = require("../helpers/usersDB");
 const router = express_1.Router();
 router.get("/", (_req, res) => {
-    const stats = licencesDB.getDashboardStats();
+    const stats = licencesDB_getDashboardStats.getDashboardStats();
     res.render("dashboard", {
         headTitle: "Dashboard",
         stats
