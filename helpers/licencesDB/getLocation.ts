@@ -19,13 +19,14 @@ export const getLocation = (locationID: number, reqSession: Express.SessionData)
 
   if (locationObj) {
     locationObj.recordType = "location";
+
+    locationObj.locationDisplayName =
+      locationObj.locationName === "" ? locationObj.locationAddress1 : locationObj.locationName;
+
     locationObj.canUpdate = canUpdateObject(locationObj, reqSession);
   }
 
   db.close();
-
-  locationObj.locationDisplayName =
-    locationObj.locationName === "" ? locationObj.locationAddress1 : locationObj.locationName;
 
   return locationObj;
 };

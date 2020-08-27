@@ -4,11 +4,11 @@
 import * as llm from "../../types/recordTypes";
 export declare const getLocations: (reqSession: Express.SessionData, queryOptions: {
     limit: number;
-    offset?: number;
+    offset: number;
     locationNameAddress?: string;
     locationIsDistributor: number;
     locationIsManufacturer: number;
-    locationIsActive: string;
+    locationIsActive?: "on";
 }) => {
     count: number;
     locations: llm.Location[];

@@ -13,7 +13,7 @@ export declare const getLicences: (reqBodyOrParamsObj: {
 }, reqSession: Express.SessionData, includeOptions: {
     includeOrganization: boolean;
     limit: number;
-    offset?: number;
+    offset: number;
 }) => {
     count: number;
     licences: llm.LotteryLicence[];

@@ -20,7 +20,7 @@ export const getLicences = (reqBodyOrParamsObj: {
   includeOptions: {
     includeOrganization: boolean;
     limit: number;
-    offset?: number;
+    offset: number;
   }) => {
 
   if (reqBodyOrParamsObj.organizationName && reqBodyOrParamsObj.organizationName !== "") {

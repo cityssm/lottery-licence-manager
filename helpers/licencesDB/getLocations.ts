@@ -10,11 +10,11 @@ import * as llm from "../../types/recordTypes";
 
 export const getLocations = (reqSession: Express.SessionData, queryOptions: {
   limit: number;
-  offset?: number;
+  offset: number;
   locationNameAddress?: string;
   locationIsDistributor: number;
   locationIsManufacturer: number;
-  locationIsActive: string;
+  locationIsActive?: "on";
 }) => {
 
   const db = sqlite(dbPath, {
@@ -53,7 +53,7 @@ export const getLocations = (reqSession: Express.SessionData, queryOptions: {
 
   }
 
-  if (queryOptions.locationIsActive !== "") {
+  if (queryOptions.locationIsActive) {
 
     const currentDate = dateTimeFns.dateToInteger(new Date());
 

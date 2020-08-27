@@ -27,7 +27,7 @@ exports.getLocations = (reqSession, queryOptions) => {
         sqlWhereClause += " and lo.locationIsManufacturer = ?";
         sqlParams.push(queryOptions.locationIsManufacturer);
     }
-    if (queryOptions.locationIsActive !== "") {
+    if (queryOptions.locationIsActive) {
         const currentDate = dateTimeFns.dateToInteger(new Date());
         sqlWhereClause += " and (lo.locationID in (" +
             "select lx.locationID from LotteryLicences lx" +

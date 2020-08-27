@@ -13,10 +13,10 @@ exports.getLocation = (locationID, reqSession) => {
         .get(locationID);
     if (locationObj) {
         locationObj.recordType = "location";
+        locationObj.locationDisplayName =
+            locationObj.locationName === "" ? locationObj.locationAddress1 : locationObj.locationName;
         locationObj.canUpdate = licencesDB_1.canUpdateObject(locationObj, reqSession);
     }
     db.close();
-    locationObj.locationDisplayName =
-        locationObj.locationName === "" ? locationObj.locationAddress1 : locationObj.locationName;
     return locationObj;
 };
