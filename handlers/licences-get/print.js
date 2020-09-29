@@ -19,7 +19,7 @@ exports.handler = (req, res, next) => {
         return;
     }
     const organization = licencesDB_getOrganization.getOrganization(licence.organizationID, req.session);
-    ejs.renderFile(path.join(__dirname, "../reports/", configFns.getProperty("licences.printTemplate")), {
+    ejs.renderFile(path.join(__dirname, "../../reports/", configFns.getProperty("licences.printTemplate")), {
         configFns,
         licence,
         organization
