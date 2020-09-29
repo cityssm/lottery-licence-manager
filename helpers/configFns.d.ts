@@ -16,6 +16,7 @@ export declare function getProperty(propertyName: "application.https"): configTy
 export declare function getProperty(propertyName: "bankRecordTypes"): configTypes.ConfigBankRecordType[];
 export declare function getProperty(propertyName: "defaults.city"): string;
 export declare function getProperty(propertyName: "defaults.province"): string;
+export declare function getProperty(propertyName: "reminders.preferredSortOrder"): string;
 export declare function getProperty(propertyName: "licences.externalLicenceNumber.fieldLabel"): string;
 export declare function getProperty(propertyName: "licences.externalLicenceNumber.newCalculation"): "" | "range";
 export declare function getProperty(propertyName: "licences.externalLicenceNumber.isPreferredID"): boolean;

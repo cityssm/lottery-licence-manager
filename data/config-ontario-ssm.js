@@ -10,6 +10,7 @@ configSSM.session = {
     doKeepAlive: true
 };
 configSSM.defaults.city = "Sault Ste. Marie";
+configSSM.reminders.preferredSortOrder = "file";
 configSSM.licences.externalLicenceNumber.newCalculation = "range";
 configSSM.licences.externalReceiptNumber = {
     fieldLabel: "GP Receipt Number"

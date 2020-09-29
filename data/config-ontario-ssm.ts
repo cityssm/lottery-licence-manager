@@ -29,6 +29,7 @@ configSSM.session = {
 
 configSSM.defaults.city = "Sault Ste. Marie";
 
+configSSM.reminders.preferredSortOrder = "file";
 
 /*
  * LICENCE SETTINGS

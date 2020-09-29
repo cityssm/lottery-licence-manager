@@ -7,6 +7,9 @@ export interface Config {
   admin?: ConfigAdmin;
   user?: ConfigUser;
   defaults?: ConfigDefaults;
+  reminders?: {
+    preferredSortOrder: "date" | "file";
+  };
   reminderCategories?: ConfigReminderCategory[];
   bankRecordTypes?: ConfigBankRecordType[];
   licences?: ConfigLicences;
@@ -66,6 +69,7 @@ export interface ConfigReminderType {
   reminderType: string;
   reminderStatuses?: string[];
   hasUndismissedLimit: boolean;
+  isBasedOnFiscalYear: boolean;
   isActive: boolean;
 }
 

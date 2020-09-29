@@ -27,6 +27,7 @@ configFallbackValues.set("user.defaultProperties", {
 });
 configFallbackValues.set("defaults.city", "");
 configFallbackValues.set("defaults.province", "");
+configFallbackValues.set("reminders.preferredSortOrder", "date");
 configFallbackValues.set("reminderCategories", []);
 configFallbackValues.set("bankRecordTypes", [
     {

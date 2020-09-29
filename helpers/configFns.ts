@@ -46,6 +46,8 @@ configFallbackValues.set("user.defaultProperties", {
 configFallbackValues.set("defaults.city", "");
 configFallbackValues.set("defaults.province", "");
 
+configFallbackValues.set("reminders.preferredSortOrder", "date");
+
 configFallbackValues.set("reminderCategories", []);
 
 configFallbackValues.set("bankRecordTypes", [
@@ -117,6 +119,8 @@ export function getProperty(propertyName: "bankRecordTypes"): configTypes.Config
 
 export function getProperty(propertyName: "defaults.city"): string;
 export function getProperty(propertyName: "defaults.province"): string;
+
+export function getProperty(propertyName: "reminders.preferredSortOrder"): string;
 
 export function getProperty(propertyName: "licences.externalLicenceNumber.fieldLabel"): string;
 export function getProperty(propertyName: "licences.externalLicenceNumber.newCalculation"): "" | "range";
