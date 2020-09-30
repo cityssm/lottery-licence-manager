@@ -87,6 +87,56 @@ declare const llm: llmGlobal;
 
     });
 
+    formEle.getElementsByClassName("is-rollforward-button")[0].addEventListener("click", () => {
+
+      let rollForwardCloseModalFn: () => void;
+      let formEle: HTMLFormElement;
+      let isSubmitting = false;
+
+      const submitFn = (formEvent: Event) => {
+
+        formEvent.preventDefault();
+
+        if (isSubmitting) {
+          return;
+        }
+
+        isSubmitting = true;
+
+        cityssm.postJSON(
+          "/organizations/doRollForward", formEle,
+          (responseJSON: { success: boolean; message?: string }) => {
+
+            if (responseJSON.success) {
+
+              window.location.reload();
+
+            } else {
+
+              isSubmitting = false;
+              rollForwardCloseModalFn();
+              cityssm.alertModal("Roll Forward Failed",
+                responseJSON.message,
+                "OK",
+                "danger");
+            }
+          });
+      };
+
+      cityssm.openHtmlModal("organization-rollforward", {
+        onshown: (_modalEle, closeModalFn) => {
+
+          rollForwardCloseModalFn = closeModalFn;
+
+          (document.getElementById("rollforward--organizationID") as HTMLInputElement).value =
+            organizationIDString;
+
+          formEle = (document.getElementById("form--rollforward") as HTMLFormElement);
+          formEle.addEventListener("submit", submitFn);
+        }
+      });
+    });
+
     /*
      * Representatives
      */

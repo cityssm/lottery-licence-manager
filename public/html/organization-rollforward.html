@@ -1,0 +1,37 @@
+<div class="modal">
+  <div class="modal-background"></div>
+  <div class="modal-card">
+    <header class="modal-card-head">
+      <h3 class="modal-card-title">Roll Forward Fiscal Year</h3>
+      <button class="delete is-close-modal-button" aria-label="close" type="button"></button>
+    </header>
+    <section class="modal-card-body">
+      <form id="form--rollforward">
+        <input id="rollforward--organizationID" name="organizationID" type="hidden" />
+
+        <div class="block">
+          <p class="facheck facheck-fas-checked has-checked-info">
+            <input id="rollforward--updateFiscalYear" name="updateFiscalYear" type="checkbox" value="1" checked />
+            <label class="has-text-weight-bold" for="rollforward--updateFiscalYear">Update Fiscal Year</label>
+          </p>
+          <p class="is-size-7">
+            Adds one year to the Fiscal Year Start and Fiscal Year End values.
+          </p>
+        </div>
+        <div class="block">
+          <p class="facheck facheck-fas-checked has-checked-info">
+            <input id="rollforward--updateReminders" name="updateReminders" type="checkbox" value="1" />
+            <label class="has-text-weight-bold" for="rollforward--updateReminders">Refresh Reminders</label>
+          </p>
+          <p class="is-size-7">
+            Purges all dates associated with reminders based on fiscal year values.
+          </p>
+        </div>
+      </form>
+    </section>
+    <footer class="modal-card-foot justify-right">
+      <button class="button is-close-modal-button" type="button">Cancel</button>
+      <button class="button is-success" type="submit" form="form--rollforward">Roll Forward Fiscal Year</button>
+    </footer>
+  </div>
+</div>

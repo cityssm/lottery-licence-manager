@@ -534,68 +534,6 @@ export const getOrganizationReminder =
   };
 
 
-export const addOrganizationReminder = (reqBody: {
-  organizationID: string;
-  reminderTypeKey: string;
-  reminderDateString?: string;
-  reminderStatus: string;
-  reminderNote: string;
-}, reqSession: Express.SessionData) => {
-
-  const db = sqlite(dbPath);
-
-  const row: { maxIndex: number } = db.prepare("select ifnull(max(reminderIndex), -1) as maxIndex" +
-    " from OrganizationReminders" +
-    " where organizationID = ?")
-    .get(reqBody.organizationID);
-
-  const newReminderIndex = row.maxIndex + 1;
-
-  const nowMillis = Date.now();
-
-  db.prepare("insert into OrganizationReminders" +
-    " (organizationID, reminderIndex, reminderTypeKey, reminderDate," +
-    " reminderStatus, reminderNote," +
-    " recordCreate_userName, recordCreate_timeMillis, recordUpdate_userName, recordUpdate_timeMillis)" +
-    " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
-    .run(reqBody.organizationID,
-      newReminderIndex,
-      reqBody.reminderTypeKey,
-      (reqBody.reminderDateString === ""
-        ? null
-        : dateTimeFns.dateStringToInteger(reqBody.reminderDateString)),
-      reqBody.reminderStatus,
-      reqBody.reminderNote,
-      reqSession.user.userName,
-      nowMillis,
-      reqSession.user.userName,
-      nowMillis
-    );
-
-  db.close();
-
-  const reminder: llm.OrganizationReminder = {
-    recordType: "reminder",
-    canUpdate: true,
-    organizationID: parseInt(reqBody.organizationID, 10),
-    reminderIndex: newReminderIndex,
-    reminderTypeKey: reqBody.reminderTypeKey,
-    reminderDate: dateTimeFns.dateStringToInteger(reqBody.reminderDateString),
-    reminderDateString: reqBody.reminderDateString,
-    dismissedDate: null,
-    dismissedDateString: "",
-    reminderStatus: reqBody.reminderStatus,
-    reminderNote: reqBody.reminderNote,
-    recordCreate_userName: reqSession.user.userName,
-    recordCreate_timeMillis: nowMillis,
-    recordUpdate_userName: reqSession.user.userName,
-    recordUpdate_timeMillis: nowMillis
-  };
-
-  return reminder;
-};
-
-
 export const updateOrganizationReminder = (reqBody: {
   organizationID: string;
   reminderIndex: string;
@@ -661,25 +599,6 @@ export const dismissOrganizationReminder =
       .run(dateTimeFns.dateToInteger(currentDate),
         reqSession.user.userName, currentDate.getTime(),
         organizationID, reminderIndex);
-
-    db.close();
-
-    return info.changes > 0;
-  };
-
-
-export const deleteOrganizationReminder =
-  (organizationID: number, reminderIndex: number, reqSession: Express.SessionData) => {
-
-    const db = sqlite(dbPath);
-
-    const info = db.prepare("update OrganizationReminders" +
-      " set recordDelete_userName = ?," +
-      " recordDelete_timeMillis = ?" +
-      " where organizationID = ?" +
-      " and reminderIndex = ?" +
-      " and recordDelete_timeMillis is null")
-      .run(reqSession.user.userName, Date.now(), organizationID, reminderIndex);
 
     db.close();
 

@@ -36,6 +36,37 @@ Object.defineProperty(exports, "__esModule", { value: true });
             cityssm.confirmModal("Delete Organization?", ("Are you sure you want to delete this organization?<br />" +
                 "Note that any active licences issued to this organization will remain active."), "Yes, Delete Organization", "warning", deleteOrganizationFn);
         });
+        formEle.getElementsByClassName("is-rollforward-button")[0].addEventListener("click", () => {
+            let rollForwardCloseModalFn;
+            let formEle;
+            let isSubmitting = false;
+            const submitFn = (formEvent) => {
+                formEvent.preventDefault();
+                if (isSubmitting) {
+                    return;
+                }
+                isSubmitting = true;
+                cityssm.postJSON("/organizations/doRollForward", formEle, (responseJSON) => {
+                    if (responseJSON.success) {
+                        window.location.reload();
+                    }
+                    else {
+                        isSubmitting = false;
+                        rollForwardCloseModalFn();
+                        cityssm.alertModal("Roll Forward Failed", responseJSON.message, "OK", "danger");
+                    }
+                });
+            };
+            cityssm.openHtmlModal("organization-rollforward", {
+                onshown: (_modalEle, closeModalFn) => {
+                    rollForwardCloseModalFn = closeModalFn;
+                    document.getElementById("rollforward--organizationID").value =
+                        organizationIDString;
+                    formEle = document.getElementById("form--rollforward");
+                    formEle.addEventListener("submit", submitFn);
+                }
+            });
+        });
         const representativeTbodyEle = document.getElementsByClassName("is-representative-table")[0].getElementsByTagName("tbody")[0];
         const showNoRepresentativesWarning = () => {
             if (representativeTbodyEle.getElementsByTagName("tr").length === 0) {

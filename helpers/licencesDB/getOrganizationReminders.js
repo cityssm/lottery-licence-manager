@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getOrganizationReminders = void 0;
+exports.getOrganizationReminders = exports.getOrganizationRemindersWithDB = void 0;
 const sqlite = require("better-sqlite3");
 const databasePaths_1 = require("../../data/databasePaths");
 const configFns = require("../configFns");
@@ -41,10 +41,7 @@ const sortFn_byConfig = (reminderA, reminderB) => {
     }
     return sortFn_byDate(reminderA, reminderB);
 };
-exports.getOrganizationReminders = (organizationID, reqSession) => {
-    const db = sqlite(databasePaths_1.licencesDB, {
-        readonly: true
-    });
+exports.getOrganizationRemindersWithDB = (db, organizationID, reqSession) => {
     const reminders = db.prepare("select reminderIndex," +
         " reminderTypeKey, reminderDate, dismissedDate," +
         " reminderStatus, reminderNote," +
@@ -53,7 +50,6 @@ exports.getOrganizationReminders = (organizationID, reqSession) => {
         " where recordDelete_timeMillis is null" +
         " and organizationID = ?")
         .all(organizationID);
-    db.close();
     for (const reminder of reminders) {
         reminder.recordType = "reminder";
         reminder.reminderDateString = dateTimeFns.dateIntegerToString(reminder.reminderDate || 0);
@@ -68,5 +64,13 @@ exports.getOrganizationReminders = (organizationID, reqSession) => {
             reminders.sort(sortFn_byConfig);
             break;
     }
+    return reminders;
+};
+exports.getOrganizationReminders = (organizationID, reqSession) => {
+    const db = sqlite(databasePaths_1.licencesDB, {
+        readonly: true
+    });
+    const reminders = exports.getOrganizationRemindersWithDB(db, organizationID, reqSession);
+    db.close();
     return reminders;
 };

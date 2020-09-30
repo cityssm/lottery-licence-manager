@@ -79,11 +79,7 @@ const sortFn_byConfig = (reminderA: llm.OrganizationReminder, reminderB: llm.Org
 };
 
 
-export const getOrganizationReminders = (organizationID: number, reqSession: Express.SessionData) => {
-
-  const db = sqlite(dbPath, {
-    readonly: true
-  });
+export const getOrganizationRemindersWithDB = (db: sqlite.Database, organizationID: number, reqSession: Express.SessionData) => {
 
   const reminders: llm.OrganizationReminder[] =
     db.prepare("select reminderIndex," +
@@ -94,8 +90,6 @@ export const getOrganizationReminders = (organizationID: number, reqSession: Exp
       " where recordDelete_timeMillis is null" +
       " and organizationID = ?")
       .all(organizationID);
-
-  db.close();
 
   for (const reminder of reminders) {
 
@@ -117,6 +111,20 @@ export const getOrganizationReminders = (organizationID: number, reqSession: Exp
       reminders.sort(sortFn_byConfig);
       break;
   }
+
+  return reminders;
+};
+
+
+export const getOrganizationReminders = (organizationID: number, reqSession: Express.SessionData) => {
+
+  const db = sqlite(dbPath, {
+    readonly: true
+  });
+
+  const reminders = getOrganizationRemindersWithDB(db, organizationID, reqSession);
+
+  db.close();
 
   return reminders;
 };

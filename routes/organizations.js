@@ -8,8 +8,12 @@ const handler_edit = require("../handlers/organizations-get/edit");
 const handler_doSearch = require("../handlers/organizations-post/doSearch");
 const handler_doGetAll = require("../handlers/organizations-all/doGetAll");
 const handler_doGetRemarks = require("../handlers/organizations-post/doGetRemarks");
+const handler_doAddRemark = require("../handlers/organizations-post/doAddRemark");
 const handler_reminders = require("../handlers/organizations-get/reminders");
 const handler_doGetReminders = require("../handlers/organizations-post/doGetReminders");
+const handler_doAddReminder = require("../handlers/organizations-post/doAddReminder");
+const handler_doDeleteReminder = require("../handlers/organizations-post/doDeleteReminder");
+const handler_doRollForward = require("../handlers/organizations-post/doRollForward");
 const licencesDBOrganizations = require("../helpers/licencesDB-organizations");
 const userFns_1 = require("../helpers/userFns");
 const router = express_1.Router();
@@ -43,17 +47,7 @@ router.post("/doGetRemark", (req, res) => {
     const remarkIndex = req.body.remarkIndex;
     res.json(licencesDBOrganizations.getOrganizationRemark(organizationID, remarkIndex, req.session));
 });
-router.post("/doAddRemark", (req, res) => {
-    if (!userFns_1.userCanCreate(req)) {
-        return userFns_1.forbiddenJSON(res);
-    }
-    const remarkIndex = licencesDBOrganizations.addOrganizationRemark(req.body, req.session);
-    res.json({
-        success: true,
-        message: "Remark added successfully.",
-        remarkIndex
-    });
-});
+router.post("/doAddRemark", permissionHandlers.createPostHandler, handler_doAddRemark.handler);
 router.post("/doEditRemark", (req, res) => {
     if (!userFns_1.userCanCreate(req)) {
         return userFns_1.forbiddenJSON(res);
@@ -98,23 +92,7 @@ router.post("/doGetReminder", (req, res) => {
     const reminderIndex = req.body.reminderIndex;
     res.json(licencesDBOrganizations.getOrganizationReminder(organizationID, reminderIndex, req.session));
 });
-router.post("/doAddReminder", (req, res) => {
-    if (!userFns_1.userCanCreate(req)) {
-        return userFns_1.forbiddenJSON(res);
-    }
-    const reminder = licencesDBOrganizations.addOrganizationReminder(req.body, req.session);
-    if (reminder) {
-        return res.json({
-            success: true,
-            reminder
-        });
-    }
-    else {
-        return res.json({
-            success: false
-        });
-    }
-});
+router.post("/doAddReminder", permissionHandlers.createPostHandler, handler_doAddReminder.handler);
 router.post("/doEditReminder", (req, res) => {
     if (!userFns_1.userCanCreate(req)) {
         return userFns_1.forbiddenJSON(res);
@@ -153,14 +131,7 @@ router.post("/doDismissReminder", (req, res) => {
         });
     }
 });
-router.post("/doDeleteReminder", (req, res) => {
-    if (!userFns_1.userCanCreate(req)) {
-        return userFns_1.forbiddenJSON(res);
-    }
-    const success = licencesDBOrganizations
-        .deleteOrganizationReminder(req.body.organizationID, req.body.reminderIndex, req.session);
-    return res.json({ success });
-});
+router.post("/doDeleteReminder", permissionHandlers.createPostHandler, handler_doDeleteReminder.handler);
 router.post("/doGetBankRecords", (req, res) => {
     const organizationID = req.body.organizationID;
     const bankingYear = req.body.bankingYear;
@@ -303,6 +274,7 @@ router.post("/doRestore", (req, res) => {
         });
     }
 });
+router.post("/doRollForward", permissionHandlers.createPostHandler, handler_doRollForward.handler);
 router.get("/:organizationID", handler_view.handler);
 router.get("/:organizationID/edit", permissionHandlers.createGetHandler, handler_edit.handler);
 router.post("/:organizationID/doAddOrganizationRepresentative", (req, res) => {
