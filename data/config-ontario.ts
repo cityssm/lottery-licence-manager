@@ -46,13 +46,6 @@ config.reminderCategories = [
         isBasedOnFiscalYear: true,
         isActive: true
       }, {
-        reminderTypeKey: "DOC_SCHOOLBD",
-        reminderType: "School Board Budget",
-        reminderStatuses: ["Received", "Incomplete", "Not Applicable"],
-        hasUndismissedLimit: true,
-        isBasedOnFiscalYear: true,
-        isActive: true
-      }, {
         reminderTypeKey: "DOC_MEMBERS",
         reminderType: "Bona Fide Members List",
         reminderStatuses: ["Received", "Incomplete", "Not Applicable"],
@@ -62,6 +55,13 @@ config.reminderCategories = [
       }, {
         reminderTypeKey: "DOC_ROSTER",
         reminderType: "Team Roster",
+        reminderStatuses: ["Received", "Incomplete", "Not Applicable"],
+        hasUndismissedLimit: true,
+        isBasedOnFiscalYear: true,
+        isActive: true
+      }, {
+        reminderTypeKey: "DOC_SCHOOLBD",
+        reminderType: "School Board Budget",
         reminderStatuses: ["Received", "Incomplete", "Not Applicable"],
         hasUndismissedLimit: true,
         isBasedOnFiscalYear: true,

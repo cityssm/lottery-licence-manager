@@ -6,7 +6,7 @@ export interface Config {
     user?: ConfigUser;
     defaults?: ConfigDefaults;
     reminders?: {
-        preferredSortOrder: "date" | "file";
+        preferredSortOrder: "date" | "config";
     };
     reminderCategories?: ConfigReminderCategory[];
     bankRecordTypes?: ConfigBankRecordType[];

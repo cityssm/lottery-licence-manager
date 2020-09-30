@@ -12,7 +12,8 @@ let config = "";
 
 try {
   config = require("../data/config");
-} catch (_e) {
+} catch (e) {
+  log.error(e);
   log.warn("Using data/config-example.js");
   config = require("../data/config-example");
 }
@@ -120,7 +121,7 @@ export function getProperty(propertyName: "bankRecordTypes"): configTypes.Config
 export function getProperty(propertyName: "defaults.city"): string;
 export function getProperty(propertyName: "defaults.province"): string;
 
-export function getProperty(propertyName: "reminders.preferredSortOrder"): string;
+export function getProperty(propertyName: "reminders.preferredSortOrder"): "date" | "config";
 
 export function getProperty(propertyName: "licences.externalLicenceNumber.fieldLabel"): string;
 export function getProperty(propertyName: "licences.externalLicenceNumber.newCalculation"): "" | "range";
