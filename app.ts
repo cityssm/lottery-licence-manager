@@ -3,6 +3,7 @@ import * as express from "express";
 import * as compression from "compression";
 import * as path from "path";
 import * as cookieParser from "cookie-parser";
+import * as csurf from "csurf";
 import * as logger from "morgan";
 
 import * as session from "express-session";
@@ -60,6 +61,7 @@ app.use(express.urlencoded({
   extended: false
 }));
 app.use(cookieParser());
+app.use(csurf({ cookie: true }));
 
 
 /*
@@ -76,6 +78,7 @@ app.use("/fa",
   express.static(path.join(__dirname, "node_modules", "@fortawesome", "fontawesome-free")));
 
 app.use("/cityssm-bulma-webapp-js",
+  // express.static(path.join("..", "bulma-webapp-js"))); // DEBUG
   express.static(path.join(__dirname, "node_modules", "@cityssm", "bulma-webapp-js")));
 
 
@@ -139,6 +142,7 @@ app.use((req, res, next) => {
   res.locals.dateTimeFns = dateTimeFns;
   res.locals.stringFns = stringFns;
   res.locals.htmlFns = htmlFns;
+  res.locals.csrfToken = req.csrfToken();
 
   next();
 });

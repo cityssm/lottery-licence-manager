@@ -49,7 +49,7 @@ declare const cityssm: cityssmGlobal;
 
         searchResultsEle.innerHTML = "<table class=\"table is-fullwidth is-striped is-hoverable\">" +
           "<thead><tr>" +
-          "<th>" + externalLicenceNumberLabel + "</th>" +
+          "<th>" + cityssm.escapeHTML(externalLicenceNumberLabel) + "</th>" +
           "<th>Licence</th>" +
           "<th>Organization Name</th>" +
           "<th>Location</th>" +

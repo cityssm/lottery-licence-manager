@@ -7,6 +7,16 @@ import * as usersDB from "../helpers/usersDB";
 const router = Router();
 
 
+const getSafeRedirectURL = (possibleRedirectURL: string = "") => {
+
+  if (possibleRedirectURL.startsWith("/")) {
+    return possibleRedirectURL;
+  } else {
+    return "/dashboard";
+  }
+};
+
+
 router.route("/")
   .get((req, res) => {
 
@@ -14,15 +24,9 @@ router.route("/")
 
     if (req.session.user && req.cookies[sessionCookieName]) {
 
-      if (req.query.redirect && req.query.redirect !== "") {
+      const redirectURL = getSafeRedirectURL((req.query.redirect || "") as string);
 
-        res.redirect(req.query.redirect);
-
-      } else {
-
-        res.redirect("/dashboard");
-
-      }
+      res.redirect(redirectURL);
 
     } else {
 
@@ -31,16 +35,14 @@ router.route("/")
         message: "",
         redirect: req.query.redirect
       });
-
     }
-
   })
   .post((req, res) => {
 
     const userName = req.body.userName;
     const passwordPlain = req.body.password;
 
-    const redirectURL = req.body.redirect;
+    const redirectURL = getSafeRedirectURL(req.body.redirect);
 
     const userObj = usersDB.getUser(userName, passwordPlain);
 
@@ -48,15 +50,7 @@ router.route("/")
 
       req.session.user = userObj;
 
-      if (redirectURL && redirectURL !== "") {
-
-        res.redirect(req.body.redirect);
-
-      } else {
-
-        res.redirect("/dashboard");
-
-      }
+      res.redirect(redirectURL);
 
     } else {
 
@@ -65,9 +59,7 @@ router.route("/")
         message: "Login Failed",
         redirect: redirectURL
       });
-
     }
-
   });
 
 

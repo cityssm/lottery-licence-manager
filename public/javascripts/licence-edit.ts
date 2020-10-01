@@ -808,9 +808,9 @@ declare const llm: llmGlobal;
         "<div class=\"field has-addons\">" +
         ("<div class=\"control is-expanded has-icons-left\">" +
           "<input class=\"input is-small\" name=\"eventDate\" type=\"date\"" +
-          " value=\"" + eventDateString + "\"" +
-          " min=\"" + startDateEle.value + "\"" +
-          " max=\"" + endDateEle.value + "\"" +
+          " value=\"" + cityssm.escapeHTML(eventDateString) + "\"" +
+          " min=\"" + cityssm.escapeHTML(startDateEle.value) + "\"" +
+          " max=\"" + cityssm.escapeHTML(endDateEle.value) + "\"" +
           " required />" +
           "<span class=\"icon is-left\">" +
           "<i class=\"fas fa-calendar\" aria-hidden=\"true\"></i>" +
@@ -1243,7 +1243,7 @@ declare const llm: llmGlobal;
             "beforeend",
             "<input class=\"is-removed-after-save\" name=\"ticketType_toAdd\"" +
             " type=\"hidden\"" +
-            " value=\"" + (document.getElementById("ticketTypeAdd--ticketType") as HTMLSelectElement).value + "\" />"
+            " value=\"" + cityssm.escapeHTML((document.getElementById("ticketTypeAdd--ticketType") as HTMLSelectElement).value) + "\" />"
           );
         }
 
@@ -1358,8 +1358,8 @@ declare const llm: llmGlobal;
       trEle.setAttribute("data-ticket-type", ticketType);
 
       trEle.insertAdjacentHTML("beforeend", "<td>" +
-        "<input name=\"ticketType_ticketType\" type=\"hidden\" value=\"" + ticketType + "\" />" +
-        "<span>" + ticketType + "</span>" +
+        "<input name=\"ticketType_ticketType\" type=\"hidden\" value=\"" + cityssm.escapeHTML(ticketType) + "\" />" +
+        "<span>" + cityssm.escapeHTML(ticketType) + "</span>" +
         "</td>");
 
       // Unit count

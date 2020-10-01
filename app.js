@@ -4,6 +4,7 @@ const express = require("express");
 const compression = require("compression");
 const path = require("path");
 const cookieParser = require("cookie-parser");
+const csurf = require("csurf");
 const logger = require("morgan");
 const session = require("express-session");
 const sqlite3 = require("connect-sqlite3");
@@ -35,6 +36,7 @@ app.use(express.urlencoded({
     extended: false
 }));
 app.use(cookieParser());
+app.use(csurf({ cookie: true }));
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/docs/images", express.static(path.join(__dirname, "docs", "images")));
 app.use("/fa", express.static(path.join(__dirname, "node_modules", "@fortawesome", "fontawesome-free")));
@@ -74,6 +76,7 @@ app.use((req, res, next) => {
     res.locals.dateTimeFns = dateTimeFns;
     res.locals.stringFns = stringFns;
     res.locals.htmlFns = htmlFns;
+    res.locals.csrfToken = req.csrfToken();
     next();
 });
 app.get("/", sessionChecker, (_req, res) => {
