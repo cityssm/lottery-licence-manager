@@ -3,7 +3,7 @@
 /// <reference types="compression" />
 /// <reference types="express-rate-limit" />
 /// <reference types="express-session" />
-import sqlite from "better-sqlite3";
+import * as sqlite from "better-sqlite3";
 import type * as llm from "../../types/recordTypes";
 interface ReminderData {
     organizationID: string;

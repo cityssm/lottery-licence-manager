@@ -5,7 +5,7 @@ import { rollForwardOrganization } from "../../helpers/licencesDB/rollForwardOrg
 
 export const handler: RequestHandler = (req, res) => {
 
-  const organizationID = parseInt(req.body.organizationID);
+  const organizationID = parseInt(req.body.organizationID, 10);
 
   const updateFiscalYear = req.body.updateFiscalYear === "1";
   const updateReminders = req.body.updateReminders === "1";
