@@ -4,12 +4,30 @@ const configFns = require("../helpers/configFns");
 const usersDB = require("../helpers/usersDB");
 const router = express_1.Router();
 const getSafeRedirectURL = (possibleRedirectURL = "") => {
-    if (possibleRedirectURL.startsWith("/")) {
-        return possibleRedirectURL;
+    switch (possibleRedirectURL) {
+        case "/organizations":
+        case "/organizations/new":
+        case "/organizations/reminders":
+        case "/organizations/cleanup":
+        case "/organizations/recovery":
+        case "/licences":
+        case "/licences/new":
+        case "/licences/licenceTypes":
+        case "/licences/activeSummary":
+        case "/events":
+        case "/events/byWeek":
+        case "/events/recent":
+        case "/events/outstanding":
+        case "/events/financials":
+        case "/locations":
+        case "/locations/new":
+        case "/locations/cleanup":
+        case "/reports":
+        case "/admin/applicationSettings":
+        case "/admin/userManagement":
+            return possibleRedirectURL;
     }
-    else {
-        return "/dashboard";
-    }
+    return "/dashboard";
 };
 router.route("/")
     .get((req, res) => {

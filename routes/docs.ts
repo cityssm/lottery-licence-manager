@@ -7,6 +7,9 @@ import * as marked from "marked";
 
 import * as configFns from "../helpers/configFns";
 
+import sanitize = require("sanitize-filename");
+
+
 const router = Router();
 
 
@@ -19,12 +22,7 @@ router.all("/", (_req, res) => {
 
 router.all("/:mdFileName", (req, res, next) => {
 
-  const mdFileName = req.params.mdFileName;
-
-  if (mdFileName.includes("/") || mdFileName.includes("\\")) {
-    next(createError(403));
-    return;
-  }
+  const mdFileName = sanitize(req.params.mdFileName);
 
   const mdPath = path.join(__dirname, "..", "docs", mdFileName + (mdFileName.endsWith(".md") ? "" : ".md"));
 

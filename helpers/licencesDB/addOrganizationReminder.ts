@@ -1,4 +1,4 @@
-import * as sqlite from "better-sqlite3";
+import sqlite from "better-sqlite3";
 
 import { licencesDB as dbPath } from "../../data/databasePaths";
 
@@ -13,7 +13,7 @@ interface ReminderData {
   reminderDateString?: string;
   reminderStatus: string;
   reminderNote: string;
-};
+}
 
 
 export const addOrganizationReminderWithDB = (db: sqlite.Database,

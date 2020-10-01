@@ -6,6 +6,7 @@ const path = require("path");
 const cookieParser = require("cookie-parser");
 const csurf = require("csurf");
 const logger = require("morgan");
+const rateLimit = require("express-rate-limit");
 const session = require("express-session");
 const sqlite3 = require("connect-sqlite3");
 const packageJSON = require("./package.json");
@@ -37,6 +38,11 @@ app.use(express.urlencoded({
 }));
 app.use(cookieParser());
 app.use(csurf({ cookie: true }));
+const limiter = rateLimit({
+    windowMs: 60 * 1000,
+    max: 500
+});
+app.use(limiter);
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/docs/images", express.static(path.join(__dirname, "docs", "images")));
 app.use("/fa", express.static(path.join(__dirname, "node_modules", "@fortawesome", "fontawesome-free")));
