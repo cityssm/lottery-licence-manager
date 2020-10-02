@@ -1,3 +1,4 @@
+/// <reference types="qs" />
 import type { Request } from "express";
 export declare const fakeViewOnlySession: {
     id: string;
@@ -34,7 +35,7 @@ export declare const fakeAdminSession: {
     };
 };
 export declare const fakeRequest: Request;
-export declare const fakeViewOnlyRequest: Request<import("express-serve-static-core").ParamsDictionary, any, any, any> & {
+export declare const fakeViewOnlyRequest: Request<import("express-serve-static-core").ParamsDictionary, any, any, import("qs").ParsedQs> & {
     session: {
         id: string;
         cookie: any;
@@ -53,7 +54,7 @@ export declare const fakeViewOnlyRequest: Request<import("express-serve-static-c
         };
     };
 };
-export declare const fakeAdminRequest: Request<import("express-serve-static-core").ParamsDictionary, any, any, any> & {
+export declare const fakeAdminRequest: Request<import("express-serve-static-core").ParamsDictionary, any, any, import("qs").ParsedQs> & {
     session: {
         id: string;
         cookie: any;
