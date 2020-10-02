@@ -48,6 +48,7 @@ configFallbackValues.set("defaults.city", "");
 configFallbackValues.set("defaults.province", "");
 
 configFallbackValues.set("reminders.preferredSortOrder", "date");
+configFallbackValues.set("reminders.dismissingStatuses", []);
 
 configFallbackValues.set("reminderCategories", []);
 
@@ -122,6 +123,7 @@ export function getProperty(propertyName: "defaults.city"): string;
 export function getProperty(propertyName: "defaults.province"): string;
 
 export function getProperty(propertyName: "reminders.preferredSortOrder"): "date" | "config";
+export function getProperty(propertyName: "reminders.dismissingStatuses"): string[];
 
 export function getProperty(propertyName: "licences.externalLicenceNumber.fieldLabel"): string;
 export function getProperty(propertyName: "licences.externalLicenceNumber.newCalculation"): "" | "range";

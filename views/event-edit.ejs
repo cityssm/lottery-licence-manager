@@ -89,7 +89,7 @@
               <div class="field">
                 <label class="label" for="event--reportDateString">Report Date</label>
                 <div class="control">
-                  <input class="input" id="event--reportDateString" name="reportDateString" type="date" value="<%= event.reportDateString %>" min="<%= event.eventDateString %>" max="<%= dateTimeFns.dateToString(new Date()) %>" />
+                  <input class="input" id="event--reportDateString" name="reportDateString" type="date" value="<%= event.reportDateString %>" min="<%= licence.startDateString %>" max="<%= dateTimeFns.dateToString(new Date()) %>" />
                 </div>
               </div>
             </div>

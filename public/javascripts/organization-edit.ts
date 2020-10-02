@@ -555,7 +555,7 @@ declare const llm: llmGlobal;
           "<span class=\"is-size-7\">" + reminderType.reminderCategory + "</span>"
           : reminder.reminderTypeKey) +
         "</td>") +
-        "<td>" + reminder.reminderStatus + "</td>" +
+        "<td>" + (reminder.reminderStatus || "") + "</td>" +
         ("<td class=\"has-text-centered\">" +
           (reminder.dismissedDateString === ""
             ? "<span class=\"has-text-grey\">(Active)</span><br />" +

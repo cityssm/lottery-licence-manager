@@ -277,7 +277,7 @@ llm.initializeTabs = (tabsListEle, callbackFns) => {
 
     tabContentEle.classList.add("is-active");
 
-    if (callbackFns ?.onshown) {
+    if (callbackFns?.onshown) {
       callbackFns.onshown(tabContentEle);
     }
   };

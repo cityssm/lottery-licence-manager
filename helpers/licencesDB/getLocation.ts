@@ -3,7 +3,7 @@ import * as sqlite from "better-sqlite3";
 
 import { licencesDB as dbPath } from "../../data/databasePaths";
 
-import * as llm from "../../types/recordTypes";
+import type * as llm from "../../types/recordTypes";
 
 
 export const getLocation = (locationID: number, reqSession: Express.SessionData) => {

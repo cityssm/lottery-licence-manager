@@ -3,8 +3,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 llm.organizationReminders = (() => {
     let reminderCategories;
     const reminderTypeCache = new Map();
+    let dismissingStatuses = [];
     const loadReminderTypeCache = (callbackFn) => {
         if (reminderTypeCache.size === 0) {
+            llm.getDefaultConfigProperty("dismissingStatuses", (statuses) => {
+                dismissingStatuses = statuses;
+            });
             llm.getDefaultConfigProperty("reminderCategories", (reminderCategoriesResult) => {
                 reminderCategories = reminderCategoriesResult;
                 for (const reminderCategory of reminderCategories) {
@@ -110,6 +114,7 @@ llm.organizationReminders = (() => {
         loadReminderTypeCache(openModalFn);
     };
     const openEditReminderModal = (organizationID, reminderIndex, updateCallbackFn) => {
+        let dismissedDateSetByUser = false;
         let editReminderCloseModalFn;
         const submitFn = (formEvent) => {
             formEvent.preventDefault();
@@ -127,13 +132,26 @@ llm.organizationReminders = (() => {
             const reminderType = reminderTypeCache.get(reminderTypeKey);
             const reminderStatusSelectEle = document.getElementById("editReminder--reminderStatus");
             reminderStatusSelectEle.value = "";
-            reminderStatusSelectEle.innerHTML = "<option value=\"\">(Not Set)</option>";
+            reminderStatusSelectEle.innerHTML = "<option data-is-dismissing=\"0\" value=\"\">(Not Set)</option>";
             for (const reminderStatus of reminderType.reminderStatuses) {
                 const optionEle = document.createElement("option");
                 optionEle.value = reminderStatus;
                 optionEle.innerText = reminderStatus;
+                optionEle.setAttribute("data-is-dismissing", dismissingStatuses.includes(reminderStatus) ? "1" : "0");
                 reminderStatusSelectEle.appendChild(optionEle);
             }
+        };
+        const reminderStatusChangeFn = (selectChangeEvent) => {
+            if (dismissedDateSetByUser) {
+                return;
+            }
+            const isDismissing = selectChangeEvent.currentTarget
+                .selectedOptions[0]
+                .getAttribute("data-is-dismissing") === "1";
+            document.getElementById("editReminder--dismissedDateString").value =
+                (isDismissing
+                    ? cityssm.dateToString(new Date())
+                    : "");
         };
         const openModalFn = () => {
             cityssm.openHtmlModal("reminderEdit", {
@@ -189,8 +207,8 @@ llm.organizationReminders = (() => {
                         document.getElementById("editReminder--reminderDateString").value =
                             reminder.reminderDateString;
                         reminderTypeKeyChangeFn();
+                        const reminderStatusSelectEle = document.getElementById("editReminder--reminderStatus");
                         if (reminder.reminderStatus && reminder.reminderStatus !== "") {
-                            const reminderStatusSelectEle = document.getElementById("editReminder--reminderStatus");
                             let currentStatusOptionFound = false;
                             for (const possibleOptionEle of reminderStatusSelectEle.options) {
                                 if (possibleOptionEle.value === reminder.reminderStatus) {
@@ -206,11 +224,18 @@ llm.organizationReminders = (() => {
                             }
                             reminderStatusSelectEle.value = reminder.reminderStatus;
                         }
+                        reminderStatusSelectEle.addEventListener("change", reminderStatusChangeFn);
                         document.getElementById("editReminder--reminderNote").value =
                             reminder.reminderNote;
                         const dismissedDateEle = document.getElementById("editReminder--dismissedDateString");
                         dismissedDateEle.value = reminder.dismissedDateString;
                         dismissedDateEle.setAttribute("max", cityssm.dateToString(new Date()));
+                        if (reminder.dismissedDateString !== "") {
+                            dismissedDateSetByUser = true;
+                        }
+                        dismissedDateEle.addEventListener("change", () => {
+                            dismissedDateSetByUser = true;
+                        });
                     });
                 }
             });

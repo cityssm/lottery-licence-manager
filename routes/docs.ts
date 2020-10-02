@@ -24,7 +24,8 @@ router.all("/:mdFileName", (req, res, next) => {
 
   const mdFileName = sanitize(req.params.mdFileName);
 
-  const mdPath = path.join(__dirname, "..", "docs", mdFileName + (mdFileName.endsWith(".md") ? "" : ".md"));
+  const mdPath = path.join(__dirname, "..", "docs",
+    mdFileName + (mdFileName.endsWith(".md") ? "" : ".md"));
 
   fs.readFile(mdPath, "utf8", (err, data) => {
 

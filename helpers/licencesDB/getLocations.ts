@@ -5,7 +5,7 @@ import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns";
 
 import { licencesDB as dbPath } from "../../data/databasePaths";
 
-import * as llm from "../../types/recordTypes";
+import type * as llm from "../../types/recordTypes";
 
 
 export const getLocations = (reqSession: Express.SessionData, queryOptions: {

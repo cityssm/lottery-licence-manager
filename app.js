@@ -78,11 +78,11 @@ const sessionChecker = (req, res, next) => {
 app.use((req, res, next) => {
     res.locals.buildNumber = packageJSON.version;
     res.locals.user = req.session.user;
+    res.locals.csrfToken = req.csrfToken();
     res.locals.configFns = configFns;
     res.locals.dateTimeFns = dateTimeFns;
     res.locals.stringFns = stringFns;
     res.locals.htmlFns = htmlFns;
-    res.locals.csrfToken = req.csrfToken();
     next();
 });
 app.get("/", sessionChecker, (_req, res) => {

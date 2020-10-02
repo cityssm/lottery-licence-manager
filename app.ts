@@ -1,5 +1,6 @@
 import * as createError from "http-errors";
 import * as express from "express";
+
 import * as compression from "compression";
 import * as path from "path";
 import * as cookieParser from "cookie-parser";
@@ -58,9 +59,11 @@ app.set("view engine", "ejs");
 app.use(compression());
 app.use(logger("dev"));
 app.use(express.json());
+
 app.use(express.urlencoded({
   extended: false
 }));
+
 app.use(cookieParser());
 app.use(csurf({ cookie: true }));
 
@@ -150,12 +153,14 @@ const sessionChecker = (req: express.Request, res: express.Response, next: expre
 app.use((req, res, next) => {
 
   res.locals.buildNumber = packageJSON.version;
+
   res.locals.user = req.session.user;
+  res.locals.csrfToken = req.csrfToken();
+
   res.locals.configFns = configFns;
   res.locals.dateTimeFns = dateTimeFns;
   res.locals.stringFns = stringFns;
   res.locals.htmlFns = htmlFns;
-  res.locals.csrfToken = req.csrfToken();
 
   next();
 });

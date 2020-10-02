@@ -30,7 +30,8 @@ configSSM.session = {
 configSSM.defaults.city = "Sault Ste. Marie";
 
 configSSM.reminders = {
-  preferredSortOrder: "config"
+  preferredSortOrder: "config",
+  dismissingStatuses: ["Received", "Not Applicable", "Dismissed"]
 };
 
 /*

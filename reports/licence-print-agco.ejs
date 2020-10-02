@@ -239,28 +239,36 @@
       </table>
     </div>
 
+    <%
+      const hideTimes = licenceType && licenceType.printSettings && licenceType.printSettings.agco_hideTimes;
+    %>
+
     <div class="container has-background-blue has-margin-bottom-10">
       <table class="is-fullwidth">
         <tbody>
           <tr>
-            <td class="has-padding-right-10 is-two-thirds" rowspan="2">
+            <td class="has-padding-right-10 is-two-thirds" <% if (!hideTimes) { %>rowspan="2"<% } %>>
               Specific date(s) of the lottery event(s) (yyyy/mm/dd)<br />
               Date(s) spécifique(s) de la loterie (aaaa/mm/jj)
             </td>
-            <td class="has-text-nowrap" colspan="2">
-              Specific time(s) of the lottery event(s)<br />
-              Heure(s) spécifique(s) de la loterie
-            </td>
+            <% if (!hideTimes) { %>
+              <td class="has-text-nowrap" colspan="2">
+                Specific time(s) of the lottery event(s)<br />
+                Heure(s) spécifique(s) de la loterie
+              </td>
+            <% } %>
           </tr>
-          <tr>
-            <td class="is-one-sixth">From/de (HH:MM)</td>
-            <td class="is-one-sixth">To/à (HH/MM)</td>
-          </tr>
+          <% if (!hideTimes) { %>
+            <tr>
+              <td class="is-one-sixth">From/de (HH:MM)</td>
+              <td class="is-one-sixth">To/à (HH/MM)</td>
+            </tr>
+          <% } %>
           <tr>
             <td class="has-padding-right-10 is-two-thirds">
               <div class="field" style="min-height:100px">
                 <% if (licenceType && licenceType.printSettings && licenceType.printSettings.agco_useLicenceDatesAsEventDates) { %>
-                  <%= licence.startDateString %> to <%= licence.endDateString %>
+                  <%= licence.startDateString.replace(/-/g, "/") %> to <%= licence.endDateString.replace(/-/g, "/") %>
                 <% } else { %>
                   <% for (let eventIndex = 0; eventIndex < licence.events.length; eventIndex += 1) { %>
                     <%= (eventIndex === 0 ? "" : ", ") + licence.events[eventIndex].eventDateString.replace(/-/g, "/"); %>
@@ -268,12 +276,14 @@
                 <% } %>
               </div>
             </td>
-            <td class="has-vertical-align-top is-one-sixth has-padding-right-10">
-              <div class="field" style="min-height:100px"><%= licence.startTimeString %></div>
-            </td>
-            <td class="has-vertical-align-top is-one-sixth">
-              <div class="field" style="min-height:100px"><%= licence.endTimeString %></div>
-            </td>
+            <% if (!hideTimes) { %>
+              <td class="has-vertical-align-top is-one-sixth has-padding-right-10">
+                <div class="field" style="min-height:100px"><%= licence.startTimeString %></div>
+              </td>
+              <td class="has-vertical-align-top is-one-sixth">
+                <div class="field" style="min-height:100px"><%= licence.endTimeString %></div>
+              </td>
+            <% } %>
           </tr>
         </tbody>
       </table>

@@ -11,6 +11,7 @@ config.defaults = {
   province: "ON"
 };
 
+
 config.reminderCategories = [
   {
     reminderCategory: "Annual Eligibility Documents",
@@ -277,7 +278,8 @@ config.licenceTypes = [
     }],
     printSettings: {
       agco_hideTotalPrizeValue: true,
-      agco_useLicenceDatesAsEventDates: true
+      agco_useLicenceDatesAsEventDates: true,
+      agco_hideTimes: true
     }
   },
   {

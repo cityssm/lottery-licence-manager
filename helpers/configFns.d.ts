@@ -17,6 +17,7 @@ export declare function getProperty(propertyName: "bankRecordTypes"): configType
 export declare function getProperty(propertyName: "defaults.city"): string;
 export declare function getProperty(propertyName: "defaults.province"): string;
 export declare function getProperty(propertyName: "reminders.preferredSortOrder"): "date" | "config";
+export declare function getProperty(propertyName: "reminders.dismissingStatuses"): string[];
 export declare function getProperty(propertyName: "licences.externalLicenceNumber.fieldLabel"): string;
 export declare function getProperty(propertyName: "licences.externalLicenceNumber.newCalculation"): "" | "range";
 export declare function getProperty(propertyName: "licences.externalLicenceNumber.isPreferredID"): boolean;
