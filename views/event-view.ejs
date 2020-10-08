@@ -114,6 +114,13 @@
           <span class="sr-only">Edit this Event</span>
         </a>
       </div>
+    <% } else if (user.userProperties.isAdmin) { %>
+      <div class="fixed-container is-fixed-bottom-right mx-4 my-4 is-hidden-print">
+        <a class="button is-circle is-warning has-tooltip-left" data-tooltip="Unlock this Event" href="/events/<%= licence.licenceID %>/<%= event.eventDate %>/poke">
+          <i class="fas fa-unlock" aria-hidden="true"></i>
+          <span class="sr-only">Unlock this Event</span>
+        </a>
+      </div>
     <% } %>
 
     <div class="columns is-desktop">

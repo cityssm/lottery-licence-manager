@@ -55,6 +55,13 @@
           <span class="sr-only">Edit this Licence</span>
         </a>
       </div>
+    <% } else if (user.userProperties.isAdmin) { %>
+      <div class="fixed-container is-fixed-bottom-right mx-4 my-4 is-hidden-print">
+        <a class="button is-circle is-warning has-tooltip-left" data-tooltip="Unlock this Licence" href="/licences/<%= licence.licenceID %>/poke">
+          <i class="fas fa-unlock" aria-hidden="true"></i>
+          <span class="sr-only">Unlock this Licence</span>
+        </a>
+      </div>
     <% } %>
 
     <div class="columns is-block-print">
