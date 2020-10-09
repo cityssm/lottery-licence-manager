@@ -11,6 +11,9 @@ import * as handler_edit from "../handlers/organizations-get/edit";
 import * as handler_doSearch from "../handlers/organizations-post/doSearch";
 import * as handler_doGetAll from "../handlers/organizations-all/doGetAll";
 
+import * as handler_doAddRepresentative from "../handlers/organizations-post/doAddRepresentative";
+import * as handler_doUpdateRepresentative from "../handlers/organizations-post/doUpdateRepresentative";
+
 import * as handler_doGetRemarks from "../handlers/organizations-post/doGetRemarks";
 import * as handler_doAddRemark from "../handlers/organizations-post/doAddRemark";
 
@@ -502,60 +505,13 @@ router.get("/:organizationID/edit",
   handler_edit.handler);
 
 
-router.post("/:organizationID/doAddOrganizationRepresentative", (req, res) => {
+router.post("/:organizationID/doAddOrganizationRepresentative",
+  permissionHandlers.createPostHandler,
+  handler_doAddRepresentative.handler);
 
-  if (!userCanCreate(req)) {
-    return forbiddenJSON(res);
-  }
-
-  const organizationID = parseInt(req.params.organizationID, 10);
-
-  const representativeObj = licencesDBOrganizations.addOrganizationRepresentative(organizationID, req.body);
-
-  if (representativeObj) {
-
-    res.json({
-      success: true,
-      organizationRepresentative: representativeObj
-    });
-
-  } else {
-
-    res.json({
-      success: false
-    });
-
-  }
-
-});
-
-
-router.post("/:organizationID/doEditOrganizationRepresentative", (req, res) => {
-
-  if (!userCanCreate(req)) {
-    return forbiddenJSON(res);
-  }
-
-  const organizationID = parseInt(req.params.organizationID, 10);
-
-  const representativeObj = licencesDBOrganizations.updateOrganizationRepresentative(organizationID, req.body);
-
-  if (representativeObj) {
-
-    res.json({
-      success: true,
-      organizationRepresentative: representativeObj
-    });
-
-  } else {
-
-    res.json({
-      success: false
-    });
-
-  }
-
-});
+router.post("/:organizationID/doEditOrganizationRepresentative",
+  permissionHandlers.createPostHandler,
+  handler_doUpdateRepresentative.handler);
 
 
 router.post("/:organizationID/doDeleteOrganizationRepresentative", (req, res) => {

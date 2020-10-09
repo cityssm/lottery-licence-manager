@@ -283,6 +283,7 @@
                     data-representative-province="<%= representativeObj.representativeProvince %>"
                     data-representative-postal-code="<%= representativeObj.representativePostalCode %>"
                     data-representative-phone-number="<%= representativeObj.representativePhoneNumber %>"
+                    data-representative-phone-number-2="<%= representativeObj.representativePhoneNumber2 %>"
                     data-representative-email-address="<%= representativeObj.representativeEmailAddress %>">
                     <td>
                       <div class="field">
@@ -304,7 +305,8 @@
                       </small>
                     </td>
                     <td>
-                      <%= representativeObj.representativePhoneNumber %>
+                      <%= representativeObj.representativePhoneNumber %><br />
+                      <%= representativeObj.representativePhoneNumber2 %>
                     </td>
                     <td>
                       <%= representativeObj.representativeEmailAddress %>
@@ -384,22 +386,23 @@
                       </div>
                     </div>
                   </div>
-                  <div class="columns">
-                    <div class="column is-6">
-                      <div class="field">
-                        <label class="label" for="addOrganizationRepresentative--representativePostalCode">Postal Code</label>
-                        <div class="control">
-                          <input class="input" id="addOrganizationRepresentative--representativePostalCode" name="representativePostalCode" type="text" value="" minlength="5" maxlength="7" autocomplete="off" required />
-                        </div>
-                      </div>
+                  <div class="field">
+                    <label class="label" for="addOrganizationRepresentative--representativePostalCode">Postal Code</label>
+                    <div class="control">
+                      <input class="input" id="addOrganizationRepresentative--representativePostalCode" name="representativePostalCode" type="text" value="" minlength="5" maxlength="7" autocomplete="off" required />
                     </div>
-                    <div class="column">
-                      <div class="field">
-                        <label class="label" for="addOrganizationRepresentative--representativePhoneNumber">Phone Number</label>
-                        <div class="control">
-                          <input class="input" id="addOrganizationRepresentative--representativePhoneNumber" name="representativePhoneNumber" type="tel" value="" minlength="10" maxlength="30" pattern="^\+?[(]?\d{3}[)]?[ -]?\d{3}[ -]?\d{4}.*" autocomplete="off" required />
-                        </div>
-                      </div>
+                  </div>
+                  <hr />
+                  <div class="field">
+                    <label class="label" for="addOrganizationRepresentative--representativePhoneNumber">Phone Number</label>
+                    <div class="control">
+                      <input class="input" id="addOrganizationRepresentative--representativePhoneNumber" name="representativePhoneNumber" type="tel" value="" minlength="10" maxlength="30" pattern="^\+?[(]?\d{3}[)]?[ -]?\d{3}[ -]?\d{4}.*" autocomplete="off" required />
+                    </div>
+                  </div>
+                  <div class="field">
+                    <label class="label" for="addOrganizationRepresentative--representativePhoneNumber2">Secondary Phone Number</label>
+                    <div class="control">
+                      <input class="input" id="addOrganizationRepresentative--representativePhoneNumber2" name="representativePhoneNumber2" type="tel" value="" minlength="10" maxlength="30" pattern="^\+?[(]?\d{3}[)]?[ -]?\d{3}[ -]?\d{4}.*" autocomplete="off" />
                     </div>
                   </div>
                   <div class="field mb-4">
@@ -468,22 +471,23 @@
                       </div>
                     </div>
                   </div>
-                  <div class="columns">
-                    <div class="column is-6">
-                      <div class="field">
-                        <label class="label" for="editOrganizationRepresentative--representativePostalCode">Postal Code</label>
-                        <div class="control">
-                          <input class="input" id="editOrganizationRepresentative--representativePostalCode" name="representativePostalCode" type="text" value="" minlength="5" maxlength="7" autocomplete="off" required />
-                        </div>
-                      </div>
+                  <div class="field">
+                    <label class="label" for="editOrganizationRepresentative--representativePostalCode">Postal Code</label>
+                    <div class="control">
+                      <input class="input" id="editOrganizationRepresentative--representativePostalCode" name="representativePostalCode" type="text" value="" minlength="5" maxlength="7" autocomplete="off" required />
                     </div>
-                    <div class="column">
-                      <div class="field">
-                        <label class="label" for="editOrganizationRepresentative--representativePhoneNumber">Phone Number</label>
-                        <div class="control">
-                          <input class="input" id="editOrganizationRepresentative--representativePhoneNumber" name="representativePhoneNumber" type="tel" value="" minlength="10" maxlength="30" pattern="^\+?[(]?\d{3}[)]?[ -]?\d{3}[ -]?\d{4}.*" autocomplete="off" required />
-                        </div>
-                      </div>
+                  </div>
+                  <hr />
+                  <div class="field">
+                    <label class="label" for="editOrganizationRepresentative--representativePhoneNumber">Phone Number</label>
+                    <div class="control">
+                      <input class="input" id="editOrganizationRepresentative--representativePhoneNumber" name="representativePhoneNumber" type="tel" value="" minlength="10" maxlength="30" pattern="^\+?[(]?\d{3}[)]?[ -]?\d{3}[ -]?\d{4}.*" autocomplete="off" required />
+                    </div>
+                  </div>
+                  <div class="field">
+                    <label class="label" for="editOrganizationRepresentative--representativePhoneNumber2">Secondary Phone Number</label>
+                    <div class="control">
+                      <input class="input" id="editOrganizationRepresentative--representativePhoneNumber2" name="representativePhoneNumber2" type="tel" value="" minlength="10" maxlength="30" pattern="^\+?[(]?\d{3}[)]?[ -]?\d{3}[ -]?\d{4}.*" autocomplete="off" />
                     </div>
                   </div>
                   <div class="field mb-4">

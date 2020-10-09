@@ -7,6 +7,8 @@ const handler_view = require("../handlers/organizations-get/view");
 const handler_edit = require("../handlers/organizations-get/edit");
 const handler_doSearch = require("../handlers/organizations-post/doSearch");
 const handler_doGetAll = require("../handlers/organizations-all/doGetAll");
+const handler_doAddRepresentative = require("../handlers/organizations-post/doAddRepresentative");
+const handler_doUpdateRepresentative = require("../handlers/organizations-post/doUpdateRepresentative");
 const handler_doGetRemarks = require("../handlers/organizations-post/doGetRemarks");
 const handler_doAddRemark = require("../handlers/organizations-post/doAddRemark");
 const handler_reminders = require("../handlers/organizations-get/reminders");
@@ -277,42 +279,8 @@ router.post("/doRestore", (req, res) => {
 router.post("/doRollForward", permissionHandlers.createPostHandler, handler_doRollForward.handler);
 router.get("/:organizationID", handler_view.handler);
 router.get("/:organizationID/edit", permissionHandlers.createGetHandler, handler_edit.handler);
-router.post("/:organizationID/doAddOrganizationRepresentative", (req, res) => {
-    if (!userFns_1.userCanCreate(req)) {
-        return userFns_1.forbiddenJSON(res);
-    }
-    const organizationID = parseInt(req.params.organizationID, 10);
-    const representativeObj = licencesDBOrganizations.addOrganizationRepresentative(organizationID, req.body);
-    if (representativeObj) {
-        res.json({
-            success: true,
-            organizationRepresentative: representativeObj
-        });
-    }
-    else {
-        res.json({
-            success: false
-        });
-    }
-});
-router.post("/:organizationID/doEditOrganizationRepresentative", (req, res) => {
-    if (!userFns_1.userCanCreate(req)) {
-        return userFns_1.forbiddenJSON(res);
-    }
-    const organizationID = parseInt(req.params.organizationID, 10);
-    const representativeObj = licencesDBOrganizations.updateOrganizationRepresentative(organizationID, req.body);
-    if (representativeObj) {
-        res.json({
-            success: true,
-            organizationRepresentative: representativeObj
-        });
-    }
-    else {
-        res.json({
-            success: false
-        });
-    }
-});
+router.post("/:organizationID/doAddOrganizationRepresentative", permissionHandlers.createPostHandler, handler_doAddRepresentative.handler);
+router.post("/:organizationID/doEditOrganizationRepresentative", permissionHandlers.createPostHandler, handler_doUpdateRepresentative.handler);
 router.post("/:organizationID/doDeleteOrganizationRepresentative", (req, res) => {
     if (!userFns_1.userCanCreate(req)) {
         return userFns_1.forbiddenJSON(res);

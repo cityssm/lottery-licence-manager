@@ -10,8 +10,6 @@ export declare const deleteOrganization: (organizationID: number, reqSession: Ex
 export declare const restoreOrganization: (organizationID: number, reqSession: Express.SessionData) => boolean;
 export declare const getInactiveOrganizations: (inactiveYears: number) => llm.Organization[];
 export declare const getDeletedOrganizations: () => llm.Organization[];
-export declare const addOrganizationRepresentative: (organizationID: number, reqBody: llm.OrganizationRepresentative) => llm.OrganizationRepresentative;
-export declare const updateOrganizationRepresentative: (organizationID: number, reqBody: llm.OrganizationRepresentative) => llm.OrganizationRepresentative;
 export declare const deleteOrganizationRepresentative: (organizationID: number, representativeIndex: number) => boolean;
 export declare const setDefaultOrganizationRepresentative: (organizationID: number, representativeIndex: number) => boolean;
 export declare const getOrganizationRemark: (organizationID: number, remarkIndex: number, reqSession: Express.SessionData) => llm.OrganizationRemark;

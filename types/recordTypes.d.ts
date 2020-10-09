@@ -69,6 +69,7 @@ export interface OrganizationRepresentative {
     representativeProvince: string;
     representativePostalCode: string;
     representativePhoneNumber: string;
+    representativePhoneNumber2: string;
     representativeEmailAddress: string;
     isDefault: boolean | string;
 }

@@ -130,6 +130,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 .value = editRepresentativeTrEle.getAttribute("data-representative-postal-code");
             document.getElementById("editOrganizationRepresentative--representativePhoneNumber")
                 .value = editRepresentativeTrEle.getAttribute("data-representative-phone-number");
+            document.getElementById("editOrganizationRepresentative--representativePhoneNumber2")
+                .value = editRepresentativeTrEle.getAttribute("data-representative-phone-number-2");
             document.getElementById("editOrganizationRepresentative--representativeEmailAddress")
                 .value = editRepresentativeTrEle.getAttribute("data-representative-email-address");
             document.getElementById("editOrganizationRepresentative--isDefault").value =
@@ -149,6 +151,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
             trEle.setAttribute("data-representative-province", representativeObj.representativeProvince);
             trEle.setAttribute("data-representative-postal-code", representativeObj.representativePostalCode);
             trEle.setAttribute("data-representative-phone-number", representativeObj.representativePhoneNumber);
+            trEle.setAttribute("data-representative-phone-number-2", representativeObj.representativePhoneNumber2);
             trEle.setAttribute("data-representative-email-address", representativeObj.representativeEmailAddress);
             trEle.insertAdjacentHTML("beforeend", "<td>" +
                 "<div class=\"field\">" +
@@ -161,22 +164,23 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 "</td>");
             trEle.getElementsByTagName("input")[0].addEventListener("change", updateDefaultRepresentativeFn);
             let tdEle = document.createElement("td");
-            tdEle.innerHTML = representativeObj.representativeName + "<br />" +
-                "<small>" + representativeObj.representativeTitle + "</small>";
+            tdEle.innerHTML = cityssm.escapeHTML(representativeObj.representativeName) + "<br />" +
+                "<small>" + cityssm.escapeHTML(representativeObj.representativeTitle) + "</small>";
             trEle.insertAdjacentElement("beforeend", tdEle);
             tdEle = document.createElement("td");
-            tdEle.innerHTML = representativeObj.representativeAddress1 + "<br />" +
+            tdEle.innerHTML = cityssm.escapeHTML(representativeObj.representativeAddress1) + "<br />" +
                 "<small>" +
-                (representativeObj.representativeAddress2 === "" ? "" : representativeObj.representativeAddress2 + "<br />") +
-                representativeObj.representativeCity + ", " + representativeObj.representativeProvince + "<br />" +
-                representativeObj.representativePostalCode +
+                (representativeObj.representativeAddress2 === "" ? "" : cityssm.escapeHTML(representativeObj.representativeAddress2) + "<br />") +
+                cityssm.escapeHTML(representativeObj.representativeCity) + ", " + cityssm.escapeHTML(representativeObj.representativeProvince) + "<br />" +
+                cityssm.escapeHTML(representativeObj.representativePostalCode) +
                 "</small>";
             trEle.insertAdjacentElement("beforeend", tdEle);
             tdEle = document.createElement("td");
-            tdEle.innerHTML = representativeObj.representativePhoneNumber;
+            tdEle.innerHTML = cityssm.escapeHTML(representativeObj.representativePhoneNumber) + "<br />" +
+                cityssm.escapeHTML(representativeObj.representativePhoneNumber2);
             trEle.insertAdjacentElement("beforeend", tdEle);
             tdEle = document.createElement("td");
-            tdEle.innerHTML = representativeObj.representativeEmailAddress;
+            tdEle.innerHTML = cityssm.escapeHTML(representativeObj.representativeEmailAddress);
             trEle.insertAdjacentElement("beforeend", tdEle);
             trEle.insertAdjacentHTML("beforeend", "<td>" +
                 "<div class=\"buttons is-right has-addons\">" +

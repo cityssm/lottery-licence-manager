@@ -113,6 +113,7 @@ export const initLicencesDB = () => {
       " representativeProvince varchar(2)," +
       " representativePostalCode varchar(7)," +
       " representativePhoneNumber varchar(30)," +
+      " representativePhoneNumber2 varchar(30)," +
       " representativeEmailAddress varchar(200)," +
       " isDefault bit not null default 0," +
 
