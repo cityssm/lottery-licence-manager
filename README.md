@@ -1,7 +1,6 @@
 # Lottery Licence Manager
 
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/d2d290ed8f214420aad853c41c90c708)](https://www.codacy.com/gh/cityssm/lottery-licence-manager?utm_source=github.com&utm_medium=referral&utm_content=cityssm/lottery-licence-manager&utm_campaign=Badge_Grade)
-[![Build Status](https://travis-ci.com/cityssm/lottery-licence-manager.svg?branch=master)](https://travis-ci.com/cityssm/lottery-licence-manager)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/d2d290ed8f214420aad853c41c90c708)](https://www.codacy.com/gh/cityssm/lottery-licence-manager?utm_source=github.com&utm_medium=referral&utm_content=cityssm/lottery-licence-manager&utm_campaign=Badge_Grade) [![Build Status](https://travis-ci.com/cityssm/lottery-licence-manager.svg?branch=master)](https://travis-ci.com/cityssm/lottery-licence-manager) [![dependencies Status](https://david-dm.org/cityssm/lottery-licence-manager/status.svg)](https://david-dm.org/cityssm/lottery-licence-manager)
 
 ![Lottery Licence Search](docs/images/licence-search.png)
 
