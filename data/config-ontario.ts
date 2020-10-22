@@ -415,15 +415,15 @@ config.licenceTypes = [
 
         return (ticketCountField ? ticketCountField.fieldValue + " tickets; " : "") +
           (ticketCostField ? "$" + ticketCostField.fieldValue + " per ticket; " : "") +
-          (discountTicketsField && discountCostField ?
-            discountTicketsField.fieldValue + " for $" + discountCostField.fieldValue + "; " :
-            "") +
-          (discount2TicketsField && discount2CostField ?
-            discount2TicketsField.fieldValue + " for $" + discount2CostField.fieldValue + "; " :
-            "") +
-          (discount3TicketsField && discount3CostField ?
-            discount3TicketsField.fieldValue + " for $" + discount3CostField.fieldValue + "; " :
-            "");
+          (discountTicketsField && discountCostField
+            ? discountTicketsField.fieldValue + " for $" + discountCostField.fieldValue + "; "
+            : "") +
+          (discount2TicketsField && discount2CostField
+            ? discount2TicketsField.fieldValue + " for $" + discount2CostField.fieldValue + "; "
+            : "") +
+          (discount3TicketsField && discount3CostField
+            ? discount3TicketsField.fieldValue + " for $" + discount3CostField.fieldValue + "; "
+            : "");
       }
     }
   }
