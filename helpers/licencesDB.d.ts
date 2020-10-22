@@ -10,7 +10,6 @@ export declare const getRawRowsColumns: (sql: string, params: Array<string | num
 export declare const resetEventTableStats: () => void;
 export declare const resetLicenceTableStats: () => void;
 export declare const getLicenceTableStats: () => llm.LotteryLicenceStats;
-export declare const getDistinctTermsConditions: (organizationID: number) => llm.TermsConditionsStat[];
 export declare const getLicenceTypeSummary: (reqBody: {
     applicationDateStartString?: string;
     applicationDateEndString?: string;

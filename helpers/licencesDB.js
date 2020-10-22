@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateApplicationSetting = exports.getApplicationSettings = exports.getLicenceActivityByDateRange = exports.pokeEvent = exports.deleteEvent = exports.updateEvent = exports.getPastEventBankingInformation = exports.getEventFinancialSummary = exports.getOutstandingEvents = exports.getRecentlyUpdateEvents = exports.getEvents = exports.getEventTableStats = exports.getActiveLicenceSummary = exports.getLicenceTypeSummary = exports.getDistinctTermsConditions = exports.getLicenceTableStats = exports.resetLicenceTableStats = exports.resetEventTableStats = exports.getRawRowsColumns = exports.canUpdateObject = void 0;
+exports.updateApplicationSetting = exports.getApplicationSettings = exports.getLicenceActivityByDateRange = exports.pokeEvent = exports.deleteEvent = exports.updateEvent = exports.getPastEventBankingInformation = exports.getEventFinancialSummary = exports.getOutstandingEvents = exports.getRecentlyUpdateEvents = exports.getEvents = exports.getEventTableStats = exports.getActiveLicenceSummary = exports.getLicenceTypeSummary = exports.getLicenceTableStats = exports.resetLicenceTableStats = exports.resetEventTableStats = exports.getRawRowsColumns = exports.canUpdateObject = void 0;
 const sqlite = require("better-sqlite3");
 const configFns = require("./configFns");
 const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
@@ -93,26 +93,6 @@ exports.getLicenceTableStats = () => {
     licenceTableStatsExpiryMillis = Date.now() + (3600 * 1000);
     db.close();
     return licenceTableStats;
-};
-exports.getDistinctTermsConditions = (organizationID) => {
-    const db = sqlite(databasePaths_1.licencesDB, {
-        readonly: true
-    });
-    const terms = db.prepare("select termsConditions," +
-        " count(licenceID) as termsConditionsCount," +
-        " max(startDate) as startDateMax" +
-        " from LotteryLicences l" +
-        " where l.organizationID = ?" +
-        " and l.termsConditions is not null and trim(l.termsConditions) <> ''" +
-        " and l.recordDelete_timeMillis is null" +
-        " group by l.termsConditions" +
-        " order by startDateMax desc")
-        .all(organizationID);
-    db.close();
-    for (const term of terms) {
-        term.startDateMaxString = dateTimeFns.dateIntegerToString(term.startDateMax);
-    }
-    return terms;
 };
 exports.getLicenceTypeSummary = (reqBody) => {
     const db = sqlite(databasePaths_1.licencesDB, {

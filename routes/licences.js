@@ -13,6 +13,7 @@ const handler_doSave = require("../handlers/licences-post/doSave");
 const handler_doIssueLicence = require("../handlers/licences-post/doIssueLicence");
 const handler_doUnissueLicence = require("../handlers/licences-post/doUnissueLicence");
 const handler_doDelete = require("../handlers/licences-post/doDelete");
+const handler_doGetDistinctTermsConditions = require("../handlers/licences-post/doGetDistinctTermsConditions");
 const handler_doAddTransaction = require("../handlers/licences-post/doAddTransaction");
 const handler_doVoidTransaction = require("../handlers/licences-post/doVoidTransaction");
 const licencesDB = require("../helpers/licencesDB");
@@ -64,10 +65,7 @@ router.get([
     "/new",
     "/new/:organizationID"
 ], permissionHandlers.createGetHandler, handler_new.handler);
-router.post("/doGetDistinctTermsConditions", (req, res) => {
-    const organizationID = req.body.organizationID;
-    res.json(licencesDB.getDistinctTermsConditions(organizationID));
-});
+router.post("/doGetDistinctTermsConditions", handler_doGetDistinctTermsConditions.handler);
 router.post("/doGetTicketTypes", (req, res) => {
     const licenceTypeKey = req.body.licenceTypeKey;
     const licenceType = configFns.getLicenceType(licenceTypeKey);

@@ -346,12 +346,20 @@ Object.defineProperty(exports, "__esModule", { value: true });
                             "</p>" +
                             "<p class=\"has-text-right\">" +
                             (termsConditionsObj.termsConditionsCount > 1
-                                ? "<span class=\"tag is-light\">" +
-                                    "Used " + termsConditionsObj.termsConditionsCount.toString() + " times" +
+                                ? "<span class=\"tag is-light has-tooltip-left\" data-tooltip=\"Included on Multiple Licences\">" +
+                                    "<span class=\"icon\"><i class=\"fas fa-star\" aria-hidden=\"true\"></i></span>" +
+                                    " <span>Used " + termsConditionsObj.termsConditionsCount.toString() + " times</span>" +
                                     "</span>"
                                 : "") +
-                            "<span class=\"tag is-info has-tooltip-left\" data-tooltip=\"Most Recent Licence Start Date\">" +
-                            termsConditionsObj.startDateMaxString +
+                            (termsConditionsObj.isIssued >= 1
+                                ? "<span class=\"tag is-info has-tooltip-left\" data-tooltip=\"Included on an Issued Licence\">" +
+                                    "<span class=\"icon\"><i class=\"fas fa-stamp\" aria-hidden=\"true\"></i></span>" +
+                                    " <span>Issued</span>" +
+                                    "</span>"
+                                : "") +
+                            " <span class=\"tag is-info has-tooltip-left\" data-tooltip=\"Most Recent Licence Start Date\">" +
+                            "<span class=\"icon\"><i class=\"fas fa-calendar\" aria-hidden=\"true\"></i></span>" +
+                            " <span>" + termsConditionsObj.startDateMaxString + "</span>" +
                             "</span>" +
                             "</p>";
                         listItemEle.addEventListener("click", termsConditionsLookupFn_setTermsConditions);

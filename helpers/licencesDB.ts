@@ -173,33 +173,6 @@ export const getLicenceTableStats = () => {
 };
 
 
-export const getDistinctTermsConditions = (organizationID: number) => {
-
-  const db = sqlite(dbPath, {
-    readonly: true
-  });
-
-  const terms: llm.TermsConditionsStat[] = db.prepare("select termsConditions," +
-    " count(licenceID) as termsConditionsCount," +
-    " max(startDate) as startDateMax" +
-    " from LotteryLicences l" +
-    " where l.organizationID = ?" +
-    " and l.termsConditions is not null and trim(l.termsConditions) <> ''" +
-    " and l.recordDelete_timeMillis is null" +
-    " group by l.termsConditions" +
-    " order by startDateMax desc")
-    .all(organizationID);
-
-  db.close();
-
-  for (const term of terms) {
-    term.startDateMaxString = dateTimeFns.dateIntegerToString(term.startDateMax);
-  }
-
-  return terms;
-};
-
-
 export const getLicenceTypeSummary = (reqBody: {
   applicationDateStartString?: string;
   applicationDateEndString?: string;

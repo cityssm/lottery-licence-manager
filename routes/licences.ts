@@ -18,6 +18,7 @@ import * as handler_doIssueLicence from "../handlers/licences-post/doIssueLicenc
 import * as handler_doUnissueLicence from "../handlers/licences-post/doUnissueLicence";
 import * as handler_doDelete from "../handlers/licences-post/doDelete";
 
+import * as handler_doGetDistinctTermsConditions from "../handlers/licences-post/doGetDistinctTermsConditions";
 import * as handler_doAddTransaction from "../handlers/licences-post/doAddTransaction";
 import * as handler_doVoidTransaction from "../handlers/licences-post/doVoidTransaction";
 
@@ -142,13 +143,7 @@ router.get([
   handler_new.handler);
 
 
-router.post("/doGetDistinctTermsConditions", (req, res) => {
-
-  const organizationID = req.body.organizationID;
-
-  res.json(licencesDB.getDistinctTermsConditions(organizationID));
-
-});
+router.post("/doGetDistinctTermsConditions", handler_doGetDistinctTermsConditions.handler);
 
 
 router.post("/doGetTicketTypes", (req, res) => {

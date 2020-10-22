@@ -268,6 +268,7 @@ export interface TermsConditionsStat {
   termsConditionsCount: number;
   startDateMax: number;
   startDateMaxString: string;
+  isIssued: number;
 }
 
 export interface User {
