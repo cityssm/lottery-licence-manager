@@ -13,7 +13,6 @@ let config = "";
 try {
   config = require("../data/config");
 } catch (e) {
-  log.error(e);
   log.warn("Using data/config-example.js");
   config = require("../data/config-example");
 }
