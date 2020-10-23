@@ -1,6 +1,6 @@
 # Lottery Licence Manager
 
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/d2d290ed8f214420aad853c41c90c708)](https://www.codacy.com/gh/cityssm/lottery-licence-manager?utm_source=github.com&utm_medium=referral&utm_content=cityssm/lottery-licence-manager&utm_campaign=Badge_Grade) [![Build Status](https://travis-ci.com/cityssm/lottery-licence-manager.svg?branch=master)](https://travis-ci.com/cityssm/lottery-licence-manager) [![dependencies Status](https://david-dm.org/cityssm/lottery-licence-manager/status.svg)](https://david-dm.org/cityssm/lottery-licence-manager)
+[![Codacy Badge](https://img.shields.io/codacy/grade/d2d290ed8f214420aad853c41c90c708)](https://www.codacy.com/gh/cityssm/lottery-licence-manager) [![Maintainability](https://img.shields.io/codeclimate/maintainability-percentage/cityssm/lottery-licence-manager)](https://codeclimate.com/github/cityssm/lottery-licence-manager/maintainability) [![Build Status](https://img.shields.io/travis/cityssm/lottery-licence-manager)](https://travis-ci.com/cityssm/lottery-licence-manager) [![dependencies Status](https://img.shields.io/david/cityssm/lottery-licence-manager)](https://david-dm.org/cityssm/lottery-licence-manager) ![Snyk Vulnerabilities for GitHub Repo](https://img.shields.io/snyk/vulnerabilities/github/cityssm/lottery-licence-manager)
 
 ![Lottery Licence Search](docs/images/licence-search.png)
 
@@ -17,7 +17,7 @@ looking to move away from older, legacy systems.
 **This project is incomplete and under active development.**
 **Significant, breaking changes are happening with each commit.**
 **It is not ready to run in a live environment yet.**
-**Completion is expecting in mid-2020.**
+**Completion is expected by the end of 2020.**
 
 It is being shared in it's current state to start the dialog
 among other Ontario municipalities and present an option to those
