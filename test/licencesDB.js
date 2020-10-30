@@ -9,6 +9,8 @@ const licencesDB_getLicence = require("../helpers/licencesDB/getLicence");
 const licencesDB_getLicences = require("../helpers/licencesDB/getLicences");
 const licencesDB_getLocation = require("../helpers/licencesDB/getLocation");
 const licencesDB_getLocations = require("../helpers/licencesDB/getLocations");
+const licencesDB_getOrganization = require("../helpers/licencesDB/getOrganization");
+const licencesDB_getOrganizations = require("../helpers/licencesDB/getOrganizations");
 describe("licencesDB", () => {
     it("should execute getApplicationSetting()", () => {
         assert.equal(licencesDB_getApplicationSetting.getApplicationSetting("~~FAKE SETTING~~"), "");
@@ -30,5 +32,11 @@ describe("licencesDB", () => {
     });
     it("should execute getLocations()", () => {
         assert.equal(typeof licencesDB_getLocations.getLocations(_globals_1.fakeViewOnlySession, { limit: 10, offset: 0, locationIsDistributor: 0, locationIsManufacturer: 0 }), "object");
+    });
+    it("should execute getOrganization()", () => {
+        assert.equal(licencesDB_getOrganization.getOrganization(-1, _globals_1.fakeViewOnlySession), null);
+    });
+    it("should execute getOrganizations()", () => {
+        assert.equal(typeof licencesDB_getOrganizations.getOrganizations({}, _globals_1.fakeViewOnlySession, { limit: 10 }), "object");
     });
 });

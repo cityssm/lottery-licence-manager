@@ -85,7 +85,7 @@ export const getOrganizations = (reqBody: {
   if (includeOptions.limit !== -1) {
 
     sql += " limit " + includeOptions.limit.toString() +
-      " offset " + includeOptions.offset.toString();
+      " offset " + (includeOptions.offset || 0).toString();
 
   }
 

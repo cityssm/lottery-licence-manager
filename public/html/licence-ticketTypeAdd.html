@@ -6,7 +6,7 @@
       <button class="delete is-close-modal-button" aria-label="close" type="button"></button>
     </header>
     <section class="modal-card-body">
-      <form>
+      <form id="form--ticketTypeAdd">
         <div class="field">
           <label class="label" for="ticketTypeAdd--ticketType">Ticket Type</label>
           <div class="control">
@@ -115,16 +115,14 @@
               </div>
             </div>
           </div>
-          <div class="column is-narrow align-self-flex-end">
-            <button class="button is-success" type="submit">
-              <span class="icon"><i class="fas fa-plus" aria-hidden="true"></i></span>
-              <span>Add</span>
-            </button>
-          </div>
         </div>
       </form>
     </section>
     <footer class="modal-card-foot justify-right">
+      <button class="button is-success" type="submit" form="form--ticketTypeAdd">
+        <span class="icon"><i class="fas fa-plus" aria-hidden="true"></i></span>
+        <span>Add Ticket Type</span>
+      </button>
       <button class="button is-close-modal-button" type="button">Cancel</button>
     </footer>
   </div>

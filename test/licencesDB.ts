@@ -9,6 +9,8 @@ import * as licencesDB_getLicence from "../helpers/licencesDB/getLicence";
 import * as licencesDB_getLicences from "../helpers/licencesDB/getLicences";
 import * as licencesDB_getLocation from "../helpers/licencesDB/getLocation";
 import * as licencesDB_getLocations from "../helpers/licencesDB/getLocations";
+import * as licencesDB_getOrganization from "../helpers/licencesDB/getOrganization";
+import * as licencesDB_getOrganizations from "../helpers/licencesDB/getOrganizations";
 
 
 describe("licencesDB", () => {
@@ -39,5 +41,13 @@ describe("licencesDB", () => {
 
   it("should execute getLocations()", () => {
     assert.equal(typeof licencesDB_getLocations.getLocations(fakeViewOnlySession, { limit: 10, offset: 0, locationIsDistributor: 0, locationIsManufacturer: 0 }), "object");
+  });
+
+  it("should execute getOrganization()", () => {
+    assert.equal(licencesDB_getOrganization.getOrganization(-1, fakeViewOnlySession), null);
+  });
+
+  it("should execute getOrganizations()", () => {
+    assert.equal(typeof licencesDB_getOrganizations.getOrganizations({}, fakeViewOnlySession, { limit: 10 }), "object");
   });
 });

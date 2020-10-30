@@ -94,7 +94,7 @@ exports.getLicences = (reqBodyOrParamsObj, reqSession, includeOptions) => {
         " order by l.endDate desc, l.startDate desc, l.licenceID";
     if (includeOptions.limit !== -1) {
         sql += " limit " + includeOptions.limit.toString() +
-            " offset " + includeOptions.offset.toString();
+            " offset " + (includeOptions.offset || 0).toString();
     }
     const rows = db.prepare(sql)
         .all(sqlParams);

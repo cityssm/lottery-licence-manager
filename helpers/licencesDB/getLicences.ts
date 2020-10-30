@@ -20,7 +20,7 @@ export const getLicences = (reqBodyOrParamsObj: {
   includeOptions: {
     includeOrganization: boolean;
     limit: number;
-    offset: number;
+    offset?: number;
   }) => {
 
   if (reqBodyOrParamsObj.organizationName && reqBodyOrParamsObj.organizationName !== "") {
@@ -146,7 +146,7 @@ export const getLicences = (reqBodyOrParamsObj: {
 
   if (includeOptions.limit !== -1) {
     sql += " limit " + includeOptions.limit.toString() +
-      " offset " + includeOptions.offset.toString();
+      " offset " + (includeOptions.offset || 0).toString();
   }
 
   const rows: llm.LotteryLicence[] =

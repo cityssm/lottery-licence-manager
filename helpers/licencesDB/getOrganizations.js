@@ -53,7 +53,7 @@ exports.getOrganizations = (reqBody, reqSession, includeOptions) => {
         " order by o.organizationName, o.organizationID";
     if (includeOptions.limit !== -1) {
         sql += " limit " + includeOptions.limit.toString() +
-            " offset " + includeOptions.offset.toString();
+            " offset " + (includeOptions.offset || 0).toString();
     }
     const rows = db.prepare(sql).all(sqlParams);
     db.close();
