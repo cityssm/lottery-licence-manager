@@ -1,8 +1,10 @@
 import { Router } from "express";
 
+import { handler as handler_doChangePassword } from "../handlers/dashboard-post/doChangePassword";
+
 import * as configFns from "../helpers/configFns";
 import * as licencesDB_getDashboardStats from "../helpers/licencesDB/getDashboardStats";
-import * as usersDB from "../helpers/usersDB";
+
 
 const router = Router();
 
@@ -19,17 +21,7 @@ router.get("/", (_req, res) => {
 });
 
 
-router.post("/doChangePassword", (req, res) => {
-
-  const userName = req.session.user.userName;
-  const oldPassword = req.body.oldPassword;
-  const newPassword = req.body.newPassword;
-
-  const result = usersDB.tryResetPassword(userName, oldPassword, newPassword);
-
-  res.json(result);
-
-});
+router.post("/doChangePassword", handler_doChangePassword);
 
 
 router.all("/doGetDefaultConfigProperties", (_req, res) => {

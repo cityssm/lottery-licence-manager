@@ -4,6 +4,7 @@ const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
 const permissionHandlers = require("../handlers/permissions");
 const handler_view = require("../handlers/events-get/view");
 const handler_edit = require("../handlers/events-get/edit");
+const handler_poke = require("../handlers/events-get/poke");
 const licencesDB = require("../helpers/licencesDB");
 const router = express_1.Router();
 router.get("/", (_req, res) => {
@@ -129,12 +130,5 @@ router.post("/doDelete", (req, res) => {
 });
 router.get("/:licenceID/:eventDate", handler_view.handler);
 router.get("/:licenceID/:eventDate/edit", permissionHandlers.updateGetHandler, handler_edit.handler);
-router.get("/:licenceID/:eventDate/poke", (req, res) => {
-    const licenceID = parseInt(req.params.licenceID, 10);
-    const eventDate = parseInt(req.params.eventDate, 10);
-    if (req.session.user.userProperties.isAdmin) {
-        licencesDB.pokeEvent(licenceID, eventDate, req.session);
-    }
-    res.redirect("/events/" + licenceID.toString() + "/" + eventDate.toString());
-});
+router.get("/:licenceID/:eventDate/poke", permissionHandlers.adminGetHandler, handler_poke.handler);
 module.exports = router;

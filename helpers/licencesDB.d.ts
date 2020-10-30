@@ -52,12 +52,9 @@ export declare const updateEvent: (reqBody: {
     fieldKeys: string;
 }, reqSession: Express.SessionData) => boolean;
 export declare const deleteEvent: (licenceID: number, eventDate: number, reqSession: Express.SessionData) => boolean;
-export declare const pokeEvent: (licenceID: number, eventDate: number, reqSession: Express.SessionData) => boolean;
 export declare const getLicenceActivityByDateRange: (startDate: number, endDate: number, _reqBody: {}) => {
     startDateString: string;
     endDateString: string;
     licences: llm.LotteryLicence[];
     events: llm.LotteryEvent[];
 };
-export declare const getApplicationSettings: () => any[];
-export declare const updateApplicationSetting: (settingKey: string, settingValue: string, reqSession: Express.SessionData) => boolean;

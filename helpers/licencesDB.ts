@@ -767,34 +767,6 @@ export const deleteEvent = (licenceID: number, eventDate: number, reqSession: Ex
 };
 
 
-/**
- * @returns TRUE if successful
- */
-export const pokeEvent = (licenceID: number, eventDate: number, reqSession: Express.SessionData) => {
-
-  const db = sqlite(dbPath);
-
-  const nowMillis = Date.now();
-
-  const info = db.prepare("update LotteryEvents" +
-    " set recordUpdate_userName = ?," +
-    " recordUpdate_timeMillis = ?" +
-    " where licenceID = ?" +
-    " and eventDate = ?" +
-    " and recordDelete_timeMillis is null")
-    .run(
-      reqSession.user.userName,
-      nowMillis,
-      licenceID,
-      eventDate
-    );
-
-  db.close();
-
-  return info.changes > 0;
-};
-
-
 export const getLicenceActivityByDateRange = (startDate: number, endDate: number, _reqBody: {}) => {
 
   const db = sqlite(dbPath, {
@@ -859,49 +831,3 @@ export const getLicenceActivityByDateRange = (startDate: number, endDate: number
 
   return activity;
 };
-
-
-/*
- * APPLICATION SETTINGS
- */
-
-export const getApplicationSettings = () => {
-
-  const db = sqlite(dbPath, {
-    readonly: true
-  });
-
-  const rows = db.prepare("select * from ApplicationSettings order by orderNumber, settingKey").all();
-
-  db.close();
-
-  return rows;
-};
-
-
-/**
- * @returns TRUE if successful
- */
-export const updateApplicationSetting =
-  (settingKey: string, settingValue: string, reqSession: Express.SessionData) => {
-
-    const db = sqlite(dbPath);
-
-    const nowMillis = Date.now();
-
-    const info = db.prepare("update ApplicationSettings" +
-      " set settingValue = ?," +
-      " recordUpdate_userName = ?," +
-      " recordUpdate_timeMillis = ?" +
-      " where settingKey = ?")
-      .run(
-        settingValue,
-        reqSession.user.userName,
-        nowMillis,
-        settingKey
-      );
-
-    db.close();
-
-    return info.changes > 0;
-  };

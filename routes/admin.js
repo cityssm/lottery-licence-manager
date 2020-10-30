@@ -1,106 +1,23 @@
 "use strict";
 const express_1 = require("express");
-const licencesDB = require("../helpers/licencesDB");
-const usersDB = require("../helpers/usersDB");
-const userFns_1 = require("../helpers/userFns");
+const permissionHandlers = require("../handlers/permissions");
+const applicationSettings_1 = require("../handlers/admin-get/applicationSettings");
+const doSaveApplicationSetting_1 = require("../handlers/admin-post/doSaveApplicationSetting");
+const userManagement_1 = require("../handlers/admin-get/userManagement");
+const doCreateUser_1 = require("../handlers/admin-post/doCreateUser");
+const doUpdateUser_1 = require("../handlers/admin-post/doUpdateUser");
+const doGetUserProperties_1 = require("../handlers/admin-post/doGetUserProperties");
+const doUpdateUserProperty_1 = require("../handlers/admin-post/doUpdateUserProperty");
+const doDeleteUser_1 = require("../handlers/admin-post/doDeleteUser");
+const doResetPassword_1 = require("../handlers/admin-post/doResetPassword");
 const router = express_1.Router();
-router.get("/applicationSettings", (req, res) => {
-    if (!userFns_1.userIsAdmin(req)) {
-        res.redirect("/dashboard/?error=accessDenied");
-        return;
-    }
-    const applicationSettings = licencesDB.getApplicationSettings();
-    res.render("admin-applicationSettings", {
-        headTitle: "Application Settings",
-        applicationSettings
-    });
-});
-router.post("/doSaveApplicationSetting", (req, res) => {
-    if (!userFns_1.userIsAdmin(req)) {
-        return userFns_1.forbiddenJSON(res);
-    }
-    const settingKey = req.body.settingKey;
-    const settingValue = req.body.settingValue;
-    const success = licencesDB.updateApplicationSetting(settingKey, settingValue, req.session);
-    res.json({
-        success
-    });
-});
-router.get("/userManagement", (req, res) => {
-    if (!userFns_1.userIsAdmin(req)) {
-        res.redirect("/dashboard/?error=accessDenied");
-        return;
-    }
-    const users = usersDB.getAllUsers();
-    res.render("admin-userManagement", {
-        headTitle: "User Management",
-        users
-    });
-});
-router.post("/doCreateUser", (req, res) => {
-    if (!userFns_1.userIsAdmin(req)) {
-        return userFns_1.forbiddenJSON(res);
-    }
-    const newPassword = usersDB.createUser(req.body);
-    if (!newPassword) {
-        res.json({
-            success: false,
-            message: "New Account Not Created"
-        });
-    }
-    else {
-        res.json({
-            success: true,
-            newPassword
-        });
-    }
-});
-router.post("/doUpdateUser", (req, res) => {
-    if (!userFns_1.userIsAdmin(req)) {
-        return userFns_1.forbiddenJSON(res);
-    }
-    const changeCount = usersDB.updateUser(req.body);
-    res.json({
-        success: (changeCount === 1)
-    });
-});
-router.post("/doUpdateUserProperty", (req, res) => {
-    if (!userFns_1.userIsAdmin(req)) {
-        return userFns_1.forbiddenJSON(res);
-    }
-    const changeCount = usersDB.updateUserProperty(req.body);
-    res.json({
-        success: (changeCount === 1)
-    });
-});
-router.post("/doResetPassword", (req, res) => {
-    if (!userFns_1.userIsAdmin(req)) {
-        return userFns_1.forbiddenJSON(res);
-    }
-    const newPassword = usersDB.generateNewPassword(req.body.userName);
-    res.json({
-        success: true,
-        newPassword
-    });
-});
-router.post("/doGetUserProperties", (req, res) => {
-    if (!userFns_1.userIsAdmin(req)) {
-        return userFns_1.forbiddenJSON(res);
-    }
-    const userProperties = usersDB.getUserProperties(req.body.userName);
-    res.json(userProperties);
-});
-router.post("/doDeleteUser", (req, res) => {
-    if (!userFns_1.userIsAdmin(req)) {
-        return userFns_1.forbiddenJSON(res);
-    }
-    const userNameToDelete = req.body.userName;
-    if (userNameToDelete === req.session.user.userName) {
-        return userFns_1.forbiddenJSON(res);
-    }
-    const success = usersDB.inactivateUser(userNameToDelete);
-    res.json({
-        success
-    });
-});
+router.get("/applicationSettings", permissionHandlers.adminGetHandler, applicationSettings_1.handler);
+router.post("/doSaveApplicationSetting", permissionHandlers.adminPostHandler, doSaveApplicationSetting_1.handler);
+router.get("/userManagement", permissionHandlers.adminGetHandler, userManagement_1.handler);
+router.post("/doCreateUser", permissionHandlers.adminPostHandler, doCreateUser_1.handler);
+router.post("/doUpdateUser", permissionHandlers.adminPostHandler, doUpdateUser_1.handler);
+router.post("/doUpdateUserProperty", permissionHandlers.adminPostHandler, doUpdateUserProperty_1.handler);
+router.post("/doResetPassword", permissionHandlers.adminPostHandler, doResetPassword_1.handler);
+router.post("/doGetUserProperties", permissionHandlers.adminPostHandler, doGetUserProperties_1.handler);
+router.post("/doDeleteUser", permissionHandlers.adminPostHandler, doDeleteUser_1.handler);
 module.exports = router;

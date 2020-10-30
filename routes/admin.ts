@@ -1,9 +1,17 @@
 import { Router } from "express";
 
-import * as licencesDB from "../helpers/licencesDB";
-import * as usersDB from "../helpers/usersDB";
+import * as permissionHandlers from "../handlers/permissions";
 
-import { userIsAdmin, forbiddenJSON } from "../helpers/userFns";
+import { handler as handler_applicationSettings } from "../handlers/admin-get/applicationSettings";
+import { handler as handler_doSaveApplicationSetting } from "../handlers/admin-post/doSaveApplicationSetting";
+
+import { handler as handler_userManagement } from "../handlers/admin-get/userManagement";
+import { handler as handler_doCreateUser } from "../handlers/admin-post/doCreateUser";
+import { handler as handler_doUpdateUser } from "../handlers/admin-post/doUpdateUser";
+import { handler as handler_doGetUserProperties } from "../handlers/admin-post/doGetUserProperties";
+import { handler as handler_doUpdateUserProperty } from "../handlers/admin-post/doUpdateUserProperty";
+import { handler as handler_doDeleteUser } from "../handlers/admin-post/doDeleteUser";
+import { handler as handler_doResetPassword } from "../handlers/admin-post/doResetPassword";
 
 
 const router = Router();
@@ -11,172 +19,52 @@ const router = Router();
 
 // Application Settings
 
-router.get("/applicationSettings", (req, res) => {
-
-  if (!userIsAdmin(req)) {
-
-    res.redirect("/dashboard/?error=accessDenied");
-    return;
-
-  }
-
-  const applicationSettings = licencesDB.getApplicationSettings();
-
-  res.render("admin-applicationSettings", {
-    headTitle: "Application Settings",
-    applicationSettings
-  });
-
-});
+router.get("/applicationSettings",
+  permissionHandlers.adminGetHandler,
+  handler_applicationSettings);
 
 
-router.post("/doSaveApplicationSetting", (req, res) => {
-
-  if (!userIsAdmin(req)) {
-    return forbiddenJSON(res);
-  }
-
-  const settingKey = req.body.settingKey;
-  const settingValue = req.body.settingValue;
-
-  const success = licencesDB.updateApplicationSetting(settingKey, settingValue, req.session);
-
-  res.json({
-    success
-  });
-
-});
+router.post("/doSaveApplicationSetting",
+  permissionHandlers.adminPostHandler,
+  handler_doSaveApplicationSetting);
 
 
 // User Management
 
 
-router.get("/userManagement", (req, res) => {
-
-  if (!userIsAdmin(req)) {
-
-    res.redirect("/dashboard/?error=accessDenied");
-    return;
-
-  }
-
-  const users = usersDB.getAllUsers();
-
-  res.render("admin-userManagement", {
-    headTitle: "User Management",
-    users
-  });
-
-});
+router.get("/userManagement",
+  permissionHandlers.adminGetHandler,
+  handler_userManagement);
 
 
-router.post("/doCreateUser", (req, res) => {
-
-  if (!userIsAdmin(req)) {
-    return forbiddenJSON(res);
-  }
-
-  const newPassword = usersDB.createUser(req.body);
-
-  if (!newPassword) {
-
-    res.json({
-      success: false,
-      message: "New Account Not Created"
-    });
-
-  } else {
-
-    res.json({
-      success: true,
-      newPassword
-    });
-
-  }
-
-});
+router.post("/doCreateUser",
+  permissionHandlers.adminPostHandler,
+  handler_doCreateUser);
 
 
-router.post("/doUpdateUser", (req, res) => {
-
-  if (!userIsAdmin(req)) {
-    return forbiddenJSON(res);
-  }
-
-  const changeCount = usersDB.updateUser(req.body);
-
-  res.json({
-    success: (changeCount === 1)
-  });
-
-});
+router.post("/doUpdateUser",
+  permissionHandlers.adminPostHandler,
+  handler_doUpdateUser);
 
 
-router.post("/doUpdateUserProperty", (req, res) => {
-
-  if (!userIsAdmin(req)) {
-    return forbiddenJSON(res);
-  }
-
-  const changeCount = usersDB.updateUserProperty(req.body);
-
-  res.json({
-    success: (changeCount === 1)
-  });
-
-});
+router.post("/doUpdateUserProperty",
+  permissionHandlers.adminPostHandler,
+  handler_doUpdateUserProperty);
 
 
-router.post("/doResetPassword", (req, res) => {
-
-  if (!userIsAdmin(req)) {
-    return forbiddenJSON(res);
-  }
-
-  const newPassword = usersDB.generateNewPassword(req.body.userName);
-
-  res.json({
-    success: true,
-    newPassword
-  });
-
-});
+router.post("/doResetPassword",
+  permissionHandlers.adminPostHandler,
+  handler_doResetPassword);
 
 
-router.post("/doGetUserProperties", (req, res) => {
-
-  if (!userIsAdmin(req)) {
-    return forbiddenJSON(res);
-  }
-
-  const userProperties = usersDB.getUserProperties(req.body.userName);
-
-  res.json(userProperties);
-
-});
+router.post("/doGetUserProperties",
+  permissionHandlers.adminPostHandler,
+  handler_doGetUserProperties);
 
 
-router.post("/doDeleteUser", (req, res) => {
-
-  if (!userIsAdmin(req)) {
-    return forbiddenJSON(res);
-  }
-
-  const userNameToDelete = req.body.userName;
-
-  if (userNameToDelete === req.session.user.userName) {
-
-    // You can't delete yourself!
-    return forbiddenJSON(res);
-  }
-
-  const success = usersDB.inactivateUser(userNameToDelete);
-
-  res.json({
-    success
-  });
-
-});
+router.post("/doDeleteUser",
+  permissionHandlers.adminPostHandler,
+  handler_doDeleteUser);
 
 
 export = router;

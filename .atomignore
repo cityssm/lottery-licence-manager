@@ -1,9 +1,8 @@
-*.d.ts
+*.xd.ts
 *.db-journal
 *.min.js
 app.js
 gulpfile.js
-helpers/*.js
 public/javascripts/*.js
 public/stylesheets/*.min.css
 routes/*.js

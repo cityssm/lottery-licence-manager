@@ -2,7 +2,7 @@ import { Router } from "express";
 
 import * as configFns from "../helpers/configFns";
 
-import * as usersDB from "../helpers/usersDB";
+import * as usersDB_getUser from "../helpers/usersDB/getUser";
 
 const router = Router();
 
@@ -65,7 +65,7 @@ router.route("/")
 
     const redirectURL = getSafeRedirectURL(req.body.redirect);
 
-    const userObj = usersDB.getUser(userName, passwordPlain);
+    const userObj = usersDB_getUser.getUser(userName, passwordPlain);
 
     if (userObj) {
 

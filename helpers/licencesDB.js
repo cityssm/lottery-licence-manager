@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateApplicationSetting = exports.getApplicationSettings = exports.getLicenceActivityByDateRange = exports.pokeEvent = exports.deleteEvent = exports.updateEvent = exports.getPastEventBankingInformation = exports.getEventFinancialSummary = exports.getOutstandingEvents = exports.getRecentlyUpdateEvents = exports.getEvents = exports.getEventTableStats = exports.getActiveLicenceSummary = exports.getLicenceTypeSummary = exports.getLicenceTableStats = exports.resetLicenceTableStats = exports.resetEventTableStats = exports.getRawRowsColumns = exports.canUpdateObject = void 0;
+exports.getLicenceActivityByDateRange = exports.deleteEvent = exports.updateEvent = exports.getPastEventBankingInformation = exports.getEventFinancialSummary = exports.getOutstandingEvents = exports.getRecentlyUpdateEvents = exports.getEvents = exports.getEventTableStats = exports.getActiveLicenceSummary = exports.getLicenceTypeSummary = exports.getLicenceTableStats = exports.resetLicenceTableStats = exports.resetEventTableStats = exports.getRawRowsColumns = exports.canUpdateObject = void 0;
 const sqlite = require("better-sqlite3");
 const configFns = require("./configFns");
 const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
@@ -459,19 +459,6 @@ exports.deleteEvent = (licenceID, eventDate, reqSession) => {
     eventTableStatsExpiryMillis = -1;
     return changeCount > 0;
 };
-exports.pokeEvent = (licenceID, eventDate, reqSession) => {
-    const db = sqlite(databasePaths_1.licencesDB);
-    const nowMillis = Date.now();
-    const info = db.prepare("update LotteryEvents" +
-        " set recordUpdate_userName = ?," +
-        " recordUpdate_timeMillis = ?" +
-        " where licenceID = ?" +
-        " and eventDate = ?" +
-        " and recordDelete_timeMillis is null")
-        .run(reqSession.user.userName, nowMillis, licenceID, eventDate);
-    db.close();
-    return info.changes > 0;
-};
 exports.getLicenceActivityByDateRange = (startDate, endDate, _reqBody) => {
     const db = sqlite(databasePaths_1.licencesDB, {
         readonly: true
@@ -523,24 +510,4 @@ exports.getLicenceActivityByDateRange = (startDate, endDate, _reqBody) => {
     }
     db.close();
     return activity;
-};
-exports.getApplicationSettings = () => {
-    const db = sqlite(databasePaths_1.licencesDB, {
-        readonly: true
-    });
-    const rows = db.prepare("select * from ApplicationSettings order by orderNumber, settingKey").all();
-    db.close();
-    return rows;
-};
-exports.updateApplicationSetting = (settingKey, settingValue, reqSession) => {
-    const db = sqlite(databasePaths_1.licencesDB);
-    const nowMillis = Date.now();
-    const info = db.prepare("update ApplicationSettings" +
-        " set settingValue = ?," +
-        " recordUpdate_userName = ?," +
-        " recordUpdate_timeMillis = ?" +
-        " where settingKey = ?")
-        .run(settingValue, reqSession.user.userName, nowMillis, settingKey);
-    db.close();
-    return info.changes > 0;
 };

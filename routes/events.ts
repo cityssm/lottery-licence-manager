@@ -6,6 +6,7 @@ import * as permissionHandlers from "../handlers/permissions";
 
 import * as handler_view from "../handlers/events-get/view";
 import * as handler_edit from "../handlers/events-get/edit";
+import * as handler_poke from "../handlers/events-get/poke";
 
 import * as licencesDB from "../helpers/licencesDB";
 
@@ -244,18 +245,9 @@ router.get("/:licenceID/:eventDate/edit",
   handler_edit.handler);
 
 
-router.get("/:licenceID/:eventDate/poke", (req, res) => {
-
-  const licenceID = parseInt(req.params.licenceID, 10);
-  const eventDate = parseInt(req.params.eventDate, 10);
-
-  if (req.session.user.userProperties.isAdmin) {
-    licencesDB.pokeEvent(licenceID, eventDate, req.session);
-  }
-
-  res.redirect("/events/" + licenceID.toString() + "/" + eventDate.toString());
-
-});
+router.get("/:licenceID/:eventDate/poke",
+  permissionHandlers.adminGetHandler,
+  handler_poke.handler);
 
 
 export = router;
