@@ -4,7 +4,7 @@ import * as http from "http";
 import * as app from "../app";
 
 import { getLicences } from "../helpers/licencesDB/getLicences";
-import { getAllUsers } from "../helpers/usersDB";
+import { getAllUsers } from "../helpers/usersDB/getAllUsers";
 
 import { fakeViewOnlySession } from "./_globals";
 
