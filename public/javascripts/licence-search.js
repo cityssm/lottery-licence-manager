@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 (() => {
-    const licenceType_keyToName = {};
+    const licenceType_keyToName = new Map();
     const formEle = document.getElementById("form--filters");
     const limitEle = document.getElementById("filter--limit");
     const offsetEle = document.getElementById("filter--offset");
@@ -38,7 +38,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 "</table>";
             const tbodyEle = searchResultsEle.getElementsByTagName("tbody")[0];
             for (const licenceObj of licenceList) {
-                const licenceType = licenceType_keyToName[licenceObj.licenceTypeKey];
+                const licenceType = licenceType_keyToName.get(licenceObj.licenceTypeKey);
                 const trEle = document.createElement("tr");
                 trEle.innerHTML =
                     ("<td>" +
@@ -141,7 +141,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
     const licenceTypeOptionEles = document.getElementById("filter--licenceTypeKey").getElementsByTagName("option");
     for (let optionIndex = 1; optionIndex < licenceTypeOptionEles.length; optionIndex += 1) {
         const optionEle = licenceTypeOptionEles[optionIndex];
-        licenceType_keyToName[optionEle.value] = optionEle.innerText;
+        licenceType_keyToName.set(optionEle.value, optionEle.innerText);
     }
     formEle.addEventListener("submit", (formEvent) => {
         formEvent.preventDefault();

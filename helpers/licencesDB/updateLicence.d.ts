@@ -1,8 +1,3 @@
-/// <reference types="csurf" />
-/// <reference types="express-serve-static-core" />
-/// <reference types="compression" />
-/// <reference types="express-rate-limit" />
-/// <reference types="express-session" />
 export interface LotteryLicenceForm {
     licenceID?: string;
     externalLicenceNumber: string;
@@ -29,4 +24,4 @@ export interface LotteryLicenceForm {
     fieldKeys: string;
     licenceFee?: string;
 }
-export declare const updateLicence: (reqBody: LotteryLicenceForm, reqSession: Express.SessionData) => boolean;
+export declare const updateLicence: (reqBody: LotteryLicenceForm, reqSession: any) => boolean;

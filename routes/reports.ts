@@ -371,7 +371,8 @@ router.all("/:reportName", (req, res) => {
         " where transactionDate = ?" +
         " and recordDelete_timeMillis is null";
 
-      params = [req.query.transactionDate.replace(/-/g, "")];
+
+      params = [(req.query.transactionDate as string).replace(/-/g, "")];
 
       break;
 

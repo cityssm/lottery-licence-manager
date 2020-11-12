@@ -6,7 +6,7 @@ declare const cityssm: cityssmGlobal;
 
 (() => {
 
-  const licenceType_keyToName: { [licenceTypeKey: string]: string } = {};
+  const licenceType_keyToName = new Map<string, string>();
 
   const formEle = document.getElementById("form--filters") as HTMLFormElement;
 
@@ -63,7 +63,7 @@ declare const cityssm: cityssmGlobal;
 
         for (const licenceObj of licenceList) {
 
-          const licenceType = licenceType_keyToName[licenceObj.licenceTypeKey];
+          const licenceType = licenceType_keyToName.get(licenceObj.licenceTypeKey);
 
           const trEle = document.createElement("tr");
 
@@ -202,7 +202,7 @@ declare const cityssm: cityssmGlobal;
   for (let optionIndex = 1; optionIndex < licenceTypeOptionEles.length; optionIndex += 1) {
 
     const optionEle = licenceTypeOptionEles[optionIndex];
-    licenceType_keyToName[optionEle.value] = optionEle.innerText;
+    licenceType_keyToName.set(optionEle.value, optionEle.innerText);
   }
 
 

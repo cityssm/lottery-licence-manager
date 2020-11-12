@@ -1,11 +1,6 @@
-/// <reference types="csurf" />
-/// <reference types="express-serve-static-core" />
-/// <reference types="compression" />
-/// <reference types="express-rate-limit" />
-/// <reference types="express-session" />
 import type * as llm from "../types/recordTypes";
 import { RawRowsColumnsReturn } from "@cityssm/expressjs-server-js/types";
-export declare const canUpdateObject: (obj: llm.Record, reqSession: Express.SessionData) => boolean;
+export declare const canUpdateObject: (obj: llm.Record, reqSession: any) => boolean;
 export declare const getRawRowsColumns: (sql: string, params: Array<string | number>) => RawRowsColumnsReturn;
 export declare const resetEventTableStats: () => void;
 export declare const resetLicenceTableStats: () => void;
@@ -18,7 +13,7 @@ export declare const getLicenceTypeSummary: (reqBody: {
 export declare const getActiveLicenceSummary: (reqBody: {
     startEndDateStartString: string;
     startEndDateEndString: string;
-}, reqSession: Express.SessionData) => llm.LotteryLicence[];
+}, reqSession: any) => llm.LotteryLicence[];
 export declare const getEventTableStats: () => llm.LotteryEventStats;
 export declare const getEvents: (reqBody: {
     externalLicenceNumber?: string;
@@ -26,12 +21,12 @@ export declare const getEvents: (reqBody: {
     organizationName?: string;
     locationName?: string;
     eventYear?: string;
-}, reqSession: Express.SessionData) => llm.LotteryEvent[];
-export declare const getRecentlyUpdateEvents: (reqSession: Express.SessionData) => llm.LotteryEvent[];
+}, reqSession: any) => llm.LotteryEvent[];
+export declare const getRecentlyUpdateEvents: (reqSession: any) => llm.LotteryEvent[];
 export declare const getOutstandingEvents: (reqBody: {
     eventDateType?: string;
     licenceTypeKey?: string;
-}, reqSession: Express.SessionData) => llm.LotteryEvent[];
+}, reqSession: any) => llm.LotteryEvent[];
 export declare const getEventFinancialSummary: (reqBody: {
     eventDateStartString: string;
     eventDateEndString: string;
@@ -50,8 +45,8 @@ export declare const updateEvent: (reqBody: {
     costs_prizesAwarded: string;
     costs_amountDonated: string;
     fieldKeys: string;
-}, reqSession: Express.SessionData) => boolean;
-export declare const deleteEvent: (licenceID: number, eventDate: number, reqSession: Express.SessionData) => boolean;
+}, reqSession: any) => boolean;
+export declare const deleteEvent: (licenceID: number, eventDate: number, reqSession: any) => boolean;
 export declare const getLicenceActivityByDateRange: (startDate: number, endDate: number, _reqBody: {}) => {
     startDateString: string;
     endDateString: string;

@@ -570,7 +570,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     }
                     else {
                         formEle.insertAdjacentHTML("beforeend", "<input class=\"is-removed-after-save\" name=\"ticketType_toDelete\"" +
-                            " type=\"hidden\" value=\"" + ticketType + "\" />");
+                            " type=\"hidden\" value=\"" + cityssm.escapeHTML(ticketType) + "\" />");
                     }
                 }
                 ticketTypesFn_calculateTfoot();
