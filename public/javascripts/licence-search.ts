@@ -75,7 +75,7 @@ declare const cityssm: cityssmGlobal;
               "</a>" +
               "</td>") +
 
-            ("<td>" + (licenceType || licenceObj.licenceTypeKey) + "<br />" +
+            ("<td>" + cityssm.escapeHTML(licenceType || licenceObj.licenceTypeKey) + "<br />" +
               "<small>" + cityssm.escapeHTML(licenceObj.licenceDetails) + "</small>" +
               "</td>") +
 

@@ -1,6 +1,7 @@
 "use strict";
 const express_1 = require("express");
 const licencesDB = require("../helpers/licencesDB");
+const reportFns = require("../helpers/reportFns");
 const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
 const stringFns_1 = require("@cityssm/expressjs-server-js/stringFns");
 const router = express_1.Router();
@@ -131,13 +132,8 @@ router.all("/:reportName", (req, res) => {
         case "bankRecords-all":
             sql = "select * from OrganizationBankRecords";
             break;
-        case "bankRecords-byOrganization":
-            sql = "select organizationID, recordIndex, accountNumber, bankingYear, bankingMonth," +
-                " bankRecordType, recordIsNA, recordDate, recordNote," +
-                " recordCreate_userName, recordCreate_timeMillis, recordUpdate_userName, recordUpdate_timeMillis" +
-                " from OrganizationBankRecords" +
-                " where recordDelete_timeMillis is null" +
-                " and organizationID = ?";
+        case "bankRecordsFlat-byOrganization":
+            sql = reportFns.getBankRecordsFlatQuery(true);
             params = [req.query.organizationID];
             break;
         case "licences-all":

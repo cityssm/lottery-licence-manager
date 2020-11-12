@@ -1,6 +1,7 @@
 import { Router } from "express";
 
 import * as licencesDB from "../helpers/licencesDB";
+import * as reportFns from "../helpers/reportFns";
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns";
 import { rawToCSV } from "@cityssm/expressjs-server-js/stringFns";
 
@@ -214,14 +215,9 @@ router.all("/:reportName", (req, res) => {
       sql = "select * from OrganizationBankRecords";
       break;
 
-    case "bankRecords-byOrganization":
+    case "bankRecordsFlat-byOrganization":
 
-      sql = "select organizationID, recordIndex, accountNumber, bankingYear, bankingMonth," +
-        " bankRecordType, recordIsNA, recordDate, recordNote," +
-        " recordCreate_userName, recordCreate_timeMillis, recordUpdate_userName, recordUpdate_timeMillis" +
-        " from OrganizationBankRecords" +
-        " where recordDelete_timeMillis is null" +
-        " and organizationID = ?";
+      sql = reportFns.getBankRecordsFlatQuery(true);
 
       params = [req.query.organizationID];
 

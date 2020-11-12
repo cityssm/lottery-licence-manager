@@ -47,7 +47,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                         "<small>Licence #" + licenceObj.licenceID.toString() + "</small>" +
                         "</a>" +
                         "</td>") +
-                        ("<td>" + (licenceType || licenceObj.licenceTypeKey) + "<br />" +
+                        ("<td>" + cityssm.escapeHTML(licenceType || licenceObj.licenceTypeKey) + "<br />" +
                             "<small>" + cityssm.escapeHTML(licenceObj.licenceDetails) + "</small>" +
                             "</td>") +
                         (`<td>
