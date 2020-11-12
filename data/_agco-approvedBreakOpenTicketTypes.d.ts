@@ -1,2 +1,1 @@
-import { ConfigTicketType } from "../types/configTypes";
-export declare const ticketTypes: ConfigTicketType[];
+export declare const ticketTypes: import("../types/configTypes").ConfigTicketType[];
