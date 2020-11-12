@@ -94,13 +94,14 @@ router.all("/:reportName", (req, res) => {
             sql = "select * from OrganizationRepresentatives";
             break;
         case "representatives-byOrganization":
-            sql = "select organizationID, representativeIndex," +
+            sql = "select r.organizationID, o.organizationName," +
                 " representativeName, representativeTitle," +
                 " representativeAddress1, representativeAddress2, representativeCity, representativeProvince," +
-                " representativePostalCode, representativePhoneNumber, representativeEmailAddress," +
+                " representativePostalCode, representativePhoneNumber, representativePhoneNumber2, representativeEmailAddress," +
                 " isDefault" +
-                " from OrganizationRepresentatives" +
-                " where organizationID = ?";
+                " from OrganizationRepresentatives r" +
+                " left join Organizations o on r.organizationID = o.organizationID" +
+                " where r.organizationID = ?";
             params = [req.query.organizationID];
             break;
         case "remarks-all":
@@ -120,58 +121,30 @@ router.all("/:reportName", (req, res) => {
             sql = "select * from OrganizationReminders";
             break;
         case "reminders-byOrganization":
-            sql = "select organizationID, reminderIndex," +
-                " reminderTypeKey, dueDate, dismissedDate," +
-                " reminderStatus, reminderNote," +
-                " recordCreate_userName, recordCreate_timeMillis, recordUpdate_userName, recordUpdate_timeMillis" +
-                " from OrganizationReminders" +
-                " where recordDelete_timeMillis is null" +
-                " and organizationID = ?";
+            sql = reportFns.getOrganizationRemindersQuery(true);
+            console.log(sql);
             params = [req.query.organizationID];
             break;
         case "bankRecords-all":
             sql = "select * from OrganizationBankRecords";
             break;
         case "bankRecordsFlat-byOrganization":
-            sql = reportFns.getBankRecordsFlatQuery(true);
+            sql = reportFns.getOrganizationBankRecordsFlatQuery(true);
             params = [req.query.organizationID];
             break;
         case "licences-all":
             sql = "select * from LotteryLicences";
             break;
         case "licences-byOrganization":
-            sql = "select" +
-                " l.licenceID, l.externalLicenceNumber," +
-                " o.organizationID, o.organizationName," +
-                " l.applicationDate, l.licenceTypeKey," +
-                " l.startDate, l.endDate, l.startTime, l.endTime," +
-                " lo.locationName, lo.locationAddress1," +
-                " l.municipality, l.licenceDetails, l.termsConditions," +
-                " l.totalPrizeValue, l.licenceFee," +
-                " l.issueDate," +
-                " l.recordCreate_userName, l.recordCreate_timeMillis, l.recordUpdate_userName, l.recordUpdate_timeMillis" +
-                " from LotteryLicences l" +
-                " left join Locations lo on l.locationID = lo.locationID" +
-                " left join Organizations o on l.organizationID = o.organizationID" +
-                " where l.recordDelete_timeMillis is null" +
-                " and l.organizationID = ?";
+            sql = reportFns.getLicencesQuery({
+                includeOrganizationIDFilter: true
+            });
             params = [req.query.organizationID];
             break;
         case "licences-byLocation":
-            sql = "select" +
-                " l.licenceID, l.externalLicenceNumber," +
-                " o.organizationID, o.organizationName," +
-                " l.applicationDate, l.licenceTypeKey," +
-                " l.startDate, l.endDate, l.startTime, l.endTime," +
-                " lo.locationName, lo.locationAddress1," +
-                " l.municipality, l.licenceDetails, l.termsConditions," +
-                " l.totalPrizeValue, l.licenceFee, l.issueDate," +
-                " l.recordCreate_userName, l.recordCreate_timeMillis, l.recordUpdate_userName, l.recordUpdate_timeMillis" +
-                " from LotteryLicences l" +
-                " left join Locations lo on l.locationID = lo.locationID" +
-                " left join Organizations o on l.organizationID = o.organizationID" +
-                " where l.recordDelete_timeMillis is null" +
-                " and l.locationID = ?";
+            sql = reportFns.getLicencesQuery({
+                includeLocationIDFilter: true
+            });
             params = [req.query.locationID];
             break;
         case "licences-notIssued":
