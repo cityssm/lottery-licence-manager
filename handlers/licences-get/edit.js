@@ -6,10 +6,6 @@ const licencesDB_getOrganization = require("../../helpers/licencesDB/getOrganiza
 const licencesDB_getLicence = require("../../helpers/licencesDB/getLicence");
 exports.handler = (req, res) => {
     const licenceID = parseInt(req.params.licenceID, 10);
-    if (!req.session.user.userProperties.canCreate) {
-        res.redirect("/licences/" + licenceID.toString() + "/?error=accessDenied");
-        return;
-    }
     const licence = licencesDB_getLicence.getLicence(licenceID, req.session);
     if (!licence) {
         res.redirect("/licences/?error=licenceNotFound");

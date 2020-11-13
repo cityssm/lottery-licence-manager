@@ -10,13 +10,6 @@ export const handler: RequestHandler = (req, res) => {
 
   const licenceID = parseInt(req.params.licenceID, 10);
 
-  if (!req.session.user.userProperties.canCreate) {
-
-    res.redirect("/licences/" + licenceID.toString() + "/?error=accessDenied");
-    return;
-
-  }
-
   const licence = licencesDB_getLicence.getLicence(licenceID, req.session);
 
   if (!licence) {
