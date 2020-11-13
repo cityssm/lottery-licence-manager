@@ -21,11 +21,7 @@ declare const llm: llmGlobal;
   const isCreate = licenceID === "";
   const isIssued = formEle.getAttribute("data-licence-is-issued") === "true";
 
-  const refreshInputTypes = [
-    "number",
-    "date",
-    "time"
-  ];
+  const refreshInputTypes = ["number", "date", "time"];
 
   let doRefreshAfterSave = false;
   let hasUnsavedChanges = false;
@@ -192,7 +188,6 @@ declare const llm: llmGlobal;
    */
 
   {
-
     let organizationList: recordTypes.Organization[] = [];
 
     let organizationLookupCloseModalFn: () => void;
@@ -327,7 +322,6 @@ declare const llm: llmGlobal;
 
     document.getElementById("is-organization-lookup-button").addEventListener("click", organizationLookupFn_openModal);
     document.getElementById("licence--organizationName").addEventListener("dblclick", organizationLookupFn_openModal);
-
   }
 
 
@@ -358,7 +352,6 @@ declare const llm: llmGlobal;
   };
 
   {
-
     let locationLookup_closeModalFn: () => void;
     let locationLookup_searchStrEle: HTMLInputElement;
     let locationLookup_resultsEle: HTMLElement;
@@ -522,6 +515,31 @@ declare const llm: llmGlobal;
     document.getElementById("is-location-lookup-button").addEventListener("click", locationLookupFn_openModal);
     document.getElementById("licence--locationDisplayName").addEventListener("dblclick", locationLookupFn_openModal);
   }
+
+
+  /*
+   * END DATE
+   */
+
+
+  document.getElementById("is-endDateString-year-button").addEventListener("click", () => {
+
+    const startDateStringSplit = (document.getElementById("licence--startDateString") as HTMLInputElement).value.split("-");
+
+    const dateObj = new Date(parseInt(startDateStringSplit[0], 10) + 1,
+      parseInt(startDateStringSplit[1], 10) - 1,
+      parseInt(startDateStringSplit[2]));
+
+    const endDateString =
+      dateObj.getFullYear().toString() + "-" +
+      ("00" + (dateObj.getMonth() + 1).toString()).slice(-2) + "-" +
+      ("00" + dateObj.getDate().toString()).slice(-2);
+
+    (document.getElementById("licence--endDateString") as HTMLInputElement).value = endDateString;
+
+    setUnsavedChangesFn();
+    setDoRefreshAfterSaveFn();
+  });
 
 
   /*

@@ -6,11 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
     const licenceID = document.getElementById("licence--licenceID").value;
     const isCreate = licenceID === "";
     const isIssued = formEle.getAttribute("data-licence-is-issued") === "true";
-    const refreshInputTypes = [
-        "number",
-        "date",
-        "time"
-    ];
+    const refreshInputTypes = ["number", "date", "time"];
     let doRefreshAfterSave = false;
     let hasUnsavedChanges = false;
     const eventsContainerEle = document.getElementById("container--events");
@@ -300,6 +296,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
         document.getElementById("is-location-lookup-button").addEventListener("click", locationLookupFn_openModal);
         document.getElementById("licence--locationDisplayName").addEventListener("dblclick", locationLookupFn_openModal);
     }
+    document.getElementById("is-endDateString-year-button").addEventListener("click", () => {
+        const startDateStringSplit = document.getElementById("licence--startDateString").value.split("-");
+        const dateObj = new Date(parseInt(startDateStringSplit[0], 10) + 1, parseInt(startDateStringSplit[1], 10) - 1, parseInt(startDateStringSplit[2]));
+        const endDateString = dateObj.getFullYear().toString() + "-" +
+            ("00" + (dateObj.getMonth() + 1).toString()).slice(-2) + "-" +
+            ("00" + dateObj.getDate().toString()).slice(-2);
+        document.getElementById("licence--endDateString").value = endDateString;
+        setUnsavedChangesFn();
+        setDoRefreshAfterSaveFn();
+    });
     {
         let termsConditionsList = [];
         const termsConditionsLookupModalEle = document.getElementById("is-termsConditions-lookup-modal");

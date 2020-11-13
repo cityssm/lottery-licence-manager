@@ -1,6 +1,6 @@
 {
   "name": "lottery-licence-manager",
-  "version": "0.11.0",
+  "version": "0.12.0-dev",
   "scripts": {
     "start": "node ./bin/www",
     "test": "snyk test && mocha",

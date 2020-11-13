@@ -168,7 +168,19 @@
             </div>
             <div class="column is-3">
               <div class="field">
-                <label class="label" for="licence--endDateString">End Date</label>
+                <div class="columns is-vcentered is-mobile mb-0">
+                  <div class="column pb-2">
+                    <label class="label" for="licence--endDateString">End Date</label>
+                  </div>
+                  <div class="column is-narrow pb-2">
+                    <button class="button is-xsmall" id="is-endDateString-year-button" type="button">
+                      <span class="icon">
+                        <i class="fas fa-calendar-plus" aria-hidden="true"></i>
+                      </span>
+                      <span>Start + 1 Year</span>
+                    </button>
+                  </div>
+                </div>
                 <div class="control has-icons-left">
                   <input class="input" id="licence--endDateString" name="endDateString" type="date" value="<%= licence.endDateString %>" min="<%= licence.startDateString %>" required />
                   <span class="icon is-left">
@@ -212,18 +224,24 @@
 
             <div class="column is-half">
               <div class="field">
-                <label class="label" for="licence--termsConditions">Terms and Conditions</label>
+                <div class="columns is-vcentered is-mobile mb-0">
+                  <div class="column pb-2">
+                    <label class="label" for="licence--termsConditions">Terms and Conditions</label>
+                  </div>
+                  <div class="column pb-2 is-narrow">
+                    <button class="button is-xsmall" id="is-termsConditions-lookup-button" type="button">
+                      <span class="icon">
+                        <i class="fas fa-search" aria-hidden="true"></i>
+                      </span>
+                      <span>Lookup Past Terms</span>
+                    </button>
+                  </div>
+                </div>
                 <div class="control">
                   <textarea class="textarea" id="licence--termsConditions" name="termsConditions" rows="5"><%= licence.termsConditions.trim() %></textarea>
                 </div>
               </div>
               <div class="has-text-right is-hidden-print">
-                <button class="button is-small" id="is-termsConditions-lookup-button" type="button">
-                  <span class="icon">
-                    <i class="fas fa-search" aria-hidden="true"></i>
-                  </span>
-                  <span>Lookup Past Terms</span>
-                </button>
               </div>
             </div>
           </div>
