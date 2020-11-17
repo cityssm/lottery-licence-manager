@@ -221,6 +221,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
     bankRecordsAccountNumberFilterEle.addEventListener("change", getBankRecordsFn);
     if (canCreate) {
         const openBankRecordEditModalFn = (buttonEvent) => {
+            const isNavBlockedByPage = cityssm.isNavBlockerEnabled();
             let bankRecordEditCloseModalFn;
             let isUpdate = false;
             let lockKeyFields = false;
@@ -292,6 +293,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
             }
             cityssm.openHtmlModal("organization-bankRecordEdit", {
                 onshow() {
+                    cityssm.enableNavBlocker();
                     document.getElementById("bankRecordEdit--organizationID").value = organizationID;
                     document.getElementById("bankRecordEdit--recordIndex").value = recordIndex;
                     const accountNumberEle = document.getElementById("bankRecordEdit--accountNumber");
@@ -342,6 +344,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 onshown(modalEle, closeModalFn) {
                     bankRecordEditCloseModalFn = closeModalFn;
                     modalEle.getElementsByTagName("form")[0].addEventListener("submit", submitBankRecordEditFn);
+                },
+                onremoved() {
+                    if (!isNavBlockedByPage) {
+                        cityssm.disableNavBlocker();
+                    }
                 }
             });
         };

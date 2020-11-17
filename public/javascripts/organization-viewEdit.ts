@@ -358,6 +358,8 @@ declare const llm: llmGlobal;
 
     const openBankRecordEditModalFn = (buttonEvent: Event) => {
 
+      const isNavBlockedByPage = cityssm.isNavBlockerEnabled();
+
       let bankRecordEditCloseModalFn: () => void;
       let isUpdate = false;
       let lockKeyFields = false;
@@ -487,6 +489,8 @@ declare const llm: llmGlobal;
 
         onshow(): void {
 
+          cityssm.enableNavBlocker();
+
           (document.getElementById("bankRecordEdit--organizationID") as HTMLInputElement).value = organizationID;
           (document.getElementById("bankRecordEdit--recordIndex") as HTMLInputElement).value = recordIndex;
 
@@ -569,6 +573,11 @@ declare const llm: llmGlobal;
 
           bankRecordEditCloseModalFn = closeModalFn;
           modalEle.getElementsByTagName("form")[0].addEventListener("submit", submitBankRecordEditFn);
+        },
+        onremoved(): void {
+          if (!isNavBlockedByPage) {
+            cityssm.disableNavBlocker();
+          }
         }
       });
     };
