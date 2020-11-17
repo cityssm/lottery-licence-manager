@@ -209,18 +209,19 @@ declare const llm: llmGlobal;
     bankRecordsTableEle.classList.remove("has-status-loaded");
     bankRecordsTableEle.classList.add("has-status-loading");
 
-    const buttonEles = bankRecordsTableEle.getElementsByClassName("is-bank-record-button");
+    const infoEles = bankRecordsTableEle.getElementsByClassName("is-bank-record-info");
 
-    for (const buttonEle of buttonEles) {
+    for (const infoEle of infoEles) {
 
-      buttonEle.classList.remove("is-success");
-      buttonEle.classList.remove("is-info");
-
-      buttonEle.innerHTML = "<i class=\"fas fa-minus has-text-grey-lighter\" aria-hidden=\"true\"></i>" +
+      infoEle.innerHTML = "<i class=\"fas fa-minus has-text-grey-lighter\" aria-hidden=\"true\"></i>" +
         "<br />" +
-        "<small>No Record Recorded</small>";
+        "<strong class=\"is-size-7 has-text-grey-light\">No Record Recorded</strong>";
 
-      buttonEle.setAttribute("data-record-index", "");
+      const tdEle = infoEle.closest("td");
+
+      tdEle.setAttribute("data-record-index", "");
+      tdEle.classList.remove("has-background-success-light");
+      tdEle.classList.remove("has-background-info-light");
     }
   };
 
@@ -234,44 +235,43 @@ declare const llm: llmGlobal;
 
         bankRecordsCache[bankRecord.recordIndex] = bankRecord;
 
-        const buttonEle = bankRecordsTableEle
+        const tdEle = bankRecordsTableEle
           .querySelector("[data-banking-month='" + bankRecord.bankingMonth.toString() + "']")
           .querySelector("[data-bank-record-type='" + bankRecord.bankRecordType + "']");
 
-        if (!buttonEle) {
+        if (!tdEle) {
           continue;
         }
 
-        buttonEle.setAttribute("data-record-index", bankRecord.recordIndex.toString());
+        tdEle.setAttribute("data-record-index", bankRecord.recordIndex.toString());
+
+        const infoEle = tdEle.getElementsByClassName("is-bank-record-info")[0];
 
         if (bankRecord.recordIsNA) {
 
-          buttonEle.classList.add("is-info");
+          tdEle.classList.add("has-background-info-light");
 
-          buttonEle.innerHTML =
+          infoEle.innerHTML =
             "<i class=\"fas fa-times\" aria-hidden=\"true\"></i>" +
             "<br />" +
-            "<small>Not Applicable</small>" +
-            (bankRecord.recordNote === ""
-              ? ""
-              : " <span class=\"ml-2\" data-tooltip=\"" + cityssm.escapeHTML(bankRecord.recordNote) + "\">" +
-              "<i class=\"fas fa-sticky-note\" aria-hidden=\"true\"></i>" +
-              "</span>");
+            "<span class=\"has-text-weight-bold is-size-7\">Not Applicable</span>";
 
         } else {
 
-          buttonEle.classList.add("is-success");
+          tdEle.classList.add("has-background-success-light");
 
-          buttonEle.innerHTML =
+          infoEle.innerHTML =
             "<i class=\"fas fa-check\" aria-hidden=\"true\"></i>" +
             "<br />" +
-            "<small>Recorded " + bankRecord.recordDateString + "</small>" +
-            (bankRecord.recordNote === ""
-              ? ""
-              : " <span class=\"ml-2\" data-tooltip=\"" + cityssm.escapeHTML(bankRecord.recordNote) + "\">" +
-              "<i class=\"fas fa-sticky-note\" aria-hidden=\"true\"></i>" +
-              "</span>");
+            "<span class=\"has-text-weight-bold is-size-7\">Recorded " + bankRecord.recordDateString + "</span>";
 
+        }
+
+        if (bankRecord.recordNote !== "") {
+          infoEle.insertAdjacentHTML("beforeend", "<div class=\"is-size-7 has-text-left\">" +
+            "<span class=\"icon\"><i class=\"fas fa-sticky-note\" aria-hidden=\"true\"></i></span> " +
+            cityssm.escapeHTML(bankRecord.recordNote) +
+            "</div>");
         }
       }
 
@@ -455,16 +455,18 @@ declare const llm: llmGlobal;
 
         lockKeyFields = true;
 
-        recordIndex = buttonEle.getAttribute("data-record-index");
+        const tdEle = buttonEle.closest("td");
+
+        recordIndex = tdEle.getAttribute("data-record-index");
 
         bankingYear = parseInt(bankRecordsBankingYearFilterEle.value, 10);
 
         // If no record exists, use default data
         if (recordIndex === "") {
 
-          bankingMonth = parseInt(buttonEle.closest("tr").getAttribute("data-banking-month"), 10);
+          bankingMonth = parseInt(tdEle.closest("tr").getAttribute("data-banking-month"), 10);
 
-          bankRecordType = buttonEle.getAttribute("data-bank-record-type");
+          bankRecordType = tdEle.getAttribute("data-bank-record-type");
 
         } else {
 

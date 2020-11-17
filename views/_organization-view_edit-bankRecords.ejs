@@ -80,23 +80,24 @@
         <tr data-banking-month="<%= (monthIndex + 1) %>">
           <th scope="row"><%= dateTimeFns.months[monthIndex] %></th>
           <% for (let recordTypeIndex = 0; recordTypeIndex < bankRecordTypes.length; recordTypeIndex += 1) { %>
-            <td class="has-text-centered">
-              <div class="is-hidden-status-loaded px-2 py-3">
+            <td data-bank-record-type="<%= bankRecordTypes[recordTypeIndex].bankRecordType %>" data-record-index="">
+              <div class="is-hidden-status-loaded has-text-centered px-2 py-3">
                 <span class="icon">
                   <i class="fas fa-circle-notch fa-spin has-text-grey-lighter" aria-hidden="true"></i>
                 </span><br />
                 ...
               </div>
               <div class="is-hidden-status-loading">
-                <% if (isViewOnly) { %>
-                  <div class="button is-bank-record-button is-light is-fullwidth is-block has-height-auto has-cursor-default"
-                    data-bank-record-type="<%= bankRecordTypes[recordTypeIndex].bankRecordType %>">
+                <div class="is-bank-record-info has-text-centered"></div>
+                <% if (!isViewOnly) { %>
+                  <div class="has-text-right">
+                    <button class="button is-xsmall is-bank-record-button" type="button">
+                      <span class="icon">
+                        <i class="fas fa-pencil-alt" aria-hidden="true"></i>
+                      </span>
+                      <span>Edit</span>
+                    </button>
                   </div>
-                <% } else { %>
-                  <button class="button is-bank-record-button is-light is-fullwidth is-block has-height-auto"
-                    data-bank-record-type="<%= bankRecordTypes[recordTypeIndex].bankRecordType %>"
-                    type="button">
-                  </button>
                 <% } %>
               </div>
             </td>

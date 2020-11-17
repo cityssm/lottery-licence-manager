@@ -129,14 +129,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
         bankRecordsCache = {};
         bankRecordsTableEle.classList.remove("has-status-loaded");
         bankRecordsTableEle.classList.add("has-status-loading");
-        const buttonEles = bankRecordsTableEle.getElementsByClassName("is-bank-record-button");
-        for (const buttonEle of buttonEles) {
-            buttonEle.classList.remove("is-success");
-            buttonEle.classList.remove("is-info");
-            buttonEle.innerHTML = "<i class=\"fas fa-minus has-text-grey-lighter\" aria-hidden=\"true\"></i>" +
+        const infoEles = bankRecordsTableEle.getElementsByClassName("is-bank-record-info");
+        for (const infoEle of infoEles) {
+            infoEle.innerHTML = "<i class=\"fas fa-minus has-text-grey-lighter\" aria-hidden=\"true\"></i>" +
                 "<br />" +
-                "<small>No Record Recorded</small>";
-            buttonEle.setAttribute("data-record-index", "");
+                "<strong class=\"is-size-7 has-text-grey-light\">No Record Recorded</strong>";
+            const tdEle = infoEle.closest("td");
+            tdEle.setAttribute("data-record-index", "");
+            tdEle.classList.remove("has-background-success-light");
+            tdEle.classList.remove("has-background-info-light");
         }
     };
     const getBankRecordsFn = () => {
@@ -144,36 +145,33 @@ Object.defineProperty(exports, "__esModule", { value: true });
         const processRecordsFn = (bankRecords) => {
             for (const bankRecord of bankRecords) {
                 bankRecordsCache[bankRecord.recordIndex] = bankRecord;
-                const buttonEle = bankRecordsTableEle
+                const tdEle = bankRecordsTableEle
                     .querySelector("[data-banking-month='" + bankRecord.bankingMonth.toString() + "']")
                     .querySelector("[data-bank-record-type='" + bankRecord.bankRecordType + "']");
-                if (!buttonEle) {
+                if (!tdEle) {
                     continue;
                 }
-                buttonEle.setAttribute("data-record-index", bankRecord.recordIndex.toString());
+                tdEle.setAttribute("data-record-index", bankRecord.recordIndex.toString());
+                const infoEle = tdEle.getElementsByClassName("is-bank-record-info")[0];
                 if (bankRecord.recordIsNA) {
-                    buttonEle.classList.add("is-info");
-                    buttonEle.innerHTML =
+                    tdEle.classList.add("has-background-info-light");
+                    infoEle.innerHTML =
                         "<i class=\"fas fa-times\" aria-hidden=\"true\"></i>" +
                             "<br />" +
-                            "<small>Not Applicable</small>" +
-                            (bankRecord.recordNote === ""
-                                ? ""
-                                : " <span class=\"ml-2\" data-tooltip=\"" + cityssm.escapeHTML(bankRecord.recordNote) + "\">" +
-                                    "<i class=\"fas fa-sticky-note\" aria-hidden=\"true\"></i>" +
-                                    "</span>");
+                            "<span class=\"has-text-weight-bold is-size-7\">Not Applicable</span>";
                 }
                 else {
-                    buttonEle.classList.add("is-success");
-                    buttonEle.innerHTML =
+                    tdEle.classList.add("has-background-success-light");
+                    infoEle.innerHTML =
                         "<i class=\"fas fa-check\" aria-hidden=\"true\"></i>" +
                             "<br />" +
-                            "<small>Recorded " + bankRecord.recordDateString + "</small>" +
-                            (bankRecord.recordNote === ""
-                                ? ""
-                                : " <span class=\"ml-2\" data-tooltip=\"" + cityssm.escapeHTML(bankRecord.recordNote) + "\">" +
-                                    "<i class=\"fas fa-sticky-note\" aria-hidden=\"true\"></i>" +
-                                    "</span>");
+                            "<span class=\"has-text-weight-bold is-size-7\">Recorded " + bankRecord.recordDateString + "</span>";
+                }
+                if (bankRecord.recordNote !== "") {
+                    infoEle.insertAdjacentHTML("beforeend", "<div class=\"is-size-7 has-text-left\">" +
+                        "<span class=\"icon\"><i class=\"fas fa-sticky-note\" aria-hidden=\"true\"></i></span> " +
+                        cityssm.escapeHTML(bankRecord.recordNote) +
+                        "</div>");
                 }
             }
             bankRecordsTableEle.classList.remove("has-status-loading");
@@ -275,11 +273,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
             let bankingMonth = dateObj.getMonth() + 1;
             if (buttonEle.id !== "is-add-bank-record-button") {
                 lockKeyFields = true;
-                recordIndex = buttonEle.getAttribute("data-record-index");
+                const tdEle = buttonEle.closest("td");
+                recordIndex = tdEle.getAttribute("data-record-index");
                 bankingYear = parseInt(bankRecordsBankingYearFilterEle.value, 10);
                 if (recordIndex === "") {
-                    bankingMonth = parseInt(buttonEle.closest("tr").getAttribute("data-banking-month"), 10);
-                    bankRecordType = buttonEle.getAttribute("data-bank-record-type");
+                    bankingMonth = parseInt(tdEle.closest("tr").getAttribute("data-banking-month"), 10);
+                    bankRecordType = tdEle.getAttribute("data-bank-record-type");
                 }
                 else {
                     const recordObj = bankRecordsCache[parseInt(recordIndex, 10)];
