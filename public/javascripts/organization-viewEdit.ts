@@ -190,7 +190,7 @@ declare const llm: llmGlobal;
 
   let bankRecordsFiltersLoaded = false;
 
-  let bankRecordsCache = {};
+  const bankRecordsCache = new Map<number, recordTypes.OrganizationBankRecord>();
 
   const bankRecordsBankingYearFilterEle =
     document.getElementById("bankRecordFilter--bankingYear") as HTMLSelectElement;
@@ -204,7 +204,7 @@ declare const llm: llmGlobal;
 
   const clearBankRecordsTableFn = () => {
 
-    bankRecordsCache = {};
+    bankRecordsCache.clear();
 
     bankRecordsTableEle.classList.remove("has-status-loaded");
     bankRecordsTableEle.classList.add("has-status-loading");
@@ -233,7 +233,7 @@ declare const llm: llmGlobal;
 
       for (const bankRecord of bankRecords) {
 
-        bankRecordsCache[bankRecord.recordIndex] = bankRecord;
+        bankRecordsCache.set(bankRecord.recordIndex, bankRecord);
 
         const tdEle = bankRecordsTableEle
           .querySelector("[data-banking-month='" + bankRecord.bankingMonth.toString() + "']")
@@ -472,7 +472,7 @@ declare const llm: llmGlobal;
 
         } else {
 
-          const recordObj = bankRecordsCache[parseInt(recordIndex, 10)];
+          const recordObj = bankRecordsCache.get(parseInt(recordIndex, 10));
 
           isUpdate = true;
           bankingMonth = recordObj.bankingMonth;
@@ -582,13 +582,177 @@ declare const llm: llmGlobal;
       });
     };
 
-    const buttonEles = bankRecordsTableEle.getElementsByTagName("button");
+    /*
+     * Main "Add" Button
+     */
+
+    const addRecordButtonEle = document.getElementById("is-add-bank-record-button");
+
+    if (addRecordButtonEle) {
+      addRecordButtonEle.addEventListener("click", openBankRecordEditModalFn);
+    }
+
+    /*
+     * Single Record Edit
+     */
+
+    const buttonEles = bankRecordsTableEle.getElementsByClassName("is-bank-record-button");
 
     for (const buttonEle of buttonEles) {
       buttonEle.addEventListener("click", openBankRecordEditModalFn);
     }
 
-    document.getElementById("is-add-bank-record-button").addEventListener("click", openBankRecordEditModalFn);
+    /*
+     * Multiple Record Edit
+     */
+
+    const openBankRecordMonthEditModalFn = (buttonEvent: Event) => {
+
+      // Ensure an account number is available
+
+      const accountNumber = bankRecordsAccountNumberFilterEle.value;
+
+      if (accountNumber === "") {
+        cityssm.alertModal("No Account Number Set",
+          "Please add at least one bank record with the account number you are looking to record.",
+          "OK",
+          "warning");
+
+        return;
+      }
+
+      // Track if navigation is already blocked
+
+      const isNavBlockedByPage = cityssm.isNavBlockerEnabled();
+
+      // Get date details
+
+      const bankingYear = parseInt(bankRecordsBankingYearFilterEle.value, 10);
+
+      const trEle = (buttonEvent.currentTarget as HTMLButtonElement).closest("tr");
+
+      const bankingMonth = parseInt(trEle.getAttribute("data-banking-month"), 10);
+
+      // Get data for the month
+
+      const tdEles = trEle.getElementsByTagName("td");
+
+      const bankRecordTypeToRecord = new Map<string, recordTypes.OrganizationBankRecord>();
+
+      for (const tdEle of tdEles) {
+
+        const recordIndexString = tdEle.getAttribute("data-record-index");
+
+        if (recordIndexString !== "") {
+          const bankRecord = bankRecordsCache.get(parseInt(recordIndexString, 10));
+          bankRecordTypeToRecord.set(bankRecord.bankRecordType, bankRecord);
+        }
+      }
+
+      cityssm.openHtmlModal("organization-bankRecordMonthEdit", {
+        onshow: () => {
+          cityssm.enableNavBlocker();
+
+          (document.getElementById("bankRecordMonthEdit--organizationID") as HTMLInputElement).value = organizationID;
+
+          (document.getElementById("bankRecordMonthEdit--accountNumber") as HTMLInputElement).value = accountNumber;
+          (document.getElementById("bankRecordMonthEdit--bankingYear") as HTMLInputElement).value = bankingYear.toString();
+          (document.getElementById("bankRecordMonthEdit--bankingMonth") as HTMLInputElement).value = bankingMonth.toString();
+
+          (document.getElementById("bankRecordMonthEdit--accountNumber-span") as HTMLSpanElement).innerText = accountNumber;
+          (document.getElementById("bankRecordMonthEdit--bankingYear-span") as HTMLSpanElement).innerText = bankingYear.toString();
+          (document.getElementById("bankRecordMonthEdit--bankingMonth-span") as HTMLSpanElement).innerText = bankingMonth.toString();
+
+          const recordTypeContainerEle = document.getElementById("container--bankRecordMonthEdit-recordTypes");
+
+          let rowIndex = -1;
+
+          for (const config_bankRecordType of (exports.config_bankRecordTypes as configTypes.ConfigBankRecordType[])) {
+
+            rowIndex += 1;
+
+            const rowIndexString = rowIndex.toString();
+
+            recordTypeContainerEle.insertAdjacentHTML(
+              "beforeend",
+              "<hr />");
+
+            recordTypeContainerEle.insertAdjacentHTML(
+              "beforeend",
+              "<div class=\"columns is-mobile\">" +
+              ("<div class=\"column\">" +
+                "<strong>" + cityssm.escapeHTML(config_bankRecordType.bankRecordTypeName) + "</strong>" +
+                "</div>") +
+              ("<div class=\"column is-narrow has-text-right\">" +
+                (rowIndex === 0
+                  ? ""
+                  : "<div class=\"facheck facheck-inline facheck-fas-checked is-info\">" +
+                  "<input id=\"bankRecordMonthEdit--syncRecordDate-" + rowIndexString + "\" name=\"syncRecordDate-" + rowIndexString + "\" type=\"checkbox\" value=\"1\" checked />" +
+                  "<label for=\"bankRecordMonthEdit--syncRecordDate-" + rowIndexString + "\">" +
+                  "Sync Record Date" +
+                  "</label>" +
+                  "</div>") +
+                ("<div class=\"facheck facheck-inline facheck-fas-checked is-info\">" +
+                  "<input id=\"bankRecordMonthEdit--recordIsNA-" + rowIndexString + "\" name=\"recordIsNA-" + rowIndexString + "\" type=\"checkbox\" value=\"1\" />" +
+                  "<label for=\"bankRecordMonthEdit--recordIsNA-" + rowIndexString + "\">" +
+                  "Not Applicable" +
+                  "</label>" +
+                  "</div>") +
+                "</div>") +
+              "</div>");
+
+            recordTypeContainerEle.insertAdjacentHTML(
+              "beforeend",
+              "<div class=\"columns\">" +
+              ("<div class=\"column\">" +
+                "<div class=\"field has-addons\">" +
+                ("<div class=\"control has-icons-left\">" +
+                  "<input" +
+                  " class=\"input" + (rowIndex === 0 ? "" : " is-readonly") + "\"" +
+                  " id=\"bankRecordMonthEdit--recordDateString-" + rowIndexString + "\"" +
+                  " name=\"recordDateString-" + rowIndexString + "\"" +
+                  " type=\"date\"" +
+                  " aria-label=\"Record Date\"" +
+                  (rowIndex === 0 ? "" : " readonly") +
+                  " />" +
+                  "<span class=\"icon is-small is-left\"><i class=\"fas fa-calendar\" aria-hidden=\"true\"></i></span>" +
+                  "</div>") +
+                ("<div class=\"control\">" +
+                  "<button class=\"button is-info\">" +
+                  "Today" +
+                  "</button>" +
+                  "</div>") +
+                "</div>" +
+                "</div>") +
+              ("<div class=\"column\">" +
+                "<div class=\"control has-icons-left\">" +
+                "<input class=\"input\"" +
+                " id=\"bankRecordMonthEdit--recordNote-" + rowIndexString + "\"" +
+                " name=\"recordNote-" + rowIndexString + "\"" +
+                " type=\"text\"" +
+                " aria-label=\"Optional Note\" />" +
+                "<span class=\"icon is-small is-left\"><i class=\"fas fa-sticky-note\" aria-hidden=\"true\"></i></span>" +
+                "</div>" +
+                "</div>") +
+              "</div>");
+
+          }
+
+          (document.getElementById("bankRecordMonthEdit--bankRecordTypeIndex") as HTMLInputElement).value = rowIndex.toString();
+        },
+        onremoved: () => {
+          if (!isNavBlockedByPage) {
+            cityssm.disableNavBlocker();
+          }
+        }
+      });
+    };
+
+    const monthButtonEles = bankRecordsTableEle.getElementsByClassName("is-bank-record-month-button");
+
+    for (const buttonEle of monthButtonEles) {
+      buttonEle.addEventListener("click", openBankRecordMonthEditModalFn);
+    }
   }
 
   /*

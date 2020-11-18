@@ -1,0 +1,44 @@
+<div class="modal">
+  <div class="modal-background"></div>
+  <div class="modal-card">
+    <header class="modal-card-head">
+      <h3 class="modal-card-title">Update Bank Record by Month</h3>
+      <button class="delete is-close-modal-button" aria-label="close" type="button"></button>
+    </header>
+    <section class="modal-card-body">
+      <form id="form--bankRecordMonthEdit">
+        <input id="bankRecordMonthEdit--organizationID" name="organizationID" type="hidden" value="" />
+
+        <input id="bankRecordMonthEdit--accountNumber" name="accountNumber" type="hidden" />
+        <input id="bankRecordMonthEdit--bankingYear" name="bankingYear" type="hidden" />
+        <input id="bankRecordMonthEdit--bankingMonth" name="bankingMonth" type="hidden" />
+
+        <div class="columns">
+          <div class="column">
+            <strong>Account Number</strong><br />
+            <span id="bankRecordMonthEdit--accountNumber-span"></span>
+          </div>
+          <div class="column">
+            <strong>Banking Year</strong><br />
+            <span id="bankRecordMonthEdit--bankingYear-span"></span>
+          </div>
+          <div class="column">
+            <strong>Banking Month</strong><br />
+            <span id="bankRecordMonthEdit--bankingMonth-span"></span>
+          </div>
+        </div>
+        <input id="bankRecordMonthEdit--bankRecordTypeIndex" name="bankRecordTypeIndex" type="hidden" />
+        <div id="container--bankRecordMonthEdit-recordTypes"></div>
+      </form>
+    </section>
+    <footer class="modal-card-foot justify-right">
+      <button class="button is-success" type="submit" form="form--bankRecordMonthEdit">
+        <span class="icon">
+          <i class="fas fa-save" aria-hidden="true"></i>
+        </span>
+        <span>Save Records</span>
+      </button>
+      <button class="button is-close-modal-button" type="button">Cancel</button>
+    </footer>
+  </div>
+</div>
