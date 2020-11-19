@@ -5,6 +5,7 @@ import { licencesDB as dbPath } from "../../data/databasePaths";
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns";
 
 import type * as llm from "../../types/recordTypes";
+import type * as expressSession from "express-session";
 
 
 interface ReminderData {
@@ -17,7 +18,7 @@ interface ReminderData {
 
 
 export const addOrganizationReminderWithDB = (db: sqlite.Database,
-  reminderData: ReminderData, reqSession: Express.SessionData) => {
+  reminderData: ReminderData, reqSession: expressSession.Session) => {
 
   const row: { maxIndex: number } = db.prepare("select ifnull(max(reminderIndex), -1) as maxIndex" +
     " from OrganizationReminders" +
@@ -69,7 +70,7 @@ export const addOrganizationReminderWithDB = (db: sqlite.Database,
 };
 
 
-export const addOrganizationReminder = (reqBody: ReminderData, reqSession: Express.SessionData) => {
+export const addOrganizationReminder = (reqBody: ReminderData, reqSession: expressSession.Session) => {
 
   const db = sqlite(dbPath);
 

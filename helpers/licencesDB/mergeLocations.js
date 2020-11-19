@@ -2,9 +2,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.mergeLocations = void 0;
 const sqlite = require("better-sqlite3");
-const databasePaths_1 = require("../../data/databasePaths");
+const databasePaths_2 = require("../../data/databasePaths");
 exports.mergeLocations = (targetLocationID, sourceLocationID, reqSession) => {
-    const db = sqlite(databasePaths_1.licencesDB);
+    const db = sqlite(databasePaths_2.licencesDB);
     const nowMillis = Date.now();
     const locationAttributes = db.prepare("select max(locationIsDistributor) as locationIsDistributorMax," +
         " max(locationIsManufacturer) as locationIsManufacturerMax," +

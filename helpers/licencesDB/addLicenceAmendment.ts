@@ -2,10 +2,12 @@ import * as sqlite from "better-sqlite3";
 
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns";
 
+import type * as expressSession from "express-session";
+
 
 export const addLicenceAmendmentWithDB = (db: sqlite.Database,
   licenceID: number | string, amendmentType: string, amendment: string, isHidden: number,
-  reqSession: Express.SessionData) => {
+  reqSession: expressSession.Session) => {
 
   const amendmentIndexRecord: {
     amendmentIndex: number;

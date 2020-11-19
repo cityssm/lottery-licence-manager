@@ -2,9 +2,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.pokeEvent = void 0;
 const sqlite = require("better-sqlite3");
-const databasePaths_1 = require("../../data/databasePaths");
+const databasePaths_2 = require("../../data/databasePaths");
 exports.pokeEvent = (licenceID, eventDate, reqSession) => {
-    const db = sqlite(databasePaths_1.licencesDB);
+    const db = sqlite(databasePaths_2.licencesDB);
     const nowMillis = Date.now();
     const info = db.prepare("update LotteryEvents" +
         " set recordUpdate_userName = ?," +

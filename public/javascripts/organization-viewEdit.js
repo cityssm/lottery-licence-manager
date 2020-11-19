@@ -366,6 +366,59 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 cityssm.alertModal("No Account Number Set", "Please add at least one bank record with the account number you are looking to record.", "OK", "warning");
                 return;
             }
+            let recordDateRowIndex = -1;
+            const syncFn_enableDateField = (rowIndexString) => {
+                const recordDateEle = document.getElementById("bankRecordMonthEdit--recordDateString-" + rowIndexString);
+                recordDateEle.classList.remove("is-readonly");
+                recordDateEle.readOnly = false;
+            };
+            const syncFn_disableDateField = (rowIndexString) => {
+                const recordDateEle = document.getElementById("bankRecordMonthEdit--recordDateString-" + rowIndexString);
+                recordDateEle.classList.add("is-readonly");
+                recordDateEle.readOnly = true;
+                recordDateEle.value = document.getElementById("bankRecordMonthEdit--recordDateString-0").value;
+            };
+            const syncFn_toggleDateField = (changeEvent) => {
+                const syncRecordDateCheckboxEle = changeEvent.currentTarget;
+                const rowIndexString = syncRecordDateCheckboxEle.value;
+                if (syncRecordDateCheckboxEle.checked) {
+                    syncFn_disableDateField(rowIndexString);
+                }
+                else {
+                    syncFn_enableDateField(rowIndexString);
+                }
+            };
+            const syncFn_copyToSyncedDates = () => {
+                const recordDateString = document.getElementById("bankRecordMonthEdit--recordDateString-0").value;
+                for (let i = 1; i <= recordDateRowIndex; i += 1) {
+                    if (document.getElementById("bankRecordMonthEdit--syncRecordDate-" + i.toString()).checked) {
+                        document.getElementById("bankRecordMonthEdit--recordDateString-" + i.toString()).value = recordDateString;
+                    }
+                }
+            };
+            const dateFn_setToToday = (clickEvent) => {
+                const rowIndexString = clickEvent.currentTarget.value;
+                if (rowIndexString === "0" ||
+                    !document.getElementById("bankRecordMonthEdit--syncRecordDate-" + rowIndexString).checked) {
+                    document.getElementById("bankRecordMonthEdit--recordDateString-" + rowIndexString).value = cityssm.dateToString(new Date());
+                    if (rowIndexString === "0") {
+                        syncFn_copyToSyncedDates();
+                    }
+                }
+                else {
+                    cityssm.alertModal("Date Not Changed", "This date is synced with the date on the first band record type.", "OK", "warning");
+                }
+            };
+            let closeBankRecordMonthEditModalFn;
+            const submitFn = (formEvent) => {
+                formEvent.preventDefault();
+                cityssm.postJSON("/organizations/doUpdateBankRecordsByMonth", formEvent.currentTarget, (responseJSON) => {
+                    if (responseJSON.success) {
+                        closeBankRecordMonthEditModalFn();
+                        getBankRecordsFn();
+                    }
+                });
+            };
             const isNavBlockedByPage = cityssm.isNavBlockerEnabled();
             const bankingYear = parseInt(bankRecordsBankingYearFilterEle.value, 10);
             const trEle = buttonEvent.currentTarget.closest("tr");
@@ -390,20 +443,21 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     document.getElementById("bankRecordMonthEdit--bankingYear-span").innerText = bankingYear.toString();
                     document.getElementById("bankRecordMonthEdit--bankingMonth-span").innerText = bankingMonth.toString();
                     const recordTypeContainerEle = document.getElementById("container--bankRecordMonthEdit-recordTypes");
-                    let rowIndex = -1;
                     for (const config_bankRecordType of exports.config_bankRecordTypes) {
-                        rowIndex += 1;
-                        const rowIndexString = rowIndex.toString();
+                        recordDateRowIndex += 1;
+                        const rowIndexString = recordDateRowIndex.toString();
                         recordTypeContainerEle.insertAdjacentHTML("beforeend", "<hr />");
+                        recordTypeContainerEle.insertAdjacentHTML("beforeend", "<input id=\"bankRecordMonthEdit--recordIndex-" + rowIndexString + "\" name=\"recordIndex-" + rowIndexString + "\" type=\"hidden\" value=\"\" />");
+                        recordTypeContainerEle.insertAdjacentHTML("beforeend", "<input name=\"bankRecordType-" + rowIndexString + "\" type=\"hidden\" value=\"" + cityssm.escapeHTML(config_bankRecordType.bankRecordType) + "\" />");
                         recordTypeContainerEle.insertAdjacentHTML("beforeend", "<div class=\"columns is-mobile\">" +
                             ("<div class=\"column\">" +
                                 "<strong>" + cityssm.escapeHTML(config_bankRecordType.bankRecordTypeName) + "</strong>" +
                                 "</div>") +
                             ("<div class=\"column is-narrow has-text-right\">" +
-                                (rowIndex === 0
+                                (recordDateRowIndex === 0
                                     ? ""
                                     : "<div class=\"facheck facheck-inline facheck-fas-checked is-info\">" +
-                                        "<input id=\"bankRecordMonthEdit--syncRecordDate-" + rowIndexString + "\" name=\"syncRecordDate-" + rowIndexString + "\" type=\"checkbox\" value=\"1\" checked />" +
+                                        "<input id=\"bankRecordMonthEdit--syncRecordDate-" + rowIndexString + "\" name=\"syncRecordDate-" + rowIndexString + "\" type=\"checkbox\" value=\"" + rowIndexString + "\" checked />" +
                                         "<label for=\"bankRecordMonthEdit--syncRecordDate-" + rowIndexString + "\">" +
                                         "Sync Record Date" +
                                         "</label>" +
@@ -419,19 +473,19 @@ Object.defineProperty(exports, "__esModule", { value: true });
                         recordTypeContainerEle.insertAdjacentHTML("beforeend", "<div class=\"columns\">" +
                             ("<div class=\"column\">" +
                                 "<div class=\"field has-addons\">" +
-                                ("<div class=\"control has-icons-left\">" +
+                                ("<div class=\"control is-expanded has-icons-left\">" +
                                     "<input" +
-                                    " class=\"input" + (rowIndex === 0 ? "" : " is-readonly") + "\"" +
+                                    " class=\"input" + (recordDateRowIndex === 0 ? "" : " is-readonly") + "\"" +
                                     " id=\"bankRecordMonthEdit--recordDateString-" + rowIndexString + "\"" +
                                     " name=\"recordDateString-" + rowIndexString + "\"" +
                                     " type=\"date\"" +
                                     " aria-label=\"Record Date\"" +
-                                    (rowIndex === 0 ? "" : " readonly") +
+                                    (recordDateRowIndex === 0 ? "" : " readonly") +
                                     " />" +
                                     "<span class=\"icon is-small is-left\"><i class=\"fas fa-calendar\" aria-hidden=\"true\"></i></span>" +
                                     "</div>") +
                                 ("<div class=\"control\">" +
-                                    "<button class=\"button is-info\">" +
+                                    "<button class=\"button is-info\" id=\"bankRecordMonthEdit--setToToday-" + rowIndexString + "\" type=\"button\" value=\"" + rowIndexString + "\">" +
                                     "Today" +
                                     "</button>" +
                                     "</div>") +
@@ -448,8 +502,34 @@ Object.defineProperty(exports, "__esModule", { value: true });
                                 "</div>" +
                                 "</div>") +
                             "</div>");
+                        const bankRecord = bankRecordTypeToRecord.get(config_bankRecordType.bankRecordType);
+                        if (bankRecord) {
+                            document.getElementById("bankRecordMonthEdit--recordIndex-" + rowIndexString).value = bankRecord.recordIndex.toString();
+                            if (bankRecord.recordIsNA) {
+                                document.getElementById("bankRecordMonthEdit--recordIsNA-" + rowIndexString).checked = true;
+                            }
+                            document.getElementById("bankRecordMonthEdit--recordDateString-" + rowIndexString).value = bankRecord.recordDateString;
+                            document.getElementById("bankRecordMonthEdit--recordNote-" + rowIndexString).value = bankRecord.recordNote;
+                        }
+                        if (recordDateRowIndex !== 0) {
+                            const syncRecordDateCheckboxEle = document.getElementById("bankRecordMonthEdit--syncRecordDate-" + rowIndexString);
+                            syncRecordDateCheckboxEle.addEventListener("change", syncFn_toggleDateField);
+                            const mainRecordDateString = document.getElementById("bankRecordMonthEdit--recordDateString-0").value;
+                            if ((bankRecord && bankRecord.recordDateString !== mainRecordDateString) || (!bankRecord && mainRecordDateString !== "")) {
+                                syncRecordDateCheckboxEle.checked = false;
+                                syncFn_enableDateField(rowIndexString);
+                            }
+                        }
+                        document.getElementById("bankRecordMonthEdit--setToToday-" + rowIndexString).addEventListener("click", dateFn_setToToday);
                     }
-                    document.getElementById("bankRecordMonthEdit--bankRecordTypeIndex").value = rowIndex.toString();
+                    document.getElementById("bankRecordMonthEdit--bankRecordTypeIndex").value = recordDateRowIndex.toString();
+                    if (recordDateRowIndex >= 0) {
+                        document.getElementById("bankRecordMonthEdit--recordDateString-0").addEventListener("change", syncFn_copyToSyncedDates);
+                    }
+                },
+                onshown: (_modalEle, closeModalFn) => {
+                    document.getElementById("form--bankRecordMonthEdit").addEventListener("submit", submitFn);
+                    closeBankRecordMonthEditModalFn = closeModalFn;
                 },
                 onremoved: () => {
                     if (!isNavBlockedByPage) {

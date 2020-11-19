@@ -2,9 +2,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateUser = void 0;
 const sqlite = require("better-sqlite3");
-const databasePaths_1 = require("../../data/databasePaths");
+const databasePaths_2 = require("../../data/databasePaths");
 exports.updateUser = (reqBody) => {
-    const db = sqlite(databasePaths_1.usersDB);
+    const db = sqlite(databasePaths_2.usersDB);
     const info = db.prepare("update Users" +
         " set firstName = ?," +
         " lastName = ?" +

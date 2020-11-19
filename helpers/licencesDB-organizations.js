@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteOrganizationBankRecord = exports.updateOrganizationBankRecord = exports.addOrganizationBankRecord = exports.getOrganizationBankRecordStats = exports.getOrganizationBankRecords = exports.dismissOrganizationReminder = exports.updateOrganizationReminder = exports.getOrganizationReminder = exports.deleteOrganizationRemark = exports.updateOrganizationRemark = exports.addOrganizationRemark = exports.getOrganizationRemark = exports.setDefaultOrganizationRepresentative = exports.deleteOrganizationRepresentative = exports.getDeletedOrganizations = exports.getInactiveOrganizations = exports.restoreOrganization = exports.deleteOrganization = exports.updateOrganization = exports.createOrganization = void 0;
+exports.getOrganizationBankRecordStats = exports.getOrganizationBankRecords = exports.dismissOrganizationReminder = exports.updateOrganizationReminder = exports.getOrganizationReminder = exports.deleteOrganizationRemark = exports.updateOrganizationRemark = exports.addOrganizationRemark = exports.getOrganizationRemark = exports.setDefaultOrganizationRepresentative = exports.deleteOrganizationRepresentative = exports.getDeletedOrganizations = exports.getInactiveOrganizations = exports.restoreOrganization = exports.deleteOrganization = exports.updateOrganization = exports.createOrganization = void 0;
 const licencesDB_1 = require("./licencesDB");
 const sqlite = require("better-sqlite3");
 const databasePaths_1 = require("../data/databasePaths");
@@ -295,74 +295,4 @@ exports.getOrganizationBankRecordStats = (organizationID) => {
         .all(organizationID);
     db.close();
     return rows;
-};
-exports.addOrganizationBankRecord = (reqBody, reqSession) => {
-    const db = sqlite(databasePaths_1.licencesDB);
-    const record = db.prepare("select recordIndex, recordDelete_timeMillis" +
-        " from OrganizationBankRecords" +
-        " where organizationID = ?" +
-        " and accountNumber = ?" +
-        " and bankingYear = ?" +
-        " and bankingMonth = ?" +
-        " and bankRecordType = ?")
-        .get(reqBody.organizationID, reqBody.accountNumber, reqBody.bankingYear, reqBody.bankingMonth, reqBody.bankRecordType);
-    if (record) {
-        if (record.recordDelete_timeMillis) {
-            const info = db.prepare("delete from OrganizationBankRecords" +
-                " where organizationID = ?" +
-                " and recordIndex = ?")
-                .run(reqBody.organizationID, record.recordIndex);
-            if (info.changes === 0) {
-                db.close();
-                return false;
-            }
-        }
-        else {
-            db.close();
-            return false;
-        }
-    }
-    const row = db.prepare("select ifnull(max(recordIndex), -1) as maxIndex" +
-        " from OrganizationBankRecords" +
-        " where organizationID = ?")
-        .get(reqBody.organizationID);
-    const newRecordIndex = row.maxIndex + 1;
-    const nowMillis = Date.now();
-    const info = db.prepare("insert into OrganizationBankRecords" +
-        " (organizationID, recordIndex," +
-        " accountNumber, bankingYear, bankingMonth, bankRecordType, recordIsNA, recordDate, recordNote," +
-        " recordCreate_userName, recordCreate_timeMillis, recordUpdate_userName, recordUpdate_timeMillis)" +
-        " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
-        .run(reqBody.organizationID, newRecordIndex, reqBody.accountNumber, reqBody.bankingYear, reqBody.bankingMonth, reqBody.bankRecordType, reqBody.recordIsNA || 0, dateTimeFns.dateStringToInteger(reqBody.recordDateString), reqBody.recordNote, reqSession.user.userName, nowMillis, reqSession.user.userName, nowMillis);
-    db.close();
-    return info.changes > 0;
-};
-exports.updateOrganizationBankRecord = (reqBody, reqSession) => {
-    const db = sqlite(databasePaths_1.licencesDB);
-    const nowMillis = Date.now();
-    const info = db.prepare("update OrganizationBankRecords" +
-        " set recordDate = ?," +
-        " recordIsNA = ?," +
-        " recordNote = ?," +
-        " recordUpdate_userName = ?," +
-        " recordUpdate_timeMillis = ?" +
-        " where organizationID = ?" +
-        " and recordIndex = ?" +
-        " and recordDelete_timeMillis is null")
-        .run(dateTimeFns.dateStringToInteger(reqBody.recordDateString), reqBody.recordIsNA || 0, reqBody.recordNote, reqSession.user.userName, nowMillis, reqBody.organizationID, reqBody.recordIndex);
-    db.close();
-    return info.changes > 0;
-};
-exports.deleteOrganizationBankRecord = (organizationID, recordIndex, reqSession) => {
-    const db = sqlite(databasePaths_1.licencesDB);
-    const nowMillis = Date.now();
-    const info = db.prepare("update OrganizationBankRecords" +
-        " set recordDelete_userName = ?," +
-        " recordDelete_timeMillis = ?" +
-        " where organizationID = ?" +
-        " and recordIndex = ?" +
-        " and recordDelete_timeMillis is null")
-        .run(reqSession.user.userName, nowMillis, organizationID, recordIndex);
-    db.close();
-    return info.changes > 0;
 };

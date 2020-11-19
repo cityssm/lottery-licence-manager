@@ -1,17 +1,17 @@
 export interface Record {
     recordType: "location" | "organization" | "remark" | "reminder" | "bankRecord" | "licence" | "event";
     success?: true;
-    recordCreate_userName: string;
-    recordCreate_timeMillis: number;
+    recordCreate_userName?: string;
+    recordCreate_timeMillis?: number;
     recordCreate_dateString?: string;
-    recordUpdate_userName: string;
-    recordUpdate_timeMillis: number;
+    recordUpdate_userName?: string;
+    recordUpdate_timeMillis?: number;
     recordUpdate_dateString?: string;
     recordUpdate_timeString?: string;
     recordDelete_userName?: string;
     recordDelete_timeMillis?: number;
     recordDelete_dateString?: string;
-    canUpdate: boolean;
+    canUpdate?: boolean;
 }
 export interface Location extends Record {
     recordType: "location" | "licence" | "event";
@@ -105,7 +105,7 @@ export interface OrganizationBankRecord extends Record {
     bankingMonth: number;
     bankRecordType: "statement" | "cheques" | "receipts";
     accountNumber: string;
-    recordDate: number;
+    recordDate?: number;
     recordDateString: string;
     recordNote: string;
     recordIsNA: boolean;
@@ -218,4 +218,9 @@ export interface UserProperties {
     canCreate: boolean;
     canUpdate: boolean;
     isAdmin: boolean;
+}
+declare module "express-session" {
+    interface Session {
+        user: User;
+    }
 }

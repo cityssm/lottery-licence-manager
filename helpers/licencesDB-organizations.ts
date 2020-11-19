@@ -4,7 +4,9 @@ import * as sqlite from "better-sqlite3";
 import { licencesDB as dbPath } from "../data/databasePaths";
 
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns";
+
 import type * as llm from "../types/recordTypes";
+import type * as expressSession from "express-session";
 
 
 /*
@@ -15,7 +17,7 @@ import type * as llm from "../types/recordTypes";
 /**
  * @returns New organizationID
  */
-export const createOrganization = (reqBody: llm.Organization, reqSession: Express.SessionData) => {
+export const createOrganization = (reqBody: llm.Organization, reqSession: expressSession.Session) => {
 
   const db = sqlite(dbPath);
 
@@ -52,7 +54,7 @@ export const createOrganization = (reqBody: llm.Organization, reqSession: Expres
 /**
  * @returns TRUE if successful
  */
-export const updateOrganization = (reqBody: llm.Organization, reqSession: Express.SessionData): boolean => {
+export const updateOrganization = (reqBody: llm.Organization, reqSession: expressSession.Session): boolean => {
 
   const db = sqlite(dbPath);
 
@@ -101,7 +103,7 @@ export const updateOrganization = (reqBody: llm.Organization, reqSession: Expres
 /**
  * @returns TRUE if successful
  */
-export const deleteOrganization = (organizationID: number, reqSession: Express.SessionData): boolean => {
+export const deleteOrganization = (organizationID: number, reqSession: expressSession.Session): boolean => {
 
   const db = sqlite(dbPath);
 
@@ -128,7 +130,7 @@ export const deleteOrganization = (organizationID: number, reqSession: Express.S
 /**
  * @returns TRUE if successful
  */
-export const restoreOrganization = (organizationID: number, reqSession: Express.SessionData): boolean => {
+export const restoreOrganization = (organizationID: number, reqSession: expressSession.Session): boolean => {
 
   const db = sqlite(dbPath);
 
@@ -263,7 +265,7 @@ export const setDefaultOrganizationRepresentative = (organizationID: number, rep
 
 
 export const getOrganizationRemark =
-  (organizationID: number, remarkIndex: number, reqSession: Express.SessionData) => {
+  (organizationID: number, remarkIndex: number, reqSession: expressSession.Session) => {
 
     const db = sqlite(dbPath, {
       readonly: true
@@ -293,7 +295,7 @@ export const getOrganizationRemark =
   };
 
 
-export const addOrganizationRemark = (reqBody: llm.OrganizationRemark, reqSession: Express.SessionData) => {
+export const addOrganizationRemark = (reqBody: llm.OrganizationRemark, reqSession: expressSession.Session) => {
 
   const db = sqlite(dbPath);
 
@@ -336,7 +338,7 @@ export const addOrganizationRemark = (reqBody: llm.OrganizationRemark, reqSessio
 /**
  * @returns TRUE if successful
  */
-export const updateOrganizationRemark = (reqBody: llm.OrganizationRemark, reqSession: Express.SessionData) => {
+export const updateOrganizationRemark = (reqBody: llm.OrganizationRemark, reqSession: expressSession.Session) => {
 
   const db = sqlite(dbPath);
 
@@ -373,7 +375,7 @@ export const updateOrganizationRemark = (reqBody: llm.OrganizationRemark, reqSes
  * @returns TRUE if successful
  */
 export const deleteOrganizationRemark =
-  (organizationID: number, remarkIndex: number, reqSession: Express.SessionData) => {
+  (organizationID: number, remarkIndex: number, reqSession: expressSession.Session) => {
 
     const db = sqlite(dbPath);
 
@@ -404,7 +406,7 @@ export const deleteOrganizationRemark =
 
 
 export const getOrganizationReminder =
-  (organizationID: number, reminderIndex: number, reqSession: Express.SessionData) => {
+  (organizationID: number, reminderIndex: number, reqSession: expressSession.Session) => {
 
     const db = sqlite(dbPath, {
       readonly: true
@@ -441,7 +443,7 @@ export const updateOrganizationReminder = (reqBody: {
   reminderStatus: string;
   reminderNote: string;
   dismissedDateString: string;
-}, reqSession: Express.SessionData) => {
+}, reqSession: expressSession.Session) => {
 
   const db = sqlite(dbPath);
 
@@ -481,7 +483,7 @@ export const updateOrganizationReminder = (reqBody: {
 
 
 export const dismissOrganizationReminder =
-  (organizationID: number, reminderIndex: number, reqSession: Express.SessionData) => {
+  (organizationID: number, reminderIndex: number, reqSession: expressSession.Session) => {
 
     const currentDate = new Date();
 
@@ -559,142 +561,3 @@ export const getOrganizationBankRecordStats = (organizationID: number) => {
 
   return rows;
 };
-
-
-export const addOrganizationBankRecord = (reqBody: llm.OrganizationBankRecord, reqSession: Express.Session) => {
-
-  // Check for a record with the same unique key
-
-  const db = sqlite(dbPath);
-
-  const record = db.prepare("select recordIndex, recordDelete_timeMillis" +
-    " from OrganizationBankRecords" +
-    " where organizationID = ?" +
-    " and accountNumber = ?" +
-    " and bankingYear = ?" +
-    " and bankingMonth = ?" +
-    " and bankRecordType = ?")
-    .get(reqBody.organizationID,
-      reqBody.accountNumber,
-      reqBody.bankingYear,
-      reqBody.bankingMonth,
-      reqBody.bankRecordType);
-
-  if (record) {
-
-    if (record.recordDelete_timeMillis) {
-
-      const info = db.prepare("delete from OrganizationBankRecords" +
-        " where organizationID = ?" +
-        " and recordIndex = ?")
-        .run(reqBody.organizationID, record.recordIndex);
-
-      if (info.changes === 0) {
-
-        // Record not deleted
-        db.close();
-        return false;
-      }
-
-    } else {
-
-      // An active record already exists
-      db.close();
-      return false;
-    }
-  }
-
-  // Get next recordIndex
-
-  const row = db.prepare("select ifnull(max(recordIndex), -1) as maxIndex" +
-    " from OrganizationBankRecords" +
-    " where organizationID = ?")
-    .get(reqBody.organizationID);
-
-  const newRecordIndex = row.maxIndex as number + 1;
-
-  // Insert the record
-
-  const nowMillis = Date.now();
-
-  const info = db.prepare("insert into OrganizationBankRecords" +
-    " (organizationID, recordIndex," +
-    " accountNumber, bankingYear, bankingMonth, bankRecordType, recordIsNA, recordDate, recordNote," +
-    " recordCreate_userName, recordCreate_timeMillis, recordUpdate_userName, recordUpdate_timeMillis)" +
-    " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
-    .run(reqBody.organizationID,
-      newRecordIndex,
-      reqBody.accountNumber,
-      reqBody.bankingYear,
-      reqBody.bankingMonth,
-      reqBody.bankRecordType,
-      reqBody.recordIsNA || 0,
-      dateTimeFns.dateStringToInteger(reqBody.recordDateString),
-      reqBody.recordNote,
-      reqSession.user.userName,
-      nowMillis,
-      reqSession.user.userName,
-      nowMillis
-    );
-
-  db.close();
-
-  return info.changes > 0;
-};
-
-
-export const updateOrganizationBankRecord = (reqBody: llm.OrganizationBankRecord, reqSession: Express.Session) => {
-
-  const db = sqlite(dbPath);
-
-  const nowMillis = Date.now();
-
-  const info = db.prepare("update OrganizationBankRecords" +
-    " set recordDate = ?," +
-    " recordIsNA = ?," +
-    " recordNote = ?," +
-    " recordUpdate_userName = ?," +
-    " recordUpdate_timeMillis = ?" +
-    " where organizationID = ?" +
-    " and recordIndex = ?" +
-    " and recordDelete_timeMillis is null")
-    .run(
-      dateTimeFns.dateStringToInteger(reqBody.recordDateString),
-      reqBody.recordIsNA || 0,
-      reqBody.recordNote,
-      reqSession.user.userName,
-      nowMillis,
-      reqBody.organizationID,
-      reqBody.recordIndex
-    );
-
-  db.close();
-
-  return info.changes > 0;
-};
-
-
-export const deleteOrganizationBankRecord =
-  (organizationID: number, recordIndex: number, reqSession: Express.Session) => {
-
-    const db = sqlite(dbPath);
-
-    const nowMillis = Date.now();
-
-    const info = db.prepare("update OrganizationBankRecords" +
-      " set recordDelete_userName = ?," +
-      " recordDelete_timeMillis = ?" +
-      " where organizationID = ?" +
-      " and recordIndex = ?" +
-      " and recordDelete_timeMillis is null")
-      .run(
-        reqSession.user.userName,
-        nowMillis,
-        organizationID,
-        recordIndex
-      );
-
-    db.close();
-
-    return info.changes > 0;
-  };

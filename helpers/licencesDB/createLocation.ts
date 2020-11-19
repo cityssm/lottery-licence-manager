@@ -3,9 +3,10 @@ import * as sqlite from "better-sqlite3";
 import { licencesDB as dbPath } from "../../data/databasePaths";
 
 import * as llm from "../../types/recordTypes";
+import type * as expressSession from "express-session";
 
 
-export const createLocation = (reqBody: llm.Location, reqSession: Express.SessionData) => {
+export const createLocation = (reqBody: llm.Location, reqSession: expressSession.Session) => {
 
   const db = sqlite(dbPath);
 

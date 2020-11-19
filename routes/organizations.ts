@@ -4,25 +4,30 @@ import * as configFns from "../helpers/configFns";
 
 import * as permissionHandlers from "../handlers/permissions";
 
-import * as handler_cleanup from "../handlers/organizations-get/cleanup";
-import * as handler_view from "../handlers/organizations-get/view";
-import * as handler_edit from "../handlers/organizations-get/edit";
+import { handler as handler_cleanup } from "../handlers/organizations-get/cleanup";
+import { handler as handler_view } from "../handlers/organizations-get/view";
+import { handler as handler_edit } from "../handlers/organizations-get/edit";
 
-import * as handler_doSearch from "../handlers/organizations-post/doSearch";
-import * as handler_doGetAll from "../handlers/organizations-all/doGetAll";
+import { handler as handler_doSearch } from "../handlers/organizations-post/doSearch";
+import { handler as handler_doGetAll } from "../handlers/organizations-all/doGetAll";
 
-import * as handler_doAddRepresentative from "../handlers/organizations-post/doAddRepresentative";
-import * as handler_doUpdateRepresentative from "../handlers/organizations-post/doUpdateRepresentative";
+import { handler as handler_doAddRepresentative } from "../handlers/organizations-post/doAddRepresentative";
+import { handler as handler_doUpdateRepresentative } from "../handlers/organizations-post/doUpdateRepresentative";
 
-import * as handler_doGetRemarks from "../handlers/organizations-post/doGetRemarks";
-import * as handler_doAddRemark from "../handlers/organizations-post/doAddRemark";
+import { handler as handler_doGetRemarks } from "../handlers/organizations-post/doGetRemarks";
+import { handler as handler_doAddRemark } from "../handlers/organizations-post/doAddRemark";
 
-import * as handler_reminders from "../handlers/organizations-get/reminders";
-import * as handler_doGetReminders from "../handlers/organizations-post/doGetReminders";
-import * as handler_doAddReminder from "../handlers/organizations-post/doAddReminder";
-import * as handler_doDeleteReminder from "../handlers/organizations-post/doDeleteReminder";
+import { handler as handler_reminders } from "../handlers/organizations-get/reminders";
+import { handler as handler_doGetReminders } from "../handlers/organizations-post/doGetReminders";
+import { handler as handler_doAddReminder } from "../handlers/organizations-post/doAddReminder";
+import { handler as handler_doDeleteReminder } from "../handlers/organizations-post/doDeleteReminder";
 
-import * as handler_doRollForward from "../handlers/organizations-post/doRollForward";
+import { handler as handler_doAddBankRecord } from "../handlers/organizations-post/doAddBankRecord";
+import { handler as handler_doEditBankRecord } from "../handlers/organizations-post/doEditBankRecord";
+import { handler as handler_doUpdateBankRecordsByMonth } from "../handlers/organizations-post/doUpdateBankRecordsByMonth";
+import { handler as handler_doDeleteBankRecord } from "../handlers/organizations-post/doDeleteBankRecord";
+
+import { handler as handler_doRollForward } from "../handlers/organizations-post/doRollForward";
 
 import * as licencesDBOrganizations from "../helpers/licencesDB-organizations";
 
@@ -47,11 +52,11 @@ router.get("/", (_req, res) => {
 
 
 router.post("/doSearch",
-  handler_doSearch.handler);
+  handler_doSearch);
 
 
 router.all("/doGetAll",
-  handler_doGetAll.handler);
+  handler_doGetAll);
 
 
 /*
@@ -60,7 +65,7 @@ router.all("/doGetAll",
 
 
 router.get("/reminders",
-  handler_reminders.handler);
+  handler_reminders);
 
 
 /*
@@ -70,7 +75,7 @@ router.get("/reminders",
 
 router.get("/cleanup",
   permissionHandlers.updateGetHandler,
-  handler_cleanup.handler);
+  handler_cleanup);
 
 
 router.post("/doGetInactive", (req, res) => {
@@ -111,7 +116,7 @@ router.get("/recovery", (req, res) => {
  */
 
 
-router.post("/doGetRemarks", handler_doGetRemarks.handler);
+router.post("/doGetRemarks", handler_doGetRemarks);
 
 
 router.post("/doGetRemark", (req, res) => {
@@ -124,7 +129,9 @@ router.post("/doGetRemark", (req, res) => {
 });
 
 
-router.post("/doAddRemark", permissionHandlers.createPostHandler, handler_doAddRemark.handler);
+router.post("/doAddRemark",
+  permissionHandlers.createPostHandler,
+  handler_doAddRemark);
 
 
 router.post("/doEditRemark", (req, res) => {
@@ -187,7 +194,7 @@ router.post("/doDeleteRemark", (req, res) => {
  */
 
 
-router.post("/doGetReminders", handler_doGetReminders.handler);
+router.post("/doGetReminders", handler_doGetReminders);
 
 
 router.post("/doGetReminder", (req, res) => {
@@ -199,7 +206,9 @@ router.post("/doGetReminder", (req, res) => {
 });
 
 
-router.post("/doAddReminder", permissionHandlers.createPostHandler, handler_doAddReminder.handler);
+router.post("/doAddReminder",
+  permissionHandlers.createPostHandler,
+  handler_doAddReminder);
 
 
 router.post("/doEditReminder", (req, res) => {
@@ -260,7 +269,9 @@ router.post("/doDismissReminder", (req, res) => {
 });
 
 
-router.post("/doDeleteReminder", permissionHandlers.createPostHandler, handler_doDeleteReminder.handler);
+router.post("/doDeleteReminder",
+  permissionHandlers.createPostHandler,
+  handler_doDeleteReminder);
 
 
 /*
@@ -287,81 +298,24 @@ router.post("/doGetBankRecordStats", (req, res) => {
 });
 
 
-router.post("/doAddBankRecord", (req, res) => {
-
-  if (!userCanCreate(req)) {
-    return forbiddenJSON(res);
-  }
-
-  const success = licencesDBOrganizations.addOrganizationBankRecord(req.body, req.session);
-
-  if (success) {
-
-    return res.json({
-      success: true,
-      message: "Record added successfully."
-    });
-
-  } else {
-
-    return res.json({
-      success: false,
-      message: "Please make sure that the record you are trying to create does not already exist."
-    });
-
-  }
-
-});
+router.post("/doAddBankRecord",
+  permissionHandlers.createPostHandler,
+  handler_doAddBankRecord);
 
 
-router.post("/doEditBankRecord", (req, res) => {
-
-  if (!userCanCreate(req)) {
-    return forbiddenJSON(res);
-  }
-
-  const success = licencesDBOrganizations.updateOrganizationBankRecord(req.body, req.session);
-
-  if (success) {
-
-    return res.json({
-      success: true,
-      message: "Record updated successfully."
-    });
-
-  } else {
-
-    return res.json({
-      success: false,
-      message: "Please try again."
-    });
-
-  }
-
-});
+router.post("/doEditBankRecord",
+  permissionHandlers.createPostHandler,
+  handler_doEditBankRecord);
 
 
-router.post("/doDeleteBankRecord", (req, res) => {
+router.post("/doUpdateBankRecordsByMonth",
+  permissionHandlers.createPostHandler,
+  handler_doUpdateBankRecordsByMonth);
 
-  if (!userCanCreate(req)) {
-    return forbiddenJSON(res);
-  }
 
-  const success =
-    licencesDBOrganizations.deleteOrganizationBankRecord(req.body.organizationID, req.body.recordIndex, req.session);
-
-  if (success) {
-    res.json({
-      success: true,
-      message: "Organization updated successfully."
-    });
-  } else {
-    res.json({
-      success: false,
-      message: "Record Not Saved"
-    });
-  }
-});
+router.post("/doDeleteBankRecord",
+  permissionHandlers.createPostHandler,
+  handler_doDeleteBankRecord);
 
 
 /*
@@ -483,7 +437,9 @@ router.post("/doRestore", (req, res) => {
 });
 
 
-router.post("/doRollForward", permissionHandlers.createPostHandler, handler_doRollForward.handler);
+router.post("/doRollForward",
+  permissionHandlers.createPostHandler,
+  handler_doRollForward);
 
 
 /*
@@ -492,7 +448,7 @@ router.post("/doRollForward", permissionHandlers.createPostHandler, handler_doRo
 
 
 router.get("/:organizationID",
-  handler_view.handler);
+  handler_view);
 
 
 /*
@@ -502,16 +458,16 @@ router.get("/:organizationID",
 
 router.get("/:organizationID/edit",
   permissionHandlers.createGetHandler,
-  handler_edit.handler);
+  handler_edit);
 
 
 router.post("/:organizationID/doAddOrganizationRepresentative",
   permissionHandlers.createPostHandler,
-  handler_doAddRepresentative.handler);
+  handler_doAddRepresentative);
 
 router.post("/:organizationID/doEditOrganizationRepresentative",
   permissionHandlers.createPostHandler,
-  handler_doUpdateRepresentative.handler);
+  handler_doUpdateRepresentative);
 
 
 router.post("/:organizationID/doDeleteOrganizationRepresentative", (req, res) => {

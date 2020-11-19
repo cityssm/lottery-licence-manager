@@ -2,11 +2,11 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.tryResetPassword = void 0;
 const sqlite = require("better-sqlite3");
-const databasePaths_1 = require("../../data/databasePaths");
+const databasePaths_2 = require("../../data/databasePaths");
 const userFns = require("../../helpers/userFns");
 const bcrypt = require("bcrypt");
 exports.tryResetPassword = (userName, oldPasswordPlain, newPasswordPlain) => {
-    const db = sqlite(databasePaths_1.usersDB);
+    const db = sqlite(databasePaths_2.usersDB);
     const row = db.prepare("select passwordHash from Users" +
         " where userName = ?" +
         " and isActive = 1")

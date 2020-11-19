@@ -2,13 +2,13 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createLicence = void 0;
 const sqlite = require("better-sqlite3");
-const databasePaths_1 = require("../../data/databasePaths");
+const databasePaths_2 = require("../../data/databasePaths");
 const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
 const configFns = require("../configFns");
 const getLicence_1 = require("./getLicence");
 const licencesDB_1 = require("../licencesDB");
 exports.createLicence = (reqBody, reqSession) => {
-    const db = sqlite(databasePaths_1.licencesDB);
+    const db = sqlite(databasePaths_2.licencesDB);
     const nowMillis = Date.now();
     let externalLicenceNumberInteger = -1;
     try {
