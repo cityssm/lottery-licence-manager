@@ -6,7 +6,6 @@ orbs:
 
 jobs:
   cc-cov:
-    executor: build-executor
     environment:
         NODE_ENV: test
     steps:
