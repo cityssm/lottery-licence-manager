@@ -1,6 +1,29 @@
 version: 2.1
+
 orbs:
   node: circleci/node@3.0.0
+  code-climate: travelaudience/code-climate@0.1.1
+
+jobs:
+  test-fe:
+    executor: build-executor
+    environment:
+        NODE_ENV: test
+    steps:
+      - attach_workspace:
+          at: .
+      - code-climate/install
+      - run: cc-test-reporter before-build
+      - run:
+          name: Run tests
+          command: npm run coverage
+          when: always
+      - run: cc-test-reporter after-build --exit-code $?
+      - store_test_results:
+          path: ./reports
+      - store_artifacts:
+          path: ./reports
+
 workflows:
   node-tests:
     jobs:
