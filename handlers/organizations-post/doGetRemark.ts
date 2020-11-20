@@ -9,5 +9,4 @@ export const handler: RequestHandler = (req, res) => {
   const remarkIndex = req.body.remarkIndex;
 
   res.json(getOrganizationRemark(organizationID, remarkIndex, req.session));
-
 };
