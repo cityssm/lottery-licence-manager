@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
     const searchResultsEle = document.getElementById("container--searchResults");
     const confirmDeleteOrganizationFn = (clickEvent) => {
         const buttonEle = clickEvent.currentTarget;
-        const organizationName = cityssm.escapeHTML(buttonEle.getAttribute("data-organization-name"));
+        const organizationName = buttonEle.getAttribute("data-organization-name");
         const deleteFn = () => {
             const organizationID = buttonEle.getAttribute("data-organization-id");
             cityssm.postJSON("/organizations/doDelete", {
@@ -21,7 +21,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 }
             });
         };
-        cityssm.confirmModal("Delete Organization?", `Are you sure you want delete ${cityssm.escapeHTML(organizationName)}?`, "Yes, Delete", "danger", deleteFn);
+        cityssm.confirmModal("Delete Organization?", "Are you sure you want delete " + cityssm.escapeHTML(organizationName) + "?", "Yes, Delete", "danger", deleteFn);
     };
     const getInactiveOrganizationsFn = () => {
         searchResultsEle.innerHTML = "<p class=\"has-text-centered has-text-grey-lighter\">" +

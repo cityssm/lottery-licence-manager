@@ -16,7 +16,7 @@ declare const cityssm: cityssmGlobal;
   const confirmDeleteOrganizationFn = (clickEvent: Event) => {
 
     const buttonEle = clickEvent.currentTarget as HTMLButtonElement;
-    const organizationName = cityssm.escapeHTML(buttonEle.getAttribute("data-organization-name"));
+    const organizationName = buttonEle.getAttribute("data-organization-name");
 
     const deleteFn = () => {
 
@@ -40,7 +40,7 @@ declare const cityssm: cityssmGlobal;
 
     cityssm.confirmModal(
       "Delete Organization?",
-      `Are you sure you want delete ${cityssm.escapeHTML(organizationName)}?`,
+      "Are you sure you want delete " + cityssm.escapeHTML(organizationName) + "?",
       "Yes, Delete",
       "danger",
       deleteFn
