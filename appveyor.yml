@@ -17,11 +17,11 @@ test_script:
   # install test reporters
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
   - chmod +x ./cc-test-reporter
-  - ./cc-test-reporter before-build
+  - cc-test-reporter before-build
   # run tests
   - nyc --reporter=lcov mocha --timeout 30000
   # post results
-  - ./cc-test-reporter after-build -t lcov
+  - cc-test-reporter after-build -t lcov
   - bash <(curl -Ls https://coverage.codacy.com/get.sh) report -r ./coverage/lcov.info
 
 # Don't actually build.
