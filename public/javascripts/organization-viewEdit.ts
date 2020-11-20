@@ -810,8 +810,9 @@ declare const llm: llmGlobal;
                   "<span class=\"icon is-small is-left\"><i class=\"fas fa-calendar\" aria-hidden=\"true\"></i></span>" +
                   "</div>") +
                 ("<div class=\"control\">" +
-                  "<button class=\"button is-info\" id=\"bankRecordMonthEdit--setToToday-" + rowIndexString + "\" type=\"button\" value=\"" + rowIndexString + "\">" +
-                  "Today" +
+                  "<button class=\"button is-info\" id=\"bankRecordMonthEdit--setToToday-" + rowIndexString + "\" data-tooltip=\"Set to Today\" type=\"button\" value=\"" + rowIndexString + "\">" +
+                  "<i class=\"fas fa-calendar-day\" aria-hidden=\"true\"></i>" +
+                  "<span class=\"sr-only\">Set to Today</span>" +
                   "</button>" +
                   "</div>") +
                 "</div>" +
@@ -822,6 +823,7 @@ declare const llm: llmGlobal;
                 " id=\"bankRecordMonthEdit--recordNote-" + rowIndexString + "\"" +
                 " name=\"recordNote-" + rowIndexString + "\"" +
                 " type=\"text\"" +
+                " placeholder=\"Optional Note\"" +
                 " aria-label=\"Optional Note\" />" +
                 "<span class=\"icon is-small is-left\"><i class=\"fas fa-sticky-note\" aria-hidden=\"true\"></i></span>" +
                 "</div>" +
