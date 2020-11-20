@@ -1,5 +1,5 @@
 .nyc_output/
-coverage/lcov-report
+coverage/
 node_modules/
 
 app.min.js
