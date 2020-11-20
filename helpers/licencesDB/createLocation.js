@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.createLocation = void 0;
 const sqlite = require("better-sqlite3");
 const databasePaths_1 = require("../../data/databasePaths");
-exports.createLocation = (reqBody, reqSession) => {
+const createLocation = (reqBody, reqSession) => {
     const db = sqlite(databasePaths_1.licencesDB);
     const nowMillis = Date.now();
     const info = db.prepare("insert into Locations" +
@@ -15,3 +15,4 @@ exports.createLocation = (reqBody, reqSession) => {
     db.close();
     return info.lastInsertRowid;
 };
+exports.createLocation = createLocation;

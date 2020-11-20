@@ -4,7 +4,7 @@ exports.addOrganizationReminder = exports.addOrganizationReminderWithDB = void 0
 const sqlite = require("better-sqlite3");
 const databasePaths_1 = require("../../data/databasePaths");
 const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
-exports.addOrganizationReminderWithDB = (db, reminderData, reqSession) => {
+const addOrganizationReminderWithDB = (db, reminderData, reqSession) => {
     const row = db.prepare("select ifnull(max(reminderIndex), -1) as maxIndex" +
         " from OrganizationReminders" +
         " where organizationID = ?")
@@ -38,9 +38,11 @@ exports.addOrganizationReminderWithDB = (db, reminderData, reqSession) => {
     };
     return reminder;
 };
-exports.addOrganizationReminder = (reqBody, reqSession) => {
+exports.addOrganizationReminderWithDB = addOrganizationReminderWithDB;
+const addOrganizationReminder = (reqBody, reqSession) => {
     const db = sqlite(databasePaths_1.licencesDB);
     const reminder = exports.addOrganizationReminderWithDB(db, reqBody, reqSession);
     db.close();
     return reminder;
 };
+exports.addOrganizationReminder = addOrganizationReminder;

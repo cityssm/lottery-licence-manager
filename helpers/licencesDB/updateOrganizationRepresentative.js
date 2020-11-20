@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateOrganizationRepresentative = void 0;
 const sqlite = require("better-sqlite3");
 const databasePaths_1 = require("../../data/databasePaths");
-exports.updateOrganizationRepresentative = (organizationID, reqBody) => {
+const updateOrganizationRepresentative = (organizationID, reqBody) => {
     const db = sqlite(databasePaths_1.licencesDB);
     db.prepare("update OrganizationRepresentatives" +
         " set representativeName = ?," +
@@ -37,3 +37,4 @@ exports.updateOrganizationRepresentative = (organizationID, reqBody) => {
     };
     return representativeObj;
 };
+exports.updateOrganizationRepresentative = updateOrganizationRepresentative;

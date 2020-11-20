@@ -4,7 +4,7 @@ exports.addOrganizationBankRecord = void 0;
 const sqlite = require("better-sqlite3");
 const databasePaths_1 = require("../../data/databasePaths");
 const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
-exports.addOrganizationBankRecord = (reqBody, reqSession) => {
+const addOrganizationBankRecord = (reqBody, reqSession) => {
     const db = sqlite(databasePaths_1.licencesDB);
     const record = db.prepare("select recordIndex, recordDelete_timeMillis" +
         " from OrganizationBankRecords" +
@@ -45,3 +45,4 @@ exports.addOrganizationBankRecord = (reqBody, reqSession) => {
     db.close();
     return info.changes > 0;
 };
+exports.addOrganizationBankRecord = addOrganizationBankRecord;

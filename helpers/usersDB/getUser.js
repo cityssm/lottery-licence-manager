@@ -6,7 +6,7 @@ const databasePaths_1 = require("../../data/databasePaths");
 const userFns = require("../../helpers/userFns");
 const bcrypt = require("bcrypt");
 const configFns = require("../../helpers/configFns");
-exports.getUser = (userNameSubmitted, passwordPlain) => {
+const getUser = (userNameSubmitted, passwordPlain) => {
     const db = sqlite(databasePaths_1.usersDB);
     const row = db.prepare("select userName, passwordHash, isActive" +
         " from Users" +
@@ -70,3 +70,4 @@ exports.getUser = (userNameSubmitted, passwordPlain) => {
         userProperties
     };
 };
+exports.getUser = getUser;

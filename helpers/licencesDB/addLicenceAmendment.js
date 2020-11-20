@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.addLicenceAmendmentWithDB = void 0;
 const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
-exports.addLicenceAmendmentWithDB = (db, licenceID, amendmentType, amendment, isHidden, reqSession) => {
+const addLicenceAmendmentWithDB = (db, licenceID, amendmentType, amendment, isHidden, reqSession) => {
     const amendmentIndexRecord = db.prepare("select amendmentIndex" +
         " from LotteryLicenceAmendments" +
         " where licenceID = ?" +
@@ -20,3 +20,4 @@ exports.addLicenceAmendmentWithDB = (db, licenceID, amendmentType, amendment, is
         .run(licenceID, amendmentIndex, amendmentDate, amendmentTime, amendmentType, amendment, isHidden, reqSession.user.userName, nowDate.getTime(), reqSession.user.userName, nowDate.getTime());
     return amendmentIndex;
 };
+exports.addLicenceAmendmentWithDB = addLicenceAmendmentWithDB;

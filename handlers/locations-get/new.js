@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.handler = void 0;
 const configFns = require("../../helpers/configFns");
 const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
-exports.handler = (_req, res) => {
+const handler = (_req, res) => {
     res.render("location-edit", {
         headTitle: "Create a New Location",
         location: {
@@ -14,3 +14,4 @@ exports.handler = (_req, res) => {
         isCreate: true
     });
 };
+exports.handler = handler;

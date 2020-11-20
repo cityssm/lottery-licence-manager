@@ -4,7 +4,7 @@ exports.getDistinctTermsConditions = void 0;
 const sqlite = require("better-sqlite3");
 const databasePaths_1 = require("../../data/databasePaths");
 const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
-exports.getDistinctTermsConditions = (organizationID) => {
+const getDistinctTermsConditions = (organizationID) => {
     const db = sqlite(databasePaths_1.licencesDB, {
         readonly: true
     });
@@ -25,3 +25,4 @@ exports.getDistinctTermsConditions = (organizationID) => {
     }
     return terms;
 };
+exports.getDistinctTermsConditions = getDistinctTermsConditions;

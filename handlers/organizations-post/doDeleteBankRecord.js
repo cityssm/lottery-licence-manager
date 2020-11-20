@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.handler = void 0;
 const deleteOrganizationBankRecord_1 = require("../../helpers/licencesDB/deleteOrganizationBankRecord");
-exports.handler = (req, res) => {
+const handler = (req, res) => {
     const success = deleteOrganizationBankRecord_1.deleteOrganizationBankRecord(req.body.organizationID, req.body.recordIndex, req.session);
     if (success) {
         res.json({
@@ -17,3 +17,4 @@ exports.handler = (req, res) => {
         });
     }
 };
+exports.handler = handler;

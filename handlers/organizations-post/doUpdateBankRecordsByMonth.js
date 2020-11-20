@@ -10,7 +10,7 @@ const bankRecordIsBlank = (bankRecord) => {
     }
     return false;
 };
-exports.handler = (req, res) => {
+const handler = (req, res) => {
     const organizationID = parseInt(req.body.organizationID, 10);
     const accountNumber = req.body.accountNumber;
     const bankingYear = parseInt(req.body.bankingYear, 10);
@@ -67,3 +67,4 @@ exports.handler = (req, res) => {
         });
     }
 };
+exports.handler = handler;

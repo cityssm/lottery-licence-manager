@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getLicencesQuery = exports.getOrganizationRemindersQuery = exports.getOrganizationBankRecordsFlatQuery = void 0;
 const configFns = require("./configFns");
-exports.getOrganizationBankRecordsFlatQuery = (includeOrganizationIDFilter) => {
+const getOrganizationBankRecordsFlatQuery = (includeOrganizationIDFilter) => {
     const bankRecordTypes = configFns.getProperty("bankRecordTypes");
     const sql = "select b.organizationID, o.organizationName," +
         " b.accountNumber, b.bankingYear, b.bankingMonth" +
@@ -20,7 +20,8 @@ exports.getOrganizationBankRecordsFlatQuery = (includeOrganizationIDFilter) => {
         " group by b.organizationID, o.organizationName, b.accountNumber, b.bankingYear, b.bankingMonth";
     return sql;
 };
-exports.getOrganizationRemindersQuery = (includeOrganizationIDFilter) => {
+exports.getOrganizationBankRecordsFlatQuery = getOrganizationBankRecordsFlatQuery;
+const getOrganizationRemindersQuery = (includeOrganizationIDFilter) => {
     const reminderCategories = configFns.getProperty("reminderCategories");
     const sql = "select r.organizationID, o.organizationName," +
         " case reminderTypeKey" +
@@ -41,7 +42,8 @@ exports.getOrganizationRemindersQuery = (includeOrganizationIDFilter) => {
         (includeOrganizationIDFilter ? " and r.organizationID = ?" : "");
     return sql;
 };
-exports.getLicencesQuery = (options) => {
+exports.getOrganizationRemindersQuery = getOrganizationRemindersQuery;
+const getLicencesQuery = (options) => {
     const licenceTypes = configFns.getProperty("licenceTypes");
     const sql = "select" +
         " l.licenceID, l.externalLicenceNumber," +
@@ -65,3 +67,4 @@ exports.getLicencesQuery = (options) => {
         (options.includeLocationIDFilter ? " and l.locationID = ?" : "");
     return sql;
 };
+exports.getLicencesQuery = getLicencesQuery;

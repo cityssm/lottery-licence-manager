@@ -4,7 +4,7 @@ exports.getUserProperties = void 0;
 const sqlite = require("better-sqlite3");
 const databasePaths_1 = require("../../data/databasePaths");
 const configFns = require("../../helpers/configFns");
-exports.getUserProperties = (userName) => {
+const getUserProperties = (userName) => {
     const db = sqlite(databasePaths_1.usersDB, {
         readonly: true
     });
@@ -19,3 +19,4 @@ exports.getUserProperties = (userName) => {
     db.close();
     return userProperties;
 };
+exports.getUserProperties = getUserProperties;

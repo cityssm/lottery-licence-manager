@@ -4,7 +4,7 @@ exports.updateOrganizationBankRecord = void 0;
 const sqlite = require("better-sqlite3");
 const databasePaths_1 = require("../../data/databasePaths");
 const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
-exports.updateOrganizationBankRecord = (reqBody, reqSession) => {
+const updateOrganizationBankRecord = (reqBody, reqSession) => {
     const db = sqlite(databasePaths_1.licencesDB);
     const nowMillis = Date.now();
     const info = db.prepare("update OrganizationBankRecords" +
@@ -20,3 +20,4 @@ exports.updateOrganizationBankRecord = (reqBody, reqSession) => {
     db.close();
     return info.changes > 0;
 };
+exports.updateOrganizationBankRecord = updateOrganizationBankRecord;

@@ -2,10 +2,10 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getNextExternalLicenceNumberFromRange = void 0;
 const sqlite = require("better-sqlite3");
-const databasePaths_2 = require("../../data/databasePaths");
+const databasePaths_1 = require("../../data/databasePaths");
 const getApplicationSetting_1 = require("./getApplicationSetting");
-exports.getNextExternalLicenceNumberFromRange = () => {
-    const db = sqlite(databasePaths_2.licencesDB, {
+const getNextExternalLicenceNumberFromRange = () => {
+    const db = sqlite(databasePaths_1.licencesDB, {
         readonly: true
     });
     const rangeStartFromConfig = getApplicationSetting_1.getApplicationSettingWithDB(db, "licences.externalLicenceNumber.range.start");
@@ -30,3 +30,4 @@ exports.getNextExternalLicenceNumberFromRange = () => {
     }
     return newExternalLicenceNumber;
 };
+exports.getNextExternalLicenceNumberFromRange = getNextExternalLicenceNumberFromRange;

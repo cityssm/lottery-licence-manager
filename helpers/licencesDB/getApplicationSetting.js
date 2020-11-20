@@ -2,8 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getApplicationSetting = exports.getApplicationSettingWithDB = void 0;
 const sqlite = require("better-sqlite3");
-const databasePaths_2 = require("../../data/databasePaths");
-exports.getApplicationSettingWithDB = (db, settingKey) => {
+const databasePaths_1 = require("../../data/databasePaths");
+const getApplicationSettingWithDB = (db, settingKey) => {
     const row = db.prepare("select settingValue" +
         " from ApplicationSettings" +
         " where settingKey = ?")
@@ -13,11 +13,13 @@ exports.getApplicationSettingWithDB = (db, settingKey) => {
     }
     return "";
 };
-exports.getApplicationSetting = (settingKey) => {
-    const db = sqlite(databasePaths_2.licencesDB, {
+exports.getApplicationSettingWithDB = getApplicationSettingWithDB;
+const getApplicationSetting = (settingKey) => {
+    const db = sqlite(databasePaths_1.licencesDB, {
         readonly: true
     });
     const settingValue = exports.getApplicationSettingWithDB(db, settingKey);
     db.close();
     return settingValue;
 };
+exports.getApplicationSetting = getApplicationSetting;

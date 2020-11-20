@@ -81,7 +81,7 @@ exports.keepAliveMillis = getProperty("session.doKeepAlive")
     ? Math.max(getProperty("session.maxAgeMillis") / 2, getProperty("session.maxAgeMillis") - (10 * 60 * 1000))
     : 0;
 const reminderTypeCache = new Map();
-exports.getReminderType = (reminderTypeKey) => {
+const getReminderType = (reminderTypeKey) => {
     if (reminderTypeCache.size === 0) {
         for (const reminderCategory of getProperty("reminderCategories")) {
             for (const reminderType of reminderCategory.reminderTypes) {
@@ -92,9 +92,10 @@ exports.getReminderType = (reminderTypeKey) => {
     }
     return reminderTypeCache.get(reminderTypeKey);
 };
+exports.getReminderType = getReminderType;
 const licenceTypeCache = new Map();
 let licenceTypeKeyNameObject = {};
-exports.getLicenceType = (licenceTypeKey) => {
+const getLicenceType = (licenceTypeKey) => {
     if (!licenceTypeCache.has(licenceTypeKey)) {
         const licenceType = getProperty("licenceTypes")
             .find((ele) => ele.licenceTypeKey === licenceTypeKey);
@@ -102,7 +103,8 @@ exports.getLicenceType = (licenceTypeKey) => {
     }
     return licenceTypeCache.get(licenceTypeKey);
 };
-exports.getLicenceTypeKeyToNameObject = () => {
+exports.getLicenceType = getLicenceType;
+const getLicenceTypeKeyToNameObject = () => {
     if (Object.keys(licenceTypeKeyNameObject).length === 0) {
         const list = {};
         getProperty("licenceTypes")
@@ -115,3 +117,4 @@ exports.getLicenceTypeKeyToNameObject = () => {
     }
     return licenceTypeKeyNameObject;
 };
+exports.getLicenceTypeKeyToNameObject = getLicenceTypeKeyToNameObject;

@@ -4,7 +4,7 @@ exports.getInactiveLocations = void 0;
 const sqlite = require("better-sqlite3");
 const databasePaths_1 = require("../../data/databasePaths");
 const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
-exports.getInactiveLocations = (inactiveYears) => {
+const getInactiveLocations = (inactiveYears) => {
     const cutoffDate = new Date();
     cutoffDate.setFullYear(cutoffDate.getFullYear() - inactiveYears);
     const cutoffDateInteger = dateTimeFns.dateToInteger(cutoffDate);
@@ -52,3 +52,4 @@ exports.getInactiveLocations = (inactiveYears) => {
     }
     return rows;
 };
+exports.getInactiveLocations = getInactiveLocations;

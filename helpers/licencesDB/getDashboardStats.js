@@ -4,7 +4,7 @@ exports.getDashboardStats = void 0;
 const sqlite = require("better-sqlite3");
 const databasePaths_1 = require("../../data/databasePaths");
 const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
-exports.getDashboardStats = () => {
+const getDashboardStats = () => {
     const windowDate = new Date();
     const currentDateInteger = dateTimeFns.dateToInteger(windowDate);
     windowDate.setDate(windowDate.getDate() + 7);
@@ -93,3 +93,4 @@ exports.getDashboardStats = () => {
     };
     return result;
 };
+exports.getDashboardStats = getDashboardStats;

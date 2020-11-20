@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getOrganizationBankRecordStats = exports.getOrganizationBankRecords = exports.deleteOrganizationRemark = exports.updateOrganizationRemark = exports.getOrganizationRemark = exports.setDefaultOrganizationRepresentative = exports.deleteOrganizationRepresentative = exports.getDeletedOrganizations = exports.getInactiveOrganizations = exports.restoreOrganization = exports.deleteOrganization = exports.updateOrganization = exports.createOrganization = void 0;
-const licencesDB_1 = require("./licencesDB");
+exports.getOrganizationBankRecordStats = exports.getOrganizationBankRecords = exports.setDefaultOrganizationRepresentative = exports.deleteOrganizationRepresentative = exports.getDeletedOrganizations = exports.getInactiveOrganizations = exports.restoreOrganization = exports.deleteOrganization = exports.updateOrganization = exports.createOrganization = void 0;
 const sqlite = require("better-sqlite3");
 const databasePaths_1 = require("../data/databasePaths");
 const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
@@ -143,59 +142,6 @@ const setDefaultOrganizationRepresentative = (organizationID, representativeInde
     return true;
 };
 exports.setDefaultOrganizationRepresentative = setDefaultOrganizationRepresentative;
-const getOrganizationRemark = (organizationID, remarkIndex, reqSession) => {
-    const db = sqlite(databasePaths_1.licencesDB, {
-        readonly: true
-    });
-    const remark = db.prepare("select" +
-        " remarkDate, remarkTime," +
-        " remark, isImportant," +
-        " recordCreate_userName, recordCreate_timeMillis, recordUpdate_userName, recordUpdate_timeMillis" +
-        " from OrganizationRemarks" +
-        " where recordDelete_timeMillis is null" +
-        " and organizationID = ?" +
-        " and remarkIndex = ?")
-        .get(organizationID, remarkIndex);
-    db.close();
-    remark.recordType = "remark";
-    remark.remarkDateString = dateTimeFns.dateIntegerToString(remark.remarkDate || 0);
-    remark.remarkTimeString = dateTimeFns.timeIntegerToString(remark.remarkTime || 0);
-    remark.canUpdate = licencesDB_1.canUpdateObject(remark, reqSession);
-    return remark;
-};
-exports.getOrganizationRemark = getOrganizationRemark;
-const updateOrganizationRemark = (reqBody, reqSession) => {
-    const db = sqlite(databasePaths_1.licencesDB);
-    const nowMillis = Date.now();
-    const info = db.prepare("update OrganizationRemarks" +
-        " set remarkDate = ?," +
-        " remarkTime = ?," +
-        " remark = ?," +
-        " isImportant = ?," +
-        " recordUpdate_userName = ?," +
-        " recordUpdate_timeMillis = ?" +
-        " where organizationID = ?" +
-        " and remarkIndex = ?" +
-        " and recordDelete_timeMillis is null")
-        .run(dateTimeFns.dateStringToInteger(reqBody.remarkDateString), dateTimeFns.timeStringToInteger(reqBody.remarkTimeString), reqBody.remark, reqBody.isImportant ? 1 : 0, reqSession.user.userName, nowMillis, reqBody.organizationID, reqBody.remarkIndex);
-    db.close();
-    return info.changes > 0;
-};
-exports.updateOrganizationRemark = updateOrganizationRemark;
-const deleteOrganizationRemark = (organizationID, remarkIndex, reqSession) => {
-    const db = sqlite(databasePaths_1.licencesDB);
-    const nowMillis = Date.now();
-    const info = db.prepare("update OrganizationRemarks" +
-        " set recordDelete_userName = ?," +
-        " recordDelete_timeMillis = ?" +
-        " where organizationID = ?" +
-        " and remarkIndex = ?" +
-        " and recordDelete_timeMillis is null")
-        .run(reqSession.user.userName, nowMillis, organizationID, remarkIndex);
-    db.close();
-    return info.changes > 0;
-};
-exports.deleteOrganizationRemark = deleteOrganizationRemark;
 const getOrganizationBankRecords = (organizationID, accountNumber, bankingYear) => {
     const db = sqlite(databasePaths_1.licencesDB, {
         readonly: true

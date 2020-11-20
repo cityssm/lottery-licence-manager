@@ -15,7 +15,10 @@ import { handler as handler_doAddRepresentative } from "../handlers/organization
 import { handler as handler_doUpdateRepresentative } from "../handlers/organizations-post/doUpdateRepresentative";
 
 import { handler as handler_doGetRemarks } from "../handlers/organizations-post/doGetRemarks";
+import { handler as handler_doGetRemark } from "../handlers/organizations-post/doGetRemark";
 import { handler as handler_doAddRemark } from "../handlers/organizations-post/doAddRemark";
+import { handler as handler_doEditRemark } from "../handlers/organizations-post/doEditRemark";
+import { handler as handler_doDeleteRemark } from "../handlers/organizations-post/doDeleteRemark";
 
 import { handler as handler_reminders } from "../handlers/organizations-get/reminders";
 import { handler as handler_doGetReminders } from "../handlers/organizations-post/doGetReminders";
@@ -122,14 +125,7 @@ router.get("/recovery", (req, res) => {
 router.post("/doGetRemarks", handler_doGetRemarks);
 
 
-router.post("/doGetRemark", (req, res) => {
-
-  const organizationID = req.body.organizationID;
-  const remarkIndex = req.body.remarkIndex;
-
-  res.json(licencesDBOrganizations.getOrganizationRemark(organizationID, remarkIndex, req.session));
-
-});
+router.post("/doGetRemark", handler_doGetRemark);
 
 
 router.post("/doAddRemark",
@@ -137,59 +133,14 @@ router.post("/doAddRemark",
   handler_doAddRemark);
 
 
-router.post("/doEditRemark", (req, res) => {
-
-  if (!userCanCreate(req)) {
-    return forbiddenJSON(res);
-  }
-
-  const success = licencesDBOrganizations.updateOrganizationRemark(req.body, req.session);
-
-  if (success) {
-
-    res.json({
-      success: true,
-      message: "Remark updated successfully."
-    });
-
-  } else {
-
-    res.json({
-      success: false,
-      message: "Remark could not be updated."
-    });
-  }
-});
+router.post("/doEditRemark",
+  permissionHandlers.createPostHandler,
+  handler_doEditRemark);
 
 
-router.post("/doDeleteRemark", (req, res) => {
-
-  if (!userCanCreate(req)) {
-    return forbiddenJSON(res);
-  }
-
-  const organizationID = req.body.organizationID;
-  const remarkIndex = req.body.remarkIndex;
-
-  const success = licencesDBOrganizations.deleteOrganizationRemark(organizationID, remarkIndex, req.session);
-
-  if (success) {
-
-    res.json({
-      success: true,
-      message: "Remark deleted successfully."
-    });
-
-  } else {
-
-    res.json({
-      success: false,
-      message: "Remark could not be deleted."
-    });
-
-  }
-
-});
+router.post("/doDeleteRemark",
+  permissionHandlers.createPostHandler,
+  handler_doDeleteRemark);
 
 
 /*

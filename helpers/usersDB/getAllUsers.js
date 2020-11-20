@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getAllUsers = void 0;
 const sqlite = require("better-sqlite3");
 const databasePaths_1 = require("../../data/databasePaths");
-exports.getAllUsers = () => {
+const getAllUsers = () => {
     const db = sqlite(databasePaths_1.usersDB, {
         readonly: true
     });
@@ -15,3 +15,4 @@ exports.getAllUsers = () => {
     db.close();
     return rows;
 };
+exports.getAllUsers = getAllUsers;

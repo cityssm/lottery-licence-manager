@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.forbiddenJSON = exports.getHashString = exports.userCanCreate = exports.userCanUpdate = exports.userIsAdmin = void 0;
-exports.userIsAdmin = (req) => {
+const userIsAdmin = (req) => {
     var _a;
     const user = (_a = req.session) === null || _a === void 0 ? void 0 : _a.user;
     if (!user) {
@@ -9,7 +9,8 @@ exports.userIsAdmin = (req) => {
     }
     return user.userProperties.isAdmin;
 };
-exports.userCanUpdate = (req) => {
+exports.userIsAdmin = userIsAdmin;
+const userCanUpdate = (req) => {
     var _a;
     const user = (_a = req.session) === null || _a === void 0 ? void 0 : _a.user;
     if (!user) {
@@ -17,7 +18,8 @@ exports.userCanUpdate = (req) => {
     }
     return user.userProperties.canUpdate;
 };
-exports.userCanCreate = (req) => {
+exports.userCanUpdate = userCanUpdate;
+const userCanCreate = (req) => {
     var _a;
     const user = (_a = req.session) === null || _a === void 0 ? void 0 : _a.user;
     if (!user) {
@@ -25,10 +27,12 @@ exports.userCanCreate = (req) => {
     }
     return user.userProperties.canCreate;
 };
-exports.getHashString = (userName, passwordPlain) => {
+exports.userCanCreate = userCanCreate;
+const getHashString = (userName, passwordPlain) => {
     return userName + "::" + passwordPlain;
 };
-exports.forbiddenJSON = (res) => {
+exports.getHashString = getHashString;
+const forbiddenJSON = (res) => {
     return res
         .status(403)
         .json({
@@ -36,3 +40,4 @@ exports.forbiddenJSON = (res) => {
         message: "Forbidden"
     });
 };
+exports.forbiddenJSON = forbiddenJSON;
