@@ -5,7 +5,7 @@ orbs:
   code-climate: travelaudience/code-climate@0.1.1
 
 jobs:
-  test-fe:
+  cc-cov:
     executor: build-executor
     environment:
         NODE_ENV: test
@@ -28,3 +28,4 @@ workflows:
   node-tests:
     jobs:
       - node/test
+      - cc-cov
