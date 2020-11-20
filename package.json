@@ -2,7 +2,8 @@
   "name": "lottery-licence-manager",
   "version": "0.12.0-dev",
   "scripts": {
-    "start": "node ./bin/www",
+    "start": "cross-env NODE_ENV=production supervisor ./bin/www",
+    "dev": "cross-env NODE_ENV=dev supervisor ./bin/www",
     "test": "mocha",
     "coverage": "nyc --reporter=lcov --reporter=text --reporter=text-summary mocha"
   },
@@ -25,6 +26,7 @@
     "compression": "^1.7.4",
     "connect-sqlite3": "^0.9.11",
     "cookie-parser": "^1.4.5",
+    "cross-env": "^7.0.2",
     "csurf": "^1.11.0",
     "ejs": "^3.1.5",
     "express": "^4.17.1",
@@ -35,7 +37,8 @@
     "marked": "^1.2.5",
     "morgan": "^1.10.0",
     "pdf-puppeteer": "^1.1.10",
-    "sanitize-filename": "^1.6.3"
+    "sanitize-filename": "^1.6.3",
+    "supervisor": "^0.12.0"
   },
   "devDependencies": {
     "@cityssm/bulma-webapp-css": "^0.4.2",
