@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.handler = void 0;
-const licencesDB_getLocations = require("../../helpers/licencesDB/getLocations");
-exports.handler = (req, res) => {
-    const locations = licencesDB_getLocations.getLocations(req.session, {
+const getLocations_1 = require("../../helpers/licencesDB/getLocations");
+const handler = (req, res) => {
+    const locations = getLocations_1.getLocations(req.session, {
         limit: req.body.limit || -1,
         offset: req.body.offset || 0,
         locationNameAddress: req.body.locationNameAddress,
@@ -17,3 +17,4 @@ exports.handler = (req, res) => {
     });
     res.json(locations);
 };
+exports.handler = handler;

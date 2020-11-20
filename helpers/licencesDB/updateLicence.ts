@@ -8,6 +8,8 @@ import { getLicenceWithDB } from "./getLicence";
 import { addLicenceAmendmentWithDB } from "./addLicenceAmendment";
 import { resetLicenceTableStats, resetEventTableStats } from "../licencesDB";
 
+import type * as expressSession from "express-session";
+
 
 export interface LotteryLicenceForm {
   licenceID?: string;
@@ -40,7 +42,7 @@ export interface LotteryLicenceForm {
 }
 
 
-export const updateLicence = (reqBody: LotteryLicenceForm, reqSession: Express.SessionData): boolean => {
+export const updateLicence = (reqBody: LotteryLicenceForm, reqSession: expressSession.Session): boolean => {
 
   // Check if can update
 

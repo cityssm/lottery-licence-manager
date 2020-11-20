@@ -1,4 +1,4 @@
-*.xd.ts
+*.d.ts
 *.db-journal
 *.min.js
 app.js

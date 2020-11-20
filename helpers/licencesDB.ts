@@ -8,13 +8,15 @@ import { RawRowsColumnsReturn } from "@cityssm/expressjs-server-js/types";
 
 import { licencesDB as dbPath } from "../data/databasePaths";
 
+import type * as expressSession from "express-session";
+
 
 /*
  * REUSED FUNCTIONS
  */
 
 
-export const canUpdateObject = (obj: llm.Record, reqSession: Express.SessionData) => {
+export const canUpdateObject = (obj: llm.Record, reqSession: expressSession.Session) => {
 
   const userProperties: llm.UserProperties = reqSession.user.userProperties;
 
@@ -250,7 +252,7 @@ export const getLicenceTypeSummary = (reqBody: {
 export const getActiveLicenceSummary = (reqBody: {
   startEndDateStartString: string;
   startEndDateEndString: string;
-}, reqSession: Express.SessionData) => {
+}, reqSession: expressSession.Session) => {
 
   const db = sqlite(dbPath, {
     readonly: true
@@ -342,7 +344,7 @@ export const getEvents = (reqBody: {
   organizationName?: string;
   locationName?: string;
   eventYear?: string;
-}, reqSession: Express.SessionData) => {
+}, reqSession: expressSession.Session) => {
 
   const db = sqlite(dbPath, {
     readonly: true
@@ -430,7 +432,7 @@ export const getEvents = (reqBody: {
 };
 
 
-export const getRecentlyUpdateEvents = (reqSession: Express.SessionData) => {
+export const getRecentlyUpdateEvents = (reqSession: expressSession.Session) => {
 
   const db = sqlite(dbPath, {
     readonly: true
@@ -475,7 +477,7 @@ export const getRecentlyUpdateEvents = (reqSession: Express.SessionData) => {
 export const getOutstandingEvents = (reqBody: {
   eventDateType?: string;
   licenceTypeKey?: string;
-}, reqSession: Express.SessionData) => {
+}, reqSession: expressSession.Session) => {
 
   const db = sqlite(dbPath, {
     readonly: true
@@ -657,7 +659,7 @@ export const updateEvent = (reqBody: {
   costs_prizesAwarded: string;
   costs_amountDonated: string;
   fieldKeys: string;
-}, reqSession: Express.SessionData): boolean => {
+}, reqSession: expressSession.Session): boolean => {
 
   const db = sqlite(dbPath);
 
@@ -737,7 +739,7 @@ export const updateEvent = (reqBody: {
 /**
  * @returns TRUE if successful
  */
-export const deleteEvent = (licenceID: number, eventDate: number, reqSession: Express.SessionData) => {
+export const deleteEvent = (licenceID: number, eventDate: number, reqSession: expressSession.Session) => {
 
   const db = sqlite(dbPath);
 

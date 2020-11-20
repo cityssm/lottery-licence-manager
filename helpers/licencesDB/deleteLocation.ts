@@ -2,8 +2,10 @@ import * as sqlite from "better-sqlite3";
 
 import { licencesDB as dbPath } from "../../data/databasePaths";
 
+import type * as expressSession from "express-session";
 
-export const deleteLocation = (locationID: number, reqSession: Express.SessionData): boolean => {
+
+export const deleteLocation = (locationID: number, reqSession: expressSession.Session): boolean => {
 
   const db = sqlite(dbPath);
 

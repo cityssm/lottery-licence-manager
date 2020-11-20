@@ -8,7 +8,7 @@ const configFns = require("../configFns");
 const getLicence_1 = require("./getLicence");
 const addLicenceAmendment_1 = require("./addLicenceAmendment");
 const licencesDB_1 = require("../licencesDB");
-exports.updateLicence = (reqBody, reqSession) => {
+const updateLicence = (reqBody, reqSession) => {
     const db = sqlite(databasePaths_1.licencesDB);
     const pastLicenceObj = getLicence_1.getLicenceWithDB(db, reqBody.licenceID, reqSession, {
         includeTicketTypes: true,
@@ -271,3 +271,4 @@ exports.updateLicence = (reqBody, reqSession) => {
     licencesDB_1.resetEventTableStats();
     return changeCount > 0;
 };
+exports.updateLicence = updateLicence;

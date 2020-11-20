@@ -1,2 +1,3 @@
 import type * as llm from "../../types/recordTypes";
-export declare const getOrganization: (organizationID: number, reqSession: any) => llm.Organization;
+import type * as expressSession from "express-session";
+export declare const getOrganization: (organizationID: number, reqSession: expressSession.Session) => llm.Organization;

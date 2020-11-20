@@ -6,7 +6,7 @@ const databasePaths_1 = require("../../data/databasePaths");
 const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
 const getLicence_1 = require("./getLicence");
 const addLicenceAmendment_1 = require("./addLicenceAmendment");
-exports.addTransaction = (reqBody, reqSession) => {
+const addTransaction = (reqBody, reqSession) => {
     const db = sqlite(databasePaths_1.licencesDB);
     const licenceObj = getLicence_1.getLicenceWithDB(db, reqBody.licenceID, reqSession, {
         includeTicketTypes: false,
@@ -49,3 +49,4 @@ exports.addTransaction = (reqBody, reqSession) => {
     db.close();
     return newTransactionIndex;
 };
+exports.addTransaction = addTransaction;

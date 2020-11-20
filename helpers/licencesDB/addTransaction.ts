@@ -6,6 +6,8 @@ import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns";
 import { getLicenceWithDB } from "./getLicence";
 import { addLicenceAmendmentWithDB } from "./addLicenceAmendment";
 
+import type * as expressSession from "express-session";
+
 
 export const addTransaction = (reqBody: {
   licenceID: string;
@@ -13,7 +15,7 @@ export const addTransaction = (reqBody: {
   transactionNote: string;
   externalReceiptNumber: string;
   issueLicence: "" | "true";
-}, reqSession: Express.SessionData) => {
+}, reqSession: expressSession.Session) => {
 
   const db = sqlite(dbPath);
 

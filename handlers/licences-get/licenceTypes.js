@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.handler = void 0;
 const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
 const licencesDB = require("../../helpers/licencesDB");
-exports.handler = (_req, res) => {
+const handler = (_req, res) => {
     const licenceTableStats = licencesDB.getLicenceTableStats();
     const applicationDate = new Date();
     applicationDate.setMonth(applicationDate.getMonth() - 1);
@@ -19,3 +19,4 @@ exports.handler = (_req, res) => {
         applicationDateEndString
     });
 };
+exports.handler = handler;

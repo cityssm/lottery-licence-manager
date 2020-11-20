@@ -3,8 +3,10 @@ import { licencesDB as dbPath } from "../../data/databasePaths";
 
 import { addLicenceAmendmentWithDB } from "./addLicenceAmendment";
 
+import type * as expressSession from "express-session";
 
-export const unissueLicence = (licenceID: number, reqSession: Express.SessionData) => {
+
+export const unissueLicence = (licenceID: number, reqSession: expressSession.Session) => {
 
   const db = sqlite(dbPath);
 

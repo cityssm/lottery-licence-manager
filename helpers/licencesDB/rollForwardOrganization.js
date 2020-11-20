@@ -8,7 +8,7 @@ const deleteOrganizationReminder_1 = require("./deleteOrganizationReminder");
 const addOrganizationReminder_1 = require("./addOrganizationReminder");
 const configFns = require("../configFns");
 const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
-exports.rollForwardOrganization = (organizationID, updateFiscalYear, updateReminders, reqSession) => {
+const rollForwardOrganization = (organizationID, updateFiscalYear, updateReminders, reqSession) => {
     const rightNowMillis = Date.now();
     const db = sqlite(databasePaths_1.licencesDB);
     const organizationRow = db.prepare("select fiscalStartDate, fiscalEndDate" +
@@ -80,3 +80,4 @@ exports.rollForwardOrganization = (organizationID, updateFiscalYear, updateRemin
         success: true
     };
 };
+exports.rollForwardOrganization = rollForwardOrganization;

@@ -5,10 +5,11 @@ import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns";
 import { canUpdateObject } from "../licencesDB";
 
 import type * as llm from "../../types/recordTypes";
+import type * as expressSession from "express-session";
 
 
 export const getLicenceWithDB = (db: sqlite.Database, licenceID: number | string,
-  reqSession: Express.SessionData,
+  reqSession: expressSession.Session,
   queryOptions: {
     includeTicketTypes: boolean;
     includeFields: boolean;
@@ -181,7 +182,7 @@ export const getLicenceWithDB = (db: sqlite.Database, licenceID: number | string
 };
 
 
-export const getLicence = (licenceID: number, reqSession: Express.SessionData): llm.LotteryLicence => {
+export const getLicence = (licenceID: number, reqSession: expressSession.Session): llm.LotteryLicence => {
 
   const db = sqlite(dbPath, {
     readonly: true

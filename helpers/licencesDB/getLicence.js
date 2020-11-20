@@ -5,7 +5,7 @@ const sqlite = require("better-sqlite3");
 const databasePaths_1 = require("../../data/databasePaths");
 const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
 const licencesDB_1 = require("../licencesDB");
-exports.getLicenceWithDB = (db, licenceID, reqSession, queryOptions) => {
+const getLicenceWithDB = (db, licenceID, reqSession, queryOptions) => {
     const licenceObj = db.prepare("select l.*," +
         " lo.locationName, lo.locationAddress1" +
         " from LotteryLicences l" +
@@ -106,7 +106,8 @@ exports.getLicenceWithDB = (db, licenceID, reqSession, queryOptions) => {
     }
     return licenceObj;
 };
-exports.getLicence = (licenceID, reqSession) => {
+exports.getLicenceWithDB = getLicenceWithDB;
+const getLicence = (licenceID, reqSession) => {
     const db = sqlite(databasePaths_1.licencesDB, {
         readonly: true
     });
@@ -120,3 +121,4 @@ exports.getLicence = (licenceID, reqSession) => {
     db.close();
     return licenceObj;
 };
+exports.getLicence = getLicence;

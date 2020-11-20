@@ -1,6 +1,6 @@
 import type { RequestHandler } from "express";
 
-import * as licencesDB_unissueLicence from "../../helpers/licencesDB/unissueLicence";
+import { unissueLicence } from "../../helpers/licencesDB/unissueLicence";
 
 
 export const handler: RequestHandler = (req, res) => {
@@ -17,7 +17,7 @@ export const handler: RequestHandler = (req, res) => {
 
   }
 
-  const success = licencesDB_unissueLicence.unissueLicence(req.body.licenceID, req.session);
+  const success = unissueLicence(req.body.licenceID, req.session);
 
   if (success) {
 

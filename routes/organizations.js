@@ -13,7 +13,10 @@ const doGetRemarks_1 = require("../handlers/organizations-post/doGetRemarks");
 const doAddRemark_1 = require("../handlers/organizations-post/doAddRemark");
 const reminders_1 = require("../handlers/organizations-get/reminders");
 const doGetReminders_1 = require("../handlers/organizations-post/doGetReminders");
+const doGetReminder_1 = require("../handlers/organizations-post/doGetReminder");
 const doAddReminder_1 = require("../handlers/organizations-post/doAddReminder");
+const doEditReminder_1 = require("../handlers/organizations-post/doEditReminder");
+const doDismissReminder_1 = require("../handlers/organizations-post/doDismissReminder");
 const doDeleteReminder_1 = require("../handlers/organizations-post/doDeleteReminder");
 const doAddBankRecord_1 = require("../handlers/organizations-post/doAddBankRecord");
 const doEditBankRecord_1 = require("../handlers/organizations-post/doEditBankRecord");
@@ -93,50 +96,10 @@ router.post("/doDeleteRemark", (req, res) => {
     }
 });
 router.post("/doGetReminders", doGetReminders_1.handler);
-router.post("/doGetReminder", (req, res) => {
-    const organizationID = req.body.organizationID;
-    const reminderIndex = req.body.reminderIndex;
-    res.json(licencesDBOrganizations.getOrganizationReminder(organizationID, reminderIndex, req.session));
-});
+router.post("/doGetReminder", doGetReminder_1.handler);
 router.post("/doAddReminder", permissionHandlers.createPostHandler, doAddReminder_1.handler);
-router.post("/doEditReminder", (req, res) => {
-    if (!userFns_1.userCanCreate(req)) {
-        return userFns_1.forbiddenJSON(res);
-    }
-    const success = licencesDBOrganizations.updateOrganizationReminder(req.body, req.session);
-    if (success) {
-        const reminder = licencesDBOrganizations.getOrganizationReminder(req.body.organizationID, req.body.reminderIndex, req.session);
-        return res.json({
-            success: true,
-            reminder
-        });
-    }
-    else {
-        res.json({ success: false });
-    }
-});
-router.post("/doDismissReminder", (req, res) => {
-    if (!userFns_1.userCanCreate(req)) {
-        return userFns_1.forbiddenJSON(res);
-    }
-    const organizationID = req.body.organizationID;
-    const reminderIndex = req.body.reminderIndex;
-    const success = licencesDBOrganizations.dismissOrganizationReminder(organizationID, reminderIndex, req.session);
-    if (success) {
-        const reminder = licencesDBOrganizations.getOrganizationReminder(req.body.organizationID, req.body.reminderIndex, req.session);
-        res.json({
-            success: true,
-            message: "Reminder dismissed.",
-            reminder
-        });
-    }
-    else {
-        res.json({
-            success: false,
-            message: "Reminder could not be dismissed."
-        });
-    }
-});
+router.post("/doEditReminder", permissionHandlers.createPostHandler, doEditReminder_1.handler);
+router.post("/doDismissReminder", permissionHandlers.createPostHandler, doDismissReminder_1.handler);
 router.post("/doDeleteReminder", permissionHandlers.createPostHandler, doDeleteReminder_1.handler);
 router.post("/doGetBankRecords", (req, res) => {
     const organizationID = req.body.organizationID;

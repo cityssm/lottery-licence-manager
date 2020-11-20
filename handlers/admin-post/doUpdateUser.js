@@ -1,10 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.handler = void 0;
-const usersDB_updateUser = require("../../helpers/usersDB/updateUser");
-exports.handler = (req, res) => {
-    const changeCount = usersDB_updateUser.updateUser(req.body);
+const updateUser_1 = require("../../helpers/usersDB/updateUser");
+const handler = (req, res) => {
+    const changeCount = updateUser_1.updateUser(req.body);
     res.json({
         success: (changeCount === 1)
     });
 };
+exports.handler = handler;

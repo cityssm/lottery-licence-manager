@@ -1,3 +1,4 @@
+import type * as expressSession from "express-session";
 export interface LotteryLicenceForm {
     licenceID?: string;
     externalLicenceNumber: string;
@@ -24,4 +25,4 @@ export interface LotteryLicenceForm {
     fieldKeys: string;
     licenceFee?: string;
 }
-export declare const updateLicence: (reqBody: LotteryLicenceForm, reqSession: any) => boolean;
+export declare const updateLicence: (reqBody: LotteryLicenceForm, reqSession: expressSession.Session) => boolean;

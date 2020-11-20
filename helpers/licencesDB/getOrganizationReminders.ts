@@ -6,6 +6,7 @@ import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns";
 import { canUpdateObject } from "../licencesDB";
 
 import type * as llm from "../../types/recordTypes";
+import type * as expressSession from "express-session";
 
 
 const reminderTypeOrdering: { [reminderTypeKey: string]: number } = {};
@@ -79,7 +80,7 @@ const sortFn_byConfig = (reminderA: llm.OrganizationReminder, reminderB: llm.Org
 };
 
 
-export const getOrganizationRemindersWithDB = (db: sqlite.Database, organizationID: number, reqSession: Express.SessionData) => {
+export const getOrganizationRemindersWithDB = (db: sqlite.Database, organizationID: number, reqSession: expressSession.Session) => {
 
   const reminders: llm.OrganizationReminder[] =
     db.prepare("select reminderIndex," +
@@ -116,7 +117,7 @@ export const getOrganizationRemindersWithDB = (db: sqlite.Database, organization
 };
 
 
-export const getOrganizationReminders = (organizationID: number, reqSession: Express.SessionData) => {
+export const getOrganizationReminders = (organizationID: number, reqSession: expressSession.Session) => {
 
   const db = sqlite(dbPath, {
     readonly: true

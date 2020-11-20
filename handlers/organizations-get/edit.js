@@ -2,13 +2,13 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.handler = void 0;
 const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
-const licencesDB_getLicences = require("../../helpers/licencesDB/getLicences");
-const licencesDB_getOrganization = require("../../helpers/licencesDB/getOrganization");
-const licencesDB_getOrganizationRemarks = require("../../helpers/licencesDB/getOrganizationRemarks");
-const licencesDB_getOrganizationReminders = require("../../helpers/licencesDB/getOrganizationReminders");
-exports.handler = (req, res) => {
+const getLicences_1 = require("../../helpers/licencesDB/getLicences");
+const getOrganization_1 = require("../../helpers/licencesDB/getOrganization");
+const getOrganizationRemarks_1 = require("../../helpers/licencesDB/getOrganizationRemarks");
+const getOrganizationReminders_1 = require("../../helpers/licencesDB/getOrganizationReminders");
+const handler = (req, res) => {
     const organizationID = parseInt(req.params.organizationID, 10);
-    const organization = licencesDB_getOrganization.getOrganization(organizationID, req.session);
+    const organization = getOrganization_1.getOrganization(organizationID, req.session);
     if (!organization) {
         res.redirect("/organizations/?error=organizationNotFound");
         return;
@@ -17,14 +17,14 @@ exports.handler = (req, res) => {
         res.redirect("/organizations/" + organizationID.toString() + "/?error=accessDenied-noUpdate");
         return;
     }
-    const licences = licencesDB_getLicences.getLicences({
+    const licences = getLicences_1.getLicences({
         organizationID
     }, req.session, {
         includeOrganization: false,
         limit: -1
     }).licences || [];
-    const remarks = licencesDB_getOrganizationRemarks.getOrganizationRemarks(organizationID, req.session) || [];
-    const reminders = licencesDB_getOrganizationReminders.getOrganizationReminders(organizationID, req.session) || [];
+    const remarks = getOrganizationRemarks_1.getOrganizationRemarks(organizationID, req.session) || [];
+    const reminders = getOrganizationReminders_1.getOrganizationReminders(organizationID, req.session) || [];
     res.render("organization-edit", {
         headTitle: "Organization Update",
         isViewOnly: false,
@@ -36,3 +36,4 @@ exports.handler = (req, res) => {
         currentDateInteger: dateTimeFns.dateToInteger(new Date())
     });
 };
+exports.handler = handler;

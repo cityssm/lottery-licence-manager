@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.handler = void 0;
 const updateOrganizationRepresentative_1 = require("../../helpers/licencesDB/updateOrganizationRepresentative");
-exports.handler = (req, res) => {
+const handler = (req, res) => {
     const organizationID = parseInt(req.params.organizationID, 10);
     const representativeObj = updateOrganizationRepresentative_1.updateOrganizationRepresentative(organizationID, req.body);
     if (representativeObj) {
@@ -17,3 +17,4 @@ exports.handler = (req, res) => {
         });
     }
 };
+exports.handler = handler;

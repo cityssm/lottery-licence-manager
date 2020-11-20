@@ -1,6 +1,6 @@
-import { addOrganizationRepresentative } from "../../helpers/licencesDB/addOrganizationRepresentative";
-
 import type { RequestHandler } from "express";
+
+import { addOrganizationRepresentative } from "../../helpers/licencesDB/addOrganizationRepresentative";
 
 
 export const handler: RequestHandler = (req, res) => {
@@ -21,6 +21,5 @@ export const handler: RequestHandler = (req, res) => {
     res.json({
       success: false
     });
-
   }
 };

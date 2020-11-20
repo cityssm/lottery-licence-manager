@@ -5,9 +5,10 @@ import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns";
 import { canUpdateObject } from "../licencesDB";
 
 import type * as llm from "../../types/recordTypes";
+import type * as expressSession from "express-session";
 
 
-export const getOrganization = (organizationID: number, reqSession: Express.SessionData): llm.Organization => {
+export const getOrganization = (organizationID: number, reqSession: expressSession.Session): llm.Organization => {
 
   const db = sqlite(dbPath, {
     readonly: true

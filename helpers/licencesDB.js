@@ -5,7 +5,7 @@ const sqlite = require("better-sqlite3");
 const configFns = require("./configFns");
 const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
 const databasePaths_1 = require("../data/databasePaths");
-exports.canUpdateObject = (obj, reqSession) => {
+const canUpdateObject = (obj, reqSession) => {
     const userProperties = reqSession.user.userProperties;
     let canUpdate = false;
     if (!reqSession) {
@@ -45,7 +45,8 @@ exports.canUpdateObject = (obj, reqSession) => {
     }
     return canUpdate;
 };
-exports.getRawRowsColumns = (sql, params) => {
+exports.canUpdateObject = canUpdateObject;
+const getRawRowsColumns = (sql, params) => {
     const db = sqlite(databasePaths_1.licencesDB, {
         readonly: true
     });
@@ -60,23 +61,26 @@ exports.getRawRowsColumns = (sql, params) => {
         columns
     };
 };
+exports.getRawRowsColumns = getRawRowsColumns;
 let licenceTableStats = {
     applicationYearMin: 1990,
     startYearMin: 1990,
     endYearMax: new Date().getFullYear() + 1
 };
 let licenceTableStatsExpiryMillis = -1;
-exports.resetEventTableStats = () => {
+const resetEventTableStats = () => {
     eventTableStatsExpiryMillis = -1;
 };
-exports.resetLicenceTableStats = () => {
+exports.resetEventTableStats = resetEventTableStats;
+const resetLicenceTableStats = () => {
     licenceTableStatsExpiryMillis = -1;
 };
+exports.resetLicenceTableStats = resetLicenceTableStats;
 let eventTableStats = {
     eventYearMin: 1970
 };
 let eventTableStatsExpiryMillis = -1;
-exports.getLicenceTableStats = () => {
+const getLicenceTableStats = () => {
     if (Date.now() < licenceTableStatsExpiryMillis) {
         return licenceTableStats;
     }
@@ -94,7 +98,8 @@ exports.getLicenceTableStats = () => {
     db.close();
     return licenceTableStats;
 };
-exports.getLicenceTypeSummary = (reqBody) => {
+exports.getLicenceTableStats = getLicenceTableStats;
+const getLicenceTypeSummary = (reqBody) => {
     const db = sqlite(databasePaths_1.licencesDB, {
         readonly: true
     });
@@ -139,7 +144,8 @@ exports.getLicenceTypeSummary = (reqBody) => {
     }
     return rows;
 };
-exports.getActiveLicenceSummary = (reqBody, reqSession) => {
+exports.getLicenceTypeSummary = getLicenceTypeSummary;
+const getActiveLicenceSummary = (reqBody, reqSession) => {
     const db = sqlite(databasePaths_1.licencesDB, {
         readonly: true
     });
@@ -176,7 +182,8 @@ exports.getActiveLicenceSummary = (reqBody, reqSession) => {
     }
     return licences;
 };
-exports.getEventTableStats = () => {
+exports.getActiveLicenceSummary = getActiveLicenceSummary;
+const getEventTableStats = () => {
     if (Date.now() < eventTableStatsExpiryMillis) {
         return eventTableStats;
     }
@@ -194,7 +201,8 @@ exports.getEventTableStats = () => {
     db.close();
     return eventTableStats;
 };
-exports.getEvents = (reqBody, reqSession) => {
+exports.getEventTableStats = getEventTableStats;
+const getEvents = (reqBody, reqSession) => {
     const db = sqlite(databasePaths_1.licencesDB, {
         readonly: true
     });
@@ -255,7 +263,8 @@ exports.getEvents = (reqBody, reqSession) => {
     }
     return events;
 };
-exports.getRecentlyUpdateEvents = (reqSession) => {
+exports.getEvents = getEvents;
+const getRecentlyUpdateEvents = (reqSession) => {
     const db = sqlite(databasePaths_1.licencesDB, {
         readonly: true
     });
@@ -284,7 +293,8 @@ exports.getRecentlyUpdateEvents = (reqSession) => {
     }
     return events;
 };
-exports.getOutstandingEvents = (reqBody, reqSession) => {
+exports.getRecentlyUpdateEvents = getRecentlyUpdateEvents;
+const getOutstandingEvents = (reqBody, reqSession) => {
     const db = sqlite(databasePaths_1.licencesDB, {
         readonly: true
     });
@@ -332,7 +342,8 @@ exports.getOutstandingEvents = (reqBody, reqSession) => {
     }
     return events;
 };
-exports.getEventFinancialSummary = (reqBody) => {
+exports.getOutstandingEvents = getOutstandingEvents;
+const getEventFinancialSummary = (reqBody) => {
     const db = sqlite(databasePaths_1.licencesDB, {
         readonly: true
     });
@@ -373,7 +384,8 @@ exports.getEventFinancialSummary = (reqBody) => {
     db.close();
     return rows;
 };
-exports.getPastEventBankingInformation = (licenceID) => {
+exports.getEventFinancialSummary = getEventFinancialSummary;
+const getPastEventBankingInformation = (licenceID) => {
     const db = sqlite(databasePaths_1.licencesDB, {
         readonly: true
     });
@@ -402,7 +414,8 @@ exports.getPastEventBankingInformation = (licenceID) => {
     }
     return bankInfoList;
 };
-exports.updateEvent = (reqBody, reqSession) => {
+exports.getPastEventBankingInformation = getPastEventBankingInformation;
+const updateEvent = (reqBody, reqSession) => {
     const db = sqlite(databasePaths_1.licencesDB);
     const nowMillis = Date.now();
     const info = db.prepare("update LotteryEvents" +
@@ -444,7 +457,8 @@ exports.updateEvent = (reqBody, reqSession) => {
     eventTableStatsExpiryMillis = -1;
     return changeCount > 0;
 };
-exports.deleteEvent = (licenceID, eventDate, reqSession) => {
+exports.updateEvent = updateEvent;
+const deleteEvent = (licenceID, eventDate, reqSession) => {
     const db = sqlite(databasePaths_1.licencesDB);
     const nowMillis = Date.now();
     const info = db.prepare("update LotteryEvents" +
@@ -459,7 +473,8 @@ exports.deleteEvent = (licenceID, eventDate, reqSession) => {
     eventTableStatsExpiryMillis = -1;
     return changeCount > 0;
 };
-exports.getLicenceActivityByDateRange = (startDate, endDate, _reqBody) => {
+exports.deleteEvent = deleteEvent;
+const getLicenceActivityByDateRange = (startDate, endDate, _reqBody) => {
     const db = sqlite(databasePaths_1.licencesDB, {
         readonly: true
     });
@@ -511,3 +526,4 @@ exports.getLicenceActivityByDateRange = (startDate, endDate, _reqBody) => {
     db.close();
     return activity;
 };
+exports.getLicenceActivityByDateRange = getLicenceActivityByDateRange;

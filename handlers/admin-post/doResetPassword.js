@@ -1,11 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.handler = void 0;
-const usersDB_generateNewPassword = require("../../helpers/usersDB/generateNewPassword");
-exports.handler = (req, res) => {
-    const newPassword = usersDB_generateNewPassword.generateNewPassword(req.body.userName);
+const generateNewPassword_1 = require("../../helpers/usersDB/generateNewPassword");
+const handler = (req, res) => {
+    const newPassword = generateNewPassword_1.generateNewPassword(req.body.userName);
     res.json({
         success: true,
         newPassword
     });
 };
+exports.handler = handler;

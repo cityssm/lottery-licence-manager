@@ -9,8 +9,10 @@ import type { LotteryLicenceForm } from "./updateLicence";
 import { getLicenceWithDB } from "./getLicence";
 import { resetLicenceTableStats, resetEventTableStats } from "../licencesDB";
 
+import type * as expressSession from "express-session";
 
-export const createLicence = (reqBody: LotteryLicenceForm, reqSession: Express.SessionData) => {
+
+export const createLicence = (reqBody: LotteryLicenceForm, reqSession: expressSession.Session) => {
 
   const db = sqlite(dbPath);
 

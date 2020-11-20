@@ -6,9 +6,10 @@ import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns";
 import { licencesDB as dbPath } from "../../data/databasePaths";
 
 import type * as llm from "../../types/recordTypes";
+import type * as expressSession from "express-session";
 
 
-export const getLocations = (reqSession: Express.SessionData, queryOptions: {
+export const getLocations = (reqSession: expressSession.Session, queryOptions: {
   limit: number;
   offset: number;
   locationNameAddress?: string;

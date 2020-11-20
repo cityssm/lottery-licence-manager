@@ -2,11 +2,11 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.handler = void 0;
 const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
-const licencesDB_getLicences = require("../../helpers/licencesDB/getLicences");
-const licencesDB_getLocation = require("../../helpers/licencesDB/getLocation");
-exports.handler = (req, res) => {
+const getLicences_1 = require("../../helpers/licencesDB/getLicences");
+const getLocation_1 = require("../../helpers/licencesDB/getLocation");
+const handler = (req, res) => {
     const locationID = parseInt(req.params.locationID, 10);
-    const location = licencesDB_getLocation.getLocation(locationID, req.session);
+    const location = getLocation_1.getLocation(locationID, req.session);
     if (!location) {
         res.redirect("/locations/?error=locationNotFound");
         return;
@@ -15,7 +15,7 @@ exports.handler = (req, res) => {
         res.redirect("/locations/" + locationID.toString() + "/?error=accessDenied-noUpdate");
         return;
     }
-    const licences = licencesDB_getLicences.getLicences({
+    const licences = getLicences_1.getLicences({
         locationID
     }, req.session, {
         includeOrganization: true,
@@ -29,3 +29,4 @@ exports.handler = (req, res) => {
         isCreate: false
     });
 };
+exports.handler = handler;

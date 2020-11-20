@@ -3,8 +3,10 @@ import { licencesDB as dbPath } from "../../data/databasePaths";
 
 import { resetEventTableStats, resetLicenceTableStats } from "../licencesDB";
 
+import type * as expressSession from "express-session";
 
-export const deleteLicence = (licenceID: number, reqSession: Express.SessionData) => {
+
+export const deleteLicence = (licenceID: number, reqSession: expressSession.Session) => {
 
   const db = sqlite(dbPath);
 

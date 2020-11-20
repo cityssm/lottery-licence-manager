@@ -2,15 +2,15 @@ import type { RequestHandler } from "express";
 
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns";
 
-import * as licencesDB_getLicences from "../../helpers/licencesDB/getLicences";
-import * as licencesDB_getLocation from "../../helpers/licencesDB/getLocation";
+import { getLicences } from "../../helpers/licencesDB/getLicences";
+import { getLocation } from "../../helpers/licencesDB/getLocation";
 
 
 export const handler: RequestHandler = (req, res) => {
 
   const locationID = parseInt(req.params.locationID, 10);
 
-  const location = licencesDB_getLocation.getLocation(locationID, req.session);
+  const location = getLocation(locationID, req.session);
 
   if (!location) {
 
@@ -26,7 +26,7 @@ export const handler: RequestHandler = (req, res) => {
 
   }
 
-  const licences = licencesDB_getLicences.getLicences({
+  const licences = getLicences({
     locationID
   }, req.session, {
       includeOrganization: true,

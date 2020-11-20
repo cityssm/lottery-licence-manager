@@ -2,9 +2,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateApplicationSetting = void 0;
 const sqlite = require("better-sqlite3");
-const databasePaths_2 = require("../../data/databasePaths");
-exports.updateApplicationSetting = (settingKey, settingValue, reqSession) => {
-    const db = sqlite(databasePaths_2.licencesDB);
+const databasePaths_1 = require("../../data/databasePaths");
+const updateApplicationSetting = (settingKey, settingValue, reqSession) => {
+    const db = sqlite(databasePaths_1.licencesDB);
     const nowMillis = Date.now();
     const info = db.prepare("update ApplicationSettings" +
         " set settingValue = ?," +
@@ -15,3 +15,4 @@ exports.updateApplicationSetting = (settingKey, settingValue, reqSession) => {
     db.close();
     return info.changes > 0;
 };
+exports.updateApplicationSetting = updateApplicationSetting;

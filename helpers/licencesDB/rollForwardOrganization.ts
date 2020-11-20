@@ -8,11 +8,13 @@ import { addOrganizationReminderWithDB } from "./addOrganizationReminder";
 import * as configFns from "../configFns";
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns";
 
+import type * as expressSession from "express-session";
+
 
 export const rollForwardOrganization = (organizationID: number,
   updateFiscalYear: boolean,
   updateReminders: boolean,
-  reqSession: Express.SessionData) => {
+  reqSession: expressSession.Session) => {
 
   const rightNowMillis = Date.now();
 

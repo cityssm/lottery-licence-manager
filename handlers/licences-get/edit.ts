@@ -2,15 +2,15 @@ import type { RequestHandler } from "express";
 
 import * as configFns from "../../helpers/configFns";
 
-import * as licencesDB_getOrganization from "../../helpers/licencesDB/getOrganization";
-import * as licencesDB_getLicence from "../../helpers/licencesDB/getLicence";
+import { getLicence } from "../../helpers/licencesDB/getLicence";
+import { getOrganization } from "../../helpers/licencesDB/getOrganization";
 
 
 export const handler: RequestHandler = (req, res) => {
 
   const licenceID = parseInt(req.params.licenceID, 10);
 
-  const licence = licencesDB_getLicence.getLicence(licenceID, req.session);
+  const licence = getLicence(licenceID, req.session);
 
   if (!licence) {
 
@@ -25,7 +25,7 @@ export const handler: RequestHandler = (req, res) => {
   }
 
 
-  const organization = licencesDB_getOrganization.getOrganization(licence.organizationID, req.session);
+  const organization = getOrganization(licence.organizationID, req.session);
 
   const feeCalculation = configFns.getProperty("licences.feeCalculationFn")(licence);
 

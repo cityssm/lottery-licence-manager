@@ -3,8 +3,10 @@ import { licencesDB as dbPath } from "../../data/databasePaths";
 
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns";
 
+import type * as expressSession from "express-session";
 
-export const issueLicence = (licenceID: number, reqSession: Express.SessionData) => {
+
+export const issueLicence = (licenceID: number, reqSession: expressSession.Session) => {
 
   const db = sqlite(dbPath);
 

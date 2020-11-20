@@ -41,7 +41,7 @@ const sortFn_byConfig = (reminderA, reminderB) => {
     }
     return sortFn_byDate(reminderA, reminderB);
 };
-exports.getOrganizationRemindersWithDB = (db, organizationID, reqSession) => {
+const getOrganizationRemindersWithDB = (db, organizationID, reqSession) => {
     const reminders = db.prepare("select reminderIndex," +
         " reminderTypeKey, reminderDate, dismissedDate," +
         " reminderStatus, reminderNote," +
@@ -66,7 +66,8 @@ exports.getOrganizationRemindersWithDB = (db, organizationID, reqSession) => {
     }
     return reminders;
 };
-exports.getOrganizationReminders = (organizationID, reqSession) => {
+exports.getOrganizationRemindersWithDB = getOrganizationRemindersWithDB;
+const getOrganizationReminders = (organizationID, reqSession) => {
     const db = sqlite(databasePaths_1.licencesDB, {
         readonly: true
     });
@@ -74,3 +75,4 @@ exports.getOrganizationReminders = (organizationID, reqSession) => {
     db.close();
     return reminders;
 };
+exports.getOrganizationReminders = getOrganizationReminders;

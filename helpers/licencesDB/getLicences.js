@@ -5,7 +5,7 @@ const sqlite = require("better-sqlite3");
 const databasePaths_1 = require("../../data/databasePaths");
 const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
 const licencesDB_1 = require("../licencesDB");
-exports.getLicences = (reqBodyOrParamsObj, reqSession, includeOptions) => {
+const getLicences = (reqBodyOrParamsObj, reqSession, includeOptions) => {
     if (reqBodyOrParamsObj.organizationName && reqBodyOrParamsObj.organizationName !== "") {
         includeOptions.includeOrganization = true;
     }
@@ -116,3 +116,4 @@ exports.getLicences = (reqBodyOrParamsObj, reqSession, includeOptions) => {
         licences: rows
     };
 };
+exports.getLicences = getLicences;

@@ -1,11 +1,11 @@
 import type { RequestHandler } from "express";
 
-import * as licencesDB_getLocations from "../../helpers/licencesDB/getLocations";
+import { getLocations } from "../../helpers/licencesDB/getLocations";
 
 
 export const handler: RequestHandler = (req, res) => {
 
-  const locations = licencesDB_getLocations.getLocations(req.session, {
+  const locations = getLocations(req.session, {
     limit: req.body.limit || -1,
     offset: req.body.offset || 0,
     locationNameAddress: req.body.locationNameAddress,

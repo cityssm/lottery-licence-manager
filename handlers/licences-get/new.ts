@@ -3,8 +3,8 @@ import type { RequestHandler } from "express";
 import * as configFns from "../../helpers/configFns";
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns";
 
-import * as licencesDB_getOrganization from "../../helpers/licencesDB/getOrganization";
-import * as licencesDB_getNextExternalLicenceNumberFromRange from "../../helpers/licencesDB/getNextExternalLicenceNumberFromRange";
+import { getOrganization } from "../../helpers/licencesDB/getOrganization";
+import { getNextExternalLicenceNumberFromRange } from "../../helpers/licencesDB/getNextExternalLicenceNumberFromRange";
 
 import type { Organization } from "../../types/recordTypes";
 
@@ -19,14 +19,12 @@ export const handler: RequestHandler = (req, res) => {
 
   if (organizationID) {
 
-    organization = licencesDB_getOrganization.getOrganization(organizationID, req.session);
+    organization = getOrganization(organizationID, req.session);
 
     if (organization && !organization.isEligibleForLicences) {
 
       organization = null;
-
     }
-
   }
 
   // Use current date as default
@@ -41,8 +39,7 @@ export const handler: RequestHandler = (req, res) => {
 
   if (licenceNumberCalculationType === "range") {
 
-    externalLicenceNumber = licencesDB_getNextExternalLicenceNumberFromRange.getNextExternalLicenceNumberFromRange().toString();
-
+    externalLicenceNumber = getNextExternalLicenceNumberFromRange().toString();
   }
 
   res.render("licence-edit", {

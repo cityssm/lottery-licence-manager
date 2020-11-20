@@ -1,11 +1,11 @@
 import type { RequestHandler } from "express";
 
-import * as licencesDB_restoreLocation from "../../helpers/licencesDB/restoreLocation";
+import { restoreLocation } from "../../helpers/licencesDB/restoreLocation";
 
 
 export const handler: RequestHandler = (req, res) => {
 
-  const changeCount = licencesDB_restoreLocation.restoreLocation(req.body.locationID, req.session);
+  const changeCount = restoreLocation(req.body.locationID, req.session);
 
   if (changeCount) {
 

@@ -1,6 +1,6 @@
 import type { RequestHandler } from "express";
 
-import * as usersDB_tryResetPassword from "../../helpers/usersDB/tryResetPassword";
+import { tryResetPassword } from "../../helpers/usersDB/tryResetPassword";
 
 
 export const handler: RequestHandler = (req, res) => {
@@ -9,7 +9,7 @@ export const handler: RequestHandler = (req, res) => {
   const oldPassword = req.body.oldPassword;
   const newPassword = req.body.newPassword;
 
-  const result = usersDB_tryResetPassword.tryResetPassword(userName, oldPassword, newPassword);
+  const result = tryResetPassword(userName, oldPassword, newPassword);
 
   res.json(result);
 };

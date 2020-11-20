@@ -5,6 +5,7 @@ import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns";
 import { canUpdateObject } from "../licencesDB";
 
 import type * as llm from "../../types/recordTypes";
+import type * as expressSession from "express-session";
 
 
 export const getOrganizations = (reqBody: {
@@ -12,7 +13,7 @@ export const getOrganizations = (reqBody: {
   representativeName?: string;
   isEligibleForLicences?: string;
   organizationIsActive?: string;
-}, reqSession: Express.SessionData, includeOptions: {
+}, reqSession: expressSession.Session, includeOptions: {
   limit: number;
   offset?: number;
 }) => {

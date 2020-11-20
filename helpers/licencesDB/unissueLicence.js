@@ -4,7 +4,7 @@ exports.unissueLicence = void 0;
 const sqlite = require("better-sqlite3");
 const databasePaths_1 = require("../../data/databasePaths");
 const addLicenceAmendment_1 = require("./addLicenceAmendment");
-exports.unissueLicence = (licenceID, reqSession) => {
+const unissueLicence = (licenceID, reqSession) => {
     const db = sqlite(databasePaths_1.licencesDB);
     const nowMillis = Date.now();
     const info = db.prepare("update LotteryLicences" +
@@ -23,3 +23,4 @@ exports.unissueLicence = (licenceID, reqSession) => {
     db.close();
     return changeCount > 0;
 };
+exports.unissueLicence = unissueLicence;

@@ -1,6 +1,6 @@
-import { updateOrganizationRepresentative } from "../../helpers/licencesDB/updateOrganizationRepresentative";
-
 import type { RequestHandler } from "express";
+
+import { updateOrganizationRepresentative } from "../../helpers/licencesDB/updateOrganizationRepresentative";
 
 
 export const handler: RequestHandler = (req, res) => {

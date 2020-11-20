@@ -5,7 +5,7 @@ const sqlite = require("better-sqlite3");
 const databasePaths_1 = require("../../data/databasePaths");
 const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
 const licencesDB_1 = require("../licencesDB");
-exports.getOrganizations = (reqBody, reqSession, includeOptions) => {
+const getOrganizations = (reqBody, reqSession, includeOptions) => {
     const db = sqlite(databasePaths_1.licencesDB, {
         readonly: true
     });
@@ -68,3 +68,4 @@ exports.getOrganizations = (reqBody, reqSession, includeOptions) => {
     }
     return rows;
 };
+exports.getOrganizations = getOrganizations;

@@ -1,11 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getOrganizationBankRecordStats = exports.getOrganizationBankRecords = exports.dismissOrganizationReminder = exports.updateOrganizationReminder = exports.getOrganizationReminder = exports.deleteOrganizationRemark = exports.updateOrganizationRemark = exports.addOrganizationRemark = exports.getOrganizationRemark = exports.setDefaultOrganizationRepresentative = exports.deleteOrganizationRepresentative = exports.getDeletedOrganizations = exports.getInactiveOrganizations = exports.restoreOrganization = exports.deleteOrganization = exports.updateOrganization = exports.createOrganization = void 0;
+exports.getOrganizationBankRecordStats = exports.getOrganizationBankRecords = exports.deleteOrganizationRemark = exports.updateOrganizationRemark = exports.getOrganizationRemark = exports.setDefaultOrganizationRepresentative = exports.deleteOrganizationRepresentative = exports.getDeletedOrganizations = exports.getInactiveOrganizations = exports.restoreOrganization = exports.deleteOrganization = exports.updateOrganization = exports.createOrganization = void 0;
 const licencesDB_1 = require("./licencesDB");
 const sqlite = require("better-sqlite3");
 const databasePaths_1 = require("../data/databasePaths");
 const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
-exports.createOrganization = (reqBody, reqSession) => {
+const createOrganization = (reqBody, reqSession) => {
     const db = sqlite(databasePaths_1.licencesDB);
     const nowMillis = Date.now();
     const info = db.prepare("insert into Organizations (" +
@@ -19,7 +19,8 @@ exports.createOrganization = (reqBody, reqSession) => {
     db.close();
     return Number(info.lastInsertRowid);
 };
-exports.updateOrganization = (reqBody, reqSession) => {
+exports.createOrganization = createOrganization;
+const updateOrganization = (reqBody, reqSession) => {
     const db = sqlite(databasePaths_1.licencesDB);
     const nowMillis = Date.now();
     const info = db.prepare("update Organizations" +
@@ -42,7 +43,8 @@ exports.updateOrganization = (reqBody, reqSession) => {
     db.close();
     return info.changes > 0;
 };
-exports.deleteOrganization = (organizationID, reqSession) => {
+exports.updateOrganization = updateOrganization;
+const deleteOrganization = (organizationID, reqSession) => {
     const db = sqlite(databasePaths_1.licencesDB);
     const nowMillis = Date.now();
     const info = db.prepare("update Organizations" +
@@ -54,7 +56,8 @@ exports.deleteOrganization = (organizationID, reqSession) => {
     db.close();
     return info.changes > 0;
 };
-exports.restoreOrganization = (organizationID, reqSession) => {
+exports.deleteOrganization = deleteOrganization;
+const restoreOrganization = (organizationID, reqSession) => {
     const db = sqlite(databasePaths_1.licencesDB);
     const nowMillis = Date.now();
     const info = db.prepare("update Organizations" +
@@ -68,7 +71,8 @@ exports.restoreOrganization = (organizationID, reqSession) => {
     db.close();
     return info.changes > 0;
 };
-exports.getInactiveOrganizations = (inactiveYears) => {
+exports.restoreOrganization = restoreOrganization;
+const getInactiveOrganizations = (inactiveYears) => {
     const cutoffDate = new Date();
     cutoffDate.setFullYear(cutoffDate.getFullYear() - inactiveYears);
     const cutoffDateInteger = dateTimeFns.dateToInteger(cutoffDate);
@@ -97,7 +101,8 @@ exports.getInactiveOrganizations = (inactiveYears) => {
     }
     return rows;
 };
-exports.getDeletedOrganizations = () => {
+exports.getInactiveOrganizations = getInactiveOrganizations;
+const getDeletedOrganizations = () => {
     const db = sqlite(databasePaths_1.licencesDB, {
         readonly: true
     });
@@ -112,7 +117,8 @@ exports.getDeletedOrganizations = () => {
     }
     return organizations;
 };
-exports.deleteOrganizationRepresentative = (organizationID, representativeIndex) => {
+exports.getDeletedOrganizations = getDeletedOrganizations;
+const deleteOrganizationRepresentative = (organizationID, representativeIndex) => {
     const db = sqlite(databasePaths_1.licencesDB);
     const info = db.prepare("delete from OrganizationRepresentatives" +
         " where organizationID = ?" +
@@ -121,7 +127,8 @@ exports.deleteOrganizationRepresentative = (organizationID, representativeIndex)
     db.close();
     return info.changes > 0;
 };
-exports.setDefaultOrganizationRepresentative = (organizationID, representativeIndex) => {
+exports.deleteOrganizationRepresentative = deleteOrganizationRepresentative;
+const setDefaultOrganizationRepresentative = (organizationID, representativeIndex) => {
     const db = sqlite(databasePaths_1.licencesDB);
     db.prepare("update OrganizationRepresentatives" +
         " set isDefault = 0" +
@@ -135,7 +142,8 @@ exports.setDefaultOrganizationRepresentative = (organizationID, representativeIn
     db.close();
     return true;
 };
-exports.getOrganizationRemark = (organizationID, remarkIndex, reqSession) => {
+exports.setDefaultOrganizationRepresentative = setDefaultOrganizationRepresentative;
+const getOrganizationRemark = (organizationID, remarkIndex, reqSession) => {
     const db = sqlite(databasePaths_1.licencesDB, {
         readonly: true
     });
@@ -155,27 +163,8 @@ exports.getOrganizationRemark = (organizationID, remarkIndex, reqSession) => {
     remark.canUpdate = licencesDB_1.canUpdateObject(remark, reqSession);
     return remark;
 };
-exports.addOrganizationRemark = (reqBody, reqSession) => {
-    const db = sqlite(databasePaths_1.licencesDB);
-    const row = db.prepare("select ifnull(max(remarkIndex), -1) as maxIndex" +
-        " from OrganizationRemarks" +
-        " where organizationID = ?")
-        .get(reqBody.organizationID);
-    const newRemarkIndex = row.maxIndex + 1;
-    const rightNow = new Date();
-    const remarkDate = dateTimeFns.dateToInteger(rightNow);
-    const remarkTime = dateTimeFns.dateToTimeInteger(rightNow);
-    db.prepare("insert into OrganizationRemarks (" +
-        "organizationID, remarkIndex," +
-        " remarkDate, remarkTime, remark, isImportant," +
-        " recordCreate_userName, recordCreate_timeMillis," +
-        " recordUpdate_userName, recordUpdate_timeMillis)" +
-        " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
-        .run(reqBody.organizationID, newRemarkIndex, remarkDate, remarkTime, reqBody.remark, 0, reqSession.user.userName, rightNow.getTime(), reqSession.user.userName, rightNow.getTime());
-    db.close();
-    return newRemarkIndex;
-};
-exports.updateOrganizationRemark = (reqBody, reqSession) => {
+exports.getOrganizationRemark = getOrganizationRemark;
+const updateOrganizationRemark = (reqBody, reqSession) => {
     const db = sqlite(databasePaths_1.licencesDB);
     const nowMillis = Date.now();
     const info = db.prepare("update OrganizationRemarks" +
@@ -192,7 +181,8 @@ exports.updateOrganizationRemark = (reqBody, reqSession) => {
     db.close();
     return info.changes > 0;
 };
-exports.deleteOrganizationRemark = (organizationID, remarkIndex, reqSession) => {
+exports.updateOrganizationRemark = updateOrganizationRemark;
+const deleteOrganizationRemark = (organizationID, remarkIndex, reqSession) => {
     const db = sqlite(databasePaths_1.licencesDB);
     const nowMillis = Date.now();
     const info = db.prepare("update OrganizationRemarks" +
@@ -205,62 +195,8 @@ exports.deleteOrganizationRemark = (organizationID, remarkIndex, reqSession) => 
     db.close();
     return info.changes > 0;
 };
-exports.getOrganizationReminder = (organizationID, reminderIndex, reqSession) => {
-    const db = sqlite(databasePaths_1.licencesDB, {
-        readonly: true
-    });
-    const reminder = db.prepare("select * from OrganizationReminders" +
-        " where recordDelete_timeMillis is null" +
-        " and organizationID = ?" +
-        " and reminderIndex = ?")
-        .get(organizationID, reminderIndex);
-    db.close();
-    if (reminder) {
-        reminder.recordType = "reminder";
-        reminder.reminderDateString = dateTimeFns.dateIntegerToString(reminder.reminderDate || 0);
-        reminder.dismissedDateString = dateTimeFns.dateIntegerToString(reminder.dismissedDate || 0);
-        reminder.canUpdate = licencesDB_1.canUpdateObject(reminder, reqSession);
-    }
-    return reminder;
-};
-exports.updateOrganizationReminder = (reqBody, reqSession) => {
-    const db = sqlite(databasePaths_1.licencesDB);
-    const nowMillis = Date.now();
-    const info = db.prepare("update OrganizationReminders" +
-        " set reminderTypeKey = ?," +
-        " reminderDate = ?," +
-        " reminderStatus = ?," +
-        " reminderNote = ?," +
-        " dismissedDate = ?," +
-        " recordUpdate_userName = ?," +
-        " recordUpdate_timeMillis = ?" +
-        " where organizationID = ?" +
-        " and reminderIndex = ?" +
-        " and recordDelete_timeMillis is null")
-        .run(reqBody.reminderTypeKey, (reqBody.reminderDateString === ""
-        ? null
-        : dateTimeFns.dateStringToInteger(reqBody.reminderDateString)), reqBody.reminderStatus, reqBody.reminderNote, (reqBody.dismissedDateString === ""
-        ? null
-        : dateTimeFns.dateStringToInteger(reqBody.dismissedDateString)), reqSession.user.userName, nowMillis, reqBody.organizationID, reqBody.reminderIndex);
-    db.close();
-    return info.changes > 0;
-};
-exports.dismissOrganizationReminder = (organizationID, reminderIndex, reqSession) => {
-    const currentDate = new Date();
-    const db = sqlite(databasePaths_1.licencesDB);
-    const info = db.prepare("update OrganizationReminders" +
-        " set dismissedDate = ?," +
-        " recordUpdate_userName = ?," +
-        " recordUpdate_timeMillis = ?" +
-        " where organizationID = ?" +
-        " and reminderIndex = ?" +
-        " and dismissedDate is null" +
-        " and recordDelete_timeMillis is null")
-        .run(dateTimeFns.dateToInteger(currentDate), reqSession.user.userName, currentDate.getTime(), organizationID, reminderIndex);
-    db.close();
-    return info.changes > 0;
-};
-exports.getOrganizationBankRecords = (organizationID, accountNumber, bankingYear) => {
+exports.deleteOrganizationRemark = deleteOrganizationRemark;
+const getOrganizationBankRecords = (organizationID, accountNumber, bankingYear) => {
     const db = sqlite(databasePaths_1.licencesDB, {
         readonly: true
     });
@@ -280,7 +216,8 @@ exports.getOrganizationBankRecords = (organizationID, accountNumber, bankingYear
     }
     return bankRecords;
 };
-exports.getOrganizationBankRecordStats = (organizationID) => {
+exports.getOrganizationBankRecords = getOrganizationBankRecords;
+const getOrganizationBankRecordStats = (organizationID) => {
     const db = sqlite(databasePaths_1.licencesDB, {
         readonly: true
     });
@@ -296,3 +233,4 @@ exports.getOrganizationBankRecordStats = (organizationID) => {
     db.close();
     return rows;
 };
+exports.getOrganizationBankRecordStats = getOrganizationBankRecordStats;

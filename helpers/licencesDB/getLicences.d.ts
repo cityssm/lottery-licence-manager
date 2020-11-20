@@ -1,4 +1,5 @@
 import type * as llm from "../../types/recordTypes";
+import type * as expressSession from "express-session";
 export declare const getLicences: (reqBodyOrParamsObj: {
     externalLicenceNumber?: string;
     licenceTypeKey?: string;
@@ -7,7 +8,7 @@ export declare const getLicences: (reqBodyOrParamsObj: {
     licenceStatus?: string;
     locationID?: number;
     locationName?: string;
-}, reqSession: any, includeOptions: {
+}, reqSession: expressSession.Session, includeOptions: {
     includeOrganization: boolean;
     limit: number;
     offset?: number;

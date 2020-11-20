@@ -2,10 +2,10 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.issueLicence = void 0;
 const sqlite = require("better-sqlite3");
-const databasePaths_2 = require("../../data/databasePaths");
+const databasePaths_1 = require("../../data/databasePaths");
 const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
-exports.issueLicence = (licenceID, reqSession) => {
-    const db = sqlite(databasePaths_2.licencesDB);
+const issueLicence = (licenceID, reqSession) => {
+    const db = sqlite(databasePaths_1.licencesDB);
     const nowDate = new Date();
     const issueDate = dateTimeFns.dateToInteger(nowDate);
     const issueTime = dateTimeFns.dateToTimeInteger(nowDate);
@@ -22,3 +22,4 @@ exports.issueLicence = (licenceID, reqSession) => {
     db.close();
     return info.changes > 0;
 };
+exports.issueLicence = issueLicence;

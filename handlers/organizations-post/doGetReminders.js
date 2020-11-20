@@ -1,8 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.handler = void 0;
-const licencesDB_getOrganizationReminders = require("../../helpers/licencesDB/getOrganizationReminders");
-exports.handler = (req, res) => {
+const getOrganizationReminders_1 = require("../../helpers/licencesDB/getOrganizationReminders");
+const handler = (req, res) => {
     const organizationID = req.body.organizationID;
-    res.json(licencesDB_getOrganizationReminders.getOrganizationReminders(organizationID, req.session));
+    res.json(getOrganizationReminders_1.getOrganizationReminders(organizationID, req.session));
 };
+exports.handler = handler;

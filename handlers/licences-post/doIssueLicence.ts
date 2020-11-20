@@ -1,11 +1,11 @@
 import type { RequestHandler } from "express";
 
-import * as licencesDB_issueLicence from "../../helpers/licencesDB/issueLicence";
+import { issueLicence } from "../../helpers/licencesDB/issueLicence";
 
 
 export const handler: RequestHandler = (req, res) => {
 
-  const success = licencesDB_issueLicence.issueLicence(req.body.licenceID, req.session);
+  const success = issueLicence(req.body.licenceID, req.session);
 
   if (success) {
 
@@ -20,6 +20,5 @@ export const handler: RequestHandler = (req, res) => {
       success: false,
       message: "Licence Not Issued"
     });
-
   }
 };

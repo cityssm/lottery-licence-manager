@@ -901,7 +901,7 @@ declare const llm: llmGlobal;
    */
 
   llm.initializeTabs(document.getElementById("tabs--organization"), {
-    onshown(tabContentEle: HTMLElement): void {
+    onshown: (tabContentEle) => {
 
       if (tabContentEle.id === "organizationTabContent--bankRecords" && !bankRecordsFiltersLoaded) {
         bankRecordsFiltersLoaded = true;

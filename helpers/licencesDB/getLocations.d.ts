@@ -1,5 +1,6 @@
 import type * as llm from "../../types/recordTypes";
-export declare const getLocations: (reqSession: any, queryOptions: {
+import type * as expressSession from "express-session";
+export declare const getLocations: (reqSession: expressSession.Session, queryOptions: {
     limit: number;
     offset: number;
     locationNameAddress?: string;

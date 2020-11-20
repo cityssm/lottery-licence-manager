@@ -5,7 +5,7 @@ const sqlite = require("better-sqlite3");
 const databasePaths_1 = require("../../data/databasePaths");
 const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
 const licencesDB_1 = require("../licencesDB");
-exports.getUndismissedOrganizationReminders = (reqSession) => {
+const getUndismissedOrganizationReminders = (reqSession) => {
     const db = sqlite(databasePaths_1.licencesDB, {
         readonly: true
     });
@@ -28,3 +28,4 @@ exports.getUndismissedOrganizationReminders = (reqSession) => {
     }
     return reminders;
 };
+exports.getUndismissedOrganizationReminders = getUndismissedOrganizationReminders;

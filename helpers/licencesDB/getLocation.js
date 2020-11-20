@@ -4,7 +4,7 @@ exports.getLocation = void 0;
 const licencesDB_1 = require("../licencesDB");
 const sqlite = require("better-sqlite3");
 const databasePaths_1 = require("../../data/databasePaths");
-exports.getLocation = (locationID, reqSession) => {
+const getLocation = (locationID, reqSession) => {
     const db = sqlite(databasePaths_1.licencesDB, {
         readonly: true
     });
@@ -20,3 +20,4 @@ exports.getLocation = (locationID, reqSession) => {
     db.close();
     return locationObj;
 };
+exports.getLocation = getLocation;

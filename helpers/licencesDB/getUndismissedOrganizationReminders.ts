@@ -5,9 +5,10 @@ import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns";
 import { canUpdateObject } from "../licencesDB";
 
 import type * as llm from "../../types/recordTypes";
+import type * as expressSession from "express-session";
 
 
-export const getUndismissedOrganizationReminders = (reqSession: Express.SessionData) => {
+export const getUndismissedOrganizationReminders = (reqSession: expressSession.Session) => {
 
   const db = sqlite(dbPath, {
     readonly: true

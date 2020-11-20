@@ -546,7 +546,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
         }
     }
     llm.initializeTabs(document.getElementById("tabs--organization"), {
-        onshown(tabContentEle) {
+        onshown: (tabContentEle) => {
             if (tabContentEle.id === "organizationTabContent--bankRecords" && !bankRecordsFiltersLoaded) {
                 bankRecordsFiltersLoaded = true;
                 loadBankRecordFiltersFn();

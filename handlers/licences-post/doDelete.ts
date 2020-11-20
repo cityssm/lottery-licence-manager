@@ -1,6 +1,6 @@
 import type { RequestHandler } from "express";
 
-import * as licencesDB_deleteLicence from "../../helpers/licencesDB/deleteLicence";
+import { deleteLicence } from "../../helpers/licencesDB/deleteLicence";
 
 
 export const handler: RequestHandler = (req, res) => {
@@ -14,7 +14,7 @@ export const handler: RequestHandler = (req, res) => {
 
   } else {
 
-    const changeCount = licencesDB_deleteLicence.deleteLicence(req.body.licenceID, req.session);
+    const changeCount = deleteLicence(req.body.licenceID, req.session);
 
     if (changeCount) {
 

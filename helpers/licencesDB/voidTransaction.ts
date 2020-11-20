@@ -4,9 +4,11 @@ import { licencesDB as dbPath } from "../../data/databasePaths";
 import { getLicenceWithDB } from "./getLicence";
 import { addLicenceAmendmentWithDB } from "./addLicenceAmendment";
 
+import type * as expressSession from "express-session";
+
 
 export const voidTransaction =
-  (licenceID: number, transactionIndex: number, reqSession: Express.SessionData) => {
+  (licenceID: number, transactionIndex: number, reqSession: expressSession.Session) => {
 
     const db = sqlite(dbPath);
 

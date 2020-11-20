@@ -2,10 +2,10 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteLicence = void 0;
 const sqlite = require("better-sqlite3");
-const databasePaths_2 = require("../../data/databasePaths");
+const databasePaths_1 = require("../../data/databasePaths");
 const licencesDB_1 = require("../licencesDB");
-exports.deleteLicence = (licenceID, reqSession) => {
-    const db = sqlite(databasePaths_2.licencesDB);
+const deleteLicence = (licenceID, reqSession) => {
+    const db = sqlite(databasePaths_1.licencesDB);
     const nowMillis = Date.now();
     const info = db.prepare("update LotteryLicences" +
         " set recordDelete_userName = ?," +
@@ -27,3 +27,4 @@ exports.deleteLicence = (licenceID, reqSession) => {
     licencesDB_1.resetEventTableStats();
     return changeCount > 0;
 };
+exports.deleteLicence = deleteLicence;

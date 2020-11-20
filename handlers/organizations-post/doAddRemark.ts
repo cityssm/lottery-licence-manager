@@ -1,11 +1,11 @@
 import type { RequestHandler } from "express";
 
-import * as licencesDBOrganizations from "../../helpers/licencesDB-organizations";
+import { addOrganizationRemark } from "../../helpers/licencesDB/addOrganizationRemark";
 
 
 export const handler: RequestHandler = (req, res) => {
 
-  const remarkIndex = licencesDBOrganizations.addOrganizationRemark(req.body, req.session);
+  const remarkIndex = addOrganizationRemark(req.body, req.session);
 
   return res.json({
     success: true,

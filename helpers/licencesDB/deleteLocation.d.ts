@@ -1,1 +1,2 @@
-export declare const deleteLocation: (locationID: number, reqSession: any) => boolean;
+import type * as expressSession from "express-session";
+export declare const deleteLocation: (locationID: number, reqSession: expressSession.Session) => boolean;

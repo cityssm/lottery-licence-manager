@@ -1,8 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.handler = void 0;
-const licencesDB_getInactiveLocations = require("../../helpers/licencesDB/getInactiveLocations");
-exports.handler = (req, res) => {
+const getInactiveLocations_1 = require("../../helpers/licencesDB/getInactiveLocations");
+const handler = (req, res) => {
     const inactiveYears = parseInt(req.body.inactiveYears, 10);
-    res.json(licencesDB_getInactiveLocations.getInactiveLocations(inactiveYears));
+    res.json(getInactiveLocations_1.getInactiveLocations(inactiveYears));
 };
+exports.handler = handler;

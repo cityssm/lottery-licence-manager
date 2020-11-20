@@ -2,18 +2,18 @@ import type { RequestHandler } from "express";
 
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns";
 
-import * as licencesDB_getLicences from "../../helpers/licencesDB/getLicences";
-import * as licencesDB_getOrganization from "../../helpers/licencesDB/getOrganization";
+import { getLicences } from "../../helpers/licencesDB/getLicences";
+import { getOrganization } from "../../helpers/licencesDB/getOrganization";
 
-import * as licencesDB_getOrganizationRemarks from "../../helpers/licencesDB/getOrganizationRemarks";
-import * as licencesDB_getOrganizationReminders from "../../helpers/licencesDB/getOrganizationReminders";
+import { getOrganizationRemarks } from "../../helpers/licencesDB/getOrganizationRemarks";
+import { getOrganizationReminders } from "../../helpers/licencesDB/getOrganizationReminders";
 
 
 export const handler: RequestHandler = (req, res) => {
 
   const organizationID = parseInt(req.params.organizationID, 10);
 
-  const organization = licencesDB_getOrganization.getOrganization(organizationID, req.session);
+  const organization = getOrganization(organizationID, req.session);
 
   if (!organization) {
 
@@ -29,7 +29,7 @@ export const handler: RequestHandler = (req, res) => {
 
   }
 
-  const licences = licencesDB_getLicences.getLicences(
+  const licences = getLicences(
     {
       organizationID
     },
@@ -40,9 +40,9 @@ export const handler: RequestHandler = (req, res) => {
     }
   ).licences || [];
 
-  const remarks = licencesDB_getOrganizationRemarks.getOrganizationRemarks(organizationID, req.session) || [];
+  const remarks = getOrganizationRemarks(organizationID, req.session) || [];
 
-  const reminders = licencesDB_getOrganizationReminders.getOrganizationReminders(organizationID, req.session) || [];
+  const reminders = getOrganizationReminders(organizationID, req.session) || [];
 
   res.render("organization-edit", {
     headTitle: "Organization Update",

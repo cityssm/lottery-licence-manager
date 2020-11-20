@@ -1,11 +1,11 @@
 import type { RequestHandler } from "express";
 
-import * as licencesDB_createLocation from "../../helpers/licencesDB/createLocation";
+import { createLocation } from "../../helpers/licencesDB/createLocation";
 
 
 export const handler: RequestHandler = (req, res) => {
 
-  const locationID = licencesDB_createLocation.createLocation(req.body, req.session);
+  const locationID = createLocation(req.body, req.session);
 
   return res.json({
     success: true,

@@ -8,11 +8,10 @@ import * as configFns from "../../helpers/configFns";
 import * as licencesDB_getOrganization from "../../helpers/licencesDB/getOrganization";
 import * as licencesDB_getLicence from "../../helpers/licencesDB/getLicence";
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const convertHTMLToPDF = require("pdf-puppeteer");
+import convertHTMLToPDF = require("pdf-puppeteer");
 
 
-export const handler: RequestHandler = (req, res, next) => {
+export const handler: RequestHandler = async(req, res, next) => {
 
   const licenceID = parseInt(req.params.licenceID, 10);
 
@@ -34,19 +33,19 @@ export const handler: RequestHandler = (req, res, next) => {
 
   const organization = licencesDB_getOrganization.getOrganization(licence.organizationID, req.session);
 
-  ejs.renderFile(
+  await ejs.renderFile(
     path.join(__dirname, "../../reports/", configFns.getProperty("licences.printTemplate")), {
       configFns,
       licence,
       organization
     }, {},
-    (ejsErr, ejsData) => {
+    async(ejsErr, ejsData) => {
 
       if (ejsErr) {
         return next(ejsErr);
       }
 
-      convertHTMLToPDF(ejsData, (pdf) => {
+      const pdfCallbackFn = (pdf: Buffer) => {
 
         res.setHeader("Content-Disposition",
           "attachment;" +
@@ -57,11 +56,13 @@ export const handler: RequestHandler = (req, res, next) => {
 
         res.send(pdf);
 
-      }, {
-          format: "Letter",
-          printBackground: true,
-          preferCSSPageSize: true
-        });
+      };
+
+      await convertHTMLToPDF(ejsData, pdfCallbackFn, {
+        format: "Letter",
+        printBackground: true,
+        preferCSSPageSize: true
+      });
 
       return null;
     }

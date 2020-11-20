@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.handler = void 0;
-const licencesDB_restoreLocation = require("../../helpers/licencesDB/restoreLocation");
-exports.handler = (req, res) => {
-    const changeCount = licencesDB_restoreLocation.restoreLocation(req.body.locationID, req.session);
+const restoreLocation_1 = require("../../helpers/licencesDB/restoreLocation");
+const handler = (req, res) => {
+    const changeCount = restoreLocation_1.restoreLocation(req.body.locationID, req.session);
     if (changeCount) {
         return res.json({
             success: true,
@@ -17,3 +17,4 @@ exports.handler = (req, res) => {
         });
     }
 };
+exports.handler = handler;

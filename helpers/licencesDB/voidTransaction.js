@@ -5,7 +5,7 @@ const sqlite = require("better-sqlite3");
 const databasePaths_1 = require("../../data/databasePaths");
 const getLicence_1 = require("./getLicence");
 const addLicenceAmendment_1 = require("./addLicenceAmendment");
-exports.voidTransaction = (licenceID, transactionIndex, reqSession) => {
+const voidTransaction = (licenceID, transactionIndex, reqSession) => {
     const db = sqlite(databasePaths_1.licencesDB);
     const licenceObj = getLicence_1.getLicenceWithDB(db, licenceID, reqSession, {
         includeTicketTypes: false,
@@ -29,3 +29,4 @@ exports.voidTransaction = (licenceID, transactionIndex, reqSession) => {
     db.close();
     return changeCount > 0;
 };
+exports.voidTransaction = voidTransaction;

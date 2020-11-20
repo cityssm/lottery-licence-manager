@@ -1,11 +1,11 @@
 import type { RequestHandler } from "express";
 
-import * as licencesDB_deleteLocation from "../../helpers/licencesDB/deleteLocation";
+import { deleteLocation } from "../../helpers/licencesDB/deleteLocation";
 
 
 export const handler: RequestHandler = (req, res) => {
 
-  const changeCount = licencesDB_deleteLocation.deleteLocation(req.body.locationID, req.session);
+  const changeCount = deleteLocation(req.body.locationID, req.session);
 
   if (changeCount) {
 
