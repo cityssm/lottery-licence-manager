@@ -27,7 +27,7 @@ declare const llm: llmGlobal;
     tableEle.classList.remove("has-status-view");
     tableEle.classList.add("has-status-loading");
 
-    cityssm.postJSON("/events/doGetFinancialSummary", formEle, (summary: Array<{
+    cityssm.postJSON("doGetFinancialSummary", formEle, (summary: Array<{
       licenceTypeKey: string;
       licenceCount: number;
       eventCount: number;

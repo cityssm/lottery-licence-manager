@@ -28,8 +28,7 @@ declare const cityssm: cityssmGlobal;
       "<em>Loading licences...</em>" +
       "</p>";
 
-    cityssm.postJSON(
-      "/licences/doSearch",
+    cityssm.postJSON("licences/doSearch",
       formEle,
       (licenceResults: { count: number; licences: llmTypes.LotteryLicence[] }) => {
 

@@ -4,7 +4,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
     const restoreButtonEle = document.getElementById("is-location-restore-button");
     if (restoreButtonEle) {
         const restoreFn = () => {
-            cityssm.postJSON("/locations/doRestore", {
+            cityssm.postJSON("doRestore", {
                 locationID: restoreButtonEle.getAttribute("data-location-id")
             }, (responseJSON) => {
                 if (responseJSON.success) {

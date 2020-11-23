@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
         changePasswordModalEle.getElementsByTagName("form")[0].addEventListener("submit", (formEvent) => {
             formEvent.preventDefault();
             const formEle = formEvent.currentTarget;
-            cityssm.postJSON("/dashboard/doChangePassword", formEle, (responseJSON) => {
+            cityssm.postJSON("dashboard/doChangePassword", formEle, (responseJSON) => {
                 if (responseJSON.success) {
                     cityssm.hideModal(changePasswordModalEle);
                     cityssm.alertModal("Password Updated Successfully", "", "OK", "success");

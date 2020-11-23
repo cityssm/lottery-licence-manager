@@ -4,7 +4,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
     const createUserModalEle = document.getElementById("is-create-user-modal");
     createUserModalEle.getElementsByTagName("form")[0].addEventListener("submit", (formEvent) => {
         formEvent.preventDefault();
-        cityssm.postJSON("/admin/doCreateUser", formEvent.currentTarget, (responseJSON) => {
+        cityssm.postJSON("doCreateUser", formEvent.currentTarget, (responseJSON) => {
             if (responseJSON.success) {
                 window.location.reload();
             }
@@ -24,7 +24,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
         const userNameToDelete = deleteButtonEle.getAttribute("data-user-name");
         const trEle = deleteButtonEle.closest("tr");
         const doDeleteFn = () => {
-            cityssm.postJSON("/admin/doDeleteUser", {
+            cityssm.postJSON("doDeleteUser", {
                 userName: userNameToDelete
             }, (resultJSON) => {
                 if (resultJSON.success) {
@@ -44,7 +44,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
     const submitFn_updateUserSetting = (formEvent) => {
         formEvent.preventDefault();
         const formEle = formEvent.currentTarget;
-        cityssm.postJSON("/admin/doUpdateUserProperty", formEle, (responseJSON) => {
+        cityssm.postJSON("doUpdateUserProperty", formEle, (responseJSON) => {
             if (responseJSON.success) {
                 const inputEle = formEle.getElementsByClassName("input")[0];
                 inputEle.classList.add("is-success");
@@ -79,7 +79,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
         document.getElementById("updateUser--lastName").value = lastName;
         const userPropertiesContainerEle = document.getElementById("container--userProperties");
         cityssm.clearElement(userPropertiesContainerEle);
-        cityssm.postJSON("/admin/doGetUserProperties", {
+        cityssm.postJSON("doGetUserProperties", {
             userName
         }, (userPropertiesJSON) => {
             let propertyIndex = 0;
@@ -136,7 +136,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
     document.getElementById("tab--updateUser-name").getElementsByTagName("form")[0]
         .addEventListener("submit", (formEvent) => {
         formEvent.preventDefault();
-        cityssm.postJSON("/admin/doUpdateUser", formEvent.currentTarget, (responseJSON) => {
+        cityssm.postJSON("doUpdateUser", formEvent.currentTarget, (responseJSON) => {
             if (responseJSON.success) {
                 window.location.reload();
             }
@@ -145,7 +145,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
     document.getElementById("tab--updateUser-password").getElementsByTagName("form")[0]
         .addEventListener("submit", (formEvent) => {
         formEvent.preventDefault();
-        cityssm.postJSON("/admin/doResetPassword", formEvent.currentTarget, (responseJSON) => {
+        cityssm.postJSON("doResetPassword", formEvent.currentTarget, (responseJSON) => {
             if (responseJSON.success) {
                 const newPasswordEle = document.getElementById("resetPassword--newPassword");
                 newPasswordEle.innerText = responseJSON.newPassword;

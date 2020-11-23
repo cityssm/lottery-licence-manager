@@ -18,7 +18,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
             return;
         }
         formMessageEle.innerHTML = "Saving... <i class=\"fas fa-circle-notch fa-spin\" aria-hidden=\"true\"></i>";
-        cityssm.postJSON("/licences/doSave", formEle, (responseJSON) => {
+        cityssm.postJSON("doSave", formEle, (responseJSON) => {
             if (responseJSON.success) {
                 cityssm.disableNavBlocker();
                 hasUnsavedChanges = false;
@@ -43,7 +43,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
         document.getElementById("is-delete-licence-button").addEventListener("click", (clickEvent) => {
             clickEvent.preventDefault();
             const deleteFn = () => {
-                cityssm.postJSON("/licences/doDelete", {
+                cityssm.postJSON("doDelete", {
                     licenceID
                 }, (responseJSON) => {
                     if (responseJSON.success) {
@@ -156,7 +156,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     organizationLookupSearchStrEle.addEventListener("keyup", organizationLookupFn_refreshResults);
                     organizationLookupResultsEle = document.getElementById("container--organizationLookup");
                     if (organizationList.length === 0) {
-                        cityssm.postJSON("/organizations/doGetAll", null, (organizationListRes) => {
+                        cityssm.postJSON("../organizations/doGetAll", null, (organizationListRes) => {
                             organizationList = organizationListRes;
                             organizationLookupSearchStrEle.removeAttribute("disabled");
                             organizationLookupFn_refreshResults();
@@ -184,7 +184,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
     let locationList = [];
     const loadLocationListFn = (callbackFn) => {
         if (locationList.length === 0) {
-            cityssm.postJSON("/locations/doGetLocations", null, (locationResults) => {
+            cityssm.postJSON("../locations/doGetLocations", null, (locationResults) => {
                 locationList = locationResults.locations;
                 callbackFn();
             });
@@ -274,7 +274,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     });
                     document.getElementById("form--newLocation").addEventListener("submit", (formEvent) => {
                         formEvent.preventDefault();
-                        cityssm.postJSON("/locations/doCreate", formEvent.currentTarget, (responseJSON) => {
+                        cityssm.postJSON("../locations/doCreate", formEvent.currentTarget, (responseJSON) => {
                             if (responseJSON.success) {
                                 locationList = [];
                                 locationLookupFn_setLocation(responseJSON.locationID, responseJSON.locationDisplayName);
@@ -331,7 +331,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 "<i class=\"fas fa-3x fa-circle-notch fa-spin\" aria-hidden=\"true\"></i><br />" +
                 "Loading previously used terms and conditions..." +
                 "</p>";
-            cityssm.postJSON("/licences/doGetDistinctTermsConditions", {
+            cityssm.postJSON("doGetDistinctTermsConditions", {
                 organizationID
             }, (termsConditionsListRes) => {
                 termsConditionsList = termsConditionsListRes;
@@ -531,7 +531,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 callbackFn(licenceTypeKeyToTicketTypes.get(licenceTypeKey));
             }
             else {
-                cityssm.postJSON("/licences/doGetTicketTypes", {
+                cityssm.postJSON("doGetTicketTypes", {
                     licenceTypeKey
                 }, (ticketTypes) => {
                     licenceTypeKeyToTicketTypes.set(licenceTypeKey, ticketTypes);
@@ -936,7 +936,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 if (formEvent) {
                     formEvent.preventDefault();
                 }
-                cityssm.postJSON("/licences/doAddTransaction", addTransactionFormEle, (responseJSON) => {
+                cityssm.postJSON("doAddTransaction", addTransactionFormEle, (responseJSON) => {
                     if (responseJSON.success) {
                         window.location.reload();
                     }
@@ -978,7 +978,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     return;
                 }
                 const voidFn = () => {
-                    cityssm.postJSON("/licences/doVoidTransaction", {
+                    cityssm.postJSON("doVoidTransaction", {
                         licenceID,
                         transactionIndex: voidTransactionButtonEle.getAttribute("data-transaction-index")
                     }, (responseJSON) => {
@@ -999,7 +999,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
         if (unissueLicenceButtonEle) {
             unissueLicenceButtonEle.addEventListener("click", () => {
                 const unissueFn = () => {
-                    cityssm.postJSON("/licences/doUnissueLicence", {
+                    cityssm.postJSON("doUnissueLicence", {
                         licenceID
                     }, (responseJSON) => {
                         if (responseJSON.success) {
@@ -1013,7 +1013,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
         else {
             const issueLicenceFn = () => {
                 const issueFn = () => {
-                    cityssm.postJSON("/licences/doIssueLicence", {
+                    cityssm.postJSON("doIssueLicence", {
                         licenceID
                     }, (responseJSON) => {
                         if (responseJSON.success) {

@@ -5,7 +5,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
     const tbodyEle = document.getElementById("tbody--outstandingEvents");
     const getOutstandingEventsFn = () => {
         cityssm.clearElement(tbodyEle);
-        cityssm.postJSON("/events/doGetOutstandingEvents", formEle, (outstandingEvents) => {
+        cityssm.postJSON("doGetOutstandingEvents", formEle, (outstandingEvents) => {
             let currentOrganizationID = -1;
             for (const outstandingEventObj of outstandingEvents) {
                 if (currentOrganizationID !== outstandingEventObj.organizationID) {

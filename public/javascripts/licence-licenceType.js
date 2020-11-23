@@ -10,7 +10,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
             "<i class=\"fas fa-3x fa-circle-notch fa-spin\" aria-hidden=\"true\"></i><br />" +
             "<em>Loading report...</em>" +
             "</p>";
-        cityssm.postJSON("/licences/doGetLicenceTypeSummary", formEle, (licenceList) => {
+        cityssm.postJSON("doGetLicenceTypeSummary", formEle, (licenceList) => {
             cityssm.clearElement(containerEle);
             if (licenceList.length === 0) {
                 containerEle.innerHTML = "<div class=\"message is-info\">" +

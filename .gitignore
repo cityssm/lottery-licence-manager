@@ -7,9 +7,7 @@ bin/daemon/
 data/*.db
 data/*.db-journal
 data/*.min.js
-data/config.js
-data/config.d.ts
-data/config.ts
+data/config.*
 helpers/*.min.js
 public/images-custom/*
 routes/*.min.js

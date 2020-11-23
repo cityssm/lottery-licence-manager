@@ -19,8 +19,7 @@ declare const cityssm: cityssmGlobal;
 
       const locationID = buttonEle.getAttribute("data-location-id");
 
-      cityssm.postJSON(
-        "/locations/doDelete", {
+      cityssm.postJSON("doDelete", {
           locationID
         },
         (responseJSON: {
@@ -54,7 +53,7 @@ declare const cityssm: cityssmGlobal;
       "<em>Loading locations...</em>" +
       "</p>";
 
-    cityssm.postJSON("/locations/doGetInactive", {
+    cityssm.postJSON("doGetInactive", {
       inactiveYears: inactiveYearsFilterEle.value
     },
       (inactiveList: llmTypes.Location[]) => {

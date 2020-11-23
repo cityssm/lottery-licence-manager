@@ -25,7 +25,7 @@ declare const cityssm: cityssmGlobal;
       eventDateFilterEle.value = cityssm.dateToString(new Date());
     }
 
-    cityssm.postJSON("/events/doGetEventsByWeek", {
+    cityssm.postJSON("doGetEventsByWeek", {
       eventDate: eventDateFilterEle.value
     },
       (responseJSON: {

@@ -10,7 +10,7 @@ declare const cityssm: cityssmGlobal;
 
     const restoreFn = () => {
 
-      cityssm.postJSON("/locations/doRestore", {
+      cityssm.postJSON("doRestore", {
         locationID: restoreButtonEle.getAttribute("data-location-id")
       },
         (responseJSON: { success: boolean }) => {

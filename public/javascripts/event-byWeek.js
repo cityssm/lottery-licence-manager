@@ -14,7 +14,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
         if (eventDateFilterEle.value === "") {
             eventDateFilterEle.value = cityssm.dateToString(new Date());
         }
-        cityssm.postJSON("/events/doGetEventsByWeek", {
+        cityssm.postJSON("doGetEventsByWeek", {
             eventDate: eventDateFilterEle.value
         }, (responseJSON) => {
             if (responseJSON.licences.length === 0 && responseJSON.events.length === 0) {

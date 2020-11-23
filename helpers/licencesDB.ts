@@ -117,10 +117,6 @@ export const getRawRowsColumns = (sql: string, params: Array<string | number>): 
 
 
 /*
- * DASHBOARD
- */
-
-/*
  * LICENCES
  */
 

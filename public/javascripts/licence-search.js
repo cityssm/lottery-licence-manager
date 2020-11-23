@@ -14,7 +14,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
             "<i class=\"fas fa-3x fa-circle-notch fa-spin\" aria-hidden=\"true\"></i><br />" +
             "<em>Loading licences...</em>" +
             "</p>";
-        cityssm.postJSON("/licences/doSearch", formEle, (licenceResults) => {
+        cityssm.postJSON("licences/doSearch", formEle, (licenceResults) => {
             const licenceList = licenceResults.licences;
             if (licenceList.length === 0) {
                 searchResultsEle.innerHTML = "<div class=\"message is-info\">" +

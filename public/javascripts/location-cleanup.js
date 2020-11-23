@@ -8,7 +8,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
         const locationDisplayName = cityssm.escapeHTML(buttonEle.getAttribute("data-location-display-name"));
         const deleteFn = () => {
             const locationID = buttonEle.getAttribute("data-location-id");
-            cityssm.postJSON("/locations/doDelete", {
+            cityssm.postJSON("doDelete", {
                 locationID
             }, (responseJSON) => {
                 if (responseJSON.success) {
@@ -27,7 +27,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
             "<i class=\"fas fa-3x fa-circle-notch fa-spin\" aria-hidden=\"true\"></i><br />" +
             "<em>Loading locations...</em>" +
             "</p>";
-        cityssm.postJSON("/locations/doGetInactive", {
+        cityssm.postJSON("doGetInactive", {
             inactiveYears: inactiveYearsFilterEle.value
         }, (inactiveList) => {
             if (inactiveList.length === 0) {

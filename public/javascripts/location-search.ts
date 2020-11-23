@@ -139,8 +139,7 @@ declare const cityssm: cityssmGlobal;
       "<em>Loading locations...</em>" +
       "</p>";
 
-    cityssm.postJSON(
-      "/locations/doGetLocations",
+    cityssm.postJSON("locations/doGetLocations",
       formEle,
       (locationResults: { count: number; locations: llmTypes.Location[] }) => {
 
@@ -255,8 +254,7 @@ declare const cityssm: cityssmGlobal;
 
     const deleteFn = () => {
 
-      cityssm.postJSON(
-        "/locations/doDelete", {
+      cityssm.postJSON("locations/doDelete", {
           locationID: locationObj.locationID
         },
         (responseJSON: { success: boolean }) => {

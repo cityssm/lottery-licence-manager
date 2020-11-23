@@ -9,7 +9,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
     formEle.addEventListener("submit", (formEvent) => {
         formEvent.preventDefault();
         formMessageEle.innerHTML = "Saving... <i class=\"fas fa-circle-notch fa-spin\" aria-hidden=\"true\"></i>";
-        cityssm.postJSON("/events/doSave", formEle, (responseJSON) => {
+        cityssm.postJSON("doSave", formEle, (responseJSON) => {
             if (responseJSON.success) {
                 cityssm.disableNavBlocker();
                 if (eventDateNavEle) {
@@ -23,7 +23,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
     document.getElementById("is-delete-event-button").addEventListener("click", (clickEvent) => {
         clickEvent.preventDefault();
         cityssm.confirmModal("Delete Event?", "Are you sure you want to delete this event?", "Yes, Delete", "danger", () => {
-            cityssm.postJSON("/events/doDelete", {
+            cityssm.postJSON("doDelete", {
                 licenceID,
                 eventDate
             }, (responseJSON) => {
@@ -66,7 +66,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
         };
         const getPastBankInformationFn = () => {
             const containerEle = document.getElementById("container--bankInformationLookup");
-            cityssm.postJSON("/events/doGetPastBankInformation", {
+            cityssm.postJSON("doGetPastBankInformation", {
                 licenceID
             }, (bankInfoList) => {
                 savedBankInfoList = bankInfoList;

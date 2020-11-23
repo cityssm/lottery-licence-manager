@@ -9,7 +9,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
             "<i class=\"fas fa-3x fa-circle-notch fa-spin\" aria-hidden=\"true\"></i><br />" +
             "<em>Loading organizations...</em>" +
             "</p>";
-        cityssm.postJSON("/organizations/doSearch", formEle, (organizationsList) => {
+        cityssm.postJSON("organizations/doSearch", formEle, (organizationsList) => {
             if (organizationsList.length === 0) {
                 searchResultsEle.innerHTML = "<div class=\"message is-info\">" +
                     "<div class=\"message-body\">" +

@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
             "<i class=\"fas fa-3x fa-circle-notch fa-spin\" aria-hidden=\"true\"></i><br />" +
             "<em>Loading events..." +
             "</p>";
-        cityssm.postJSON("/events/doSearch", {
+        cityssm.postJSON("events/doSearch", {
             externalLicenceNumber: filterExternalLicenceNumberEle.value,
             licenceTypeKey: filterLicenceTypeKeyEle.value,
             organizationName: filterOrganizationNameEle.value,

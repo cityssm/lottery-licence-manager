@@ -14,7 +14,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
     const getFinancialSummaryFn = () => {
         tableEle.classList.remove("has-status-view");
         tableEle.classList.add("has-status-loading");
-        cityssm.postJSON("/events/doGetFinancialSummary", formEle, (summary) => {
+        cityssm.postJSON("doGetFinancialSummary", formEle, (summary) => {
             const trEles = tbodyEle.children;
             for (const trEle of trEles) {
                 trEle.classList.add("is-hidden");

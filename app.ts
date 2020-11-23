@@ -50,13 +50,14 @@ dbInit.initLicencesDB();
 
 const app = express();
 
+app.set("etag", false);
 
 // View engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 
 
-app.use(compression());
+// app.use(compression());
 app.use(logger("dev"));
 app.use(express.json());
 

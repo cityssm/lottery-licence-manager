@@ -21,8 +21,7 @@ declare const cityssm: cityssmGlobal;
 
     messageEle.innerHTML = "Saving... <i class=\"fas fa-circle-notch fa-spin\" aria-hidden=\"true\"></i>";
 
-    cityssm.postJSON(
-      "/admin/doSaveApplicationSetting",
+    cityssm.postJSON("doSaveApplicationSetting",
       formEle,
       (responseJSON: { success: boolean }) => {
 

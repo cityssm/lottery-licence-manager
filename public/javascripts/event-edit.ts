@@ -19,8 +19,7 @@ declare const cityssm: cityssmGlobal;
 
     formMessageEle.innerHTML = "Saving... <i class=\"fas fa-circle-notch fa-spin\" aria-hidden=\"true\"></i>";
 
-    cityssm.postJSON(
-      "/events/doSave",
+    cityssm.postJSON("doSave",
       formEle,
       (responseJSON: { success: boolean; message?: string }) => {
 
@@ -56,8 +55,7 @@ declare const cityssm: cityssmGlobal;
       "danger",
       () => {
 
-        cityssm.postJSON(
-          "/events/doDelete", {
+        cityssm.postJSON("doDelete", {
             licenceID,
             eventDate
           },
@@ -139,7 +137,7 @@ declare const cityssm: cityssmGlobal;
 
       const containerEle = document.getElementById("container--bankInformationLookup");
 
-      cityssm.postJSON("/events/doGetPastBankInformation", {
+      cityssm.postJSON("doGetPastBankInformation", {
         licenceID
       }, (bankInfoList) => {
 

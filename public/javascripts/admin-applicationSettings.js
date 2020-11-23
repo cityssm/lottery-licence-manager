@@ -9,7 +9,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
         const formEle = formEvent.currentTarget;
         const messageEle = getMessageEle(formEle);
         messageEle.innerHTML = "Saving... <i class=\"fas fa-circle-notch fa-spin\" aria-hidden=\"true\"></i>";
-        cityssm.postJSON("/admin/doSaveApplicationSetting", formEle, (responseJSON) => {
+        cityssm.postJSON("doSaveApplicationSetting", formEle, (responseJSON) => {
             if (responseJSON.success) {
                 messageEle.innerHTML = "<span class=\"has-text-success\">Updated Successfully</span>";
             }

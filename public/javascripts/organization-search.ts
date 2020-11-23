@@ -20,7 +20,7 @@ declare const cityssm: cityssmGlobal;
       "</p>";
 
     cityssm.postJSON(
-      "/organizations/doSearch",
+      "organizations/doSearch",
       formEle,
       (organizationsList: llmTypes.Organization[]) => {
 

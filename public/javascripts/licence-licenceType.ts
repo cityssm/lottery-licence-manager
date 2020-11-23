@@ -21,7 +21,7 @@ declare const llm: llmGlobal;
       "<em>Loading report...</em>" +
       "</p>";
 
-    cityssm.postJSON("/licences/doGetLicenceTypeSummary", formEle,
+    cityssm.postJSON("doGetLicenceTypeSummary", formEle,
       (licenceList: Array<{
         licenceID: number;
         externalLicenceNumber: string;

@@ -1,7 +1,6 @@
 "use strict";
 const createError = require("http-errors");
 const express = require("express");
-const compression = require("compression");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const csurf = require("csurf");
@@ -28,9 +27,9 @@ const SQLiteStore = sqlite3(session);
 dbInit.initUsersDB();
 dbInit.initLicencesDB();
 const app = express();
+app.set("etag", false);
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
-app.use(compression());
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({

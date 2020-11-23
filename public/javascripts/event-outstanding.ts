@@ -13,7 +13,7 @@ declare const cityssm: cityssmGlobal;
 
     cityssm.clearElement(tbodyEle);
 
-    cityssm.postJSON("/events/doGetOutstandingEvents", formEle, (outstandingEvents: llmTypes.LotteryEvent[]) => {
+    cityssm.postJSON("doGetOutstandingEvents", formEle, (outstandingEvents: llmTypes.LotteryEvent[]) => {
 
       let currentOrganizationID = -1;
 

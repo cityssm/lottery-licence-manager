@@ -21,8 +21,7 @@ declare const cityssm: cityssmGlobal;
 
     formMessageEle.innerHTML = "Saving... <i class=\"fas fa-circle-notch fa-spin\" aria-hidden=\"true\"></i>";
 
-    cityssm.postJSON(
-      (isCreate ? "/locations/doCreate" : "/locations/doUpdate"),
+    cityssm.postJSON((isCreate ? "doCreate" : "doUpdate"),
       formEle,
       (responseJSON: { success: boolean; message?: string; locationID?: number }) => {
 
@@ -55,8 +54,7 @@ declare const cityssm: cityssmGlobal;
 
     const deleteLocationFn = () => {
 
-      cityssm.postJSON(
-        "/locations/doDelete", {
+      cityssm.postJSON("doDelete", {
           locationID
         },
         (responseJSON: { success: boolean }) => {
@@ -123,8 +121,7 @@ declare const cityssm: cityssmGlobal;
 
       const doMergeFn = () => {
 
-        cityssm.postJSON(
-          "/locations/doMerge", {
+        cityssm.postJSON("doMerge", {
             targetLocationID: locationID,
             sourceLocationID: locationID_source
           },
@@ -262,8 +259,7 @@ declare const cityssm: cityssmGlobal;
 
           closeMergeLocationModalFn = closeModalFn;
 
-          cityssm.postJSON(
-            "/locations/doGetLocations", {
+          cityssm.postJSON("doGetLocations", {
               limit: -1
             },
             (responseJSON) => {

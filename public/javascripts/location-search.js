@@ -83,7 +83,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
             "<i class=\"fas fa-3x fa-circle-notch fa-spin\" aria-hidden=\"true\"></i><br />" +
             "<em>Loading locations...</em>" +
             "</p>";
-        cityssm.postJSON("/locations/doGetLocations", formEle, (locationResults) => {
+        cityssm.postJSON("locations/doGetLocations", formEle, (locationResults) => {
             displayedLocationList = locationResults.locations;
             if (displayedLocationList.length === 0) {
                 searchResultsEle.innerHTML = "<div class=\"message is-info\">" +
@@ -162,7 +162,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
         const locationIndex = parseInt(clickEvent.currentTarget.getAttribute("data-location-index"), 10);
         const locationObj = displayedLocationList[locationIndex];
         const deleteFn = () => {
-            cityssm.postJSON("/locations/doDelete", {
+            cityssm.postJSON("locations/doDelete", {
                 locationID: locationObj.locationID
             }, (responseJSON) => {
                 if (responseJSON.success) {

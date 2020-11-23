@@ -10,7 +10,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
     formEle.addEventListener("submit", (formEvent) => {
         formEvent.preventDefault();
         formMessageEle.innerHTML = "Saving... <i class=\"fas fa-circle-notch fa-spin\" aria-hidden=\"true\"></i>";
-        cityssm.postJSON((isCreate ? "/locations/doCreate" : "/locations/doUpdate"), formEle, (responseJSON) => {
+        cityssm.postJSON((isCreate ? "doCreate" : "doUpdate"), formEle, (responseJSON) => {
             if (responseJSON.success) {
                 hasUnsavedChanges = false;
                 cityssm.disableNavBlocker();
@@ -26,7 +26,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
     });
     if (!isCreate) {
         const deleteLocationFn = () => {
-            cityssm.postJSON("/locations/doDelete", {
+            cityssm.postJSON("doDelete", {
                 locationID
             }, (responseJSON) => {
                 if (responseJSON.success) {
@@ -59,7 +59,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
             let sourceLocationsContainerEle = null;
             let closeMergeLocationModalFn = null;
             const doMergeFn = () => {
-                cityssm.postJSON("/locations/doMerge", {
+                cityssm.postJSON("doMerge", {
                     targetLocationID: locationID,
                     sourceLocationID: locationID_source
                 }, (responseJSON) => {
@@ -155,7 +155,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 },
                 onshown(_modalEle, closeModalFn) {
                     closeMergeLocationModalFn = closeModalFn;
-                    cityssm.postJSON("/locations/doGetLocations", {
+                    cityssm.postJSON("doGetLocations", {
                         limit: -1
                     }, (responseJSON) => {
                         locationsList = responseJSON.locations;

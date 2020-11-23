@@ -23,8 +23,7 @@ declare const cityssm: cityssmGlobal;
       "<em>Loading events..." +
       "</p>";
 
-    cityssm.postJSON(
-      "/events/doSearch", {
+    cityssm.postJSON("events/doSearch", {
         externalLicenceNumber: filterExternalLicenceNumberEle.value,
         licenceTypeKey: filterLicenceTypeKeyEle.value,
         organizationName: filterOrganizationNameEle.value,

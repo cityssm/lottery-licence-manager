@@ -14,8 +14,7 @@ declare const cityssm: cityssmGlobal;
 
       const formEle = formEvent.currentTarget;
 
-      cityssm.postJSON(
-        "/dashboard/doChangePassword",
+      cityssm.postJSON("dashboard/doChangePassword",
         formEle,
         (responseJSON: { success: boolean }) => {
 

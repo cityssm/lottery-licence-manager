@@ -47,7 +47,7 @@ declare const llm: llmGlobal;
 
     formMessageEle.innerHTML = "Saving... <i class=\"fas fa-circle-notch fa-spin\" aria-hidden=\"true\"></i>";
 
-    cityssm.postJSON("/licences/doSave", formEle,
+    cityssm.postJSON("doSave", formEle,
       (responseJSON: { success: boolean; message?: string; licenceID?: number }) => {
 
         if (responseJSON.success) {
@@ -90,8 +90,7 @@ declare const llm: llmGlobal;
       clickEvent.preventDefault();
 
       const deleteFn = () => {
-        cityssm.postJSON(
-          "/licences/doDelete", {
+        cityssm.postJSON("doDelete", {
             licenceID
           },
           (responseJSON: { success: boolean }) => {
@@ -286,8 +285,7 @@ declare const llm: llmGlobal;
 
           if (organizationList.length === 0) {
 
-            cityssm.postJSON(
-              "/organizations/doGetAll",
+            cityssm.postJSON("../organizations/doGetAll",
               null,
               (organizationListRes: recordTypes.Organization[]) => {
 
@@ -335,8 +333,7 @@ declare const llm: llmGlobal;
 
     if (locationList.length === 0) {
 
-      cityssm.postJSON(
-        "/locations/doGetLocations",
+      cityssm.postJSON("../locations/doGetLocations",
         null,
         (locationResults) => {
 
@@ -485,8 +482,7 @@ declare const llm: llmGlobal;
 
             formEvent.preventDefault();
 
-            cityssm.postJSON(
-              "/locations/doCreate",
+            cityssm.postJSON("../locations/doCreate",
               formEvent.currentTarget,
               (responseJSON) => {
 
@@ -594,8 +590,7 @@ declare const llm: llmGlobal;
         "Loading previously used terms and conditions..." +
         "</p>";
 
-      cityssm.postJSON(
-        "/licences/doGetDistinctTermsConditions", {
+      cityssm.postJSON("doGetDistinctTermsConditions", {
           organizationID
         },
         (termsConditionsListRes: recordTypes.TermsConditionsStat[]) => {
@@ -927,8 +922,7 @@ declare const llm: llmGlobal;
 
       } else {
 
-        cityssm.postJSON(
-          "/licences/doGetTicketTypes", {
+        cityssm.postJSON("doGetTicketTypes", {
             licenceTypeKey
           },
           (ticketTypes: configTypes.ConfigTicketType[]) => {
@@ -1569,8 +1563,7 @@ declare const llm: llmGlobal;
           formEvent.preventDefault();
         }
 
-        cityssm.postJSON(
-          "/licences/doAddTransaction",
+        cityssm.postJSON("doAddTransaction",
           addTransactionFormEle,
           (responseJSON: { success: boolean }) => {
 
@@ -1646,8 +1639,7 @@ declare const llm: llmGlobal;
 
         const voidFn = () => {
 
-          cityssm.postJSON(
-            "/licences/doVoidTransaction", {
+          cityssm.postJSON("doVoidTransaction", {
               licenceID,
               transactionIndex: voidTransactionButtonEle.getAttribute("data-transaction-index")
             },
@@ -1692,8 +1684,7 @@ declare const llm: llmGlobal;
 
         const unissueFn = () => {
 
-          cityssm.postJSON(
-            "/licences/doUnissueLicence", {
+          cityssm.postJSON("doUnissueLicence", {
               licenceID
             },
             (responseJSON) => {
@@ -1720,8 +1711,7 @@ declare const llm: llmGlobal;
 
         const issueFn = () => {
 
-          cityssm.postJSON(
-            "/licences/doIssueLicence", {
+          cityssm.postJSON("doIssueLicence", {
               licenceID
             },
             (responseJSON: { success: boolean }) => {
