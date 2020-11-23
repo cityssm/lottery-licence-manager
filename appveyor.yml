@@ -1,29 +1,29 @@
-# Test against the latest version of this Node.js version
+image: ubuntu
+platform: Any CPU
+
 environment:
   nodejs_version: "14"
 
-# Install scripts. (runs after repo cloning)
 install:
-  # Get the latest stable version of Node.js or io.js
-  - ps: Install-Product node $env:nodejs_version
   # install modules
-  - npm install
-  - npm install -g mocha nyc
+  - sh: npm install
+  - sh: npm install -g mocha nyc
+  # Download codeclimate test report
+  - sh: curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./codeclimate-test-reporter
+  - sh: chmod +x ./codeclimate-test-reporter
 
 # Post-install test scripts.
 test_script:
   # Output useful info for debugging.
   - node --version
   - npm --version
-  # install test reporters
-  #- curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-  #- chmod +x ./cc-test-reporter
-  #- cc-test-reporter before-build
   # run tests
   - nyc --reporter=lcov mocha --timeout 30000
-  # post results
-  #- cc-test-reporter after-build -t lcov
-  - bash <(curl -Ls https://coverage.codacy.com/get.sh) report -r ./coverage/lcov.info
+
+after_test:
+  # Send test result to codeclimate
+  - sh: ./codeclimate-test-reporter before-build
+  - sh: ./codeclimate-test-reporter after-build -t lcov --exit-code $?
 
 # Don't actually build.
 build: off
