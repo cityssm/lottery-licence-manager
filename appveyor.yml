@@ -1,8 +1,7 @@
 image: ubuntu
 platform: Any CPU
 
-environment:
-  nodejs_version: "14"
+stack: "node 14"
 
 install:
   # install modules
