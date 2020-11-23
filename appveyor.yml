@@ -1,6 +1,12 @@
 image: ubuntu
 platform: Any CPU
 
+environment:
+  CODACY_PROJECT_TOKEN:
+    secure: 44s57WJWyOkDP41gB1qUk4WPXHMY2f13Jps4HYT0kNgr4O07m62f1qFcrBq7bdf8
+  CC_TEST_REPORTER_ID:
+    secure: cuyl2RLaP2eJEZbRFOZq2AEhBQy2tDVZPeQKNFuDTiK0+c2jO/EdQ5YlskrLvkVE5ktJkf45K6Kx1p3ngE1dRBDgsHAtF8wRDajrWli7ktk=
+
 stack: "node 14"
 
 install:
