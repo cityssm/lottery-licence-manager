@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 (() => {
+    const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
     const getMessageEle = (formEle) => {
         return formEle.closest("tr").getElementsByClassName("formMessage")[0];
     };
@@ -9,7 +10,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
         const formEle = formEvent.currentTarget;
         const messageEle = getMessageEle(formEle);
         messageEle.innerHTML = "Saving... <i class=\"fas fa-circle-notch fa-spin\" aria-hidden=\"true\"></i>";
-        cityssm.postJSON("doSaveApplicationSetting", formEle, (responseJSON) => {
+        cityssm.postJSON(urlPrefix + "/admin/doSaveApplicationSetting", formEle, (responseJSON) => {
             if (responseJSON.success) {
                 messageEle.innerHTML = "<span class=\"has-text-success\">Updated Successfully</span>";
             }

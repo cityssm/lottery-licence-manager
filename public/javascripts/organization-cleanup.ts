@@ -6,6 +6,8 @@ declare const cityssm: cityssmGlobal;
 
 (() => {
 
+  const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
+
   const canUpdate = document.getElementsByTagName("main")[0].getAttribute("data-can-update") === "true";
 
   const inactiveYearsFilterEle = document.getElementById("filter--inactiveYears") as HTMLSelectElement;
@@ -22,7 +24,7 @@ declare const cityssm: cityssmGlobal;
 
       const organizationID = buttonEle.getAttribute("data-organization-id");
 
-      cityssm.postJSON("/organizations/doDelete", {
+      cityssm.postJSON(urlPrefix + "/organizations/doDelete", {
         organizationID
       },
         (responseJSON: { success: boolean; message: string }) => {
@@ -54,7 +56,7 @@ declare const cityssm: cityssmGlobal;
       "<em>Loading organizations...</em>" +
       "</p>";
 
-    cityssm.postJSON("/organizations/doGetInactive", {
+    cityssm.postJSON(urlPrefix + "/organizations/doGetInactive", {
       inactiveYears: inactiveYearsFilterEle.value
     },
       (inactiveList: llmTypes.Organization[]) => {

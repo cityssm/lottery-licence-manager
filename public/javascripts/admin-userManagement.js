@@ -1,10 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 (() => {
+    const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
     const createUserModalEle = document.getElementById("is-create-user-modal");
     createUserModalEle.getElementsByTagName("form")[0].addEventListener("submit", (formEvent) => {
         formEvent.preventDefault();
-        cityssm.postJSON("doCreateUser", formEvent.currentTarget, (responseJSON) => {
+        cityssm.postJSON(urlPrefix + "/admin/doCreateUser", formEvent.currentTarget, (responseJSON) => {
             if (responseJSON.success) {
                 window.location.reload();
             }
@@ -24,7 +25,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
         const userNameToDelete = deleteButtonEle.getAttribute("data-user-name");
         const trEle = deleteButtonEle.closest("tr");
         const doDeleteFn = () => {
-            cityssm.postJSON("doDeleteUser", {
+            cityssm.postJSON(urlPrefix + "/admin/doDeleteUser", {
                 userName: userNameToDelete
             }, (resultJSON) => {
                 if (resultJSON.success) {
@@ -44,7 +45,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
     const submitFn_updateUserSetting = (formEvent) => {
         formEvent.preventDefault();
         const formEle = formEvent.currentTarget;
-        cityssm.postJSON("doUpdateUserProperty", formEle, (responseJSON) => {
+        cityssm.postJSON(urlPrefix + "/admin/doUpdateUserProperty", formEle, (responseJSON) => {
             if (responseJSON.success) {
                 const inputEle = formEle.getElementsByClassName("input")[0];
                 inputEle.classList.add("is-success");
@@ -79,7 +80,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
         document.getElementById("updateUser--lastName").value = lastName;
         const userPropertiesContainerEle = document.getElementById("container--userProperties");
         cityssm.clearElement(userPropertiesContainerEle);
-        cityssm.postJSON("doGetUserProperties", {
+        cityssm.postJSON(urlPrefix + "/admin/doGetUserProperties", {
             userName
         }, (userPropertiesJSON) => {
             let propertyIndex = 0;
@@ -136,7 +137,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
     document.getElementById("tab--updateUser-name").getElementsByTagName("form")[0]
         .addEventListener("submit", (formEvent) => {
         formEvent.preventDefault();
-        cityssm.postJSON("doUpdateUser", formEvent.currentTarget, (responseJSON) => {
+        cityssm.postJSON(urlPrefix + "/admin/doUpdateUser", formEvent.currentTarget, (responseJSON) => {
             if (responseJSON.success) {
                 window.location.reload();
             }
@@ -145,7 +146,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
     document.getElementById("tab--updateUser-password").getElementsByTagName("form")[0]
         .addEventListener("submit", (formEvent) => {
         formEvent.preventDefault();
-        cityssm.postJSON("doResetPassword", formEvent.currentTarget, (responseJSON) => {
+        cityssm.postJSON(urlPrefix + "/admin/doResetPassword", formEvent.currentTarget, (responseJSON) => {
             if (responseJSON.success) {
                 const newPasswordEle = document.getElementById("resetPassword--newPassword");
                 newPasswordEle.innerText = responseJSON.newPassword;

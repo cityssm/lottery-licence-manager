@@ -117,7 +117,8 @@ llm.getDefaultConfigProperty = (propertyName, propertyValueCallbackFn) => {
     }
     catch (_e) {
     }
-    cityssm.postJSON("/dashboard/doGetDefaultConfigProperties", {}, (defaultConfigProperties) => {
+    const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
+    cityssm.postJSON(urlPrefix + "/dashboard/doGetDefaultConfigProperties", {}, (defaultConfigProperties) => {
         try {
             window.localStorage.setItem("defaultConfigProperties", JSON.stringify(defaultConfigProperties));
         }

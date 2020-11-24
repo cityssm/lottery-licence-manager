@@ -8,6 +8,8 @@ declare const llm: llmGlobal;
 
 (() => {
 
+  const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
+
   const formEle = document.getElementById("form--organization") as HTMLFormElement;
   const formMessageEle = document.getElementById("container--form-message");
 
@@ -26,8 +28,7 @@ declare const llm: llmGlobal;
 
     formMessageEle.innerHTML = "Saving... <i class=\"fas fa-circle-notch fa-spin\" aria-hidden=\"true\"></i>";
 
-    cityssm.postJSON(
-      "/organizations/doSave",
+    cityssm.postJSON(urlPrefix + "/organizations/doSave",
       formEle,
       (responseJSON: { success: boolean; organizationID?: number; message?: string }) => {
 
@@ -60,10 +61,9 @@ declare const llm: llmGlobal;
 
     const deleteOrganizationFn = () => {
 
-      cityssm.postJSON(
-        "/organizations/doDelete", {
-          organizationID
-        },
+      cityssm.postJSON(urlPrefix + "/organizations/doDelete", {
+        organizationID
+      },
         (responseJSON: { success: boolean }) => {
 
           if (responseJSON.success) {
@@ -103,8 +103,8 @@ declare const llm: llmGlobal;
 
         isSubmitting = true;
 
-        cityssm.postJSON(
-          "/organizations/doRollForward", formEle,
+        cityssm.postJSON(urlPrefix + "/organizations/doRollForward",
+          formEle,
           (responseJSON: { success: boolean; message?: string }) => {
 
             if (responseJSON.success) {
@@ -165,10 +165,9 @@ declare const llm: llmGlobal;
 
       const defaultRepresentativeIndex = (changeEvent.currentTarget as HTMLInputElement).value;
 
-      cityssm.postJSON(
-        "/organizations/" + organizationIDString + "/doSetDefaultRepresentative", {
-          isDefaultRepresentativeIndex: defaultRepresentativeIndex
-        },
+      cityssm.postJSON(urlPrefix + "/organizations/" + organizationIDString + "/doSetDefaultRepresentative", {
+        isDefaultRepresentativeIndex: defaultRepresentativeIndex
+      },
         () => { }
       );
 
@@ -201,10 +200,9 @@ declare const llm: llmGlobal;
         "danger",
         () => {
 
-          cityssm.postJSON(
-            "/organizations/" + organizationIDString + "/doDeleteOrganizationRepresentative", {
-              representativeIndex: trEle.getAttribute("data-representative-index")
-            },
+          cityssm.postJSON(urlPrefix + "/organizations/" + organizationIDString + "/doDeleteOrganizationRepresentative", {
+            representativeIndex: trEle.getAttribute("data-representative-index")
+          },
             (responseJSON: { success: boolean }) => {
 
               if (responseJSON.success) {
@@ -375,8 +373,7 @@ declare const llm: llmGlobal;
 
       formEvent.preventDefault();
 
-      cityssm.postJSON(
-        "/organizations/" + organizationIDString + "/doEditOrganizationRepresentative",
+      cityssm.postJSON(urlPrefix + "/organizations/" + organizationIDString + "/doEditOrganizationRepresentative",
         formEvent.currentTarget,
         (responseJSON) => {
 
@@ -419,8 +416,7 @@ declare const llm: llmGlobal;
 
       formEvent.preventDefault();
 
-      cityssm.postJSON(
-        "/organizations/" + organizationIDString + "/doAddOrganizationRepresentative",
+      cityssm.postJSON(urlPrefix + "/organizations/" + organizationIDString + "/doAddOrganizationRepresentative",
         formEvent.currentTarget,
         (responseJSON: { success: boolean; organizationRepresentative: llmTypes.OrganizationRepresentative }) => {
 

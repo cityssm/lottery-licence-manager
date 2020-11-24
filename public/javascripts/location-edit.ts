@@ -6,6 +6,8 @@ declare const cityssm: cityssmGlobal;
 
 (() => {
 
+  const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
+
   const formEle = document.getElementById("form--location") as HTMLFormElement;
   const formMessageEle = document.getElementById("container--form-message");
   const locationID = (document.getElementById("location--locationID") as HTMLInputElement).value;
@@ -21,7 +23,7 @@ declare const cityssm: cityssmGlobal;
 
     formMessageEle.innerHTML = "Saving... <i class=\"fas fa-circle-notch fa-spin\" aria-hidden=\"true\"></i>";
 
-    cityssm.postJSON((isCreate ? "doCreate" : "doUpdate"),
+    cityssm.postJSON(urlPrefix + (isCreate ? "/locations/doCreate" : "/locations/doUpdate"),
       formEle,
       (responseJSON: { success: boolean; message?: string; locationID?: number }) => {
 
@@ -54,9 +56,9 @@ declare const cityssm: cityssmGlobal;
 
     const deleteLocationFn = () => {
 
-      cityssm.postJSON("doDelete", {
-          locationID
-        },
+      cityssm.postJSON(urlPrefix + "/locations/doDelete", {
+        locationID
+      },
         (responseJSON: { success: boolean }) => {
 
           if (responseJSON.success) {
@@ -121,10 +123,10 @@ declare const cityssm: cityssmGlobal;
 
       const doMergeFn = () => {
 
-        cityssm.postJSON("doMerge", {
-            targetLocationID: locationID,
-            sourceLocationID: locationID_source
-          },
+        cityssm.postJSON(urlPrefix + "/locations/doMerge", {
+          targetLocationID: locationID,
+          sourceLocationID: locationID_source
+        },
           (responseJSON: { success: boolean }) => {
 
             if (responseJSON.success) {
@@ -259,9 +261,9 @@ declare const cityssm: cityssmGlobal;
 
           closeMergeLocationModalFn = closeModalFn;
 
-          cityssm.postJSON("doGetLocations", {
-              limit: -1
-            },
+          cityssm.postJSON(urlPrefix + "/locations/doGetLocations", {
+            limit: -1
+          },
             (responseJSON) => {
 
               locationsList = responseJSON.locations;

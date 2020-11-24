@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 (() => {
+    const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
     const formEle = document.getElementById("form--licenceTypes");
     const containerEle = document.getElementById("container--licenceTypes");
     let externalLicenceNumberLabel = "";
@@ -10,7 +11,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
             "<i class=\"fas fa-3x fa-circle-notch fa-spin\" aria-hidden=\"true\"></i><br />" +
             "<em>Loading report...</em>" +
             "</p>";
-        cityssm.postJSON("doGetLicenceTypeSummary", formEle, (licenceList) => {
+        cityssm.postJSON(urlPrefix + "/licences/doGetLicenceTypeSummary", formEle, (licenceList) => {
             cityssm.clearElement(containerEle);
             if (licenceList.length === 0) {
                 containerEle.innerHTML = "<div class=\"message is-info\">" +
@@ -38,7 +39,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 trEle.insertAdjacentHTML("beforeend", "<td>" + licenceObj.applicationDateString + "</td>");
                 trEle.insertAdjacentHTML("beforeend", "<td>" + licenceObj.issueDateString + "</td>");
                 trEle.insertAdjacentHTML("beforeend", "<td>" +
-                    "<a data-tooltip=\"View Licence\" href=\"/licences/" + licenceObj.licenceID.toString() + "\">" +
+                    "<a data-tooltip=\"View Licence\" href=\"" + urlPrefix + "/licences/" + licenceObj.licenceID.toString() + "\">" +
                     cityssm.escapeHTML(licenceObj.externalLicenceNumber) + "<br />" +
                     "<small>Licence #" + licenceObj.licenceID.toString() + "</small>" +
                     "</a>" +

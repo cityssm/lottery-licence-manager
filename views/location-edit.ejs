@@ -5,15 +5,15 @@
   <div class="column">
     <nav class="breadcrumb">
       <ul>
-        <li><a href="/dashboard">Home</a></li>
-        <li><a href="/locations">
+        <li><a href="<%= urlPrefix %>/dashboard">Home</a></li>
+        <li><a href="<%= urlPrefix %>/locations">
           <span class="icon is-small"><i class="fas fa-map-marker-alt" aria-hidden="true"></i></span>
           <span>Locations</span>
         </a></li>
         <% if (isCreate) { %>
           <li class="is-active"><a href="#" aria-current="page">New Location</a></li>
         <% } else { %>
-          <li><a href="/locations/<%= location.locationID %>"><%= headTitle %></a></li>
+          <li><a href="<%= urlPrefix %>/locations/<%= location.locationID %>"><%= headTitle %></a></li>
           <li class="is-active"><a href="#" aria-current="page">Update</a></li>
         <% } %>
       </ul>
@@ -155,10 +155,10 @@
 
 <%- include('_footerA'); -%>
 
-<script src="/javascripts/location-edit.min.js"></script>
+<script src="<%= urlPrefix %>/javascripts/location-edit.min.js"></script>
 
 <% if (!isCreate) { %>
-  <script src="/javascripts/location-viewEdit.min.js"></script>
+  <script src="<%= urlPrefix %>/javascripts/location-viewEdit.min.js"></script>
 <% } %>
 
 <%- include('_footerB'); -%>

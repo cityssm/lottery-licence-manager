@@ -7,6 +7,8 @@ declare const llm: llmGlobal;
 
 (() => {
 
+  const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
+
   const formEle = document.getElementById("form--licenceTypes");
   const containerEle = document.getElementById("container--licenceTypes");
 
@@ -21,7 +23,7 @@ declare const llm: llmGlobal;
       "<em>Loading report...</em>" +
       "</p>";
 
-    cityssm.postJSON("doGetLicenceTypeSummary", formEle,
+    cityssm.postJSON(urlPrefix + "/licences/doGetLicenceTypeSummary", formEle,
       (licenceList: Array<{
         licenceID: number;
         externalLicenceNumber: string;
@@ -82,7 +84,7 @@ declare const llm: llmGlobal;
           trEle.insertAdjacentHTML(
             "beforeend",
             "<td>" +
-            "<a data-tooltip=\"View Licence\" href=\"/licences/" + licenceObj.licenceID.toString() + "\">" +
+            "<a data-tooltip=\"View Licence\" href=\"" + urlPrefix + "/licences/" + licenceObj.licenceID.toString() + "\">" +
             cityssm.escapeHTML(licenceObj.externalLicenceNumber) + "<br />" +
             "<small>Licence #" + licenceObj.licenceID.toString() + "</small>" +
             "</a>" +

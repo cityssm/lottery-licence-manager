@@ -17,14 +17,15 @@ const licencesDB_getOrganization = require("../../helpers/licencesDB/getOrganiza
 const licencesDB_getLicence = require("../../helpers/licencesDB/getLicence");
 const convertHTMLToPDF = require("pdf-puppeteer");
 const handler = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
     const licenceID = parseInt(req.params.licenceID, 10);
     const licence = licencesDB_getLicence.getLicence(licenceID, req.session);
     if (!licence) {
-        res.redirect("/licences/?error=licenceNotFound");
+        res.redirect(urlPrefix + "/licences/?error=licenceNotFound");
         return;
     }
     if (!licence.issueDate) {
-        res.redirect("/licences/?error=licenceNotIssued");
+        res.redirect(urlPrefix + "/licences/?error=licenceNotIssued");
         return;
     }
     const organization = licencesDB_getOrganization.getOrganization(licence.organizationID, req.session);

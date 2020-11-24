@@ -4,6 +4,8 @@ declare const cityssm: cityssmGlobal;
 
 (() => {
 
+  const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
+
   const changePasswordModalEle = document.getElementById("is-change-password-modal");
 
   if (changePasswordModalEle) {
@@ -14,7 +16,7 @@ declare const cityssm: cityssmGlobal;
 
       const formEle = formEvent.currentTarget;
 
-      cityssm.postJSON("dashboard/doChangePassword",
+      cityssm.postJSON(urlPrefix + "/dashboard/doChangePassword",
         formEle,
         (responseJSON: { success: boolean }) => {
 

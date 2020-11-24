@@ -6,6 +6,8 @@ declare const cityssm: cityssmGlobal;
 
 (() => {
 
+  const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
+
   const formEle = document.getElementById("form--searchFilters") as HTMLFormElement;
 
   const limitEle = document.getElementById("filter--limit") as HTMLInputElement;
@@ -27,7 +29,7 @@ declare const cityssm: cityssmGlobal;
     const locationDisplayNameLinkEle = document.createElement("a");
 
     locationDisplayNameLinkEle.innerText = locationObj.locationDisplayName;
-    locationDisplayNameLinkEle.href = "/locations/" + locationObj.locationID.toString();
+    locationDisplayNameLinkEle.href = urlPrefix + "/locations/" + locationObj.locationID.toString();
     trEle.getElementsByTagName("td")[0].insertAdjacentElement("beforeend", locationDisplayNameLinkEle);
 
     // Address
@@ -139,7 +141,7 @@ declare const cityssm: cityssmGlobal;
       "<em>Loading locations...</em>" +
       "</p>";
 
-    cityssm.postJSON("locations/doGetLocations",
+    cityssm.postJSON(urlPrefix + "/locations/doGetLocations",
       formEle,
       (locationResults: { count: number; locations: llmTypes.Location[] }) => {
 
@@ -254,7 +256,7 @@ declare const cityssm: cityssmGlobal;
 
     const deleteFn = () => {
 
-      cityssm.postJSON("locations/doDelete", {
+      cityssm.postJSON(urlPrefix + "/locations/doDelete", {
           locationID: locationObj.locationID
         },
         (responseJSON: { success: boolean }) => {

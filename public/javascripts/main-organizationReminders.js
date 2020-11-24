@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 llm.organizationReminders = (() => {
+    const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
     let reminderCategories;
     const reminderTypeCache = new Map();
     let dismissingStatuses = [];
@@ -30,12 +31,12 @@ llm.organizationReminders = (() => {
         return reminderTypeCache.get(reminderTypeKey);
     };
     const getRemindersByOrganizationID = (organizationID, callbackFn) => {
-        cityssm.postJSON("/organizations/doGetReminders", {
+        cityssm.postJSON(urlPrefix + "/organizations/doGetReminders", {
             organizationID
         }, callbackFn);
     };
     const getReminderByID = (organizationID, reminderIndex, callbackFn) => {
-        cityssm.postJSON("/organizations/doGetReminder", {
+        cityssm.postJSON(urlPrefix + "/organizations/doGetReminder", {
             organizationID,
             reminderIndex
         }, callbackFn);
@@ -44,7 +45,7 @@ llm.organizationReminders = (() => {
         let addReminderCloseModalFn;
         const submitFn = (formEvent) => {
             formEvent.preventDefault();
-            cityssm.postJSON("/organizations/doAddReminder", formEvent.currentTarget, (responseJSON) => {
+            cityssm.postJSON(urlPrefix + "/organizations/doAddReminder", formEvent.currentTarget, (responseJSON) => {
                 if (responseJSON.success) {
                     addReminderCloseModalFn();
                     if (updateCallbackFn) {
@@ -118,7 +119,7 @@ llm.organizationReminders = (() => {
         let editReminderCloseModalFn;
         const submitFn = (formEvent) => {
             formEvent.preventDefault();
-            cityssm.postJSON("/organizations/doEditReminder", formEvent.currentTarget, (responseJSON) => {
+            cityssm.postJSON(urlPrefix + "/organizations/doEditReminder", formEvent.currentTarget, (responseJSON) => {
                 if (responseJSON.success) {
                     editReminderCloseModalFn();
                     if (updateCallbackFn) {
@@ -243,7 +244,7 @@ llm.organizationReminders = (() => {
         loadReminderTypeCache(openModalFn);
     };
     const doDismissReminder = (organizationID, reminderIndex, callbackFn) => {
-        cityssm.postJSON("/organizations/doDismissReminder", {
+        cityssm.postJSON(urlPrefix + "/organizations/doDismissReminder", {
             organizationID,
             reminderIndex
         }, callbackFn);
@@ -259,7 +260,7 @@ llm.organizationReminders = (() => {
         }
     };
     const doDeleteReminder = (organizationID, reminderIndex, callbackFn) => {
-        cityssm.postJSON("/organizations/doDeleteReminder", {
+        cityssm.postJSON(urlPrefix + "/organizations/doDeleteReminder", {
             organizationID,
             reminderIndex
         }, callbackFn);

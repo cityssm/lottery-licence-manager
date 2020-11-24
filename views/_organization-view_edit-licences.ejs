@@ -8,7 +8,7 @@
         <div class="field is-grouped justify-flex-end">
           <% if (user.userProperties.canCreate && organization.isEligibleForLicences) { %>
             <div class="control">
-              <a class="button is-primary is-small" href="/licences/new/<%= organization.organizationID %>">
+              <a class="button is-primary is-small" href="<%= urlPrefix %>/licences/new/<%= organization.organizationID %>">
                 <span class="icon is-small">
                   <i class="fas fa-certificate" aria-hidden="true"></i>
                 </span>
@@ -17,7 +17,7 @@
             </div>
           <% } %>
           <div class="control">
-            <a class="button is-small" href="/reports/licences-byOrganization?organizationID=<%= organization.organizationID %>" download>
+            <a class="button is-small" href="<%= urlPrefix %>/reports/licences-byOrganization?organizationID=<%= organization.organizationID %>" download>
               <span class="icon is-small">
                 <i class="fas fa-file-download" aria-hidden="true"></i>
               </span>
@@ -54,7 +54,7 @@
 
       let rowHTML = "<tr>" +
         "<td>" +
-          "<a href=\"/licences/" + licence.licenceID + "\">" +
+          "<a href=\"" + urlPrefix + "/licences/" + licence.licenceID + "\">" +
           htmlFns.escapeHTML(licence.externalLicenceNumber) + "<br />" +
           "<small>Licence #" + licence.licenceID + "</small>" +
           "</a>" +
@@ -62,7 +62,7 @@
         "<td>" + (licenceType.licenceType || licence.licenceTypeKey) + "</td>" +
         "<td class=\"has-newline-chars\">" + htmlFns.escapeHTML(licence.licenceDetails) + "</td>" +
         "<td>" +
-          "<a href=\"/locations/" + licence.locationID + "\">" +
+          "<a href=\"" + urlPrefix + "/locations/" + licence.locationID + "\">" +
           htmlFns.escapeHTML(licence.locationDisplayName) +
           "</a>" +
           (licence.locationDisplayName === licence.locationAddress1 ? "" : "<br /><small>" + htmlFns.escapeHTML(licence.locationAddress1) + "</small>") +
@@ -71,10 +71,10 @@
         "<td class=\"is-nowrap\">" + licence.endDateString + "</td>" +
         "<td class=\"is-nowrap has-text-right is-hidden-print\">" +
           (canEdit ?
-            "<a class=\"button is-small\" href=\"/licences/" + licence.licenceID + "/edit\" data-tooltip=\"Edit Licence\"><span class=\"icon\"><i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i></span><span>Edit</span></a> " :
+            "<a class=\"button is-small\" href=\"" + urlPrefix + "/licences/" + licence.licenceID + "/edit\" data-tooltip=\"Edit Licence\"><span class=\"icon\"><i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i></span><span>Edit</span></a> " :
             "") +
           (licence.issueDate ?
-            "<a class=\"button is-small\" href=\"/licences/" + licence.licenceID + "/print\" data-tooltip=\"Print Licence\" download>" +
+            "<a class=\"button is-small\" href=\"" + urlPrefix + "/licences/" + licence.licenceID + "/print\" data-tooltip=\"Print Licence\" download>" +
             "<i class=\"fas fa-print\" aria-hidden=\"true\"></i>" +
             "<span class=\"sr-only\">Print Licence</span>" +
             "</a>" :

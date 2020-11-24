@@ -5,8 +5,8 @@
   <div class="column">
     <nav class="breadcrumb">
       <ul>
-        <li><a href="/dashboard">Home</a></li>
-        <li><a href="/organizations">
+        <li><a href="<%= urlPrefix %>/dashboard">Home</a></li>
+        <li><a href="<%= urlPrefix %>/organizations">
           <span class="icon is-small"><i class="fas fa-users" aria-hidden="true"></i></span>
           <span>Organizations</span>
         </a></li>
@@ -58,6 +58,6 @@
 
 <%- include('_footerA'); -%>
 
-<script src="/javascripts/organization-cleanup.min.js"></script>
+<script src="<%= urlPrefix %>/javascripts/organization-cleanup.min.js"></script>
 
 <%- include('_footerB'); -%>

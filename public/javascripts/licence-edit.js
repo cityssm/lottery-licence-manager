@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 (() => {
+    const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
     const formEle = document.getElementById("form--licence");
     const formMessageEle = document.getElementById("container--form-message");
     const licenceID = document.getElementById("licence--licenceID").value;
@@ -18,7 +19,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
             return;
         }
         formMessageEle.innerHTML = "Saving... <i class=\"fas fa-circle-notch fa-spin\" aria-hidden=\"true\"></i>";
-        cityssm.postJSON("doSave", formEle, (responseJSON) => {
+        cityssm.postJSON(urlPrefix + "/licences/doSave", formEle, (responseJSON) => {
             if (responseJSON.success) {
                 cityssm.disableNavBlocker();
                 hasUnsavedChanges = false;
@@ -43,7 +44,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
         document.getElementById("is-delete-licence-button").addEventListener("click", (clickEvent) => {
             clickEvent.preventDefault();
             const deleteFn = () => {
-                cityssm.postJSON("doDelete", {
+                cityssm.postJSON(urlPrefix + "/licences/doDelete", {
                     licenceID
                 }, (responseJSON) => {
                     if (responseJSON.success) {
@@ -156,7 +157,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     organizationLookupSearchStrEle.addEventListener("keyup", organizationLookupFn_refreshResults);
                     organizationLookupResultsEle = document.getElementById("container--organizationLookup");
                     if (organizationList.length === 0) {
-                        cityssm.postJSON("../organizations/doGetAll", null, (organizationListRes) => {
+                        cityssm.postJSON(urlPrefix + "/organizations/doGetAll", null, (organizationListRes) => {
                             organizationList = organizationListRes;
                             organizationLookupSearchStrEle.removeAttribute("disabled");
                             organizationLookupFn_refreshResults();
@@ -184,7 +185,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
     let locationList = [];
     const loadLocationListFn = (callbackFn) => {
         if (locationList.length === 0) {
-            cityssm.postJSON("../locations/doGetLocations", null, (locationResults) => {
+            cityssm.postJSON(urlPrefix + "/locations/doGetLocations", null, (locationResults) => {
                 locationList = locationResults.locations;
                 callbackFn();
             });
@@ -274,7 +275,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     });
                     document.getElementById("form--newLocation").addEventListener("submit", (formEvent) => {
                         formEvent.preventDefault();
-                        cityssm.postJSON("../locations/doCreate", formEvent.currentTarget, (responseJSON) => {
+                        cityssm.postJSON(urlPrefix + "/locations/doCreate", formEvent.currentTarget, (responseJSON) => {
                             if (responseJSON.success) {
                                 locationList = [];
                                 locationLookupFn_setLocation(responseJSON.locationID, responseJSON.locationDisplayName);
@@ -331,7 +332,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 "<i class=\"fas fa-3x fa-circle-notch fa-spin\" aria-hidden=\"true\"></i><br />" +
                 "Loading previously used terms and conditions..." +
                 "</p>";
-            cityssm.postJSON("doGetDistinctTermsConditions", {
+            cityssm.postJSON(urlPrefix + "/licences/doGetDistinctTermsConditions", {
                 organizationID
             }, (termsConditionsListRes) => {
                 termsConditionsList = termsConditionsListRes;
@@ -531,7 +532,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 callbackFn(licenceTypeKeyToTicketTypes.get(licenceTypeKey));
             }
             else {
-                cityssm.postJSON("doGetTicketTypes", {
+                cityssm.postJSON(urlPrefix + "/licences/doGetTicketTypes", {
                     licenceTypeKey
                 }, (ticketTypes) => {
                     licenceTypeKeyToTicketTypes.set(licenceTypeKey, ticketTypes);
@@ -936,7 +937,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 if (formEvent) {
                     formEvent.preventDefault();
                 }
-                cityssm.postJSON("doAddTransaction", addTransactionFormEle, (responseJSON) => {
+                cityssm.postJSON(urlPrefix + "/licences/doAddTransaction", addTransactionFormEle, (responseJSON) => {
                     if (responseJSON.success) {
                         window.location.reload();
                     }
@@ -978,7 +979,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     return;
                 }
                 const voidFn = () => {
-                    cityssm.postJSON("doVoidTransaction", {
+                    cityssm.postJSON(urlPrefix + "/licences/doVoidTransaction", {
                         licenceID,
                         transactionIndex: voidTransactionButtonEle.getAttribute("data-transaction-index")
                     }, (responseJSON) => {
@@ -999,7 +1000,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
         if (unissueLicenceButtonEle) {
             unissueLicenceButtonEle.addEventListener("click", () => {
                 const unissueFn = () => {
-                    cityssm.postJSON("doUnissueLicence", {
+                    cityssm.postJSON(urlPrefix + "/licences/doUnissueLicence", {
                         licenceID
                     }, (responseJSON) => {
                         if (responseJSON.success) {
@@ -1013,7 +1014,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
         else {
             const issueLicenceFn = () => {
                 const issueFn = () => {
-                    cityssm.postJSON("doIssueLicence", {
+                    cityssm.postJSON(urlPrefix + "/licences/doIssueLicence", {
                         licenceID
                     }, (responseJSON) => {
                         if (responseJSON.success) {

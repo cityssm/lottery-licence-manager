@@ -1,7 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 (() => {
-    const canCreate = document.getElementsByTagName("main")[0].getAttribute("data-can-create") === "true";
+    const mainEle = document.getElementsByTagName("main")[0];
+    const urlPrefix = mainEle.getAttribute("data-url-prefix");
+    const canCreate = mainEle.getAttribute("data-can-create") === "true";
     const remarksContainerEle = document.getElementById("container--remarks");
     if (canCreate) {
         const organizationID = parseInt(remarksContainerEle.getAttribute("data-organization-id"), 10);
@@ -181,7 +183,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
             processRecordsFn([]);
         }
         else {
-            cityssm.postJSON("/organizations/doGetBankRecords", {
+            cityssm.postJSON(urlPrefix + "/organizations/doGetBankRecords", {
                 organizationID,
                 bankingYear: bankRecordsBankingYearFilterEle.value,
                 accountNumber: bankRecordsAccountNumberFilterEle.value
@@ -189,7 +191,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
         }
     };
     const loadBankRecordFiltersFn = () => {
-        cityssm.postJSON("/organizations/doGetBankRecordStats", {
+        cityssm.postJSON(urlPrefix + "/organizations/doGetBankRecordStats", {
             organizationID
         }, (bankRecordStats) => {
             const currentYear = new Date().getFullYear();
@@ -228,7 +230,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
             let accountNumberIsBlank = true;
             const submitBankRecordEditFn = (formEvent) => {
                 formEvent.preventDefault();
-                cityssm.postJSON("/organizations/" + (isUpdate ? "doEditBankRecord" : "doAddBankRecord"), formEvent.currentTarget, (resultJSON) => {
+                cityssm.postJSON(urlPrefix + "/organizations/" + (isUpdate ? "doEditBankRecord" : "doAddBankRecord"), formEvent.currentTarget, (resultJSON) => {
                     if (resultJSON.success) {
                         bankRecordEditCloseModalFn();
                         if (isUpdate || (lockKeyFields && !accountNumberIsBlank)) {
@@ -248,7 +250,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 deleteButtonEvent.preventDefault();
                 const recordIndex = deleteButtonEvent.currentTarget.getAttribute("data-record-index");
                 const deleteFn = () => {
-                    cityssm.postJSON("/organizations/doDeleteBankRecord", {
+                    cityssm.postJSON(urlPrefix + "/organizations/doDeleteBankRecord", {
                         organizationID,
                         recordIndex
                     }, () => {
@@ -412,7 +414,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
             let closeBankRecordMonthEditModalFn;
             const submitFn = (formEvent) => {
                 formEvent.preventDefault();
-                cityssm.postJSON("/organizations/doUpdateBankRecordsByMonth", formEvent.currentTarget, (responseJSON) => {
+                cityssm.postJSON(urlPrefix + "/organizations/doUpdateBankRecordsByMonth", formEvent.currentTarget, (responseJSON) => {
                     if (responseJSON.success) {
                         closeBankRecordMonthEditModalFn();
                         getBankRecordsFn();

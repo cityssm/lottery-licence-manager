@@ -5,8 +5,8 @@
   <div class="column is-block-print is-full-print">
     <nav class="breadcrumb">
       <ul>
-        <li><a href="/dashboard">Home</a></li>
-        <li><a href="/events">
+        <li><a href="<%= urlPrefix %>/dashboard">Home</a></li>
+        <li><a href="<%= urlPrefix %>/events">
           <span class="icon is-small"><i class="fas fa-calendar" aria-hidden="true"></i></span>
           <span>Lottery Events</span>
         </a></li>
@@ -87,6 +87,6 @@
 
 <%- include('_footerA'); -%>
 
-<script src="/javascripts/event-outstanding.min.js"></script>
+<script src="<%= urlPrefix %>/javascripts/event-outstanding.min.js"></script>
 
 <%- include('_footerB'); -%>

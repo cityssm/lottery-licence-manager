@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 (() => {
+    const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
     let externalLicenceNumberFieldLabel = "";
     const formEle = document.getElementById("form--activeSummary");
     const containerEle = document.getElementById("container--activeSummary");
@@ -9,7 +10,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
             "<i class=\"fas fa-3x fa-circle-notch fa-spin\" aria-hidden=\"true\"></i><br />" +
             "<em>Loading licences...</em>" +
             "</p>";
-        cityssm.postJSON("/licences/doGetActiveLicenceSummary", formEle, (activeLicenceList) => {
+        cityssm.postJSON(urlPrefix + "/licences/doGetActiveLicenceSummary", formEle, (activeLicenceList) => {
             if (activeLicenceList.length === 0) {
                 containerEle.innerHTML = "<div class=\"message is-info\">" +
                     "<p class=\"message-body\">" +

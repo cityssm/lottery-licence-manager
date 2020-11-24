@@ -29,6 +29,10 @@ configFallbackValues.set("application.applicationName", "Lottery Licence System"
 configFallbackValues.set("application.logoURL", "/images/bingoBalls.png");
 configFallbackValues.set("application.httpPort", 3000);
 
+configFallbackValues.set("reverseProxy.disableCompression", false);
+configFallbackValues.set("reverseProxy.disableEtag", false);
+configFallbackValues.set("reverseProxy.urlPrefix", "");
+
 configFallbackValues.set("session.cookieName", "lottery-licence-manager-user-sid");
 configFallbackValues.set("session.secret", "cityssm/lottery-licence-manager");
 configFallbackValues.set("session.maxAgeMillis", 60 * 60 * 1000);
@@ -137,6 +141,10 @@ export function getProperty(propertyName: "licences.printTemplate"): string;
 export function getProperty(propertyName: "licenceTypes"): configTypes.ConfigLicenceType[];
 
 export function getProperty(propertyName: "reminderCategories"): configTypes.ConfigReminderCategory[];
+
+export function getProperty(propertyName: "reverseProxy.disableCompression"): boolean;
+export function getProperty(propertyName: "reverseProxy.disableEtag"): boolean;
+export function getProperty(propertyName: "reverseProxy.urlPrefix"): "";
 
 export function getProperty(propertyName: "session.cookieName"): string;
 export function getProperty(propertyName: "session.doKeepAlive"): boolean;

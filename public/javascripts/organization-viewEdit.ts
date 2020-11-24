@@ -10,7 +10,10 @@ declare const llm: llmGlobal;
 
 (() => {
 
-  const canCreate = document.getElementsByTagName("main")[0].getAttribute("data-can-create") === "true";
+  const mainEle = document.getElementsByTagName("main")[0];
+
+  const urlPrefix = mainEle.getAttribute("data-url-prefix");
+  const canCreate = mainEle.getAttribute("data-can-create") === "true";
 
   /*
    * Remarks
@@ -286,7 +289,7 @@ declare const llm: llmGlobal;
 
     } else {
 
-      cityssm.postJSON("/organizations/doGetBankRecords", {
+      cityssm.postJSON(urlPrefix + "/organizations/doGetBankRecords", {
         organizationID,
         bankingYear: bankRecordsBankingYearFilterEle.value,
         accountNumber: bankRecordsAccountNumberFilterEle.value
@@ -296,7 +299,7 @@ declare const llm: llmGlobal;
 
   const loadBankRecordFiltersFn = () => {
 
-    cityssm.postJSON("/organizations/doGetBankRecordStats", {
+    cityssm.postJSON(urlPrefix + "/organizations/doGetBankRecordStats", {
       organizationID
     },
       (bankRecordStats: Array<{
@@ -369,8 +372,7 @@ declare const llm: llmGlobal;
 
         formEvent.preventDefault();
 
-        cityssm.postJSON(
-          "/organizations/" + (isUpdate ? "doEditBankRecord" : "doAddBankRecord"),
+        cityssm.postJSON(urlPrefix + "/organizations/" + (isUpdate ? "doEditBankRecord" : "doAddBankRecord"),
           formEvent.currentTarget,
           (resultJSON: { success: boolean; message?: string }) => {
 
@@ -406,7 +408,7 @@ declare const llm: llmGlobal;
 
         const deleteFn = () => {
 
-          cityssm.postJSON("/organizations/doDeleteBankRecord", {
+          cityssm.postJSON(urlPrefix + "/organizations/doDeleteBankRecord", {
             organizationID,
             recordIndex
           }, () => {
@@ -690,7 +692,7 @@ declare const llm: llmGlobal;
       const submitFn = (formEvent: Event) => {
         formEvent.preventDefault();
 
-        cityssm.postJSON("/organizations/doUpdateBankRecordsByMonth",
+        cityssm.postJSON(urlPrefix + "/organizations/doUpdateBankRecordsByMonth",
           formEvent.currentTarget,
           (responseJSON: {
             success: boolean;

@@ -10,6 +10,8 @@ declare const llm: llmGlobal;
 
 llm.organizationReminders = (() => {
 
+  const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
+
   let reminderCategories: configTypes.ConfigReminderCategory[];
   const reminderTypeCache = new Map<string, configTypes.ConfigReminderType>();
   let dismissingStatuses = [];
@@ -52,8 +54,7 @@ llm.organizationReminders = (() => {
   const getRemindersByOrganizationID = (organizationID: number,
     callbackFn: (reminderList: recordTypes.OrganizationReminder[]) => void) => {
 
-    cityssm.postJSON(
-      "/organizations/doGetReminders", {
+    cityssm.postJSON(urlPrefix + "/organizations/doGetReminders", {
         organizationID
       },
       callbackFn
@@ -63,8 +64,7 @@ llm.organizationReminders = (() => {
   const getReminderByID = (organizationID: number, reminderIndex: number,
     callbackFn: (reminder: recordTypes.OrganizationReminder) => void) => {
 
-    cityssm.postJSON(
-      "/organizations/doGetReminder", {
+    cityssm.postJSON(urlPrefix + "/organizations/doGetReminder", {
         organizationID,
         reminderIndex
       },
@@ -81,8 +81,7 @@ llm.organizationReminders = (() => {
     const submitFn = (formEvent: Event) => {
       formEvent.preventDefault();
 
-      cityssm.postJSON(
-        "/organizations/doAddReminder",
+      cityssm.postJSON(urlPrefix + "/organizations/doAddReminder",
         formEvent.currentTarget,
         (responseJSON) => {
 
@@ -199,8 +198,7 @@ llm.organizationReminders = (() => {
 
       formEvent.preventDefault();
 
-      cityssm.postJSON(
-        "/organizations/doEditReminder",
+      cityssm.postJSON(urlPrefix + "/organizations/doEditReminder",
         formEvent.currentTarget,
         (responseJSON: {
           success: boolean;
@@ -407,8 +405,7 @@ llm.organizationReminders = (() => {
     reminder: recordTypes.OrganizationReminder;
   }) => void) => {
 
-    cityssm.postJSON(
-      "/organizations/doDismissReminder", {
+    cityssm.postJSON(urlPrefix + "/organizations/doDismissReminder", {
         organizationID,
         reminderIndex
       },
@@ -445,8 +442,7 @@ llm.organizationReminders = (() => {
     message: string;
   }) => void) => {
 
-    cityssm.postJSON(
-      "/organizations/doDeleteReminder", {
+    cityssm.postJSON(urlPrefix + "/organizations/doDeleteReminder", {
         organizationID,
         reminderIndex
       },

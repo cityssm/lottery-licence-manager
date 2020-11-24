@@ -5,7 +5,7 @@
     </p>
     <ul class="menu-list">
       <li>
-        <a class="<%= (headTitle === "Locations" ? "is-active" : "") %>" href="/locations">
+        <a class="<%= (headTitle === "Locations" ? "is-active" : "") %>" href="<%= urlPrefix %>/locations">
           <span class="icon">
             <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
           </span>
@@ -14,7 +14,7 @@
       </li>
       <% if (user.userProperties.canCreate) { %>
         <li>
-          <a class="<%= (headTitle === "Create a New Location" ? "is-active" : "") %>" href="/locations/new">
+          <a class="<%= (headTitle === "Create a New Location" ? "is-active" : "") %>" href="<%= urlPrefix %>/locations/new">
             <span class="icon">
               <i class="fas fa-plus" aria-hidden="true"></i>
             </span>
@@ -29,7 +29,7 @@
       </p>
       <ul class="menu-list">
         <li>
-          <a class="<%= (headTitle === "Location Cleanup" ? "is-active" : "") %>" href="/locations/cleanup">
+          <a class="<%= (headTitle === "Location Cleanup" ? "is-active" : "") %>" href="<%= urlPrefix %>/locations/cleanup">
             <span class="icon">
               <i class="fas fa-broom" aria-hidden="true"></i>
             </span>
@@ -43,7 +43,7 @@
     </p>
     <ul class="menu-list">
       <li>
-        <a href="/docs/locations.md" target="_blank">
+        <a href="<%= urlPrefix %>/docs/locations.md" target="_blank">
           <span class="icon">
             <i class="fas fa-question-circle" aria-hidden="true"></i>
           </span>

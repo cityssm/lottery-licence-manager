@@ -5,7 +5,7 @@
   <div class="column">
     <nav class="breadcrumb">
       <ul>
-        <li><a href="/dashboard">Home</a></li>
+        <li><a href="<%= urlPrefix %>/dashboard">Home</a></li>
         <li class="is-active"><a href="#" aria-current="page">
           <span class="icon is-small"><i class="fas fa-calendar" aria-hidden="true"></i></span>
           <span>Lottery Events</span>
@@ -112,6 +112,6 @@
 <script>
   exports.config_licenceTypes = <%- JSON.stringify(configFns.getLicenceTypeKeyToNameObject()) %>;
 </script>
-<script src="/javascripts/event-search.min.js"></script>
+<script src="<%= urlPrefix %>/javascripts/event-search.min.js"></script>
 
 <%- include('_footerB'); -%>

@@ -5,10 +5,11 @@ const configFns = require("../../helpers/configFns");
 const getOrganization_1 = require("../../helpers/licencesDB/getOrganization");
 const getLicence_1 = require("../../helpers/licencesDB/getLicence");
 const handler = (req, res) => {
+    const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
     const licenceID = parseInt(req.params.licenceID, 10);
     const licence = getLicence_1.getLicence(licenceID, req.session);
     if (!licence) {
-        return res.redirect("/licences/?error=licenceNotFound");
+        return res.redirect(urlPrefix + "/licences/?error=licenceNotFound");
     }
     const organization = getOrganization_1.getOrganization(licence.organizationID, req.session);
     const headTitle = configFns.getProperty("licences.externalLicenceNumber.isPreferredID")

@@ -1,5 +1,7 @@
 import type { RequestHandler } from "express";
 
+import * as configFns from "../../helpers/configFns";
+
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns";
 
 import { getLicences } from "../../helpers/licencesDB/getLicences";
@@ -11,20 +13,22 @@ import { getOrganizationReminders } from "../../helpers/licencesDB/getOrganizati
 
 export const handler: RequestHandler = (req, res) => {
 
+  const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
+
   const organizationID = parseInt(req.params.organizationID, 10);
 
   const organization = getOrganization(organizationID, req.session);
 
   if (!organization) {
 
-    res.redirect("/organizations/?error=organizationNotFound");
+    res.redirect(urlPrefix + "/organizations/?error=organizationNotFound");
     return;
 
   }
 
   if (!organization.canUpdate) {
 
-    res.redirect("/organizations/" + organizationID.toString() + "/?error=accessDenied-noUpdate");
+    res.redirect(urlPrefix + "/organizations/" + organizationID.toString() + "/?error=accessDenied-noUpdate");
     return;
 
   }

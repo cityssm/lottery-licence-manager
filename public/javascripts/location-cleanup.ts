@@ -6,6 +6,8 @@ declare const cityssm: cityssmGlobal;
 
 (() => {
 
+  const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
+
   const inactiveYearsFilterEle = document.getElementById("filter--inactiveYears") as HTMLSelectElement;
 
   const searchResultsEle = document.getElementById("container--searchResults");
@@ -19,7 +21,7 @@ declare const cityssm: cityssmGlobal;
 
       const locationID = buttonEle.getAttribute("data-location-id");
 
-      cityssm.postJSON("doDelete", {
+      cityssm.postJSON(urlPrefix + "/locations/doDelete", {
           locationID
         },
         (responseJSON: {
@@ -53,7 +55,7 @@ declare const cityssm: cityssmGlobal;
       "<em>Loading locations...</em>" +
       "</p>";
 
-    cityssm.postJSON("doGetInactive", {
+    cityssm.postJSON(urlPrefix + "/locations/doGetInactive", {
       inactiveYears: inactiveYearsFilterEle.value
     },
       (inactiveList: llmTypes.Location[]) => {
@@ -92,7 +94,7 @@ declare const cityssm: cityssmGlobal;
 
           trEle.insertAdjacentHTML("beforeend", "<td>" +
             "<a data-tooltip=\"View Location\"" +
-            " href=\"/locations/" + locationObj.locationID.toString() + "\">" +
+            " href=\"" + urlPrefix + "/locations/" + locationObj.locationID.toString() + "\">" +
             safeLocationDisplayName +
             "</a>" +
             (locationObj.locationDisplayName === locationObj.locationAddress1 ? "" : "<br />" +

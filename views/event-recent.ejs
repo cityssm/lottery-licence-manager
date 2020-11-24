@@ -5,8 +5,8 @@
   <div class="column is-block-print is-full-print">
     <nav class="breadcrumb">
       <ul>
-        <li><a href="/dashboard">Home</a></li>
-        <li><a href="/events">
+        <li><a href="<%= urlPrefix %>/dashboard">Home</a></li>
+        <li><a href="<%= urlPrefix %>/events">
           <span class="icon is-small"><i class="fas fa-calendar" aria-hidden="true"></i></span>
           <span>Lottery Events</span>
         </a></li>
@@ -60,7 +60,7 @@
               <td><%= record.recordUpdate_timeString %></td>
               <td class="has-border-right-width-1"><%= record.recordUpdate_userName %></td>
               <td>
-                <a href="/events/<%=record.licenceID %>/<%= record.eventDate %>">
+                <a href="<%= urlPrefix %>/events/<%=record.licenceID %>/<%= record.eventDate %>">
                   <%= record.externalLicenceNumber %><br />
                   <small>Licence #<%= record.licenceID %></small>
                 </a>

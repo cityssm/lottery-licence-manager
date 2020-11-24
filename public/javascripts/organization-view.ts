@@ -6,6 +6,8 @@ declare const cityssm: cityssmGlobal;
 
   if (document.getElementsByTagName("main")[0].getAttribute("data-can-update") === "true") {
 
+    const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
+
     const restoreButtonEles = document.getElementsByClassName("is-restore-organization-button");
 
     if (restoreButtonEles.length > 0) {
@@ -16,10 +18,9 @@ declare const cityssm: cityssmGlobal;
 
       const restoreFn = () => {
 
-        cityssm.postJSON(
-          "/organizations/doRestore", {
-            organizationID
-          },
+        cityssm.postJSON(urlPrefix + "/organizations/doRestore", {
+          organizationID
+        },
           (responseJSON: { success: boolean }) => {
 
             if (responseJSON.success) {

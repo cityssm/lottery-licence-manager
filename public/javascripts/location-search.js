@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 (() => {
+    const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
     const formEle = document.getElementById("form--searchFilters");
     const limitEle = document.getElementById("filter--limit");
     const offsetEle = document.getElementById("filter--offset");
@@ -12,7 +13,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
         trEle.innerHTML = "<td></td>";
         const locationDisplayNameLinkEle = document.createElement("a");
         locationDisplayNameLinkEle.innerText = locationObj.locationDisplayName;
-        locationDisplayNameLinkEle.href = "/locations/" + locationObj.locationID.toString();
+        locationDisplayNameLinkEle.href = urlPrefix + "/locations/" + locationObj.locationID.toString();
         trEle.getElementsByTagName("td")[0].insertAdjacentElement("beforeend", locationDisplayNameLinkEle);
         const addressTdEle = document.createElement("td");
         addressTdEle.innerHTML =
@@ -83,7 +84,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
             "<i class=\"fas fa-3x fa-circle-notch fa-spin\" aria-hidden=\"true\"></i><br />" +
             "<em>Loading locations...</em>" +
             "</p>";
-        cityssm.postJSON("locations/doGetLocations", formEle, (locationResults) => {
+        cityssm.postJSON(urlPrefix + "/locations/doGetLocations", formEle, (locationResults) => {
             displayedLocationList = locationResults.locations;
             if (displayedLocationList.length === 0) {
                 searchResultsEle.innerHTML = "<div class=\"message is-info\">" +
@@ -162,7 +163,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
         const locationIndex = parseInt(clickEvent.currentTarget.getAttribute("data-location-index"), 10);
         const locationObj = displayedLocationList[locationIndex];
         const deleteFn = () => {
-            cityssm.postJSON("locations/doDelete", {
+            cityssm.postJSON(urlPrefix + "/locations/doDelete", {
                 locationID: locationObj.locationID
             }, (responseJSON) => {
                 if (responseJSON.success) {

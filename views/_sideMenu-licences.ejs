@@ -5,7 +5,7 @@
     </p>
     <ul class="menu-list">
       <li>
-        <a class="<%= (headTitle === "Lottery Licences" ? "is-active" : "") %>" href="/licences">
+        <a class="<%= (headTitle === "Lottery Licences" ? "is-active" : "") %>" href="<%= urlPrefix %>/licences">
           <span class="icon">
             <i class="fas fa-certificate" aria-hidden="true"></i>
           </span>
@@ -14,7 +14,7 @@
       </li>
       <% if (user.userProperties.canCreate) { %>
         <li>
-          <a class="<%= (headTitle === "Licence Create" ? "is-active" : "") %>" href="/licences/new">
+          <a class="<%= (headTitle === "Licence Create" ? "is-active" : "") %>" href="<%= urlPrefix %>/licences/new">
             <span class="icon">
               <i class="fas fa-plus" aria-hidden="true"></i>
             </span>
@@ -28,7 +28,7 @@
     </p>
     <ul class="menu-list">
       <li>
-        <a class="<%= (headTitle === "Licence Type Summary" ? "is-active" : "") %>" href="/licences/licenceTypes">
+        <a class="<%= (headTitle === "Licence Type Summary" ? "is-active" : "") %>" href="<%= urlPrefix %>/licences/licenceTypes">
           <span class="icon">
             <i class="fas fa-file" aria-hidden="true"></i>
           </span>
@@ -36,7 +36,7 @@
         </a>
       </li>
       <li>
-        <a class="<%= (headTitle === "Active Licence Summary" ? "is-active" : "") %>" href="/licences/activeSummary">
+        <a class="<%= (headTitle === "Active Licence Summary" ? "is-active" : "") %>" href="<%= urlPrefix %>/licences/activeSummary">
           <span class="icon">
             <i class="fas fa-file" aria-hidden="true"></i>
           </span>
@@ -49,7 +49,7 @@
     </p>
     <ul class="menu-list">
       <li>
-        <a href="/docs/licences.md" target="_blank">
+        <a href="<%= urlPrefix %>/docs/licences.md" target="_blank">
           <span class="icon">
             <i class="fas fa-question-circle" aria-hidden="true"></i>
           </span>

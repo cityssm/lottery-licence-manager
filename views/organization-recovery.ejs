@@ -5,8 +5,8 @@
   <div class="column">
     <nav class="breadcrumb">
       <ul>
-        <li><a href="/dashboard">Home</a></li>
-        <li><a href="/organizations">
+        <li><a href="<%= urlPrefix %>/dashboard">Home</a></li>
+        <li><a href="<%= urlPrefix %>/organizations">
           <span class="icon is-small"><i class="fas fa-users" aria-hidden="true"></i></span>
           <span>Organizations</span>
         </a></li>
@@ -44,7 +44,7 @@
           %>
           <tr>
             <td>
-              <a class="has-text-danger" href="/organizations/<%= organization.organizationID %>">
+              <a class="has-text-danger" href="<%= urlPrefix %>/organizations/<%= organization.organizationID %>">
                 <%= organization.organizationName %>
               </a>
             </td>

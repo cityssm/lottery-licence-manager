@@ -7,6 +7,8 @@ declare const llm: llmGlobal;
 
 (() => {
 
+  const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
+
   const formEle = document.getElementById("form--financialSummary") as HTMLFormElement;
 
   const tableEle = document.getElementById("table--financialSummary") as HTMLTableElement;
@@ -27,7 +29,7 @@ declare const llm: llmGlobal;
     tableEle.classList.remove("has-status-view");
     tableEle.classList.add("has-status-loading");
 
-    cityssm.postJSON("doGetFinancialSummary", formEle, (summary: Array<{
+    cityssm.postJSON(urlPrefix + "/events/doGetFinancialSummary", formEle, (summary: Array<{
       licenceTypeKey: string;
       licenceCount: number;
       eventCount: number;

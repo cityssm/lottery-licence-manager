@@ -5,8 +5,8 @@
   <div class="column">
     <nav class="breadcrumb">
       <ul>
-        <li><a href="/dashboard">Home</a></li>
-        <li><a href="/locations">
+        <li><a href="<%= urlPrefix %>/dashboard">Home</a></li>
+        <li><a href="<%= urlPrefix %>/locations">
           <span class="icon is-small"><i class="fas fa-map-marker-alt" aria-hidden="true"></i></span>
           <span>Locations</span>
         </a></li>
@@ -42,7 +42,7 @@
 
     <% if (location.canUpdate) { %>
       <div class="fixed-container is-fixed-bottom-right mx-4 my-4 has-text-right is-hidden-print">
-        <a class="button is-circle is-primary has-tooltip-left" data-tooltip="Edit this Location" href="/locations/<%= location.locationID %>/edit">
+        <a class="button is-circle is-primary has-tooltip-left" data-tooltip="Edit this Location" href="<%= urlPrefix %>/locations/<%= location.locationID %>/edit">
           <i class="fas fa-pencil-alt" aria-hidden="true"></i>
           <span class="sr-only">Edit this Location</span>
         </a>
@@ -88,9 +88,9 @@
 <%- include('_footerA'); -%>
 
 <% if (user.userProperties.canUpdate) { %>
-  <script src="/javascripts/location-view.min.js"></script>
+  <script src="<%= urlPrefix %>/javascripts/location-view.min.js"></script>
 <% } %>
 
-<script src="/javascripts/location-viewEdit.min.js"></script>
+<script src="<%= urlPrefix %>/javascripts/location-viewEdit.min.js"></script>
 
 <%- include('_footerB'); -%>

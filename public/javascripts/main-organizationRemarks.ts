@@ -8,13 +8,14 @@ declare const llm: llmGlobal;
 
 llm.organizationRemarks = (() => {
 
+  const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
+
   const getRemarksByOrganizationID = (organizationID: number,
     callbackFn: (remarkList: llmTypes.OrganizationRemark[]) => void) => {
 
-    cityssm.postJSON(
-      "/organizations/doGetRemarks", {
-        organizationID
-      },
+    cityssm.postJSON(urlPrefix + "/organizations/doGetRemarks", {
+      organizationID
+    },
       callbackFn
     );
   };
@@ -22,11 +23,10 @@ llm.organizationRemarks = (() => {
   const getRemarkByID = (organizationID: number, remarkIndex: number,
     callbackFn: (remark: llmTypes.OrganizationRemark) => void) => {
 
-    cityssm.postJSON(
-      "/organizations/doGetRemark", {
-        organizationID,
-        remarkIndex
-      },
+    cityssm.postJSON(urlPrefix + "/organizations/doGetRemark", {
+      organizationID,
+      remarkIndex
+    },
       callbackFn
     );
   };
@@ -38,7 +38,8 @@ llm.organizationRemarks = (() => {
     remarkIndex: number;
   }) => void) => {
 
-    cityssm.postJSON("/organizations/doAddRemark", formEle, callbackFn);
+    cityssm.postJSON(urlPrefix + "/organizations/doAddRemark",
+      formEle, callbackFn);
   };
 
   const openAddRemarkModal = (organizationID: number, updateCallbackFn: () => void) => {
@@ -78,7 +79,8 @@ llm.organizationRemarks = (() => {
     message: string;
   }) => void) => {
 
-    cityssm.postJSON("/organizations/doEditRemark", formEle, callbackFn);
+    cityssm.postJSON(urlPrefix + "/organizations/doEditRemark",
+      formEle, callbackFn);
   };
 
   const openEditRemarkModal = (organizationID: number, remarkIndex: number, updateCallbackFn: () => void) => {
@@ -135,11 +137,10 @@ llm.organizationRemarks = (() => {
     message: string;
   }) => void) => {
 
-    cityssm.postJSON(
-      "/organizations/doDeleteRemark", {
-        organizationID,
-        remarkIndex
-      },
+    cityssm.postJSON(urlPrefix + "/organizations/doDeleteRemark", {
+      organizationID,
+      remarkIndex
+    },
       callbackFn
     );
   };

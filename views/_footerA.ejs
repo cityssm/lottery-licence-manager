@@ -14,6 +14,9 @@
 <script>
   window.exports = window.exports || {};
 </script>
-<script src="/cityssm-bulma-webapp-js/dist/cityssm.min.js"></script>
-<script src="/javascripts/main.min.js"></script>
-<script src="/cityssm-bulma-webapp-js/dist/cityssm-theme.min.js" defer></script>
+<script src="<%= urlPrefix %>/cityssm-bulma-webapp-js/dist/cityssm.min.js"></script>
+<script>
+  cityssm.htmlModalFolder ="<%= urlPrefix %>/html/";
+</script>
+<script src="<%= urlPrefix %>/javascripts/main.min.js"></script>
+<script src="<%= urlPrefix %>/cityssm-bulma-webapp-js/dist/cityssm-theme.min.js" defer></script>

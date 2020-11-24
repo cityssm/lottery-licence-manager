@@ -4,6 +4,8 @@ declare const cityssm: cityssmGlobal;
 
 (() => {
 
+  const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
+
   const eventDateNavEle = document.getElementById("eventNav--eventDate") as HTMLSelectElement;
 
   const formEle = document.getElementById("form--event") as HTMLFormElement;
@@ -19,7 +21,7 @@ declare const cityssm: cityssmGlobal;
 
     formMessageEle.innerHTML = "Saving... <i class=\"fas fa-circle-notch fa-spin\" aria-hidden=\"true\"></i>";
 
-    cityssm.postJSON("doSave",
+    cityssm.postJSON(urlPrefix + "/events/doSave",
       formEle,
       (responseJSON: { success: boolean; message?: string }) => {
 
@@ -55,7 +57,7 @@ declare const cityssm: cityssmGlobal;
       "danger",
       () => {
 
-        cityssm.postJSON("doDelete", {
+        cityssm.postJSON(urlPrefix + "/events/doDelete", {
             licenceID,
             eventDate
           },
@@ -137,7 +139,7 @@ declare const cityssm: cityssmGlobal;
 
       const containerEle = document.getElementById("container--bankInformationLookup");
 
-      cityssm.postJSON("doGetPastBankInformation", {
+      cityssm.postJSON(urlPrefix + "/events/doGetPastBankInformation", {
         licenceID
       }, (bankInfoList) => {
 

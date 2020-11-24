@@ -43,6 +43,9 @@ import { userCanCreate, userCanUpdate, userIsAdmin, forbiddenJSON } from "../hel
 const router = Router();
 
 
+const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
+
+
 /*
  * SEARCH
  */
@@ -102,7 +105,7 @@ router.get("/recovery", (req, res) => {
 
   if (!userIsAdmin(req)) {
 
-    res.redirect("/organizations/?error=accessDenied");
+    res.redirect(urlPrefix + "/organizations/?error=accessDenied");
     return;
 
   }
@@ -227,7 +230,7 @@ router.get("/new", (req, res) => {
 
   if (!userCanCreate(req)) {
 
-    res.redirect("/organizations/?error=accessDenied");
+    res.redirect(urlPrefix + "/organizations/?error=accessDenied");
     return;
 
   }

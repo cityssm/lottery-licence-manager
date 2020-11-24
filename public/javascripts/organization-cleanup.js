@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 (() => {
+    const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
     const canUpdate = document.getElementsByTagName("main")[0].getAttribute("data-can-update") === "true";
     const inactiveYearsFilterEle = document.getElementById("filter--inactiveYears");
     const searchResultsEle = document.getElementById("container--searchResults");
@@ -9,7 +10,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
         const organizationName = buttonEle.getAttribute("data-organization-name");
         const deleteFn = () => {
             const organizationID = buttonEle.getAttribute("data-organization-id");
-            cityssm.postJSON("/organizations/doDelete", {
+            cityssm.postJSON(urlPrefix + "/organizations/doDelete", {
                 organizationID
             }, (responseJSON) => {
                 if (responseJSON.success) {
@@ -28,7 +29,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
             "<i class=\"fas fa-3x fa-circle-notch fa-spin\" aria-hidden=\"true\"></i><br />" +
             "<em>Loading organizations...</em>" +
             "</p>";
-        cityssm.postJSON("/organizations/doGetInactive", {
+        cityssm.postJSON(urlPrefix + "/organizations/doGetInactive", {
             inactiveYears: inactiveYearsFilterEle.value
         }, (inactiveList) => {
             if (inactiveList.length === 0) {

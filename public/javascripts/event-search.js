@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 (() => {
+    const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
     const filterExternalLicenceNumberEle = document.getElementById("filter--externalLicenceNumber");
     const filterLicenceTypeKeyEle = document.getElementById("filter--licenceTypeKey");
     const filterOrganizationNameEle = document.getElementById("filter--organizationName");
@@ -12,7 +13,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
             "<i class=\"fas fa-3x fa-circle-notch fa-spin\" aria-hidden=\"true\"></i><br />" +
             "<em>Loading events..." +
             "</p>";
-        cityssm.postJSON("events/doSearch", {
+        cityssm.postJSON(urlPrefix + "/events/doSearch", {
             externalLicenceNumber: filterExternalLicenceNumberEle.value,
             licenceTypeKey: filterLicenceTypeKeyEle.value,
             organizationName: filterOrganizationNameEle.value,
@@ -30,7 +31,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
             const tbodyEle = document.createElement("tbody");
             for (const eventObj of eventList) {
                 const licenceType = exports.config_licenceTypes[eventObj.licenceTypeKey] || eventObj.licenceTypeKey;
-                const eventURL = "/events/" + eventObj.licenceID.toString() + "/" + eventObj.eventDate.toString();
+                const eventURL = urlPrefix + "/events/" + eventObj.licenceID.toString() + "/" + eventObj.eventDate.toString();
                 const trEle = document.createElement("tr");
                 trEle.innerHTML =
                     ("<td>" +

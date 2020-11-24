@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 (() => {
+    const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
     const formEle = document.getElementById("form--financialSummary");
     const tableEle = document.getElementById("table--financialSummary");
     const tbodyEle = tableEle.getElementsByTagName("tbody")[0];
@@ -14,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
     const getFinancialSummaryFn = () => {
         tableEle.classList.remove("has-status-view");
         tableEle.classList.add("has-status-loading");
-        cityssm.postJSON("doGetFinancialSummary", formEle, (summary) => {
+        cityssm.postJSON(urlPrefix + "/events/doGetFinancialSummary", formEle, (summary) => {
             const trEles = tbodyEle.children;
             for (const trEle of trEles) {
                 trEle.classList.add("is-hidden");

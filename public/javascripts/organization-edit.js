@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 (() => {
+    const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
     const formEle = document.getElementById("form--organization");
     const formMessageEle = document.getElementById("container--form-message");
     const organizationIDString = document.getElementById("organization--organizationID").value;
@@ -9,7 +10,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
     formEle.addEventListener("submit", (formEvent) => {
         formEvent.preventDefault();
         formMessageEle.innerHTML = "Saving... <i class=\"fas fa-circle-notch fa-spin\" aria-hidden=\"true\"></i>";
-        cityssm.postJSON("/organizations/doSave", formEle, (responseJSON) => {
+        cityssm.postJSON(urlPrefix + "/organizations/doSave", formEle, (responseJSON) => {
             if (responseJSON.success) {
                 cityssm.disableNavBlocker();
             }
@@ -24,7 +25,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
     });
     if (!isCreate) {
         const deleteOrganizationFn = () => {
-            cityssm.postJSON("/organizations/doDelete", {
+            cityssm.postJSON(urlPrefix + "/organizations/doDelete", {
                 organizationID
             }, (responseJSON) => {
                 if (responseJSON.success) {
@@ -46,7 +47,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     return;
                 }
                 isSubmitting = true;
-                cityssm.postJSON("/organizations/doRollForward", formEle, (responseJSON) => {
+                cityssm.postJSON(urlPrefix + "/organizations/doRollForward", formEle, (responseJSON) => {
                     if (responseJSON.success) {
                         window.location.reload();
                     }
@@ -80,7 +81,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
         showNoRepresentativesWarning();
         const updateDefaultRepresentativeFn = (changeEvent) => {
             const defaultRepresentativeIndex = changeEvent.currentTarget.value;
-            cityssm.postJSON("/organizations/" + organizationIDString + "/doSetDefaultRepresentative", {
+            cityssm.postJSON(urlPrefix + "/organizations/" + organizationIDString + "/doSetDefaultRepresentative", {
                 isDefaultRepresentativeIndex: defaultRepresentativeIndex
             }, () => { });
         };
@@ -93,7 +94,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
             const trEle = clickEvent.currentTarget.closest("tr");
             const representativeName = trEle.getAttribute("data-representative-name");
             cityssm.confirmModal("Delete a Representative?", `<p>Are you sure you want to delete the representative "${cityssm.escapeHTML(representativeName)}"?</p>`, "Yes, Delete", "danger", () => {
-                cityssm.postJSON("/organizations/" + organizationIDString + "/doDeleteOrganizationRepresentative", {
+                cityssm.postJSON(urlPrefix + "/organizations/" + organizationIDString + "/doDeleteOrganizationRepresentative", {
                     representativeIndex: trEle.getAttribute("data-representative-index")
                 }, (responseJSON) => {
                     if (responseJSON.success) {
@@ -210,7 +211,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
         }
         editRepresentativeFormEle.addEventListener("submit", (formEvent) => {
             formEvent.preventDefault();
-            cityssm.postJSON("/organizations/" + organizationIDString + "/doEditOrganizationRepresentative", formEvent.currentTarget, (responseJSON) => {
+            cityssm.postJSON(urlPrefix + "/organizations/" + organizationIDString + "/doEditOrganizationRepresentative", formEvent.currentTarget, (responseJSON) => {
                 if (responseJSON.success) {
                     editRepresentativeTrEle.remove();
                     editRepresentativeTrEle = null;
@@ -232,7 +233,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
         }
         addRepresentativeFormEle.addEventListener("submit", (formEvent) => {
             formEvent.preventDefault();
-            cityssm.postJSON("/organizations/" + organizationIDString + "/doAddOrganizationRepresentative", formEvent.currentTarget, (responseJSON) => {
+            cityssm.postJSON(urlPrefix + "/organizations/" + organizationIDString + "/doAddOrganizationRepresentative", formEvent.currentTarget, (responseJSON) => {
                 if (responseJSON.success) {
                     const emptyWarningEle = representativeTbodyEle.getElementsByClassName("is-empty-warning");
                     if (emptyWarningEle.length > 0) {

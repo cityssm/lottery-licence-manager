@@ -1,6 +1,11 @@
 import type { RequestHandler } from "express";
 
+import * as configFns from "../helpers/configFns";
+
 import * as userFns from "../helpers/userFns";
+
+
+const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
 
 
 export const adminGetHandler: RequestHandler = (req, res, next) => {
@@ -9,7 +14,7 @@ export const adminGetHandler: RequestHandler = (req, res, next) => {
     return next();
   }
 
-  return res.redirect("/dashboard");
+  return res.redirect(urlPrefix + "/dashboard");
 };
 
 
@@ -29,7 +34,7 @@ export const updateGetHandler: RequestHandler = (req, res, next) => {
     return next();
   }
 
-  return res.redirect("/dashboard");
+  return res.redirect(urlPrefix + "/dashboard");
 };
 
 
@@ -49,7 +54,7 @@ export const createGetHandler: RequestHandler = (req, res, next) => {
     return next();
   }
 
-  return res.redirect("/dashboard");
+  return res.redirect(urlPrefix + "/dashboard");
 };
 
 

@@ -5,7 +5,7 @@
     </p>
     <ul class="menu-list">
       <li>
-        <a class="<%= (headTitle === "Lottery Events" ? "is-active" : "") %>" href="/events">
+        <a class="<%= (headTitle === "Lottery Events" ? "is-active" : "") %>" href="<%= urlPrefix %>/events">
           <span class="icon">
             <i class="fas fa-calendar" aria-hidden="true"></i>
           </span>
@@ -13,7 +13,7 @@
         </a>
       </li>
       <li>
-        <a class="<%= (headTitle === "Events By Week" ? "is-active" : "") %>" href="/events/byWeek">
+        <a class="<%= (headTitle === "Events By Week" ? "is-active" : "") %>" href="<%= urlPrefix %>/events/byWeek">
           <span class="icon">
             <i class="fas fa-calendar-week" aria-hidden="true"></i>
           </span>
@@ -26,7 +26,7 @@
     </p>
     <ul class="menu-list">
       <li>
-        <a class="<%= (headTitle === "Recently Updated Events" ? "is-active" : "") %>" href="/events/recent">
+        <a class="<%= (headTitle === "Recently Updated Events" ? "is-active" : "") %>" href="<%= urlPrefix %>/events/recent">
           <span class="icon">
             <i class="fas fa-scroll" aria-hidden="true"></i>
           </span>
@@ -34,7 +34,7 @@
         </a>
       </li>
       <li>
-        <a class="<%= (headTitle === "Outstanding Events" ? "is-active" : "") %>" href="/events/outstanding">
+        <a class="<%= (headTitle === "Outstanding Events" ? "is-active" : "") %>" href="<%= urlPrefix %>/events/outstanding">
           <span class="icon">
             <i class="fas fa-file" aria-hidden="true"></i>
           </span>
@@ -42,7 +42,7 @@
         </a>
       </li>
       <li>
-        <a class="<%= (headTitle === "Financial Summary" ? "is-active" : "") %>" href="/events/financials">
+        <a class="<%= (headTitle === "Financial Summary" ? "is-active" : "") %>" href="<%= urlPrefix %>/events/financials">
           <span class="icon">
             <i class="fas fa-file" aria-hidden="true"></i>
           </span>
@@ -55,7 +55,7 @@
     </p>
     <ul class="menu-list">
       <li>
-        <a href="/docs/events.md" target="_blank">
+        <a href="<%= urlPrefix %>/docs/events.md" target="_blank">
           <span class="icon">
             <i class="fas fa-question-circle" aria-hidden="true"></i>
           </span>

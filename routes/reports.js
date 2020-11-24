@@ -1,10 +1,12 @@
 "use strict";
 const express_1 = require("express");
+const configFns = require("../helpers/configFns");
 const licencesDB = require("../helpers/licencesDB");
 const reportFns = require("../helpers/reportFns");
 const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
 const stringFns_1 = require("@cityssm/expressjs-server-js/stringFns");
 const router = express_1.Router();
+const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
 router.get("/", (_req, res) => {
     const rightNow = new Date();
     res.render("report-search", {
@@ -276,7 +278,7 @@ router.all("/:reportName", (req, res) => {
             break;
     }
     if (sql === "") {
-        res.redirect("/reports/?error=reportNotFound");
+        res.redirect(urlPrefix + "/reports/?error=reportNotFound");
         return;
     }
     const rowsColumnsObj = licencesDB.getRawRowsColumns(sql, params);

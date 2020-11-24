@@ -4,6 +4,11 @@ import type { LotteryLicence } from "./recordTypes";
 export interface Config {
   application?: ConfigApplication;
   session?: ConfigSession;
+  reverseProxy?: {
+    disableCompression: boolean;
+    disableEtag: boolean;
+    urlPrefix: string;
+  };
   admin?: ConfigAdmin;
   user?: ConfigUser;
   defaults?: ConfigDefaults;

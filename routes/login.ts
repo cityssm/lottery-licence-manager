@@ -9,7 +9,11 @@ const router = Router();
 
 const getSafeRedirectURL = (possibleRedirectURL: string = "") => {
 
-  switch (possibleRedirectURL) {
+  const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
+
+  const urlToCheck = (possibleRedirectURL.startsWith(urlPrefix) ? possibleRedirectURL.substring(urlPrefix.length) : possibleRedirectURL);
+
+  switch (urlToCheck) {
     case "/organizations":
     case "/organizations/new":
     case "/organizations/reminders":
@@ -31,10 +35,10 @@ const getSafeRedirectURL = (possibleRedirectURL: string = "") => {
     case "/admin/applicationSettings":
     case "/admin/userManagement":
 
-      return possibleRedirectURL;
+      return urlPrefix + urlToCheck;
   }
 
-  return "/dashboard";
+  return urlPrefix + "/dashboard";
 };
 
 

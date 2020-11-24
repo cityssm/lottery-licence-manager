@@ -4,19 +4,21 @@ declare const cityssm: cityssmGlobal;
 
 (() => {
 
+  const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
+
   const restoreButtonEle = document.getElementById("is-location-restore-button");
 
   if (restoreButtonEle) {
 
     const restoreFn = () => {
 
-      cityssm.postJSON("doRestore", {
+      cityssm.postJSON(urlPrefix + "/locations/doRestore", {
         locationID: restoreButtonEle.getAttribute("data-location-id")
       },
         (responseJSON: { success: boolean }) => {
 
           if (responseJSON.success) {
-            window.location.reload(true);
+            window.location.reload();
           }
         });
     };

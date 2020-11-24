@@ -8,6 +8,8 @@ declare const llm: llmGlobal;
 
 (() => {
 
+  const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
+
   /*
    * Create user
    */
@@ -18,7 +20,7 @@ declare const llm: llmGlobal;
 
     formEvent.preventDefault();
 
-    cityssm.postJSON("doCreateUser",
+    cityssm.postJSON(urlPrefix + "/admin/doCreateUser",
       formEvent.currentTarget,
       (responseJSON: { success: boolean }) => {
 
@@ -58,7 +60,7 @@ declare const llm: llmGlobal;
 
     const doDeleteFn = () => {
 
-      cityssm.postJSON("doDeleteUser", {
+      cityssm.postJSON(urlPrefix + "/admin/doDeleteUser", {
         userName: userNameToDelete
       }, (resultJSON: { success: boolean }) => {
 
@@ -100,7 +102,7 @@ declare const llm: llmGlobal;
 
     const formEle = formEvent.currentTarget as HTMLFormElement;
 
-    cityssm.postJSON("doUpdateUserProperty",
+    cityssm.postJSON(urlPrefix + "/admin/doUpdateUserProperty",
       formEle,
       (responseJSON: { success: boolean }) => {
 
@@ -163,7 +165,7 @@ declare const llm: llmGlobal;
 
     cityssm.clearElement(userPropertiesContainerEle);
 
-    cityssm.postJSON("doGetUserProperties", {
+    cityssm.postJSON(urlPrefix + "/admin/doGetUserProperties", {
         userName
       },
       (userPropertiesJSON: llmTypes.UserProperties) => {
@@ -247,7 +249,7 @@ declare const llm: llmGlobal;
 
       formEvent.preventDefault();
 
-      cityssm.postJSON("doUpdateUser",
+      cityssm.postJSON(urlPrefix + "/admin/doUpdateUser",
         formEvent.currentTarget,
         (responseJSON: { success: boolean }) => {
 
@@ -265,7 +267,7 @@ declare const llm: llmGlobal;
 
       formEvent.preventDefault();
 
-      cityssm.postJSON("doResetPassword",
+      cityssm.postJSON(urlPrefix + "/admin/doResetPassword",
         formEvent.currentTarget,
         (responseJSON: { success: boolean; newPassword?: string }) => {
 

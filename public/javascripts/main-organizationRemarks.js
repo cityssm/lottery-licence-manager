@@ -1,19 +1,20 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 llm.organizationRemarks = (() => {
+    const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
     const getRemarksByOrganizationID = (organizationID, callbackFn) => {
-        cityssm.postJSON("/organizations/doGetRemarks", {
+        cityssm.postJSON(urlPrefix + "/organizations/doGetRemarks", {
             organizationID
         }, callbackFn);
     };
     const getRemarkByID = (organizationID, remarkIndex, callbackFn) => {
-        cityssm.postJSON("/organizations/doGetRemark", {
+        cityssm.postJSON(urlPrefix + "/organizations/doGetRemark", {
             organizationID,
             remarkIndex
         }, callbackFn);
     };
     const doAddRemark = (formEle, callbackFn) => {
-        cityssm.postJSON("/organizations/doAddRemark", formEle, callbackFn);
+        cityssm.postJSON(urlPrefix + "/organizations/doAddRemark", formEle, callbackFn);
     };
     const openAddRemarkModal = (organizationID, updateCallbackFn) => {
         let addRemarkCloseModalFn;
@@ -36,7 +37,7 @@ llm.organizationRemarks = (() => {
         });
     };
     const doEditRemark = (formEle, callbackFn) => {
-        cityssm.postJSON("/organizations/doEditRemark", formEle, callbackFn);
+        cityssm.postJSON(urlPrefix + "/organizations/doEditRemark", formEle, callbackFn);
     };
     const openEditRemarkModal = (organizationID, remarkIndex, updateCallbackFn) => {
         let editRemarkCloseModalFn;
@@ -72,7 +73,7 @@ llm.organizationRemarks = (() => {
         });
     };
     const doDeleteRemark = (organizationID, remarkIndex, callbackFn) => {
-        cityssm.postJSON("/organizations/doDeleteRemark", {
+        cityssm.postJSON(urlPrefix + "/organizations/doDeleteRemark", {
             organizationID,
             remarkIndex
         }, callbackFn);

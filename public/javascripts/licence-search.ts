@@ -6,6 +6,8 @@ declare const cityssm: cityssmGlobal;
 
 (() => {
 
+  const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
+
   const licenceType_keyToName = new Map<string, string>();
 
   const formEle = document.getElementById("form--filters") as HTMLFormElement;
@@ -28,7 +30,7 @@ declare const cityssm: cityssmGlobal;
       "<em>Loading licences...</em>" +
       "</p>";
 
-    cityssm.postJSON("licences/doSearch",
+    cityssm.postJSON(urlPrefix + "/licences/doSearch",
       formEle,
       (licenceResults: { count: number; licences: llmTypes.LotteryLicence[] }) => {
 
@@ -68,7 +70,7 @@ declare const cityssm: cityssmGlobal;
 
           trEle.innerHTML =
             ("<td>" +
-              "<a data-tooltip=\"View Licence\" href=\"/licences/" + licenceObj.licenceID.toString() + "\">" +
+              "<a data-tooltip=\"View Licence\" href=\"" + urlPrefix + "/licences/" + licenceObj.licenceID.toString() + "\">" +
               cityssm.escapeHTML(licenceObj.externalLicenceNumber) + "<br />" +
               "<small>Licence #" + licenceObj.licenceID.toString() + "</small>" +
               "</a>" +
@@ -78,20 +80,20 @@ declare const cityssm: cityssmGlobal;
               "<small>" + cityssm.escapeHTML(licenceObj.licenceDetails) + "</small>" +
               "</td>") +
 
-            (`<td>
-              <a data-tooltip="View Organization"
-                href="/organizations/${licenceObj.organizationID.toString()}">
-              ${cityssm.escapeHTML(licenceObj.organizationName)}
-              </a>
-              </td>`) +
+            ("<td>" +
+              "<a data-tooltip=\"View Organization\"" +
+              " href=\"" + urlPrefix + "/organizations/" + licenceObj.organizationID.toString() + "\">" +
+              cityssm.escapeHTML(licenceObj.organizationName) +
+              "</a>" +
+              "</td>") +
 
             ("<td>" +
-              "<a data-tooltip=\"View Location\" href=\"/locations/" + licenceObj.locationID.toString() + "\">" +
+              "<a data-tooltip=\"View Location\" href=\"" + urlPrefix + "/locations/" + licenceObj.locationID.toString() + "\">" +
               cityssm.escapeHTML(licenceObj.locationDisplayName) +
               "</a>" +
               (licenceObj.locationDisplayName === licenceObj.locationAddress1
                 ? ""
-                : `<br /><small>${cityssm.escapeHTML(licenceObj.locationAddress1)}</small>`) +
+                : `<br /> <small>${cityssm.escapeHTML(licenceObj.locationAddress1)} </small>`) +
               "</td>") +
 
             ("<td class=\"is-nowrap\">" +
@@ -107,7 +109,7 @@ declare const cityssm: cityssmGlobal;
 
             (licenceObj.canUpdate
               ? "<a class=\"button is-small\" data-tooltip=\"Edit Licence\"" +
-              " href=\"/licences/" + licenceObj.licenceID.toString() + "/edit\">" +
+              " href=\"" + urlPrefix + "/licences/" + licenceObj.licenceID.toString() + "/edit\">" +
               "<span class=\"icon\"><i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i></span>" +
               "<span>Edit</span>" +
               "</a> "
@@ -115,7 +117,7 @@ declare const cityssm: cityssmGlobal;
 
             (licenceObj.issueDate
               ? "<a class=\"button is-small\" data-tooltip=\"Print Licence\"" +
-              " href=\"/licences/" + licenceObj.licenceID.toString() + "/print\" download>" +
+              " href=\"" + urlPrefix + "/licences/" + licenceObj.licenceID.toString() + "/print\" download>" +
               "<i class=\"fas fa-print\" aria-hidden=\"true\"></i>" +
               "<span class=\"sr-only\">Print</span>" +
               "</a>"

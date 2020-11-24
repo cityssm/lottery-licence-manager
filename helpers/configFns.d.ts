@@ -30,6 +30,9 @@ export declare function getProperty(propertyName: "licences.feeCalculationFn"): 
 export declare function getProperty(propertyName: "licences.printTemplate"): string;
 export declare function getProperty(propertyName: "licenceTypes"): configTypes.ConfigLicenceType[];
 export declare function getProperty(propertyName: "reminderCategories"): configTypes.ConfigReminderCategory[];
+export declare function getProperty(propertyName: "reverseProxy.disableCompression"): boolean;
+export declare function getProperty(propertyName: "reverseProxy.disableEtag"): boolean;
+export declare function getProperty(propertyName: "reverseProxy.urlPrefix"): "";
 export declare function getProperty(propertyName: "session.cookieName"): string;
 export declare function getProperty(propertyName: "session.doKeepAlive"): boolean;
 export declare function getProperty(propertyName: "session.maxAgeMillis"): number;

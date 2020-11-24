@@ -10,6 +10,8 @@ declare const llm: llmGlobal;
 
 (() => {
 
+  const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
+
   /*
    * FORM
    */
@@ -47,7 +49,8 @@ declare const llm: llmGlobal;
 
     formMessageEle.innerHTML = "Saving... <i class=\"fas fa-circle-notch fa-spin\" aria-hidden=\"true\"></i>";
 
-    cityssm.postJSON("doSave", formEle,
+    cityssm.postJSON(urlPrefix + "/licences/doSave",
+      formEle,
       (responseJSON: { success: boolean; message?: string; licenceID?: number }) => {
 
         if (responseJSON.success) {
@@ -90,9 +93,9 @@ declare const llm: llmGlobal;
       clickEvent.preventDefault();
 
       const deleteFn = () => {
-        cityssm.postJSON("doDelete", {
-            licenceID
-          },
+        cityssm.postJSON(urlPrefix + "/licences/doDelete", {
+          licenceID
+        },
           (responseJSON: { success: boolean }) => {
 
             if (responseJSON.success) {
@@ -285,7 +288,7 @@ declare const llm: llmGlobal;
 
           if (organizationList.length === 0) {
 
-            cityssm.postJSON("../organizations/doGetAll",
+            cityssm.postJSON(urlPrefix + "/organizations/doGetAll",
               null,
               (organizationListRes: recordTypes.Organization[]) => {
 
@@ -333,7 +336,7 @@ declare const llm: llmGlobal;
 
     if (locationList.length === 0) {
 
-      cityssm.postJSON("../locations/doGetLocations",
+      cityssm.postJSON(urlPrefix + "/locations/doGetLocations",
         null,
         (locationResults) => {
 
@@ -482,7 +485,7 @@ declare const llm: llmGlobal;
 
             formEvent.preventDefault();
 
-            cityssm.postJSON("../locations/doCreate",
+            cityssm.postJSON(urlPrefix + "/locations/doCreate",
               formEvent.currentTarget,
               (responseJSON) => {
 
@@ -590,9 +593,9 @@ declare const llm: llmGlobal;
         "Loading previously used terms and conditions..." +
         "</p>";
 
-      cityssm.postJSON("doGetDistinctTermsConditions", {
-          organizationID
-        },
+      cityssm.postJSON(urlPrefix + "/licences/doGetDistinctTermsConditions", {
+        organizationID
+      },
         (termsConditionsListRes: recordTypes.TermsConditionsStat[]) => {
 
           termsConditionsList = termsConditionsListRes;
@@ -922,9 +925,9 @@ declare const llm: llmGlobal;
 
       } else {
 
-        cityssm.postJSON("doGetTicketTypes", {
-            licenceTypeKey
-          },
+        cityssm.postJSON(urlPrefix + "/licences/doGetTicketTypes", {
+          licenceTypeKey
+        },
           (ticketTypes: configTypes.ConfigTicketType[]) => {
 
             licenceTypeKeyToTicketTypes.set(licenceTypeKey, ticketTypes);
@@ -1563,7 +1566,7 @@ declare const llm: llmGlobal;
           formEvent.preventDefault();
         }
 
-        cityssm.postJSON("doAddTransaction",
+        cityssm.postJSON(urlPrefix + "/licences/doAddTransaction",
           addTransactionFormEle,
           (responseJSON: { success: boolean }) => {
 
@@ -1639,10 +1642,10 @@ declare const llm: llmGlobal;
 
         const voidFn = () => {
 
-          cityssm.postJSON("doVoidTransaction", {
-              licenceID,
-              transactionIndex: voidTransactionButtonEle.getAttribute("data-transaction-index")
-            },
+          cityssm.postJSON(urlPrefix + "/licences/doVoidTransaction", {
+            licenceID,
+            transactionIndex: voidTransactionButtonEle.getAttribute("data-transaction-index")
+          },
             (responseJSON: { success: true }) => {
 
               if (responseJSON.success) {
@@ -1684,9 +1687,9 @@ declare const llm: llmGlobal;
 
         const unissueFn = () => {
 
-          cityssm.postJSON("doUnissueLicence", {
-              licenceID
-            },
+          cityssm.postJSON(urlPrefix + "/licences/doUnissueLicence", {
+            licenceID
+          },
             (responseJSON) => {
 
               if (responseJSON.success) {
@@ -1711,9 +1714,9 @@ declare const llm: llmGlobal;
 
         const issueFn = () => {
 
-          cityssm.postJSON("doIssueLicence", {
-              licenceID
-            },
+          cityssm.postJSON(urlPrefix + "/licences/doIssueLicence", {
+            licenceID
+          },
             (responseJSON: { success: boolean }) => {
 
               if (responseJSON.success) {

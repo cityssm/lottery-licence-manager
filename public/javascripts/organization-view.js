@@ -2,12 +2,13 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 (() => {
     if (document.getElementsByTagName("main")[0].getAttribute("data-can-update") === "true") {
+        const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
         const restoreButtonEles = document.getElementsByClassName("is-restore-organization-button");
         if (restoreButtonEles.length > 0) {
             const buttonEle = restoreButtonEles[0];
             const organizationID = buttonEle.getAttribute("data-organization-id");
             const restoreFn = () => {
-                cityssm.postJSON("/organizations/doRestore", {
+                cityssm.postJSON(urlPrefix + "/organizations/doRestore", {
                     organizationID
                 }, (responseJSON) => {
                     if (responseJSON.success) {

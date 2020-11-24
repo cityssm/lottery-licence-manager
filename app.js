@@ -1,6 +1,7 @@
 "use strict";
 const createError = require("http-errors");
 const express = require("express");
+const compression = require("compression");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const csurf = require("csurf");
@@ -27,9 +28,14 @@ const SQLiteStore = sqlite3(session);
 dbInit.initUsersDB();
 dbInit.initLicencesDB();
 const app = express();
-app.set("etag", false);
+if (!configFns.getProperty("reverseProxy.disableEtag")) {
+    app.set("etag", false);
+}
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
+if (!configFns.getProperty("reverseProxy.disableCompression")) {
+    app.use(compression());
+}
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({
@@ -42,10 +48,11 @@ const limiter = rateLimit({
     max: 500
 });
 app.use(limiter);
-app.use(express.static(path.join(__dirname, "public")));
-app.use("/docs/images", express.static(path.join(__dirname, "docs", "images")));
-app.use("/fa", express.static(path.join(__dirname, "node_modules", "@fortawesome", "fontawesome-free")));
-app.use("/cityssm-bulma-webapp-js", express.static(path.join(__dirname, "node_modules", "@cityssm", "bulma-webapp-js")));
+const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
+app.use(urlPrefix, express.static(path.join(__dirname, "public")));
+app.use(urlPrefix + "/docs/images", express.static(path.join(__dirname, "docs", "images")));
+app.use(urlPrefix + "/fa", express.static(path.join(__dirname, "node_modules", "@fortawesome", "fontawesome-free")));
+app.use(urlPrefix + "/cityssm-bulma-webapp-js", express.static(path.join(__dirname, "node_modules", "@cityssm", "bulma-webapp-js")));
 const sessionCookieName = configFns.getProperty("session.cookieName");
 app.use(session({
     store: new SQLiteStore({
@@ -72,7 +79,7 @@ const sessionChecker = (req, res, next) => {
     if (req.session.user && req.cookies[sessionCookieName]) {
         return next();
     }
-    return res.redirect("/login?redirect=" + req.originalUrl);
+    return res.redirect(urlPrefix + "/login?redirect=" + req.originalUrl);
 };
 app.use((req, res, next) => {
     res.locals.buildNumber = packageJSON.version;
@@ -82,32 +89,33 @@ app.use((req, res, next) => {
     res.locals.dateTimeFns = dateTimeFns;
     res.locals.stringFns = stringFns;
     res.locals.htmlFns = htmlFns;
+    res.locals.urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
     next();
 });
-app.get("/", sessionChecker, (_req, res) => {
-    res.redirect("/dashboard");
+app.get(urlPrefix + "/", sessionChecker, (_req, res) => {
+    res.redirect(urlPrefix + "/dashboard");
 });
-app.use("/docs", routerDocs);
-app.use("/dashboard", sessionChecker, routerDashboard);
-app.use("/organizations", sessionChecker, routerOrganizations);
-app.use("/licences", sessionChecker, routerLicences);
-app.use("/locations", sessionChecker, routerLocations);
-app.use("/events", sessionChecker, routerEvents);
-app.use("/reports", sessionChecker, routerReports);
-app.use("/admin", sessionChecker, routerAdmin);
-app.all("/keepAlive", (_req, res) => {
+app.use(urlPrefix + "/docs", routerDocs);
+app.use(urlPrefix + "/dashboard", sessionChecker, routerDashboard);
+app.use(urlPrefix + "/organizations", sessionChecker, routerOrganizations);
+app.use(urlPrefix + "/licences", sessionChecker, routerLicences);
+app.use(urlPrefix + "/locations", sessionChecker, routerLocations);
+app.use(urlPrefix + "/events", sessionChecker, routerEvents);
+app.use(urlPrefix + "/reports", sessionChecker, routerReports);
+app.use(urlPrefix + "/admin", sessionChecker, routerAdmin);
+app.all(urlPrefix + "/keepAlive", (_req, res) => {
     res.json(true);
 });
-app.use("/login", routerLogin);
-app.get("/logout", (req, res) => {
+app.use(urlPrefix + "/login", routerLogin);
+app.get(urlPrefix + "/logout", (req, res) => {
     if (req.session.user && req.cookies[sessionCookieName]) {
         req.session.destroy(null);
         req.session = null;
         res.clearCookie(sessionCookieName);
-        res.redirect("/");
+        res.redirect(urlPrefix + "/");
     }
     else {
-        res.redirect("/login");
+        res.redirect(urlPrefix + "/login");
     }
 });
 app.use((_req, _res, next) => {

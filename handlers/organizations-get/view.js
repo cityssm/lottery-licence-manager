@@ -1,16 +1,18 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.handler = void 0;
+const configFns = require("../../helpers/configFns");
 const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
 const getLicences_1 = require("../../helpers/licencesDB/getLicences");
 const getOrganization_1 = require("../../helpers/licencesDB/getOrganization");
 const getOrganizationRemarks_1 = require("../../helpers/licencesDB/getOrganizationRemarks");
 const getOrganizationReminders_1 = require("../../helpers/licencesDB/getOrganizationReminders");
 const handler = (req, res) => {
+    const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
     const organizationID = parseInt(req.params.organizationID, 10);
     const organization = getOrganization_1.getOrganization(organizationID, req.session);
     if (!organization) {
-        res.redirect("/organizations/?error=organizationNotFound");
+        res.redirect(urlPrefix + "/organizations/?error=organizationNotFound");
         return;
     }
     const licences = getLicences_1.getLicences({

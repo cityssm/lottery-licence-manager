@@ -1,11 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 (() => {
+    const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
     const formEle = document.getElementById("form--outstandingEvents");
     const tbodyEle = document.getElementById("tbody--outstandingEvents");
     const getOutstandingEventsFn = () => {
         cityssm.clearElement(tbodyEle);
-        cityssm.postJSON("doGetOutstandingEvents", formEle, (outstandingEvents) => {
+        cityssm.postJSON(urlPrefix + "/events/doGetOutstandingEvents", formEle, (outstandingEvents) => {
             let currentOrganizationID = -1;
             for (const outstandingEventObj of outstandingEvents) {
                 if (currentOrganizationID !== outstandingEventObj.organizationID) {

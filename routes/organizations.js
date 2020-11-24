@@ -29,6 +29,7 @@ const doRollForward_1 = require("../handlers/organizations-post/doRollForward");
 const licencesDBOrganizations = require("../helpers/licencesDB-organizations");
 const userFns_1 = require("../helpers/userFns");
 const router = express_1.Router();
+const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
 router.get("/", (_req, res) => {
     res.render("organization-search", {
         headTitle: "Organizations"
@@ -44,7 +45,7 @@ router.post("/doGetInactive", (req, res) => {
 });
 router.get("/recovery", (req, res) => {
     if (!userFns_1.userIsAdmin(req)) {
-        res.redirect("/organizations/?error=accessDenied");
+        res.redirect(urlPrefix + "/organizations/?error=accessDenied");
         return;
     }
     const organizations = licencesDBOrganizations.getDeletedOrganizations();
@@ -80,7 +81,7 @@ router.post("/doUpdateBankRecordsByMonth", permissionHandlers.createPostHandler,
 router.post("/doDeleteBankRecord", permissionHandlers.createPostHandler, doDeleteBankRecord_1.handler);
 router.get("/new", (req, res) => {
     if (!userFns_1.userCanCreate(req)) {
-        res.redirect("/organizations/?error=accessDenied");
+        res.redirect(urlPrefix + "/organizations/?error=accessDenied");
         return;
     }
     res.render("organization-edit", {

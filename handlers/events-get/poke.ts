@@ -1,6 +1,11 @@
 import type { RequestHandler } from "express";
 
+import * as configFns from "../../helpers/configFns";
+
 import { pokeEvent } from "../../helpers/licencesDB/pokeEvent";
+
+
+const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
 
 
 export const handler: RequestHandler = (req, res) => {
@@ -10,5 +15,5 @@ export const handler: RequestHandler = (req, res) => {
 
   pokeEvent(licenceID, eventDate, req.session);
 
-  res.redirect("/events/" + licenceID.toString() + "/" + eventDate.toString());
+  res.redirect(urlPrefix + "/events/" + licenceID.toString() + "/" + eventDate.toString());
 };

@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 (() => {
+    const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
     const formEle = document.getElementById("form--location");
     const formMessageEle = document.getElementById("container--form-message");
     const locationID = document.getElementById("location--locationID").value;
@@ -10,7 +11,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
     formEle.addEventListener("submit", (formEvent) => {
         formEvent.preventDefault();
         formMessageEle.innerHTML = "Saving... <i class=\"fas fa-circle-notch fa-spin\" aria-hidden=\"true\"></i>";
-        cityssm.postJSON((isCreate ? "doCreate" : "doUpdate"), formEle, (responseJSON) => {
+        cityssm.postJSON(urlPrefix + (isCreate ? "/locations/doCreate" : "/locations/doUpdate"), formEle, (responseJSON) => {
             if (responseJSON.success) {
                 hasUnsavedChanges = false;
                 cityssm.disableNavBlocker();
@@ -26,7 +27,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
     });
     if (!isCreate) {
         const deleteLocationFn = () => {
-            cityssm.postJSON("doDelete", {
+            cityssm.postJSON(urlPrefix + "/locations/doDelete", {
                 locationID
             }, (responseJSON) => {
                 if (responseJSON.success) {
@@ -59,7 +60,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
             let sourceLocationsContainerEle = null;
             let closeMergeLocationModalFn = null;
             const doMergeFn = () => {
-                cityssm.postJSON("doMerge", {
+                cityssm.postJSON(urlPrefix + "/locations/doMerge", {
                     targetLocationID: locationID,
                     sourceLocationID: locationID_source
                 }, (responseJSON) => {
@@ -155,7 +156,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 },
                 onshown(_modalEle, closeModalFn) {
                     closeMergeLocationModalFn = closeModalFn;
-                    cityssm.postJSON("doGetLocations", {
+                    cityssm.postJSON(urlPrefix + "/locations/doGetLocations", {
                         limit: -1
                     }, (responseJSON) => {
                         locationsList = responseJSON.locations;

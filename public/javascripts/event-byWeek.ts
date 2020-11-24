@@ -5,6 +5,8 @@ declare const cityssm: cityssmGlobal;
 
 (() => {
 
+  const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
+
   const currentDateString = cityssm.dateToString(new Date());
 
   const eventDateFilterEle = document.getElementById("filter--eventDate") as HTMLInputElement;
@@ -25,7 +27,7 @@ declare const cityssm: cityssmGlobal;
       eventDateFilterEle.value = cityssm.dateToString(new Date());
     }
 
-    cityssm.postJSON("doGetEventsByWeek", {
+    cityssm.postJSON(urlPrefix + "/events/doGetEventsByWeek", {
       eventDate: eventDateFilterEle.value
     },
       (responseJSON: {

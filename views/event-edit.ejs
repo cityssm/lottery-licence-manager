@@ -8,13 +8,13 @@
       <div class="column">
         <nav class="breadcrumb">
           <ul>
-            <li><a href="/dashboard">Home</a></li>
-            <li><a href="/events">
+            <li><a href="<%= urlPrefix %>/dashboard">Home</a></li>
+            <li><a href="<%= urlPrefix %>/events">
               <span class="icon is-small"><i class="fas fa-calendar" aria-hidden="true"></i></span>
               <span>Lottery Events</span>
             </a></li>
             <li>
-              <a href="/licences/<%= event.licenceID %>">
+              <a href="<%= urlPrefix %>/licences/<%= event.licenceID %>">
                 <% if (configFns.getProperty("licences.externalLicenceNumber.isPreferredID")) { %>
                   Licence <%= licence.externalLicenceNumber %>
                 <% } else { %>
@@ -22,7 +22,7 @@
                 <% } %>
               </a>
             </li>
-            <li><a href="/events/<%= event.licenceID %>/<%= event.eventDate %>">
+            <li><a href="<%= urlPrefix %>/events/<%= event.licenceID %>/<%= event.eventDate %>">
                Event <%= event.eventDateString %>
             </a></li>
             <li class="is-active"><a href="#" aria-current="page">
@@ -350,9 +350,9 @@
 <%- include('_footerA'); -%>
 
 <% if (licence.events.length > 1) { %>
-  <script src="/javascripts/event-viewEdit.min.js"></script>
+  <script src="<%= urlPrefix %>/javascripts/event-viewEdit.min.js"></script>
 <% } %>
 
-<script src="/javascripts/event-edit.min.js"></script>
+<script src="<%= urlPrefix %>/javascripts/event-edit.min.js"></script>
 
 <%- include('_footerB'); -%>

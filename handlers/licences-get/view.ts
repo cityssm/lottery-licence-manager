@@ -8,13 +8,15 @@ import { getLicence } from "../../helpers/licencesDB/getLicence";
 
 export const handler: RequestHandler = (req, res) => {
 
+  const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
+
   const licenceID = parseInt(req.params.licenceID, 10);
 
   const licence = getLicence(licenceID, req.session);
 
   if (!licence) {
 
-    return res.redirect("/licences/?error=licenceNotFound");
+    return res.redirect(urlPrefix + "/licences/?error=licenceNotFound");
   }
 
   const organization = getOrganization(licence.organizationID, req.session);

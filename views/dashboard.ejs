@@ -20,7 +20,7 @@
   <div class="message is-danger">
     <p class="message-body">
       <strong>You are currently logged into the admin user account using credentials in your config.js file.</strong><br />
-      It is highly recommended that you create a proper admin user under <a href="/admin/userManagement">User Management</a>.
+      It is highly recommended that you create a proper admin user under <a href="<%= urlPrefix %>/admin/userManagement">User Management</a>.
     </p>
   </div>
 <% } %>
@@ -31,19 +31,19 @@
 
     <div class="columns is-mobile">
       <div class="column">
-        <a data-tooltip="View Reminders" href="/organizations/reminders">
+        <a data-tooltip="View Reminders" href="<%= urlPrefix %>/organizations/reminders">
           <span class="tag is-large is-warning"><%= stats.reminderStats.todayCount %></span><br />
           Due Today
         </a>
       </div>
       <div class="column">
-        <a data-tooltip="Undismissed Reminders" href="/organizations/reminders">
+        <a data-tooltip="Undismissed Reminders" href="<%= urlPrefix %>/organizations/reminders">
           <span class="tag is-large is-danger"><%= stats.reminderStats.pastCount %></span><br />
           Missed
         </a>
       </div>
       <div class="column">
-        <a data-tooltip="Upcoming Reminders" href="/organizations/reminders">
+        <a data-tooltip="Upcoming Reminders" href="<%= urlPrefix %>/organizations/reminders">
           <span class="tag is-large is-info"><%= stats.reminderStats.upcomingCount %></span><br />
           Upcoming
         </a>
@@ -58,7 +58,7 @@
           %>
           <div class="panel-block is-block">
             <div>
-              <a class="has-tooltip-right" data-tooltip="View Organization" href="/organizations/<%= reminder.organizationID %>"><%= reminder.organizationName %></a>
+              <a class="has-tooltip-right" data-tooltip="View Organization" href="<%= urlPrefix %>/organizations/<%= reminder.organizationID %>"><%= reminder.organizationName %></a>
             </div>
             <div class="columns is-mobile">
               <div class="column">
@@ -80,19 +80,19 @@
 
     <div class="columns is-mobile">
       <div class="column">
-        <a data-tooltip="View Events" href="/events">
+        <a data-tooltip="View Events" href="<%= urlPrefix %>/events">
           <span class="tag is-large is-info"><%= stats.eventStats.todayCount %></span><br />
           Today
         </a>
       </div>
       <div class="column">
-        <a data-tooltip="Events from <%= stats.windowStartDateString %>" href="/events">
+        <a data-tooltip="Events from <%= stats.windowStartDateString %>" href="<%= urlPrefix %>/events">
           <span class="tag is-large is-warning"><%= stats.eventStats.pastCount %></span><br />
           Recently Past
         </a>
       </div>
       <div class="column">
-        <a data-tooltip="Events to <%= stats.windowEndDateString %>" href="/events">
+        <a data-tooltip="Events to <%= stats.windowEndDateString %>" href="<%= urlPrefix %>/events">
           <span class="tag is-large is-info"><%= stats.eventStats.upcomingCount %></span><br />
           Upcoming
         </a>
@@ -107,7 +107,7 @@
           %>
           <div class="panel-block is-block">
             <div>
-              <a class="has-tooltip-right" data-tooltip="View Event" href="/events/<%= eventRecord.licenceID %>/<%= eventRecord.eventDate %>">
+              <a class="has-tooltip-right" data-tooltip="View Event" href="<%= urlPrefix %>/events/<%= eventRecord.licenceID %>/<%= eventRecord.eventDate %>">
                 <%= eventRecord.organizationName %>
               </a>
             </div>
@@ -138,7 +138,7 @@
               </div>
               <div class="media-content has-text-black">
                 <h2 class="title is-4 is-marginless">
-                  <a href="/organizations">Organizations</a>
+                  <a href="<%= urlPrefix %>/organizations">Organizations</a>
                   <span class="tag is-info is-pulled-right has-tooltip-left" data-tooltip="Holds an Active Licences"><%= stats.licenceStats.distinctOrganizationCount %> Active</span>
                 </h2>
                 <p>View and maintain organizations that hold lottery licences.</p>
@@ -146,13 +146,13 @@
             </div>
           </div>
           <div class="card-footer">
-            <a class="card-footer-item" href="/organizations">
+            <a class="card-footer-item" href="<%= urlPrefix %>/organizations">
               <span class="icon">
                 <i class="fas fa-search" aria-hidden="true"></i>
               </span>
               <span>Find</span>
             </a>
-            <a class="card-footer-item" href="/organizations/reminders">
+            <a class="card-footer-item" href="<%= urlPrefix %>/organizations/reminders">
               <span class="icon">
                 <i class="fas fa-lightbulb" aria-hidden="true"></i>
               </span>
@@ -170,7 +170,7 @@
               </div>
               <div class="media-content has-text-black">
                 <h2 class="title is-4 is-marginless">
-                  <a href="/locations">Locations</a>
+                  <a href="<%= urlPrefix %>/locations">Locations</a>
                   <span class="tag is-info is-pulled-right has-tooltip-left" data-tooltip="Used on Active Licences"><%= stats.licenceStats.distinctLocationCount %> Active</span>
                 </h2>
                 <p>View and maintain the locations where lottery events can take place.</p>
@@ -178,14 +178,14 @@
             </div>
           </div>
           <div class="card-footer">
-            <a class="card-footer-item" href="/locations">
+            <a class="card-footer-item" href="<%= urlPrefix %>/locations">
               <span class="icon">
                 <i class="fas fa-search" aria-hidden="true"></i>
               </span>
               <span>Find</span>
             </a>
             <% if (user.userProperties.canCreate) { %>
-              <a class="card-footer-item" href="/locations/new">
+              <a class="card-footer-item" href="<%= urlPrefix %>/locations/new">
                 <span class="icon">
                   <i class="fas fa-plus" aria-hidden="true"></i>
                 </span>
@@ -206,7 +206,7 @@
               </div>
               <div class="media-content has-text-black">
                 <h2 class="title is-4 is-marginless">
-                  <a href="/licences">Lottery Licences</a>
+                  <a href="<%= urlPrefix %>/licences">Lottery Licences</a>
                   <span class="tag is-info is-pulled-right"><%= stats.licenceStats.licenceCount %> Active</span>
                 </h2>
                 <p>View and maintain lottery licences.</p>
@@ -214,14 +214,14 @@
             </div>
           </div>
           <div class="card-footer">
-            <a class="card-footer-item" href="/licences">
+            <a class="card-footer-item" href="<%= urlPrefix %>/licences">
               <span class="icon">
                 <i class="fas fa-search" aria-hidden="true"></i>
               </span>
               <span>Find</span>
             </a>
             <% if (user.userProperties.canCreate) { %>
-              <a class="card-footer-item" href="/licences/new">
+              <a class="card-footer-item" href="<%= urlPrefix %>/licences/new">
                 <span class="icon">
                   <i class="fas fa-plus" aria-hidden="true"></i>
                 </span>
@@ -240,7 +240,7 @@
               </div>
               <div class="media-content has-text-black">
                 <h2 class="title is-4 is-marginless">
-                  <a href="/events">Lottery Events</a>
+                  <a href="<%= urlPrefix %>/events">Lottery Events</a>
                   <span class="tag is-info is-pulled-right"><%= stats.eventStats.todayCount %> Today</span>
                 </h2>
                 <p>View and update events.</p>
@@ -248,7 +248,7 @@
             </div>
           </div>
           <div class="card-footer">
-            <a class="card-footer-item" href="/events">
+            <a class="card-footer-item" href="<%= urlPrefix %>/events">
               <span class="icon">
                 <i class="fas fa-search" aria-hidden="true"></i>
               </span>
@@ -268,14 +268,14 @@
               </div>
               <div class="media-content has-text-black">
                 <h2 class="title is-4 is-marginless">
-                  <a href="/reports">Report Library</a>
+                  <a href="<%= urlPrefix %>/reports">Report Library</a>
                 </h2>
                 <p>Produce reports and export data.</p>
               </div>
             </div>
           </div>
           <div class="card-footer">
-            <a class="card-footer-item" href="/reports">
+            <a class="card-footer-item" href="<%= urlPrefix %>/reports">
               <span class="icon">
                 <i class="fas fa-search" aria-hidden="true"></i>
               </span>
@@ -293,14 +293,14 @@
               </div>
               <div class="media-content has-text-black">
                 <h2 class="title is-4 is-marginless">
-                  <a href="/docs" target="_blank">Help Documentation</a>
+                  <a href="<%= urlPrefix %>/docs" target="_blank">Help Documentation</a>
                 </h2>
                 <p>Instructions on how to use this application.</p>
               </div>
             </div>
           </div>
           <div class="card-footer">
-            <a class="card-footer-item" href="/docs" target="_blank">
+            <a class="card-footer-item" href="<%= urlPrefix %>/docs" target="_blank">
               <span class="icon">
                 <i class="fas fa-question-circle" aria-hidden="true"></i>
               </span>
@@ -330,14 +330,14 @@
                 </div>
                 <div class="media-content has-text-black">
                   <h2 class="title is-4 is-marginless">
-                    <a href="/admin/applicationSettings">Application Settings</a>
+                    <a href="<%= urlPrefix %>/admin/applicationSettings">Application Settings</a>
                   </h2>
                   <p>Settings that affect the <%= configFns.getProperty("application.applicationName") %> application.</p>
                 </div>
               </div>
             </div>
             <div class="card-footer">
-              <a class="card-footer-item" href="/admin/applicationSettings">
+              <a class="card-footer-item" href="<%= urlPrefix %>/admin/applicationSettings">
                 <span class="icon">
                   <i class="fas fa-cog" aria-hidden="true"></i>
                 </span>
@@ -355,14 +355,14 @@
                 </div>
                 <div class="media-content has-text-black">
                   <h2 class="title is-4 is-marginless">
-                    <a href="/admin/userManagement">User Management</a>
+                    <a href="<%= urlPrefix %>/admin/userManagement">User Management</a>
                   </h2>
                   <p>Add users. Remove users. Grant permissions.</p>
                 </div>
               </div>
             </div>
             <div class="card-footer">
-              <a class="card-footer-item" href="/admin/userManagement">
+              <a class="card-footer-item" href="<%= urlPrefix %>/admin/userManagement">
                 <span class="icon">
                   <i class="fas fa-cog" aria-hidden="true"></i>
                 </span>
@@ -440,6 +440,6 @@
 
 <%- include('_footerA'); -%>
 
-<script src="/javascripts/dashboard.min.js"></script>
+<script src="<%= urlPrefix %>/javascripts/dashboard.min.js"></script>
 
 <%- include('_footerB'); -%>

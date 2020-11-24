@@ -9,9 +9,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-  <link rel="icon" href="images/favicon.png" />
-  <link rel="stylesheet" href="stylesheets/style.min.css" />
-  <link rel="stylesheet" href="fa/css/all.min.css" />
+  <link rel="icon" href="<%= urlPrefix %>/images/favicon.png" />
+  <link rel="stylesheet" href="<%= urlPrefix %>/stylesheets/style.min.css" />
+  <link rel="stylesheet" href="<%= urlPrefix %>/fa/css/all.min.css" />
 </head>
 
 <body>
@@ -20,13 +20,13 @@
       <div class="box mx-3 my-3">
         <div class="columns is-vcentered">
           <div class="column has-text-centered">
-            <img src="<%= configFns.getProperty("application.logoURL") %>" alt="" />
+            <img src="<%= urlPrefix + configFns.getProperty("application.logoURL") %>" alt="" />
           </div>
           <div class="column">
             <h1 class="title is-3 has-text-centered">
               <%= configFns.getProperty("application.applicationName") %>
             </h1>
-            <form method="post" action="/login">
+            <form method="post" action="<%= urlPrefix %>/login">
               <input name="_csrf" type="hidden" value="<%= csrfToken %>" />
               <input name="redirect" type="hidden" value="<%= redirect %>" />
               <div class="field">
@@ -70,7 +70,7 @@
             <hr />
             <div class="has-text-right has-text-grey is-size-7">
               Build <%= buildNumber %><br />
-              <a class="has-text-grey" href="/docs" target="_blank">Help</a>
+              <a class="has-text-grey" href="<%= urlPrefix %>/docs" target="_blank">Help</a>
               <a class="has-text-grey ml-4" href="https://github.com/cityssm/lottery-licence-manager" target="_blank" rel="noreferrer">GitHub</a>
             </div>
           </div>

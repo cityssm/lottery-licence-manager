@@ -5,8 +5,8 @@
   <div class="column is-block-print">
     <nav class="breadcrumb">
       <ul>
-        <li><a href="/dashboard">Home</a></li>
-        <li><a href="/licences">
+        <li><a href="<%= urlPrefix %>/dashboard">Home</a></li>
+        <li><a href="<%= urlPrefix %>/licences">
           <span class="icon is-small"><i class="fas fa-certificate" aria-hidden="true"></i></span>
           <span>Lottery Licences</span>
         </a></li>
@@ -36,7 +36,7 @@
         <div class="level-right is-hidden-print">
           <div class="field is-grouped justify-flex-end">
             <div class="control">
-              <a class="button is-link" href="/licences/<%= licence.licenceID %>/print" download>
+              <a class="button is-link" href="<%= urlPrefix %>/licences/<%= licence.licenceID %>/print" download>
                 <span class="icon is-small">
                   <i class="fas fa-print" aria-hidden="true"></i>
                 </span>
@@ -50,14 +50,14 @@
 
     <% if (licence.canUpdate) { %>
       <div class="fixed-container is-fixed-bottom-right mx-4 my-4 is-hidden-print">
-        <a class="button is-circle is-primary has-tooltip-left" data-tooltip="Edit this Licence" href="/licences/<%= licence.licenceID %>/edit">
+        <a class="button is-circle is-primary has-tooltip-left" data-tooltip="Edit this Licence" href="<%= urlPrefix %>/licences/<%= licence.licenceID %>/edit">
           <i class="fas fa-pencil-alt" aria-hidden="true"></i>
           <span class="sr-only">Edit this Licence</span>
         </a>
       </div>
     <% } else if (user.userProperties.isAdmin) { %>
       <div class="fixed-container is-fixed-bottom-right mx-4 my-4 is-hidden-print">
-        <a class="button is-circle is-warning has-tooltip-left" data-tooltip="Unlock this Licence" href="/licences/<%= licence.licenceID %>/poke">
+        <a class="button is-circle is-warning has-tooltip-left" data-tooltip="Unlock this Licence" href="<%= urlPrefix %>/licences/<%= licence.licenceID %>/poke">
           <i class="fas fa-unlock" aria-hidden="true"></i>
           <span class="sr-only">Unlock this Licence</span>
         </a>
@@ -91,7 +91,7 @@
           <div class="column">
             <p>
               <strong>Organization</strong><br />
-              <a <%- (organization.isEligibleForLicences ? "" : " class=\"has-text-danger\"") %> href="/organizations/<%= organization.organizationID %>">
+              <a <%- (organization.isEligibleForLicences ? "" : " class=\"has-text-danger\"") %> href="<%= urlPrefix %>/organizations/<%= organization.organizationID %>">
                 <%= organization.organizationName %>
               </a>
             </p>
@@ -108,7 +108,7 @@
           <div class="column is-6">
             <p>
               <strong>Location</strong><br />
-              <a href="/locations/<%=licence.locationID %>"><%= licence.locationDisplayName %></a>
+              <a href="<%= urlPrefix %>/locations/<%=licence.locationID %>"><%= licence.locationDisplayName %></a>
             </p>
           </div>
         </div>
@@ -188,7 +188,7 @@
               <h2 class="has-text-weight-bold">Ticket Types</h2>
             </div>
             <div class="level-right has-text-weight-normal has-text-right is-hidden-print">
-              <a class="button is-small" href="/reports/ticketTypes-byLicence?licenceID=<%= licence.licenceID %>" download>
+              <a class="button is-small" href="<%= urlPrefix %>/reports/ticketTypes-byLicence?licenceID=<%= licence.licenceID %>" download>
                 <span class="icon"><i class="fas fa-file-download" aria-hidden="true"></i></span>
                 <span>Export Ticket Types</span>
               </a>
@@ -292,7 +292,7 @@
                 <h2 class="has-text-weight-bold">Event Dates</h2>
               </div>
               <div class="level-right has-text-weight-normal has-text-right is-hidden-print">
-                <a class="button is-small" href="/reports/events-byLicence?licenceID=<%= licence.licenceID %>" download>
+                <a class="button is-small" href="<%= urlPrefix %>/reports/events-byLicence?licenceID=<%= licence.licenceID %>" download>
                   <span class="icon is-small">
                     <i class="fas fa-file-download" aria-hidden="true"></i>
                   </span>
@@ -311,7 +311,7 @@
             </div>
           <% } else { %>
             <% for (let eventIndex = 0; eventIndex < licence.events.length; eventIndex += 1) { %>
-              <a class="panel-block" href="/events/<%= licence.licenceID %>/<%=licence.events[eventIndex].eventDate %>">
+              <a class="panel-block" href="<%= urlPrefix %>/events/<%= licence.licenceID %>/<%=licence.events[eventIndex].eventDate %>">
                 <span class="panel-icon">
                   <i class="fas fa-calendar" aria-hidden="true"></i>
                 </span>
@@ -397,7 +397,7 @@
             <h2 class="has-text-weight-bold">Transactions</h2>
           </div>
           <div class="level-right has-text-weight-normal has-text-right is-hidden-print">
-            <a class="button is-small" href="/reports/transactions-byLicence?licenceID=<%= licence.licenceID %>" download>
+            <a class="button is-small" href="<%= urlPrefix %>/reports/transactions-byLicence?licenceID=<%= licence.licenceID %>" download>
               <span class="icon"><i class="fas fa-file-download" aria-hidden="true"></i></span>
               <span>Export Transactions</span>
             </a>

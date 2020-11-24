@@ -1,5 +1,6 @@
 <%
   const licenceType = configFns.getLicenceType(licence.licenceTypeKey);
+  const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
 
 %><html>
 <head>
@@ -166,7 +167,7 @@
       <tbody>
         <tr>
           <td class="has-padding-right-10">
-            <img src="http://localhost:<%= configFns.getProperty("application.httpPort") %>/images/ontarioCoatOfArms.svg" alt="" style="height:60px" />
+            <img src="http://localhost:<%= configFns.getProperty("application.httpPort") %><%= urlPrefix %>/images/ontarioCoatOfArms.svg" alt="" style="height:60px" />
           </td>
           <td class="has-padding-right-10 is-9pt">
             Alcohol and<br />

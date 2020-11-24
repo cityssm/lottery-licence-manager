@@ -50,14 +50,18 @@ dbInit.initLicencesDB();
 
 const app = express();
 
-app.set("etag", false);
+if (!configFns.getProperty("reverseProxy.disableEtag")) {
+  app.set("etag", false);
+}
 
 // View engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 
+if (!configFns.getProperty("reverseProxy.disableCompression")) {
+  app.use(compression());
+}
 
-// app.use(compression());
 app.use(logger("dev"));
 app.use(express.json());
 
@@ -86,15 +90,18 @@ app.use(limiter);
  */
 
 
-app.use(express.static(path.join(__dirname, "public")));
+const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
 
-app.use("/docs/images",
+
+app.use(urlPrefix, express.static(path.join(__dirname, "public")));
+
+app.use(urlPrefix + "/docs/images",
   express.static(path.join(__dirname, "docs", "images")));
 
-app.use("/fa",
+app.use(urlPrefix + "/fa",
   express.static(path.join(__dirname, "node_modules", "@fortawesome", "fontawesome-free")));
 
-app.use("/cityssm-bulma-webapp-js",
+app.use(urlPrefix + "/cityssm-bulma-webapp-js",
   // express.static(path.join("..", "bulma-webapp-js"))); // DEBUG
   express.static(path.join(__dirname, "node_modules", "@cityssm", "bulma-webapp-js")));
 
@@ -141,7 +148,7 @@ const sessionChecker = (req: express.Request, res: express.Response, next: expre
     return next();
   }
 
-  return res.redirect("/login?redirect=" + req.originalUrl);
+  return res.redirect(urlPrefix + "/login?redirect=" + req.originalUrl);
 };
 
 
@@ -163,42 +170,44 @@ app.use((req, res, next) => {
   res.locals.stringFns = stringFns;
   res.locals.htmlFns = htmlFns;
 
+  res.locals.urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
+
   next();
 });
 
 
-app.get("/", sessionChecker, (_req, res) => {
-  res.redirect("/dashboard");
+app.get(urlPrefix + "/", sessionChecker, (_req, res) => {
+  res.redirect(urlPrefix + "/dashboard");
 });
 
-app.use("/docs", routerDocs);
+app.use(urlPrefix + "/docs", routerDocs);
 
-app.use("/dashboard", sessionChecker, routerDashboard);
-app.use("/organizations", sessionChecker, routerOrganizations);
-app.use("/licences", sessionChecker, routerLicences);
-app.use("/locations", sessionChecker, routerLocations);
-app.use("/events", sessionChecker, routerEvents);
-app.use("/reports", sessionChecker, routerReports);
-app.use("/admin", sessionChecker, routerAdmin);
+app.use(urlPrefix + "/dashboard", sessionChecker, routerDashboard);
+app.use(urlPrefix + "/organizations", sessionChecker, routerOrganizations);
+app.use(urlPrefix + "/licences", sessionChecker, routerLicences);
+app.use(urlPrefix + "/locations", sessionChecker, routerLocations);
+app.use(urlPrefix + "/events", sessionChecker, routerEvents);
+app.use(urlPrefix + "/reports", sessionChecker, routerReports);
+app.use(urlPrefix + "/admin", sessionChecker, routerAdmin);
 
-app.all("/keepAlive", (_req, res) => {
+app.all(urlPrefix + "/keepAlive", (_req, res) => {
   res.json(true);
 });
 
-app.use("/login", routerLogin);
+app.use(urlPrefix + "/login", routerLogin);
 
-app.get("/logout", (req, res) => {
+app.get(urlPrefix + "/logout", (req, res) => {
 
   if (req.session.user && req.cookies[sessionCookieName]) {
 
     req.session.destroy(null);
     req.session = null;
     res.clearCookie(sessionCookieName);
-    res.redirect("/");
+    res.redirect(urlPrefix + "/");
 
   } else {
 
-    res.redirect("/login");
+    res.redirect(urlPrefix + "/login");
   }
 });
 

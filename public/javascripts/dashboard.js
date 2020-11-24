@@ -1,12 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 (() => {
+    const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
     const changePasswordModalEle = document.getElementById("is-change-password-modal");
     if (changePasswordModalEle) {
         changePasswordModalEle.getElementsByTagName("form")[0].addEventListener("submit", (formEvent) => {
             formEvent.preventDefault();
             const formEle = formEvent.currentTarget;
-            cityssm.postJSON("dashboard/doChangePassword", formEle, (responseJSON) => {
+            cityssm.postJSON(urlPrefix + "/dashboard/doChangePassword", formEle, (responseJSON) => {
                 if (responseJSON.success) {
                     cityssm.hideModal(changePasswordModalEle);
                     cityssm.alertModal("Password Updated Successfully", "", "OK", "success");

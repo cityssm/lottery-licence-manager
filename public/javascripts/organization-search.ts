@@ -6,6 +6,8 @@ declare const cityssm: cityssmGlobal;
 
 (() => {
 
+  const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
+
   const formEle = document.getElementById("form--filters");
   const searchResultsEle = document.getElementById("container--searchResults");
 
@@ -19,8 +21,7 @@ declare const cityssm: cityssmGlobal;
       "<em>Loading organizations...</em>" +
       "</p>";
 
-    cityssm.postJSON(
-      "organizations/doSearch",
+    cityssm.postJSON(urlPrefix + "/organizations/doSearch",
       formEle,
       (organizationsList: llmTypes.Organization[]) => {
 
@@ -67,7 +68,7 @@ declare const cityssm: cityssmGlobal;
           }
 
           organizationNameLinkEle.innerText = organizationObj.organizationName;
-          organizationNameLinkEle.href = "/organizations/" + organizationObj.organizationID.toString();
+          organizationNameLinkEle.href = "organizations/" + organizationObj.organizationID.toString();
           trEle.getElementsByTagName("td")[0].insertAdjacentElement("beforeend", organizationNameLinkEle);
 
           trEle.insertAdjacentHTML(
@@ -99,7 +100,7 @@ declare const cityssm: cityssmGlobal;
             trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right is-hidden-print\">" +
               (organizationObj.canUpdate
                 ? "<a class=\"button is-small\" data-tooltip=\"Edit Organization\"" +
-                " href=\"/organizations/" + organizationObj.organizationID.toString() + "/edit\">" +
+                " href=\"organizations/" + organizationObj.organizationID.toString() + "/edit\">" +
                 "<span class=\"icon\"><i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i></span>" +
                 "<span>Edit</span>" +
                 "</a>"
@@ -134,7 +135,7 @@ declare const cityssm: cityssmGlobal;
             trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right is-hidden-print\">" +
               (organizationObj.isEligibleForLicences
                 ? "<a class=\"button is-small\" data-tooltip=\"Create a New Licence\"" +
-                " href=\"/licences/new/" + organizationObj.organizationID.toString() + "\">" +
+                " href=\"licences/new/" + organizationObj.organizationID.toString() + "\">" +
                 "<span class=\"icon\"><i class=\"fas fa-certificate\" aria-hidden=\"true\"></i></span>" +
                 "<span>New</span>" +
                 "</a>"

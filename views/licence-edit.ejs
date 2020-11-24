@@ -5,8 +5,8 @@
   <div class="column is-block-print">
     <nav class="breadcrumb">
       <ul>
-        <li><a href="/dashboard">Home</a></li>
-        <li><a href="/licences">
+        <li><a href="<%= urlPrefix %>/dashboard">Home</a></li>
+        <li><a href="<%= urlPrefix %>/licences">
           <span class="icon is-small"><i class="fas fa-certificate" aria-hidden="true"></i></span>
           <span>Lottery Licences</span>
         </a></li>
@@ -14,7 +14,7 @@
           <li class="is-active"><a href="#" aria-current="page">New Licence</a></li>
         <% } else { %>
           <li>
-            <a href="/licences/<%= licence.licenceID %>">
+            <a href="<%= urlPrefix %>/licences/<%= licence.licenceID %>">
               <% if (configFns.getProperty("licences.externalLicenceNumber.isPreferredID")) { %>
                 Licence <%= licence.externalLicenceNumber %>
               <% } else { %>
@@ -35,7 +35,7 @@
       </div>
       <div class="level-right has-text-right ml-4 is-hidden-print">
         <% if (licence.issueDate) { %>
-          <a class="button is-link" href="/licences/<%= licence.licenceID %>/print" download>
+          <a class="button is-link" href="<%= urlPrefix %>/licences/<%= licence.licenceID %>/print" download>
             <span class="icon is-small">
               <i class="fas fa-print" aria-hidden="true"></i>
             </span>
@@ -332,7 +332,7 @@
                   </span>
                   <span>Add</span>
                 </button>
-                <a class="button is-small" data-tooltip="Export Ticket Types" href="/reports/ticketTypes-byLicence?licenceID=<%= licence.licenceID %>" download>
+                <a class="button is-small" data-tooltip="Export Ticket Types" href="<%= urlPrefix %>/reports/ticketTypes-byLicence?licenceID=<%= licence.licenceID %>" download>
                   <i class="fas fa-file-download" aria-hidden="true"></i>
                   <span class="sr-only">Export Ticket Types</span>
                 </a>
@@ -702,7 +702,7 @@
                       </span>
                       <span>Add a Transaction</span>
                     </button>
-                    <a class="button is-small" data-tooltip="Export Transactions" href="/reports/transactions-byLicence?licenceID=<%= licence.licenceID %>" download>
+                    <a class="button is-small" data-tooltip="Export Transactions" href="<%= urlPrefix %>/reports/transactions-byLicence?licenceID=<%= licence.licenceID %>" download>
                       <i class="fas fa-file-download" aria-hidden="true"></i>
                       <span class="sr-only">Export Transactions</span>
                     </a>
@@ -907,6 +907,6 @@
 
 <%- include('_footerA'); -%>
 
-<script src="/javascripts/licence-edit.min.js"></script>
+<script src="<%= urlPrefix %>/javascripts/licence-edit.min.js"></script>
 
 <%- include('_footerB'); -%>

@@ -216,8 +216,10 @@ llm.getDefaultConfigProperty = (propertyName, propertyValueCallbackFn) => {
 
   // Populate local storage
 
-  cityssm.postJSON(
-    "/dashboard/doGetDefaultConfigProperties", {},
+  const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
+
+  cityssm.postJSON(urlPrefix + "/dashboard/doGetDefaultConfigProperties",
+    {},
     (defaultConfigProperties) => {
 
       try {
@@ -277,7 +279,7 @@ llm.initializeTabs = (tabsListEle, callbackFns) => {
 
     tabContentEle.classList.add("is-active");
 
-    if (callbackFns?.onshown) {
+    if (callbackFns ?.onshown) {
       callbackFns.onshown(tabContentEle);
     }
   };

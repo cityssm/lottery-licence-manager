@@ -5,8 +5,8 @@
   <div class="column is-block-print">
     <nav class="breadcrumb">
       <ul>
-        <li><a href="/dashboard">Home</a></li>
-        <li><a href="/licences">
+        <li><a href="<%= urlPrefix %>/dashboard">Home</a></li>
+        <li><a href="<%= urlPrefix %>/licences">
           <span class="icon is-small"><i class="fas fa-certificate" aria-hidden="true"></i></span>
           <span>Lottery Licences</span>
         </a></li>
@@ -69,6 +69,6 @@
 
 <%- include('_footerA'); -%>
 
-<script src="/javascripts/licence-licenceType.min.js"></script>
+<script src="<%= urlPrefix %>/javascripts/licence-licenceType.min.js"></script>
 
 <%- include('_footerB'); -%>

@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 (() => {
+    const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
     const inactiveYearsFilterEle = document.getElementById("filter--inactiveYears");
     const searchResultsEle = document.getElementById("container--searchResults");
     const confirmDeleteLocationFn = (clickEvent) => {
@@ -8,7 +9,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
         const locationDisplayName = cityssm.escapeHTML(buttonEle.getAttribute("data-location-display-name"));
         const deleteFn = () => {
             const locationID = buttonEle.getAttribute("data-location-id");
-            cityssm.postJSON("doDelete", {
+            cityssm.postJSON(urlPrefix + "/locations/doDelete", {
                 locationID
             }, (responseJSON) => {
                 if (responseJSON.success) {
@@ -27,7 +28,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
             "<i class=\"fas fa-3x fa-circle-notch fa-spin\" aria-hidden=\"true\"></i><br />" +
             "<em>Loading locations...</em>" +
             "</p>";
-        cityssm.postJSON("doGetInactive", {
+        cityssm.postJSON(urlPrefix + "/locations/doGetInactive", {
             inactiveYears: inactiveYearsFilterEle.value
         }, (inactiveList) => {
             if (inactiveList.length === 0) {
@@ -54,7 +55,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 const safeLocationDisplayName = cityssm.escapeHTML(locationObj.locationDisplayName);
                 trEle.insertAdjacentHTML("beforeend", "<td>" +
                     "<a data-tooltip=\"View Location\"" +
-                    " href=\"/locations/" + locationObj.locationID.toString() + "\">" +
+                    " href=\"" + urlPrefix + "/locations/" + locationObj.locationID.toString() + "\">" +
                     safeLocationDisplayName +
                     "</a>" +
                     (locationObj.locationDisplayName === locationObj.locationAddress1 ? "" : "<br />" +

@@ -6,6 +6,8 @@ declare const cityssm: cityssmGlobal;
 
 (() => {
 
+  const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
+
   const filterExternalLicenceNumberEle =
     document.getElementById("filter--externalLicenceNumber") as HTMLInputElement;
 
@@ -23,13 +25,13 @@ declare const cityssm: cityssmGlobal;
       "<em>Loading events..." +
       "</p>";
 
-    cityssm.postJSON("events/doSearch", {
-        externalLicenceNumber: filterExternalLicenceNumberEle.value,
-        licenceTypeKey: filterLicenceTypeKeyEle.value,
-        organizationName: filterOrganizationNameEle.value,
-        locationName: filterLocationNameEle.value,
-        eventYear: filterYearEle.value
-      },
+    cityssm.postJSON(urlPrefix + "/events/doSearch", {
+      externalLicenceNumber: filterExternalLicenceNumberEle.value,
+      licenceTypeKey: filterLicenceTypeKeyEle.value,
+      organizationName: filterOrganizationNameEle.value,
+      locationName: filterLocationNameEle.value,
+      eventYear: filterYearEle.value
+    },
       (eventList: llmTypes.LotteryEvent[]) => {
 
         if (eventList.length === 0) {
@@ -49,7 +51,7 @@ declare const cityssm: cityssmGlobal;
 
           const licenceType: string = exports.config_licenceTypes[eventObj.licenceTypeKey] || eventObj.licenceTypeKey;
 
-          const eventURL = "/events/" + eventObj.licenceID.toString() + "/" + eventObj.eventDate.toString();
+          const eventURL = urlPrefix + "/events/" + eventObj.licenceID.toString() + "/" + eventObj.eventDate.toString();
 
           const trEle = document.createElement("tr");
 

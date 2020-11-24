@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 (() => {
+    const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
     const currentDateString = cityssm.dateToString(new Date());
     const eventDateFilterEle = document.getElementById("filter--eventDate");
     const showLicencesCheckboxEle = document.getElementById("filter--showLicences");
@@ -14,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
         if (eventDateFilterEle.value === "") {
             eventDateFilterEle.value = cityssm.dateToString(new Date());
         }
-        cityssm.postJSON("doGetEventsByWeek", {
+        cityssm.postJSON(urlPrefix + "/events/doGetEventsByWeek", {
             eventDate: eventDateFilterEle.value
         }, (responseJSON) => {
             if (responseJSON.licences.length === 0 && responseJSON.events.length === 0) {

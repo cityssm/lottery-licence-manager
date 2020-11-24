@@ -8,13 +8,13 @@
       <div class="column">
         <nav class="breadcrumb">
           <ul>
-            <li><a href="/dashboard">Home</a></li>
-            <li><a href="/events">
+            <li><a href="<%= urlPrefix %>/dashboard">Home</a></li>
+            <li><a href="<%= urlPrefix %>/events">
               <span class="icon is-small"><i class="fas fa-calendar" aria-hidden="true"></i></span>
               <span>Lottery Events</span>
             </a></li>
             <li>
-              <a href="/licences/<%= event.licenceID %>">
+              <a href="<%= urlPrefix %>/licences/<%= event.licenceID %>">
                 <% if (configFns.getProperty("licences.externalLicenceNumber.isPreferredID")) { %>
                   Licence <%= licence.externalLicenceNumber %>
                 <% } else { %>
@@ -109,14 +109,14 @@
 
     <% if (event.canUpdate) { %>
       <div class="fixed-container is-fixed-bottom-right mx-4 my-4 has-text-right is-hidden-print">
-        <a class="button is-circle is-primary has-tooltip-left" data-tooltip="Edit this Event" href="/events/<%= licence.licenceID %>/<%= event.eventDate %>/edit">
+        <a class="button is-circle is-primary has-tooltip-left" data-tooltip="Edit this Event" href="<%= urlPrefix %>/events/<%= licence.licenceID %>/<%= event.eventDate %>/edit">
           <i class="fas fa-pencil-alt" aria-hidden="true"></i>
           <span class="sr-only">Edit this Event</span>
         </a>
       </div>
     <% } else if (user.userProperties.isAdmin) { %>
       <div class="fixed-container is-fixed-bottom-right mx-4 my-4 is-hidden-print">
-        <a class="button is-circle is-warning has-tooltip-left" data-tooltip="Unlock this Event" href="/events/<%= licence.licenceID %>/<%= event.eventDate %>/poke">
+        <a class="button is-circle is-warning has-tooltip-left" data-tooltip="Unlock this Event" href="<%= urlPrefix %>/events/<%= licence.licenceID %>/<%= event.eventDate %>/poke">
           <i class="fas fa-unlock" aria-hidden="true"></i>
           <span class="sr-only">Unlock this Event</span>
         </a>
@@ -369,7 +369,7 @@
 <%- include('_footerA'); -%>
 
 <% if (licence.events.length > 1) { %>
-<script src="/javascripts/event-viewEdit.min.js"></script>
+<script src="<%= urlPrefix %>/javascripts/event-viewEdit.min.js"></script>
 <% } %>
 
 <%- include('_footerB'); -%>

@@ -8,6 +8,8 @@ declare const llm: llmGlobal;
 
 (() => {
 
+  const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
+
   let externalLicenceNumberFieldLabel = "";
 
   const formEle = document.getElementById("form--activeSummary");
@@ -20,8 +22,8 @@ declare const llm: llmGlobal;
       "<em>Loading licences...</em>" +
       "</p>";
 
-    cityssm.postJSON(
-      "/licences/doGetActiveLicenceSummary", formEle,
+    cityssm.postJSON(urlPrefix + "/licences/doGetActiveLicenceSummary",
+      formEle,
       (activeLicenceList: llmTypes.LotteryLicence[]) => {
 
         if (activeLicenceList.length === 0) {

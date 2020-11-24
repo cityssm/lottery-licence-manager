@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 (() => {
+    const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
     const formEle = document.getElementById("form--filters");
     const searchResultsEle = document.getElementById("container--searchResults");
     const canCreate = document.getElementsByTagName("main")[0].getAttribute("data-can-create") === "true";
@@ -9,7 +10,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
             "<i class=\"fas fa-3x fa-circle-notch fa-spin\" aria-hidden=\"true\"></i><br />" +
             "<em>Loading organizations...</em>" +
             "</p>";
-        cityssm.postJSON("organizations/doSearch", formEle, (organizationsList) => {
+        cityssm.postJSON(urlPrefix + "/organizations/doSearch", formEle, (organizationsList) => {
             if (organizationsList.length === 0) {
                 searchResultsEle.innerHTML = "<div class=\"message is-info\">" +
                     "<div class=\"message-body\">" +
@@ -42,7 +43,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     organizationNameLinkEle.setAttribute("data-tooltip", "View Organization");
                 }
                 organizationNameLinkEle.innerText = organizationObj.organizationName;
-                organizationNameLinkEle.href = "/organizations/" + organizationObj.organizationID.toString();
+                organizationNameLinkEle.href = "organizations/" + organizationObj.organizationID.toString();
                 trEle.getElementsByTagName("td")[0].insertAdjacentElement("beforeend", organizationNameLinkEle);
                 trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right\">" +
                     (organizationObj.organizationNote === ""
@@ -63,7 +64,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right is-hidden-print\">" +
                         (organizationObj.canUpdate
                             ? "<a class=\"button is-small\" data-tooltip=\"Edit Organization\"" +
-                                " href=\"/organizations/" + organizationObj.organizationID.toString() + "/edit\">" +
+                                " href=\"organizations/" + organizationObj.organizationID.toString() + "/edit\">" +
                                 "<span class=\"icon\"><i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i></span>" +
                                 "<span>Edit</span>" +
                                 "</a>"
@@ -88,7 +89,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right is-hidden-print\">" +
                         (organizationObj.isEligibleForLicences
                             ? "<a class=\"button is-small\" data-tooltip=\"Create a New Licence\"" +
-                                " href=\"/licences/new/" + organizationObj.organizationID.toString() + "\">" +
+                                " href=\"licences/new/" + organizationObj.organizationID.toString() + "\">" +
                                 "<span class=\"icon\"><i class=\"fas fa-certificate\" aria-hidden=\"true\"></i></span>" +
                                 "<span>New</span>" +
                                 "</a>"

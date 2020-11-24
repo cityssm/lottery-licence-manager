@@ -1,5 +1,7 @@
 import { Router } from "express";
 
+import * as configFns from "../helpers/configFns";
+
 import * as licencesDB from "../helpers/licencesDB";
 import * as reportFns from "../helpers/reportFns";
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns";
@@ -7,6 +9,9 @@ import { rawToCSV } from "@cityssm/expressjs-server-js/stringFns";
 
 
 const router = Router();
+
+
+const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
 
 
 router.get("/", (_req, res) => {
@@ -439,7 +444,7 @@ router.all("/:reportName", (req, res) => {
 
   if (sql === "") {
 
-    res.redirect("/reports/?error=reportNotFound");
+    res.redirect(urlPrefix + "/reports/?error=reportNotFound");
     return;
 
   }

@@ -4,6 +4,8 @@ declare const cityssm: cityssmGlobal;
 
 (() => {
 
+  const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
+
   const getMessageEle = (formEle: HTMLFormElement | HTMLInputElement) => {
     return formEle.closest("tr").getElementsByClassName("formMessage")[0] as HTMLElement;
   };
@@ -21,7 +23,7 @@ declare const cityssm: cityssmGlobal;
 
     messageEle.innerHTML = "Saving... <i class=\"fas fa-circle-notch fa-spin\" aria-hidden=\"true\"></i>";
 
-    cityssm.postJSON("doSaveApplicationSetting",
+    cityssm.postJSON(urlPrefix + "/admin/doSaveApplicationSetting",
       formEle,
       (responseJSON: { success: boolean }) => {
 
