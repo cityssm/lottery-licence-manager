@@ -35,7 +35,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 const trEle = document.createElement("tr");
                 trEle.innerHTML =
                     ("<td>" +
-                        "<a href=\"" + eventURL + "\">" +
+                        "<a href=\"" + cityssm.escapeHTML(eventURL) + "\">" +
                         eventObj.eventDateString +
                         "</a>" +
                         "</td>") +

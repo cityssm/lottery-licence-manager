@@ -84,7 +84,7 @@ declare const llm: llmGlobal;
           trEle.insertAdjacentHTML(
             "beforeend",
             "<td>" +
-            "<a data-tooltip=\"View Licence\" href=\"" + urlPrefix + "/licences/" + licenceObj.licenceID.toString() + "\">" +
+            "<a data-tooltip=\"View Licence\" href=\"" + cityssm.escapeHTML(urlPrefix) + "/licences/" + licenceObj.licenceID.toString() + "\">" +
             cityssm.escapeHTML(licenceObj.externalLicenceNumber) + "<br />" +
             "<small>Licence #" + licenceObj.licenceID.toString() + "</small>" +
             "</a>" +

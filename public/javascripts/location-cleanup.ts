@@ -94,7 +94,7 @@ declare const cityssm: cityssmGlobal;
 
           trEle.insertAdjacentHTML("beforeend", "<td>" +
             "<a data-tooltip=\"View Location\"" +
-            " href=\"" + urlPrefix + "/locations/" + locationObj.locationID.toString() + "\">" +
+            " href=\"" + cityssm.escapeHTML(urlPrefix) + "/locations/" + locationObj.locationID.toString() + "\">" +
             safeLocationDisplayName +
             "</a>" +
             (locationObj.locationDisplayName === locationObj.locationAddress1 ? "" : "<br />" +

@@ -102,7 +102,6 @@ app.use(urlPrefix + "/fa",
   express.static(path.join(__dirname, "node_modules", "@fortawesome", "fontawesome-free")));
 
 app.use(urlPrefix + "/cityssm-bulma-webapp-js",
-  // express.static(path.join("..", "bulma-webapp-js"))); // DEBUG
   express.static(path.join(__dirname, "node_modules", "@cityssm", "bulma-webapp-js")));
 
 

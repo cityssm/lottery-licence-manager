@@ -57,7 +57,7 @@ declare const cityssm: cityssmGlobal;
 
           trEle.innerHTML =
             ("<td>" +
-              "<a href=\"" + eventURL + "\">" +
+              "<a href=\"" + cityssm.escapeHTML(eventURL) + "\">" +
               eventObj.eventDateString +
               "</a>" +
               "</td>") +

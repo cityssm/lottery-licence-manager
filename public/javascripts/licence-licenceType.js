@@ -39,7 +39,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 trEle.insertAdjacentHTML("beforeend", "<td>" + licenceObj.applicationDateString + "</td>");
                 trEle.insertAdjacentHTML("beforeend", "<td>" + licenceObj.issueDateString + "</td>");
                 trEle.insertAdjacentHTML("beforeend", "<td>" +
-                    "<a data-tooltip=\"View Licence\" href=\"" + urlPrefix + "/licences/" + licenceObj.licenceID.toString() + "\">" +
+                    "<a data-tooltip=\"View Licence\" href=\"" + cityssm.escapeHTML(urlPrefix) + "/licences/" + licenceObj.licenceID.toString() + "\">" +
                     cityssm.escapeHTML(licenceObj.externalLicenceNumber) + "<br />" +
                     "<small>Licence #" + licenceObj.licenceID.toString() + "</small>" +
                     "</a>" +

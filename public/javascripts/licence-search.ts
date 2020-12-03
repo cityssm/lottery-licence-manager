@@ -70,7 +70,7 @@ declare const cityssm: cityssmGlobal;
 
           trEle.innerHTML =
             ("<td>" +
-              "<a data-tooltip=\"View Licence\" href=\"" + urlPrefix + "/licences/" + licenceObj.licenceID.toString() + "\">" +
+              "<a data-tooltip=\"View Licence\" href=\"" + cityssm.escapeHTML(urlPrefix) + "/licences/" + licenceObj.licenceID.toString() + "\">" +
               cityssm.escapeHTML(licenceObj.externalLicenceNumber) + "<br />" +
               "<small>Licence #" + licenceObj.licenceID.toString() + "</small>" +
               "</a>" +
@@ -82,13 +82,13 @@ declare const cityssm: cityssmGlobal;
 
             ("<td>" +
               "<a data-tooltip=\"View Organization\"" +
-              " href=\"" + urlPrefix + "/organizations/" + licenceObj.organizationID.toString() + "\">" +
+              " href=\"" + cityssm.escapeHTML(urlPrefix) + "/organizations/" + licenceObj.organizationID.toString() + "\">" +
               cityssm.escapeHTML(licenceObj.organizationName) +
               "</a>" +
               "</td>") +
 
             ("<td>" +
-              "<a data-tooltip=\"View Location\" href=\"" + urlPrefix + "/locations/" + licenceObj.locationID.toString() + "\">" +
+              "<a data-tooltip=\"View Location\" href=\"" + cityssm.escapeHTML(urlPrefix) + "/locations/" + licenceObj.locationID.toString() + "\">" +
               cityssm.escapeHTML(licenceObj.locationDisplayName) +
               "</a>" +
               (licenceObj.locationDisplayName === licenceObj.locationAddress1
@@ -109,7 +109,7 @@ declare const cityssm: cityssmGlobal;
 
             (licenceObj.canUpdate
               ? "<a class=\"button is-small\" data-tooltip=\"Edit Licence\"" +
-              " href=\"" + urlPrefix + "/licences/" + licenceObj.licenceID.toString() + "/edit\">" +
+              " href=\"" + cityssm.escapeHTML(urlPrefix) + "/licences/" + licenceObj.licenceID.toString() + "/edit\">" +
               "<span class=\"icon\"><i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i></span>" +
               "<span>Edit</span>" +
               "</a> "
@@ -117,7 +117,7 @@ declare const cityssm: cityssmGlobal;
 
             (licenceObj.issueDate
               ? "<a class=\"button is-small\" data-tooltip=\"Print Licence\"" +
-              " href=\"" + urlPrefix + "/licences/" + licenceObj.licenceID.toString() + "/print\" download>" +
+              " href=\"" + cityssm.escapeHTML(urlPrefix) + "/licences/" + licenceObj.licenceID.toString() + "/print\" download>" +
               "<i class=\"fas fa-print\" aria-hidden=\"true\"></i>" +
               "<span class=\"sr-only\">Print</span>" +
               "</a>"

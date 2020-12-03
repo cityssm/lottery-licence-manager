@@ -43,7 +43,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 const trEle = document.createElement("tr");
                 trEle.innerHTML =
                     ("<td>" +
-                        "<a data-tooltip=\"View Licence\" href=\"" + urlPrefix + "/licences/" + licenceObj.licenceID.toString() + "\">" +
+                        "<a data-tooltip=\"View Licence\" href=\"" + cityssm.escapeHTML(urlPrefix) + "/licences/" + licenceObj.licenceID.toString() + "\">" +
                         cityssm.escapeHTML(licenceObj.externalLicenceNumber) + "<br />" +
                         "<small>Licence #" + licenceObj.licenceID.toString() + "</small>" +
                         "</a>" +
@@ -53,12 +53,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
                             "</td>") +
                         ("<td>" +
                             "<a data-tooltip=\"View Organization\"" +
-                            " href=\"" + urlPrefix + "/organizations/" + licenceObj.organizationID.toString() + "\">" +
+                            " href=\"" + cityssm.escapeHTML(urlPrefix) + "/organizations/" + licenceObj.organizationID.toString() + "\">" +
                             cityssm.escapeHTML(licenceObj.organizationName) +
                             "</a>" +
                             "</td>") +
                         ("<td>" +
-                            "<a data-tooltip=\"View Location\" href=\"" + urlPrefix + "/locations/" + licenceObj.locationID.toString() + "\">" +
+                            "<a data-tooltip=\"View Location\" href=\"" + cityssm.escapeHTML(urlPrefix) + "/locations/" + licenceObj.locationID.toString() + "\">" +
                             cityssm.escapeHTML(licenceObj.locationDisplayName) +
                             "</a>" +
                             (licenceObj.locationDisplayName === licenceObj.locationAddress1
@@ -76,14 +76,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
                         "<td class=\"has-text-right is-nowrap is-hidden-print\">" +
                         (licenceObj.canUpdate
                             ? "<a class=\"button is-small\" data-tooltip=\"Edit Licence\"" +
-                                " href=\"" + urlPrefix + "/licences/" + licenceObj.licenceID.toString() + "/edit\">" +
+                                " href=\"" + cityssm.escapeHTML(urlPrefix) + "/licences/" + licenceObj.licenceID.toString() + "/edit\">" +
                                 "<span class=\"icon\"><i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i></span>" +
                                 "<span>Edit</span>" +
                                 "</a> "
                             : "") +
                         (licenceObj.issueDate
                             ? "<a class=\"button is-small\" data-tooltip=\"Print Licence\"" +
-                                " href=\"" + urlPrefix + "/licences/" + licenceObj.licenceID.toString() + "/print\" download>" +
+                                " href=\"" + cityssm.escapeHTML(urlPrefix) + "/licences/" + licenceObj.licenceID.toString() + "/print\" download>" +
                                 "<i class=\"fas fa-print\" aria-hidden=\"true\"></i>" +
                                 "<span class=\"sr-only\">Print</span>" +
                                 "</a>"
