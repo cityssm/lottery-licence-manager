@@ -58,7 +58,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                             "</td>") +
                         ("<td class=\"is-hidden-print has-text-right\">" +
                             (eventObj.canUpdate
-                                ? "<a class=\"button is-small\" href=\"" + eventURL + "/edit\">" +
+                                ? "<a class=\"button is-small\" href=\"" + cityssm.escapeHTML(eventURL) + "/edit\">" +
                                     "<span class=\"icon\"><i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i></span>" +
                                     "<span>Edit</span>" +
                                     "</a>"
