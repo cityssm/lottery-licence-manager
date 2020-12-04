@@ -55,7 +55,7 @@
     "@types/gulp": "^4.0.7",
     "@types/gulp-minify": "^3.1.0",
     "@types/http-errors": "^1.8.0",
-    "@types/marked": "^1.2.0",
+    "@types/marked": "^1.2.1",
     "@types/mocha": "^8.0.4",
     "@types/morgan": "^1.9.2",
     "@typescript-eslint/eslint-plugin": "^4.9.0",
