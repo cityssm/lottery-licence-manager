@@ -399,7 +399,10 @@ config.licenceTypes = [
       }
     }],
     printSettings: {
+      agco_useLicenceDatesAsEventDates: true,
       agco_additionalLicenceDetailsHTMLFn: (licenceObj: recordTypes.LotteryLicence): string => {
+
+        const drawCountField = licenceObj.licenceFields.find((field) => field.fieldKey === "RA-drawCount");
 
         const ticketCountField = licenceObj.licenceFields.find((field) => field.fieldKey === "RA-ticketCount");
         const ticketCostField = licenceObj.licenceFields.find((field) => field.fieldKey === "RA-ticketCost");
@@ -413,7 +416,8 @@ config.licenceTypes = [
         const discount3TicketsField = licenceObj.licenceFields.find((field) => field.fieldKey === "RA-discount3_tickets");
         const discount3CostField = licenceObj.licenceFields.find((field) => field.fieldKey === "RA-discount3_cost");
 
-        return (ticketCountField ? ticketCountField.fieldValue + " tickets; " : "") +
+        return (drawCountField.fieldValue + " draw" + (drawCountField.fieldValue === "1" ? "" : "s") + "; ") +
+          (ticketCountField ? ticketCountField.fieldValue + " tickets; " : "") +
           (ticketCostField ? "$" + ticketCostField.fieldValue + " per ticket; " : "") +
           (discountTicketsField && discountCostField
             ? discountTicketsField.fieldValue + " for $" + discountCostField.fieldValue + "; "
