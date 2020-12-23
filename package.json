@@ -22,7 +22,7 @@
     "@cityssm/expressjs-server-js": "^1.0.3",
     "@fortawesome/fontawesome-free": "^5.15.1",
     "bcrypt": "^5.0.0",
-    "better-sqlite3": "^7.1.1",
+    "better-sqlite3": "^7.1.2",
     "compression": "^1.7.4",
     "connect-sqlite3": "^0.9.11",
     "cookie-parser": "^1.4.5",
@@ -40,7 +40,7 @@
     "sanitize-filename": "^1.6.3"
   },
   "devDependencies": {
-    "@cityssm/bulma-webapp-css": "^0.4.2",
+    "@cityssm/bulma-webapp-css": "^0.6.0",
     "@types/bcrypt": "^3.0.0",
     "@types/better-sqlite3": "^5.4.1",
     "@types/compression": "^1.7.0",
@@ -58,9 +58,9 @@
     "@types/marked": "^1.2.1",
     "@types/mocha": "^8.2.0",
     "@types/morgan": "^1.9.2",
-    "@typescript-eslint/eslint-plugin": "^4.10.0",
-    "@typescript-eslint/parser": "^4.10.0",
-    "eslint": "^7.15.0",
+    "@typescript-eslint/eslint-plugin": "^4.11.0",
+    "@typescript-eslint/parser": "^4.11.0",
+    "eslint": "^7.16.0",
     "eslint-config-standard-with-typescript": "^19.0.1",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-node": "^11.1.0",
@@ -69,9 +69,7 @@
     "github-markdown-css": "^4.0.0",
     "gulp": "^4.0.2",
     "gulp-minify": "^3.1.0",
-    "mocha": "^8.2.1",
     "nodemon": "^2.0.6",
-    "nyc": "^15.1.0",
     "typescript": "^4.1.3"
   }
 }
