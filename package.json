@@ -21,7 +21,7 @@
   "dependencies": {
     "@cityssm/bulma-webapp-js": "^0.7.1",
     "@cityssm/expressjs-server-js": "^1.0.3",
-    "@fortawesome/fontawesome-free": "^5.15.1",
+    "@fortawesome/fontawesome-free": "^5.15.2",
     "bcrypt": "^5.0.0",
     "better-sqlite3": "^7.1.2",
     "compression": "^1.7.4",
