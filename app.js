@@ -45,7 +45,7 @@ app.use(cookieParser());
 app.use(csurf({ cookie: true }));
 const limiter = rateLimit({
     windowMs: 60 * 1000,
-    max: 500
+    max: 1000
 });
 app.use(limiter);
 const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
