@@ -22,7 +22,7 @@
     "@cityssm/bulma-webapp-js": "^1.0.0",
     "@cityssm/expressjs-server-js": "^1.0.3",
     "@fortawesome/fontawesome-free": "^5.15.2",
-    "bcrypt": "^5.0.0",
+    "bcrypt": "^5.0.1",
     "better-sqlite3": "^7.1.2",
     "compression": "^1.7.4",
     "connect-sqlite3": "^0.9.11",
