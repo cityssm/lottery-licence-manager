@@ -38,7 +38,7 @@ declare const llm: llmGlobal;
 
         if (responseJSON.success && isCreate) {
 
-          window.location.href = "/organizations/" + responseJSON.organizationID.toString() + "/edit";
+          window.location.href = urlPrefix + "/organizations/" + responseJSON.organizationID.toString() + "/edit";
 
         } else {
 
@@ -181,11 +181,7 @@ declare const llm: llmGlobal;
 
     // Delete
 
-
-    /**
-     * @param  {MouseEvent} clickEvent
-     */
-    const deleteRepresentativeFn = (clickEvent: Event) => {
+    const deleteRepresentativeFn = (clickEvent: MouseEvent) => {
 
       clickEvent.preventDefault();
 
@@ -375,7 +371,7 @@ declare const llm: llmGlobal;
 
       cityssm.postJSON(urlPrefix + "/organizations/" + organizationIDString + "/doEditOrganizationRepresentative",
         formEvent.currentTarget,
-        (responseJSON) => {
+        (responseJSON: { success: boolean; organizationRepresentative: llmTypes.OrganizationRepresentative }) => {
 
           if (responseJSON.success) {
 
@@ -536,18 +532,18 @@ declare const llm: llmGlobal;
 
       let reminderDateInnerHTML = "";
 
-      if (reminder.reminderDateString === "") {
+      if (reminder.dueDateString === "") {
 
-        reminderDateInnerHTML = "<span class=\"has-text-grey\">(No Reminder Set)</span>";
+        reminderDateInnerHTML = "<span class=\"has-text-grey\">(No Due Date Set)</span>";
 
       } else if (reminder.dismissedDateString !== "") {
 
         reminderDateInnerHTML = "<span class=\"has-text-grey is-linethrough\">" +
-          reminder.reminderDateString +
+          reminder.dueDateString +
           "</span>";
 
       } else {
-        reminderDateInnerHTML = reminder.reminderDateString;
+        reminderDateInnerHTML = reminder.dueDateString;
       }
 
       trEle.innerHTML = ("<td>" +

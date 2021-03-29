@@ -16,13 +16,6 @@ export declare const getActiveLicenceSummary: (reqBody: {
     startEndDateEndString: string;
 }, reqSession: expressSession.Session) => llm.LotteryLicence[];
 export declare const getEventTableStats: () => llm.LotteryEventStats;
-export declare const getEvents: (reqBody: {
-    externalLicenceNumber?: string;
-    licenceTypeKey?: string;
-    organizationName?: string;
-    locationName?: string;
-    eventYear?: string;
-}, reqSession: expressSession.Session) => llm.LotteryEvent[];
 export declare const getRecentlyUpdateEvents: (reqSession: expressSession.Session) => llm.LotteryEvent[];
 export declare const getOutstandingEvents: (reqBody: {
     eventDateType?: string;

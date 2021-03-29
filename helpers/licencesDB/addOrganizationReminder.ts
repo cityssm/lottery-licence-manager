@@ -11,7 +11,7 @@ import type * as expressSession from "express-session";
 interface ReminderData {
   organizationID: string;
   reminderTypeKey: string;
-  reminderDateString?: string;
+  dueDateString?: string;
   reminderStatus: string;
   reminderNote: string;
 }
@@ -30,16 +30,16 @@ export const addOrganizationReminderWithDB = (db: sqlite.Database,
   const nowMillis = Date.now();
 
   db.prepare("insert into OrganizationReminders" +
-    " (organizationID, reminderIndex, reminderTypeKey, reminderDate," +
+    " (organizationID, reminderIndex, reminderTypeKey, dueDate," +
     " reminderStatus, reminderNote," +
     " recordCreate_userName, recordCreate_timeMillis, recordUpdate_userName, recordUpdate_timeMillis)" +
     " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
     .run(reminderData.organizationID,
       newReminderIndex,
       reminderData.reminderTypeKey,
-      (!reminderData.reminderDateString || reminderData.reminderDateString === ""
+      (!reminderData.dueDateString || reminderData.dueDateString === ""
         ? null
-        : dateTimeFns.dateStringToInteger(reminderData.reminderDateString)),
+        : dateTimeFns.dateStringToInteger(reminderData.dueDateString)),
       reminderData.reminderStatus,
       reminderData.reminderNote,
       reqSession.user.userName,
@@ -54,8 +54,8 @@ export const addOrganizationReminderWithDB = (db: sqlite.Database,
     organizationID: parseInt(reminderData.organizationID, 10),
     reminderIndex: newReminderIndex,
     reminderTypeKey: reminderData.reminderTypeKey,
-    reminderDate: dateTimeFns.dateStringToInteger(reminderData.reminderDateString),
-    reminderDateString: reminderData.reminderDateString,
+    dueDate: dateTimeFns.dateStringToInteger(reminderData.dueDateString),
+    dueDateString: reminderData.dueDateString,
     dismissedDate: null,
     dismissedDateString: "",
     reminderStatus: reminderData.reminderStatus,

@@ -52,29 +52,29 @@ const getDashboardStats = () => {
                 (eventRecord.locationName === "" ? eventRecord.locationAddress1 : eventRecord.locationName);
         }
     }
-    const reminderStats = db.prepare("select ifnull(sum(case when reminderDate = ? then 1 else 0 end), 0) as todayCount," +
-        " ifnull(sum(case when reminderDate < ? then 1 else 0 end), 0) as pastCount," +
-        " ifnull(sum(case when reminderDate > ? then 1 else 0 end), 0) as upcomingCount" +
+    const reminderStats = db.prepare("select ifnull(sum(case when dueDate = ? then 1 else 0 end), 0) as todayCount," +
+        " ifnull(sum(case when dueDate < ? then 1 else 0 end), 0) as pastCount," +
+        " ifnull(sum(case when dueDate > ? then 1 else 0 end), 0) as upcomingCount" +
         " from OrganizationReminders" +
         " where recordDelete_timeMillis is NULL" +
         " and dismissedDate is null" +
-        " and reminderDate <= ?")
+        " and dueDate <= ?")
         .get(currentDateInteger, currentDateInteger, currentDateInteger, windowEndDateInteger);
     let reminders = [];
     if (reminderStats.todayCount > 0 || reminderStats.upcomingCount > 0) {
         reminders = db.prepare("select r.organizationID, o.organizationName," +
-            " r.reminderTypeKey, r.reminderDate" +
+            " r.reminderTypeKey, r.dueDate" +
             " from OrganizationReminders r" +
             " left join Organizations o on r.organizationID = o.organizationID" +
             " where r.recordDelete_timeMillis is null" +
             " and o.recordDelete_timeMillis is null" +
             " and r.dismissedDate is null" +
-            " and r.reminderDate >= ?" +
-            " and r.reminderDate <= ?" +
-            " order by r.reminderDate, o.organizationName, r.reminderTypeKey")
+            " and r.dueDate >= ?" +
+            " and r.dueDate <= ?" +
+            " order by r.dueDate, o.organizationName, r.reminderTypeKey")
             .all(currentDateInteger, windowEndDateInteger);
         for (const reminder of reminders) {
-            reminder.reminderDateString = dateTimeFns.dateIntegerToString(reminder.reminderDate);
+            reminder.dueDateString = dateTimeFns.dateIntegerToString(reminder.dueDate);
         }
     }
     db.close();

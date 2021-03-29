@@ -42,16 +42,16 @@ const sortFn_byDate = (reminderA: llm.OrganizationReminder, reminderB: llm.Organ
   }
 
   /*
-   * Reminder Date
+   * Due Date
    */
 
   // A has no reminder, B has one, B comes first
-  if (reminderA.reminderDateString === "" && reminderB.reminderDateString !== "") {
+  if (reminderA.dueDateString === "" && reminderB.dueDateString !== "") {
     return 1;
   }
 
   // B has no reminder, A has one, A comes first
-  if (reminderB.reminderDateString === "" && reminderA.reminderDateString !== "") {
+  if (reminderB.dueDateString === "" && reminderA.dueDateString !== "") {
     return -1;
   }
 
@@ -60,7 +60,7 @@ const sortFn_byDate = (reminderA: llm.OrganizationReminder, reminderB: llm.Organ
    */
 
   if (reminderA.dismissedDate !== reminderB.dismissedDate) {
-    return reminderB.reminderDate - reminderA.dismissedDate;
+    return reminderB.dueDate - reminderA.dismissedDate;
   }
 
   /*
@@ -84,7 +84,7 @@ export const getOrganizationRemindersWithDB = (db: sqlite.Database, organization
 
   const reminders: llm.OrganizationReminder[] =
     db.prepare("select reminderIndex," +
-      " reminderTypeKey, reminderDate, dismissedDate," +
+      " reminderTypeKey, dueDate, dismissedDate," +
       " reminderStatus, reminderNote," +
       " recordCreate_userName, recordCreate_timeMillis, recordUpdate_userName, recordUpdate_timeMillis" +
       " from OrganizationReminders" +
@@ -96,7 +96,7 @@ export const getOrganizationRemindersWithDB = (db: sqlite.Database, organization
 
     reminder.recordType = "reminder";
 
-    reminder.reminderDateString = dateTimeFns.dateIntegerToString(reminder.reminderDate || 0);
+    reminder.dueDateString = dateTimeFns.dateIntegerToString(reminder.dueDate || 0);
     reminder.dismissedDateString = dateTimeFns.dateIntegerToString(reminder.dismissedDate || 0);
 
     reminder.canUpdate = canUpdateObject(reminder, reqSession);

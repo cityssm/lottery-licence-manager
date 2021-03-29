@@ -4,7 +4,7 @@ import type * as expressSession from "express-session";
 interface ReminderData {
     organizationID: string;
     reminderTypeKey: string;
-    reminderDateString?: string;
+    dueDateString?: string;
     reminderStatus: string;
     reminderNote: string;
 }

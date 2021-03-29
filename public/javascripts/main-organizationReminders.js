@@ -72,7 +72,7 @@ llm.organizationReminders = (() => {
                 onshow() {
                     document.getElementById("addReminder--organizationID").value =
                         organizationID.toString();
-                    document.getElementById("addReminder--reminderDateString")
+                    document.getElementById("addReminder--dueDateString")
                         .setAttribute("min", cityssm.dateToString(new Date()));
                     getRemindersByOrganizationID(organizationID, (reminderList) => {
                         const reminderTypeKeySelectEle = document.getElementById("addReminder--reminderTypeKey");
@@ -205,8 +205,8 @@ llm.organizationReminders = (() => {
                         reminderTypeKeySelectEle.value = reminder.reminderTypeKey;
                         reminderTypeKeySelectEle.addEventListener("change", reminderTypeKeyChangeFn);
                         reminderTypeKeySelectEle.closest(".select").classList.remove("is-loading");
-                        document.getElementById("editReminder--reminderDateString").value =
-                            reminder.reminderDateString;
+                        document.getElementById("editReminder--dueDateString").value =
+                            reminder.dueDateString;
                         reminderTypeKeyChangeFn();
                         const reminderStatusSelectEle = document.getElementById("editReminder--reminderStatus");
                         if (reminder.reminderStatus && reminder.reminderStatus !== "") {

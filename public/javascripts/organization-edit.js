@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 cityssm.disableNavBlocker();
             }
             if (responseJSON.success && isCreate) {
-                window.location.href = "/organizations/" + responseJSON.organizationID.toString() + "/edit";
+                window.location.href = urlPrefix + "/organizations/" + responseJSON.organizationID.toString() + "/edit";
             }
             else {
                 formMessageEle.innerHTML = "";
@@ -298,16 +298,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
             const reminderType = llm.organizationReminders.getReminderType(reminder.reminderTypeKey);
             const trEle = document.createElement("tr");
             let reminderDateInnerHTML = "";
-            if (reminder.reminderDateString === "") {
-                reminderDateInnerHTML = "<span class=\"has-text-grey\">(No Reminder Set)</span>";
+            if (reminder.dueDateString === "") {
+                reminderDateInnerHTML = "<span class=\"has-text-grey\">(No Due Date Set)</span>";
             }
             else if (reminder.dismissedDateString !== "") {
                 reminderDateInnerHTML = "<span class=\"has-text-grey is-linethrough\">" +
-                    reminder.reminderDateString +
+                    reminder.dueDateString +
                     "</span>";
             }
             else {
-                reminderDateInnerHTML = reminder.reminderDateString;
+                reminderDateInnerHTML = reminder.dueDateString;
             }
             trEle.innerHTML = ("<td>" +
                 (reminderType

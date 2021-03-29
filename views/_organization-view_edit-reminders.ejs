@@ -38,7 +38,7 @@
           <i class="fas fa-check" aria-hidden="true"></i>
         </th>
         <th class="has-text-centered">
-          Reminder Date<br />
+          Due Date<br />
           <i class="fas fa-bell" aria-hidden="true"></i>
         </th>
         <th></th>
@@ -78,12 +78,12 @@
             <% } %>
           </td>
           <td class="has-text-centered">
-            <% if (reminder.reminderDateString === "") { %>
-              <span class="has-text-grey">(No Reminder Set)</span>
+            <% if (reminder.dueDateString === "") { %>
+              <span class="has-text-grey">(No Due Date Set)</span>
             <% } else if (reminder.dismissedDateString !== "") { %>
-              <span class="has-text-grey is-linethrough"><%= reminder.reminderDateString %></span>
+              <span class="has-text-grey is-linethrough"><%= reminder.dueDateString %></span>
             <% } else { %>
-              <%= reminder.reminderDateString %>
+              <%= reminder.dueDateString %>
             <% } %>
           </td>
           <td class="is-hidden-print">

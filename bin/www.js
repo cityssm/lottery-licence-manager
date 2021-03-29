@@ -2,21 +2,22 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const app = require("../app");
-const log = require("fancy-log");
 const http = require("http");
 const https = require("https");
 const fs = require("fs");
 const configFns = require("../helpers/configFns");
+const debug_1 = require("debug");
+const debugWWW = debug_1.debug("lottery-licence-manager:www");
 const onError = (error) => {
     if (error.syscall !== "listen") {
         throw error;
     }
     switch (error.code) {
         case "EACCES":
-            log.error("Requires elevated privileges");
+            debugWWW("Requires elevated privileges");
             process.exit(1);
         case "EADDRINUSE":
-            log.error("Port is already in use.");
+            debugWWW("Port is already in use.");
             process.exit(1);
         default:
             throw error;
@@ -27,7 +28,7 @@ const onListening = (server) => {
     const bind = typeof addr === "string"
         ? "pipe " + addr
         : "port " + addr.port.toString();
-    log.info("Listening on " + bind);
+    debugWWW("Listening on " + bind);
 };
 const httpPort = configFns.getProperty("application.httpPort");
 if (httpPort) {
@@ -37,7 +38,7 @@ if (httpPort) {
     httpServer.on("listening", () => {
         onListening(httpServer);
     });
-    log.info("HTTP listening on " + httpPort.toString());
+    debugWWW("HTTP listening on " + httpPort.toString());
 }
 const httpsConfig = configFns.getProperty("application.https");
 if (httpsConfig) {
@@ -51,5 +52,5 @@ if (httpsConfig) {
     httpsServer.on("listening", () => {
         onListening(httpsServer);
     });
-    log.info("HTTPS listening on " + httpsConfig.port.toString());
+    debugWWW("HTTPS listening on " + httpsConfig.port.toString());
 }

@@ -9,7 +9,7 @@ const updateOrganizationReminder = (reqBody, reqSession) => {
     const nowMillis = Date.now();
     const info = db.prepare("update OrganizationReminders" +
         " set reminderTypeKey = ?," +
-        " reminderDate = ?," +
+        " dueDate = ?," +
         " reminderStatus = ?," +
         " reminderNote = ?," +
         " dismissedDate = ?," +
@@ -18,9 +18,9 @@ const updateOrganizationReminder = (reqBody, reqSession) => {
         " where organizationID = ?" +
         " and reminderIndex = ?" +
         " and recordDelete_timeMillis is null")
-        .run(reqBody.reminderTypeKey, (reqBody.reminderDateString === ""
+        .run(reqBody.reminderTypeKey, (reqBody.dueDateString === ""
         ? null
-        : dateTimeFns.dateStringToInteger(reqBody.reminderDateString)), reqBody.reminderStatus, reqBody.reminderNote, (reqBody.dismissedDateString === ""
+        : dateTimeFns.dateStringToInteger(reqBody.dueDateString)), reqBody.reminderStatus, reqBody.reminderNote, (reqBody.dismissedDateString === ""
         ? null
         : dateTimeFns.dateStringToInteger(reqBody.dismissedDateString)), reqSession.user.userName, nowMillis, reqBody.organizationID, reqBody.reminderIndex);
     db.close();

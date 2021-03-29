@@ -3,7 +3,7 @@ export declare const updateOrganizationReminder: (reqBody: {
     organizationID: string;
     reminderIndex: string;
     reminderTypeKey: string;
-    reminderDateString?: string;
+    dueDateString?: string;
     reminderStatus: string;
     reminderNote: string;
     dismissedDateString: string;

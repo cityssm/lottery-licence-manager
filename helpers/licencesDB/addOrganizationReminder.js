@@ -12,21 +12,21 @@ const addOrganizationReminderWithDB = (db, reminderData, reqSession) => {
     const newReminderIndex = row.maxIndex + 1;
     const nowMillis = Date.now();
     db.prepare("insert into OrganizationReminders" +
-        " (organizationID, reminderIndex, reminderTypeKey, reminderDate," +
+        " (organizationID, reminderIndex, reminderTypeKey, dueDate," +
         " reminderStatus, reminderNote," +
         " recordCreate_userName, recordCreate_timeMillis, recordUpdate_userName, recordUpdate_timeMillis)" +
         " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
-        .run(reminderData.organizationID, newReminderIndex, reminderData.reminderTypeKey, (!reminderData.reminderDateString || reminderData.reminderDateString === ""
+        .run(reminderData.organizationID, newReminderIndex, reminderData.reminderTypeKey, (!reminderData.dueDateString || reminderData.dueDateString === ""
         ? null
-        : dateTimeFns.dateStringToInteger(reminderData.reminderDateString)), reminderData.reminderStatus, reminderData.reminderNote, reqSession.user.userName, nowMillis, reqSession.user.userName, nowMillis);
+        : dateTimeFns.dateStringToInteger(reminderData.dueDateString)), reminderData.reminderStatus, reminderData.reminderNote, reqSession.user.userName, nowMillis, reqSession.user.userName, nowMillis);
     const reminder = {
         recordType: "reminder",
         canUpdate: true,
         organizationID: parseInt(reminderData.organizationID, 10),
         reminderIndex: newReminderIndex,
         reminderTypeKey: reminderData.reminderTypeKey,
-        reminderDate: dateTimeFns.dateStringToInteger(reminderData.reminderDateString),
-        reminderDateString: reminderData.reminderDateString,
+        dueDate: dateTimeFns.dateStringToInteger(reminderData.dueDateString),
+        dueDateString: reminderData.dueDateString,
         dismissedDate: null,
         dismissedDateString: "",
         reminderStatus: reminderData.reminderStatus,

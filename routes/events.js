@@ -5,6 +5,7 @@ const permissionHandlers = require("../handlers/permissions");
 const handler_view = require("../handlers/events-get/view");
 const handler_edit = require("../handlers/events-get/edit");
 const handler_poke = require("../handlers/events-get/poke");
+const doSearch_1 = require("../handlers/events-post/doSearch");
 const licencesDB = require("../helpers/licencesDB");
 const router = express_1.Router();
 router.get("/", (_req, res) => {
@@ -14,9 +15,7 @@ router.get("/", (_req, res) => {
         eventTableStats
     });
 });
-router.post("/doSearch", (req, res) => {
-    res.json(licencesDB.getEvents(req.body, req.session));
-});
+router.post("/doSearch", doSearch_1.handler);
 router.get("/byWeek", (_req, res) => {
     res.render("event-byWeek", {
         headTitle: "Events By Week"

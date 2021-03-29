@@ -11,7 +11,7 @@ export const updateOrganizationReminder = (reqBody: {
   organizationID: string;
   reminderIndex: string;
   reminderTypeKey: string;
-  reminderDateString?: string;
+  dueDateString?: string;
   reminderStatus: string;
   reminderNote: string;
   dismissedDateString: string;
@@ -23,7 +23,7 @@ export const updateOrganizationReminder = (reqBody: {
 
   const info = db.prepare("update OrganizationReminders" +
     " set reminderTypeKey = ?," +
-    " reminderDate = ?," +
+    " dueDate = ?," +
     " reminderStatus = ?," +
     " reminderNote = ?," +
     " dismissedDate = ?," +
@@ -34,9 +34,9 @@ export const updateOrganizationReminder = (reqBody: {
     " and recordDelete_timeMillis is null")
     .run(
       reqBody.reminderTypeKey,
-      (reqBody.reminderDateString === ""
+      (reqBody.dueDateString === ""
         ? null
-        : dateTimeFns.dateStringToInteger(reqBody.reminderDateString)),
+        : dateTimeFns.dateStringToInteger(reqBody.dueDateString)),
       reqBody.reminderStatus,
       reqBody.reminderNote,
       (reqBody.dismissedDateString === ""

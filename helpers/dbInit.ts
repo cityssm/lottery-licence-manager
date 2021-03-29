@@ -1,6 +1,7 @@
-import * as log from "fancy-log";
-
 import * as sqlite from "better-sqlite3";
+
+import { debug } from "debug";
+const debugSQL = debug("lottery-licence-manager:dbInit");
 
 
 export const initUsersDB = () => {
@@ -11,7 +12,7 @@ export const initUsersDB = () => {
 
   if (!row) {
 
-    log.warn("Creating users.db." +
+    debugSQL("Creating users.db." +
       " To get started creating users, set the 'admin.defaultPassword' property in your config.js file.");
 
     usersDB.prepare("create table if not exists Users (" +
@@ -49,7 +50,7 @@ export const initLicencesDB = () => {
 
   if (!row) {
 
-    log.warn("Creating licences.db");
+    debugSQL("Creating licences.db");
 
     /*
      * Locations
@@ -192,6 +193,7 @@ export const initLicencesDB = () => {
      * Licences
      */
 
+
     licencesDB.prepare("create table if not exists LotteryLicences (" +
       "licenceID integer primary key autoincrement," +
       " organizationID integer not null," +
@@ -229,9 +231,11 @@ export const initLicencesDB = () => {
 
       ")").run();
 
+
     licencesDB.prepare("create index if not exists LotteryLicences_ExternalLicenceNumberInteger_Index" +
       " on LotteryLicences (externalLicenceNumberInteger desc)" +
       " where externalLicenceNumberInteger <> -1").run();
+
 
     licencesDB.prepare("create table if not exists LotteryLicenceTransactions (" +
       "licenceID integer not null," +
@@ -256,6 +260,7 @@ export const initLicencesDB = () => {
 
       ") without rowid").run();
 
+
     licencesDB.prepare("create table if not exists LotteryLicenceAmendments (" +
       "licenceID integer not null," +
       " amendmentIndex integer not null," +
@@ -276,19 +281,18 @@ export const initLicencesDB = () => {
       ") without rowid").run();
 
 
-    licencesDB.prepare("create table if not exists LotteryLicenceTicketTypes (" +
+    licencesDB.prepare("create table if not exists LotteryEvents (" +
       "licenceID integer not null," +
-      " ticketType varchar(5) not null," +
+      " eventDate integer not null," +
 
-      " distributorLocationID integer," +
-      " manufacturerLocationID integer," +
+      " reportDate integer," +
 
-      " unitCount integer not null," +
-      " licenceFee decimal(10, 2)," +
+      " bank_name varchar(50)," +
+      " bank_address varchar(50)," +
+      " bank_accountNumber varchar(20)," +
+      " bank_accountBalance decimal(12, 2)," +
 
-      " costs_receipts decimal(10, 2)," +
-      " costs_admin decimal(10, 2)," +
-      " costs_prizesAwarded decimal(10, 2)," +
+      " costs_amountDonated decimal(10, 2)," +
 
       " recordCreate_userName varchar(30) not null," +
       " recordCreate_timeMillis integer not null," +
@@ -297,9 +301,32 @@ export const initLicencesDB = () => {
       " recordDelete_userName varchar(30)," +
       " recordDelete_timeMillis integer," +
 
-      " primary key (licenceID, ticketType)," +
+      " primary key (licenceID, eventDate)," +
+      " foreign key (licenceID) references LotteryLicences (licenceID)" +
+      ") without rowid").run();
 
-      " foreign key (licenceID) references LotteryLicences (licenceID)," +
+
+    licencesDB.prepare("create table if not exists LotteryLicenceTicketTypes (" +
+      "licenceID integer not null," +
+      " eventDate integer not null," +
+      " ticketType varchar(5) not null," +
+
+      " distributorLocationID integer," +
+      " manufacturerLocationID integer," +
+
+      " unitCount integer not null," +
+      " licenceFee decimal(10, 2)," +
+
+      " recordCreate_userName varchar(30) not null," +
+      " recordCreate_timeMillis integer not null," +
+      " recordUpdate_userName varchar(30) not null," +
+      " recordUpdate_timeMillis integer not null," +
+      " recordDelete_userName varchar(30)," +
+      " recordDelete_timeMillis integer," +
+
+      " primary key (licenceID, eventDate, ticketType)," +
+
+      " foreign key (licenceID, eventDate) references LotteryEvents (licenceID, eventDate)," +
       " foreign key (distributorLocationID) references Locations (locationID)," +
       " foreign key (manufacturerLocationID) references Locations (locationID)" +
 
@@ -320,32 +347,17 @@ export const initLicencesDB = () => {
      * Events
      */
 
-    licencesDB.prepare("create table if not exists LotteryEvents (" +
+
+    licencesDB.prepare("create table if not exists LotteryEventCosts (" +
       "licenceID integer not null," +
       " eventDate integer not null," +
-
-      " reportDate integer," +
-
-      " bank_name varchar(50)," +
-      " bank_address varchar(50)," +
-      " bank_accountNumber varchar(20)," +
-      " bank_accountBalance decimal(12, 2)," +
-
+      " ticketType varchar(5)," +
       " costs_receipts decimal(10, 2)," +
       " costs_admin decimal(10, 2)," +
       " costs_prizesAwarded decimal(10, 2)," +
-      " costs_amountDonated decimal(10, 2)," +
-
-      " recordCreate_userName varchar(30) not null," +
-      " recordCreate_timeMillis integer not null," +
-      " recordUpdate_userName varchar(30) not null," +
-      " recordUpdate_timeMillis integer not null," +
-      " recordDelete_userName varchar(30)," +
-      " recordDelete_timeMillis integer," +
-
-      " primary key (licenceID, eventDate)," +
-      " foreign key (licenceID) references LotteryLicences (licenceID)" +
-      ") without rowid").run();
+      " primary key (licenceID, eventDate, ticketType)," +
+      " foreign key (licenceID, eventDate) references LotteryEvents (licenceID, eventDate)" +
+      ")").run();
 
     licencesDB.prepare("create table if not exists LotteryEventFields (" +
       "licenceID integer not null," +

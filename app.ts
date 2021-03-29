@@ -5,7 +5,6 @@ import * as compression from "compression";
 import * as path from "path";
 import * as cookieParser from "cookie-parser";
 import * as csurf from "csurf";
-import * as logger from "morgan";
 import * as rateLimit from "express-rate-limit";
 
 import * as session from "express-session";
@@ -29,6 +28,9 @@ import * as stringFns from "@cityssm/expressjs-server-js/stringFns";
 import * as htmlFns from "@cityssm/expressjs-server-js/htmlFns";
 
 import * as dbInit from "./helpers/dbInit";
+
+import { debug } from "debug";
+const debugApp = debug("lottery-licence-manager:app");
 
 
 const SQLiteStore = sqlite3(session);
@@ -62,7 +64,11 @@ if (!configFns.getProperty("reverseProxy.disableCompression")) {
   app.use(compression());
 }
 
-app.use(logger("dev"));
+app.use((req, _res, next) => {
+  debugApp(req.method + " " + req.url);
+  next();
+});
+
 app.use(express.json());
 
 app.use(express.urlencoded({

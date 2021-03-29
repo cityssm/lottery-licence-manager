@@ -8,6 +8,8 @@ import * as handler_view from "../handlers/events-get/view";
 import * as handler_edit from "../handlers/events-get/edit";
 import * as handler_poke from "../handlers/events-get/poke";
 
+import { handler as hander_doSearch } from "../handlers/events-post/doSearch";
+
 import * as licencesDB from "../helpers/licencesDB";
 
 
@@ -29,9 +31,7 @@ router.get("/", (_req, res) => {
 
 });
 
-router.post("/doSearch", (req, res) => {
-  res.json(licencesDB.getEvents(req.body, req.session));
-});
+router.post("/doSearch", hander_doSearch);
 
 /*
  * Events by Week

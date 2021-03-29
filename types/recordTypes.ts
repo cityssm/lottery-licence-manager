@@ -125,8 +125,8 @@ export interface OrganizationReminder extends Record {
 
   reminderIndex: number;
   reminderTypeKey: string;
-  reminderDate: number;
-  reminderDateString: string;
+  dueDate: number;
+  dueDateString: string;
   dismissedDate: number;
   dismissedDateString: string;
   reminderStatus: string;
@@ -200,6 +200,8 @@ export interface LotteryLicence extends Location, Record {
 
 export interface LotteryLicenceTicketType extends Record {
   licenceID: number;
+  eventDate: number;
+  eventDateString: string;
   ticketType: string;
   unitCount: number;
 }
@@ -239,14 +241,25 @@ export interface LotteryEvent extends LotteryLicence {
   bank_accountNumber: string;
   bank_accountBalance: string;
 
+  costs_amountDonated: number;
+
+  costs_receiptsSum?: number;
+  costs_adminSum?: number;
+  costs_prizesAwardedSum?: number;
+
+  eventFields: FieldData[];
+  costs?: LotteryEventCosts[];
+}
+
+export interface LotteryEventCosts {
+  licenceID?: number;
+  eventDate?: number;
+  ticketType?: string;
+
   costs_receipts: number;
   costs_admin: number;
   costs_prizesAwarded: number;
-  costs_netProceeds: number;
-  costs_amountDonated: number;
-
-  eventFields: FieldData[];
-}
+};
 
 export interface FieldData {
   fieldKey: string;

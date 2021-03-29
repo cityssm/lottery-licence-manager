@@ -24,14 +24,14 @@ const sortFn_byDate = (reminderA, reminderB) => {
     if (reminderB.dismissedDateString === "" && reminderA.dismissedDateString !== "") {
         return 1;
     }
-    if (reminderA.reminderDateString === "" && reminderB.reminderDateString !== "") {
+    if (reminderA.dueDateString === "" && reminderB.dueDateString !== "") {
         return 1;
     }
-    if (reminderB.reminderDateString === "" && reminderA.reminderDateString !== "") {
+    if (reminderB.dueDateString === "" && reminderA.dueDateString !== "") {
         return -1;
     }
     if (reminderA.dismissedDate !== reminderB.dismissedDate) {
-        return reminderB.reminderDate - reminderA.dismissedDate;
+        return reminderB.dueDate - reminderA.dismissedDate;
     }
     return reminderTypeOrdering[reminderA.reminderTypeKey] - reminderTypeOrdering[reminderB.reminderTypeKey];
 };
@@ -43,7 +43,7 @@ const sortFn_byConfig = (reminderA, reminderB) => {
 };
 const getOrganizationRemindersWithDB = (db, organizationID, reqSession) => {
     const reminders = db.prepare("select reminderIndex," +
-        " reminderTypeKey, reminderDate, dismissedDate," +
+        " reminderTypeKey, dueDate, dismissedDate," +
         " reminderStatus, reminderNote," +
         " recordCreate_userName, recordCreate_timeMillis, recordUpdate_userName, recordUpdate_timeMillis" +
         " from OrganizationReminders" +
@@ -52,7 +52,7 @@ const getOrganizationRemindersWithDB = (db, organizationID, reqSession) => {
         .all(organizationID);
     for (const reminder of reminders) {
         reminder.recordType = "reminder";
-        reminder.reminderDateString = dateTimeFns.dateIntegerToString(reminder.reminderDate || 0);
+        reminder.dueDateString = dateTimeFns.dateIntegerToString(reminder.dueDate || 0);
         reminder.dismissedDateString = dateTimeFns.dateIntegerToString(reminder.dismissedDate || 0);
         reminder.canUpdate = licencesDB_1.canUpdateObject(reminder, reqSession);
     }

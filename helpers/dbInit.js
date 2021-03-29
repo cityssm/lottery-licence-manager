@@ -1,13 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.initLicencesDB = exports.initUsersDB = void 0;
-const log = require("fancy-log");
 const sqlite = require("better-sqlite3");
+const debug_1 = require("debug");
+const debugSQL = debug_1.debug("lottery-licence-manager:dbInit");
 const initUsersDB = () => {
     const usersDB = sqlite("data/users.db");
     const row = usersDB.prepare("select name from sqlite_master where type = 'table' and name = 'Users'").get();
     if (!row) {
-        log.warn("Creating users.db." +
+        debugSQL("Creating users.db." +
             " To get started creating users, set the 'admin.defaultPassword' property in your config.js file.");
         usersDB.prepare("create table if not exists Users (" +
             "userName varchar(30) primary key not null," +
@@ -34,7 +35,7 @@ const initLicencesDB = () => {
         .prepare("select name from sqlite_master where type = 'table' and name = 'Organizations'")
         .get();
     if (!row) {
-        log.warn("Creating licences.db");
+        debugSQL("Creating licences.db");
         licencesDB.prepare("create table if not exists Locations (" +
             "locationID integer primary key autoincrement," +
             " locationName varchar(100)," +
@@ -202,34 +203,6 @@ const initLicencesDB = () => {
             " primary key (licenceID, amendmentIndex)," +
             " foreign key (licenceID) references LotteryLicences (licenceID)" +
             ") without rowid").run();
-        licencesDB.prepare("create table if not exists LotteryLicenceTicketTypes (" +
-            "licenceID integer not null," +
-            " ticketType varchar(5) not null," +
-            " distributorLocationID integer," +
-            " manufacturerLocationID integer," +
-            " unitCount integer not null," +
-            " licenceFee decimal(10, 2)," +
-            " costs_receipts decimal(10, 2)," +
-            " costs_admin decimal(10, 2)," +
-            " costs_prizesAwarded decimal(10, 2)," +
-            " recordCreate_userName varchar(30) not null," +
-            " recordCreate_timeMillis integer not null," +
-            " recordUpdate_userName varchar(30) not null," +
-            " recordUpdate_timeMillis integer not null," +
-            " recordDelete_userName varchar(30)," +
-            " recordDelete_timeMillis integer," +
-            " primary key (licenceID, ticketType)," +
-            " foreign key (licenceID) references LotteryLicences (licenceID)," +
-            " foreign key (distributorLocationID) references Locations (locationID)," +
-            " foreign key (manufacturerLocationID) references Locations (locationID)" +
-            ") without rowid").run();
-        licencesDB.prepare("create table if not exists LotteryLicenceFields (" +
-            "licenceID integer not null," +
-            " fieldKey varchar(20) not null," +
-            " fieldValue text," +
-            " primary key (licenceID, fieldKey)," +
-            " foreign key (licenceID) references LotteryLicences (licenceID)" +
-            ") without rowid").run();
         licencesDB.prepare("create table if not exists LotteryEvents (" +
             "licenceID integer not null," +
             " eventDate integer not null," +
@@ -238,9 +211,6 @@ const initLicencesDB = () => {
             " bank_address varchar(50)," +
             " bank_accountNumber varchar(20)," +
             " bank_accountBalance decimal(12, 2)," +
-            " costs_receipts decimal(10, 2)," +
-            " costs_admin decimal(10, 2)," +
-            " costs_prizesAwarded decimal(10, 2)," +
             " costs_amountDonated decimal(10, 2)," +
             " recordCreate_userName varchar(30) not null," +
             " recordCreate_timeMillis integer not null," +
@@ -251,6 +221,42 @@ const initLicencesDB = () => {
             " primary key (licenceID, eventDate)," +
             " foreign key (licenceID) references LotteryLicences (licenceID)" +
             ") without rowid").run();
+        licencesDB.prepare("create table if not exists LotteryLicenceTicketTypes (" +
+            "licenceID integer not null," +
+            " eventDate integer not null," +
+            " ticketType varchar(5) not null," +
+            " distributorLocationID integer," +
+            " manufacturerLocationID integer," +
+            " unitCount integer not null," +
+            " licenceFee decimal(10, 2)," +
+            " recordCreate_userName varchar(30) not null," +
+            " recordCreate_timeMillis integer not null," +
+            " recordUpdate_userName varchar(30) not null," +
+            " recordUpdate_timeMillis integer not null," +
+            " recordDelete_userName varchar(30)," +
+            " recordDelete_timeMillis integer," +
+            " primary key (licenceID, eventDate, ticketType)," +
+            " foreign key (licenceID, eventDate) references LotteryEvents (licenceID, eventDate)," +
+            " foreign key (distributorLocationID) references Locations (locationID)," +
+            " foreign key (manufacturerLocationID) references Locations (locationID)" +
+            ") without rowid").run();
+        licencesDB.prepare("create table if not exists LotteryLicenceFields (" +
+            "licenceID integer not null," +
+            " fieldKey varchar(20) not null," +
+            " fieldValue text," +
+            " primary key (licenceID, fieldKey)," +
+            " foreign key (licenceID) references LotteryLicences (licenceID)" +
+            ") without rowid").run();
+        licencesDB.prepare("create table if not exists LotteryEventCosts (" +
+            "licenceID integer not null," +
+            " eventDate integer not null," +
+            " ticketType varchar(5)," +
+            " costs_receipts decimal(10, 2)," +
+            " costs_admin decimal(10, 2)," +
+            " costs_prizesAwarded decimal(10, 2)," +
+            " primary key (licenceID, eventDate, ticketType)," +
+            " foreign key (licenceID, eventDate) references LotteryEvents (licenceID, eventDate)" +
+            ")").run();
         licencesDB.prepare("create table if not exists LotteryEventFields (" +
             "licenceID integer not null," +
             " eventDate integer not null," +

@@ -29,7 +29,7 @@ export const getOrganizationReminder =
 
       reminder.recordType = "reminder";
 
-      reminder.reminderDateString = dateTimeFns.dateIntegerToString(reminder.reminderDate || 0);
+      reminder.dueDateString = dateTimeFns.dateIntegerToString(reminder.dueDate || 0);
       reminder.dismissedDateString = dateTimeFns.dateIntegerToString(reminder.dismissedDate || 0);
 
       reminder.canUpdate = canUpdateObject(reminder, reqSession);

@@ -41,9 +41,9 @@
             : "") +
           ">" +
           "<td>" +
-          (reminder.reminderDateString === ""
+          (reminder.dueDateString === ""
             ? "(No Date Set)"
-            : reminder.reminderDateString) +
+            : reminder.dueDateString) +
           "</td>" +
           "<td>" +
             "<a data-tooltip=\"View Organization\" href=\"" + urlPrefix + "/organizations/" + reminder.organizationID + "\">" +
@@ -62,11 +62,11 @@
           "</td>" +
           "</tr>";
 
-        if (reminder.reminderDate == null) {
+        if (reminder.dueDate == null) {
           reminders_noDate += trHTML;
           count_noDate += 1;
 
-        } else if (reminder.reminderDate < currentDateInteger) {
+        } else if (reminder.dueDate < currentDateInteger) {
           reminders_past += trHTML;
           count_past += 1;
 

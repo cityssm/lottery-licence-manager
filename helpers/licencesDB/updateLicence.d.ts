@@ -14,13 +14,16 @@ export interface LotteryLicenceForm {
     termsConditions: string;
     licenceTypeKey: string;
     totalPrizeValue: string;
+    ticketType_eventDateString: string | string[];
     ticketType_ticketType: string | string[];
     ticketType_unitCount: string | string[];
     ticketType_licenceFee: string | string[];
     ticketType_manufacturerLocationID: string | string[];
     ticketType_distributorLocationID: string | string[];
-    ticketType_toAdd?: string | string[];
-    ticketType_toDelete?: string | string[];
+    ticketType_ticketType_toAdd?: string | string[];
+    ticketType_eventDateString_toAdd?: string | string[];
+    ticketType_eventDateString_toDelete?: string | string[];
+    ticketType_ticketType_toDelete?: string | string[];
     eventDate: string | string[];
     fieldKeys: string;
     licenceFee?: string;

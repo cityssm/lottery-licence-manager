@@ -10,7 +10,7 @@ const getUndismissedOrganizationReminders = (reqSession) => {
         readonly: true
     });
     const reminders = db.prepare("select r.organizationID, o.organizationName, r.reminderIndex," +
-        " r.reminderTypeKey, r.reminderDate," +
+        " r.reminderTypeKey, r.dueDate," +
         " r.reminderStatus, r.reminderNote," +
         " r.recordUpdate_userName, r.recordUpdate_timeMillis" +
         " from OrganizationReminders r" +
@@ -18,12 +18,12 @@ const getUndismissedOrganizationReminders = (reqSession) => {
         " where r.recordDelete_timeMillis is null" +
         " and o.recordDelete_timeMillis is null" +
         " and r.dismissedDate is null" +
-        " order by r.reminderDate, o.organizationName, r.reminderTypeKey")
+        " order by r.dueDate, o.organizationName, r.reminderTypeKey")
         .all();
     db.close();
     for (const reminder of reminders) {
         reminder.recordType = "reminder";
-        reminder.reminderDateString = dateTimeFns.dateIntegerToString(reminder.reminderDate || 0);
+        reminder.dueDateString = dateTimeFns.dateIntegerToString(reminder.dueDate || 0);
         reminder.canUpdate = licencesDB_1.canUpdateObject(reminder, reqSession);
     }
     return reminders;

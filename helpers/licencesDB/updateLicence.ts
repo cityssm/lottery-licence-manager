@@ -27,14 +27,18 @@ export interface LotteryLicenceForm {
   licenceTypeKey: string;
   totalPrizeValue: string;
 
+  ticketType_eventDateString: string | string[];
   ticketType_ticketType: string | string[];
   ticketType_unitCount: string | string[];
   ticketType_licenceFee: string | string[];
   ticketType_manufacturerLocationID: string | string[];
   ticketType_distributorLocationID: string | string[];
 
-  ticketType_toAdd?: string | string[];
-  ticketType_toDelete?: string | string[];
+  ticketType_ticketType_toAdd?: string | string[];
+  ticketType_eventDateString_toAdd?: string | string[];
+
+  ticketType_eventDateString_toDelete?: string | string[];
+  ticketType_ticketType_toDelete?: string | string[];
 
   eventDate: string | string[];
   fieldKeys: string;
@@ -240,18 +244,20 @@ export const updateLicence = (reqBody: LotteryLicenceForm, reqSession: expressSe
 
   // Do deletes
 
-  if (typeof (reqBody.ticketType_toDelete) === "string") {
+  if (typeof (reqBody.ticketType_ticketType_toDelete) === "string") {
 
     db.prepare("update LotteryLicenceTicketTypes" +
       " set recordDelete_userName = ?," +
       " recordDelete_timeMillis = ?" +
       " where licenceID = ?" +
+      " and eventDate = ?" +
       " and ticketType = ?")
       .run(
         reqSession.user.userName,
         nowMillis,
         reqBody.licenceID,
-        reqBody.ticketType_toDelete
+        dateTimeFns.dateStringToInteger(reqBody.ticketType_eventDateString_toDelete as string),
+        reqBody.ticketType_ticketType_toDelete
       );
 
     if (pastLicenceObj.trackUpdatesAsAmendments &&
@@ -261,25 +267,27 @@ export const updateLicence = (reqBody: LotteryLicenceForm, reqSession: expressSe
         db,
         reqBody.licenceID,
         "Ticket Type Removed",
-        "Removed " + reqBody.ticketType_toDelete + ".",
+        "Removed " + (reqBody.ticketType_eventDateString_toDelete as string) + ", " + reqBody.ticketType_ticketType_toDelete + ".",
         0,
         reqSession
       );
     }
 
-  } else if (typeof (reqBody.ticketType_toDelete) === "object") {
+  } else if (typeof (reqBody.ticketType_ticketType_toDelete) === "object") {
 
-    for (const ticketType of reqBody.ticketType_toDelete) {
+    reqBody.ticketType_ticketType_toDelete.forEach((ticketType: string, ticketTypeIndex: number) => {
 
       db.prepare("update LotteryLicenceTicketTypes" +
         " set recordDelete_userName = ?," +
         " recordDelete_timeMillis = ?" +
         " where licenceID = ?" +
+        " and eventDate = ?" +
         " and ticketType = ?")
         .run(
           reqSession.user.userName,
           nowMillis,
           reqBody.licenceID,
+          dateTimeFns.dateStringToInteger(reqBody.ticketType_eventDateString_toDelete[ticketTypeIndex]),
           ticketType
         );
 
@@ -290,18 +298,17 @@ export const updateLicence = (reqBody: LotteryLicenceForm, reqSession: expressSe
           db,
           reqBody.licenceID,
           "Ticket Type Removed",
-          "Removed " + ticketType + ".",
+          "Removed " + reqBody.ticketType_eventDateString_toDelete[ticketTypeIndex] + ", " + ticketType + ".",
           0,
           reqSession
         );
-
       }
-    }
+    });
   }
 
   // Do adds
 
-  if (typeof (reqBody.ticketType_toAdd) === "string") {
+  if (typeof (reqBody.ticketType_ticketType_toAdd) === "string") {
 
     const addInfo = db
       .prepare("update LotteryLicenceTicketTypes" +
@@ -313,24 +320,27 @@ export const updateLicence = (reqBody: LotteryLicenceForm, reqSession: expressSe
         " recordUpdate_userName = ?," +
         " recordUpdate_timeMillis = ?" +
         " where licenceID = ?" +
+        " and eventDate = ?" +
         " and ticketType = ?" +
         " and recordDelete_timeMillis is not null")
       .run(
         reqSession.user.userName,
         nowMillis,
         reqBody.licenceID,
-        reqBody.ticketType_toAdd
+        reqBody.ticketType_eventDateString_toAdd,
+        reqBody.ticketType_ticketType_toAdd
       );
 
     if (addInfo.changes === 0) {
 
       db.prepare("insert or ignore into LotteryLicenceTicketTypes" +
-        " (licenceID, ticketType, unitCount," +
+        " (licenceID, eventDate, ticketType, unitCount," +
         " recordCreate_userName, recordCreate_timeMillis, recordUpdate_userName, recordUpdate_timeMillis)" +
-        " values (?, ?, ?, ?, ?, ?, ?)")
+        " values (?, ?, ?, ?, ?, ?, ?, ?)")
         .run(
           reqBody.licenceID,
-          reqBody.ticketType_toAdd,
+          reqBody.ticketType_eventDateString_toAdd,
+          reqBody.ticketType_ticketType_toAdd,
           0,
           reqSession.user.userName,
           nowMillis,
@@ -346,15 +356,15 @@ export const updateLicence = (reqBody: LotteryLicenceForm, reqSession: expressSe
         db,
         reqBody.licenceID,
         "New Ticket Type",
-        "Added " + reqBody.ticketType_toAdd + ".",
+        "Added " + (reqBody.ticketType_eventDateString_toAdd as string) + ", " + reqBody.ticketType_ticketType_toAdd + ".",
         0,
         reqSession
       );
     }
 
-  } else if (typeof (reqBody.ticketType_toAdd) === "object") {
+  } else if (typeof (reqBody.ticketType_ticketType_toAdd) === "object") {
 
-    for (const ticketType of reqBody.ticketType_toAdd) {
+    reqBody.ticketType_ticketType_toAdd.forEach((ticketType, ticketTypeIndex) => {
 
       const addInfo = db.prepare("update LotteryLicenceTicketTypes" +
         " set costs_receipts = null," +
@@ -365,23 +375,26 @@ export const updateLicence = (reqBody: LotteryLicenceForm, reqSession: expressSe
         " recordUpdate_userName = ?," +
         " recordUpdate_timeMillis = ?" +
         " where licenceID = ?" +
+        " and eventDate = ?" +
         " and ticketType = ?" +
         " and recordDelete_timeMillis is not null")
         .run(
           reqSession.user.userName,
           nowMillis,
           reqBody.licenceID,
+          reqBody.ticketType_eventDateString_toAdd[ticketTypeIndex],
           ticketType
         );
 
       if (addInfo.changes === 0) {
 
         db.prepare("insert or ignore into LotteryLicenceTicketTypes" +
-          " (licenceID, ticketType, unitCount," +
+          " (licenceID, eventDate, ticketType, unitCount," +
           " recordCreate_userName, recordCreate_timeMillis, recordUpdate_userName, recordUpdate_timeMillis)" +
-          " values (?, ?, ?, ?, ?, ?, ?)")
+          " values (?, ?, ?, ?, ?, ?, ?, ?)")
           .run(
             reqBody.licenceID,
+            reqBody.ticketType_eventDateString_toAdd[ticketTypeIndex],
             ticketType,
             0,
             reqSession.user.userName,
@@ -398,12 +411,12 @@ export const updateLicence = (reqBody: LotteryLicenceForm, reqSession: expressSe
           db,
           reqBody.licenceID,
           "New Ticket Type",
-          "Added " + ticketType + ".",
+          "Added " + reqBody.ticketType_eventDateString_toAdd[ticketTypeIndex] + ", " + ticketType + ".",
           0,
           reqSession
         );
       }
-    }
+    });
   }
 
   // Do updates
@@ -418,6 +431,7 @@ export const updateLicence = (reqBody: LotteryLicenceForm, reqSession: expressSe
       " recordUpdate_userName = ?," +
       " recordUpdate_timeMillis = ?" +
       " where licenceID = ?" +
+      " and eventDate = ?" +
       " and ticketType = ?" +
       " and recordDelete_timeMillis is null")
       .run(
@@ -428,6 +442,7 @@ export const updateLicence = (reqBody: LotteryLicenceForm, reqSession: expressSe
         reqSession.user.userName,
         nowMillis,
         reqBody.licenceID,
+        reqBody.ticketType_eventDateString,
         reqBody.ticketType_ticketType
       );
 
@@ -444,7 +459,7 @@ export const updateLicence = (reqBody: LotteryLicenceForm, reqSession: expressSe
           db,
           reqBody.licenceID,
           "Ticket Type Change",
-          (reqBody.ticketType_ticketType + " Units: " +
+          ((reqBody.ticketType_eventDateString as string) + ", " + reqBody.ticketType_ticketType + " Units: " +
             ticketTypeObj_past.unitCount.toString() + " -> " + reqBody.ticketType_unitCount.toString()),
           0,
           reqSession
@@ -466,6 +481,7 @@ export const updateLicence = (reqBody: LotteryLicenceForm, reqSession: expressSe
         " recordUpdate_userName = ?," +
         " recordUpdate_timeMillis = ?" +
         " where licenceID = ?" +
+        " and eventDate = ?" +
         " and ticketType = ?" +
         " and recordDelete_timeMillis is null")
         .run(
@@ -482,6 +498,7 @@ export const updateLicence = (reqBody: LotteryLicenceForm, reqSession: expressSe
           reqSession.user.userName,
           nowMillis,
           reqBody.licenceID,
+          reqBody.ticketType_eventDateString[ticketTypeIndex],
           ticketType
         );
 
@@ -498,7 +515,7 @@ export const updateLicence = (reqBody: LotteryLicenceForm, reqSession: expressSe
             db,
             reqBody.licenceID,
             "Ticket Type Change",
-            (ticketType + " Units: " +
+            (reqBody.ticketType_eventDateString[ticketTypeIndex] + ", " + ticketType + " Units: " +
               ticketTypeObj_past.unitCount.toString() + " -> " + reqBody.ticketType_unitCount[ticketTypeIndex]),
             0,
             reqSession

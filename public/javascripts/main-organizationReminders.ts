@@ -55,8 +55,8 @@ llm.organizationReminders = (() => {
     callbackFn: (reminderList: recordTypes.OrganizationReminder[]) => void) => {
 
     cityssm.postJSON(urlPrefix + "/organizations/doGetReminders", {
-        organizationID
-      },
+      organizationID
+    },
       callbackFn
     );
   };
@@ -65,9 +65,9 @@ llm.organizationReminders = (() => {
     callbackFn: (reminder: recordTypes.OrganizationReminder) => void) => {
 
     cityssm.postJSON(urlPrefix + "/organizations/doGetReminder", {
-        organizationID,
-        reminderIndex
-      },
+      organizationID,
+      reminderIndex
+    },
       callbackFn
     );
   };
@@ -83,7 +83,7 @@ llm.organizationReminders = (() => {
 
       cityssm.postJSON(urlPrefix + "/organizations/doAddReminder",
         formEvent.currentTarget,
-        (responseJSON) => {
+        (responseJSON: { success: boolean; reminder: recordTypes.OrganizationReminder }) => {
 
           if (responseJSON.success) {
             addReminderCloseModalFn();
@@ -125,7 +125,7 @@ llm.organizationReminders = (() => {
           (document.getElementById("addReminder--organizationID") as HTMLInputElement).value =
             organizationID.toString();
 
-          document.getElementById("addReminder--reminderDateString")
+          document.getElementById("addReminder--dueDateString")
             .setAttribute("min", cityssm.dateToString(new Date()));
 
           getRemindersByOrganizationID(organizationID, (reminderList) => {
@@ -336,10 +336,10 @@ llm.organizationReminders = (() => {
             reminderTypeKeySelectEle.addEventListener("change", reminderTypeKeyChangeFn);
             reminderTypeKeySelectEle.closest(".select").classList.remove("is-loading");
 
-            // Reminder date
+            // Due date
 
-            (document.getElementById("editReminder--reminderDateString") as HTMLInputElement).value =
-              reminder.reminderDateString;
+            (document.getElementById("editReminder--dueDateString") as HTMLInputElement).value =
+              reminder.dueDateString;
 
             // Initialize the reminder status select
 
@@ -406,9 +406,9 @@ llm.organizationReminders = (() => {
   }) => void) => {
 
     cityssm.postJSON(urlPrefix + "/organizations/doDismissReminder", {
-        organizationID,
-        reminderIndex
-      },
+      organizationID,
+      reminderIndex
+    },
       callbackFn
     );
   };
@@ -443,9 +443,9 @@ llm.organizationReminders = (() => {
   }) => void) => {
 
     cityssm.postJSON(urlPrefix + "/organizations/doDeleteReminder", {
-        organizationID,
-        reminderIndex
-      },
+      organizationID,
+      reminderIndex
+    },
       callbackFn
     );
   };

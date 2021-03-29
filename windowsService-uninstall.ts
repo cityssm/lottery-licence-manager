@@ -1,11 +1,8 @@
 import { Service } from "node-windows";
-import * as path from "path";
+import { serviceConfig } from "./windowsService";
 
 // Create a new service object
-var svc = new Service({
-  name: "Lottery Licence Manager",
-  script: path.join(__dirname, "bin", "www.js")
-});
+const svc = new Service(serviceConfig);
 
 // Listen for the "uninstall" event so we know when it's done.
 svc.on("uninstall", function() {

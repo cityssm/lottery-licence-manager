@@ -180,109 +180,6 @@
       <% } %>
     </div>
 
-    <% if (licence.licenceTicketTypes.length) { %>
-      <div class="panel">
-        <div class="panel-heading">
-          <div class="level">
-            <div class="level-left">
-              <h2 class="has-text-weight-bold">Ticket Types</h2>
-            </div>
-            <div class="level-right has-text-weight-normal has-text-right is-hidden-print">
-              <a class="button is-small" href="<%= urlPrefix %>/reports/ticketTypes-byLicence?licenceID=<%= licence.licenceID %>" download>
-                <span class="icon"><i class="fas fa-file-download" aria-hidden="true"></i></span>
-                <span>Export Ticket Types</span>
-              </a>
-            </div>
-          </div>
-        </div>
-
-        <table class="table is-fullwidth">
-          <thead>
-            <tr>
-              <th>Type</th>
-              <th class="has-text-right">Units</th>
-              <th class="has-text-right">Value</th>
-              <th class="has-text-right">Prizes</th>
-              <th class="has-text-right">Licence Fee</th>
-              <th>Manufacturer</th>
-              <th>Distributor</th>
-            </tr>
-          </thead>
-          <tbody>
-            <%
-              let ticketTypeLicenceFeeTotal = 0;
-              let ticketTypePrizesTotal = 0;
-
-              for (let ticketTypeIndex = 0; ticketTypeIndex < licence.licenceTicketTypes.length; ticketTypeIndex += 1) {
-                const licenceTicketTypeObj = licence.licenceTicketTypes[ticketTypeIndex];
-                const ticketType = (licenceType && licenceType.ticketTypes ? licenceType.ticketTypes.find(ele => ele.ticketType === licenceTicketTypeObj.ticketType) : null);
-
-                ticketTypeLicenceFeeTotal += licenceTicketTypeObj.licenceFee;
-            %>
-                <tr>
-                  <td><%= licenceTicketTypeObj.ticketType %></td>
-                  <td class="has-text-right">
-                    <%= licenceTicketTypeObj.unitCount %>
-                  </td>
-                  <td class="has-text-right">
-                    <%
-                      let ticketValue = (ticketType ? (ticketType.ticketPrice * ticketType.ticketCount) : 0);
-                      let totalValue = (ticketValue * licenceTicketTypeObj.unitCount).toFixed(2);
-                    %>
-                    <span data-tooltip="$<%= ticketValue %> value per deal">$ <%= totalValue %></span>
-                  </td>
-                  <td class="has-text-right">
-                    <%
-                      let prizesPerDeal = (ticketType ? ticketType.prizesPerDeal : 0);
-                      let totalPrizesPerDeal = (prizesPerDeal * licenceTicketTypeObj.unitCount).toFixed(2);
-
-                      ticketTypePrizesTotal += (prizesPerDeal * licenceTicketTypeObj.unitCount);
-                    %>
-                    <span data-tooltip="$<%= prizesPerDeal.toFixed(2) %> prizes per deal">$ <%= totalPrizesPerDeal %></span>
-                  </td>
-                  <td class="has-text-right">
-                    <%= "$ " + licenceTicketTypeObj.licenceFee.toFixed(2) %>
-                  </td>
-                  <td>
-                    <span>
-                      <% if (licenceTicketTypeObj.manufacturerLocationID === null) { %>
-                        <span class="has-text-grey">(Not Set)</span>
-                      <% } else { %>
-                        <%= licenceTicketTypeObj.manufacturerLocationDisplayName %>
-                      <% } %>
-                    </span>
-                  </td>
-                  <td>
-                    <span>
-                      <% if (licenceTicketTypeObj.distributorLocationID === null) { %>
-                        <span class="has-text-grey">(Not Set)</span>
-                      <% } else { %>
-                        <%= licenceTicketTypeObj.distributorLocationDisplayName %>
-                      <% } %>
-                    </span>
-                  </td>
-                </tr>
-            <% } %>
-          </tbody>
-          <tfoot>
-            <tr>
-              <td></td>
-              <td></td>
-              <td></td>
-              <th class="has-text-right">
-                $ <%= ticketTypePrizesTotal.toFixed(2) %>
-              </th>
-              <th class="has-text-right">
-                $ <%= ticketTypeLicenceFeeTotal.toFixed(2) %>
-              </th>
-              <td></td>
-              <td></td>
-            </tr>
-          </tfoot>
-        </table>
-      </div>
-    <% } %>
-
     <div class="columns">
       <div class="column">
         <div class="panel">
@@ -389,6 +286,111 @@
         %>
       </div>
     </div>
+
+    <% if (licence.licenceTicketTypes.length) { %>
+      <div class="panel">
+        <div class="panel-heading">
+          <div class="level">
+            <div class="level-left">
+              <h2 class="has-text-weight-bold">Ticket Types</h2>
+            </div>
+            <div class="level-right has-text-weight-normal has-text-right is-hidden-print">
+              <a class="button is-small" href="<%= urlPrefix %>/reports/ticketTypes-byLicence?licenceID=<%= licence.licenceID %>" download>
+                <span class="icon"><i class="fas fa-file-download" aria-hidden="true"></i></span>
+                <span>Export Ticket Types</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <table class="table is-fullwidth">
+          <thead>
+            <tr>
+              <th>Event Date</th>
+              <th>Type</th>
+              <th class="has-text-right">Units</th>
+              <th class="has-text-right">Value</th>
+              <th class="has-text-right">Prizes</th>
+              <th class="has-text-right">Licence Fee</th>
+              <th>Manufacturer</th>
+              <th>Distributor</th>
+            </tr>
+          </thead>
+          <tbody>
+            <%
+              let ticketTypeLicenceFeeTotal = 0;
+              let ticketTypePrizesTotal = 0;
+
+              for (let ticketTypeIndex = 0; ticketTypeIndex < licence.licenceTicketTypes.length; ticketTypeIndex += 1) {
+                const licenceTicketTypeObj = licence.licenceTicketTypes[ticketTypeIndex];
+                const ticketType = (licenceType && licenceType.ticketTypes ? licenceType.ticketTypes.find(ele => ele.ticketType === licenceTicketTypeObj.ticketType) : null);
+
+                ticketTypeLicenceFeeTotal += licenceTicketTypeObj.licenceFee;
+            %>
+                <tr>
+                  <td><%= licenceTicketTypeObj.eventDateString %></td>
+                  <td><%= licenceTicketTypeObj.ticketType %></td>
+                  <td class="has-text-right">
+                    <%= licenceTicketTypeObj.unitCount %>
+                  </td>
+                  <td class="has-text-right">
+                    <%
+                      let ticketValue = (ticketType ? (ticketType.ticketPrice * ticketType.ticketCount) : 0);
+                      let totalValue = (ticketValue * licenceTicketTypeObj.unitCount).toFixed(2);
+                    %>
+                    <span data-tooltip="$<%= ticketValue %> value per deal">$ <%= totalValue %></span>
+                  </td>
+                  <td class="has-text-right">
+                    <%
+                      let prizesPerDeal = (ticketType ? ticketType.prizesPerDeal : 0);
+                      let totalPrizesPerDeal = (prizesPerDeal * licenceTicketTypeObj.unitCount).toFixed(2);
+
+                      ticketTypePrizesTotal += (prizesPerDeal * licenceTicketTypeObj.unitCount);
+                    %>
+                    <span data-tooltip="$<%= prizesPerDeal.toFixed(2) %> prizes per deal">$ <%= totalPrizesPerDeal %></span>
+                  </td>
+                  <td class="has-text-right">
+                    <%= "$ " + licenceTicketTypeObj.licenceFee.toFixed(2) %>
+                  </td>
+                  <td>
+                    <span>
+                      <% if (licenceTicketTypeObj.manufacturerLocationID === null) { %>
+                        <span class="has-text-grey">(Not Set)</span>
+                      <% } else { %>
+                        <%= licenceTicketTypeObj.manufacturerLocationDisplayName %>
+                      <% } %>
+                    </span>
+                  </td>
+                  <td>
+                    <span>
+                      <% if (licenceTicketTypeObj.distributorLocationID === null) { %>
+                        <span class="has-text-grey">(Not Set)</span>
+                      <% } else { %>
+                        <%= licenceTicketTypeObj.distributorLocationDisplayName %>
+                      <% } %>
+                    </span>
+                  </td>
+                </tr>
+            <% } %>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td></td>
+              <td></td>
+              <td></td>
+              <th class="has-text-right">
+                $ <%= ticketTypePrizesTotal.toFixed(2) %>
+              </th>
+              <th class="has-text-right">
+                $ <%= ticketTypeLicenceFeeTotal.toFixed(2) %>
+              </th>
+              <td></td>
+              <td></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    <% } %>
 
     <div class="panel">
       <div class="panel-heading">
