@@ -110,7 +110,6 @@ export const getLicenceWithDB = (db: sqlite.Database, licenceID: number | string
     if ("includeEvents" in queryOptions && queryOptions.includeEvents) {
 
       const eventList = db.prepare("select eventDate," +
-        " costs_receipts, costs_admin, costs_prizesAwarded," +
         " costs_amountDonated" +
         " from LotteryEvents" +
         " where licenceID = ?" +
@@ -121,10 +120,6 @@ export const getLicenceWithDB = (db: sqlite.Database, licenceID: number | string
       for (const eventObj of eventList) {
 
         eventObj.eventDateString = dateTimeFns.dateIntegerToString(eventObj.eventDate);
-
-        eventObj.costs_netProceeds = (eventObj.costs_receipts || 0) -
-          (eventObj.costs_admin || 0) -
-          (eventObj.costs_prizesAwarded || 0);
       }
 
       licenceObj.events = eventList;

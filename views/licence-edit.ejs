@@ -367,7 +367,7 @@
                 <div class="panel-block is-block">
                   <div class="field has-addons">
                     <div class="control is-expanded has-icons-left">
-                      <input class="input is-small" type="date" value="<%= eventObj.eventDateString %>" min="<%= licence.startDateString %>" max="<%= licence.endDateString %>" required readonly />
+                      <input class="input is-small input--eventDateString" type="date" value="<%= eventObj.eventDateString %>" min="<%= licence.startDateString %>" max="<%= licence.endDateString %>" required readonly />
                       <span class="icon is-left">
                         <i class="fas fa-calendar" aria-hidden="true"></i>
                       </span>
@@ -547,7 +547,11 @@
                 const licenceTicketTypeObj = licence.licenceTicketTypes[ticketTypeIndex];
                 const ticketType = (licenceType && licenceType.ticketTypes ? licenceType.ticketTypes.find(ele => ele.ticketType === licenceTicketTypeObj.ticketType) : null);
             %>
-                <tr data-event-date="<%= licenceTicketTypeObj.eventDate %>" data-ticket-type="<%= licenceTicketTypeObj.ticketType %>">
+                <tr data-event-date-string="<%= licenceTicketTypeObj.eventDateString %>" data-ticket-type="<%= licenceTicketTypeObj.ticketType %>">
+                  <td>
+                    <input name="ticketType_eventDateString" type="hidden" value="<%= licenceTicketTypeObj.eventDateString %>" />
+                    <span><%= licenceTicketTypeObj.eventDateString %></span>
+                  </td>
                   <td>
                     <input name="ticketType_ticketType" type="hidden" value="<%= licenceTicketTypeObj.ticketType %>" />
                     <span><%= licenceTicketTypeObj.ticketType %></span>
@@ -655,7 +659,7 @@
               <div class="field">
                 <label class="label" for="licence--licenceFee">Licence Fee</label>
                 <div class="control has-icons-left">
-                  <input class="input has-text-right is-readonly <%= (hasLicenceFeeDiscrepancy ? " is-danger" : "")%>" id="licence--licenceFee" name="licenceFee" type="text" value="<%= licence.licenceFee.toFixed(2) %>" />
+                  <input class="input has-text-right is-readonly <%= (hasLicenceFeeDiscrepancy ? " is-danger" : "")%>" id="licence--licenceFee" name="licenceFee" type="text" value="<%= (licence.licenceFee || 0).toFixed(2) %>" />
                   <span class="icon is-small is-left">
                     <i class="fas fa-dollar-sign" aria-hidden="true"></i>
                   </span>

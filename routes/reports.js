@@ -168,7 +168,7 @@ router.all("/:reportName", (req, res) => {
             sql = "select * from LotteryLicenceTicketTypes";
             break;
         case "ticketTypes-byLicence":
-            sql = "select t.licenceID, t.ticketType," +
+            sql = "select t.licenceID, t.eventDate, t.ticketType," +
                 " t.unitCount, t.licenceFee," +
                 " t.distributorLocationID," +
                 " d.locationName as distributorLocationName," +
@@ -237,7 +237,6 @@ router.all("/:reportName", (req, res) => {
         case "events-pastUnreported":
             sql = "select e.licenceID, e.eventDate, e.reportDate," +
                 " e.bank_name, e.bank_address, e.bank_accountNumber, e.bank_accountBalance," +
-                " e.costs_receipts," +
                 " l.externalLicenceNumber, l.licenceTypeKey, l.licenceDetails," +
                 " o.organizationID, o.organizationName," +
                 " o.organizationAddress1, o.organizationAddress2," +
@@ -262,10 +261,6 @@ router.all("/:reportName", (req, res) => {
                 " lo.locationName, lo.locationAddress1, l.licenceDetails, l.licenceTypeKey," +
                 " l.totalPrizeValue, l.licenceFee," +
                 " e.bank_name, e.bank_address, e.bank_accountNumber, e.bank_accountBalance," +
-                " e.costs_receipts, e.costs_admin, e.costs_prizesAwarded," +
-                (" ifnull(e.costs_receipts, 0)" +
-                    " - ifnull(e.costs_admin, 0)" +
-                    " - ifnull(e.costs_prizesAwarded, 0) as costs_netProceeds,") +
                 " e.costs_amountDonated" +
                 " from LotteryEvents e" +
                 " left join LotteryLicences l on e.licenceID = l.licenceID" +

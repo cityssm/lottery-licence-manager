@@ -25,7 +25,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 hasUnsavedChanges = false;
             }
             if (responseJSON.success && isCreate) {
-                window.location.href = "/licences/" + responseJSON.licenceID.toString() + "/edit";
+                window.location.href = urlPrefix + "/licences/" + responseJSON.licenceID.toString() + "/edit";
             }
             else if (responseJSON.success && doRefreshAfterSave) {
                 window.location.reload();
@@ -198,14 +198,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
         let locationLookup_closeModalFn;
         let locationLookup_searchStrEle;
         let locationLookup_resultsEle;
-        const locationLookupFn_setLocation = (locationIDString, locationDisplayName) => {
-            document.getElementById("licence--locationID").value = locationIDString;
+        const locationLookupFn_setLocation = (locationID, locationDisplayName) => {
+            document.getElementById("licence--locationID").value = locationID.toString();
             document.getElementById("licence--locationDisplayName").value = locationDisplayName;
         };
         const locationLookupFn_setLocationFromExisting = (clickEvent) => {
             clickEvent.preventDefault();
             const locationEle = clickEvent.currentTarget;
-            locationLookupFn_setLocation(locationEle.getAttribute("data-location-id"), locationEle.getAttribute("data-location-display-name"));
+            locationLookupFn_setLocation(parseInt(locationEle.getAttribute("data-location-id"), 10), locationEle.getAttribute("data-location-display-name"));
             locationLookup_closeModalFn();
             setUnsavedChangesFn();
         };
@@ -475,7 +475,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
             eventsContainerEle.insertAdjacentHTML("beforeend", "<div class=\"panel-block is-block\">" +
                 "<div class=\"field has-addons\">" +
                 ("<div class=\"control is-expanded has-icons-left\">" +
-                    "<input class=\"input is-small\" name=\"eventDate\" type=\"date\"" +
+                    "<input class=\"input is-small input--eventDateString\" name=\"eventDateString\" type=\"date\"" +
                     " value=\"" + cityssm.escapeHTML(eventDateString) + "\"" +
                     " min=\"" + cityssm.escapeHTML(startDateEle.value) + "\"" +
                     " max=\"" + cityssm.escapeHTML(endDateEle.value) + "\"" +
@@ -523,6 +523,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
             addEventBtnEle.addEventListener("click", eventFn_add);
         }
     }
+    const getEventDateStrings = () => {
+        const eventDateStrings = [];
+        const inputEles = document.getElementsByClassName("input--eventDateString");
+        for (const inputEle of inputEles) {
+            eventDateStrings.push(inputEle.value);
+        }
+        return eventDateStrings.sort();
+    };
     const ticketTypesPanelEle = document.getElementById("is-ticket-types-panel");
     if (ticketTypesPanelEle) {
         const licenceTypeKeyToTicketTypes = new Map();
@@ -555,6 +563,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 "<td></td>" +
                 "<td></td>" +
                 "<td></td>" +
+                "<td></td>" +
                 "<th class=\"has-text-right is-nowrap\">$ " + prizeValueTotal.toFixed(2) + "</th>" +
                 "<td class=\"is-hidden-print\"></td>" +
                 "<th class=\"has-text-right is-nowrap\">$ " + licenceFeeTotal.toFixed(2) + "</th>" +
@@ -567,17 +576,19 @@ Object.defineProperty(exports, "__esModule", { value: true });
         };
         const deleteTicketTypeFn_openConfirm = (buttonEvent) => {
             const trEle = buttonEvent.currentTarget.closest("tr");
+            const eventDateString = trEle.getAttribute("data-event-date-string");
             const ticketType = trEle.getAttribute("data-ticket-type");
+            const ticketTypeKey = eventDateString + ":" + ticketType;
             const doDeleteTicketTypeFn = () => {
                 trEle.remove();
                 if (!isCreate) {
-                    const addEle = formEle.querySelector("input[name='ticketType_toAdd'][value='" + ticketType + "']");
+                    const addEle = formEle.querySelector("input[name='ticketTypeKey_toAdd'][value='" + ticketTypeKey + "']");
                     if (addEle) {
                         addEle.remove();
                     }
                     else {
-                        formEle.insertAdjacentHTML("beforeend", "<input class=\"is-removed-after-save\" name=\"ticketType_toDelete\"" +
-                            " type=\"hidden\" value=\"" + cityssm.escapeHTML(ticketType) + "\" />");
+                        formEle.insertAdjacentHTML("beforeend", "<input class=\"is-removed-after-save\" name=\"ticketTypeKey_toDelete\"" +
+                            " type=\"hidden\" value=\"" + cityssm.escapeHTML(ticketTypeKey) + "\" />");
                     }
                 }
                 ticketTypesFn_calculateTfoot();
@@ -588,6 +599,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
         };
         const amendUnitCountFn_openModal = (buttonEvent) => {
             const trEle = buttonEvent.currentTarget.closest("tr");
+            const eventDateString = trEle.getAttribute("data-event-date-string");
             const ticketType = trEle.getAttribute("data-ticket-type");
             let ticketTypeObj;
             let amendUnitCount_closeModalFn;
@@ -622,6 +634,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
             };
             cityssm.openHtmlModal("licence-ticketTypeUnitAmend", {
                 onshow(modalEle) {
+                    document.getElementById("amendUnit_eventDateString").value = eventDateString;
                     document.getElementById("amendUnit_ticketType").value = ticketType;
                     const unitCountCurrent = trEle.querySelector("input[name='ticketType_unitCount']").value;
                     document.getElementById("amendUnit_unitCountCurrent").value = unitCountCurrent;
@@ -734,11 +747,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
         };
         const addTicketType_openModal = () => {
             let addTicketType_closeModalFn;
+            let addTicketType_eventDateStringEle;
             let addTicketType_ticketTypeEle;
             let addTicketType_unitCountEle;
             const addTicketTypeFn_addTicketType = (formEvent) => {
                 formEvent.preventDefault();
                 ticketTypesFn_addTr({
+                    eventDateString: document.getElementById("ticketTypeAdd--eventDateString").value,
                     ticketType: document.getElementById("ticketTypeAdd--ticketType").value,
                     unitCount: parseInt(document.getElementById("ticketTypeAdd--unitCount").value, 10),
                     valuePerDeal: parseFloat(document.getElementById("ticketTypeAdd--valuePerDeal").value),
@@ -746,9 +761,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     licenceFee: parseFloat(document.getElementById("ticketTypeAdd--licenceFee").value)
                 });
                 if (!isCreate) {
-                    formEle.insertAdjacentHTML("beforeend", "<input class=\"is-removed-after-save\" name=\"ticketType_toAdd\"" +
+                    formEle.insertAdjacentHTML("beforeend", "<input class=\"is-removed-after-save\" name=\"ticketTypeKey_toAdd\"" +
                         " type=\"hidden\"" +
-                        " value=\"" + cityssm.escapeHTML(document.getElementById("ticketTypeAdd--ticketType").value) + "\" />");
+                        " value=\"" + cityssm.escapeHTML(document.getElementById("ticketTypeAdd--eventDateString").value + ":" + document.getElementById("ticketTypeAdd--ticketType").value) + "\" />");
                 }
                 addTicketType_closeModalFn();
             };
@@ -783,8 +798,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     cityssm.alertModal("No ticket types available", "", "OK", "danger");
                     return;
                 }
+                addTicketType_ticketTypeEle.innerHTML = "";
                 for (const ticketTypeObj of ticketTypes) {
-                    if (ticketTypesPanelEle.querySelector("tr[data-ticket-type='" + ticketTypeObj.ticketType + "']")) {
+                    if (ticketTypesPanelEle.querySelector("tr[data-event-date-string='" + addTicketType_eventDateStringEle.value + "'][data-ticket-type='" + ticketTypeObj.ticketType + "']")) {
                         continue;
                     }
                     const optionEle = document.createElement("option");
@@ -801,24 +817,43 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 }
                 addTicketType_refreshTicketTypeChange();
             };
-            cityssm.openHtmlModal("licence-ticketTypeAdd", {
-                onshow(modalEle) {
-                    addTicketType_ticketTypeEle = document.getElementById("ticketTypeAdd--ticketType");
-                    addTicketType_ticketTypeEle.addEventListener("change", addTicketType_refreshTicketTypeChange);
-                    addTicketType_unitCountEle = document.getElementById("ticketTypeAdd--unitCount");
-                    addTicketType_unitCountEle.addEventListener("change", addTicketTypeFn_refreshUnitCountChange);
-                    modalEle.getElementsByTagName("form")[0].addEventListener("submit", addTicketTypeFn_addTicketType);
-                },
-                onshown(_modalEle, closeModalFn) {
-                    addTicketType_closeModalFn = closeModalFn;
-                    ticketTypesFn_getAll(addTicketTypeFn_populateTicketTypeSelect);
-                }
+            const eventDateStrings = getEventDateStrings();
+            if (eventDateStrings.length === 0) {
+                cityssm.alertModal("No Event Dates Available", "You must add at least one event date before adding ticket types to the licence.", "OK", "warning");
+                return;
+            }
+            ticketTypesFn_getAll((ticketTypes) => {
+                cityssm.openHtmlModal("licence-ticketTypeAdd", {
+                    onshow(modalEle) {
+                        addTicketType_eventDateStringEle = document.getElementById("ticketTypeAdd--eventDateString");
+                        for (const eventDateString of eventDateStrings) {
+                            addTicketType_eventDateStringEle.insertAdjacentHTML("beforeend", "<option>" + cityssm.escapeHTML(eventDateString) + "</option>");
+                        }
+                        addTicketType_eventDateStringEle.addEventListener("change", () => {
+                            addTicketTypeFn_populateTicketTypeSelect(ticketTypes);
+                        });
+                        addTicketType_ticketTypeEle = document.getElementById("ticketTypeAdd--ticketType");
+                        addTicketType_ticketTypeEle.addEventListener("change", addTicketType_refreshTicketTypeChange);
+                        addTicketType_unitCountEle = document.getElementById("ticketTypeAdd--unitCount");
+                        addTicketType_unitCountEle.addEventListener("change", addTicketTypeFn_refreshUnitCountChange);
+                        modalEle.getElementsByTagName("form")[0].addEventListener("submit", addTicketTypeFn_addTicketType);
+                    },
+                    onshown(_modalEle, closeModalFn) {
+                        addTicketType_closeModalFn = closeModalFn;
+                        addTicketTypeFn_populateTicketTypeSelect(ticketTypes);
+                    }
+                });
             });
         };
         const ticketTypesFn_addTr = (obj) => {
             const ticketType = obj.ticketType;
             const trEle = document.createElement("tr");
             trEle.setAttribute("data-ticket-type", ticketType);
+            trEle.setAttribute("data-event-date-string", obj.eventDateString);
+            trEle.insertAdjacentHTML("beforeend", "<td>" +
+                "<input name=\"ticketType_eventDateString\" type=\"hidden\" value=\"" + cityssm.escapeHTML(obj.eventDateString) + "\" />" +
+                "<span>" + cityssm.escapeHTML(obj.eventDateString) + "</span>" +
+                "</td>");
             trEle.insertAdjacentHTML("beforeend", "<td>" +
                 "<input name=\"ticketType_ticketType\" type=\"hidden\" value=\"" + cityssm.escapeHTML(ticketType) + "\" />" +
                 "<span>" + cityssm.escapeHTML(ticketType) + "</span>" +
@@ -831,6 +866,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
             const valuePerDeal = obj.valuePerDeal;
             const totalValuePerDeal = (valuePerDeal * unitCount).toFixed(2);
             trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right is-nowrap\">" +
+                "<input class=\"is-total-value-per-deal\" type=\"hidden\" value=\"" + totalValuePerDeal.toString() + "\" />" +
                 "<span data-tooltip=\"$" + valuePerDeal.toFixed(2) + " value per deal\">$ " + totalValuePerDeal + "</span>" +
                 "</td>");
             const prizesPerDeal = obj.prizesPerDeal;

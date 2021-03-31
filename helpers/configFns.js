@@ -1,13 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getLicenceTypeKeyToNameObject = exports.getLicenceType = exports.getReminderType = exports.keepAliveMillis = exports.getProperty = void 0;
-const log = require("fancy-log");
+const debug_1 = require("debug");
+const debugConfig = debug_1.debug("lottery-licence-manager:configFns");
 let config = "";
 try {
     config = require("../data/config");
 }
-catch (e) {
-    log.warn("Using data/config-example.js");
+catch (_e) {
+    debugConfig("Using data/config-example.js");
     config = require("../data/config-example");
 }
 const configFallbackValues = new Map();

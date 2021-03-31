@@ -61,7 +61,6 @@ const getLicenceWithDB = (db, licenceID, reqSession, queryOptions) => {
         }
         if ("includeEvents" in queryOptions && queryOptions.includeEvents) {
             const eventList = db.prepare("select eventDate," +
-                " costs_receipts, costs_admin, costs_prizesAwarded," +
                 " costs_amountDonated" +
                 " from LotteryEvents" +
                 " where licenceID = ?" +
@@ -70,9 +69,6 @@ const getLicenceWithDB = (db, licenceID, reqSession, queryOptions) => {
                 .all(licenceID);
             for (const eventObj of eventList) {
                 eventObj.eventDateString = dateTimeFns.dateIntegerToString(eventObj.eventDate);
-                eventObj.costs_netProceeds = (eventObj.costs_receipts || 0) -
-                    (eventObj.costs_admin || 0) -
-                    (eventObj.costs_prizesAwarded || 0);
             }
             licenceObj.events = eventList;
         }

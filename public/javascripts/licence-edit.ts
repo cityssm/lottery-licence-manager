@@ -62,7 +62,7 @@ declare const llm: llmGlobal;
 
         if (responseJSON.success && isCreate) {
 
-          window.location.href = "/licences/" + responseJSON.licenceID.toString() + "/edit";
+          window.location.href = urlPrefix + "/licences/" + responseJSON.licenceID.toString() + "/edit";
 
         } else if (responseJSON.success && doRefreshAfterSave) {
 
@@ -338,7 +338,7 @@ declare const llm: llmGlobal;
 
       cityssm.postJSON(urlPrefix + "/locations/doGetLocations",
         null,
-        (locationResults) => {
+        (locationResults: { locations: recordTypes.Location[] }) => {
 
           locationList = locationResults.locations;
           callbackFn();
@@ -357,9 +357,9 @@ declare const llm: llmGlobal;
     let locationLookup_resultsEle: HTMLElement;
 
 
-    const locationLookupFn_setLocation = (locationIDString: string, locationDisplayName: string) => {
+    const locationLookupFn_setLocation = (locationID: number, locationDisplayName: string) => {
 
-      (document.getElementById("licence--locationID") as HTMLInputElement).value = locationIDString;
+      (document.getElementById("licence--locationID") as HTMLInputElement).value = locationID.toString();
       (document.getElementById("licence--locationDisplayName") as HTMLInputElement).value = locationDisplayName;
 
     };
@@ -371,7 +371,7 @@ declare const llm: llmGlobal;
       const locationEle = clickEvent.currentTarget as HTMLAnchorElement;
 
       locationLookupFn_setLocation(
-        locationEle.getAttribute("data-location-id"),
+        parseInt(locationEle.getAttribute("data-location-id"), 10),
         locationEle.getAttribute("data-location-display-name")
       );
 
@@ -487,7 +487,7 @@ declare const llm: llmGlobal;
 
             cityssm.postJSON(urlPrefix + "/locations/doCreate",
               formEvent.currentTarget,
-              (responseJSON) => {
+              (responseJSON: { success: boolean; locationID?: number; locationDisplayName?: string }) => {
 
                 if (responseJSON.success) {
 
@@ -737,7 +737,6 @@ declare const llm: llmGlobal;
    */
 
   {
-
     const startDateEle = document.getElementById("licence--startDateString") as HTMLInputElement;
     const endDateEle = document.getElementById("licence--endDateString") as HTMLInputElement;
 
@@ -831,7 +830,7 @@ declare const llm: llmGlobal;
         "<div class=\"panel-block is-block\">" +
         "<div class=\"field has-addons\">" +
         ("<div class=\"control is-expanded has-icons-left\">" +
-          "<input class=\"input is-small\" name=\"eventDate\" type=\"date\"" +
+          "<input class=\"input is-small input--eventDateString\" name=\"eventDateString\" type=\"date\"" +
           " value=\"" + cityssm.escapeHTML(eventDateString) + "\"" +
           " min=\"" + cityssm.escapeHTML(startDateEle.value) + "\"" +
           " max=\"" + cityssm.escapeHTML(endDateEle.value) + "\"" +
@@ -904,6 +903,19 @@ declare const llm: llmGlobal;
     }
   }
 
+  const getEventDateStrings = () => {
+
+    const eventDateStrings: string[] = [];
+
+    const inputEles = document.getElementsByClassName("input--eventDateString");
+
+    for (const inputEle of inputEles) {
+      eventDateStrings.push((inputEle as HTMLInputElement).value);
+    }
+
+    return eventDateStrings.sort();
+  };
+
 
   /*
    * TICKET TYPES
@@ -961,6 +973,7 @@ declare const llm: llmGlobal;
         "<td></td>" +
         "<td></td>" +
         "<td></td>" +
+        "<td></td>" +
         "<th class=\"has-text-right is-nowrap\">$ " + prizeValueTotal.toFixed(2) + "</th>" +
         "<td class=\"is-hidden-print\"></td>" +
         "<th class=\"has-text-right is-nowrap\">$ " + licenceFeeTotal.toFixed(2) + "</th>" +
@@ -978,7 +991,10 @@ declare const llm: llmGlobal;
     const deleteTicketTypeFn_openConfirm = (buttonEvent: Event) => {
 
       const trEle = (buttonEvent.currentTarget as HTMLButtonElement).closest("tr");
+      const eventDateString = trEle.getAttribute("data-event-date-string");
       const ticketType = trEle.getAttribute("data-ticket-type");
+
+      const ticketTypeKey = eventDateString + ":" + ticketType;
 
       const doDeleteTicketTypeFn = () => {
 
@@ -986,7 +1002,7 @@ declare const llm: llmGlobal;
 
         if (!isCreate) {
 
-          const addEle = formEle.querySelector("input[name='ticketType_toAdd'][value='" + ticketType + "']");
+          const addEle = formEle.querySelector("input[name='ticketTypeKey_toAdd'][value='" + ticketTypeKey + "']");
 
           if (addEle) {
 
@@ -996,8 +1012,8 @@ declare const llm: llmGlobal;
 
             formEle.insertAdjacentHTML(
               "beforeend",
-              "<input class=\"is-removed-after-save\" name=\"ticketType_toDelete\"" +
-              " type=\"hidden\" value=\"" + cityssm.escapeHTML(ticketType) + "\" />"
+              "<input class=\"is-removed-after-save\" name=\"ticketTypeKey_toDelete\"" +
+              " type=\"hidden\" value=\"" + cityssm.escapeHTML(ticketTypeKey) + "\" />"
             );
           }
         }
@@ -1021,7 +1037,9 @@ declare const llm: llmGlobal;
 
       const trEle = (buttonEvent.currentTarget as HTMLButtonElement).closest("tr");
 
+      const eventDateString = trEle.getAttribute("data-event-date-string");
       const ticketType = trEle.getAttribute("data-ticket-type");
+
       let ticketTypeObj: configTypes.ConfigTicketType;
 
       let amendUnitCount_closeModalFn: () => void;
@@ -1068,8 +1086,9 @@ declare const llm: llmGlobal;
       };
 
       cityssm.openHtmlModal("licence-ticketTypeUnitAmend", {
-        onshow(modalEle: HTMLElement): void {
+        onshow(modalEle): void {
 
+          (document.getElementById("amendUnit_eventDateString") as HTMLInputElement).value = eventDateString;
           (document.getElementById("amendUnit_ticketType") as HTMLInputElement).value = ticketType;
 
           // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
@@ -1092,7 +1111,7 @@ declare const llm: llmGlobal;
           modalEle.getElementsByTagName("form")[0].addEventListener("submit", amendUnitCountFn_closeAndUpdate);
 
         },
-        onshown(_modalEle: HTMLElement, closeModalFn: () => void): void {
+        onshown(_modalEle, closeModalFn) {
           amendUnitCount_closeModalFn = closeModalFn;
         }
       });
@@ -1245,6 +1264,7 @@ declare const llm: llmGlobal;
     const addTicketType_openModal = () => {
 
       let addTicketType_closeModalFn: () => void;
+      let addTicketType_eventDateStringEle: HTMLSelectElement;
       let addTicketType_ticketTypeEle: HTMLSelectElement;
       let addTicketType_unitCountEle: HTMLInputElement;
 
@@ -1253,6 +1273,7 @@ declare const llm: llmGlobal;
         formEvent.preventDefault();
 
         ticketTypesFn_addTr({
+          eventDateString: (document.getElementById("ticketTypeAdd--eventDateString") as HTMLInputElement).value,
           ticketType: (document.getElementById("ticketTypeAdd--ticketType") as HTMLInputElement).value,
           unitCount: parseInt((document.getElementById("ticketTypeAdd--unitCount") as HTMLInputElement).value, 10),
           valuePerDeal: parseFloat((document.getElementById("ticketTypeAdd--valuePerDeal") as HTMLInputElement).value),
@@ -1264,9 +1285,9 @@ declare const llm: llmGlobal;
 
           formEle.insertAdjacentHTML(
             "beforeend",
-            "<input class=\"is-removed-after-save\" name=\"ticketType_toAdd\"" +
+            "<input class=\"is-removed-after-save\" name=\"ticketTypeKey_toAdd\"" +
             " type=\"hidden\"" +
-            " value=\"" + cityssm.escapeHTML((document.getElementById("ticketTypeAdd--ticketType") as HTMLSelectElement).value) + "\" />"
+            " value=\"" + cityssm.escapeHTML((document.getElementById("ticketTypeAdd--eventDateString") as HTMLSelectElement).value + ":" + (document.getElementById("ticketTypeAdd--ticketType") as HTMLSelectElement).value) + "\" />"
           );
         }
 
@@ -1319,9 +1340,11 @@ declare const llm: llmGlobal;
           return;
         }
 
+        addTicketType_ticketTypeEle.innerHTML = "";
+
         for (const ticketTypeObj of ticketTypes) {
 
-          if (ticketTypesPanelEle.querySelector("tr[data-ticket-type='" + ticketTypeObj.ticketType + "']")) {
+          if (ticketTypesPanelEle.querySelector("tr[data-event-date-string='" + addTicketType_eventDateStringEle.value + "'][data-ticket-type='" + ticketTypeObj.ticketType + "']")) {
             continue;
           }
 
@@ -1346,28 +1369,54 @@ declare const llm: llmGlobal;
 
       };
 
-      cityssm.openHtmlModal("licence-ticketTypeAdd", {
+      const eventDateStrings = getEventDateStrings();
 
-        onshow(modalEle: HTMLElement): void {
+      if (eventDateStrings.length === 0) {
 
-          addTicketType_ticketTypeEle = document.getElementById("ticketTypeAdd--ticketType") as HTMLSelectElement;
-          addTicketType_ticketTypeEle.addEventListener("change", addTicketType_refreshTicketTypeChange);
+        cityssm.alertModal("No Event Dates Available",
+          "You must add at least one event date before adding ticket types to the licence.",
+          "OK",
+          "warning");
 
-          addTicketType_unitCountEle = document.getElementById("ticketTypeAdd--unitCount") as HTMLInputElement;
-          addTicketType_unitCountEle.addEventListener("change", addTicketTypeFn_refreshUnitCountChange);
+        return;
+      }
 
-          modalEle.getElementsByTagName("form")[0].addEventListener("submit", addTicketTypeFn_addTicketType);
-        },
+      ticketTypesFn_getAll((ticketTypes) => {
 
-        onshown(_modalEle: HTMLElement, closeModalFn: () => void): void {
-          addTicketType_closeModalFn = closeModalFn;
-          ticketTypesFn_getAll(addTicketTypeFn_populateTicketTypeSelect);
-        }
+        cityssm.openHtmlModal("licence-ticketTypeAdd", {
+
+          onshow(modalEle): void {
+
+            addTicketType_eventDateStringEle = document.getElementById("ticketTypeAdd--eventDateString") as HTMLSelectElement;
+
+            for (const eventDateString of eventDateStrings) {
+              addTicketType_eventDateStringEle.insertAdjacentHTML("beforeend", "<option>" + cityssm.escapeHTML(eventDateString) + "</option>");
+            }
+
+            addTicketType_eventDateStringEle.addEventListener("change", () => {
+              addTicketTypeFn_populateTicketTypeSelect(ticketTypes);
+            });
+
+            addTicketType_ticketTypeEle = document.getElementById("ticketTypeAdd--ticketType") as HTMLSelectElement;
+            addTicketType_ticketTypeEle.addEventListener("change", addTicketType_refreshTicketTypeChange);
+
+            addTicketType_unitCountEle = document.getElementById("ticketTypeAdd--unitCount") as HTMLInputElement;
+            addTicketType_unitCountEle.addEventListener("change", addTicketTypeFn_refreshUnitCountChange);
+
+            modalEle.getElementsByTagName("form")[0].addEventListener("submit", addTicketTypeFn_addTicketType);
+          },
+
+          onshown(_modalEle, closeModalFn) {
+            addTicketType_closeModalFn = closeModalFn;
+            addTicketTypeFn_populateTicketTypeSelect(ticketTypes);
+          }
+        });
       });
 
     };
 
     const ticketTypesFn_addTr = (obj: {
+      eventDateString: string;
       ticketType: string;
       unitCount: number;
       licenceFee: number;
@@ -1379,6 +1428,12 @@ declare const llm: llmGlobal;
 
       const trEle = document.createElement("tr");
       trEle.setAttribute("data-ticket-type", ticketType);
+      trEle.setAttribute("data-event-date-string", obj.eventDateString);
+
+      trEle.insertAdjacentHTML("beforeend", "<td>" +
+        "<input name=\"ticketType_eventDateString\" type=\"hidden\" value=\"" + cityssm.escapeHTML(obj.eventDateString) + "\" />" +
+        "<span>" + cityssm.escapeHTML(obj.eventDateString) + "</span>" +
+        "</td>");
 
       trEle.insertAdjacentHTML("beforeend", "<td>" +
         "<input name=\"ticketType_ticketType\" type=\"hidden\" value=\"" + cityssm.escapeHTML(ticketType) + "\" />" +
@@ -1400,6 +1455,7 @@ declare const llm: llmGlobal;
       const totalValuePerDeal = (valuePerDeal * unitCount).toFixed(2);
 
       trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right is-nowrap\">" +
+        "<input class=\"is-total-value-per-deal\" type=\"hidden\" value=\"" + totalValuePerDeal.toString() + "\" />" +
         "<span data-tooltip=\"$" + valuePerDeal.toFixed(2) + " value per deal\">$ " + totalValuePerDeal + "</span>" +
         "</td>");
 
@@ -1690,7 +1746,7 @@ declare const llm: llmGlobal;
           cityssm.postJSON(urlPrefix + "/licences/doUnissueLicence", {
             licenceID
           },
-            (responseJSON) => {
+            (responseJSON: { success: boolean }) => {
 
               if (responseJSON.success) {
                 window.location.reload();

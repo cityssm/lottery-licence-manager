@@ -76,6 +76,45 @@ export const createLicence = (reqBody: LotteryLicenceForm, reqSession: expressSe
       .run(licenceID, fieldKey, fieldValue);
   }
 
+  // Events
+
+  if (typeof (reqBody.eventDateString) === "string") {
+
+    db.prepare("insert into LotteryEvents (" +
+      "licenceID, eventDate," +
+      " recordCreate_userName, recordCreate_timeMillis," +
+      " recordUpdate_userName, recordUpdate_timeMillis)" +
+      " values (?, ?, ?, ?, ?, ?)")
+      .run(
+        licenceID,
+        dateTimeFns.dateStringToInteger(reqBody.eventDateString),
+        reqSession.user.userName,
+        nowMillis,
+        reqSession.user.userName,
+        nowMillis
+      );
+
+  } else if (typeof (reqBody.eventDateString) === "object") {
+
+    for (const eventDateString of reqBody.eventDateString) {
+
+      db.prepare("insert or ignore into LotteryEvents (" +
+        "licenceID, eventDate," +
+        " recordCreate_userName, recordCreate_timeMillis," +
+        " recordUpdate_userName, recordUpdate_timeMillis)" +
+        " values (?, ?, ?, ?, ?, ?)")
+        .run(
+          licenceID,
+          dateTimeFns.dateStringToInteger(eventDateString),
+          reqSession.user.userName,
+          nowMillis,
+          reqSession.user.userName,
+          nowMillis
+        );
+    }
+  }
+
+
   // Ticket types
 
   if (typeof (reqBody.ticketType_ticketType) === "string") {
@@ -112,7 +151,7 @@ export const createLicence = (reqBody: LotteryLicenceForm, reqSession: expressSe
         " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
         .run(
           licenceID,
-          reqBody.ticketType_eventDateString[ticketTypeIndex],
+          dateTimeFns.dateStringToInteger(reqBody.ticketType_eventDateString[ticketTypeIndex]),
           ticketType,
 
           (reqBody.ticketType_distributorLocationID[ticketTypeIndex] === ""
@@ -131,44 +170,6 @@ export const createLicence = (reqBody: LotteryLicenceForm, reqSession: expressSe
           nowMillis
         );
     });
-  }
-
-  // Events
-
-  if (typeof (reqBody.eventDate) === "string") {
-
-    db.prepare("insert into LotteryEvents (" +
-      "licenceID, eventDate," +
-      " recordCreate_userName, recordCreate_timeMillis," +
-      " recordUpdate_userName, recordUpdate_timeMillis)" +
-      " values (?, ?, ?, ?, ?, ?)")
-      .run(
-        licenceID,
-        dateTimeFns.dateStringToInteger(reqBody.eventDate),
-        reqSession.user.userName,
-        nowMillis,
-        reqSession.user.userName,
-        nowMillis
-      );
-
-  } else if (typeof (reqBody.eventDate) === "object") {
-
-    for (const eventDate of reqBody.eventDate) {
-
-      db.prepare("insert or ignore into LotteryEvents (" +
-        "licenceID, eventDate," +
-        " recordCreate_userName, recordCreate_timeMillis," +
-        " recordUpdate_userName, recordUpdate_timeMillis)" +
-        " values (?, ?, ?, ?, ?, ?)")
-        .run(
-          licenceID,
-          dateTimeFns.dateStringToInteger(eventDate),
-          reqSession.user.userName,
-          nowMillis,
-          reqSession.user.userName,
-          nowMillis
-        );
-    }
   }
 
   // Calculate licence fee

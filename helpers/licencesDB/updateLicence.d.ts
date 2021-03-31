@@ -1,4 +1,9 @@
 import type * as expressSession from "express-session";
+export declare const parseTicketTypeKey: (ticketTypeKey: string) => {
+    eventDate: number;
+    eventDateString: string;
+    ticketType: string;
+};
 export interface LotteryLicenceForm {
     licenceID?: string;
     externalLicenceNumber: string;
@@ -20,11 +25,9 @@ export interface LotteryLicenceForm {
     ticketType_licenceFee: string | string[];
     ticketType_manufacturerLocationID: string | string[];
     ticketType_distributorLocationID: string | string[];
-    ticketType_ticketType_toAdd?: string | string[];
-    ticketType_eventDateString_toAdd?: string | string[];
-    ticketType_eventDateString_toDelete?: string | string[];
-    ticketType_ticketType_toDelete?: string | string[];
-    eventDate: string | string[];
+    ticketTypeKey_toAdd?: string | string[];
+    ticketTypeKey_toDelete?: string | string[];
+    eventDateString: string | string[];
     fieldKeys: string;
     licenceFee?: string;
 }

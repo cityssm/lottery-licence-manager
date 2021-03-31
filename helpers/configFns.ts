@@ -1,7 +1,8 @@
-import * as log from "fancy-log";
-
 import * as configTypes from "../types/configTypes";
 import * as recordTypes from "../types/recordTypes";
+
+import { debug } from "debug";
+const debugConfig = debug("lottery-licence-manager:configFns");
 
 
 /*
@@ -12,8 +13,8 @@ let config = "";
 
 try {
   config = require("../data/config");
-} catch (e) {
-  log.warn("Using data/config-example.js");
+} catch (_e) {
+  debugConfig("Using data/config-example.js");
   config = require("../data/config-example");
 }
 
@@ -22,7 +23,6 @@ try {
  * SET UP FALLBACK VALUES
  */
 
-// tslint:disable-next-line:no-any
 const configFallbackValues = new Map<string, any>();
 
 configFallbackValues.set("application.applicationName", "Lottery Licence System");
@@ -144,7 +144,7 @@ export function getProperty(propertyName: "reminderCategories"): configTypes.Con
 
 export function getProperty(propertyName: "reverseProxy.disableCompression"): boolean;
 export function getProperty(propertyName: "reverseProxy.disableEtag"): boolean;
-export function getProperty(propertyName: "reverseProxy.urlPrefix"): "";
+export function getProperty(propertyName: "reverseProxy.urlPrefix"): string;
 
 export function getProperty(propertyName: "session.cookieName"): string;
 export function getProperty(propertyName: "session.doKeepAlive"): boolean;

@@ -53,6 +53,9 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
+if (urlPrefix !== "") {
+    debugApp("urlPrefix = " + urlPrefix);
+}
 app.use(urlPrefix, express.static(path.join(__dirname, "public")));
 app.use(urlPrefix + "/docs/images", express.static(path.join(__dirname, "docs", "images")));
 app.use(urlPrefix + "/fa", express.static(path.join(__dirname, "node_modules", "@fortawesome", "fontawesome-free")));

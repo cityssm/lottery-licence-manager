@@ -68,6 +68,20 @@ declare const cityssm: cityssmGlobal;
 
           const trEle = document.createElement("tr");
 
+          let locationHTML = "";
+
+          if (licenceObj.locationID) {
+
+            locationHTML = "<a data-tooltip=\"View Location\" href=\"" + cityssm.escapeHTML(urlPrefix) + "/locations/" + licenceObj.locationID.toString() + "\">" +
+              cityssm.escapeHTML(licenceObj.locationDisplayName) +
+              "</a>" +
+              (licenceObj.locationDisplayName === licenceObj.locationAddress1
+                ? ""
+                : `<br /> <small>${cityssm.escapeHTML(licenceObj.locationAddress1)} </small>`);
+          } else {
+            locationHTML = "<span class=\"has-text-grey\">(No Location Set)</span>";
+          }
+
           trEle.innerHTML =
             ("<td>" +
               "<a data-tooltip=\"View Licence\" href=\"" + cityssm.escapeHTML(urlPrefix) + "/licences/" + licenceObj.licenceID.toString() + "\">" +
@@ -87,14 +101,7 @@ declare const cityssm: cityssmGlobal;
               "</a>" +
               "</td>") +
 
-            ("<td>" +
-              "<a data-tooltip=\"View Location\" href=\"" + cityssm.escapeHTML(urlPrefix) + "/locations/" + licenceObj.locationID.toString() + "\">" +
-              cityssm.escapeHTML(licenceObj.locationDisplayName) +
-              "</a>" +
-              (licenceObj.locationDisplayName === licenceObj.locationAddress1
-                ? ""
-                : `<br /> <small>${cityssm.escapeHTML(licenceObj.locationAddress1)} </small>`) +
-              "</td>") +
+            ("<td>" + locationHTML + "</td>") +
 
             ("<td class=\"is-nowrap\">" +
               "<span class=\"has-cursor-default has-tooltip-right\" data-tooltip=\"Start Date\">" +

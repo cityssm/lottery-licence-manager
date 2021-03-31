@@ -346,6 +346,7 @@
           <table class="data-table">
             <thead>
               <tr>
+                <th>Date</th>
                 <th>Type</th>
                 <th class="has-text-right">Value</th>
                 <th class="has-text-right">Prizes</th>
@@ -364,6 +365,7 @@
                 });
                 %>
                 <tr>
+                  <td><%= record.eventDateString %></td>
                   <td><%= record.ticketType %></td>
                   <td class="has-text-right">
                     <%= (ticketTypeConfig ? "$" + (ticketTypeConfig.ticketPrice * ticketTypeConfig.ticketCount).toFixed(2) : "") %>

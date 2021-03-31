@@ -38,6 +38,24 @@ const createLicence = (reqBody, reqSession) => {
             " values (?, ?, ?)")
             .run(licenceID, fieldKey, fieldValue);
     }
+    if (typeof (reqBody.eventDateString) === "string") {
+        db.prepare("insert into LotteryEvents (" +
+            "licenceID, eventDate," +
+            " recordCreate_userName, recordCreate_timeMillis," +
+            " recordUpdate_userName, recordUpdate_timeMillis)" +
+            " values (?, ?, ?, ?, ?, ?)")
+            .run(licenceID, dateTimeFns.dateStringToInteger(reqBody.eventDateString), reqSession.user.userName, nowMillis, reqSession.user.userName, nowMillis);
+    }
+    else if (typeof (reqBody.eventDateString) === "object") {
+        for (const eventDateString of reqBody.eventDateString) {
+            db.prepare("insert or ignore into LotteryEvents (" +
+                "licenceID, eventDate," +
+                " recordCreate_userName, recordCreate_timeMillis," +
+                " recordUpdate_userName, recordUpdate_timeMillis)" +
+                " values (?, ?, ?, ?, ?, ?)")
+                .run(licenceID, dateTimeFns.dateStringToInteger(eventDateString), reqSession.user.userName, nowMillis, reqSession.user.userName, nowMillis);
+        }
+    }
     if (typeof (reqBody.ticketType_ticketType) === "string") {
         db.prepare("insert into LotteryLicenceTicketTypes (" +
             "licenceID, eventDate, ticketType," +
@@ -55,30 +73,12 @@ const createLicence = (reqBody, reqSession) => {
                 " unitCount, licenceFee," +
                 " recordCreate_userName, recordCreate_timeMillis, recordUpdate_userName, recordUpdate_timeMillis)" +
                 " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
-                .run(licenceID, reqBody.ticketType_eventDateString[ticketTypeIndex], ticketType, (reqBody.ticketType_distributorLocationID[ticketTypeIndex] === ""
+                .run(licenceID, dateTimeFns.dateStringToInteger(reqBody.ticketType_eventDateString[ticketTypeIndex]), ticketType, (reqBody.ticketType_distributorLocationID[ticketTypeIndex] === ""
                 ? null
                 : reqBody.ticketType_distributorLocationID[ticketTypeIndex]), (reqBody.ticketType_manufacturerLocationID[ticketTypeIndex] === ""
                 ? null
                 : reqBody.ticketType_manufacturerLocationID[ticketTypeIndex]), reqBody.ticketType_unitCount[ticketTypeIndex], reqBody.ticketType_licenceFee[ticketTypeIndex], reqSession.user.userName, nowMillis, reqSession.user.userName, nowMillis);
         });
-    }
-    if (typeof (reqBody.eventDate) === "string") {
-        db.prepare("insert into LotteryEvents (" +
-            "licenceID, eventDate," +
-            " recordCreate_userName, recordCreate_timeMillis," +
-            " recordUpdate_userName, recordUpdate_timeMillis)" +
-            " values (?, ?, ?, ?, ?, ?)")
-            .run(licenceID, dateTimeFns.dateStringToInteger(reqBody.eventDate), reqSession.user.userName, nowMillis, reqSession.user.userName, nowMillis);
-    }
-    else if (typeof (reqBody.eventDate) === "object") {
-        for (const eventDate of reqBody.eventDate) {
-            db.prepare("insert or ignore into LotteryEvents (" +
-                "licenceID, eventDate," +
-                " recordCreate_userName, recordCreate_timeMillis," +
-                " recordUpdate_userName, recordUpdate_timeMillis)" +
-                " values (?, ?, ?, ?, ?, ?)")
-                .run(licenceID, dateTimeFns.dateStringToInteger(eventDate), reqSession.user.userName, nowMillis, reqSession.user.userName, nowMillis);
-        }
     }
     const licenceObj = getLicence_1.getLicenceWithDB(db, licenceID, reqSession, {
         includeTicketTypes: true,
