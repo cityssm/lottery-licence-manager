@@ -99,9 +99,10 @@ declare const llm: llmGlobal;
           trEle.insertAdjacentHTML(
             "beforeend",
             "<td>" +
-            ()
-            cityssm.escapeHTML(licenceObj.locationDisplayName) +
-             "</td>"
+            (licenceObj.locationDisplayName
+              ? cityssm.escapeHTML(licenceObj.locationDisplayName)
+              : "<span class=\"has-text-grey\">(No Location)</span>") +
+            "</td>"
           );
 
           trEle.insertAdjacentHTML(

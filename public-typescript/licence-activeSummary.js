@@ -51,12 +51,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
                         "</a>" +
                         "</td>") +
                     ("<td>" +
-                        "<a href=\"/locations/" + licenceObj.locationID.toString() + "\" data-tooltip=\"View Location\">" +
-                        cityssm.escapeHTML(licenceObj.locationDisplayName) +
-                        "</a>" +
-                        (licenceObj.locationDisplayName === licenceObj.locationName
-                            ? "<br /><small>" + cityssm.escapeHTML(licenceObj.locationAddress1) + "</small>"
-                            : "") +
+                        (licenceObj.locationID
+                            ? "<a href=\"/locations/" + licenceObj.locationID.toString() + "\" data-tooltip=\"View Location\">" +
+                                cityssm.escapeHTML(licenceObj.locationDisplayName) +
+                                "</a>" +
+                                (licenceObj.locationDisplayName === licenceObj.locationName
+                                    ? "<br /><small>" + cityssm.escapeHTML(licenceObj.locationAddress1) + "</small>"
+                                    : "")
+                            : "<span class=\"has-text-grey\">(No Location)</span>") +
                         "</td>") +
                     ("<td class=\"is-nowrap\">" + licenceObj.issueDateString + "</td>") +
                     ("<td class=\"is-nowrap\">" +

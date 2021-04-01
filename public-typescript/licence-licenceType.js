@@ -46,7 +46,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     "</td>");
                 trEle.insertAdjacentHTML("beforeend", "<td>" + cityssm.escapeHTML(licenceObj.organizationName) + "</td>");
                 trEle.insertAdjacentHTML("beforeend", "<td>" +
-                    (), cityssm.escapeHTML(licenceObj.locationDisplayName) +
+                    (licenceObj.locationDisplayName
+                        ? cityssm.escapeHTML(licenceObj.locationDisplayName)
+                        : "<span class=\"has-text-grey\">(No Location)</span>") +
                     "</td>");
                 trEle.insertAdjacentHTML("beforeend", "<td class=\"is-nowrap has-text-right\">$ " + licenceObj.totalPrizeValue.toFixed(2) + "</td>");
                 trEle.insertAdjacentHTML("beforeend", "<td class=\"is-nowrap has-text-right\">$ " + licenceObj.licenceFee.toFixed(2) + "</td>");
