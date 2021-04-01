@@ -446,6 +446,8 @@
 
                     if (!inputAttributes.type) {
                       inputAttributes.type = "text";
+                    } else if (inputAttributes.type === "number") {
+                      inputAttributes.onwheel = "return false";
                     }
 
                     let inputAttributesString = "";

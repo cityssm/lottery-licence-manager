@@ -17,7 +17,7 @@ looking to move away from older, legacy systems.
 **This project is incomplete and under active development.**
 **Significant, breaking changes are happening with each commit.**
 **It is not ready to run in a live environment yet.**
-**Completion is expected by the end of 2020.**
+**Completion is expected by mid-2021.**
 
 It is being shared in it's current state to start the dialog
 among other Ontario municipalities and present an option to those

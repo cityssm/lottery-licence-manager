@@ -108,7 +108,11 @@
           <div class="column is-6">
             <p>
               <strong>Location</strong><br />
-              <a href="<%= urlPrefix %>/locations/<%=licence.locationID %>"><%= licence.locationDisplayName %></a>
+              <% if (licence.locationID) { %>
+                <a href="<%= urlPrefix %>/locations/<%=licence.locationID %>"><%= licence.locationDisplayName %></a>
+              <% } else { %>
+                <span class="has-text-grey">(No Location)</span>
+              <% } %>
             </p>
           </div>
         </div>
