@@ -1,6 +1,6 @@
 import type { cityssmGlobal } from "@cityssm/bulma-webapp-js/src/types";
 import type { llmGlobal } from "./types";
-import type * as llmTypes from "../../types/recordTypes";
+import type * as llmTypes from "../types/recordTypes";
 
 declare const cityssm: cityssmGlobal;
 declare const llm: llmGlobal;

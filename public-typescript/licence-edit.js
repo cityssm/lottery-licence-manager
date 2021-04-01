@@ -49,7 +49,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 }, (responseJSON) => {
                     if (responseJSON.success) {
                         cityssm.disableNavBlocker();
-                        window.location.href = "/licences";
+                        window.location.href = urlPrefix + "/licences";
                     }
                 });
             };
@@ -137,10 +137,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     listItemEle.setAttribute("data-organization-id", organizationObj.organizationID.toString());
                     listItemEle.setAttribute("data-organization-name", organizationObj.organizationName);
                     listItemEle.setAttribute("href", "#");
-                    listItemEle.innerHTML = organizationObj.organizationName + "<br />" +
+                    listItemEle.innerHTML = cityssm.escapeHTML(organizationObj.organizationName) + "<br />" +
                         "<span class=\"is-size-7\">" +
                         "<span class=\"icon\"><i class=\"fas fa-user\" aria-hidden=\"true\"></i></span> " +
-                        organizationObj.representativeName +
+                        (organizationObj.representativeName
+                            ? cityssm.escapeHTML(organizationObj.representativeName)
+                            : "<span class=\"has-text-grey\">(No Representative)</span>") +
                         "</span>";
                     listItemEle.addEventListener("click", organizationLookupFn_setOrganization);
                     listEle.appendChild(listItemEle);

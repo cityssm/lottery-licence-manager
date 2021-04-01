@@ -1,5 +1,5 @@
-import type * as recordTypes from "../../types/recordTypes";
-import type * as configTypes from "../../types/configTypes";
+import type * as recordTypes from "../types/recordTypes";
+import type * as configTypes from "../types/configTypes";
 export interface llmGlobal {
     arrayToObject?: (array: [], objectKey: string | number) => {};
     getDefaultConfigProperty?: (propertyName: string, propertyValueCallbackFn: (propertyValue: any) => void) => void;

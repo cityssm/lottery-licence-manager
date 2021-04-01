@@ -7,7 +7,7 @@ import * as minify from "gulp-minify";
 
 const publicJavascriptsMinFn = () => {
 
-  return gulp.src("public/javascripts/!(*.min).js", { allowEmpty: true })
+  return gulp.src("public-typescript/*.js", { allowEmpty: true })
     .pipe(minify({ noSource: true, ext: { min: ".min.js" } }))
     .pipe(gulp.dest("public/javascripts"));
 };
@@ -20,7 +20,7 @@ gulp.task("public-javascript-min", publicJavascriptsMinFn);
  */
 
 const watchFn = () => {
-  gulp.watch("public/javascripts/!(*.min).js", publicJavascriptsMinFn);
+  gulp.watch("public-typescript/*.js", publicJavascriptsMinFn);
 };
 
 gulp.task("watch", watchFn);

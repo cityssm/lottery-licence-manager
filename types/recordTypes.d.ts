@@ -153,6 +153,8 @@ export interface LotteryLicenceTicketType extends Record {
     eventDateString: string;
     ticketType: string;
     unitCount: number;
+    distributorLocationID: number;
+    manufacturerLocationID: number;
 }
 export interface LotteryLicenceTransaction extends Record {
     transactionIndex: number;
@@ -188,7 +190,7 @@ export interface LotteryEvent extends LotteryLicence {
     costs_adminSum?: number;
     costs_prizesAwardedSum?: number;
     eventFields: FieldData[];
-    costs?: LotteryEventCosts[];
+    eventCosts?: LotteryEventCosts[];
 }
 export interface LotteryEventCosts {
     licenceID?: number;

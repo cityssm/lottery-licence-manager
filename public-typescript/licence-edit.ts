@@ -1,8 +1,8 @@
 import type { cityssmGlobal } from "@cityssm/bulma-webapp-js/src/types";
 import type { llmGlobal } from "./types";
 
-import type * as recordTypes from "../../types/recordTypes";
-import type * as configTypes from "../../types/configTypes";
+import type * as recordTypes from "../types/recordTypes";
+import type * as configTypes from "../types/configTypes";
 
 declare const cityssm: cityssmGlobal;
 declare const llm: llmGlobal;
@@ -101,7 +101,7 @@ declare const llm: llmGlobal;
             if (responseJSON.success) {
 
               cityssm.disableNavBlocker();
-              window.location.href = "/licences";
+              window.location.href = urlPrefix + "/licences";
 
             }
           }
@@ -258,10 +258,12 @@ declare const llm: llmGlobal;
           listItemEle.setAttribute("data-organization-id", organizationObj.organizationID.toString());
           listItemEle.setAttribute("data-organization-name", organizationObj.organizationName);
           listItemEle.setAttribute("href", "#");
-          listItemEle.innerHTML = organizationObj.organizationName + "<br />" +
+          listItemEle.innerHTML = cityssm.escapeHTML(organizationObj.organizationName) + "<br />" +
             "<span class=\"is-size-7\">" +
             "<span class=\"icon\"><i class=\"fas fa-user\" aria-hidden=\"true\"></i></span> " +
-            organizationObj.representativeName +
+            (organizationObj.representativeName
+              ? cityssm.escapeHTML(organizationObj.representativeName)
+              : "<span class=\"has-text-grey\">(No Representative)</span>") +
             "</span>";
           listItemEle.addEventListener("click", organizationLookupFn_setOrganization);
 

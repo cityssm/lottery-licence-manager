@@ -21,15 +21,31 @@ const getEvent = (licenceID, eventDate, reqSession) => {
         eventObj.reportDateString = dateTimeFns.dateIntegerToString(eventObj.reportDate);
         eventObj.startTimeString = dateTimeFns.timeIntegerToString(eventObj.startTime || 0);
         eventObj.endTimeString = dateTimeFns.timeIntegerToString(eventObj.endTime || 0);
-        eventObj.costs_netProceeds = (eventObj.costs_receipts || 0) -
-            (eventObj.costs_admin || 0) -
-            (eventObj.costs_prizesAwarded || 0);
         eventObj.canUpdate = licencesDB_1.canUpdateObject(eventObj, reqSession);
-        const rows = db.prepare("select fieldKey, fieldValue" +
+        let rows = db.prepare("select fieldKey, fieldValue" +
             " from LotteryEventFields" +
             " where licenceID = ? and eventDate = ?")
             .all(licenceID, eventDate);
         eventObj.eventFields = rows || [];
+        rows = db.prepare("select t.ticketType," +
+            " c.costs_receipts, c.costs_admin, c.costs_prizesAwarded" +
+            " from LotteryLicenceTicketTypes t" +
+            " left join LotteryEventCosts c on t.licenceID = c.licenceID and t.eventDate = c.eventDate and t.ticketType = c.ticketType" +
+            " where t.licenceID = ?" +
+            " and t.eventDate = ?" +
+            " order by t.ticketType")
+            .all(licenceID, eventDate);
+        eventObj.eventCosts = rows || [];
+        if (eventObj.eventCosts.length === 0) {
+            rows = db.prepare("select c.ticketType," +
+                " c.costs_receipts, c.costs_admin, c.costs_prizesAwarded" +
+                " from LotteryEventCosts c" +
+                " where c.licenceID = ?" +
+                " and c.eventDate = ?" +
+                " order by c.ticketType")
+                .all(licenceID, eventDate);
+            eventObj.eventCosts = rows || [];
+        }
     }
     db.close();
     return eventObj;

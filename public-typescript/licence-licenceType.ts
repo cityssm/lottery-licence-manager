@@ -98,7 +98,10 @@ declare const llm: llmGlobal;
 
           trEle.insertAdjacentHTML(
             "beforeend",
-            "<td>" + cityssm.escapeHTML(licenceObj.locationDisplayName) + "</td>"
+            "<td>" +
+            ()
+            cityssm.escapeHTML(licenceObj.locationDisplayName) +
+             "</td>"
           );
 
           trEle.insertAdjacentHTML(

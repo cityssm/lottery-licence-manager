@@ -137,7 +137,7 @@
                   <div class="field">
                     <label class="label" for="event--bank_accountBalance">Account Balance</label>
                     <div class="control has-icons-left">
-                      <input class="input has-text-right" id="event--bank_accountBalance" name="bank_accountBalance" type="number" max="1000000000" step="0.01" value="<%= event.bank_accountBalance.toFixed(2) %>" onwheel="return false;" />
+                      <input class="input has-text-right" id="event--bank_accountBalance" name="bank_accountBalance" type="number" max="1000000000" step="0.01" value="<%= (event.bank_accountBalance ? event.bank_accountBalance.toFixed(2) : "") %>" onwheel="return false;" />
                       <span class="icon is-left">
                         <i class="fas fa-dollar-sign" aria-hidden="true"></i>
                       </span>
@@ -147,193 +147,120 @@
               </div>
             </div>
           </div>
-
-          <div class="panel">
-            <h2 class="panel-heading">Costs</h2>
-            <div class="panel-block is-block">
-              <label class="label" for="event--costs_receipts">Receipts</label>
-              <div class="field">
-                <div class="control has-icons-left">
-                  <input class="input has-text-right" id="event--costs_receipts" name="costs_receipts" type="number" min="0" max="10000000" step="0.01" value="<%= event.costs_receipts.toFixed(2) %>" onwheel="return false;" />
-                  <span class="icon is-left">
-                    <i class="fas fa-dollar-sign" aria-hidden="true"></i>
-                  </span>
-                </div>
-              </div>
-            </div>
-            <div class="panel-block is-block">
-              <label class="label" for="event--costs_admin">Administration</label>
-              <div class="field has-addons">
-                <div class="control">
-                  <span class="button is-static">
-                    <i class="fas fa-fw fa-minus" aria-hidden="true"></i>
-                  </span>
-                </div>
-                <div class="control is-expanded has-icons-left">
-                  <input class="input has-text-right" id="event--costs_admin" name="costs_admin" type="number" min="0" max="10000000" step="0.01" value="<%= event.costs_admin.toFixed(2) %>" onwheel="return false;"/>
-                  <span class="icon is-left">
-                    <i class="fas fa-dollar-sign" aria-hidden="true"></i>
-                  </span>
-                </div>
-              </div>
-
-              <label class="label" for="event--costs_prizesAwarded">Prizes Awarded</label>
-              <div class="field has-addons">
-                <div class="control">
-                  <span class="button is-static">
-                    <i class="fas fa-fw fa-minus" aria-hidden="true"></i>
-                  </span>
-                </div>
-                <div class="control is-expanded has-icons-left">
-                  <input class="input has-text-right" id="event--costs_prizesAwarded" name="costs_prizesAwarded" type="number" min="0" max="10000000" step="0.01" value="<%= event.costs_prizesAwarded.toFixed(2) %>" onwheel="return false;" />
-                  <span class="icon is-left">
-                    <i class="fas fa-dollar-sign" aria-hidden="true"></i>
-                  </span>
-                </div>
-              </div>
-            </div>
-            <div class="panel-block is-block">
-              <label class="label" for="event--costs_netProceeds">Net Proceeds</label>
-              <div class="field has-addons">
-                <div class="control">
-                  <span class="button is-static">
-                    <i class="fas fa-fw fa-equals" aria-hidden="true"></i>
-                  </span>
-                </div>
-                <div class="control is-expanded has-icons-left">
-                  <input class="input is-readonly has-text-right" id="event--costs_netProceeds" type="number" step="0.01" value="<%= event.costs_netProceeds.toFixed(2) %>" readonly onwheel="return false;" />
-                  <span class="icon is-left">
-                    <i class="fas fa-dollar-sign" aria-hidden="true"></i>
-                  </span>
-                </div>
-              </div>
-
-              <label class="label" for="event--costs_amountDonated">Prize Amount Donated</label>
-              <div class="field has-addons">
-                <div class="control">
-                  <span class="button is-static">
-                    <i class="fas fa-fw fa-hand-holding-usd" aria-hidden="true"></i>
-                  </span>
-                </div>
-                <div class="control is-expanded has-icons-left">
-                  <input class="input has-text-right" id="event--costs_amountDonated" name="costs_amountDonated" type="number" min="0" max="<%= event.costs_netProceeds %>" step="0.01" value="<%= event.costs_amountDonated.toFixed(2) %>" onwheel="return false;" />
-                  <span class="icon is-left">
-                    <i class="fas fa-dollar-sign" aria-hidden="true"></i>
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
-      <form id="form--event">
-        <div class="columns is-desktop">
-          <div class="column is-5-desktop">
-            <%- include('_event-view_edit-licenceFields'); -%>
-          </div>
-          <div class="column">
+
+      <div class="panel">
+        <h2 class="panel-heading">Costs</h2>
+
+      </div>
+
+      <div class="columns is-desktop">
+        <div class="column is-5-desktop">
+          <%- include('_event-view_edit-licenceFields'); -%>
+        </div>
+        <div class="column">
+          <%
+            const licenceType = configFns.getLicenceType(licence.licenceTypeKey);
+          %>
+          <div class="panel">
+            <h2 class="panel-heading">
+              Event Fields
+            </h2>
             <%
-              const licenceType = configFns.getLicenceType(licence.licenceTypeKey);
-            %>
-            <div class="panel">
-              <h2 class="panel-heading">
-                Event Fields
-              </h2>
-              <%
-                const eventFields = licenceType.eventFields || [];
-                let fieldKeys = "";
+              const eventFields = licenceType.eventFields || [];
+              let fieldKeys = "";
 
-                for (let fieldIndex = 0; fieldIndex < eventFields.length; fieldIndex += 1) {
-                  const eventField = eventFields[fieldIndex];
+              for (let fieldIndex = 0; fieldIndex < eventFields.length; fieldIndex += 1) {
+                const eventField = eventFields[fieldIndex];
 
-                  const inputName = licenceType.licenceTypeKey + "-" + eventField.fieldKey;
+                const inputName = licenceType.licenceTypeKey + "-" + eventField.fieldKey;
 
-                  let fieldValue = "";
-
-                  for (let savedFieldIndex = 0; savedFieldIndex < event.eventFields.length; savedFieldIndex += 1) {
-                    if (event.eventFields[savedFieldIndex].fieldKey === inputName) {
-                      event.eventFields[savedFieldIndex].isDisplayed = true;
-                      fieldValue = event.eventFields[savedFieldIndex].fieldValue;
-                      break;
-                    }
-                  }
-
-                  if (!eventField.isActive && fieldValue === "") {
-                    continue;
-                  }
-
-                  fieldKeys += "," + inputName;
-
-                  const inputAttributes = eventField.inputAttributes || {};
-
-                  if (!inputAttributes.type) {
-                    inputAttributes.type = "text";
-                  }
-
-                  let inputAttributesString = "";
-
-                  for (let attributeName in inputAttributes) {
-                    inputAttributesString += " " + attributeName + "=\"" + inputAttributes[attributeName] + "\"";
-                  }
-              %>
-                <div class="panel-block is-block">
-                  <div class="field">
-                    <label class="label" for="event--<%= inputName %>"><%= eventField.fieldLabel || eventField.fieldKey %></label>
-                    <div class="control">
-                      <input class="input" id="event--<%= inputName %>" name="<%= inputName %>" value="<%= fieldValue %>" <%- inputAttributesString %> />
-                    </div>
-                  </div>
-                </div>
-              <%
-                }
+                let fieldValue = "";
 
                 for (let savedFieldIndex = 0; savedFieldIndex < event.eventFields.length; savedFieldIndex += 1) {
-                  const savedField = event.eventFields[savedFieldIndex];
-                  if (!savedField.isDisplayed) {
-                    fieldKeys += "," + savedField.fieldKey;
-              %>
-                <div class="panel-block is-block">
-                  <div class="field">
-                    <label class="label" for="event--<%= savedField.fieldKey %>"><%= savedField.fieldKey %></label>
-                    <div class="control">
-                      <input class="input" id="licence--<%= savedField.fieldKey %>" name="<%= savedField.fieldKey %>" type="text" value="<%= savedField.fieldValue %>" />
-                    </div>
-                  </div>
-                </div>
-              <%
+                  if (event.eventFields[savedFieldIndex].fieldKey === inputName) {
+                    event.eventFields[savedFieldIndex].isDisplayed = true;
+                    fieldValue = event.eventFields[savedFieldIndex].fieldValue;
+                    break;
                   }
                 }
-              %>
-            </div>
-            <input name="fieldKeys" type="hidden" value="<%= fieldKeys %>" />
 
-            <div class="fixed-container is-fixed-bottom px-3 py-3 has-background-grey-light is-hidden-print">
-              <div class="level">
-                <div class="level-left" id="container--form-message"></div>
-                <div class="level-right">
-                  <div class="buttons">
-                    <button class="button is-success" type="submit">
-                      <span class="icon">
-                        <i class="fas fa-save" aria-hidden="true"></i>
-                      </span>
-                      <span>Update Event</span>
-                    </button>
-                    <div class="dropdown is-hoverable is-right is-up">
-                      <div class="dropdown-trigger">
-                        <button class="button" type="button" aria-haspopup="true">
-                          <span>Options</span>
-                          <span class="icon">
-                            <i class="fas fa-angle-up" aria-hidden="true"></i>
-                          </span>
-                        </button>
-                      </div>
-                      <div class="dropdown-menu" role="menu">
-                        <div class="dropdown-content">
-                          <a class="dropdown-item" id="is-delete-event-button" href="#">
-                            <span class="icon"><i class="fas fa-trash has-text-danger"></i></span>
-                            <span>Delete Event</span>
-                          </a>
-                        </div>
+                if (!eventField.isActive && fieldValue === "") {
+                  continue;
+                }
+
+                fieldKeys += "," + inputName;
+
+                const inputAttributes = eventField.inputAttributes || {};
+
+                if (!inputAttributes.type) {
+                  inputAttributes.type = "text";
+                }
+
+                let inputAttributesString = "";
+
+                for (let attributeName in inputAttributes) {
+                  inputAttributesString += " " + attributeName + "=\"" + inputAttributes[attributeName] + "\"";
+                }
+            %>
+              <div class="panel-block is-block">
+                <div class="field">
+                  <label class="label" for="event--<%= inputName %>"><%= eventField.fieldLabel || eventField.fieldKey %></label>
+                  <div class="control">
+                    <input class="input" id="event--<%= inputName %>" name="<%= inputName %>" value="<%= fieldValue %>" <%- inputAttributesString %> />
+                  </div>
+                </div>
+              </div>
+            <%
+              }
+
+              for (let savedFieldIndex = 0; savedFieldIndex < event.eventFields.length; savedFieldIndex += 1) {
+                const savedField = event.eventFields[savedFieldIndex];
+                if (!savedField.isDisplayed) {
+                  fieldKeys += "," + savedField.fieldKey;
+            %>
+              <div class="panel-block is-block">
+                <div class="field">
+                  <label class="label" for="event--<%= savedField.fieldKey %>"><%= savedField.fieldKey %></label>
+                  <div class="control">
+                    <input class="input" id="licence--<%= savedField.fieldKey %>" name="<%= savedField.fieldKey %>" type="text" value="<%= savedField.fieldValue %>" />
+                  </div>
+                </div>
+              </div>
+            <%
+                }
+              }
+            %>
+          </div>
+          <input name="fieldKeys" type="hidden" value="<%= fieldKeys %>" />
+
+          <div class="fixed-container is-fixed-bottom px-3 py-3 has-background-grey-light is-hidden-print">
+            <div class="level">
+              <div class="level-left" id="container--form-message"></div>
+              <div class="level-right">
+                <div class="buttons">
+                  <button class="button is-success" type="submit">
+                    <span class="icon">
+                      <i class="fas fa-save" aria-hidden="true"></i>
+                    </span>
+                    <span>Update Event</span>
+                  </button>
+                  <div class="dropdown is-hoverable is-right is-up">
+                    <div class="dropdown-trigger">
+                      <button class="button" type="button" aria-haspopup="true">
+                        <span>Options</span>
+                        <span class="icon">
+                          <i class="fas fa-angle-up" aria-hidden="true"></i>
+                        </span>
+                      </button>
+                    </div>
+                    <div class="dropdown-menu" role="menu">
+                      <div class="dropdown-content">
+                        <a class="dropdown-item" id="is-delete-event-button" href="#">
+                          <span class="icon"><i class="fas fa-trash has-text-danger"></i></span>
+                          <span>Delete Event</span>
+                        </a>
                       </div>
                     </div>
                   </div>

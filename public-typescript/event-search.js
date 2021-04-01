@@ -51,7 +51,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
                             "<small>" + cityssm.escapeHTML(eventObj.licenceDetails) + "</small>" +
                             "</td>") +
                         ("<td>" +
-                            cityssm.escapeHTML(eventObj.locationDisplayName) + "<br />" +
+                            (eventObj.locationDisplayName
+                                ? cityssm.escapeHTML(eventObj.locationDisplayName)
+                                : "<span class=\"has-text-grey\">(No Location)</span>") + "<br />" +
                             "<small>" + eventObj.startTimeString +
                             (eventObj.startTimeString === eventObj.endTimeString ? "" : " to " + eventObj.endTimeString) +
                             "</small>" +

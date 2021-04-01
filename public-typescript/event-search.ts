@@ -1,5 +1,5 @@
 import type { cityssmGlobal } from "@cityssm/bulma-webapp-js/src/types";
-import type * as llmTypes from "../../types/recordTypes";
+import type * as llmTypes from "../types/recordTypes";
 
 declare const cityssm: cityssmGlobal;
 
@@ -73,7 +73,9 @@ declare const cityssm: cityssmGlobal;
               "<small>" + cityssm.escapeHTML(eventObj.licenceDetails) + "</small>" +
               "</td>") +
             ("<td>" +
-              cityssm.escapeHTML(eventObj.locationDisplayName) + "<br />" +
+              (eventObj.locationDisplayName
+                ? cityssm.escapeHTML(eventObj.locationDisplayName)
+                : "<span class=\"has-text-grey\">(No Location)</span>") + "<br />" +
               "<small>" + eventObj.startTimeString +
               (eventObj.startTimeString === eventObj.endTimeString ? "" : " to " + eventObj.endTimeString) +
               "</small>" +
