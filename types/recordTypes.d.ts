@@ -196,9 +196,9 @@ export interface LotteryEventCosts {
     licenceID?: number;
     eventDate?: number;
     ticketType?: string;
-    costs_receipts: number;
-    costs_admin: number;
-    costs_prizesAwarded: number;
+    costs_receipts?: number;
+    costs_admin?: number;
+    costs_prizesAwarded?: number;
 }
 export interface FieldData {
     fieldKey: string;

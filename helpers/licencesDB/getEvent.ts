@@ -64,6 +64,15 @@ export const getEvent = (licenceID: number, eventDate: number, reqSession: expre
 
       eventObj.eventCosts = rows || [];
     }
+
+    if (eventObj.eventCosts.length === 0) {
+      eventObj.eventCosts.push({
+        ticketType: null,
+        costs_receipts: null,
+        costs_admin: null,
+        costs_prizesAwarded: null
+      });
+    }
   }
 
   db.close();

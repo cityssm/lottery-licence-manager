@@ -17,9 +17,13 @@
       <div class="column">
         <p>
           <strong>Location</strong><br />
-          <a class="has-tooltip-right" data-tooltip="View Location" href="<%= urlPrefix %>/locations/<%= licence.locationID %>">
-            <%= licence.locationDisplayName %>
-          </a>
+          <% if (licence.locationID) { %>
+            <a class="has-tooltip-right" data-tooltip="View Location" href="<%= urlPrefix %>/locations/<%= licence.locationID %>">
+              <%= licence.locationDisplayName %>
+            </a>
+          <% } else { %>
+            <span class="has-text-grey">(No Location Set)</span>
+          <% } %>
         </p>
       </div>
     </div>

@@ -19,14 +19,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 }
                 const trEle = document.createElement("tr");
                 trEle.insertAdjacentHTML("beforeend", "<td>" +
-                    "<a href=\"/licences/" + outstandingEventObj.licenceID.toString() + "\"" +
+                    "<a href=\"" + urlPrefix + "/licences/" + outstandingEventObj.licenceID.toString() + "\"" +
                     " data-tooltip=\"View Licence\" target=\"_blank\">" +
                     outstandingEventObj.externalLicenceNumber + "<br / > " +
                     "<small>Licence #" + outstandingEventObj.licenceID.toString() + "</small>" +
                     "</a>" +
                     "</td>");
                 trEle.insertAdjacentHTML("beforeend", `<td>${cityssm.escapeHTML(outstandingEventObj.licenceType)}</td>`);
-                const eventURL = "/events/" +
+                const eventURL = urlPrefix + "/events/" +
                     outstandingEventObj.licenceID.toString() + "/" +
                     outstandingEventObj.eventDate.toString();
                 trEle.insertAdjacentHTML("beforeend", `<td>
@@ -54,7 +54,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                             "<span class=\"sr-only\">Banking Information Recorded</span>") +
                     "</td>");
                 trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-centered\">" +
-                    (outstandingEventObj.costs_receipts === null || outstandingEventObj.costs_receipts === 0
+                    (outstandingEventObj.costs_receiptsSum === null || outstandingEventObj.costs_receiptsSum === 0
                         ? "<span class=\"icon\" data-tooltip=\"Receipts Amount Outstanding\">" +
                             "<i class=\"fas fa-times has-text-danger\" aria-hidden=\"true\"></i>" +
                             "</span>" +

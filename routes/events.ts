@@ -4,11 +4,19 @@ import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns";
 
 import * as permissionHandlers from "../handlers/permissions";
 
-import * as handler_view from "../handlers/events-get/view";
-import * as handler_edit from "../handlers/events-get/edit";
-import * as handler_poke from "../handlers/events-get/poke";
+import { handler as handler_view } from "../handlers/events-get/view";
+import { handler as handler_edit } from "../handlers/events-get/edit";
+import { handler as handler_poke } from "../handlers/events-get/poke";
 
-import { handler as hander_doSearch } from "../handlers/events-post/doSearch";
+import { handler as handler_outstanding } from "../handlers/events-get/outstanding";
+import { handler as handler_doGetOutstandingEvents } from "../handlers/events-post/doGetOutstandingEvents";
+
+import { handler as handler_financials } from "../handlers/events-get/financials";
+import { handler as handler_doGetFinancialSummary } from "../handlers/events-post/doGetFinancialSummary";
+
+import { handler as handler_doSearch } from "../handlers/events-post/doSearch";
+import { handler as handler_doGetPastBankInformation } from "../handlers/events-post/doGetPastBankInformation";
+import { handler as handler_doSave } from "../handlers/events-post/doSave";
 
 import * as licencesDB from "../helpers/licencesDB";
 
@@ -31,7 +39,7 @@ router.get("/", (_req, res) => {
 
 });
 
-router.post("/doSearch", hander_doSearch);
+router.post("/doSearch", handler_doSearch);
 
 /*
  * Events by Week
@@ -82,63 +90,18 @@ router.get("/recent", (req, res) => {
  * Outstanding Events Report
  */
 
-router.get("/outstanding", (_req, res) => {
+router.get("/outstanding", handler_outstanding);
 
-  res.render("event-outstanding", {
-    headTitle: "Outstanding Events"
-  });
-
-});
-
-router.post("/doGetOutstandingEvents", (req, res) => {
-
-  const events = licencesDB.getOutstandingEvents(req.body, req.session);
-
-  res.json(events);
-
-});
+router.post("/doGetOutstandingEvents", handler_doGetOutstandingEvents);
 
 
 /*
  * Financial Summary
  */
 
-router.get("/financials", (_req, res) => {
+router.get("/financials", handler_financials);
 
-  // Get event table stats
-
-  const eventTableStats = licencesDB.getEventTableStats();
-
-  // Set application dates
-
-  const eventDate = new Date();
-
-  eventDate.setMonth(eventDate.getMonth() - 1);
-  eventDate.setDate(1);
-
-  const eventDateStartString = dateTimeFns.dateToString(eventDate);
-
-  eventDate.setMonth(eventDate.getMonth() + 1);
-  eventDate.setDate(0);
-
-  const eventDateEndString = dateTimeFns.dateToString(eventDate);
-
-  res.render("event-financials", {
-    headTitle: "Financial Summary",
-    pageContainerIsFullWidth: true,
-    eventYearMin: (eventTableStats.eventYearMin || new Date().getFullYear() + 1),
-    eventDateStartString,
-    eventDateEndString
-  });
-
-});
-
-router.post("/doGetFinancialSummary", (req, res) => {
-
-  const summary = licencesDB.getEventFinancialSummary(req.body);
-  res.json(summary);
-
-});
+router.post("/doGetFinancialSummary", handler_doGetFinancialSummary);
 
 
 /*
@@ -146,48 +109,12 @@ router.post("/doGetFinancialSummary", (req, res) => {
  */
 
 
-router.post("/doGetPastBankInformation", (req, res) => {
-
-  const bankInfoList = licencesDB.getPastEventBankingInformation(req.body.licenceID);
-  res.json(bankInfoList);
-
-});
+router.post("/doGetPastBankInformation", handler_doGetPastBankInformation);
 
 
-router.post("/doSave", (req, res) => {
-
-  if (!req.session.user.userProperties.canUpdate) {
-
-    res
-      .status(403)
-      .json({
-        success: false,
-        message: "Forbidden"
-      });
-
-    return;
-
-  }
-
-  const changeCount = licencesDB.updateEvent(req.body, req.session);
-
-  if (changeCount) {
-
-    res.json({
-      success: true,
-      message: "Event updated successfully."
-    });
-
-  } else {
-
-    res.json({
-      success: false,
-      message: "Record Not Saved"
-    });
-
-  }
-
-});
+router.post("/doSave",
+  permissionHandlers.updatePostHandler,
+  handler_doSave);
 
 
 router.post("/doDelete", (req, res) => {
@@ -237,17 +164,17 @@ router.post("/doDelete", (req, res) => {
 });
 
 
-router.get("/:licenceID/:eventDate", handler_view.handler);
+router.get("/:licenceID/:eventDate", handler_view);
 
 
 router.get("/:licenceID/:eventDate/edit",
   permissionHandlers.updateGetHandler,
-  handler_edit.handler);
+  handler_edit);
 
 
 router.get("/:licenceID/:eventDate/poke",
   permissionHandlers.adminGetHandler,
-  handler_poke.handler);
+  handler_poke);
 
 
 export = router;

@@ -46,6 +46,14 @@ const getEvent = (licenceID, eventDate, reqSession) => {
                 .all(licenceID, eventDate);
             eventObj.eventCosts = rows || [];
         }
+        if (eventObj.eventCosts.length === 0) {
+            eventObj.eventCosts.push({
+                ticketType: null,
+                costs_receipts: null,
+                costs_admin: null,
+                costs_prizesAwarded: null
+            });
+        }
     }
     db.close();
     return eventObj;

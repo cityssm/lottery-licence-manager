@@ -33,16 +33,9 @@
       <%
         let hasOtherEvents = false;
 
-        let costs_receipts_otherSum = 0;
-        let costs_admin_otherSum = 0;
-        let costs_prizesAwarded_otherSum = 0;
-        let costs_netProceeds_otherSum = 0;
-        let costs_amountDonated_otherSum = 0;
-
         if (licence.events.length > 1) {
 
           hasOtherEvents = true;
-
       %>
       <div class="column is-narrow is-hidden-print">
         <div class="field is-grouped align-items-center justify-flex-end">
@@ -54,26 +47,16 @@
               <div class="select is-small">
                 <select id="eventNav--eventDate" data-licence-id="<%= licence.licenceID %>" data-is-edit="false">
                   <%
-                      for (let index = 0; index < licence.events.length; index += 1) {
+                    for (let index = 0; index < licence.events.length; index += 1) {
 
-                        const otherEventObj = licence.events[index];
-
-                        if (event.eventDateString !== otherEventObj.eventDateString) {
-
-                          costs_receipts_otherSum += (otherEventObj.costs_receipts || 0);
-                          costs_admin_otherSum += (otherEventObj.costs_admin || 0);
-                          costs_prizesAwarded_otherSum += (otherEventObj.costs_prizesAwarded || 0);
-                          costs_netProceeds_otherSum   += (otherEventObj.costs_netProceeds || 0);
-                          costs_amountDonated_otherSum += (otherEventObj.costs_amountDonated || 0);
-                        }
-
-                    %>
+                      const otherEventObj = licence.events[index];
+                  %>
                   <option value="<%= otherEventObj.eventDate %>" <%=(event.eventDate===otherEventObj.eventDate ? " selected" : "" ) %>>
                     <%= otherEventObj.eventDateString %>
                   </option>
                   <%
-                      }
-                    %>
+                    }
+                  %>
                 </select>
               </div>
               <div class="icon is-left">
@@ -134,7 +117,7 @@
             <p>
               <strong>Report Date</strong><br />
               <% if (event.reportDateString === "") { %>
-                <span class="has-text-grey-light">(Not Reported)</span>
+                <span class="has-text-grey">(Not Reported)</span>
               <% } else { %>
                 <%= event.reportDateString %>
               <% } %>
@@ -173,116 +156,111 @@
           </div>
         </div>
         <div class="panel">
-          <h2 class="panel-heading">Cost Breakdown</h2>
+          <h2 class="panel-heading">Event Cost Breakdown</h2>
           <table class="table is-fullwidth is-striped is-hoverable">
             <thead>
               <tr>
-                <th colspan="2"></th>
-                <th class="has-text-right is-vcentered">
-                  <%= event.eventDateString %><br />
-                  Event
-                </th>
-                <% if (licence.events.length > 1) { %>
-                  <th class="is-vcentered"><i class="fas fa-plus" aria-hidden="true"></i></th>
-                  <th class="has-text-right is-vcentered">
-                    Other
-                    <%= licence.events.length - 1 %>
-                    <%= licence.events.length === 2 ? "Event" : "Events" %>
-                  </th>
-                  <th class="is-vcentered"><i class="fas fa-equals" aria-hidden="true"></i></th>
-                  <th class="has-text-right is-vcentered">
-                    Licence<br />
-                    Total
-                  </th>
+                <% if (event.eventCosts[0].ticketType) { %>
+                  <th>Ticket Type</th>
                 <% } %>
+                <th class="has-text-centered">Receipts</th>
+                <td class="has-text-centered">
+                  <i class="fas fa-minus" aria-hidden="true"></i>
+                  <span class="sr-only">Minus</span>
+                </td>
+                <th class="has-text-centered">Admin Costs</th>
+                <td class="has-text-centered">
+                  <i class="fas fa-minus" aria-hidden="true"></i>
+                  <span class="sr-only">Minus</span>
+                </td>
+                <th class="has-text-centered">Prizes Awarded</th>
+                <td class="has-text-centered">
+                  <i class="fas fa-equals" aria-hidden="true"></i>
+                  <span class="sr-only">Equals</span>
+                </td>
+                <th class="has-text-centered">Net Proceeds</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <th colspan="2">Receipts</th>
-                <td class="has-text-right">
-                  $<%= (event.costs_receipts || 0).toFixed(2) %>
-                </td>
-                <% if (licence.events.length > 1) { %>
-                  <td class="has-text-grey-lighter"><i class="fas fa-plus" aria-hidden="true"></i></td>
+              <%
+                let costs_receiptsSum = 0;
+                let costs_adminSum = 0;
+                let costs_prizesAwardedSum = 0;
+                let costs_netProceedsSum = 0;
+              %>
+              <% for (const eventCost of event.eventCosts) { %>
+                <%
+                  const ticketType = (eventCost.ticketType || "");
+
+                  costs_receiptsSum += (eventCost.costs_receipts || 0);
+                  costs_adminSum += (eventCost.costs_admin || 0);
+                  costs_prizesAwardedSum += (eventCost.costs_prizesAwarded || 0);
+                  costs_netProceedsSum += (eventCost.costs_netProceeds || 0);
+                %>
+                <tr>
+                  <% if (eventCost.ticketType) { %>
+                    <th><%= eventCost.ticketType %></th>
+                  <% } %>
                   <td class="has-text-right">
-                    $<%= costs_receipts_otherSum.toFixed(2) %>
+                    <%= htmlFns.formatDollarsAsHTML(eventCost.costs_receipts || 0) %>
                   </td>
-                  <td class="has-text-grey-lighter"><i class="fas fa-equals" aria-hidden="true"></i></td>
+                  <td class="has-text-centered has-text-grey">
+                    <i class="fas fa-minus" aria-hidden="true"></i>
+                    <span class="sr-only">Minus</span>
+                  </td>
                   <td class="has-text-right">
-                    $<%= (event.costs_receipts + costs_receipts_otherSum).toFixed(2) %>
+                    <%= htmlFns.formatDollarsAsHTML(eventCost.costs_admin || 0) %>
                   </td>
-                <% } %>
-              </tr>
-              <tr>
-                <td class="has-width-1"><i class="fas fa-minus" aria-hidden="true"></i></td>
-                <th>Administration</th>
-                <td class="has-text-right">
-                  $<%= (event.costs_admin || 0).toFixed(2) %>
-                </td>
-                <% if (licence.events.length > 1) { %>
-                  <td class="has-text-grey-lighter"><i class="fas fa-plus" aria-hidden="true"></i></td>
+                  <td class="has-text-centered has-text-grey">
+                    <i class="fas fa-minus" aria-hidden="true"></i>
+                    <span class="sr-only">Minus</span>
+                  </td>
                   <td class="has-text-right">
-                    $<%= costs_admin_otherSum.toFixed(2) %>
+                    <%= htmlFns.formatDollarsAsHTML(eventCost.costs_prizesAwarded || 0) %>
                   </td>
-                  <td class="has-text-grey-lighter"><i class="fas fa-equals" aria-hidden="true"></i></td>
+                  <td class="has-text-centered has-text-grey">
+                    <i class="fas fa-equals" aria-hidden="true"></i>
+                    <span class="sr-only">Equals</span>
+                  </td>
                   <td class="has-text-right">
-                    $<%= (event.costs_admin + costs_admin_otherSum).toFixed(2) %>
+                    <%
+                      const costs_netProceeds = (eventCost.costs_receipts || 0) - (eventCost.costs_admin || 0) - (eventCost.costs_prizesAwarded || 0);
+                      costs_netProceedsSum += costs_netProceeds;
+                    %>
+                    <%= htmlFns.formatDollarsAsHTML(costs_netProceeds) %>
                   </td>
-                <% } %>
-              </tr>
-              <tr>
-                <td><i class="fas fa-minus" aria-hidden="true"></i></td>
-                <th>Prizes Awarded</th>
-                <td class="has-text-right">
-                  $<%= (event.costs_prizesAwarded || 0).toFixed(2) %>
-                </td>
-                <% if (licence.events.length > 1) { %>
-                  <td class="has-text-grey-lighter"><i class="fas fa-plus" aria-hidden="true"></i></td>
-                  <td class="has-text-right">
-                    $<%= costs_prizesAwarded_otherSum.toFixed(2) %>
-                  </td>
-                  <td class="has-text-grey-lighter"><i class="fas fa-equals" aria-hidden="true"></i></td>
-                  <td class="has-text-right">
-                    $<%= (event.costs_prizesAwarded + costs_prizesAwarded_otherSum).toFixed(2) %>
-                  </td>
-                <% } %>
-              </tr>
-              <tr>
-                <th class="has-border-top-width-3"><i class="fas fa-equals" aria-hidden="true"></i></th>
-                <th class="has-border-top-width-3">Net Proceeds</th>
-                <td class="has-border-top-width-3 has-text-right">
-                  <%- htmlFns.formatDollarsAsHTML(event.costs_netProceeds) %>
-                </td>
-                <% if (licence.events.length > 1) { %>
-                  <td class="has-border-top-width-3 has-text-grey-lighter"><i class="fas fa-plus" aria-hidden="true"></i></td>
-                  <td class="has-border-top-width-3 has-text-right">
-                    <%- htmlFns.formatDollarsAsHTML(costs_netProceeds_otherSum) %>
-                  </td>
-                  <td class="has-border-top-width-3 has-text-grey-lighter"><i class="fas fa-equals" aria-hidden="true"></i></td>
-                  <td class="has-border-top-width-3 has-text-right">
-                    <%- htmlFns.formatDollarsAsHTML(event.costs_netProceeds + costs_netProceeds_otherSum) %>
-                  </td>
-                <% } %>
-              </tr>
-              <tr>
-                <td></td>
-                <th>Amount Donated</th>
-                <td class="has-text-right">
-                  $<%= (event.costs_amountDonated || 0).toFixed(2) %>
-                </td>
-                <% if (licence.events.length > 1) { %>
-                  <td class="has-text-grey-lighter"><i class="fas fa-plus" aria-hidden="true"></i></td>
-                  <td class="has-text-right">
-                    $<%= costs_amountDonated_otherSum.toFixed(2) %>
-                  </td>
-                  <td class="has-text-grey-lighter"><i class="fas fa-equals" aria-hidden="true"></i></td>
-                  <td class="has-text-right">
-                    $<%= (event.costs_amountDonated + costs_amountDonated_otherSum).toFixed(2) %>
-                  </td>
-                <% } %>
-              </tr>
+                </tr>
+              <% } %>
             </tbody>
+            <tfoot>
+              <% if (event.eventCosts[0].ticketType) { %>
+                <th></th>
+              <% } %>
+              <th class="has-text-right">
+                <%= htmlFns.formatDollarsAsHTML(costs_receiptsSum) %>
+              </th>
+              <td class="has-text-centered is-vcentered has-text-grey">
+                <i class="fas fa-minus" aria-hidden="true"></i>
+                <span class="sr-only">Minus</span>
+              </td>
+              <th class="has-text-right">
+                <%= htmlFns.formatDollarsAsHTML(costs_adminSum) %>
+              </th>
+              <td class="has-text-centered is-vcentered has-text-grey">
+                <i class="fas fa-minus" aria-hidden="true"></i>
+                <span class="sr-only">Minus</span>
+              </td>
+              <th class="has-text-right">
+                <%= htmlFns.formatDollarsAsHTML(costs_prizesAwardedSum) %>
+              </th>
+              <td class="has-text-centered is-vcentered has-text-grey">
+                <i class="fas fa-equals" aria-hidden="true"></i>
+                <span class="sr-only">Equals</span>
+              </td>
+              <th class="has-text-right">
+                <%= htmlFns.formatDollarsAsHTML(costs_netProceedsSum) %>
+              </th>
+            </tfoot>
           </table>
         </div>
       </div>

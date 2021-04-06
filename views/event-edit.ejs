@@ -151,12 +151,138 @@
       </div>
 
       <div class="panel">
-        <h2 class="panel-heading">Costs</h2>
-
+        <h2 class="panel-heading">Event Cost Breakdown</h2>
+        <table class="table is-fullwidth is-striped is-hoverable" id="event--costs">
+          <thead>
+            <tr>
+              <% if (event.eventCosts[0].ticketType) { %>
+                <th>Ticket Type</th>
+              <% } %>
+              <th class="has-text-centered">Receipts</th>
+              <td class="has-text-centered">
+                <i class="fas fa-minus" aria-hidden="true"></i>
+                <span class="sr-only">Minus</span>
+              </td>
+              <th class="has-text-centered">Admin Costs</th>
+              <td class="has-text-centered">
+                <i class="fas fa-minus" aria-hidden="true"></i>
+                <span class="sr-only">Minus</span>
+              </td>
+              <th class="has-text-centered">Prizes Awarded</th>
+              <td class="has-text-centered">
+                <i class="fas fa-equals" aria-hidden="true"></i>
+                <span class="sr-only">Equals</span>
+              </td>
+              <th class="has-text-centered">Net Proceeds</th>
+            </tr>
+          </thead>
+          <tbody>
+            <%
+              let ticketTypesCSV = "";
+            %>
+            <% for (const eventCost of event.eventCosts) { %>
+              <%
+                const ticketType = (eventCost.ticketType || "");
+                ticketTypesCSV += "," + ticketType;
+              %>
+              <tr data-ticket-type="<%= ticketType %>">
+                <% if (eventCost.ticketType) { %>
+                  <th class="is-vcentered"><%= eventCost.ticketType %></th>
+                <% } %>
+                <td>
+                  <div class="field">
+                    <div class="control has-icons-left">
+                      <input class="input has-text-right" name="costs_receipts-<%= ticketType %>" data-cost="receipts" type="number" value="<%= eventCost.costs_receipts %>" min="0" max="99999999.99" step="0.01" aria-label="Receipts" onwheel="return false" />
+                      <span class="icon is-small is-left">
+                        <i class="fas fa-dollar-sign" aria-hidden="true"></i>
+                      </span>
+                    </div>
+                  </div>
+                </td>
+                <td class="has-text-centered is-vcentered has-text-grey">
+                  <i class="fas fa-minus" aria-hidden="true"></i>
+                  <span class="sr-only">Minus</span>
+                </td>
+                <td>
+                  <div class="field">
+                    <div class="control has-icons-left">
+                      <input class="input has-text-right" name="costs_admin-<%= ticketType %>" data-cost="admin" type="number" value="<%= eventCost.costs_admin %>" min="0" max="99999999.99" step="0.01" aria-label="Admin Costs" onwheel="return false" />
+                      <span class="icon is-small is-left">
+                        <i class="fas fa-dollar-sign" aria-hidden="true"></i>
+                      </span>
+                    </div>
+                  </div>
+                </td>
+                <td class="has-text-centered is-vcentered has-text-grey">
+                  <i class="fas fa-minus" aria-hidden="true"></i>
+                  <span class="sr-only">Minus</span>
+                </td>
+                <td>
+                  <div class="field">
+                    <div class="control has-icons-left">
+                      <input class="input has-text-right" name="costs_prizesAwarded-<%= ticketType %>" data-cost="prizesAwarded" type="number" value="<%= eventCost.costs_prizesAwarded %>" min="0" max="99999999.99" step="0.01" aria-label="Prizes Awarded" onwheel="return false" />
+                      <span class="icon is-small is-left">
+                        <i class="fas fa-dollar-sign" aria-hidden="true"></i>
+                      </span>
+                    </div>
+                  </div>
+                </td>
+                <td class="has-text-centered is-vcentered has-text-grey">
+                  <i class="fas fa-equals" aria-hidden="true"></i>
+                  <span class="sr-only">Equals</span>
+                </td>
+                <td class="is-vcentered has-text-right" id="event--costs_netProceeds-<%= ticketType %>">
+                  <%
+                    const costs_netProceeds = (eventCost.costs_receipts || 0) - (eventCost.costs_admin || 0) - (eventCost.costs_prizesAwarded || 0);
+                  %>
+                  $<%= costs_netProceeds.toFixed(2) %>
+                </td>
+              </tr>
+            <% } %>
+          </tbody>
+          <tfoot>
+            <% if (event.eventCosts[0].ticketType) { %>
+              <th></th>
+            <% } %>
+            <th class="has-text-right" id="event--costs_receiptsSum"></th>
+            <td class="has-text-centered is-vcentered has-text-grey">
+              <i class="fas fa-minus" aria-hidden="true"></i>
+              <span class="sr-only">Minus</span>
+            </td>
+            <th class="has-text-right" id="event--costs_adminSum"></th>
+            <td class="has-text-centered is-vcentered has-text-grey">
+              <i class="fas fa-minus" aria-hidden="true"></i>
+              <span class="sr-only">Minus</span>
+            </td>
+            <th class="has-text-right" id="event--costs_prizesAwardedSum"></th>
+            <td class="has-text-centered is-vcentered has-text-grey">
+              <i class="fas fa-equals" aria-hidden="true"></i>
+              <span class="sr-only">Equals</span>
+            </td>
+            <th class="has-text-right" id="event--costs_netProceedsSum"></th>
+          </tfoot>
+        </table>
+        <input name="ticketTypes" type="hidden" value="<%= (ticketTypesCSV.charAt(0) === "," ? ticketTypesCSV.substring(1) : ticketTypesCSV) %>" />
       </div>
 
       <div class="columns is-desktop">
         <div class="column is-5-desktop">
+          <div class="panel">
+            <h2 class="panel-heading">
+              Donation
+            </h2>
+            <div class="panel-block is-block">
+              <div class="field">
+                <label class="label" for="event--costs_amountDonated">Amount Donated</label>
+                <div class="control has-icons-left">
+                  <input class="input has-text-right" id="event--costs_amountDonated" name="costs_amountDonated" type="number" value="<%= event.costs_amountDonated %>" min="0" max="99999999.99" step="0.01" />
+                  <span class="icon is-small is-left">
+                    <i class="fas fa-dollar-sign" aria-hidden="true"></i>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
           <%- include('_event-view_edit-licenceFields'); -%>
         </div>
         <div class="column">
@@ -196,6 +322,8 @@
 
                 if (!inputAttributes.type) {
                   inputAttributes.type = "text";
+                } else if (inputAttributes.type === "number") {
+                  inputAttributes.onwheel = "return false";
                 }
 
                 let inputAttributesString = "";
@@ -224,7 +352,7 @@
                 <div class="field">
                   <label class="label" for="event--<%= savedField.fieldKey %>"><%= savedField.fieldKey %></label>
                   <div class="control">
-                    <input class="input" id="licence--<%= savedField.fieldKey %>" name="<%= savedField.fieldKey %>" type="text" value="<%= savedField.fieldValue %>" />
+                    <input class="input" id=event--<%= savedField.fieldKey %>" name="<%= savedField.fieldKey %>" type="text" value="<%= savedField.fieldValue %>" />
                   </div>
                 </div>
               </div>
@@ -233,7 +361,7 @@
               }
             %>
           </div>
-          <input name="fieldKeys" type="hidden" value="<%= fieldKeys %>" />
+          <input name="fieldKeys" type="hidden" value="<%= (fieldKeys.charAt(0) === "," ? fieldKeys.substring(1) : fieldKeys) %>" />
 
           <div class="fixed-container is-fixed-bottom px-3 py-3 has-background-grey-light is-hidden-print">
             <div class="level">

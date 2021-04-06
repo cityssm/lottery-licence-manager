@@ -101,19 +101,58 @@ Object.defineProperty(exports, "__esModule", { value: true });
             }
         });
     });
-    const costs_receipts_ele = document.getElementById("event--costs_receipts");
-    const costs_admin_ele = document.getElementById("event--costs_admin");
-    const costs_prizesAwarded_ele = document.getElementById("event--costs_prizesAwarded");
-    const costs_netProceeds_ele = document.getElementById("event--costs_netProceeds");
-    const costs_amountDonated_ele = document.getElementById("event--costs_amountDonated");
-    const refreshNetProceedsFn = () => {
-        const netProceeds = (parseFloat(costs_receipts_ele.value || "0") -
-            parseFloat(costs_admin_ele.value || "0") -
-            parseFloat(costs_prizesAwarded_ele.value || "0")).toFixed(2);
-        costs_netProceeds_ele.value = netProceeds;
-        costs_amountDonated_ele.setAttribute("max", netProceeds);
+    const costs_sums = {
+        receipts: 0,
+        admin: 0,
+        prizesAwarded: 0
     };
-    costs_receipts_ele.addEventListener("keyup", refreshNetProceedsFn);
-    costs_admin_ele.addEventListener("keyup", refreshNetProceedsFn);
-    costs_prizesAwarded_ele.addEventListener("keyup", refreshNetProceedsFn);
+    const costs_tableEle = document.getElementById("event--costs");
+    const costsFn_calculateRow = (keyupEvent) => {
+        let netProceeds = 0;
+        const trEle = keyupEvent.currentTarget.closest("tr");
+        const inputEles = trEle.getElementsByTagName("input");
+        for (let inputIndex = 0; inputIndex < inputEles.length; inputIndex += 1) {
+            const value = parseFloat(inputEles[inputIndex].value || "0");
+            netProceeds += (inputEles[inputIndex].getAttribute("data-cost") === "receipts" ? 1 : -1) * value;
+        }
+        document.getElementById("event--costs_netProceeds-" + trEle.getAttribute("data-ticket-type"))
+            .innerText = "$" + netProceeds.toFixed(2);
+    };
+    const costsFn_calculateTotal = (columnName) => {
+        costs_sums[columnName] = 0;
+        costs_tableEle.querySelectorAll("input[data-cost='" + columnName + "']").forEach((inputEle) => {
+            costs_sums[columnName] += parseFloat(inputEle.value || "0");
+        });
+        document.getElementById("event--costs_" + columnName + "Sum").innerText = "$" + costs_sums[columnName].toFixed(2);
+        document.getElementById("event--costs_netProceedsSum").innerText = "$" +
+            (costs_sums.receipts - costs_sums.admin - costs_sums.prizesAwarded).toFixed(2);
+    };
+    const costsFn_calculateReceipts = () => {
+        costsFn_calculateTotal("receipts");
+    };
+    const costsFn_calculateAdmin = () => {
+        costsFn_calculateTotal("admin");
+    };
+    const costsFn_calculatePrizesAwarded = () => {
+        costsFn_calculateTotal("prizesAwarded");
+    };
+    const costsInputEles = costs_tableEle.getElementsByTagName("input");
+    for (let inputIndex = 0; inputIndex < costsInputEles.length; inputIndex += 1) {
+        const inputEle = costsInputEles[inputIndex];
+        inputEle.addEventListener("keyup", costsFn_calculateRow);
+        switch (inputEle.getAttribute("data-cost")) {
+            case "receipts":
+                inputEle.addEventListener("keyup", costsFn_calculateReceipts);
+                break;
+            case "admin":
+                inputEle.addEventListener("keyup", costsFn_calculateAdmin);
+                break;
+            case "prizesAwarded":
+                inputEle.addEventListener("keyup", costsFn_calculatePrizesAwarded);
+                break;
+        }
+    }
+    costsFn_calculateTotal("receipts");
+    costsFn_calculateTotal("admin");
+    costsFn_calculateTotal("prizesAwarded");
 })();

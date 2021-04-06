@@ -151,7 +151,7 @@ export interface OrganizationBankRecord extends Record {
   recordNote: string;
 
   recordIsNA: boolean;
-}
+};
 
 export interface LotteryLicence extends Location, Record {
   recordType: "licence" | "event";
@@ -196,7 +196,7 @@ export interface LotteryLicence extends Location, Record {
   licenceTransactions: LotteryLicenceTransaction[];
 
   events: LotteryEvent[];
-}
+};
 
 export interface LotteryLicenceTicketType extends Record {
   licenceID: number;
@@ -206,7 +206,7 @@ export interface LotteryLicenceTicketType extends Record {
   unitCount: number;
   distributorLocationID: number;
   manufacturerLocationID: number;
-}
+};
 
 export interface LotteryLicenceTransaction extends Record {
   transactionIndex: number;
@@ -217,7 +217,7 @@ export interface LotteryLicenceTransaction extends Record {
   externalReceiptNumber: string;
   transactionAmount: number;
   transactionNote: string;
-}
+};
 
 export interface LotteryLicenceAmendment extends Record {
   amendmentIndex: number;
@@ -226,7 +226,7 @@ export interface LotteryLicenceAmendment extends Record {
   amendmentType: string;
   amendment: string;
   isHidden: boolean;
-}
+};
 
 export interface LotteryEvent extends LotteryLicence {
 
@@ -251,16 +251,16 @@ export interface LotteryEvent extends LotteryLicence {
 
   eventFields: FieldData[];
   eventCosts?: LotteryEventCosts[];
-}
+};
 
 export interface LotteryEventCosts {
   licenceID?: number;
   eventDate?: number;
   ticketType?: string;
 
-  costs_receipts: number;
-  costs_admin: number;
-  costs_prizesAwarded: number;
+  costs_receipts?: number;
+  costs_admin?: number;
+  costs_prizesAwarded?: number;
 };
 
 export interface FieldData {

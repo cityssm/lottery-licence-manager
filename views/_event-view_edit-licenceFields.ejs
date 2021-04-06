@@ -15,9 +15,9 @@
       const licenceField = licence.licenceFields[fieldIndex];
       licenceFieldValueMap[licenceField.fieldKey] = licenceField.fieldValue;
     }
-
-    for (let configIndex = 0; configIndex < licenceType.licenceFields.length; configIndex += 1) {
-
+  %>
+  <% for (let configIndex = 0; configIndex < licenceType.licenceFields.length; configIndex += 1) { %>
+    <%
       const licenceFieldConfig = licenceType.licenceFields[configIndex];
 
       if (!licenceFieldConfig.isShownOnEvent) {
@@ -29,18 +29,27 @@
       if (!licenceFieldConfig.isActive && (licenceFieldValue === null || licenceFieldValue === "")) {
         continue;
       }
-  %>
-      <div class="panel-block">
-        <p>
-          <strong><%= licenceFieldConfig.fieldLabel %></strong><br />
-          <% if (licenceFieldValue && licenceFieldValue.trim() !== "") { %>
-            <%= licenceFieldValue %>
-          <% } else { %>
-            <span class="has-text-grey">(Not Set)</span>
-          <% } %>
+
+      hasFields = true;
+    %>
+    <div class="panel-block">
+      <p>
+        <strong><%= licenceFieldConfig.fieldLabel %></strong><br />
+        <% if (licenceFieldValue && licenceFieldValue.trim() !== "") { %>
+          <%= licenceFieldValue %>
+        <% } else { %>
+          <span class="has-text-grey">(Not Set)</span>
+        <% } %>
+      </p>
+    </div>
+  <% } %>
+  <% if (!hasFields) { %>
+    <div class="panel-block is-block">
+      <div class="message is-info">
+        <p class="message-body">
+          There are no additional licence fields to show.
         </p>
       </div>
-  <%
-    }
-  %>
+    </div>
+  <% } %>
 </div>
