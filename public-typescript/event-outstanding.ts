@@ -37,25 +37,27 @@ declare const cityssm: cityssmGlobal;
 
           const trEle = document.createElement("tr");
 
+          const licenceURL = urlPrefix + "/licences/" + outstandingEventObj.licenceID.toString();
+
           trEle.insertAdjacentHTML("beforeend", "<td>" +
-            "<a href=\"" + urlPrefix + "/licences/" + outstandingEventObj.licenceID.toString() + "\"" +
+            "<a href=\"" + cityssm.escapeHTML(licenceURL) + "\"" +
             " data-tooltip=\"View Licence\" target=\"_blank\">" +
-            outstandingEventObj.externalLicenceNumber + "<br / > " +
+            cityssm.escapeHTML(outstandingEventObj.externalLicenceNumber) + "<br / > " +
             "<small>Licence #" + outstandingEventObj.licenceID.toString() + "</small>" +
             "</a>" +
             "</td>");
 
-          trEle.insertAdjacentHTML("beforeend", `<td>${cityssm.escapeHTML(outstandingEventObj.licenceType)}</td>`);
+          trEle.insertAdjacentHTML("beforeend", "<td>" + cityssm.escapeHTML(outstandingEventObj.licenceType) + "</td>");
 
           const eventURL = urlPrefix + "/events/" +
             outstandingEventObj.licenceID.toString() + "/" +
             outstandingEventObj.eventDate.toString();
 
-          trEle.insertAdjacentHTML("beforeend", `<td>
-          <a href="${eventURL}" data-tooltip="View Event" target="_blank">
-          ${outstandingEventObj.eventDateString}
-          </a>
-          </td>`);
+          trEle.insertAdjacentHTML("beforeend", "<td>" +
+            "<a href=\"" + cityssm.escapeHTML(eventURL) + "\" data-tooltip=\"View Event\" target=\"_blank\">" +
+            cityssm.escapeHTML(outstandingEventObj.eventDateString) +
+            "</a>" +
+            "</td>");
 
           trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-centered\">" +
             (outstandingEventObj.reportDate === null || outstandingEventObj.reportDate === 0
