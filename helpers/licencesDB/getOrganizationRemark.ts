@@ -29,12 +29,14 @@ export const getOrganizationRemark =
 
     db.close();
 
-    remark.recordType = "remark";
+    if (remark) {
+      remark.recordType = "remark";
 
-    remark.remarkDateString = dateTimeFns.dateIntegerToString(remark.remarkDate || 0);
-    remark.remarkTimeString = dateTimeFns.timeIntegerToString(remark.remarkTime || 0);
+      remark.remarkDateString = dateTimeFns.dateIntegerToString(remark.remarkDate || 0);
+      remark.remarkTimeString = dateTimeFns.timeIntegerToString(remark.remarkTime || 0);
 
-    remark.canUpdate = canUpdateObject(remark, reqSession);
+      remark.canUpdate = canUpdateObject(remark, reqSession);
+    }
 
     return remark;
   };

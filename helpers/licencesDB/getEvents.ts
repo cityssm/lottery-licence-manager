@@ -39,17 +39,17 @@ export const getEvents = (reqBody: {
     " and e.eventDate > (? * 10000)" +
     " and e.eventDate < (? * 10000) + 9999";
 
-  if (reqBody.externalLicenceNumber !== "") {
+  if (reqBody.externalLicenceNumber && reqBody.externalLicenceNumber !== "") {
     sql += " and instr(lower(l.externalLicenceNumber), ?) > 0";
     sqlParams.push(reqBody.externalLicenceNumber);
   }
 
-  if (reqBody.licenceTypeKey !== "") {
+  if (reqBody.licenceTypeKey && reqBody.licenceTypeKey !== "") {
     sql += " and l.licenceTypeKey = ?";
     sqlParams.push(reqBody.licenceTypeKey);
   }
 
-  if (reqBody.organizationName !== "") {
+  if (reqBody.organizationName && reqBody.organizationName !== "") {
 
     const organizationNamePieces = reqBody.organizationName.toLowerCase().split(" ");
 
@@ -59,7 +59,7 @@ export const getEvents = (reqBody: {
     }
   }
 
-  if (reqBody.locationName !== "") {
+  if (reqBody.locationName && reqBody.locationName !== "") {
 
     const locationNamePieces = reqBody.locationName.toLowerCase().split(" ");
 

@@ -26,22 +26,22 @@ const getEvents = (reqBody, reqSession) => {
         " and l.recordDelete_timeMillis is null" +
         " and e.eventDate > (? * 10000)" +
         " and e.eventDate < (? * 10000) + 9999";
-    if (reqBody.externalLicenceNumber !== "") {
+    if (reqBody.externalLicenceNumber && reqBody.externalLicenceNumber !== "") {
         sql += " and instr(lower(l.externalLicenceNumber), ?) > 0";
         sqlParams.push(reqBody.externalLicenceNumber);
     }
-    if (reqBody.licenceTypeKey !== "") {
+    if (reqBody.licenceTypeKey && reqBody.licenceTypeKey !== "") {
         sql += " and l.licenceTypeKey = ?";
         sqlParams.push(reqBody.licenceTypeKey);
     }
-    if (reqBody.organizationName !== "") {
+    if (reqBody.organizationName && reqBody.organizationName !== "") {
         const organizationNamePieces = reqBody.organizationName.toLowerCase().split(" ");
         for (const organizationNamePiece of organizationNamePieces) {
             sql += " and instr(lower(o.organizationName), ?)";
             sqlParams.push(organizationNamePiece);
         }
     }
-    if (reqBody.locationName !== "") {
+    if (reqBody.locationName && reqBody.locationName !== "") {
         const locationNamePieces = reqBody.locationName.toLowerCase().split(" ");
         for (const locationNamePiece of locationNamePieces) {
             sql += " and (instr(lower(lo.locationName), ?) or instr(lower(lo.locationAddress1), ?))";

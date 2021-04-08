@@ -19,10 +19,12 @@ const getOrganizationRemark = (organizationID, remarkIndex, reqSession) => {
         " and remarkIndex = ?")
         .get(organizationID, remarkIndex);
     db.close();
-    remark.recordType = "remark";
-    remark.remarkDateString = dateTimeFns.dateIntegerToString(remark.remarkDate || 0);
-    remark.remarkTimeString = dateTimeFns.timeIntegerToString(remark.remarkTime || 0);
-    remark.canUpdate = licencesDB_1.canUpdateObject(remark, reqSession);
+    if (remark) {
+        remark.recordType = "remark";
+        remark.remarkDateString = dateTimeFns.dateIntegerToString(remark.remarkDate || 0);
+        remark.remarkTimeString = dateTimeFns.timeIntegerToString(remark.remarkTime || 0);
+        remark.canUpdate = licencesDB_1.canUpdateObject(remark, reqSession);
+    }
     return remark;
 };
 exports.getOrganizationRemark = getOrganizationRemark;

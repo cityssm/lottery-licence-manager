@@ -21,7 +21,6 @@ export const getDashboardStats = () => {
     readonly: true
   });
 
-
   const licenceStats: {
     licenceCount: number;
     distinctOrganizationCount: number;

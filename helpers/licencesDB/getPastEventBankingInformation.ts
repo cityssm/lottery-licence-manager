@@ -18,10 +18,15 @@ export const getPastEventBankingInformation = (licenceID: number | string) => {
     readonly: true
   });
 
-  const organizationID = db.prepare("select organizationID from LotteryLicences" +
+  const organizationIDResult = db.prepare("select organizationID from LotteryLicences" +
     " where licenceID = ?")
-    .get(licenceID)
-    .organizationID;
+    .get(licenceID);
+
+  if (!organizationIDResult) {
+    return [];
+  }
+
+  const organizationID = organizationIDResult.organizationID;
 
   const cutoffDateInteger = dateTimeFns.dateToInteger(new Date()) - 50000;
 
