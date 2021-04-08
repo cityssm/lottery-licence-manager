@@ -5,18 +5,6 @@ import { unissueLicence } from "../../helpers/licencesDB/unissueLicence";
 
 export const handler: RequestHandler = (req, res) => {
 
-  if (!req.session.user.userProperties.canCreate) {
-
-    res
-      .status(403)
-      .json({
-        success: false,
-        message: "Forbidden"
-      });
-    return;
-
-  }
-
   const success = unissueLicence(req.body.licenceID, req.session);
 
   if (success) {

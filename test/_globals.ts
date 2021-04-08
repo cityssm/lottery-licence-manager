@@ -1,39 +1,44 @@
 import type { Request } from "express";
+import type { Session } from "express-session";
 
 
-export const fakeViewOnlySession = {
+export const fakeViewOnlySession: Session = {
   id: "",
   cookie: null,
   destroy: null,
   regenerate: null,
   reload: null,
+  resetMaxAge: null,
   save: null,
   touch: null,
   user: {
+    userName: "test.viewOnly",
     userProperties: {
       canCreate: false,
       canUpdate: false,
       isAdmin: false,
-      isOperator: false
+      isDefaultAdmin: false
     }
   }
 };
 
 
-export const fakeAdminSession = {
+export const fakeAdminSession: Session = {
   id: "",
   cookie: null,
   destroy: null,
   regenerate: null,
   reload: null,
+  resetMaxAge: null,
   save: null,
   touch: null,
   user: {
+    userName: "test.admin",
     userProperties: {
       canCreate: true,
       canUpdate: true,
       isAdmin: true,
-      isOperator: true
+      isDefaultAdmin: false
     }
   }
 };
@@ -55,6 +60,7 @@ export const fakeRequest: Request = {
   cookies: null,
   complete: null,
   connection: null,
+  csrfToken: null,
   destroy: null,
   destroyed: null,
   emit: null,
@@ -91,6 +97,7 @@ export const fakeRequest: Request = {
   push: null,
   query: null,
   range: null,
+  rateLimit: null,
   rawHeaders: null,
   rawListeners: null,
   rawTrailers: null,
@@ -104,6 +111,8 @@ export const fakeRequest: Request = {
   resume: null,
   route: null,
   secure: null,
+  session: null,
+  sessionID: null,
   setEncoding: null,
   setMaxListeners: null,
   setTimeout: null,

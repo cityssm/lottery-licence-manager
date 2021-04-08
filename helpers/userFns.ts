@@ -1,10 +1,9 @@
-import type { Request, Response } from "express";
-import type * as llm from "../types/recordTypes";
+import type { Request } from "express";
 
 
 export const userIsAdmin = (req: Request) => {
 
-  const user = req.session?.user as llm.User;
+  const user = req.session?.user;
 
   if (!user) {
     return false;
@@ -16,7 +15,7 @@ export const userIsAdmin = (req: Request) => {
 
 export const userCanUpdate = (req: Request) => {
 
-  const user = req.session?.user as llm.User;
+  const user = req.session?.user;
 
   if (!user) {
     return false;
@@ -28,7 +27,7 @@ export const userCanUpdate = (req: Request) => {
 
 export const userCanCreate = (req: Request) => {
 
-  const user = req.session?.user as llm.User;
+  const user = req.session?.user;
 
   if (!user) {
     return false;
@@ -40,14 +39,4 @@ export const userCanCreate = (req: Request) => {
 
 export const getHashString = (userName: string, passwordPlain: string) => {
   return userName + "::" + passwordPlain;
-};
-
-
-export const forbiddenJSON = (res: Response) => {
-  return res
-    .status(403)
-    .json({
-      success: false,
-      message: "Forbidden"
-    });
 };

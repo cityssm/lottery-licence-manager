@@ -19,14 +19,16 @@ exports.fakeViewOnlySession = {
     destroy: null,
     regenerate: null,
     reload: null,
+    resetMaxAge: null,
     save: null,
     touch: null,
     user: {
+        userName: "test.viewOnly",
         userProperties: {
             canCreate: false,
             canUpdate: false,
             isAdmin: false,
-            isOperator: false
+            isDefaultAdmin: false
         }
     }
 };
@@ -36,14 +38,16 @@ exports.fakeAdminSession = {
     destroy: null,
     regenerate: null,
     reload: null,
+    resetMaxAge: null,
     save: null,
     touch: null,
     user: {
+        userName: "test.admin",
         userProperties: {
             canCreate: true,
             canUpdate: true,
             isAdmin: true,
-            isOperator: true
+            isDefaultAdmin: false
         }
     }
 };
@@ -63,6 +67,7 @@ exports.fakeRequest = {
     cookies: null,
     complete: null,
     connection: null,
+    csrfToken: null,
     destroy: null,
     destroyed: null,
     emit: null,
@@ -99,6 +104,7 @@ exports.fakeRequest = {
     push: null,
     query: null,
     range: null,
+    rateLimit: null,
     rawHeaders: null,
     rawListeners: null,
     rawTrailers: null,
@@ -112,6 +118,8 @@ exports.fakeRequest = {
     resume: null,
     route: null,
     secure: null,
+    session: null,
+    sessionID: null,
     setEncoding: null,
     setMaxListeners: null,
     setTimeout: null,

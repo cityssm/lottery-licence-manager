@@ -1,6 +1,6 @@
 import type { RequestHandler } from "express";
 
-import { forbiddenJSON } from "../../helpers/userFns";
+import { forbiddenJSON } from "../../handlers/permissions";
 
 import { inactivateUser } from "../../helpers/usersDB/inactivateUser";
 

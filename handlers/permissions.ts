@@ -8,6 +8,17 @@ import * as userFns from "../helpers/userFns";
 const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
 
 
+export const forbiddenJSON = (res: Response) => {
+
+  return res
+    .status(403)
+    .json({
+      success: false,
+      message: "Forbidden"
+    });
+};
+
+
 export const adminGetHandler: RequestHandler = (req, res, next) => {
 
   if (userFns.userIsAdmin(req)) {
@@ -24,7 +35,7 @@ export const adminPostHandler: RequestHandler = (req, res, next) => {
     return next();
   }
 
-  return res.json(userFns.forbiddenJSON);
+  return res.json(forbiddenJSON);
 };
 
 
@@ -44,7 +55,7 @@ export const updatePostHandler: RequestHandler = (req, res, next) => {
     return next();
   }
 
-  return res.json(userFns.forbiddenJSON);
+  return res.json(forbiddenJSON);
 };
 
 
@@ -64,5 +75,5 @@ export const createPostHandler: RequestHandler = (req, res, next) => {
     return next();
   }
 
-  return res.json(userFns.forbiddenJSON);
+  return res.json(forbiddenJSON);
 };
