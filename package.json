@@ -1,6 +1,6 @@
 {
   "name": "lottery-licence-manager",
-  "version": "0.12.0-dev",
+  "version": "0.12.0",
   "scripts": {
     "preinstall": "npx npm-force-resolutions",
     "start": "cross-env NODE_ENV=production node ./bin/www",
@@ -72,5 +72,6 @@
   },
   "resolutions": {
     "yargs-parser": "5.0.0-security.0"
-  }
+  },
+  "private": true
 }

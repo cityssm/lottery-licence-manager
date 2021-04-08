@@ -164,109 +164,109 @@
           <tr>
             <% if (event.eventCosts[0].ticketType) { %>
               <th>Ticket Type</th>
-              <% } %>
-              <th class="has-text-centered">Receipts</th>
-              <td class="has-text-centered">
-                <i class="fas fa-minus" aria-hidden="true"></i>
-                <span class="sr-only">Minus</span>
-              </td>
-              <th class="has-text-centered">Admin Costs</th>
-              <td class="has-text-centered">
-                <i class="fas fa-minus" aria-hidden="true"></i>
-                <span class="sr-only">Minus</span>
-              </td>
-              <th class="has-text-centered">Prizes Awarded</th>
-              <td class="has-text-centered">
-                <i class="fas fa-equals" aria-hidden="true"></i>
-                <span class="sr-only">Equals</span>
-              </td>
-              <th class="has-text-centered">Net Proceeds</th>
-            </tr>
-          </thead>
-          <tbody>
-            <%
+            <% } %>
+            <th class="has-text-centered">Receipts</th>
+            <td class="has-text-centered">
+              <i class="fas fa-minus" aria-hidden="true"></i>
+              <span class="sr-only">Minus</span>
+            </td>
+            <th class="has-text-centered">Admin Costs</th>
+            <td class="has-text-centered">
+              <i class="fas fa-minus" aria-hidden="true"></i>
+              <span class="sr-only">Minus</span>
+            </td>
+            <th class="has-text-centered">Prizes Awarded</th>
+            <td class="has-text-centered">
+              <i class="fas fa-equals" aria-hidden="true"></i>
+              <span class="sr-only">Equals</span>
+            </td>
+            <th class="has-text-centered">Net Proceeds</th>
+          </tr>
+        </thead>
+        <tbody>
+          <%
             let costs_receiptsSum = 0;
             let costs_adminSum = 0;
             let costs_prizesAwardedSum = 0;
             let costs_netProceedsSum = 0;
-            %>
-            <% for (const eventCost of event.eventCosts) { %>
-              <%
+          %>
+          <% for (const eventCost of event.eventCosts) { %>
+            <%
               const ticketType = (eventCost.ticketType || "");
 
               costs_receiptsSum += (eventCost.costs_receipts || 0);
               costs_adminSum += (eventCost.costs_admin || 0);
               costs_prizesAwardedSum += (eventCost.costs_prizesAwarded || 0);
               costs_netProceedsSum += (eventCost.costs_netProceeds || 0);
-              %>
-              <tr>
-                <% if (eventCost.ticketType) { %>
-                  <th><%= eventCost.ticketType %></th>
-                  <% } %>
-                  <td class="has-text-right">
-                    <%= htmlFns.formatDollarsAsHTML(eventCost.costs_receipts || 0) %>
-                  </td>
-                  <td class="has-text-centered has-text-grey">
-                    <i class="fas fa-minus" aria-hidden="true"></i>
-                    <span class="sr-only">Minus</span>
-                  </td>
-                  <td class="has-text-right">
-                    <%= htmlFns.formatDollarsAsHTML(eventCost.costs_admin || 0) %>
-                  </td>
-                  <td class="has-text-centered has-text-grey">
-                    <i class="fas fa-minus" aria-hidden="true"></i>
-                    <span class="sr-only">Minus</span>
-                  </td>
-                  <td class="has-text-right">
-                    <%= htmlFns.formatDollarsAsHTML(eventCost.costs_prizesAwarded || 0) %>
-                  </td>
-                  <td class="has-text-centered has-text-grey">
-                    <i class="fas fa-equals" aria-hidden="true"></i>
-                    <span class="sr-only">Equals</span>
-                  </td>
-                  <td class="has-text-right">
-                    <%
-                    const costs_netProceeds = (eventCost.costs_receipts || 0) - (eventCost.costs_admin || 0) - (eventCost.costs_prizesAwarded || 0);
-                    costs_netProceedsSum += costs_netProceeds;
-                    %>
-                    <%- htmlFns.formatDollarsAsHTML(costs_netProceeds) %>
-                  </td>
-                </tr>
-                <% } %>
-              </tbody>
-              <% if (event.eventCosts.length > 1) { %>
-                <tfoot>
-                  <% if (event.eventCosts[0].ticketType) { %>
-                    <th></th>
-                    <% } %>
-                    <th class="has-text-right">
-                      <%- htmlFns.formatDollarsAsHTML(costs_receiptsSum) %>
-                    </th>
-                    <td class="has-text-centered is-vcentered has-text-grey">
-                      <i class="fas fa-minus" aria-hidden="true"></i>
-                      <span class="sr-only">Minus</span>
-                    </td>
-                    <th class="has-text-right">
-                      <%- htmlFns.formatDollarsAsHTML(costs_adminSum) %>
-                    </th>
-                    <td class="has-text-centered is-vcentered has-text-grey">
-                      <i class="fas fa-minus" aria-hidden="true"></i>
-                      <span class="sr-only">Minus</span>
-                    </td>
-                    <th class="has-text-right">
-                      <%- htmlFns.formatDollarsAsHTML(costs_prizesAwardedSum) %>
-                    </th>
-                    <td class="has-text-centered is-vcentered has-text-grey">
-                      <i class="fas fa-equals" aria-hidden="true"></i>
-                      <span class="sr-only">Equals</span>
-                    </td>
-                    <th class="has-text-right">
-                      <%- htmlFns.formatDollarsAsHTML(costs_netProceedsSum) %>
-                    </th>
-                  </tfoot>
-                  <% } %>
-                </table>
-              </div>
+            %>
+            <tr>
+              <% if (eventCost.ticketType) { %>
+              <th><%= eventCost.ticketType %></th>
+              <% } %>
+              <td class="has-text-right">
+                <%= htmlFns.formatDollarsAsHTML(eventCost.costs_receipts || 0) %>
+              </td>
+              <td class="has-text-centered has-text-grey">
+                <i class="fas fa-minus" aria-hidden="true"></i>
+                <span class="sr-only">Minus</span>
+              </td>
+              <td class="has-text-right">
+                <%= htmlFns.formatDollarsAsHTML(eventCost.costs_admin || 0) %>
+              </td>
+              <td class="has-text-centered has-text-grey">
+                <i class="fas fa-minus" aria-hidden="true"></i>
+                <span class="sr-only">Minus</span>
+              </td>
+              <td class="has-text-right">
+                <%= htmlFns.formatDollarsAsHTML(eventCost.costs_prizesAwarded || 0) %>
+              </td>
+              <td class="has-text-centered has-text-grey">
+                <i class="fas fa-equals" aria-hidden="true"></i>
+                <span class="sr-only">Equals</span>
+              </td>
+              <td class="has-text-right">
+                <%
+                const costs_netProceeds = (eventCost.costs_receipts || 0) - (eventCost.costs_admin || 0) - (eventCost.costs_prizesAwarded || 0);
+                costs_netProceedsSum += costs_netProceeds;
+                %>
+                <%- htmlFns.formatDollarsAsHTML(costs_netProceeds) %>
+              </td>
+            </tr>
+          <% } %>
+        </tbody>
+        <% if (event.eventCosts.length > 1) { %>
+          <tfoot>
+            <% if (event.eventCosts[0].ticketType) { %>
+              <th></th>
+            <% } %>
+            <th class="has-text-right">
+              <%- htmlFns.formatDollarsAsHTML(costs_receiptsSum) %>
+            </th>
+            <td class="has-text-centered is-vcentered has-text-grey">
+              <i class="fas fa-minus" aria-hidden="true"></i>
+              <span class="sr-only">Minus</span>
+            </td>
+            <th class="has-text-right">
+              <%- htmlFns.formatDollarsAsHTML(costs_adminSum) %>
+            </th>
+            <td class="has-text-centered is-vcentered has-text-grey">
+              <i class="fas fa-minus" aria-hidden="true"></i>
+              <span class="sr-only">Minus</span>
+            </td>
+            <th class="has-text-right">
+              <%- htmlFns.formatDollarsAsHTML(costs_prizesAwardedSum) %>
+            </th>
+            <td class="has-text-centered is-vcentered has-text-grey">
+              <i class="fas fa-equals" aria-hidden="true"></i>
+              <span class="sr-only">Equals</span>
+            </td>
+            <th class="has-text-right">
+              <%- htmlFns.formatDollarsAsHTML(costs_netProceedsSum) %>
+            </th>
+          </tfoot>
+        <% } %>
+      </table>
+    </div>
 
     <div class="columns is-desktop">
       <div class="column is-5-desktop">
