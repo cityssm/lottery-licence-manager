@@ -365,18 +365,18 @@
                 });
                 %>
                 <tr>
-                  <td><%= record.eventDateString %></td>
-                  <td><%= record.ticketType %></td>
-                  <td class="has-text-right">
+                  <td class="is-9pt"><%= record.eventDateString %></td>
+                  <td class="is-9pt"><%= record.ticketType %></td>
+                  <td class="is-9pt has-text-right">
                     <%= (ticketTypeConfig ? "$" + (ticketTypeConfig.ticketPrice * ticketTypeConfig.ticketCount).toFixed(2) : "") %>
                   </td>
-                  <td class="has-text-right">
+                  <td class="is-9pt has-text-right">
                     <%= (ticketTypeConfig ? "$" + ticketTypeConfig.prizesPerDeal.toFixed(2) : "") %>
                   </td>
-                  <td class="has-text-right"><%= record.unitCount %></td>
-                  <td class="has-text-right">$<%= record.licenceFee.toFixed(2) %></td>
-                  <td><%= record.distributorLocationDisplayName %></td>
-                  <td><%= record.manufacturerLocationDisplayName %></td>
+                  <td class="is-9pt has-text-right"><%= record.unitCount %></td>
+                  <td class="is-9pt has-text-right">$<%= record.licenceFee.toFixed(2) %></td>
+                  <td class="is-9pt"><%= record.distributorLocationDisplayName %></td>
+                  <td class="is-9pt"><%= record.manufacturerLocationDisplayName %></td>
                 </tr>
               <% } %>
             </tbody>

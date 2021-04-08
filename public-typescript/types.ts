@@ -6,6 +6,8 @@ export interface llmGlobal {
 
   arrayToObject?: (array: [], objectKey: string | number) => {};
 
+  formatDollarsAsHTML?: (dollarAmt: number) => string;
+
   getDefaultConfigProperty?: (propertyName: string, propertyValueCallbackFn: (propertyValue: any) => void) => void;
 
   initializeDateRangeSelector?: (containerEle: HTMLElement, changeFn: () => void) => void;

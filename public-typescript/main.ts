@@ -25,6 +25,16 @@ llm.arrayToObject = (array, objectKey) => {
 };
 
 
+llm.formatDollarsAsHTML = (dollarAmt) => {
+
+  if (dollarAmt < 0) {
+    return "<span class=\"has-text-danger\">($" + (dollarAmt * -1).toFixed(2) + ")</span>";
+  } else {
+    return "$" + dollarAmt.toFixed(2);
+  }
+};
+
+
 /*
  * DATE RANGE
  */
@@ -279,7 +289,7 @@ llm.initializeTabs = (tabsListEle, callbackFns) => {
 
     tabContentEle.classList.add("is-active");
 
-    if (callbackFns ?.onshown) {
+    if (callbackFns?.onshown) {
       callbackFns.onshown(tabContentEle);
     }
   };

@@ -545,6 +545,7 @@
           </thead>
           <tbody>
             <%
+              const currentDate = dateTimeFns.dateToInteger(new Date());
               for (let ticketTypeIndex = 0; ticketTypeIndex < licence.licenceTicketTypes.length; ticketTypeIndex += 1) {
                 const licenceTicketTypeObj = licence.licenceTicketTypes[ticketTypeIndex];
                 const ticketType = (licenceType && licenceType.ticketTypes ? licenceType.ticketTypes.find(ele => ele.ticketType === licenceTicketTypeObj.ticketType) : null);
@@ -583,12 +584,14 @@
                       <div class="control">
                         <button class="button is-small is-amend-ticket-type-unit-count-button" data-tooltip="Amend Units" type="button">Amend</button>
                       </div>
-                      <div class="control">
-                        <button class="button is-small is-danger is-delete-ticket-type-button" data-tooltip="Delete Ticket Type" type="button">
-                          <i class="fas fa-trash" aria-hidden="true"></i>
-                          <span class="sr-only">Delete</span>
-                        </button>
-                      </div>
+                      <% if (licenceTicketTypeObj.eventDate >= currentDate) { %>
+                        <div class="control">
+                          <button class="button is-small is-danger is-delete-ticket-type-button" data-tooltip="Delete Ticket Type" type="button">
+                            <i class="fas fa-trash" aria-hidden="true"></i>
+                            <span class="sr-only">Delete</span>
+                          </button>
+                        </div>
+                      <% } %>
                     </div>
                   </td>
                   <td class="has-text-right is-nowrap">

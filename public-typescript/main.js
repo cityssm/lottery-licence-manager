@@ -8,6 +8,14 @@ llm.arrayToObject = (array, objectKey) => {
     }
     return obj;
 };
+llm.formatDollarsAsHTML = (dollarAmt) => {
+    if (dollarAmt < 0) {
+        return "<span class=\"has-text-danger\">($" + (dollarAmt * -1).toFixed(2) + ")</span>";
+    }
+    else {
+        return "$" + dollarAmt.toFixed(2);
+    }
+};
 llm.initializeDateRangeSelector = (containerEle, changeFn) => {
     const rangeTypeSelectEle = containerEle.querySelector("[data-field='rangeType']").getElementsByTagName("select")[0];
     const rangeSelectEle = containerEle.querySelector("[data-field='range']").getElementsByTagName("select")[0];

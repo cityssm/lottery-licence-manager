@@ -1,8 +1,9 @@
 import type { PastEventBankingInformation } from "../helpers/licencesDB/getPastEventBankingInformation";
 import type { cityssmGlobal } from "@cityssm/bulma-webapp-js/src/types";
+import type { llmGlobal } from "./types";
 
 declare const cityssm: cityssmGlobal;
-
+declare const llm: llmGlobal;
 
 (() => {
 
@@ -143,6 +144,13 @@ declare const cityssm: cityssmGlobal;
 
         savedBankInfoList = bankInfoList;
 
+        if (bankInfoList.length === 0) {
+          containerEle.innerHTML = "<div class=\"message is-info\">" +
+            "<p class=\"message-body\">There is no previously used banking information available.</p>" +
+            "</div>";
+          return;
+        }
+
         const listEle = document.createElement("div");
         listEle.className = "panel mb-3";
 
@@ -218,7 +226,7 @@ declare const cityssm: cityssmGlobal;
     }
 
     document.getElementById("event--costs_netProceeds-" + trEle.getAttribute("data-ticket-type"))
-      .innerText = "$" + netProceeds.toFixed(2);
+      .innerHTML = llm.formatDollarsAsHTML(netProceeds);
 
   };
 
@@ -230,10 +238,10 @@ declare const cityssm: cityssmGlobal;
       costs_sums[columnName] += parseFloat(inputEle.value || "0");
     });
 
-    document.getElementById("event--costs_" + columnName + "Sum").innerText = "$" + costs_sums[columnName].toFixed(2);
+    document.getElementById("event--costs_" + columnName + "Sum").innerHTML = llm.formatDollarsAsHTML(costs_sums[columnName]);
 
-    document.getElementById("event--costs_netProceedsSum").innerText = "$" +
-      (costs_sums.receipts - costs_sums.admin - costs_sums.prizesAwarded).toFixed(2);
+    document.getElementById("event--costs_netProceedsSum").innerHTML =
+      llm.formatDollarsAsHTML(costs_sums.receipts - costs_sums.admin - costs_sums.prizesAwarded);
   };
 
   const costsFn_calculateReceipts = () => {

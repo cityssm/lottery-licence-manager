@@ -573,7 +573,7 @@ export const updateLicence = (reqBody: LotteryLicenceForm, reqSession: expressSe
       if (pastLicenceObj.trackUpdatesAsAmendments) {
 
         const ticketTypeObj_past =
-          pastLicenceObj.licenceTicketTypes.find((ele) => ele.ticketType === ticketType);
+          pastLicenceObj.licenceTicketTypes.find((ele) => ele.ticketType === ticketType && ele.eventDateString === reqBody.ticketType_eventDateString[ticketTypeIndex]);
 
         if (ticketTypeObj_past &&
           configFns.getProperty("amendments.trackTicketTypeUpdate") &&

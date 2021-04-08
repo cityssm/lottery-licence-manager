@@ -269,7 +269,7 @@ const updateLicence = (reqBody, reqSession) => {
                 ? null
                 : reqBody.ticketType_manufacturerLocationID[ticketTypeIndex]), reqBody.ticketType_unitCount[ticketTypeIndex], reqBody.ticketType_licenceFee[ticketTypeIndex], reqSession.user.userName, nowMillis, reqBody.licenceID, dateTimeFns.dateStringToInteger(reqBody.ticketType_eventDateString[ticketTypeIndex]), ticketType);
             if (pastLicenceObj.trackUpdatesAsAmendments) {
-                const ticketTypeObj_past = pastLicenceObj.licenceTicketTypes.find((ele) => ele.ticketType === ticketType);
+                const ticketTypeObj_past = pastLicenceObj.licenceTicketTypes.find((ele) => ele.ticketType === ticketType && ele.eventDateString === reqBody.ticketType_eventDateString[ticketTypeIndex]);
                 if (ticketTypeObj_past &&
                     configFns.getProperty("amendments.trackTicketTypeUpdate") &&
                     ticketTypeObj_past.unitCount !== parseInt(reqBody.ticketType_unitCount[ticketTypeIndex], 10)) {
