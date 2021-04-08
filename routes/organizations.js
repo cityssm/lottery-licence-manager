@@ -27,9 +27,7 @@ const doUpdateBankRecordsByMonth_1 = require("../handlers/organizations-post/doU
 const doDeleteBankRecord_1 = require("../handlers/organizations-post/doDeleteBankRecord");
 const doRollForward_1 = require("../handlers/organizations-post/doRollForward");
 const licencesDBOrganizations = require("../helpers/licencesDB-organizations");
-const userFns_1 = require("../helpers/userFns");
 const router = express_1.Router();
-const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
 router.get("/", (_req, res) => {
     res.render("organization-search", {
         headTitle: "Organizations"
@@ -43,11 +41,7 @@ router.post("/doGetInactive", (req, res) => {
     const inactiveYears = parseInt(req.body.inactiveYears, 10);
     res.json(licencesDBOrganizations.getInactiveOrganizations(inactiveYears));
 });
-router.get("/recovery", (req, res) => {
-    if (!userFns_1.userIsAdmin(req)) {
-        res.redirect(urlPrefix + "/organizations/?error=accessDenied");
-        return;
-    }
+router.get("/recovery", permissionHandlers.adminGetHandler, (_req, res) => {
     const organizations = licencesDBOrganizations.getDeletedOrganizations();
     res.render("organization-recovery", {
         headTitle: "Organization Recovery",
@@ -79,11 +73,7 @@ router.post("/doAddBankRecord", permissionHandlers.createPostHandler, doAddBankR
 router.post("/doEditBankRecord", permissionHandlers.createPostHandler, doEditBankRecord_1.handler);
 router.post("/doUpdateBankRecordsByMonth", permissionHandlers.createPostHandler, doUpdateBankRecordsByMonth_1.handler);
 router.post("/doDeleteBankRecord", permissionHandlers.createPostHandler, doDeleteBankRecord_1.handler);
-router.get("/new", (req, res) => {
-    if (!userFns_1.userCanCreate(req)) {
-        res.redirect(urlPrefix + "/organizations/?error=accessDenied");
-        return;
-    }
+router.get("/new", permissionHandlers.createGetHandler, (_req, res) => {
     res.render("organization-edit", {
         headTitle: "Organization Create",
         isViewOnly: false,
@@ -94,10 +84,7 @@ router.get("/new", (req, res) => {
         }
     });
 });
-router.post("/doSave", (req, res) => {
-    if (!userFns_1.userCanCreate(req)) {
-        return userFns_1.forbiddenJSON(res);
-    }
+router.post("/doSave", permissionHandlers.createPostHandler, (req, res) => {
     if (req.body.organizationID === "") {
         const newOrganizationID = licencesDBOrganizations.createOrganization(req.body, req.session);
         res.json({
@@ -121,10 +108,7 @@ router.post("/doSave", (req, res) => {
         }
     }
 });
-router.post("/doDelete", (req, res) => {
-    if (!userFns_1.userCanCreate(req)) {
-        return userFns_1.forbiddenJSON(res);
-    }
+router.post("/doDelete", permissionHandlers.createPostHandler, (req, res) => {
     const success = licencesDBOrganizations.deleteOrganization(req.body.organizationID, req.session);
     if (success) {
         return res.json({
@@ -139,10 +123,7 @@ router.post("/doDelete", (req, res) => {
         });
     }
 });
-router.post("/doRestore", (req, res) => {
-    if (!userFns_1.userCanUpdate(req)) {
-        return userFns_1.forbiddenJSON(res);
-    }
+router.post("/doRestore", permissionHandlers.updatePostHandler, (req, res) => {
     const success = licencesDBOrganizations.restoreOrganization(req.body.organizationID, req.session);
     if (success) {
         return res.json({
@@ -162,10 +143,7 @@ router.get("/:organizationID", view_1.handler);
 router.get("/:organizationID/edit", permissionHandlers.createGetHandler, edit_1.handler);
 router.post("/:organizationID/doAddOrganizationRepresentative", permissionHandlers.createPostHandler, doAddRepresentative_1.handler);
 router.post("/:organizationID/doEditOrganizationRepresentative", permissionHandlers.createPostHandler, doUpdateRepresentative_1.handler);
-router.post("/:organizationID/doDeleteOrganizationRepresentative", (req, res) => {
-    if (!userFns_1.userCanCreate(req)) {
-        return userFns_1.forbiddenJSON(res);
-    }
+router.post("/:organizationID/doDeleteOrganizationRepresentative", permissionHandlers.createPostHandler, (req, res) => {
     const organizationID = parseInt(req.params.organizationID, 10);
     const representativeIndex = req.body.representativeIndex;
     const success = licencesDBOrganizations.deleteOrganizationRepresentative(organizationID, representativeIndex);
@@ -173,10 +151,7 @@ router.post("/:organizationID/doDeleteOrganizationRepresentative", (req, res) =>
         success
     });
 });
-router.post("/:organizationID/doSetDefaultRepresentative", (req, res) => {
-    if (!userFns_1.userCanCreate(req)) {
-        return userFns_1.forbiddenJSON(res);
-    }
+router.post("/:organizationID/doSetDefaultRepresentative", permissionHandlers.createPostHandler, (req, res) => {
     const organizationID = parseInt(req.params.organizationID, 10);
     const isDefaultRepresentativeIndex = req.body.isDefaultRepresentativeIndex;
     const success = licencesDBOrganizations.setDefaultOrganizationRepresentative(organizationID, isDefaultRepresentativeIndex);

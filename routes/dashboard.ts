@@ -1,8 +1,8 @@
 import { Router } from "express";
 
 import { handler as handler_doChangePassword } from "../handlers/dashboard-post/doChangePassword";
+import { handler as handler_doGetDefaultConfigProperties } from "../handlers/dashboard-post/doGetDefaultConfigProperties";
 
-import * as configFns from "../helpers/configFns";
 import * as licencesDB_getDashboardStats from "../helpers/licencesDB/getDashboardStats";
 
 
@@ -24,18 +24,7 @@ router.get("/", (_req, res) => {
 router.post("/doChangePassword", handler_doChangePassword);
 
 
-router.all("/doGetDefaultConfigProperties", (_req, res) => {
-
-  res.json({
-    city: configFns.getProperty("defaults.city"),
-    province: configFns.getProperty("defaults.province"),
-    externalLicenceNumber_fieldLabel: configFns.getProperty("licences.externalLicenceNumber.fieldLabel"),
-    externalReceiptNumber_fieldLabel: configFns.getProperty("licences.externalReceiptNumber.fieldLabel"),
-    reminderCategories: configFns.getProperty("reminderCategories"),
-    dismissingStatuses: configFns.getProperty("reminders.dismissingStatuses")
-  });
-
-});
+router.all("/doGetDefaultConfigProperties", handler_doGetDefaultConfigProperties);
 
 
 export = router;

@@ -18,9 +18,3 @@ export declare const getActiveLicenceSummary: (reqBody: {
 export declare const getEventTableStats: () => llm.LotteryEventStats;
 export declare const getRecentlyUpdateEvents: (reqSession: expressSession.Session) => llm.LotteryEvent[];
 export declare const deleteEvent: (licenceID: number, eventDate: number, reqSession: expressSession.Session) => boolean;
-export declare const getLicenceActivityByDateRange: (startDate: number, endDate: number, _reqBody: {}) => {
-    startDateString: string;
-    endDateString: string;
-    licences: llm.LotteryLicence[];
-    events: llm.LotteryEvent[];
-};

@@ -37,13 +37,8 @@ import { handler as handler_doRollForward } from "../handlers/organizations-post
 
 import * as licencesDBOrganizations from "../helpers/licencesDB-organizations";
 
-import { userCanCreate, userCanUpdate, userIsAdmin, forbiddenJSON } from "../helpers/userFns";
-
 
 const router = Router();
-
-
-const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
 
 
 /*
@@ -101,14 +96,7 @@ router.post("/doGetInactive", (req, res) => {
  */
 
 
-router.get("/recovery", (req, res) => {
-
-  if (!userIsAdmin(req)) {
-
-    res.redirect(urlPrefix + "/organizations/?error=accessDenied");
-    return;
-
-  }
+router.get("/recovery", permissionHandlers.adminGetHandler, (_req, res) => {
 
   const organizations = licencesDBOrganizations.getDeletedOrganizations();
 
@@ -116,7 +104,6 @@ router.get("/recovery", (req, res) => {
     headTitle: "Organization Recovery",
     organizations
   });
-
 });
 
 
@@ -226,14 +213,7 @@ router.post("/doDeleteBankRecord",
  */
 
 
-router.get("/new", (req, res) => {
-
-  if (!userCanCreate(req)) {
-
-    res.redirect(urlPrefix + "/organizations/?error=accessDenied");
-    return;
-
-  }
+router.get("/new", permissionHandlers.createGetHandler, (_req, res) => {
 
   res.render("organization-edit", {
     headTitle: "Organization Create",
@@ -248,11 +228,7 @@ router.get("/new", (req, res) => {
 });
 
 
-router.post("/doSave", (req, res) => {
-
-  if (!userCanCreate(req)) {
-    return forbiddenJSON(res);
-  }
+router.post("/doSave", permissionHandlers.createPostHandler, (req, res) => {
 
   if (req.body.organizationID === "") {
 
@@ -280,17 +256,12 @@ router.post("/doSave", (req, res) => {
         success: false,
         message: "Record Not Saved"
       });
-
     }
   }
 });
 
 
-router.post("/doDelete", (req, res) => {
-
-  if (!userCanCreate(req)) {
-    return forbiddenJSON(res);
-  }
+router.post("/doDelete", permissionHandlers.createPostHandler, (req, res) => {
 
   const success = licencesDBOrganizations.deleteOrganization(req.body.organizationID, req.session);
 
@@ -307,17 +278,11 @@ router.post("/doDelete", (req, res) => {
       success: false,
       message: "Organization could not be deleted."
     });
-
   }
-
 });
 
 
-router.post("/doRestore", (req, res) => {
-
-  if (!userCanUpdate(req)) {
-    return forbiddenJSON(res);
-  }
+router.post("/doRestore", permissionHandlers.updatePostHandler, (req, res) => {
 
   const success = licencesDBOrganizations.restoreOrganization(req.body.organizationID, req.session);
 
@@ -334,9 +299,7 @@ router.post("/doRestore", (req, res) => {
       success: false,
       message: "Organization could not be restored."
     });
-
   }
-
 });
 
 
@@ -373,29 +336,22 @@ router.post("/:organizationID/doEditOrganizationRepresentative",
   handler_doUpdateRepresentative);
 
 
-router.post("/:organizationID/doDeleteOrganizationRepresentative", (req, res) => {
+router.post("/:organizationID/doDeleteOrganizationRepresentative",
+  permissionHandlers.createPostHandler,
+  (req, res) => {
 
-  if (!userCanCreate(req)) {
-    return forbiddenJSON(res);
-  }
+    const organizationID = parseInt(req.params.organizationID, 10);
+    const representativeIndex = req.body.representativeIndex;
 
-  const organizationID = parseInt(req.params.organizationID, 10);
-  const representativeIndex = req.body.representativeIndex;
+    const success = licencesDBOrganizations.deleteOrganizationRepresentative(organizationID, representativeIndex);
 
-  const success = licencesDBOrganizations.deleteOrganizationRepresentative(organizationID, representativeIndex);
-
-  res.json({
-    success
+    res.json({
+      success
+    });
   });
 
-});
 
-
-router.post("/:organizationID/doSetDefaultRepresentative", (req, res) => {
-
-  if (!userCanCreate(req)) {
-    return forbiddenJSON(res);
-  }
+router.post("/:organizationID/doSetDefaultRepresentative", permissionHandlers.createPostHandler, (req, res) => {
 
   const organizationID = parseInt(req.params.organizationID, 10);
   const isDefaultRepresentativeIndex = req.body.isDefaultRepresentativeIndex;
@@ -406,7 +362,6 @@ router.post("/:organizationID/doSetDefaultRepresentative", (req, res) => {
   res.json({
     success
   });
-
 });
 
 

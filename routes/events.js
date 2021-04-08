@@ -1,10 +1,10 @@
 "use strict";
 const express_1 = require("express");
-const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
 const permissionHandlers = require("../handlers/permissions");
 const view_1 = require("../handlers/events-get/view");
 const edit_1 = require("../handlers/events-get/edit");
 const poke_1 = require("../handlers/events-get/poke");
+const doGetEventsByWeek_1 = require("../handlers/events-post/doGetEventsByWeek");
 const outstanding_1 = require("../handlers/events-get/outstanding");
 const doGetOutstandingEvents_1 = require("../handlers/events-post/doGetOutstandingEvents");
 const financials_1 = require("../handlers/events-get/financials");
@@ -27,15 +27,7 @@ router.get("/byWeek", (_req, res) => {
         headTitle: "Events By Week"
     });
 });
-router.post("/doGetEventsByWeek", (req, res) => {
-    const dateWithinWeek = dateTimeFns.dateStringToDate(req.body.eventDate);
-    dateWithinWeek.setDate(dateWithinWeek.getDate() - dateWithinWeek.getDay());
-    const startDateInteger = dateTimeFns.dateToInteger(dateWithinWeek);
-    dateWithinWeek.setDate(dateWithinWeek.getDate() + 6);
-    const endDateInteger = dateTimeFns.dateToInteger(dateWithinWeek);
-    const activity = licencesDB.getLicenceActivityByDateRange(startDateInteger, endDateInteger, req.body);
-    res.json(activity);
-});
+router.post("/doGetEventsByWeek", doGetEventsByWeek_1.handler);
 router.get("/recent", (req, res) => {
     const records = licencesDB.getRecentlyUpdateEvents(req.session);
     res.render("event-recent", {

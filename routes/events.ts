@@ -1,12 +1,12 @@
 import { Router } from "express";
 
-import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns";
-
 import * as permissionHandlers from "../handlers/permissions";
 
 import { handler as handler_view } from "../handlers/events-get/view";
 import { handler as handler_edit } from "../handlers/events-get/edit";
 import { handler as handler_poke } from "../handlers/events-get/poke";
+
+import { handler as handler_doGetEventsByWeek } from "../handlers/events-post/doGetEventsByWeek";
 
 import { handler as handler_outstanding } from "../handlers/events-get/outstanding";
 import { handler as handler_doGetOutstandingEvents } from "../handlers/events-post/doGetOutstandingEvents";
@@ -53,23 +53,7 @@ router.get("/byWeek", (_req, res) => {
 
 });
 
-router.post("/doGetEventsByWeek", (req, res) => {
-
-  const dateWithinWeek = dateTimeFns.dateStringToDate(req.body.eventDate);
-
-  dateWithinWeek.setDate(dateWithinWeek.getDate() - dateWithinWeek.getDay());
-
-  const startDateInteger = dateTimeFns.dateToInteger(dateWithinWeek);
-
-  dateWithinWeek.setDate(dateWithinWeek.getDate() + 6);
-
-  const endDateInteger = dateTimeFns.dateToInteger(dateWithinWeek);
-
-  const activity = licencesDB.getLicenceActivityByDateRange(startDateInteger, endDateInteger, req.body);
-
-  res.json(activity);
-
-});
+router.post("/doGetEventsByWeek", handler_doGetEventsByWeek);
 
 /*
  * Recently Updated Events
