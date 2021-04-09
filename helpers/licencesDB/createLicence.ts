@@ -7,6 +7,7 @@ import * as configFns from "../configFns";
 import type { LotteryLicenceForm } from "./updateLicence";
 
 import { getLicenceWithDB } from "./getLicence";
+import { createEventWithDB } from "./createEvent";
 import { resetLicenceTableStats, resetEventTableStats } from "../licencesDB";
 
 import type * as expressSession from "express-session";
@@ -78,42 +79,21 @@ export const createLicence = (reqBody: LotteryLicenceForm, reqSession: expressSe
 
   // Events
 
+  let eventDateStrings_toAdd: string[];
+
   if (typeof (reqBody.eventDateString) === "string") {
-
-    db.prepare("insert into LotteryEvents (" +
-      "licenceID, eventDate," +
-      " recordCreate_userName, recordCreate_timeMillis," +
-      " recordUpdate_userName, recordUpdate_timeMillis)" +
-      " values (?, ?, ?, ?, ?, ?)")
-      .run(
-        licenceID,
-        dateTimeFns.dateStringToInteger(reqBody.eventDateString),
-        reqSession.user.userName,
-        nowMillis,
-        reqSession.user.userName,
-        nowMillis
-      );
-
+    eventDateStrings_toAdd = [reqBody.eventDateString];
   } else if (typeof (reqBody.eventDateString) === "object") {
-
-    for (const eventDateString of reqBody.eventDateString) {
-
-      db.prepare("insert or ignore into LotteryEvents (" +
-        "licenceID, eventDate," +
-        " recordCreate_userName, recordCreate_timeMillis," +
-        " recordUpdate_userName, recordUpdate_timeMillis)" +
-        " values (?, ?, ?, ?, ?, ?)")
-        .run(
-          licenceID,
-          dateTimeFns.dateStringToInteger(eventDateString),
-          reqSession.user.userName,
-          nowMillis,
-          reqSession.user.userName,
-          nowMillis
-        );
-    }
+    eventDateStrings_toAdd = reqBody.eventDateString;
   }
 
+  if (eventDateStrings_toAdd) {
+    for (const eventDate of eventDateStrings_toAdd) {
+      createEventWithDB(db,
+        licenceID, eventDate,
+        reqSession);
+    }
+  }
 
   // Ticket types
 

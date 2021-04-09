@@ -7,78 +7,21 @@ const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
 const configFns = require("../configFns");
 const getLicence_1 = require("./getLicence");
 const addLicenceAmendment_1 = require("./addLicenceAmendment");
+const createEvent_1 = require("./createEvent");
+const deleteLicenceTicketType_1 = require("./deleteLicenceTicketType");
+const addLicenceTicketType_1 = require("./addLicenceTicketType");
+const updateLicenceTicketType_1 = require("./updateLicenceTicketType");
 const licencesDB_1 = require("../licencesDB");
-const parseTicketTypeKey = (ticketTypeKey) => {
-    const eventDateString = ticketTypeKey.substring(0, 10);
+const parseTicketTypeKey = (unparsedTicketTypeKey) => {
+    const eventDateString = unparsedTicketTypeKey.substring(0, 10);
     return {
         eventDate: dateTimeFns.dateStringToInteger(eventDateString),
         eventDateString,
-        ticketType: ticketTypeKey.substring(11)
+        ticketType: unparsedTicketTypeKey.substring(11)
     };
 };
 exports.parseTicketTypeKey = parseTicketTypeKey;
 ;
-const createLotteryEventWithDB = (db, licenceID, eventDateString, reqSession) => {
-    const nowMillis = Date.now();
-    db.prepare("insert or ignore into LotteryEvents (" +
-        "licenceID, eventDate," +
-        " recordCreate_userName, recordCreate_timeMillis," +
-        " recordUpdate_userName, recordUpdate_timeMillis)" +
-        " values (?, ?, ?, ?, ?, ?)")
-        .run(licenceID, dateTimeFns.dateStringToInteger(eventDateString), reqSession.user.userName, nowMillis, reqSession.user.userName, nowMillis);
-};
-const deleteLotteryLicenceTicketTypeWithDB = (db, licenceID, unparsedTicketTypeKey, reqSession) => {
-    const nowMillis = Date.now();
-    const ticketTypeKey = exports.parseTicketTypeKey(unparsedTicketTypeKey);
-    db.prepare("update LotteryLicenceTicketTypes" +
-        " set recordDelete_userName = ?," +
-        " recordDelete_timeMillis = ?" +
-        " where licenceID = ?" +
-        " and eventDate = ?" +
-        " and ticketType = ?")
-        .run(reqSession.user.userName, nowMillis, licenceID, ticketTypeKey.eventDate, ticketTypeKey.ticketType);
-};
-const addLotteryLicenceTicketTypeWithDB = (db, licenceID, unparsedTicketTypeKey, reqSession) => {
-    const nowMillis = Date.now();
-    const ticketTypeKey = exports.parseTicketTypeKey(unparsedTicketTypeKey);
-    const addInfo = db
-        .prepare("update LotteryLicenceTicketTypes" +
-        " set recordDelete_userName = null," +
-        " recordDelete_timeMillis = null," +
-        " recordUpdate_userName = ?," +
-        " recordUpdate_timeMillis = ?" +
-        " where licenceID = ?" +
-        " and eventDate = ?" +
-        " and ticketType = ?" +
-        " and recordDelete_timeMillis is not null")
-        .run(reqSession.user.userName, nowMillis, licenceID, ticketTypeKey.eventDate, ticketTypeKey.ticketType);
-    if (addInfo.changes === 0) {
-        db.prepare("insert or ignore into LotteryLicenceTicketTypes" +
-            " (licenceID, eventDate, ticketType, unitCount," +
-            " recordCreate_userName, recordCreate_timeMillis, recordUpdate_userName, recordUpdate_timeMillis)" +
-            " values (?, ?, ?, ?, ?, ?, ?, ?)")
-            .run(licenceID, ticketTypeKey.eventDate, ticketTypeKey.ticketType, 0, reqSession.user.userName, nowMillis, reqSession.user.userName, nowMillis);
-    }
-};
-const updateLotteryLicenceTicketTypeWithDB = (db, ticketTypeDef, reqSession) => {
-    const nowMillis = Date.now();
-    db.prepare("update LotteryLicenceTicketTypes" +
-        " set distributorLocationID = ?," +
-        " manufacturerLocationID = ?," +
-        " unitCount = ?," +
-        " licenceFee = ?," +
-        " recordUpdate_userName = ?," +
-        " recordUpdate_timeMillis = ?" +
-        " where licenceID = ?" +
-        " and eventDate = ?" +
-        " and ticketType = ?" +
-        " and recordDelete_timeMillis is null")
-        .run((ticketTypeDef.distributorLocationID === ""
-        ? null
-        : ticketTypeDef.distributorLocationID), (ticketTypeDef.manufacturerLocationID === ""
-        ? null
-        : ticketTypeDef.manufacturerLocationID), ticketTypeDef.unitCount, ticketTypeDef.licenceFee, reqSession.user.userName, nowMillis, ticketTypeDef.licenceID, dateTimeFns.dateStringToInteger(ticketTypeDef.eventDateString), ticketTypeDef.ticketType);
-};
 const updateLicence = (reqBody, reqSession) => {
     const db = sqlite(databasePaths_1.licencesDB);
     const pastLicenceObj = getLicence_1.getLicenceWithDB(db, reqBody.licenceID, reqSession, {
@@ -198,7 +141,7 @@ const updateLicence = (reqBody, reqSession) => {
     }
     if (eventDateStrings_toAdd) {
         for (const eventDate of eventDateStrings_toAdd) {
-            createLotteryEventWithDB(db, reqBody.licenceID, eventDate, reqSession);
+            createEvent_1.createEventWithDB(db, reqBody.licenceID, eventDate, reqSession);
         }
     }
     let ticketTypeKeys_toDelete;
@@ -210,7 +153,12 @@ const updateLicence = (reqBody, reqSession) => {
     }
     if (ticketTypeKeys_toDelete) {
         ticketTypeKeys_toDelete.forEach((ticketTypeKey_toDelete) => {
-            deleteLotteryLicenceTicketTypeWithDB(db, reqBody.licenceID, ticketTypeKey_toDelete, reqSession);
+            const parsedTicketTypeKey = exports.parseTicketTypeKey(ticketTypeKey_toDelete);
+            deleteLicenceTicketType_1.deleteLicenceTicketTypeWithDB(db, {
+                licenceID: reqBody.licenceID,
+                eventDate: parsedTicketTypeKey.eventDate,
+                ticketType: parsedTicketTypeKey.ticketType
+            }, reqSession);
             if (pastLicenceObj.trackUpdatesAsAmendments &&
                 configFns.getProperty("amendments.trackTicketTypeDelete")) {
                 addLicenceAmendment_1.addLicenceAmendmentWithDB(db, reqBody.licenceID, "Ticket Type Removed", "Removed " + ticketTypeKey_toDelete + ".", 0, reqSession);
@@ -226,7 +174,12 @@ const updateLicence = (reqBody, reqSession) => {
     }
     if (ticketTypeKeys_toAdd) {
         ticketTypeKeys_toAdd.forEach((ticketTypeKey_toAdd) => {
-            addLotteryLicenceTicketTypeWithDB(db, reqBody.licenceID, ticketTypeKey_toAdd, reqSession);
+            const parsedTicketTypeKey = exports.parseTicketTypeKey(ticketTypeKey_toAdd);
+            addLicenceTicketType_1.addLicenceTicketTypeWithDB(db, {
+                licenceID: reqBody.licenceID,
+                eventDate: parsedTicketTypeKey.eventDate,
+                ticketType: parsedTicketTypeKey.ticketType
+            }, reqSession);
             if (pastLicenceObj.trackUpdatesAsAmendments &&
                 configFns.getProperty("amendments.trackTicketTypeNew")) {
                 addLicenceAmendment_1.addLicenceAmendmentWithDB(db, reqBody.licenceID, "New Ticket Type", "Added " + ticketTypeKey_toAdd + ".", 0, reqSession);
@@ -234,7 +187,7 @@ const updateLicence = (reqBody, reqSession) => {
         });
     }
     if (typeof (reqBody.ticketType_ticketType) === "string") {
-        updateLotteryLicenceTicketTypeWithDB(db, {
+        updateLicenceTicketType_1.updateLicenceTicketTypeWithDB(db, {
             licenceID: reqBody.licenceID,
             eventDateString: reqBody.ticketType_eventDateString,
             ticketType: reqBody.ticketType_ticketType,
@@ -256,7 +209,7 @@ const updateLicence = (reqBody, reqSession) => {
     }
     else if (typeof (reqBody.ticketType_ticketType) === "object") {
         reqBody.ticketType_ticketType.forEach((ticketType, ticketTypeIndex) => {
-            updateLotteryLicenceTicketTypeWithDB(db, {
+            updateLicenceTicketType_1.updateLicenceTicketTypeWithDB(db, {
                 licenceID: reqBody.licenceID,
                 eventDateString: reqBody.ticketType_eventDateString[ticketTypeIndex],
                 ticketType: reqBody.ticketType_ticketType[ticketTypeIndex],

@@ -1,5 +1,5 @@
 import type * as expressSession from "express-session";
-export declare const parseTicketTypeKey: (ticketTypeKey: string) => {
+export declare const parseTicketTypeKey: (unparsedTicketTypeKey: string) => {
     eventDate: number;
     eventDateString: string;
     ticketType: string;

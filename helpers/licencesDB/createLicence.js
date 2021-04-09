@@ -6,6 +6,7 @@ const databasePaths_1 = require("../../data/databasePaths");
 const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
 const configFns = require("../configFns");
 const getLicence_1 = require("./getLicence");
+const createEvent_1 = require("./createEvent");
 const licencesDB_1 = require("../licencesDB");
 const createLicence = (reqBody, reqSession) => {
     const db = sqlite(databasePaths_1.licencesDB);
@@ -38,22 +39,16 @@ const createLicence = (reqBody, reqSession) => {
             " values (?, ?, ?)")
             .run(licenceID, fieldKey, fieldValue);
     }
+    let eventDateStrings_toAdd;
     if (typeof (reqBody.eventDateString) === "string") {
-        db.prepare("insert into LotteryEvents (" +
-            "licenceID, eventDate," +
-            " recordCreate_userName, recordCreate_timeMillis," +
-            " recordUpdate_userName, recordUpdate_timeMillis)" +
-            " values (?, ?, ?, ?, ?, ?)")
-            .run(licenceID, dateTimeFns.dateStringToInteger(reqBody.eventDateString), reqSession.user.userName, nowMillis, reqSession.user.userName, nowMillis);
+        eventDateStrings_toAdd = [reqBody.eventDateString];
     }
     else if (typeof (reqBody.eventDateString) === "object") {
-        for (const eventDateString of reqBody.eventDateString) {
-            db.prepare("insert or ignore into LotteryEvents (" +
-                "licenceID, eventDate," +
-                " recordCreate_userName, recordCreate_timeMillis," +
-                " recordUpdate_userName, recordUpdate_timeMillis)" +
-                " values (?, ?, ?, ?, ?, ?)")
-                .run(licenceID, dateTimeFns.dateStringToInteger(eventDateString), reqSession.user.userName, nowMillis, reqSession.user.userName, nowMillis);
+        eventDateStrings_toAdd = reqBody.eventDateString;
+    }
+    if (eventDateStrings_toAdd) {
+        for (const eventDate of eventDateStrings_toAdd) {
+            createEvent_1.createEventWithDB(db, licenceID, eventDate, reqSession);
         }
     }
     if (typeof (reqBody.ticketType_ticketType) === "string") {
