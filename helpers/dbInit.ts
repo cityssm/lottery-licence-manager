@@ -57,6 +57,7 @@ export const initLicencesDB = () => {
      */
 
     licencesDB.prepare("create table if not exists Locations (" +
+
       "locationID integer primary key autoincrement," +
       " locationName varchar(100)," +
       " locationAddress1 varchar(50)," +
@@ -81,6 +82,7 @@ export const initLicencesDB = () => {
      */
 
     licencesDB.prepare("create table if not exists Organizations (" +
+
       "organizationID integer primary key autoincrement," +
       " organizationName varchar(100) not null," +
       " organizationAddress1 varchar(50)," +
@@ -104,6 +106,7 @@ export const initLicencesDB = () => {
       ")").run();
 
     licencesDB.prepare("create table if not exists OrganizationRepresentatives (" +
+
       "organizationID integer not null," +
       " representativeIndex smallint not null," +
       " representativeName varchar(100) not null," +
@@ -123,6 +126,7 @@ export const initLicencesDB = () => {
       ") without rowid").run();
 
     licencesDB.prepare("create table if not exists OrganizationRemarks (" +
+
       "organizationID integer not null," +
       " remarkIndex integer not null," +
       " remarkDate integer, remarkTime integer," +
@@ -195,6 +199,7 @@ export const initLicencesDB = () => {
 
 
     licencesDB.prepare("create table if not exists LotteryLicences (" +
+
       "licenceID integer primary key autoincrement," +
       " organizationID integer not null," +
 
@@ -238,8 +243,10 @@ export const initLicencesDB = () => {
 
 
     licencesDB.prepare("create table if not exists LotteryLicenceTransactions (" +
+
       "licenceID integer not null," +
       " transactionIndex integer not null," +
+
       " transactionDate integer not null," +
       " transactionTime integer not null," +
       " externalReceiptNumber varchar(20)," +
@@ -262,8 +269,10 @@ export const initLicencesDB = () => {
 
 
     licencesDB.prepare("create table if not exists LotteryLicenceAmendments (" +
+
       "licenceID integer not null," +
       " amendmentIndex integer not null," +
+
       " amendmentDate integer not null, amendmentTime integer not null," +
       " amendmentType text not null, amendment text," +
       " isHidden bit not null default 0," +
@@ -282,6 +291,7 @@ export const initLicencesDB = () => {
 
 
     licencesDB.prepare("create table if not exists LotteryEvents (" +
+
       "licenceID integer not null," +
       " eventDate integer not null," +
 
@@ -307,6 +317,7 @@ export const initLicencesDB = () => {
 
 
     licencesDB.prepare("create table if not exists LotteryLicenceTicketTypes (" +
+
       "licenceID integer not null," +
       " eventDate integer not null," +
       " ticketType varchar(5) not null," +
@@ -334,6 +345,7 @@ export const initLicencesDB = () => {
 
 
     licencesDB.prepare("create table if not exists LotteryLicenceFields (" +
+
       "licenceID integer not null," +
       " fieldKey varchar(20) not null," +
       " fieldValue text," +
@@ -349,6 +361,7 @@ export const initLicencesDB = () => {
 
 
     licencesDB.prepare("create table if not exists LotteryEventCosts (" +
+
       "licenceID integer not null," +
       " eventDate integer not null," +
       " ticketType varchar(5)," +
@@ -360,6 +373,7 @@ export const initLicencesDB = () => {
       ")").run();
 
     licencesDB.prepare("create table if not exists LotteryEventFields (" +
+
       "licenceID integer not null," +
       " eventDate integer not null," +
       " fieldKey varchar(20) not null," +
@@ -372,6 +386,7 @@ export const initLicencesDB = () => {
     // Settings
 
     licencesDB.prepare("create table if not exists ApplicationSettings (" +
+
       "settingKey varchar(50) primary key not null," +
       " settingName varchar(100) not null," +
       " settingDescription text," +
