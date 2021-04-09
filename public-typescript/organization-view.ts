@@ -24,7 +24,7 @@ declare const cityssm: cityssmGlobal;
           (responseJSON: { success: boolean }) => {
 
             if (responseJSON.success) {
-              window.location.href = "/organizations/" + organizationID + "?_" + Date.now().toString();
+              window.location.href = urlPrefix + "/organizations/" + organizationID + "?_" + Date.now().toString();
             }
           }
         );

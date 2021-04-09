@@ -35,7 +35,7 @@ declare const cityssm: cityssmGlobal;
 
         if (responseJSON.success && isCreate) {
 
-          window.location.href = "/locations/" + responseJSON.locationID.toString() + "/edit";
+          window.location.href = urlPrefix + "/locations/" + responseJSON.locationID.toString() + "/edit";
 
         } else {
 
@@ -62,7 +62,7 @@ declare const cityssm: cityssmGlobal;
         (responseJSON: { success: boolean }) => {
 
           if (responseJSON.success) {
-            window.location.href = "/locations";
+            window.location.href = urlPrefix + "/locations";
           }
         }
       );

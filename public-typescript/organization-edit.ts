@@ -67,7 +67,7 @@ declare const llm: llmGlobal;
         (responseJSON: { success: boolean }) => {
 
           if (responseJSON.success) {
-            window.location.href = "/organizations";
+            window.location.href = urlPrefix + "/organizations";
           }
         }
       );

@@ -17,7 +17,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 cityssm.disableNavBlocker();
             }
             if (responseJSON.success && isCreate) {
-                window.location.href = "/locations/" + responseJSON.locationID.toString() + "/edit";
+                window.location.href = urlPrefix + "/locations/" + responseJSON.locationID.toString() + "/edit";
             }
             else {
                 formMessageEle.innerHTML = "";
@@ -31,7 +31,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 locationID
             }, (responseJSON) => {
                 if (responseJSON.success) {
-                    window.location.href = "/locations";
+                    window.location.href = urlPrefix + "/locations";
                 }
             });
         };

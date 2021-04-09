@@ -29,7 +29,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 organizationID
             }, (responseJSON) => {
                 if (responseJSON.success) {
-                    window.location.href = "/organizations";
+                    window.location.href = urlPrefix + "/organizations";
                 }
             });
         };
