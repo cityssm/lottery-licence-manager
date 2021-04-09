@@ -17,6 +17,7 @@ import { handler as handler_doGetFinancialSummary } from "../handlers/events-pos
 import { handler as handler_doSearch } from "../handlers/events-post/doSearch";
 import { handler as handler_doGetPastBankInformation } from "../handlers/events-post/doGetPastBankInformation";
 import { handler as handler_doSave } from "../handlers/events-post/doSave";
+import { handler as handler_doDelete } from "../handlers/events-post/doDelete";
 
 import * as licencesDB from "../helpers/licencesDB";
 
@@ -101,51 +102,7 @@ router.post("/doSave",
   handler_doSave);
 
 
-router.post("/doDelete", (req, res) => {
-
-  if (!req.session.user.userProperties.canUpdate) {
-
-    res
-      .status(403)
-      .json({
-        success: false,
-        message: "Forbidden"
-      });
-
-    return;
-
-  }
-
-  if (req.body.licenceID === "" || req.body.eventDate === "") {
-
-    res.json({
-      success: false,
-      message: "Licence ID or Event Date Unavailable"
-    });
-
-  } else {
-
-    const changeCount = licencesDB.deleteEvent(req.body.licenceID, req.body.eventDate, req.session);
-
-    if (changeCount) {
-
-      res.json({
-        success: true,
-        message: "Event Deleted"
-      });
-
-    } else {
-
-      res.json({
-        success: false,
-        message: "Event Not Deleted"
-      });
-
-    }
-
-  }
-
-});
+router.post("/doDelete", permissionHandlers.updatePostHandler, handler_doDelete);
 
 
 router.get("/:licenceID/:eventDate", handler_view);

@@ -12,6 +12,7 @@ const doGetFinancialSummary_1 = require("../handlers/events-post/doGetFinancialS
 const doSearch_1 = require("../handlers/events-post/doSearch");
 const doGetPastBankInformation_1 = require("../handlers/events-post/doGetPastBankInformation");
 const doSave_1 = require("../handlers/events-post/doSave");
+const doDelete_1 = require("../handlers/events-post/doDelete");
 const licencesDB = require("../helpers/licencesDB");
 const router = express_1.Router();
 router.get("/", (_req, res) => {
@@ -41,38 +42,7 @@ router.get("/financials", financials_1.handler);
 router.post("/doGetFinancialSummary", doGetFinancialSummary_1.handler);
 router.post("/doGetPastBankInformation", doGetPastBankInformation_1.handler);
 router.post("/doSave", permissionHandlers.updatePostHandler, doSave_1.handler);
-router.post("/doDelete", (req, res) => {
-    if (!req.session.user.userProperties.canUpdate) {
-        res
-            .status(403)
-            .json({
-            success: false,
-            message: "Forbidden"
-        });
-        return;
-    }
-    if (req.body.licenceID === "" || req.body.eventDate === "") {
-        res.json({
-            success: false,
-            message: "Licence ID or Event Date Unavailable"
-        });
-    }
-    else {
-        const changeCount = licencesDB.deleteEvent(req.body.licenceID, req.body.eventDate, req.session);
-        if (changeCount) {
-            res.json({
-                success: true,
-                message: "Event Deleted"
-            });
-        }
-        else {
-            res.json({
-                success: false,
-                message: "Event Not Deleted"
-            });
-        }
-    }
-});
+router.post("/doDelete", permissionHandlers.updatePostHandler, doDelete_1.handler);
 router.get("/:licenceID/:eventDate", view_1.handler);
 router.get("/:licenceID/:eventDate/edit", permissionHandlers.updateGetHandler, edit_1.handler);
 router.get("/:licenceID/:eventDate/poke", permissionHandlers.adminGetHandler, poke_1.handler);

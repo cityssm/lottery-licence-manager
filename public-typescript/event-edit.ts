@@ -68,7 +68,7 @@ declare const llm: llmGlobal;
 
             if (responseJSON.success) {
               cityssm.disableNavBlocker();
-              window.location.href = "/licences/" + licenceID;
+              window.location.href = urlPrefix + "/licences/" + licenceID;
             }
           }
         );

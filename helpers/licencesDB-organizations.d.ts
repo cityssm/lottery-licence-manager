@@ -1,9 +1,4 @@
 import type * as llm from "../types/recordTypes";
-import type * as expressSession from "express-session";
-export declare const createOrganization: (reqBody: llm.Organization, reqSession: expressSession.Session) => number;
-export declare const updateOrganization: (reqBody: llm.Organization, reqSession: expressSession.Session) => boolean;
-export declare const deleteOrganization: (organizationID: number, reqSession: expressSession.Session) => boolean;
-export declare const restoreOrganization: (organizationID: number, reqSession: expressSession.Session) => boolean;
 export declare const getInactiveOrganizations: (inactiveYears: number) => llm.Organization[];
 export declare const getDeletedOrganizations: () => llm.Organization[];
 export declare const deleteOrganizationRepresentative: (organizationID: number, representativeIndex: number) => boolean;

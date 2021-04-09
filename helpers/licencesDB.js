@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteEvent = exports.getRecentlyUpdateEvents = exports.getEventTableStats = exports.getActiveLicenceSummary = exports.getLicenceTypeSummary = exports.getLicenceTableStats = exports.resetLicenceTableStats = exports.resetEventTableStats = exports.getRawRowsColumns = exports.canUpdateObject = void 0;
+exports.getRecentlyUpdateEvents = exports.getEventTableStats = exports.getActiveLicenceSummary = exports.getLicenceTypeSummary = exports.getLicenceTableStats = exports.resetLicenceTableStats = exports.resetEventTableStats = exports.getRawRowsColumns = exports.canUpdateObject = void 0;
 const sqlite = require("better-sqlite3");
 const configFns = require("./configFns");
 const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
@@ -232,19 +232,3 @@ const getRecentlyUpdateEvents = (reqSession) => {
     return events;
 };
 exports.getRecentlyUpdateEvents = getRecentlyUpdateEvents;
-const deleteEvent = (licenceID, eventDate, reqSession) => {
-    const db = sqlite(databasePaths_1.licencesDB);
-    const nowMillis = Date.now();
-    const info = db.prepare("update LotteryEvents" +
-        " set recordDelete_userName = ?," +
-        " recordDelete_timeMillis = ?" +
-        " where licenceID = ?" +
-        " and eventDate = ?" +
-        " and recordDelete_timeMillis is null")
-        .run(reqSession.user.userName, nowMillis, licenceID, eventDate);
-    const changeCount = info.changes;
-    db.close();
-    eventTableStatsExpiryMillis = -1;
-    return changeCount > 0;
-};
-exports.deleteEvent = deleteEvent;

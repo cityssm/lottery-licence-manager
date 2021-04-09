@@ -374,36 +374,3 @@ export const getRecentlyUpdateEvents = (reqSession: expressSession.Session) => {
 
   return events;
 };
-
-
-/**
- * @returns TRUE if successful
- */
-export const deleteEvent = (licenceID: number, eventDate: number, reqSession: expressSession.Session) => {
-
-  const db = sqlite(dbPath);
-
-  const nowMillis = Date.now();
-
-  const info = db.prepare("update LotteryEvents" +
-    " set recordDelete_userName = ?," +
-    " recordDelete_timeMillis = ?" +
-    " where licenceID = ?" +
-    " and eventDate = ?" +
-    " and recordDelete_timeMillis is null")
-    .run(
-      reqSession.user.userName,
-      nowMillis,
-      licenceID,
-      eventDate
-    );
-
-  const changeCount = info.changes;
-
-  db.close();
-
-  // Purge cached stats
-  eventTableStatsExpiryMillis = -1;
-
-  return changeCount > 0;
-};

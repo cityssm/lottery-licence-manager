@@ -17,4 +17,3 @@ export declare const getActiveLicenceSummary: (reqBody: {
 }, reqSession: expressSession.Session) => llm.LotteryLicence[];
 export declare const getEventTableStats: () => llm.LotteryEventStats;
 export declare const getRecentlyUpdateEvents: (reqSession: expressSession.Session) => llm.LotteryEvent[];
-export declare const deleteEvent: (licenceID: number, eventDate: number, reqSession: expressSession.Session) => boolean;

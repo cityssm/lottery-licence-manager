@@ -30,7 +30,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
             }, (responseJSON) => {
                 if (responseJSON.success) {
                     cityssm.disableNavBlocker();
-                    window.location.href = "/licences/" + licenceID;
+                    window.location.href = urlPrefix + "/licences/" + licenceID;
                 }
             });
         });

@@ -11,6 +11,10 @@ import { handler as handler_edit } from "../handlers/organizations-get/edit";
 import { handler as handler_doSearch } from "../handlers/organizations-post/doSearch";
 import { handler as handler_doGetAll } from "../handlers/organizations-all/doGetAll";
 
+import { handler as handler_doSave } from "../handlers/organizations-post/doSave";
+import { handler as handler_doDelete } from "../handlers/organizations-post/doDelete";
+import { handler as handler_doRestore } from "../handlers/organizations-post/doRestore";
+
 import { handler as handler_doAddRepresentative } from "../handlers/organizations-post/doAddRepresentative";
 import { handler as handler_doUpdateRepresentative } from "../handlers/organizations-post/doUpdateRepresentative";
 
@@ -228,79 +232,19 @@ router.get("/new", permissionHandlers.createGetHandler, (_req, res) => {
 });
 
 
-router.post("/doSave", permissionHandlers.createPostHandler, (req, res) => {
-
-  if (req.body.organizationID === "") {
-
-    const newOrganizationID = licencesDBOrganizations.createOrganization(req.body, req.session);
-
-    res.json({
-      success: true,
-      organizationID: newOrganizationID
-    });
-
-  } else {
-
-    const success = licencesDBOrganizations.updateOrganization(req.body, req.session);
-
-    if (success) {
-
-      return res.json({
-        success: true,
-        message: "Organization updated successfully."
-      });
-
-    } else {
-
-      return res.json({
-        success: false,
-        message: "Record Not Saved"
-      });
-    }
-  }
-});
+router.post("/doSave",
+  permissionHandlers.createPostHandler,
+  handler_doSave);
 
 
-router.post("/doDelete", permissionHandlers.createPostHandler, (req, res) => {
-
-  const success = licencesDBOrganizations.deleteOrganization(req.body.organizationID, req.session);
-
-  if (success) {
-
-    return res.json({
-      success: true,
-      message: "Organization deleted successfully."
-    });
-
-  } else {
-
-    return res.json({
-      success: false,
-      message: "Organization could not be deleted."
-    });
-  }
-});
+router.post("/doDelete",
+  permissionHandlers.createPostHandler,
+  handler_doDelete);
 
 
-router.post("/doRestore", permissionHandlers.updatePostHandler, (req, res) => {
-
-  const success = licencesDBOrganizations.restoreOrganization(req.body.organizationID, req.session);
-
-  if (success) {
-
-    return res.json({
-      success: true,
-      message: "Organization restored successfully."
-    });
-
-  } else {
-
-    return res.json({
-      success: false,
-      message: "Organization could not be restored."
-    });
-  }
-});
+router.post("/doRestore",
+  permissionHandlers.updatePostHandler,
+  handler_doRestore);
 
 
 router.post("/doRollForward",

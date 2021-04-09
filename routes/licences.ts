@@ -1,7 +1,5 @@
 import { Router } from "express";
 
-import * as configFns from "../helpers/configFns";
-
 import * as permissionHandlers from "../handlers/permissions";
 
 import { handler as handler_doSearch } from "../handlers/licences-post/doSearch";
@@ -12,6 +10,7 @@ import { handler as handler_edit } from "../handlers/licences-get/edit";
 import { handler as handler_print } from "../handlers/licences-get/print";
 import { handler as handler_poke } from "../handlers/licences-get/poke";
 
+import { handler as handler_doGetTicketTypes } from "../handlers/licences-post/doGetTicketTypes";
 import { handler as handler_doSave } from "../handlers/licences-post/doSave";
 import { handler as handler_doIssueLicence } from "../handlers/licences-post/doIssueLicence";
 import { handler as handler_doUnissueLicence } from "../handlers/licences-post/doUnissueLicence";
@@ -88,26 +87,12 @@ router.get([
   handler_new);
 
 
-router.post("/doGetDistinctTermsConditions", handler_doGetDistinctTermsConditions);
+router.post("/doGetDistinctTermsConditions",
+  handler_doGetDistinctTermsConditions);
 
 
-router.post("/doGetTicketTypes", (req, res) => {
-
-  const licenceTypeKey = req.body.licenceTypeKey;
-
-  const licenceType = configFns.getLicenceType(licenceTypeKey);
-
-  if (licenceType) {
-
-    res.json(licenceType.ticketTypes || []);
-
-  } else {
-
-    res.json([]);
-
-  }
-
-});
+router.post("/doGetTicketTypes",
+  handler_doGetTicketTypes);
 
 
 router.post("/doSave",

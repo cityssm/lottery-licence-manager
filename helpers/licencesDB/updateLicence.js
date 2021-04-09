@@ -127,6 +127,12 @@ const updateLicence = (reqBody, reqSession) => {
                 "select eventDate from LotteryEvents where licenceID = ? and recordDelete_timeMillis is not null" +
                 ")"))
             .run(reqBody.licenceID, reqBody.licenceID);
+        db.prepare("delete from LotteryEventCosts" +
+            " where licenceID = ?" +
+            (" and eventDate in (" +
+                "select eventDate from LotteryEvents where licenceID = ? and recordDelete_timeMillis is not null" +
+                ")"))
+            .run(reqBody.licenceID, reqBody.licenceID);
         db.prepare("delete from LotteryEvents" +
             " where licenceID = ?" +
             " and recordDelete_timeMillis is not null")
