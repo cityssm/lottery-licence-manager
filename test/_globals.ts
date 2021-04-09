@@ -126,7 +126,6 @@ export const fakeRequest: Request = {
   url: null,
   wrap: null,
   xhr: null
-
 };
 
 

@@ -1,5 +1,5 @@
 export declare const updateUserProperty: (reqBody: {
     userName: string;
-    propertyName: string;
+    propertyName: "isAdmin" | "canUpdate" | "canCreate";
     propertyValue: string;
 }) => number;

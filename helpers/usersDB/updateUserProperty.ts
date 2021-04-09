@@ -4,7 +4,7 @@ import { usersDB as dbPath } from "../../data/databasePaths";
 
 export const updateUserProperty = (reqBody: {
   userName: string;
-  propertyName: string;
+  propertyName: "isAdmin" | "canUpdate" | "canCreate";
   propertyValue: string;
 }) => {
 
