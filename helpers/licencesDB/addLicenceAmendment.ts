@@ -1,5 +1,7 @@
 import * as sqlite from "better-sqlite3";
 
+import { getMaxLicenceAmendmentIndexWithDB } from "./getMaxLicenceAmendmentIndex";
+
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns";
 
 import type * as expressSession from "express-session";
@@ -9,16 +11,7 @@ export const addLicenceAmendmentWithDB = (db: sqlite.Database,
   licenceID: number | string, amendmentType: string, amendment: string, isHidden: number,
   reqSession: expressSession.Session) => {
 
-  const amendmentIndexRecord: {
-    amendmentIndex: number;
-  } = db.prepare("select amendmentIndex" +
-    " from LotteryLicenceAmendments" +
-    " where licenceID = ?" +
-    " order by amendmentIndex desc" +
-    " limit 1")
-    .get(licenceID);
-
-  const amendmentIndex: number = (amendmentIndexRecord ? amendmentIndexRecord.amendmentIndex : 0) + 1;
+  const newAmendmentIndex = getMaxLicenceAmendmentIndexWithDB(db, licenceID);
 
   const nowDate = new Date();
 
@@ -31,7 +24,7 @@ export const addLicenceAmendmentWithDB = (db: sqlite.Database,
     " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
     .run(
       licenceID,
-      amendmentIndex,
+      newAmendmentIndex,
       amendmentDate,
       amendmentTime,
       amendmentType,
@@ -43,5 +36,5 @@ export const addLicenceAmendmentWithDB = (db: sqlite.Database,
       nowDate.getTime()
     );
 
-  return amendmentIndex;
+  return newAmendmentIndex;
 };

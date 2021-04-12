@@ -1,5 +1,7 @@
 import * as sqlite from "better-sqlite3";
 
+import { getMaxOrganizationBankRecordIndexWithDB } from "./getMaxOrganizationBankRecordIndex";
+
 import { licencesDB as dbPath } from "../../data/databasePaths";
 
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns";
@@ -53,12 +55,7 @@ export const addOrganizationBankRecord = (reqBody: llm.OrganizationBankRecord, r
 
   // Get next recordIndex
 
-  const row = db.prepare("select ifnull(max(recordIndex), -1) as maxIndex" +
-    " from OrganizationBankRecords" +
-    " where organizationID = ?")
-    .get(reqBody.organizationID);
-
-  const newRecordIndex = row.maxIndex as number + 1;
+  const newRecordIndex = getMaxOrganizationBankRecordIndexWithDB(db, reqBody.organizationID) + 1;
 
   // Insert the record
 

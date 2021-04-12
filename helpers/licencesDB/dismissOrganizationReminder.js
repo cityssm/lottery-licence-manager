@@ -14,8 +14,10 @@ const dismissOrganizationReminder = (organizationID, reminderIndex, reqSession) 
         " and dismissedDate is null" +
         " and recordDelete_timeMillis is null", [
         dateTimeFns.dateToInteger(currentDate),
-        reqSession.user.userName, currentDate.getTime(),
-        organizationID, reminderIndex
+        reqSession.user.userName,
+        currentDate.getTime(),
+        organizationID,
+        reminderIndex
     ]);
 };
 exports.dismissOrganizationReminder = dismissOrganizationReminder;

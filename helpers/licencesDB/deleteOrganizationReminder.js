@@ -11,7 +11,10 @@ const deleteOrganizationReminderWithDB = (db, organizationID, reminderIndex, req
         " where organizationID = ?" +
         " and reminderIndex = ?" +
         " and recordDelete_timeMillis is null", [
-        reqSession.user.userName, Date.now(), organizationID, reminderIndex
+        reqSession.user.userName,
+        Date.now(),
+        organizationID,
+        reminderIndex
     ]);
 };
 exports.deleteOrganizationReminderWithDB = deleteOrganizationReminderWithDB;

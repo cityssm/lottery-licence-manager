@@ -9,13 +9,17 @@ import * as sqlite from "better-sqlite3";
 export const deleteOrganizationReminderWithDB =
   (db: sqlite.Database, organizationID: number, reminderIndex: number, reqSession: expressSession.Session) => {
 
-    return runSQLWithDB(db, "update OrganizationReminders" +
+    return runSQLWithDB(db,
+      "update OrganizationReminders" +
       " set recordDelete_userName = ?," +
       " recordDelete_timeMillis = ?" +
       " where organizationID = ?" +
       " and reminderIndex = ?" +
       " and recordDelete_timeMillis is null", [
-        reqSession.user.userName, Date.now(), organizationID, reminderIndex]);
+        reqSession.user.userName,
+        Date.now(),
+        organizationID,
+        reminderIndex]);
   };
 
 

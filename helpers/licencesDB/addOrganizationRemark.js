@@ -2,15 +2,12 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.addOrganizationRemark = void 0;
 const sqlite = require("better-sqlite3");
+const getMaxOrganizationRemarkIndex_1 = require("./getMaxOrganizationRemarkIndex");
 const databasePaths_1 = require("../../data/databasePaths");
 const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
 const addOrganizationRemark = (reqBody, reqSession) => {
     const db = sqlite(databasePaths_1.licencesDB);
-    const row = db.prepare("select ifnull(max(remarkIndex), -1) as maxIndex" +
-        " from OrganizationRemarks" +
-        " where organizationID = ?")
-        .get(reqBody.organizationID);
-    const newRemarkIndex = row.maxIndex + 1;
+    const newRemarkIndex = getMaxOrganizationRemarkIndex_1.getMaxOrganizationRemarkIndexWithDB(db, reqBody.organizationID) + 1;
     const rightNow = new Date();
     const remarkDate = dateTimeFns.dateToInteger(rightNow);
     const remarkTime = dateTimeFns.dateToTimeInteger(rightNow);

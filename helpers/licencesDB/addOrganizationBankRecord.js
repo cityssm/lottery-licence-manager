@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.addOrganizationBankRecord = void 0;
 const sqlite = require("better-sqlite3");
+const getMaxOrganizationBankRecordIndex_1 = require("./getMaxOrganizationBankRecordIndex");
 const databasePaths_1 = require("../../data/databasePaths");
 const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
 const addOrganizationBankRecord = (reqBody, reqSession) => {
@@ -30,11 +31,7 @@ const addOrganizationBankRecord = (reqBody, reqSession) => {
             return false;
         }
     }
-    const row = db.prepare("select ifnull(max(recordIndex), -1) as maxIndex" +
-        " from OrganizationBankRecords" +
-        " where organizationID = ?")
-        .get(reqBody.organizationID);
-    const newRecordIndex = row.maxIndex + 1;
+    const newRecordIndex = getMaxOrganizationBankRecordIndex_1.getMaxOrganizationBankRecordIndexWithDB(db, reqBody.organizationID) + 1;
     const nowMillis = Date.now();
     const info = db.prepare("insert into OrganizationBankRecords" +
         " (organizationID, recordIndex," +

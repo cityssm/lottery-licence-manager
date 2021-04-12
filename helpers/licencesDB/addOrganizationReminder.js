@@ -3,13 +3,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.addOrganizationReminder = exports.addOrganizationReminderWithDB = void 0;
 const sqlite = require("better-sqlite3");
 const databasePaths_1 = require("../../data/databasePaths");
+const getMaxOrganizationReminderIndex_1 = require("./getMaxOrganizationReminderIndex");
 const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
 const addOrganizationReminderWithDB = (db, reminderData, reqSession) => {
-    const row = db.prepare("select ifnull(max(reminderIndex), -1) as maxIndex" +
-        " from OrganizationReminders" +
-        " where organizationID = ?")
-        .get(reminderData.organizationID);
-    const newReminderIndex = row.maxIndex + 1;
+    const newReminderIndex = getMaxOrganizationReminderIndex_1.getMaxOrganizationReminderIndexWithDB(db, reminderData.organizationID) + 1;
     const nowMillis = Date.now();
     db.prepare("insert into OrganizationReminders" +
         " (organizationID, reminderIndex, reminderTypeKey, dueDate," +

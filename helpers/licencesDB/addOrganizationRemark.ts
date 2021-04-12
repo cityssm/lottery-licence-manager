@@ -1,5 +1,7 @@
 import * as sqlite from "better-sqlite3";
 
+import { getMaxOrganizationRemarkIndexWithDB } from "./getMaxOrganizationRemarkIndex";
+
 import { licencesDB as dbPath } from "../../data/databasePaths";
 
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns";
@@ -12,14 +14,7 @@ export const addOrganizationRemark = (reqBody: llm.OrganizationRemark, reqSessio
 
   const db = sqlite(dbPath);
 
-  const row: {
-    maxIndex: number;
-  } = db.prepare("select ifnull(max(remarkIndex), -1) as maxIndex" +
-    " from OrganizationRemarks" +
-    " where organizationID = ?")
-    .get(reqBody.organizationID);
-
-  const newRemarkIndex = row.maxIndex + 1;
+  const newRemarkIndex = getMaxOrganizationRemarkIndexWithDB(db, reqBody.organizationID) + 1;
 
   const rightNow = new Date();
 

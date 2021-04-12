@@ -1,5 +1,8 @@
 import * as assert from "assert";
 
+import * as sqlite from "better-sqlite3";
+import { licencesDB as dbPath } from "../data/databasePaths";
+
 import { fakeViewOnlySession } from "./_globals";
 
 import { getOrganization } from "../helpers/licencesDB/getOrganization";
@@ -11,6 +14,10 @@ import { getOrganizationRemarks } from "../helpers/licencesDB/getOrganizationRem
 import { getOrganizationReminder } from "../helpers/licencesDB/getOrganizationReminder";
 import { getOrganizationReminders } from "../helpers/licencesDB/getOrganizationReminders";
 import { getUndismissedOrganizationReminders } from "../helpers/licencesDB/getUndismissedOrganizationReminders";
+
+import { getMaxOrganizationReminderIndexWithDB } from "../helpers/licencesDB/getMaxOrganizationReminderIndex";
+import { getMaxOrganizationRemarkIndexWithDB } from "../helpers/licencesDB/getMaxOrganizationRemarkIndex";
+import { getMaxOrganizationBankRecordIndexWithDB } from "../helpers/licencesDB/getMaxOrganizationBankRecordIndex";
 
 
 describe("licencesDB/organizations", () => {
@@ -41,5 +48,30 @@ describe("licencesDB/organizations", () => {
 
   it("should execute getUndismissedOrganizationReminders()", () => {
     assert.equal(typeof getUndismissedOrganizationReminders(fakeViewOnlySession), "object");
+  });
+
+  describe("licencesDB/organizations (with DB)", () => {
+
+    let db: sqlite.Database;
+
+    before(() => {
+      db = sqlite(dbPath);
+    });
+
+    after(() => {
+      db.close();
+    });
+
+    it("should execute getMaxOrganizationReminderIndexWithDB()", () => {
+      assert.equal(getMaxOrganizationReminderIndexWithDB(db, -1), -1);
+    });
+
+    it("should execute getMaxOrganizationRemarkIndexWithDB()", () => {
+      assert.equal(getMaxOrganizationRemarkIndexWithDB(db, -1), -1);
+    });
+
+    it("should execute getMaxOrganizationBankRecordIndexWithDB()", () => {
+      assert.equal(getMaxOrganizationBankRecordIndexWithDB(db, -1), -1);
+    });
   });
 });

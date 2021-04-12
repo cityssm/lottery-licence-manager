@@ -2,6 +2,8 @@ import * as sqlite from "better-sqlite3";
 
 import { licencesDB as dbPath } from "../../data/databasePaths";
 
+import { getMaxOrganizationReminderIndexWithDB } from "./getMaxOrganizationReminderIndex";
+
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns";
 
 import type * as llm from "../../types/recordTypes";
@@ -20,12 +22,7 @@ interface ReminderData {
 export const addOrganizationReminderWithDB = (db: sqlite.Database,
   reminderData: ReminderData, reqSession: expressSession.Session) => {
 
-  const row: { maxIndex: number } = db.prepare("select ifnull(max(reminderIndex), -1) as maxIndex" +
-    " from OrganizationReminders" +
-    " where organizationID = ?")
-    .get(reminderData.organizationID);
-
-  const newReminderIndex = row.maxIndex + 1;
+  const newReminderIndex = getMaxOrganizationReminderIndexWithDB(db, reminderData.organizationID) + 1;
 
   const nowMillis = Date.now();
 

@@ -1,12 +1,15 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const assert = require("assert");
+const sqlite = require("better-sqlite3");
+const databasePaths_1 = require("../data/databasePaths");
 const _globals_1 = require("./_globals");
 const getLicence_1 = require("../helpers/licencesDB/getLicence");
 const getLicences_1 = require("../helpers/licencesDB/getLicences");
 const getDistinctTermsConditions_1 = require("../helpers/licencesDB/getDistinctTermsConditions");
 const getLicenceActivityByDateRange_1 = require("../helpers/licencesDB/getLicenceActivityByDateRange");
 const getNextExternalLicenceNumberFromRange_1 = require("../helpers/licencesDB/getNextExternalLicenceNumberFromRange");
+const getMaxLicenceAmendmentIndex_1 = require("../helpers/licencesDB/getMaxLicenceAmendmentIndex");
 describe("licencesDB/licences", () => {
     it("should execute getLicence()", () => {
         assert.equal(getLicence_1.getLicence(-1, _globals_1.fakeViewOnlySession), null);
@@ -22,5 +25,17 @@ describe("licencesDB/licences", () => {
     });
     it("should execute getNextExternalLicenceNumberFromRange()", () => {
         assert.equal(typeof getNextExternalLicenceNumberFromRange_1.getNextExternalLicenceNumberFromRange(), "number");
+    });
+    describe("licencesDB/licences (with DB)", () => {
+        let db;
+        before(() => {
+            db = sqlite(databasePaths_1.licencesDB);
+        });
+        after(() => {
+            db.close();
+        });
+        it("should execute getMaxLicenceAmendmentIndexWithDB()", () => {
+            assert.equal(getMaxLicenceAmendmentIndex_1.getMaxLicenceAmendmentIndexWithDB(db, -1), -1);
+        });
     });
 });
