@@ -62,14 +62,14 @@ router.route("/")
       });
     }
   })
-  .post((req, res) => {
+  .post(async(req, res) => {
 
     const userName = req.body.userName;
     const passwordPlain = req.body.password;
 
     const redirectURL = getSafeRedirectURL(req.body.redirect);
 
-    const userObj = usersDB_getUser.getUser(userName, passwordPlain);
+    const userObj = await usersDB_getUser.getUser(userName, passwordPlain);
 
     if (userObj) {
 

@@ -8,14 +8,14 @@ import * as bcrypt from "bcrypt";
 import * as stringFns from "@cityssm/expressjs-server-js/stringFns";
 
 
-export const createUser = (reqBody: {
+export const createUser = async(reqBody: {
   userName: string;
   lastName: string;
   firstName: string;
 }) => {
 
   const newPasswordPlain = stringFns.generatePassword();
-  const hash = bcrypt.hashSync(userFns.getHashString(reqBody.userName, newPasswordPlain), 10);
+  const hash = await bcrypt.hash(userFns.getHashString(reqBody.userName, newPasswordPlain), 10);
 
   const db = sqlite(dbPath);
 

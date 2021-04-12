@@ -3,6 +3,7 @@ import { licencesDB as dbPath } from "../../data/databasePaths";
 
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns";
 
+import { getMaxTransactionIndexWithDB } from "./getMaxTransactionIndex";
 import { getLicenceWithDB } from "./getLicence";
 import { addLicenceAmendmentWithDB } from "./addLicenceAmendment";
 
@@ -27,12 +28,7 @@ export const addTransaction = (reqBody: {
     includeTransactions: false
   });
 
-  const row = db.prepare("select ifnull(max(transactionIndex), -1) as maxIndex" +
-    " from LotteryLicenceTransactions" +
-    " where licenceID = ?")
-    .get(reqBody.licenceID);
-
-  const newTransactionIndex: number = row.maxIndex as number + 1;
+  const newTransactionIndex: number = getMaxTransactionIndexWithDB(db, reqBody.licenceID) + 1;
 
   const rightNow = new Date();
 

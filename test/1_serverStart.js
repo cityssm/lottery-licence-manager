@@ -16,13 +16,13 @@ describe("lottery-licence-manager", () => {
     const portNumber = 54333;
     let serverStarted = false;
     let password = "";
-    before(() => {
+    before(async () => {
         httpServer.listen(portNumber);
         httpServer.on("listening", () => {
             serverStarted = true;
         });
         inactivateUser_1.inactivateUser(_globals_1.userName);
-        password = createUser_1.createUser({
+        password = await createUser_1.createUser({
             userName: _globals_1.userName,
             firstName: "Test",
             lastName: "User"

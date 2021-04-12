@@ -4,6 +4,7 @@ exports.addTransaction = void 0;
 const sqlite = require("better-sqlite3");
 const databasePaths_1 = require("../../data/databasePaths");
 const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
+const getMaxTransactionIndex_1 = require("./getMaxTransactionIndex");
 const getLicence_1 = require("./getLicence");
 const addLicenceAmendment_1 = require("./addLicenceAmendment");
 const addTransaction = (reqBody, reqSession) => {
@@ -15,11 +16,7 @@ const addTransaction = (reqBody, reqSession) => {
         includeAmendments: false,
         includeTransactions: false
     });
-    const row = db.prepare("select ifnull(max(transactionIndex), -1) as maxIndex" +
-        " from LotteryLicenceTransactions" +
-        " where licenceID = ?")
-        .get(reqBody.licenceID);
-    const newTransactionIndex = row.maxIndex + 1;
+    const newTransactionIndex = getMaxTransactionIndex_1.getMaxTransactionIndexWithDB(db, reqBody.licenceID) + 1;
     const rightNow = new Date();
     const transactionDate = dateTimeFns.dateToInteger(rightNow);
     const transactionTime = dateTimeFns.dateToTimeInteger(rightNow);

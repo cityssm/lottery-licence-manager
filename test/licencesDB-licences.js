@@ -10,6 +10,7 @@ const getDistinctTermsConditions_1 = require("../helpers/licencesDB/getDistinctT
 const getLicenceActivityByDateRange_1 = require("../helpers/licencesDB/getLicenceActivityByDateRange");
 const getNextExternalLicenceNumberFromRange_1 = require("../helpers/licencesDB/getNextExternalLicenceNumberFromRange");
 const getMaxLicenceAmendmentIndex_1 = require("../helpers/licencesDB/getMaxLicenceAmendmentIndex");
+const getMaxTransactionIndex_1 = require("../helpers/licencesDB/getMaxTransactionIndex");
 describe("licencesDB/licences", () => {
     it("should execute getLicence()", () => {
         assert.equal(getLicence_1.getLicence(-1, _globals_1.fakeViewOnlySession), null);
@@ -36,6 +37,9 @@ describe("licencesDB/licences", () => {
         });
         it("should execute getMaxLicenceAmendmentIndexWithDB()", () => {
             assert.equal(getMaxLicenceAmendmentIndex_1.getMaxLicenceAmendmentIndexWithDB(db, -1), -1);
+        });
+        it("should execute getMaxTransactionIndexWithDB()", () => {
+            assert.equal(getMaxTransactionIndex_1.getMaxTransactionIndexWithDB(db, -1), -1);
         });
     });
 });

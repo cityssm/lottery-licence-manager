@@ -1,12 +1,14 @@
 import * as sqlite from "better-sqlite3";
 import { usersDB as dbPath } from "../../data/databasePaths";
 
+import { updatePasswordWithDB } from "./updatePassword";
+
 import * as userFns from "../../helpers/userFns";
 
 import * as bcrypt from "bcrypt";
 
 
-export const tryResetPassword = (userName: string, oldPasswordPlain: string, newPasswordPlain: string) => {
+export const tryResetPassword = async(userName: string, oldPasswordPlain: string, newPasswordPlain: string) => {
 
   const db = sqlite(dbPath);
 
@@ -37,12 +39,7 @@ export const tryResetPassword = (userName: string, oldPasswordPlain: string, new
     };
   }
 
-  const newPasswordHash = bcrypt.hashSync(userFns.getHashString(userName, newPasswordPlain), 10);
-
-  db.prepare("update Users" +
-    " set passwordHash = ?" +
-    " where userName = ?")
-    .run(newPasswordHash, userName);
+  await updatePasswordWithDB(db, userName, newPasswordPlain);
 
   db.close();
 

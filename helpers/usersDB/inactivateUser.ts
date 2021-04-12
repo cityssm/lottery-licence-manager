@@ -8,5 +8,6 @@ export const inactivateUser = (userName: string) => {
     " set isActive = 0" +
     " where userName = ?" +
     " and isActive = 1",
-    [userName]).changes;
+    [userName])
+    .changes;
 };

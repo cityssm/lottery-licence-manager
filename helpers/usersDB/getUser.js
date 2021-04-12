@@ -6,7 +6,7 @@ const databasePaths_1 = require("../../data/databasePaths");
 const userFns = require("../../helpers/userFns");
 const bcrypt = require("bcrypt");
 const configFns = require("../../helpers/configFns");
-const getUser = (userNameSubmitted, passwordPlain) => {
+const getUser = async (userNameSubmitted, passwordPlain) => {
     const db = sqlite(databasePaths_1.usersDB);
     const row = db.prepare("select userName, passwordHash, isActive" +
         " from Users" +
@@ -36,10 +36,7 @@ const getUser = (userNameSubmitted, passwordPlain) => {
         return null;
     }
     const databaseUserName = row.userName;
-    let passwordIsValid = false;
-    if (bcrypt.compareSync(userFns.getHashString(databaseUserName, passwordPlain), row.passwordHash)) {
-        passwordIsValid = true;
-    }
+    const passwordIsValid = await bcrypt.compare(userFns.getHashString(databaseUserName, passwordPlain), row.passwordHash);
     if (!passwordIsValid) {
         db.close();
         return null;

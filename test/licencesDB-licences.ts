@@ -12,6 +12,7 @@ import { getLicenceActivityByDateRange } from "../helpers/licencesDB/getLicenceA
 import { getNextExternalLicenceNumberFromRange } from "../helpers/licencesDB/getNextExternalLicenceNumberFromRange";
 
 import { getMaxLicenceAmendmentIndexWithDB } from "../helpers/licencesDB/getMaxLicenceAmendmentIndex";
+import { getMaxTransactionIndexWithDB } from "../helpers/licencesDB/getMaxTransactionIndex";
 
 
 describe("licencesDB/licences", () => {
@@ -50,6 +51,10 @@ describe("licencesDB/licences", () => {
 
     it("should execute getMaxLicenceAmendmentIndexWithDB()", () => {
       assert.equal(getMaxLicenceAmendmentIndexWithDB(db, -1), -1);
+    });
+
+    it("should execute getMaxTransactionIndexWithDB()", () => {
+      assert.equal(getMaxTransactionIndexWithDB(db, -1), -1);
     });
   });
 });

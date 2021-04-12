@@ -6,6 +6,7 @@ const inactivateUser = (userName) => {
     return _runSQLByName_1.runSQLByName("usersDB", "update Users" +
         " set isActive = 0" +
         " where userName = ?" +
-        " and isActive = 1", [userName]).changes;
+        " and isActive = 1", [userName])
+        .changes;
 };
 exports.inactivateUser = inactivateUser;

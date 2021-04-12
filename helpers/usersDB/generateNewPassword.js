@@ -1,16 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.generateNewPassword = void 0;
-const _runSQLByName_1 = require("../_runSQLByName");
-const userFns = require("../../helpers/userFns");
-const bcrypt = require("bcrypt");
+const updatePassword_1 = require("./updatePassword");
 const stringFns = require("@cityssm/expressjs-server-js/stringFns");
-const generateNewPassword = (userName) => {
+const generateNewPassword = async (userName) => {
     const newPasswordPlain = stringFns.generatePassword();
-    const hash = bcrypt.hashSync(userFns.getHashString(userName, newPasswordPlain), 10);
-    _runSQLByName_1.runSQLByName("usersDB", "update Users" +
-        " set passwordHash = ?" +
-        " where userName = ?", [hash, userName]);
+    await updatePassword_1.updatePassword(userName, newPasswordPlain);
     return newPasswordPlain;
 };
 exports.generateNewPassword = generateNewPassword;

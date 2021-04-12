@@ -3,9 +3,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.tryResetPassword = void 0;
 const sqlite = require("better-sqlite3");
 const databasePaths_1 = require("../../data/databasePaths");
+const updatePassword_1 = require("./updatePassword");
 const userFns = require("../../helpers/userFns");
 const bcrypt = require("bcrypt");
-const tryResetPassword = (userName, oldPasswordPlain, newPasswordPlain) => {
+const tryResetPassword = async (userName, oldPasswordPlain, newPasswordPlain) => {
     const db = sqlite(databasePaths_1.usersDB);
     const row = db.prepare("select passwordHash from Users" +
         " where userName = ?" +
@@ -26,11 +27,7 @@ const tryResetPassword = (userName, oldPasswordPlain, newPasswordPlain) => {
             message: "Old password does not match."
         };
     }
-    const newPasswordHash = bcrypt.hashSync(userFns.getHashString(userName, newPasswordPlain), 10);
-    db.prepare("update Users" +
-        " set passwordHash = ?" +
-        " where userName = ?")
-        .run(newPasswordHash, userName);
+    await updatePassword_1.updatePasswordWithDB(db, userName, newPasswordPlain);
     db.close();
     return {
         success: true,

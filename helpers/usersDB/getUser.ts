@@ -10,7 +10,7 @@ import * as configFns from "../../helpers/configFns";
 import type { User, UserProperties } from "../../types/recordTypes";
 
 
-export const getUser = (userNameSubmitted: string, passwordPlain: string): User => {
+export const getUser = async(userNameSubmitted: string, passwordPlain: string): Promise<User> => {
 
   const db = sqlite(dbPath);
 
@@ -64,19 +64,13 @@ export const getUser = (userNameSubmitted: string, passwordPlain: string): User 
 
   const databaseUserName = row.userName as string;
 
-  let passwordIsValid = false;
-
-  if (bcrypt.compareSync(userFns.getHashString(databaseUserName, passwordPlain), row.passwordHash)) {
-
-    passwordIsValid = true;
-
-  }
+  const passwordIsValid =
+    await bcrypt.compare(userFns.getHashString(databaseUserName, passwordPlain), row.passwordHash);
 
   if (!passwordIsValid) {
 
     db.close();
     return null;
-
   }
 
   // Get user properties
@@ -110,7 +104,6 @@ export const getUser = (userNameSubmitted: string, passwordPlain: string): User 
         userProperties[propertyName] = propertyValue;
         break;
     }
-
   }
 
   db.close();

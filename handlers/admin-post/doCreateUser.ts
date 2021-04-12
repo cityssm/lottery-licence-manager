@@ -3,9 +3,9 @@ import type { RequestHandler } from "express";
 import { createUser } from "../../helpers/usersDB/createUser";
 
 
-export const handler: RequestHandler = (req, res) => {
+export const handler: RequestHandler = async(req, res) => {
 
-  const newPassword = createUser(req.body);
+  const newPassword = await createUser(req.body);
 
   if (!newPassword) {
 
@@ -20,6 +20,5 @@ export const handler: RequestHandler = (req, res) => {
       success: true,
       newPassword
     });
-
   }
 };

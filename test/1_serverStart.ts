@@ -26,7 +26,7 @@ describe("lottery-licence-manager", () => {
 
   let password = "";
 
-  before(() => {
+  before(async() => {
 
     httpServer.listen(portNumber);
 
@@ -37,7 +37,7 @@ describe("lottery-licence-manager", () => {
     // ensure the test user is not active
     inactivateUser(userName);
 
-    password = createUser({
+    password = await createUser({
       userName,
       firstName: "Test",
       lastName: "User"
