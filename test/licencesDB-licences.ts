@@ -101,11 +101,11 @@ describe("licencesDB/licences", () => {
     });
 
     it("should execute getMaxLicenceAmendmentIndexWithDB()", () => {
-      assert.equal(getMaxLicenceAmendmentIndexWithDB(db, 1), -1);
+      assert.equal(getMaxLicenceAmendmentIndexWithDB(db, -1), -1);
     });
 
     it("should execute getMaxTransactionIndexWithDB()", () => {
-      assert.equal(getMaxTransactionIndexWithDB(db, 1), -1);
+      assert.equal(getMaxTransactionIndexWithDB(db, -1), -1);
     });
   });
 });

@@ -1,10 +1,9 @@
 import { Router } from "express";
 
-import * as configFns from "../helpers/configFns";
-
 import * as permissionHandlers from "../handlers/permissions";
 
 import { handler as handler_cleanup } from "../handlers/organizations-get/cleanup";
+import { handler as handler_new } from "../handlers/organizations-get/new";
 import { handler as handler_view } from "../handlers/organizations-get/view";
 import { handler as handler_edit } from "../handlers/organizations-get/edit";
 
@@ -17,6 +16,8 @@ import { handler as handler_doRestore } from "../handlers/organizations-post/doR
 
 import { handler as handler_doAddRepresentative } from "../handlers/organizations-post/doAddRepresentative";
 import { handler as handler_doUpdateRepresentative } from "../handlers/organizations-post/doUpdateRepresentative";
+import { handler as handler_doDeleteRepresentative } from "../handlers/organizations-post/doDeleteRepresentative";
+import { handler as handler_doSetDefaultRepresentative } from "../handlers/organizations-post/doSetDefaultRepresentative";
 
 import { handler as handler_doGetRemarks } from "../handlers/organizations-post/doGetRemarks";
 import { handler as handler_doGetRemark } from "../handlers/organizations-post/doGetRemark";
@@ -37,14 +38,13 @@ import { handler as handler_doAddBankRecord } from "../handlers/organizations-po
 import { handler as handler_doEditBankRecord } from "../handlers/organizations-post/doEditBankRecord";
 import { handler as handler_doUpdateBankRecordsByMonth } from "../handlers/organizations-post/doUpdateBankRecordsByMonth";
 import { handler as handler_doDeleteBankRecord } from "../handlers/organizations-post/doDeleteBankRecord";
+import { handler as handler_doGetBankRecordStats } from "../handlers/organizations-post/doGetBankRecordStats";
 
 import { handler as handler_doRollForward } from "../handlers/organizations-post/doRollForward";
 
 import { handler as handler_doGetInactive } from "../handlers/organizations-post/doGetInactive";
 
 import { handler as handler_recovery } from "../handlers/organizations-get/recovery";
-
-import * as licencesDBOrganizations from "../helpers/licencesDB-organizations";
 
 
 const router = Router();
@@ -171,12 +171,7 @@ router.post("/doDeleteReminder",
 router.post("/doGetBankRecords", handler_doGetBankRecords);
 
 
-router.post("/doGetBankRecordStats", (req, res) => {
-
-  const organizationID = req.body.organizationID;
-  res.json(licencesDBOrganizations.getOrganizationBankRecordStats(organizationID));
-
-});
+router.post("/doGetBankRecordStats", handler_doGetBankRecordStats);
 
 
 router.post("/doAddBankRecord",
@@ -204,19 +199,9 @@ router.post("/doDeleteBankRecord",
  */
 
 
-router.get("/new", permissionHandlers.createGetHandler, (_req, res) => {
-
-  res.render("organization-edit", {
-    headTitle: "Organization Create",
-    isViewOnly: false,
-    isCreate: true,
-    organization: {
-      organizationCity: configFns.getProperty("defaults.city"),
-      organizationProvince: configFns.getProperty("defaults.province")
-    }
-  });
-
-});
+router.get("/new",
+  permissionHandlers.createGetHandler,
+  handler_new);
 
 
 router.post("/doSave",
@@ -269,31 +254,12 @@ router.post("/:organizationID/doEditOrganizationRepresentative",
 
 router.post("/:organizationID/doDeleteOrganizationRepresentative",
   permissionHandlers.createPostHandler,
-  (req, res) => {
-
-    const organizationID = parseInt(req.params.organizationID, 10);
-    const representativeIndex = req.body.representativeIndex;
-
-    const success = licencesDBOrganizations.deleteOrganizationRepresentative(organizationID, representativeIndex);
-
-    res.json({
-      success
-    });
-  });
+  handler_doDeleteRepresentative);
 
 
-router.post("/:organizationID/doSetDefaultRepresentative", permissionHandlers.createPostHandler, (req, res) => {
-
-  const organizationID = parseInt(req.params.organizationID, 10);
-  const isDefaultRepresentativeIndex = req.body.isDefaultRepresentativeIndex;
-
-  const success =
-    licencesDBOrganizations.setDefaultOrganizationRepresentative(organizationID, isDefaultRepresentativeIndex);
-
-  res.json({
-    success
-  });
-});
+router.post("/:organizationID/doSetDefaultRepresentative",
+  permissionHandlers.createPostHandler,
+  handler_doSetDefaultRepresentative);
 
 
 export = router;

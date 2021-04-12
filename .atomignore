@@ -3,4 +3,3 @@
 app.js
 gulpfile.js
 public/stylesheets/*.min.css
-routes/*.js

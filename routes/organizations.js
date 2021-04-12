@@ -1,8 +1,8 @@
 "use strict";
 const express_1 = require("express");
-const configFns = require("../helpers/configFns");
 const permissionHandlers = require("../handlers/permissions");
 const cleanup_1 = require("../handlers/organizations-get/cleanup");
+const new_1 = require("../handlers/organizations-get/new");
 const view_1 = require("../handlers/organizations-get/view");
 const edit_1 = require("../handlers/organizations-get/edit");
 const doSearch_1 = require("../handlers/organizations-post/doSearch");
@@ -12,6 +12,8 @@ const doDelete_1 = require("../handlers/organizations-post/doDelete");
 const doRestore_1 = require("../handlers/organizations-post/doRestore");
 const doAddRepresentative_1 = require("../handlers/organizations-post/doAddRepresentative");
 const doUpdateRepresentative_1 = require("../handlers/organizations-post/doUpdateRepresentative");
+const doDeleteRepresentative_1 = require("../handlers/organizations-post/doDeleteRepresentative");
+const doSetDefaultRepresentative_1 = require("../handlers/organizations-post/doSetDefaultRepresentative");
 const doGetRemarks_1 = require("../handlers/organizations-post/doGetRemarks");
 const doGetRemark_1 = require("../handlers/organizations-post/doGetRemark");
 const doAddRemark_1 = require("../handlers/organizations-post/doAddRemark");
@@ -29,10 +31,10 @@ const doAddBankRecord_1 = require("../handlers/organizations-post/doAddBankRecor
 const doEditBankRecord_1 = require("../handlers/organizations-post/doEditBankRecord");
 const doUpdateBankRecordsByMonth_1 = require("../handlers/organizations-post/doUpdateBankRecordsByMonth");
 const doDeleteBankRecord_1 = require("../handlers/organizations-post/doDeleteBankRecord");
+const doGetBankRecordStats_1 = require("../handlers/organizations-post/doGetBankRecordStats");
 const doRollForward_1 = require("../handlers/organizations-post/doRollForward");
 const doGetInactive_1 = require("../handlers/organizations-post/doGetInactive");
 const recovery_1 = require("../handlers/organizations-get/recovery");
-const licencesDBOrganizations = require("../helpers/licencesDB-organizations");
 const router = express_1.Router();
 router.get("/", (_req, res) => {
     res.render("organization-search", {
@@ -57,25 +59,12 @@ router.post("/doEditReminder", permissionHandlers.createPostHandler, doEditRemin
 router.post("/doDismissReminder", permissionHandlers.createPostHandler, doDismissReminder_1.handler);
 router.post("/doDeleteReminder", permissionHandlers.createPostHandler, doDeleteReminder_1.handler);
 router.post("/doGetBankRecords", doGetBankRecords_1.handler);
-router.post("/doGetBankRecordStats", (req, res) => {
-    const organizationID = req.body.organizationID;
-    res.json(licencesDBOrganizations.getOrganizationBankRecordStats(organizationID));
-});
+router.post("/doGetBankRecordStats", doGetBankRecordStats_1.handler);
 router.post("/doAddBankRecord", permissionHandlers.createPostHandler, doAddBankRecord_1.handler);
 router.post("/doEditBankRecord", permissionHandlers.createPostHandler, doEditBankRecord_1.handler);
 router.post("/doUpdateBankRecordsByMonth", permissionHandlers.createPostHandler, doUpdateBankRecordsByMonth_1.handler);
 router.post("/doDeleteBankRecord", permissionHandlers.createPostHandler, doDeleteBankRecord_1.handler);
-router.get("/new", permissionHandlers.createGetHandler, (_req, res) => {
-    res.render("organization-edit", {
-        headTitle: "Organization Create",
-        isViewOnly: false,
-        isCreate: true,
-        organization: {
-            organizationCity: configFns.getProperty("defaults.city"),
-            organizationProvince: configFns.getProperty("defaults.province")
-        }
-    });
-});
+router.get("/new", permissionHandlers.createGetHandler, new_1.handler);
 router.post("/doSave", permissionHandlers.createPostHandler, doSave_1.handler);
 router.post("/doDelete", permissionHandlers.createPostHandler, doDelete_1.handler);
 router.post("/doRestore", permissionHandlers.updatePostHandler, doRestore_1.handler);
@@ -84,20 +73,6 @@ router.get("/:organizationID", view_1.handler);
 router.get("/:organizationID/edit", permissionHandlers.createGetHandler, edit_1.handler);
 router.post("/:organizationID/doAddOrganizationRepresentative", permissionHandlers.createPostHandler, doAddRepresentative_1.handler);
 router.post("/:organizationID/doEditOrganizationRepresentative", permissionHandlers.createPostHandler, doUpdateRepresentative_1.handler);
-router.post("/:organizationID/doDeleteOrganizationRepresentative", permissionHandlers.createPostHandler, (req, res) => {
-    const organizationID = parseInt(req.params.organizationID, 10);
-    const representativeIndex = req.body.representativeIndex;
-    const success = licencesDBOrganizations.deleteOrganizationRepresentative(organizationID, representativeIndex);
-    res.json({
-        success
-    });
-});
-router.post("/:organizationID/doSetDefaultRepresentative", permissionHandlers.createPostHandler, (req, res) => {
-    const organizationID = parseInt(req.params.organizationID, 10);
-    const isDefaultRepresentativeIndex = req.body.isDefaultRepresentativeIndex;
-    const success = licencesDBOrganizations.setDefaultOrganizationRepresentative(organizationID, isDefaultRepresentativeIndex);
-    res.json({
-        success
-    });
-});
+router.post("/:organizationID/doDeleteOrganizationRepresentative", permissionHandlers.createPostHandler, doDeleteRepresentative_1.handler);
+router.post("/:organizationID/doSetDefaultRepresentative", permissionHandlers.createPostHandler, doSetDefaultRepresentative_1.handler);
 module.exports = router;

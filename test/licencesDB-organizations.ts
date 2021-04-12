@@ -17,6 +17,7 @@ import { getOrganizationReminders } from "../helpers/licencesDB/getOrganizationR
 import { getUndismissedOrganizationReminders } from "../helpers/licencesDB/getUndismissedOrganizationReminders";
 
 import { getOrganizationBankRecords } from "../helpers/licencesDB/getOrganizationBankRecords";
+import { getOrganizationBankRecordStats } from "../helpers/licencesDB/getOrganizationBankRecordStats";
 
 import { getMaxOrganizationReminderIndexWithDB } from "../helpers/licencesDB/getMaxOrganizationReminderIndex";
 import { getMaxOrganizationRemarkIndexWithDB } from "../helpers/licencesDB/getMaxOrganizationRemarkIndex";
@@ -59,6 +60,10 @@ describe("licencesDB/organizations", () => {
 
   it("should execute getOrganizationBankRecords()", () => {
     assert.equal(typeof getOrganizationBankRecords(1, "", 2020), "object");
+  });
+
+  it("should execute getOrganizationBankRecordStats()", () => {
+    assert.equal(typeof getOrganizationBankRecordStats(1), "object");
   });
 
   describe("licencesDB/organizations (with DB)", () => {

@@ -64,10 +64,10 @@ describe("licencesDB/licences", () => {
             assert.equal(typeof getLicenceTicketTypes_1.getLicenceTicketTypesWithDB(db, 1), "object");
         });
         it("should execute getMaxLicenceAmendmentIndexWithDB()", () => {
-            assert.equal(getMaxLicenceAmendmentIndex_1.getMaxLicenceAmendmentIndexWithDB(db, 1), -1);
+            assert.equal(getMaxLicenceAmendmentIndex_1.getMaxLicenceAmendmentIndexWithDB(db, -1), -1);
         });
         it("should execute getMaxTransactionIndexWithDB()", () => {
-            assert.equal(getMaxTransactionIndex_1.getMaxTransactionIndexWithDB(db, 1), -1);
+            assert.equal(getMaxTransactionIndex_1.getMaxTransactionIndexWithDB(db, -1), -1);
         });
     });
 });

@@ -13,6 +13,7 @@ const getOrganizationReminder_1 = require("../helpers/licencesDB/getOrganization
 const getOrganizationReminders_1 = require("../helpers/licencesDB/getOrganizationReminders");
 const getUndismissedOrganizationReminders_1 = require("../helpers/licencesDB/getUndismissedOrganizationReminders");
 const getOrganizationBankRecords_1 = require("../helpers/licencesDB/getOrganizationBankRecords");
+const getOrganizationBankRecordStats_1 = require("../helpers/licencesDB/getOrganizationBankRecordStats");
 const getMaxOrganizationReminderIndex_1 = require("../helpers/licencesDB/getMaxOrganizationReminderIndex");
 const getMaxOrganizationRemarkIndex_1 = require("../helpers/licencesDB/getMaxOrganizationRemarkIndex");
 const getMaxOrganizationBankRecordIndex_1 = require("../helpers/licencesDB/getMaxOrganizationBankRecordIndex");
@@ -43,6 +44,9 @@ describe("licencesDB/organizations", () => {
     });
     it("should execute getOrganizationBankRecords()", () => {
         assert.equal(typeof getOrganizationBankRecords_1.getOrganizationBankRecords(1, "", 2020), "object");
+    });
+    it("should execute getOrganizationBankRecordStats()", () => {
+        assert.equal(typeof getOrganizationBankRecordStats_1.getOrganizationBankRecordStats(1), "object");
     });
     describe("licencesDB/organizations (with DB)", () => {
         let db;
