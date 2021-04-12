@@ -32,12 +32,17 @@ import { handler as handler_doEditReminder } from "../handlers/organizations-pos
 import { handler as handler_doDismissReminder } from "../handlers/organizations-post/doDismissReminder";
 import { handler as handler_doDeleteReminder } from "../handlers/organizations-post/doDeleteReminder";
 
+import { handler as handler_doGetBankRecords } from "../handlers/organizations-post/doGetBankRecords";
 import { handler as handler_doAddBankRecord } from "../handlers/organizations-post/doAddBankRecord";
 import { handler as handler_doEditBankRecord } from "../handlers/organizations-post/doEditBankRecord";
 import { handler as handler_doUpdateBankRecordsByMonth } from "../handlers/organizations-post/doUpdateBankRecordsByMonth";
 import { handler as handler_doDeleteBankRecord } from "../handlers/organizations-post/doDeleteBankRecord";
 
 import { handler as handler_doRollForward } from "../handlers/organizations-post/doRollForward";
+
+import { handler as handler_doGetInactive } from "../handlers/organizations-post/doGetInactive";
+
+import { handler as handler_recovery } from "../handlers/organizations-get/recovery";
 
 import * as licencesDBOrganizations from "../helpers/licencesDB-organizations";
 
@@ -86,13 +91,9 @@ router.get("/cleanup",
   handler_cleanup);
 
 
-router.post("/doGetInactive", (req, res) => {
-
-  const inactiveYears = parseInt(req.body.inactiveYears, 10);
-
-  res.json(licencesDBOrganizations.getInactiveOrganizations(inactiveYears));
-
-});
+router.post("/doGetInactive",
+  permissionHandlers.updatePostHandler,
+  handler_doGetInactive);
 
 
 /*
@@ -100,15 +101,9 @@ router.post("/doGetInactive", (req, res) => {
  */
 
 
-router.get("/recovery", permissionHandlers.adminGetHandler, (_req, res) => {
-
-  const organizations = licencesDBOrganizations.getDeletedOrganizations();
-
-  res.render("organization-recovery", {
-    headTitle: "Organization Recovery",
-    organizations
-  });
-});
+router.get("/recovery",
+  permissionHandlers.adminGetHandler,
+  handler_recovery);
 
 
 /*
@@ -173,15 +168,7 @@ router.post("/doDeleteReminder",
  */
 
 
-router.post("/doGetBankRecords", (req, res) => {
-
-  const organizationID = req.body.organizationID;
-  const bankingYear = req.body.bankingYear;
-  const accountNumber = req.body.accountNumber;
-
-  res.json(licencesDBOrganizations.getOrganizationBankRecords(organizationID, accountNumber, bankingYear));
-
-});
+router.post("/doGetBankRecords", handler_doGetBankRecords);
 
 
 router.post("/doGetBankRecordStats", (req, res) => {

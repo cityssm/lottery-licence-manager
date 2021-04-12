@@ -24,11 +24,14 @@ const doAddReminder_1 = require("../handlers/organizations-post/doAddReminder");
 const doEditReminder_1 = require("../handlers/organizations-post/doEditReminder");
 const doDismissReminder_1 = require("../handlers/organizations-post/doDismissReminder");
 const doDeleteReminder_1 = require("../handlers/organizations-post/doDeleteReminder");
+const doGetBankRecords_1 = require("../handlers/organizations-post/doGetBankRecords");
 const doAddBankRecord_1 = require("../handlers/organizations-post/doAddBankRecord");
 const doEditBankRecord_1 = require("../handlers/organizations-post/doEditBankRecord");
 const doUpdateBankRecordsByMonth_1 = require("../handlers/organizations-post/doUpdateBankRecordsByMonth");
 const doDeleteBankRecord_1 = require("../handlers/organizations-post/doDeleteBankRecord");
 const doRollForward_1 = require("../handlers/organizations-post/doRollForward");
+const doGetInactive_1 = require("../handlers/organizations-post/doGetInactive");
+const recovery_1 = require("../handlers/organizations-get/recovery");
 const licencesDBOrganizations = require("../helpers/licencesDB-organizations");
 const router = express_1.Router();
 router.get("/", (_req, res) => {
@@ -40,17 +43,8 @@ router.post("/doSearch", doSearch_1.handler);
 router.all("/doGetAll", doGetAll_1.handler);
 router.get("/reminders", reminders_1.handler);
 router.get("/cleanup", permissionHandlers.updateGetHandler, cleanup_1.handler);
-router.post("/doGetInactive", (req, res) => {
-    const inactiveYears = parseInt(req.body.inactiveYears, 10);
-    res.json(licencesDBOrganizations.getInactiveOrganizations(inactiveYears));
-});
-router.get("/recovery", permissionHandlers.adminGetHandler, (_req, res) => {
-    const organizations = licencesDBOrganizations.getDeletedOrganizations();
-    res.render("organization-recovery", {
-        headTitle: "Organization Recovery",
-        organizations
-    });
-});
+router.post("/doGetInactive", permissionHandlers.updatePostHandler, doGetInactive_1.handler);
+router.get("/recovery", permissionHandlers.adminGetHandler, recovery_1.handler);
 router.post("/doGetRemarks", doGetRemarks_1.handler);
 router.post("/doGetRemark", doGetRemark_1.handler);
 router.post("/doAddRemark", permissionHandlers.createPostHandler, doAddRemark_1.handler);
@@ -62,12 +56,7 @@ router.post("/doAddReminder", permissionHandlers.createPostHandler, doAddReminde
 router.post("/doEditReminder", permissionHandlers.createPostHandler, doEditReminder_1.handler);
 router.post("/doDismissReminder", permissionHandlers.createPostHandler, doDismissReminder_1.handler);
 router.post("/doDeleteReminder", permissionHandlers.createPostHandler, doDeleteReminder_1.handler);
-router.post("/doGetBankRecords", (req, res) => {
-    const organizationID = req.body.organizationID;
-    const bankingYear = req.body.bankingYear;
-    const accountNumber = req.body.accountNumber;
-    res.json(licencesDBOrganizations.getOrganizationBankRecords(organizationID, accountNumber, bankingYear));
-});
+router.post("/doGetBankRecords", doGetBankRecords_1.handler);
 router.post("/doGetBankRecordStats", (req, res) => {
     const organizationID = req.body.organizationID;
     res.json(licencesDBOrganizations.getOrganizationBankRecordStats(organizationID));

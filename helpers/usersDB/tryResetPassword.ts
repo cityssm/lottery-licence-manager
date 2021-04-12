@@ -27,7 +27,7 @@ export const tryResetPassword = async(userName: string, oldPasswordPlain: string
     };
   }
 
-  const oldPasswordMatches = bcrypt.compareSync(userFns.getHashString(userName, oldPasswordPlain), row.passwordHash);
+  const oldPasswordMatches = await bcrypt.compare(userFns.getHashString(userName, oldPasswordPlain), row.passwordHash);
 
   if (!oldPasswordMatches) {
 

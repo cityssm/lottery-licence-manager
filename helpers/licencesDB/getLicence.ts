@@ -2,7 +2,10 @@ import * as sqlite from "better-sqlite3";
 import { licencesDB as dbPath } from "../../data/databasePaths";
 
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns";
+
 import { canUpdateObject } from "../licencesDB";
+import { getLicenceTicketTypesWithDB } from "./getLicenceTicketTypes";
+import { getLicenceAmendmentsWithDB } from "./getLicenceAmendments";
 
 import type * as llm from "../../types/recordTypes";
 import type * as expressSession from "express-session";
@@ -56,37 +59,7 @@ export const getLicenceWithDB = (db: sqlite.Database, licenceID: number | string
      */
 
     if ("includeTicketTypes" in queryOptions && queryOptions.includeTicketTypes) {
-
-      const ticketTypesList = db.prepare("select t.eventDate, t.ticketType," +
-        " t.distributorLocationID," +
-        " d.locationName as distributorLocationName, d.locationAddress1 as distributorLocationAddress1," +
-        " t.manufacturerLocationID," +
-        " m.locationName as manufacturerLocationName, m.locationAddress1 as manufacturerLocationAddress1," +
-        " t.unitCount, t.licenceFee" +
-        " from LotteryLicenceTicketTypes t" +
-        " left join Locations d on t.distributorLocationID = d.locationID" +
-        " left join Locations m on t.manufacturerLocationID = m.locationID" +
-        " where t.recordDelete_timeMillis is null" +
-        " and t.licenceID = ?" +
-        " order by t.eventDate, t.ticketType")
-        .all(licenceID);
-
-      for (const ticketTypeObj of ticketTypesList) {
-
-        ticketTypeObj.eventDateString = dateTimeFns.dateIntegerToString(ticketTypeObj.eventDate);
-
-        ticketTypeObj.distributorLocationDisplayName = ticketTypeObj.distributorLocationName === ""
-          ? ticketTypeObj.distributorLocationAddress1
-          : ticketTypeObj.distributorLocationName;
-
-        ticketTypeObj.manufacturerLocationDisplayName = ticketTypeObj.manufacturerLocationName === ""
-          ? ticketTypeObj.manufacturerLocationAddress1
-          : ticketTypeObj.manufacturerLocationName;
-
-      }
-
-      licenceObj.licenceTicketTypes = ticketTypesList;
-
+      licenceObj.licenceTicketTypes = getLicenceTicketTypesWithDB(db, licenceID);
     }
 
     /*
@@ -130,20 +103,7 @@ export const getLicenceWithDB = (db: sqlite.Database, licenceID: number | string
      */
 
     if ("includeAmendments" in queryOptions && queryOptions.includeAmendments) {
-
-      const amendments = db.prepare("select *" +
-        " from LotteryLicenceAmendments" +
-        " where licenceID = ?" +
-        " and recordDelete_timeMillis is null" +
-        " order by amendmentDate, amendmentTime, amendmentIndex")
-        .all(licenceID);
-
-      for (const amendmentObj of amendments) {
-        amendmentObj.amendmentDateString = dateTimeFns.dateIntegerToString(amendmentObj.amendmentDate);
-        amendmentObj.amendmentTimeString = dateTimeFns.timeIntegerToString(amendmentObj.amendmentTime);
-      }
-
-      licenceObj.licenceAmendments = amendments;
+      licenceObj.licenceAmendments = getLicenceAmendmentsWithDB(db, licenceID);
     }
 
     /*

@@ -19,7 +19,7 @@ const tryResetPassword = async (userName, oldPasswordPlain, newPasswordPlain) =>
             message: "User record not found."
         };
     }
-    const oldPasswordMatches = bcrypt.compareSync(userFns.getHashString(userName, oldPasswordPlain), row.passwordHash);
+    const oldPasswordMatches = await bcrypt.compare(userFns.getHashString(userName, oldPasswordPlain), row.passwordHash);
     if (!oldPasswordMatches) {
         db.close();
         return {

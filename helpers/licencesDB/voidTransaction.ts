@@ -1,6 +1,8 @@
 import * as sqlite from "better-sqlite3";
 import { licencesDB as dbPath } from "../../data/databasePaths";
 
+import { runSQLWithDB } from "../_runSQLByName";
+
 import { getLicenceWithDB } from "./getLicence";
 import { addLicenceAmendmentWithDB } from "./addLicenceAmendment";
 
@@ -22,22 +24,20 @@ export const voidTransaction =
 
     const nowMillis = Date.now();
 
-    const info = db.prepare("update LotteryLicenceTransactions" +
+    const hasChanges = runSQLWithDB(db,
+      "update LotteryLicenceTransactions" +
       " set recordDelete_userName = ?," +
       " recordDelete_timeMillis = ?" +
       " where licenceID = ?" +
       " and transactionIndex = ?" +
-      " and recordDelete_timeMillis is null")
-      .run(
+      " and recordDelete_timeMillis is null", [
         reqSession.user.userName,
         nowMillis,
         licenceID,
         transactionIndex
-      );
+      ]).changes > 0;
 
-    const changeCount = info.changes;
-
-    if (changeCount && licenceObj.trackUpdatesAsAmendments) {
+    if (hasChanges && licenceObj.trackUpdatesAsAmendments) {
 
       addLicenceAmendmentWithDB(
         db,
@@ -52,6 +52,5 @@ export const voidTransaction =
 
     db.close();
 
-    return changeCount > 0;
-
+    return hasChanges;
   };

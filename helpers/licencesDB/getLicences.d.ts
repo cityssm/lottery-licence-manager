@@ -5,7 +5,7 @@ export declare const getLicences: (reqBodyOrParamsObj: {
     licenceTypeKey?: string;
     organizationID?: string | number;
     organizationName?: string;
-    licenceStatus?: string;
+    licenceStatus?: "past" | "active";
     locationID?: number;
     locationName?: string;
 }, reqSession: expressSession.Session, includeOptions: {

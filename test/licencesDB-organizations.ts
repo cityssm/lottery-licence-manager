@@ -7,6 +7,7 @@ import { fakeViewOnlySession } from "./_globals";
 
 import { getOrganization } from "../helpers/licencesDB/getOrganization";
 import { getOrganizations } from "../helpers/licencesDB/getOrganizations";
+import { getInactiveOrganizations } from "../helpers/licencesDB/getInactiveOrganizations";
 
 import { getOrganizationRemark } from "../helpers/licencesDB/getOrganizationRemark";
 import { getOrganizationRemarks } from "../helpers/licencesDB/getOrganizationRemarks";
@@ -14,6 +15,8 @@ import { getOrganizationRemarks } from "../helpers/licencesDB/getOrganizationRem
 import { getOrganizationReminder } from "../helpers/licencesDB/getOrganizationReminder";
 import { getOrganizationReminders } from "../helpers/licencesDB/getOrganizationReminders";
 import { getUndismissedOrganizationReminders } from "../helpers/licencesDB/getUndismissedOrganizationReminders";
+
+import { getOrganizationBankRecords } from "../helpers/licencesDB/getOrganizationBankRecords";
 
 import { getMaxOrganizationReminderIndexWithDB } from "../helpers/licencesDB/getMaxOrganizationReminderIndex";
 import { getMaxOrganizationRemarkIndexWithDB } from "../helpers/licencesDB/getMaxOrganizationRemarkIndex";
@@ -30,24 +33,32 @@ describe("licencesDB/organizations", () => {
     assert.equal(typeof getOrganizations({}, fakeViewOnlySession, { limit: 10 }), "object");
   });
 
+  it("should execute getInactiveOrganizations()", () => {
+    assert.equal(typeof getInactiveOrganizations(5), "object");
+  });
+
   it("should execute getOrganizationRemark()", () => {
     assert.equal(typeof getOrganizationRemark(-1, -1, fakeViewOnlySession), "undefined");
   });
 
   it("should execute getOrganizationRemarks()", () => {
-    assert.equal(typeof getOrganizationRemarks(-1, fakeViewOnlySession), "object");
+    assert.equal(typeof getOrganizationRemarks(1, fakeViewOnlySession), "object");
   });
 
   it("should execute getOrganizationReminder()", () => {
-    assert.equal(typeof getOrganizationReminder(-1, -1, fakeViewOnlySession), "undefined");
+    assert.equal(typeof getOrganizationReminder(1, 0, fakeViewOnlySession), "undefined");
   });
 
   it("should execute getOrganizationReminders()", () => {
-    assert.equal(typeof getOrganizationReminders(-1, fakeViewOnlySession), "object");
+    assert.equal(typeof getOrganizationReminders(1, fakeViewOnlySession), "object");
   });
 
   it("should execute getUndismissedOrganizationReminders()", () => {
     assert.equal(typeof getUndismissedOrganizationReminders(fakeViewOnlySession), "object");
+  });
+
+  it("should execute getOrganizationBankRecords()", () => {
+    assert.equal(typeof getOrganizationBankRecords(1, "", 2020), "object");
   });
 
   describe("licencesDB/organizations (with DB)", () => {

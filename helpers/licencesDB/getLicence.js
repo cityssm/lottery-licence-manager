@@ -5,6 +5,8 @@ const sqlite = require("better-sqlite3");
 const databasePaths_1 = require("../../data/databasePaths");
 const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
 const licencesDB_1 = require("../licencesDB");
+const getLicenceTicketTypes_1 = require("./getLicenceTicketTypes");
+const getLicenceAmendments_1 = require("./getLicenceAmendments");
 const getLicenceWithDB = (db, licenceID, reqSession, queryOptions) => {
     const licenceObj = db.prepare("select l.*," +
         " lo.locationName, lo.locationAddress1" +
@@ -29,29 +31,7 @@ const getLicenceWithDB = (db, licenceID, reqSession, queryOptions) => {
     licenceObj.canUpdate = licencesDB_1.canUpdateObject(licenceObj, reqSession);
     if (queryOptions) {
         if ("includeTicketTypes" in queryOptions && queryOptions.includeTicketTypes) {
-            const ticketTypesList = db.prepare("select t.eventDate, t.ticketType," +
-                " t.distributorLocationID," +
-                " d.locationName as distributorLocationName, d.locationAddress1 as distributorLocationAddress1," +
-                " t.manufacturerLocationID," +
-                " m.locationName as manufacturerLocationName, m.locationAddress1 as manufacturerLocationAddress1," +
-                " t.unitCount, t.licenceFee" +
-                " from LotteryLicenceTicketTypes t" +
-                " left join Locations d on t.distributorLocationID = d.locationID" +
-                " left join Locations m on t.manufacturerLocationID = m.locationID" +
-                " where t.recordDelete_timeMillis is null" +
-                " and t.licenceID = ?" +
-                " order by t.eventDate, t.ticketType")
-                .all(licenceID);
-            for (const ticketTypeObj of ticketTypesList) {
-                ticketTypeObj.eventDateString = dateTimeFns.dateIntegerToString(ticketTypeObj.eventDate);
-                ticketTypeObj.distributorLocationDisplayName = ticketTypeObj.distributorLocationName === ""
-                    ? ticketTypeObj.distributorLocationAddress1
-                    : ticketTypeObj.distributorLocationName;
-                ticketTypeObj.manufacturerLocationDisplayName = ticketTypeObj.manufacturerLocationName === ""
-                    ? ticketTypeObj.manufacturerLocationAddress1
-                    : ticketTypeObj.manufacturerLocationName;
-            }
-            licenceObj.licenceTicketTypes = ticketTypesList;
+            licenceObj.licenceTicketTypes = getLicenceTicketTypes_1.getLicenceTicketTypesWithDB(db, licenceID);
         }
         if ("includeFields" in queryOptions && queryOptions.includeFields) {
             const fieldList = db.prepare("select * from LotteryLicenceFields" +
@@ -73,17 +53,7 @@ const getLicenceWithDB = (db, licenceID, reqSession, queryOptions) => {
             licenceObj.events = eventList;
         }
         if ("includeAmendments" in queryOptions && queryOptions.includeAmendments) {
-            const amendments = db.prepare("select *" +
-                " from LotteryLicenceAmendments" +
-                " where licenceID = ?" +
-                " and recordDelete_timeMillis is null" +
-                " order by amendmentDate, amendmentTime, amendmentIndex")
-                .all(licenceID);
-            for (const amendmentObj of amendments) {
-                amendmentObj.amendmentDateString = dateTimeFns.dateIntegerToString(amendmentObj.amendmentDate);
-                amendmentObj.amendmentTimeString = dateTimeFns.timeIntegerToString(amendmentObj.amendmentTime);
-            }
-            licenceObj.licenceAmendments = amendments;
+            licenceObj.licenceAmendments = getLicenceAmendments_1.getLicenceAmendmentsWithDB(db, licenceID);
         }
         if ("includeTransactions" in queryOptions && queryOptions.includeTransactions) {
             const transactions = db.prepare("select * from LotteryLicenceTransactions" +
