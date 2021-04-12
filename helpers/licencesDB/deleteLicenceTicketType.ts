@@ -1,6 +1,7 @@
-import * as sqlite from "better-sqlite3";
+import { runSQLWithDB } from "../_runSQLByName";
 
 import type * as expressSession from "express-session";
+import type * as sqlite from "better-sqlite3";
 
 
 export const deleteLicenceTicketTypeWithDB = (db: sqlite.Database,
@@ -11,19 +12,16 @@ export const deleteLicenceTicketTypeWithDB = (db: sqlite.Database,
   },
   reqSession: expressSession.Session) => {
 
-  const nowMillis = Date.now();
-
-  db.prepare("update LotteryLicenceTicketTypes" +
+  return runSQLWithDB(db, "update LotteryLicenceTicketTypes" +
     " set recordDelete_userName = ?," +
     " recordDelete_timeMillis = ?" +
     " where licenceID = ?" +
     " and eventDate = ?" +
-    " and ticketType = ?")
-    .run(
+    " and ticketType = ?", [
       reqSession.user.userName,
-      nowMillis,
+      Date.now(),
       ticketTypeDef.licenceID,
       ticketTypeDef.eventDate,
       ticketTypeDef.ticketType
-    );
+    ]);
 };

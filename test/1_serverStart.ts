@@ -94,7 +94,7 @@ describe("lottery-licence-manager", () => {
     const docsURL = appURL + "/docs";
 
     it("should load docs page - " + docsURL, (done) => {
-      (async () => {
+      (async() => {
         const browser = await puppeteer.launch();
         const page = await browser.newPage();
         await page.goto(docsURL);

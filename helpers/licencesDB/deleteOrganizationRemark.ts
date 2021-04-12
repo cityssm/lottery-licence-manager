@@ -1,6 +1,4 @@
-import * as sqlite from "better-sqlite3";
-
-import { licencesDB as dbPath } from "../../data/databasePaths";
+import { runSQL_hasChanges } from "./_runSQL";
 
 import type * as expressSession from "express-session";
 
@@ -8,24 +6,15 @@ import type * as expressSession from "express-session";
 export const deleteOrganizationRemark =
   (organizationID: number, remarkIndex: number, reqSession: expressSession.Session) => {
 
-    const db = sqlite(dbPath);
-
-    const nowMillis = Date.now();
-
-    const info = db.prepare("update OrganizationRemarks" +
+    return runSQL_hasChanges("update OrganizationRemarks" +
       " set recordDelete_userName = ?," +
       " recordDelete_timeMillis = ?" +
       " where organizationID = ?" +
       " and remarkIndex = ?" +
-      " and recordDelete_timeMillis is null")
-      .run(
+      " and recordDelete_timeMillis is null", [
         reqSession.user.userName,
-        nowMillis,
+        Date.now(),
         organizationID,
         remarkIndex
-      );
-
-    db.close();
-
-    return info.changes > 0;
+      ]);
   };

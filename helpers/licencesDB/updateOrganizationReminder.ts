@@ -1,6 +1,4 @@
-import * as sqlite from "better-sqlite3";
-
-import { licencesDB as dbPath } from "../../data/databasePaths";
+import { runSQL_hasChanges } from "./_runSQL";
 
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns";
 
@@ -17,11 +15,7 @@ export const updateOrganizationReminder = (reqBody: {
   dismissedDateString: string;
 }, reqSession: expressSession.Session) => {
 
-  const db = sqlite(dbPath);
-
-  const nowMillis = Date.now();
-
-  const info = db.prepare("update OrganizationReminders" +
+  return runSQL_hasChanges("update OrganizationReminders" +
     " set reminderTypeKey = ?," +
     " dueDate = ?," +
     " reminderStatus = ?," +
@@ -31,8 +25,7 @@ export const updateOrganizationReminder = (reqBody: {
     " recordUpdate_timeMillis = ?" +
     " where organizationID = ?" +
     " and reminderIndex = ?" +
-    " and recordDelete_timeMillis is null")
-    .run(
+    " and recordDelete_timeMillis is null", [
       reqBody.reminderTypeKey,
       (reqBody.dueDateString === ""
         ? null
@@ -43,12 +36,8 @@ export const updateOrganizationReminder = (reqBody: {
         ? null
         : dateTimeFns.dateStringToInteger(reqBody.dismissedDateString)),
       reqSession.user.userName,
-      nowMillis,
+      Date.now(),
       reqBody.organizationID,
       reqBody.reminderIndex
-    );
-
-  db.close();
-
-  return info.changes > 0;
+    ]);
 };

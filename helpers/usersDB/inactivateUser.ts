@@ -1,18 +1,12 @@
-import * as sqlite from "better-sqlite3";
-import { usersDB as dbPath } from "../../data/databasePaths";
+import { runSQLByName } from "../_runSQLByName";
 
 
 export const inactivateUser = (userName: string) => {
 
-  const db = sqlite(dbPath);
-
-  const info = db.prepare("update Users" +
+  return runSQLByName("usersDB",
+    "update Users" +
     " set isActive = 0" +
     " where userName = ?" +
-    " and isActive = 1")
-    .run(userName);
-
-  db.close();
-
-  return info.changes;
+    " and isActive = 1",
+    [userName]).changes;
 };

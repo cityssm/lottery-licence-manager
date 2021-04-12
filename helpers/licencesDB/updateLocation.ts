@@ -1,6 +1,4 @@
-import * as sqlite from "better-sqlite3";
-
-import { licencesDB as dbPath } from "../../data/databasePaths";
+import { runSQL_hasChanges } from "./_runSQL";
 
 import type * as llm from "../../types/recordTypes";
 import type * as expressSession from "express-session";
@@ -8,11 +6,7 @@ import type * as expressSession from "express-session";
 
 export const updateLocation = (reqBody: llm.Location, reqSession: expressSession.Session): boolean => {
 
-  const db = sqlite(dbPath);
-
-  const nowMillis = Date.now();
-
-  const info = db.prepare("update Locations" +
+  return runSQL_hasChanges("update Locations" +
     " set locationName = ?," +
     " locationAddress1 = ?," +
     " locationAddress2 = ?," +
@@ -24,8 +18,7 @@ export const updateLocation = (reqBody: llm.Location, reqSession: expressSession
     " recordUpdate_userName = ?," +
     " recordUpdate_timeMillis = ?" +
     " where recordDelete_timeMillis is null" +
-    " and locationID = ?")
-    .run(
+    " and locationID = ?", [
       reqBody.locationName,
       reqBody.locationAddress1,
       reqBody.locationAddress2,
@@ -35,11 +28,7 @@ export const updateLocation = (reqBody: llm.Location, reqSession: expressSession
       reqBody.locationIsDistributor ? 1 : 0,
       reqBody.locationIsManufacturer ? 1 : 0,
       reqSession.user.userName,
-      nowMillis,
+      Date.now(),
       reqBody.locationID
-    );
-
-  db.close();
-
-  return info.changes > 0;
+    ]);
 };

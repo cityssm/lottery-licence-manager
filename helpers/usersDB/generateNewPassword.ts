@@ -1,5 +1,4 @@
-import * as sqlite from "better-sqlite3";
-import { usersDB as dbPath } from "../../data/databasePaths";
+import { runSQLByName } from "../_runSQLByName";
 
 import * as userFns from "../../helpers/userFns";
 
@@ -13,14 +12,11 @@ export const generateNewPassword = (userName: string) => {
   const newPasswordPlain: string = stringFns.generatePassword();
   const hash = bcrypt.hashSync(userFns.getHashString(userName, newPasswordPlain), 10);
 
-  const db = sqlite(dbPath);
-
-  db.prepare("update Users" +
+  runSQLByName("usersDB",
+    "update Users" +
     " set passwordHash = ?" +
-    " where userName = ?")
-    .run(hash, userName);
-
-  db.close();
+    " where userName = ?",
+    [hash, userName]);
 
   return newPasswordPlain;
 };

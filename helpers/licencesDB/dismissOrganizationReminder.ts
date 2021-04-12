@@ -1,6 +1,4 @@
-import * as sqlite from "better-sqlite3";
-
-import { licencesDB as dbPath } from "../../data/databasePaths";
+import { runSQL_hasChanges } from "./_runSQL";
 
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns";
 
@@ -12,21 +10,15 @@ export const dismissOrganizationReminder =
 
     const currentDate = new Date();
 
-    const db = sqlite(dbPath);
-
-    const info = db.prepare("update OrganizationReminders" +
+    return runSQL_hasChanges("update OrganizationReminders" +
       " set dismissedDate = ?," +
       " recordUpdate_userName = ?," +
       " recordUpdate_timeMillis = ?" +
       " where organizationID = ?" +
       " and reminderIndex = ?" +
       " and dismissedDate is null" +
-      " and recordDelete_timeMillis is null")
-      .run(dateTimeFns.dateToInteger(currentDate),
+      " and recordDelete_timeMillis is null", [
+        dateTimeFns.dateToInteger(currentDate),
         reqSession.user.userName, currentDate.getTime(),
-        organizationID, reminderIndex);
-
-    db.close();
-
-    return info.changes > 0;
+        organizationID, reminderIndex]);
   };

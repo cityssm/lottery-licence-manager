@@ -1,23 +1,22 @@
-import * as sqlite from "better-sqlite3";
-
-import { licencesDB as dbPath } from "../../data/databasePaths";
+import { runSQLWithDB } from "../_runSQLByName";
 
 import type * as expressSession from "express-session";
 
+import { licencesDB as dbPath } from "../../data/databasePaths";
+import * as sqlite from "better-sqlite3";
+
 
 export const deleteOrganizationReminderWithDB =
-(db: sqlite.Database, organizationID: number, reminderIndex: number, reqSession: expressSession.Session) => {
+  (db: sqlite.Database, organizationID: number, reminderIndex: number, reqSession: expressSession.Session) => {
 
-  const info = db.prepare("update OrganizationReminders" +
-    " set recordDelete_userName = ?," +
-    " recordDelete_timeMillis = ?" +
-    " where organizationID = ?" +
-    " and reminderIndex = ?" +
-    " and recordDelete_timeMillis is null")
-    .run(reqSession.user.userName, Date.now(), organizationID, reminderIndex);
-
-  return info.changes > 0;
-};
+    return runSQLWithDB(db, "update OrganizationReminders" +
+      " set recordDelete_userName = ?," +
+      " recordDelete_timeMillis = ?" +
+      " where organizationID = ?" +
+      " and reminderIndex = ?" +
+      " and recordDelete_timeMillis is null", [
+        reqSession.user.userName, Date.now(), organizationID, reminderIndex]);
+  };
 
 
 export const deleteOrganizationReminder =
@@ -25,7 +24,9 @@ export const deleteOrganizationReminder =
 
     const db = sqlite(dbPath);
 
-    const result = deleteOrganizationReminderWithDB(db, organizationID, reminderIndex, reqSession);
+    const result = deleteOrganizationReminderWithDB(db,
+      organizationID, reminderIndex,
+      reqSession);
 
     db.close();
 

@@ -1,6 +1,4 @@
-import * as sqlite from "better-sqlite3";
-
-import { licencesDB as dbPath } from "../../data/databasePaths";
+import { runSQL_hasChanges } from "./_runSQL";
 
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns";
 
@@ -10,11 +8,7 @@ import type * as expressSession from "express-session";
 
 export const updateOrganizationRemark = (reqBody: llm.OrganizationRemark, reqSession: expressSession.Session) => {
 
-  const db = sqlite(dbPath);
-
-  const nowMillis = Date.now();
-
-  const info = db.prepare("update OrganizationRemarks" +
+  return runSQL_hasChanges("update OrganizationRemarks" +
     " set remarkDate = ?," +
     " remarkTime = ?," +
     " remark = ?," +
@@ -23,19 +17,14 @@ export const updateOrganizationRemark = (reqBody: llm.OrganizationRemark, reqSes
     " recordUpdate_timeMillis = ?" +
     " where organizationID = ?" +
     " and remarkIndex = ?" +
-    " and recordDelete_timeMillis is null")
-    .run(
+    " and recordDelete_timeMillis is null", [
       dateTimeFns.dateStringToInteger(reqBody.remarkDateString),
       dateTimeFns.timeStringToInteger(reqBody.remarkTimeString),
       reqBody.remark,
       reqBody.isImportant ? 1 : 0,
       reqSession.user.userName,
-      nowMillis,
+      Date.now(),
       reqBody.organizationID,
       reqBody.remarkIndex
-    );
-
-  db.close();
-
-  return info.changes > 0;
+    ]);
 };

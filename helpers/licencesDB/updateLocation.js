@@ -1,12 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateLocation = void 0;
-const sqlite = require("better-sqlite3");
-const databasePaths_1 = require("../../data/databasePaths");
+const _runSQL_1 = require("./_runSQL");
 const updateLocation = (reqBody, reqSession) => {
-    const db = sqlite(databasePaths_1.licencesDB);
-    const nowMillis = Date.now();
-    const info = db.prepare("update Locations" +
+    return _runSQL_1.runSQL_hasChanges("update Locations" +
         " set locationName = ?," +
         " locationAddress1 = ?," +
         " locationAddress2 = ?," +
@@ -18,9 +15,18 @@ const updateLocation = (reqBody, reqSession) => {
         " recordUpdate_userName = ?," +
         " recordUpdate_timeMillis = ?" +
         " where recordDelete_timeMillis is null" +
-        " and locationID = ?")
-        .run(reqBody.locationName, reqBody.locationAddress1, reqBody.locationAddress2, reqBody.locationCity, reqBody.locationProvince, reqBody.locationPostalCode, reqBody.locationIsDistributor ? 1 : 0, reqBody.locationIsManufacturer ? 1 : 0, reqSession.user.userName, nowMillis, reqBody.locationID);
-    db.close();
-    return info.changes > 0;
+        " and locationID = ?", [
+        reqBody.locationName,
+        reqBody.locationAddress1,
+        reqBody.locationAddress2,
+        reqBody.locationCity,
+        reqBody.locationProvince,
+        reqBody.locationPostalCode,
+        reqBody.locationIsDistributor ? 1 : 0,
+        reqBody.locationIsManufacturer ? 1 : 0,
+        reqSession.user.userName,
+        Date.now(),
+        reqBody.locationID
+    ]);
 };
 exports.updateLocation = updateLocation;

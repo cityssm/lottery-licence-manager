@@ -1,7 +1,8 @@
-import * as sqlite from "better-sqlite3";
+import { runSQLWithDB } from "./_runSQL";
 
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns";
 
+import type * as sqlite from "better-sqlite3";
 import type * as expressSession from "express-session";
 
 
@@ -19,7 +20,8 @@ export const updateLicenceTicketTypeWithDB = (db: sqlite.Database,
 
   const nowMillis = Date.now();
 
-  db.prepare("update LotteryLicenceTicketTypes" +
+  runSQLWithDB(db,
+    "update LotteryLicenceTicketTypes" +
     " set distributorLocationID = ?," +
     " manufacturerLocationID = ?," +
     " unitCount = ?," +
@@ -29,8 +31,8 @@ export const updateLicenceTicketTypeWithDB = (db: sqlite.Database,
     " where licenceID = ?" +
     " and eventDate = ?" +
     " and ticketType = ?" +
-    " and recordDelete_timeMillis is null")
-    .run(
+    " and recordDelete_timeMillis is null", [
+
       (ticketTypeDef.distributorLocationID === ""
         ? null
         : ticketTypeDef.distributorLocationID),
@@ -46,5 +48,5 @@ export const updateLicenceTicketTypeWithDB = (db: sqlite.Database,
       ticketTypeDef.licenceID,
       dateTimeFns.dateStringToInteger(ticketTypeDef.eventDateString),
       ticketTypeDef.ticketType
-    );
+    ]);
 };

@@ -1,8 +1,9 @@
-import * as sqlite from "better-sqlite3";
+import { runSQLWithDB } from "../_runSQLByName";
 
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns";
 
 import type * as expressSession from "express-session";
+import type * as sqlite from "better-sqlite3";
 
 
 export const createEventWithDB = (db: sqlite.Database,
@@ -11,17 +12,17 @@ export const createEventWithDB = (db: sqlite.Database,
 
   const nowMillis = Date.now();
 
-  db.prepare("insert or ignore into LotteryEvents (" +
+  runSQLWithDB(db,
+    "insert or ignore into LotteryEvents (" +
     "licenceID, eventDate," +
     " recordCreate_userName, recordCreate_timeMillis," +
     " recordUpdate_userName, recordUpdate_timeMillis)" +
-    " values (?, ?, ?, ?, ?, ?)")
-    .run(
+    " values (?, ?, ?, ?, ?, ?)", [
       licenceID,
       dateTimeFns.dateStringToInteger(eventDateString),
       reqSession.user.userName,
       nowMillis,
       reqSession.user.userName,
       nowMillis
-    );
+    ]);
 };

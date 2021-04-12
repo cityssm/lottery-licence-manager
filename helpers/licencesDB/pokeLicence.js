@@ -1,18 +1,16 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.pokeLicence = void 0;
-const sqlite = require("better-sqlite3");
-const databasePaths_1 = require("../../data/databasePaths");
+const _runSQL_1 = require("./_runSQL");
 const pokeLicence = (licenceID, reqSession) => {
-    const db = sqlite(databasePaths_1.licencesDB);
-    const nowMillis = Date.now();
-    const info = db.prepare("update LotteryLicences" +
+    return _runSQL_1.runSQL_hasChanges("update LotteryLicences" +
         " set recordUpdate_userName = ?," +
         " recordUpdate_timeMillis = ?" +
         " where licenceID = ?" +
-        " and recordDelete_timeMillis is null")
-        .run(reqSession.user.userName, nowMillis, licenceID);
-    db.close();
-    return info.changes > 0;
+        " and recordDelete_timeMillis is null", [
+        reqSession.user.userName,
+        Date.now(),
+        licenceID
+    ]);
 };
 exports.pokeLicence = pokeLicence;

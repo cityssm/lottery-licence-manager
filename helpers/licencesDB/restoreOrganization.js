@@ -1,20 +1,19 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.restoreOrganization = void 0;
-const sqlite = require("better-sqlite3");
-const databasePaths_1 = require("../../data/databasePaths");
+const _runSQL_1 = require("./_runSQL");
 const restoreOrganization = (organizationID, reqSession) => {
-    const db = sqlite(databasePaths_1.licencesDB);
     const nowMillis = Date.now();
-    const info = db.prepare("update Organizations" +
+    return _runSQL_1.runSQL_hasChanges("update Organizations" +
         " set recordDelete_userName = null," +
         " recordDelete_timeMillis = null," +
         " recordUpdate_userName = ?," +
         " recordUpdate_timeMillis = ?" +
         " where organizationID = ?" +
-        " and recordDelete_timeMillis is not null")
-        .run(reqSession.user.userName, nowMillis, organizationID);
-    db.close();
-    return info.changes > 0;
+        " and recordDelete_timeMillis is not null", [
+        reqSession.user.userName,
+        nowMillis,
+        organizationID
+    ]);
 };
 exports.restoreOrganization = restoreOrganization;

@@ -264,7 +264,7 @@ declare const cityssm: cityssmGlobal;
           cityssm.postJSON(urlPrefix + "/locations/doGetLocations", {
             limit: -1
           },
-            (responseJSON) => {
+            (responseJSON: { locations: llmTypes.Location[] }) => {
 
               locationsList = responseJSON.locations;
 

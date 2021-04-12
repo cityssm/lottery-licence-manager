@@ -1,16 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.inactivateUser = void 0;
-const sqlite = require("better-sqlite3");
-const databasePaths_1 = require("../../data/databasePaths");
+const _runSQLByName_1 = require("../_runSQLByName");
 const inactivateUser = (userName) => {
-    const db = sqlite(databasePaths_1.usersDB);
-    const info = db.prepare("update Users" +
+    return _runSQLByName_1.runSQLByName("usersDB", "update Users" +
         " set isActive = 0" +
         " where userName = ?" +
-        " and isActive = 1")
-        .run(userName);
-    db.close();
-    return info.changes;
+        " and isActive = 1", [userName]).changes;
 };
 exports.inactivateUser = inactivateUser;

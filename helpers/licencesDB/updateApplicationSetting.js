@@ -1,18 +1,17 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateApplicationSetting = void 0;
-const sqlite = require("better-sqlite3");
-const databasePaths_1 = require("../../data/databasePaths");
+const _runSQL_1 = require("./_runSQL");
 const updateApplicationSetting = (settingKey, settingValue, reqSession) => {
-    const db = sqlite(databasePaths_1.licencesDB);
-    const nowMillis = Date.now();
-    const info = db.prepare("update ApplicationSettings" +
+    return _runSQL_1.runSQL_hasChanges("update ApplicationSettings" +
         " set settingValue = ?," +
         " recordUpdate_userName = ?," +
         " recordUpdate_timeMillis = ?" +
-        " where settingKey = ?")
-        .run(settingValue, reqSession.user.userName, nowMillis, settingKey);
-    db.close();
-    return info.changes > 0;
+        " where settingKey = ?", [
+        settingValue,
+        reqSession.user.userName,
+        Date.now(),
+        settingKey
+    ]);
 };
 exports.updateApplicationSetting = updateApplicationSetting;

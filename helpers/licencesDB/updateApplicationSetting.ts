@@ -1,5 +1,4 @@
-import * as sqlite from "better-sqlite3";
-import { licencesDB as dbPath } from "../../data/databasePaths";
+import { runSQL_hasChanges } from "./_runSQL";
 
 import type * as expressSession from "express-session";
 
@@ -7,23 +6,14 @@ import type * as expressSession from "express-session";
 export const updateApplicationSetting =
   (settingKey: string, settingValue: string, reqSession: expressSession.Session) => {
 
-    const db = sqlite(dbPath);
-
-    const nowMillis = Date.now();
-
-    const info = db.prepare("update ApplicationSettings" +
+    return runSQL_hasChanges("update ApplicationSettings" +
       " set settingValue = ?," +
       " recordUpdate_userName = ?," +
       " recordUpdate_timeMillis = ?" +
-      " where settingKey = ?")
-      .run(
+      " where settingKey = ?", [
         settingValue,
         reqSession.user.userName,
-        nowMillis,
+        Date.now(),
         settingKey
-      );
-
-    db.close();
-
-    return info.changes > 0;
+      ]);
   };

@@ -1,28 +1,17 @@
-import * as sqlite from "better-sqlite3";
-
-import { licencesDB as dbPath } from "../../data/databasePaths";
+import { runSQL_hasChanges } from "./_runSQL";
 
 import type * as expressSession from "express-session";
 
 
 export const pokeLicence = (licenceID: number, reqSession: expressSession.Session) => {
 
-  const db = sqlite(dbPath);
-
-  const nowMillis = Date.now();
-
-  const info = db.prepare("update LotteryLicences" +
+  return runSQL_hasChanges("update LotteryLicences" +
     " set recordUpdate_userName = ?," +
     " recordUpdate_timeMillis = ?" +
     " where licenceID = ?" +
-    " and recordDelete_timeMillis is null")
-    .run(
+    " and recordDelete_timeMillis is null", [
       reqSession.user.userName,
-      nowMillis,
+      Date.now(),
       licenceID
-    );
-
-  db.close();
-
-  return info.changes > 0;
+    ]);
 };

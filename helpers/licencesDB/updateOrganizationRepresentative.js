@@ -1,11 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateOrganizationRepresentative = void 0;
-const sqlite = require("better-sqlite3");
-const databasePaths_1 = require("../../data/databasePaths");
+const _runSQL_1 = require("./_runSQL");
 const updateOrganizationRepresentative = (organizationID, reqBody) => {
-    const db = sqlite(databasePaths_1.licencesDB);
-    db.prepare("update OrganizationRepresentatives" +
+    _runSQL_1.runSQL("update OrganizationRepresentatives" +
         " set representativeName = ?," +
         " representativeTitle = ?," +
         " representativeAddress1 = ?," +
@@ -17,9 +15,13 @@ const updateOrganizationRepresentative = (organizationID, reqBody) => {
         " representativePhoneNumber2 = ?," +
         " representativeEmailAddress = ?" +
         " where organizationID = ?" +
-        " and representativeIndex = ?")
-        .run(reqBody.representativeName, reqBody.representativeTitle, reqBody.representativeAddress1, reqBody.representativeAddress2, reqBody.representativeCity, reqBody.representativeProvince, reqBody.representativePostalCode, reqBody.representativePhoneNumber, reqBody.representativePhoneNumber2, reqBody.representativeEmailAddress, organizationID, reqBody.representativeIndex);
-    db.close();
+        " and representativeIndex = ?", [
+        reqBody.representativeName, reqBody.representativeTitle,
+        reqBody.representativeAddress1, reqBody.representativeAddress2,
+        reqBody.representativeCity, reqBody.representativeProvince, reqBody.representativePostalCode,
+        reqBody.representativePhoneNumber, reqBody.representativePhoneNumber2, reqBody.representativeEmailAddress,
+        organizationID, reqBody.representativeIndex
+    ]);
     const representativeObj = {
         organizationID,
         representativeIndex: reqBody.representativeIndex,

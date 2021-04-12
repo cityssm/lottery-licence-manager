@@ -1,6 +1,4 @@
-import * as sqlite from "better-sqlite3";
-
-import { licencesDB as dbPath } from "../../data/databasePaths";
+import { runSQL } from "./_runSQL";
 
 import type * as llm from "../../types/recordTypes";
 
@@ -8,9 +6,7 @@ import type * as llm from "../../types/recordTypes";
 export const updateOrganizationRepresentative =
   (organizationID: number, reqBody: llm.OrganizationRepresentative) => {
 
-    const db = sqlite(dbPath);
-
-    db.prepare("update OrganizationRepresentatives" +
+    runSQL("update OrganizationRepresentatives" +
       " set representativeName = ?," +
       " representativeTitle = ?," +
       " representativeAddress1 = ?," +
@@ -22,16 +18,13 @@ export const updateOrganizationRepresentative =
       " representativePhoneNumber2 = ?," +
       " representativeEmailAddress = ?" +
       " where organizationID = ?" +
-      " and representativeIndex = ?")
-      .run(
+      " and representativeIndex = ?", [
         reqBody.representativeName, reqBody.representativeTitle,
         reqBody.representativeAddress1, reqBody.representativeAddress2,
         reqBody.representativeCity, reqBody.representativeProvince, reqBody.representativePostalCode,
         reqBody.representativePhoneNumber, reqBody.representativePhoneNumber2, reqBody.representativeEmailAddress,
         organizationID, reqBody.representativeIndex
-      );
-
-    db.close();
+      ]);
 
     const representativeObj: llm.OrganizationRepresentative = {
       organizationID,

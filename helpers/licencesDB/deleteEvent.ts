@@ -1,34 +1,27 @@
-import * as sqlite from "better-sqlite3";
+import { runSQL } from "./_runSQL";
 
 import * as licencesDB from "../licencesDB";
-
-import { licencesDB as dbPath } from "../../data/databasePaths";
 
 import type * as expressSession from "express-session";
 
 
 export const deleteEvent = (licenceID: number, eventDate: number, reqSession: expressSession.Session) => {
 
-  const db = sqlite(dbPath);
-
   const nowMillis = Date.now();
 
-  const info = db.prepare("update LotteryEvents" +
+  const result = runSQL("update LotteryEvents" +
     " set recordDelete_userName = ?," +
     " recordDelete_timeMillis = ?" +
     " where licenceID = ?" +
     " and eventDate = ?" +
-    " and recordDelete_timeMillis is null")
-    .run(
+    " and recordDelete_timeMillis is null", [
       reqSession.user.userName,
       nowMillis,
       licenceID,
       eventDate
-    );
+    ]);
 
-  const changeCount = info.changes;
-
-  db.close();
+  const changeCount = result.changes;
 
   // Purge cached stats
   licencesDB.resetEventTableStats();

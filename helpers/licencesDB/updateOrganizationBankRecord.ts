@@ -1,6 +1,4 @@
-import * as sqlite from "better-sqlite3";
-
-import { licencesDB as dbPath } from "../../data/databasePaths";
+import { runSQL_hasChanges } from "./_runSQL";
 
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns";
 
@@ -10,11 +8,7 @@ import type * as expressSession from "express-session";
 
 export const updateOrganizationBankRecord = (reqBody: llm.OrganizationBankRecord, reqSession: expressSession.Session) => {
 
-  const db = sqlite(dbPath);
-
-  const nowMillis = Date.now();
-
-  const info = db.prepare("update OrganizationBankRecords" +
+  return runSQL_hasChanges("update OrganizationBankRecords" +
     " set recordDate = ?," +
     " recordIsNA = ?," +
     " recordNote = ?," +
@@ -22,16 +16,12 @@ export const updateOrganizationBankRecord = (reqBody: llm.OrganizationBankRecord
     " recordUpdate_timeMillis = ?" +
     " where organizationID = ?" +
     " and recordIndex = ?" +
-    " and recordDelete_timeMillis is null")
-    .run(dateTimeFns.dateStringToInteger(reqBody.recordDateString),
+    " and recordDelete_timeMillis is null", [
+      dateTimeFns.dateStringToInteger(reqBody.recordDateString),
       reqBody.recordIsNA ? 1 : 0,
       reqBody.recordNote,
       reqSession.user.userName,
-      nowMillis,
+      Date.now(),
       reqBody.organizationID,
-      reqBody.recordIndex);
-
-  db.close();
-
-  return info.changes > 0;
+      reqBody.recordIndex]);
 };

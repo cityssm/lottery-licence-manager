@@ -1,28 +1,17 @@
-import * as sqlite from "better-sqlite3";
-
-import { licencesDB as dbPath } from "../../data/databasePaths";
+import { runSQL_hasChanges } from "./_runSQL";
 
 import type * as expressSession from "express-session";
 
 
 export const deleteLocation = (locationID: number, reqSession: expressSession.Session): boolean => {
 
-  const db = sqlite(dbPath);
-
-  const nowMillis = Date.now();
-
-  const info = db.prepare("update Locations" +
+  return runSQL_hasChanges("update Locations" +
     " set recordDelete_userName = ?," +
     " recordDelete_timeMillis = ?" +
     " where recordDelete_timeMillis is null" +
-    " and locationID = ?")
-    .run(
+    " and locationID = ?", [
       reqSession.user.userName,
-      nowMillis,
+      Date.now(),
       locationID
-    );
-
-  db.close();
-
-  return info.changes > 0;
+    ]);
 };

@@ -1,5 +1,4 @@
-import * as sqlite from "better-sqlite3";
-import { licencesDB as dbPath } from "../../data/databasePaths";
+import { runSQL_hasChanges } from "./_runSQL";
 
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns";
 
@@ -8,14 +7,12 @@ import type * as expressSession from "express-session";
 
 export const issueLicence = (licenceID: number, reqSession: expressSession.Session) => {
 
-  const db = sqlite(dbPath);
-
   const nowDate = new Date();
 
   const issueDate = dateTimeFns.dateToInteger(nowDate);
   const issueTime = dateTimeFns.dateToTimeInteger(nowDate);
 
-  const info = db.prepare("update LotteryLicences" +
+  return runSQL_hasChanges("update LotteryLicences" +
     " set issueDate = ?," +
     " issueTime = ?," +
     " trackUpdatesAsAmendments = 1," +
@@ -23,16 +20,11 @@ export const issueLicence = (licenceID: number, reqSession: expressSession.Sessi
     " recordUpdate_timeMillis = ?" +
     " where licenceID = ?" +
     " and recordDelete_timeMillis is null" +
-    " and issueDate is null")
-    .run(
+    " and issueDate is null", [
       issueDate,
       issueTime,
       reqSession.user.userName,
       nowDate.getTime(),
       licenceID
-    );
-
-  db.close();
-
-  return info.changes > 0;
+    ]);
 };
