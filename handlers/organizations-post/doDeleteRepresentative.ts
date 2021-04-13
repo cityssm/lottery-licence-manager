@@ -3,10 +3,14 @@ import type { RequestHandler } from "express";
 import { deleteOrganizationRepresentative } from "../../helpers/licencesDB/deleteOrganizationRepresentative";
 
 
-export const handler: RequestHandler = (req, res) => {
+export const handler: RequestHandler = (req, res, next) => {
 
-  const organizationID = parseInt(req.params.organizationID, 10);
-  const representativeIndex = req.body.representativeIndex;
+  const organizationID = Number(req.params.organizationID);
+  const representativeIndex = Number(req.body.representativeIndex);
+
+  if (isNaN(organizationID) || isNaN(representativeIndex)) {
+    return next();
+  }
 
   const success = deleteOrganizationRepresentative(organizationID, representativeIndex);
 

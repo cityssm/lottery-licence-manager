@@ -4,21 +4,22 @@ exports.handler = void 0;
 const configFns = require("../../helpers/configFns");
 const getLicence_1 = require("../../helpers/licencesDB/getLicence");
 const getOrganization_1 = require("../../helpers/licencesDB/getOrganization");
-const handler = (req, res) => {
-    const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
-    const licenceID = parseInt(req.params.licenceID, 10);
+const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
+const handler = (req, res, next) => {
+    const licenceID = Number(req.params.licenceID);
+    if (isNaN(licenceID)) {
+        return next();
+    }
     const licence = getLicence_1.getLicence(licenceID, req.session);
     if (!licence) {
-        res.redirect(urlPrefix + "/licences/?error=licenceNotFound");
-        return;
+        return res.redirect(urlPrefix + "/licences/?error=licenceNotFound");
     }
     else if (!licence.canUpdate) {
-        res.redirect(urlPrefix + "/licences/" + licenceID.toString() + "/?error=accessDenied");
-        return;
+        return res.redirect(urlPrefix + "/licences/" + licenceID.toString() + "/?error=accessDenied");
     }
     const organization = getOrganization_1.getOrganization(licence.organizationID, req.session);
     const feeCalculation = configFns.getProperty("licences.feeCalculationFn")(licence);
-    res.render("licence-edit", {
+    return res.render("licence-edit", {
         headTitle: "Licence #" + licenceID.toString() + " Update",
         isCreate: false,
         licence,

@@ -11,34 +11,29 @@ import { getOrganizationRemarks } from "../../helpers/licencesDB/getOrganization
 import { getOrganizationReminders } from "../../helpers/licencesDB/getOrganizationReminders";
 
 
-export const handler: RequestHandler = (req, res) => {
+const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
 
-  const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
 
-  const organizationID = parseInt(req.params.organizationID, 10);
+export const handler: RequestHandler = (req, res, next) => {
+
+  const organizationID = Number(req.params.organizationID);
+
+  if (isNaN(organizationID)) {
+    return next();
+  }
 
   const organization = getOrganization(organizationID, req.session);
 
   if (!organization) {
-
-    res.redirect(urlPrefix + "/organizations/?error=organizationNotFound");
-    return;
-
+    return res.redirect(urlPrefix + "/organizations/?error=organizationNotFound");
   }
 
   if (!organization.canUpdate) {
-
-    res.redirect(urlPrefix + "/organizations/" + organizationID.toString() + "/?error=accessDenied-noUpdate");
-    return;
-
+    return res.redirect(urlPrefix + "/organizations/" + organizationID.toString() + "/?error=accessDenied-noUpdate");
   }
 
-  const licences = getLicences(
-    {
-      organizationID
-    },
-    req.session,
-    {
+  const licences = getLicences({ organizationID },
+    req.session, {
       includeOrganization: false,
       limit: -1
     }

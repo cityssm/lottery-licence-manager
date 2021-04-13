@@ -7,17 +7,21 @@ import { getLicence } from "../../helpers/licencesDB/getLicence";
 import { getOrganization } from "../../helpers/licencesDB/getOrganization";
 
 
-export const handler: RequestHandler = (req, res) => {
+const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
 
-  const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
 
-  const licenceID = parseInt(req.params.licenceID, 10);
-  const eventDate = parseInt(req.params.eventDate, 10);
+export const handler: RequestHandler = (req, res, next) => {
+
+  const licenceID = Number(req.params.licenceID);
+  const eventDate = Number(req.params.eventDate);
+
+  if (isNaN(licenceID) || isNaN(eventDate)) {
+    return next();
+  }
 
   const eventObj = getEvent(licenceID, eventDate, req.session);
 
   if (!eventObj) {
-
     return res.redirect(urlPrefix + "/events/?error=eventNotFound");
   }
 

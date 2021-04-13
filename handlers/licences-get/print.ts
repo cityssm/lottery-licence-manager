@@ -5,35 +5,36 @@ import * as ejs from "ejs";
 
 import * as configFns from "../../helpers/configFns";
 
-import * as licencesDB_getOrganization from "../../helpers/licencesDB/getOrganization";
-import * as licencesDB_getLicence from "../../helpers/licencesDB/getLicence";
+import { getOrganization } from "../../helpers/licencesDB/getOrganization";
+import { getLicence } from "../../helpers/licencesDB/getLicence";
 
 import convertHTMLToPDF = require("pdf-puppeteer");
 
 
+const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
+
+
 export const handler: RequestHandler = async(req, res, next) => {
 
-  const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
+  const licenceID = Number(req.params.licenceID);
 
-  const licenceID = parseInt(req.params.licenceID, 10);
+  if (isNaN(licenceID)) {
+    return next();
+  }
 
-  const licence = licencesDB_getLicence.getLicence(licenceID, req.session);
+  const licence = getLicence(licenceID, req.session);
 
   if (!licence) {
 
-    res.redirect(urlPrefix + "/licences/?error=licenceNotFound");
-    return;
-
+    return res.redirect(urlPrefix + "/licences/?error=licenceNotFound");
   }
 
   if (!licence.issueDate) {
 
-    res.redirect(urlPrefix + "/licences/?error=licenceNotIssued");
-    return;
-
+    return res.redirect(urlPrefix + "/licences/?error=licenceNotIssued");
   }
 
-  const organization = licencesDB_getOrganization.getOrganization(licence.organizationID, req.session);
+  const organization = getOrganization(licence.organizationID, req.session);
 
   await ejs.renderFile(
     path.join(__dirname, "../../reports/", configFns.getProperty("licences.printTemplate")), {
@@ -61,7 +62,7 @@ export const handler: RequestHandler = async(req, res, next) => {
       };
 
       await convertHTMLToPDF(ejsData, pdfCallbackFn, {
-        format: "Letter",
+        format: "letter",
         printBackground: true,
         preferCSSPageSize: true
       });

@@ -6,32 +6,33 @@ import { getLicence } from "../../helpers/licencesDB/getLicence";
 import { getOrganization } from "../../helpers/licencesDB/getOrganization";
 
 
-export const handler: RequestHandler = (req, res) => {
+const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
 
-  const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
 
-  const licenceID = parseInt(req.params.licenceID, 10);
+export const handler: RequestHandler = (req, res, next) => {
+
+  const licenceID = Number(req.params.licenceID);
+
+  if (isNaN(licenceID)) {
+    return next();
+  }
 
   const licence = getLicence(licenceID, req.session);
 
   if (!licence) {
 
-    res.redirect(urlPrefix + "/licences/?error=licenceNotFound");
-    return;
+    return res.redirect(urlPrefix + "/licences/?error=licenceNotFound");
 
   } else if (!licence.canUpdate) {
 
-    res.redirect(urlPrefix + "/licences/" + licenceID.toString() + "/?error=accessDenied");
-    return;
-
+    return res.redirect(urlPrefix + "/licences/" + licenceID.toString() + "/?error=accessDenied");
   }
-
 
   const organization = getOrganization(licence.organizationID, req.session);
 
   const feeCalculation = configFns.getProperty("licences.feeCalculationFn")(licence);
 
-  res.render("licence-edit", {
+  return res.render("licence-edit", {
     headTitle: "Licence #" + licenceID.toString() + " Update",
     isCreate: false,
     licence,

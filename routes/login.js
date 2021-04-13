@@ -5,7 +5,9 @@ const usersDB_getUser = require("../helpers/usersDB/getUser");
 const router = express_1.Router();
 const getSafeRedirectURL = (possibleRedirectURL = "") => {
     const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
-    const urlToCheck = (possibleRedirectURL.startsWith(urlPrefix) ? possibleRedirectURL.substring(urlPrefix.length) : possibleRedirectURL);
+    const urlToCheck = (possibleRedirectURL.startsWith(urlPrefix)
+        ? possibleRedirectURL.substring(urlPrefix.length)
+        : possibleRedirectURL).toLowerCase();
     switch (urlToCheck) {
         case "/organizations":
         case "/organizations/new":

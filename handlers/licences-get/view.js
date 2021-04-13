@@ -4,9 +4,12 @@ exports.handler = void 0;
 const configFns = require("../../helpers/configFns");
 const getOrganization_1 = require("../../helpers/licencesDB/getOrganization");
 const getLicence_1 = require("../../helpers/licencesDB/getLicence");
-const handler = (req, res) => {
-    const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
-    const licenceID = parseInt(req.params.licenceID, 10);
+const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
+const handler = (req, res, next) => {
+    const licenceID = Number(req.params.licenceID);
+    if (isNaN(licenceID)) {
+        return next();
+    }
     const licence = getLicence_1.getLicence(licenceID, req.session);
     if (!licence) {
         return res.redirect(urlPrefix + "/licences/?error=licenceNotFound");

@@ -3,9 +3,13 @@ import type { RequestHandler } from "express";
 import { updateOrganizationRepresentative } from "../../helpers/licencesDB/updateOrganizationRepresentative";
 
 
-export const handler: RequestHandler = (req, res) => {
+export const handler: RequestHandler = (req, res, next) => {
 
-  const organizationID = parseInt(req.params.organizationID, 10);
+  const organizationID = Number(req.params.organizationID);
+
+  if (isNaN(organizationID)) {
+    return next();
+  }
 
   const representativeObj = updateOrganizationRepresentative(organizationID, req.body);
 

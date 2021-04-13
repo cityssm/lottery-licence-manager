@@ -9,11 +9,16 @@ import { getLicences } from "../../helpers/licencesDB/getLicences";
 import { getLocation } from "../../helpers/licencesDB/getLocation";
 
 
-export const handler: RequestHandler = (req, res) => {
+const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
 
-  const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
 
-  const locationID = parseInt(req.params.locationID, 10);
+export const handler: RequestHandler = (req, res, next) => {
+
+  const locationID = Number(req.params.locationID);
+
+  if (isNaN(locationID)) {
+    return next();
+  }
 
   const location = getLocation(locationID, req.session);
 
@@ -21,14 +26,12 @@ export const handler: RequestHandler = (req, res) => {
 
     res.redirect(urlPrefix + "/locations/?error=locationNotFound");
     return;
-
   }
 
   if (!location.canUpdate) {
 
     res.redirect(urlPrefix + "/locations/" + locationID.toString() + "/?error=accessDenied-noUpdate");
     return;
-
   }
 
   const licences = getLicences({

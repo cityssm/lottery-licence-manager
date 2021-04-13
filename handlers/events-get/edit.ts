@@ -7,34 +7,30 @@ import { getLicence } from "../../helpers/licencesDB/getLicence";
 import { getOrganization } from "../../helpers/licencesDB/getOrganization";
 
 
-export const handler: RequestHandler = (req, res) => {
+const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
 
-  const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
 
-  const licenceID = parseInt(req.params.licenceID, 10);
-  const eventDate = parseInt(req.params.eventDate, 10);
+export const handler: RequestHandler = (req, res, next) => {
+
+  const licenceID = Number(req.params.licenceID);
+  const eventDate = Number(req.params.eventDate);
+
+  if (isNaN(licenceID) || isNaN(eventDate)) {
+    return next();
+  }
 
   if (!req.session.user.userProperties.canUpdate) {
-
-    res.redirect(urlPrefix + "/events/" + licenceID.toString() + "/" + eventDate.toString() + "/?error=accessDenied");
-    return;
-
+    return res.redirect(urlPrefix + "/events/" + licenceID.toString() + "/" + eventDate.toString() + "/?error=accessDenied");
   }
 
   const eventObj = getEvent(licenceID, eventDate, req.session);
 
   if (!eventObj) {
-
-    res.redirect(urlPrefix + "/events/?error=eventNotFound");
-    return;
-
+    return res.redirect(urlPrefix + "/events/?error=eventNotFound");
   }
 
   if (!eventObj.canUpdate) {
-
-    res.redirect(urlPrefix + "/events/" + licenceID.toString() + "/" + eventDate.toString() + "/?error=accessDenied");
-    return;
-
+    return res.redirect(urlPrefix + "/events/" + licenceID.toString() + "/" + eventDate.toString() + "/?error=accessDenied");
   }
 
   const licence = getLicence(licenceID, req.session);

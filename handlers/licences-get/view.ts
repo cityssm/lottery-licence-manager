@@ -6,16 +6,20 @@ import { getOrganization } from "../../helpers/licencesDB/getOrganization";
 import { getLicence } from "../../helpers/licencesDB/getLicence";
 
 
-export const handler: RequestHandler = (req, res) => {
+const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
 
-  const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
 
-  const licenceID = parseInt(req.params.licenceID, 10);
+export const handler: RequestHandler = (req, res, next) => {
+
+  const licenceID = Number(req.params.licenceID);
+
+  if (isNaN(licenceID)) {
+    return next();
+  }
 
   const licence = getLicence(licenceID, req.session);
 
   if (!licence) {
-
     return res.redirect(urlPrefix + "/licences/?error=licenceNotFound");
   }
 

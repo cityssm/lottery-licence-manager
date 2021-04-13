@@ -4,22 +4,23 @@ exports.handler = void 0;
 const path = require("path");
 const ejs = require("ejs");
 const configFns = require("../../helpers/configFns");
-const licencesDB_getOrganization = require("../../helpers/licencesDB/getOrganization");
-const licencesDB_getLicence = require("../../helpers/licencesDB/getLicence");
+const getOrganization_1 = require("../../helpers/licencesDB/getOrganization");
+const getLicence_1 = require("../../helpers/licencesDB/getLicence");
 const convertHTMLToPDF = require("pdf-puppeteer");
+const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
 const handler = async (req, res, next) => {
-    const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
-    const licenceID = parseInt(req.params.licenceID, 10);
-    const licence = licencesDB_getLicence.getLicence(licenceID, req.session);
+    const licenceID = Number(req.params.licenceID);
+    if (isNaN(licenceID)) {
+        return next();
+    }
+    const licence = getLicence_1.getLicence(licenceID, req.session);
     if (!licence) {
-        res.redirect(urlPrefix + "/licences/?error=licenceNotFound");
-        return;
+        return res.redirect(urlPrefix + "/licences/?error=licenceNotFound");
     }
     if (!licence.issueDate) {
-        res.redirect(urlPrefix + "/licences/?error=licenceNotIssued");
-        return;
+        return res.redirect(urlPrefix + "/licences/?error=licenceNotIssued");
     }
-    const organization = licencesDB_getOrganization.getOrganization(licence.organizationID, req.session);
+    const organization = getOrganization_1.getOrganization(licence.organizationID, req.session);
     await ejs.renderFile(path.join(__dirname, "../../reports/", configFns.getProperty("licences.printTemplate")), {
         configFns,
         licence,
@@ -35,7 +36,7 @@ const handler = async (req, res, next) => {
             res.send(pdf);
         };
         await convertHTMLToPDF(ejsData, pdfCallbackFn, {
-            format: "Letter",
+            format: "letter",
             printBackground: true,
             preferCSSPageSize: true
         });

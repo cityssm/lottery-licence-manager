@@ -102,10 +102,13 @@ router.post("/doSave",
   handler_doSave);
 
 
-router.post("/doDelete", permissionHandlers.updatePostHandler, handler_doDelete);
+router.post("/doDelete",
+  permissionHandlers.updatePostHandler,
+  handler_doDelete);
 
 
-router.get("/:licenceID/:eventDate", handler_view);
+router.get("/:licenceID/:eventDate",
+  handler_view);
 
 
 router.get("/:licenceID/:eventDate/edit",

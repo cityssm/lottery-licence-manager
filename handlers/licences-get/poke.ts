@@ -5,13 +5,18 @@ import * as configFns from "../../helpers/configFns";
 import { pokeLicence } from "../../helpers/licencesDB/pokeLicence";
 
 
-export const handler: RequestHandler = (req, res) => {
+const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
 
-  const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
 
-  const licenceID = parseInt(req.params.licenceID, 10);
+export const handler: RequestHandler = (req, res, next) => {
+
+  const licenceID = Number(req.params.licenceID);
+
+  if (isNaN(licenceID)) {
+    return next();
+  }
 
   pokeLicence(licenceID, req.session);
 
-  res.redirect(urlPrefix + "/licences/" + licenceID.toString());
+  return res.redirect(urlPrefix + "/licences/" + licenceID.toString());
 };

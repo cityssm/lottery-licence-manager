@@ -8,10 +8,14 @@ import { pokeEvent } from "../../helpers/licencesDB/pokeEvent";
 const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
 
 
-export const handler: RequestHandler = (req, res) => {
+export const handler: RequestHandler = (req, res, next) => {
 
-  const licenceID = parseInt(req.params.licenceID, 10);
-  const eventDate = parseInt(req.params.eventDate, 10);
+  const licenceID = Number(req.params.licenceID);
+  const eventDate = Number(req.params.eventDate);
+
+  if (isNaN(licenceID) || isNaN(eventDate)) {
+    return next();
+  }
 
   pokeEvent(licenceID, eventDate, req.session);
 

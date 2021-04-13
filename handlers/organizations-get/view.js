@@ -7,17 +7,17 @@ const getLicences_1 = require("../../helpers/licencesDB/getLicences");
 const getOrganization_1 = require("../../helpers/licencesDB/getOrganization");
 const getOrganizationRemarks_1 = require("../../helpers/licencesDB/getOrganizationRemarks");
 const getOrganizationReminders_1 = require("../../helpers/licencesDB/getOrganizationReminders");
-const handler = (req, res) => {
-    const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
-    const organizationID = parseInt(req.params.organizationID, 10);
+const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
+const handler = (req, res, next) => {
+    const organizationID = Number(req.params.organizationID);
+    if (isNaN(organizationID)) {
+        return next();
+    }
     const organization = getOrganization_1.getOrganization(organizationID, req.session);
     if (!organization) {
-        res.redirect(urlPrefix + "/organizations/?error=organizationNotFound");
-        return;
+        return res.redirect(urlPrefix + "/organizations/?error=organizationNotFound");
     }
-    const licences = getLicences_1.getLicences({
-        organizationID
-    }, req.session, {
+    const licences = getLicences_1.getLicences({ organizationID }, req.session, {
         includeOrganization: false,
         limit: -1
     }).licences || [];

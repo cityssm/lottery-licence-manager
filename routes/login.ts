@@ -11,7 +11,9 @@ const getSafeRedirectURL = (possibleRedirectURL: string = "") => {
 
   const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
 
-  const urlToCheck = (possibleRedirectURL.startsWith(urlPrefix) ? possibleRedirectURL.substring(urlPrefix.length) : possibleRedirectURL);
+  const urlToCheck = (possibleRedirectURL.startsWith(urlPrefix)
+    ? possibleRedirectURL.substring(urlPrefix.length)
+    : possibleRedirectURL).toLowerCase();
 
   switch (urlToCheck) {
     case "/organizations":
