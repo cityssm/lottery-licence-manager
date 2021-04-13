@@ -18,7 +18,7 @@ import type * as expressSession from "express-session";
 
 export const canUpdateObject = (obj: llm.Record, reqSession: expressSession.Session) => {
 
-  const userProperties: llm.UserProperties = reqSession.user.userProperties;
+  const userProperties = reqSession.user.userProperties;
 
   // Check user permissions
 
@@ -38,13 +38,11 @@ export const canUpdateObject = (obj: llm.Record, reqSession: expressSession.Sess
     canUpdate = true;
 
   } else if (userProperties.canCreate &&
-    (obj.recordCreate_userName === reqSession.user.userName ||
-      obj.recordUpdate_userName === reqSession.user.userName) &&
+    (obj.recordCreate_userName === reqSession.user.userName || obj.recordUpdate_userName === reqSession.user.userName) &&
     obj.recordUpdate_timeMillis + configFns.getProperty("user.createUpdateWindowMillis") > Date.now()) {
 
     // Users with only create permission can update their own records within the time window
     canUpdate = true;
-
   }
 
   // If recently updated, send back permission

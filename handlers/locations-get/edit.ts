@@ -23,9 +23,7 @@ export const handler: RequestHandler = (req, res, next) => {
   const location = getLocation(locationID, req.session);
 
   if (!location) {
-
-    res.redirect(urlPrefix + "/locations/?error=locationNotFound");
-    return;
+    return res.redirect(urlPrefix + "/locations/?error=locationNotFound");
   }
 
   if (!location.canUpdate) {
@@ -41,7 +39,7 @@ export const handler: RequestHandler = (req, res, next) => {
       limit: -1
     }).licences;
 
-  res.render("location-edit", {
+  return res.render("location-edit", {
     headTitle: location.locationDisplayName,
     location,
     licences,

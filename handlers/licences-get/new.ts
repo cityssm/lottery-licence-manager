@@ -13,16 +13,15 @@ export const handler: RequestHandler = (req, res) => {
 
   // Get organization (if set)
 
-  const organizationID = parseInt(req.params.organizationID, 10);
+  const organizationID = Number(req.params.organizationID);
 
   let organization: Organization = null;
 
-  if (organizationID) {
+  if (!isNaN(organizationID)) {
 
     organization = getOrganization(organizationID, req.session);
 
     if (organization && !organization.isEligibleForLicences) {
-
       organization = null;
     }
   }
@@ -38,7 +37,6 @@ export const handler: RequestHandler = (req, res) => {
   const licenceNumberCalculationType = configFns.getProperty("licences.externalLicenceNumber.newCalculation");
 
   if (licenceNumberCalculationType === "range") {
-
     externalLicenceNumber = getNextExternalLicenceNumberFromRange().toString();
   }
 

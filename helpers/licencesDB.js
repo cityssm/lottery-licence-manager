@@ -18,8 +18,7 @@ const canUpdateObject = (obj, reqSession) => {
         canUpdate = true;
     }
     else if (userProperties.canCreate &&
-        (obj.recordCreate_userName === reqSession.user.userName ||
-            obj.recordUpdate_userName === reqSession.user.userName) &&
+        (obj.recordCreate_userName === reqSession.user.userName || obj.recordUpdate_userName === reqSession.user.userName) &&
         obj.recordUpdate_timeMillis + configFns.getProperty("user.createUpdateWindowMillis") > Date.now()) {
         canUpdate = true;
     }

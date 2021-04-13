@@ -13,8 +13,7 @@ const handler = (req, res, next) => {
     }
     const location = getLocation_1.getLocation(locationID, req.session);
     if (!location) {
-        res.redirect(urlPrefix + "/locations/?error=locationNotFound");
-        return;
+        return res.redirect(urlPrefix + "/locations/?error=locationNotFound");
     }
     if (!location.canUpdate) {
         res.redirect(urlPrefix + "/locations/" + locationID.toString() + "/?error=accessDenied-noUpdate");
@@ -26,7 +25,7 @@ const handler = (req, res, next) => {
         includeOrganization: true,
         limit: -1
     }).licences;
-    res.render("location-edit", {
+    return res.render("location-edit", {
         headTitle: location.locationDisplayName,
         location,
         licences,

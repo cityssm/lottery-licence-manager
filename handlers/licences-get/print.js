@@ -8,6 +8,7 @@ const getOrganization_1 = require("../../helpers/licencesDB/getOrganization");
 const getLicence_1 = require("../../helpers/licencesDB/getLicence");
 const convertHTMLToPDF = require("pdf-puppeteer");
 const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
+const printTemplate = configFns.getProperty("licences.printTemplate");
 const handler = async (req, res, next) => {
     const licenceID = Number(req.params.licenceID);
     if (isNaN(licenceID)) {
@@ -17,11 +18,11 @@ const handler = async (req, res, next) => {
     if (!licence) {
         return res.redirect(urlPrefix + "/licences/?error=licenceNotFound");
     }
-    if (!licence.issueDate) {
+    else if (!licence.issueDate) {
         return res.redirect(urlPrefix + "/licences/?error=licenceNotIssued");
     }
     const organization = getOrganization_1.getOrganization(licence.organizationID, req.session);
-    await ejs.renderFile(path.join(__dirname, "../../reports/", configFns.getProperty("licences.printTemplate")), {
+    await ejs.renderFile(path.join(__dirname, "../../reports/", printTemplate), {
         configFns,
         licence,
         organization

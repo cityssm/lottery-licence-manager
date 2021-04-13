@@ -6,9 +6,9 @@ const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
 const getOrganization_1 = require("../../helpers/licencesDB/getOrganization");
 const getNextExternalLicenceNumberFromRange_1 = require("../../helpers/licencesDB/getNextExternalLicenceNumberFromRange");
 const handler = (req, res) => {
-    const organizationID = parseInt(req.params.organizationID, 10);
+    const organizationID = Number(req.params.organizationID);
     let organization = null;
-    if (organizationID) {
+    if (!isNaN(organizationID)) {
         organization = getOrganization_1.getOrganization(organizationID, req.session);
         if (organization && !organization.isEligibleForLicences) {
             organization = null;

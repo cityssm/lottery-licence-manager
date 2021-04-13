@@ -12,6 +12,7 @@ import convertHTMLToPDF = require("pdf-puppeteer");
 
 
 const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
+const printTemplate = configFns.getProperty("licences.printTemplate");
 
 
 export const handler: RequestHandler = async(req, res, next) => {
@@ -25,19 +26,16 @@ export const handler: RequestHandler = async(req, res, next) => {
   const licence = getLicence(licenceID, req.session);
 
   if (!licence) {
-
     return res.redirect(urlPrefix + "/licences/?error=licenceNotFound");
-  }
 
-  if (!licence.issueDate) {
-
+  } else if (!licence.issueDate) {
     return res.redirect(urlPrefix + "/licences/?error=licenceNotIssued");
   }
 
   const organization = getOrganization(licence.organizationID, req.session);
 
   await ejs.renderFile(
-    path.join(__dirname, "../../reports/", configFns.getProperty("licences.printTemplate")), {
+    path.join(__dirname, "../../reports/", printTemplate), {
       configFns,
       licence,
       organization
@@ -58,7 +56,6 @@ export const handler: RequestHandler = async(req, res, next) => {
         res.setHeader("Content-Type", "application/pdf");
 
         res.send(pdf);
-
       };
 
       await convertHTMLToPDF(ejsData, pdfCallbackFn, {
