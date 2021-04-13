@@ -11,6 +11,7 @@ import sanitize = require("sanitize-filename");
 
 
 const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
+const applicationName = configFns.getProperty("application.applicationName");
 
 
 export const handler: RequestHandler = (req, res, next) => {
@@ -28,8 +29,6 @@ export const handler: RequestHandler = (req, res, next) => {
       return;
 
     }
-
-    const applicationName = configFns.getProperty("application.applicationName");
 
     res.send(`<html>
       <head>

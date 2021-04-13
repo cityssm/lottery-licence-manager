@@ -16,8 +16,7 @@ const handler = (req, res, next) => {
         return res.redirect(urlPrefix + "/locations/?error=locationNotFound");
     }
     if (!location.canUpdate) {
-        res.redirect(urlPrefix + "/locations/" + locationID.toString() + "/?error=accessDenied-noUpdate");
-        return;
+        return res.redirect(urlPrefix + "/locations/" + locationID.toString() + "/?error=accessDenied-noUpdate");
     }
     const licences = getLicences_1.getLicences({
         locationID

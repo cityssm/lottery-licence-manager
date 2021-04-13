@@ -8,6 +8,7 @@ const path = require("path");
 const marked = require("marked");
 const sanitize = require("sanitize-filename");
 const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
+const applicationName = configFns.getProperty("application.applicationName");
 const handler = (req, res, next) => {
     const mdFileName = sanitize(req.params.mdFileName);
     const mdPath = path.join(__dirname, "..", "..", "docs", mdFileName + (mdFileName.endsWith(".md") ? "" : ".md"));
@@ -16,7 +17,6 @@ const handler = (req, res, next) => {
             next(createError(400));
             return;
         }
-        const applicationName = configFns.getProperty("application.applicationName");
         res.send(`<html>
       <head>
         <meta charset="utf-8" />
