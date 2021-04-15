@@ -1,11 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateLicenceTicketTypeWithDB = void 0;
-const _runSQL_1 = require("./_runSQL");
+const _runSQLByName_1 = require("../_runSQLByName");
 const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
 const updateLicenceTicketTypeWithDB = (db, ticketTypeDef, reqSession) => {
     const nowMillis = Date.now();
-    _runSQL_1.runSQLWithDB(db, "update LotteryLicenceTicketTypes" +
+    _runSQLByName_1.runSQLWithDB(db, "update LotteryLicenceTicketTypes" +
         " set distributorLocationID = ?," +
         " manufacturerLocationID = ?," +
         " unitCount = ?," +

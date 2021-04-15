@@ -19,11 +19,11 @@
   },
   "homepage": "https://github.com/cityssm/lottery-licence-manager#readme",
   "dependencies": {
-    "@cityssm/bulma-webapp-js": "^1.1.1",
+    "@cityssm/bulma-webapp-js": "^1.1.2",
     "@cityssm/expressjs-server-js": "^1.0.5",
     "@fortawesome/fontawesome-free": "^5.15.3",
     "bcrypt": "^5.0.1",
-    "better-sqlite3": "^7.1.4",
+    "better-sqlite3": "^7.1.5",
     "compression": "^1.7.4",
     "connect-sqlite3": "^0.9.11",
     "cookie-parser": "^1.4.5",

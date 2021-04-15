@@ -1,4 +1,4 @@
-import { runSQLWithDB } from "./_runSQL";
+import { runSQLWithDB } from "../_runSQLByName";
 
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns";
 

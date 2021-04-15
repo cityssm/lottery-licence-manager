@@ -8,7 +8,8 @@ const getLicenceTicketTypesWithDB = (db, licenceID) => {
         " d.locationName as distributorLocationName, d.locationAddress1 as distributorLocationAddress1," +
         " t.manufacturerLocationID," +
         " m.locationName as manufacturerLocationName, m.locationAddress1 as manufacturerLocationAddress1," +
-        " t.unitCount, t.licenceFee" +
+        " t.unitCount," +
+        " ifnull(t.licenceFee, 0) as licenceFee" +
         " from LotteryLicenceTicketTypes t" +
         " left join Locations d on t.distributorLocationID = d.locationID" +
         " left join Locations m on t.manufacturerLocationID = m.locationID" +

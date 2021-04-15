@@ -548,7 +548,9 @@
               const currentDate = dateTimeFns.dateToInteger(new Date());
               for (let ticketTypeIndex = 0; ticketTypeIndex < licence.licenceTicketTypes.length; ticketTypeIndex += 1) {
                 const licenceTicketTypeObj = licence.licenceTicketTypes[ticketTypeIndex];
-                const ticketType = (licenceType && licenceType.ticketTypes ? licenceType.ticketTypes.find(ele => ele.ticketType === licenceTicketTypeObj.ticketType) : null);
+                const ticketType = (licenceType && licenceType.ticketTypes
+                  ? licenceType.ticketTypes.find(ele => ele.ticketType === licenceTicketTypeObj.ticketType)
+                  : null);
             %>
                 <tr data-event-date-string="<%= licenceTicketTypeObj.eventDateString %>" data-ticket-type="<%= licenceTicketTypeObj.ticketType %>">
                   <td>
