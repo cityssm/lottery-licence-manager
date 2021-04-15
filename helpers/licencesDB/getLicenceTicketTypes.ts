@@ -1,11 +1,11 @@
 import * as sqlite from "better-sqlite3";
 
-import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns";
+import type * as llm from "../../types/recordTypes";
 
 
 export const getLicenceTicketTypesWithDB = (db: sqlite.Database, licenceID: number | string) => {
 
-  const ticketTypesList = db.prepare("select t.eventDate, t.ticketType," +
+  const ticketTypesList: llm.LotteryLicenceTicketType[] = db.prepare("select t.ticketTypeIndex, t.ticketType," +
     " t.distributorLocationID," +
     " d.locationName as distributorLocationName, d.locationAddress1 as distributorLocationAddress1," +
     " t.manufacturerLocationID," +
@@ -17,12 +17,10 @@ export const getLicenceTicketTypesWithDB = (db: sqlite.Database, licenceID: numb
     " left join Locations m on t.manufacturerLocationID = m.locationID" +
     " where t.recordDelete_timeMillis is null" +
     " and t.licenceID = ?" +
-    " order by t.eventDate, t.ticketType")
+    " order by t.ticketTypeIndex")
     .all(licenceID);
 
   for (const ticketTypeObj of ticketTypesList) {
-
-    ticketTypeObj.eventDateString = dateTimeFns.dateIntegerToString(ticketTypeObj.eventDate);
 
     ticketTypeObj.distributorLocationDisplayName = ticketTypeObj.distributorLocationName === ""
       ? ticketTypeObj.distributorLocationAddress1

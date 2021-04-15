@@ -1,2 +1,3 @@
 import * as sqlite from "better-sqlite3";
-export declare const getLicenceTicketTypesWithDB: (db: sqlite.Database, licenceID: number | string) => any[];
+import type * as llm from "../../types/recordTypes";
+export declare const getLicenceTicketTypesWithDB: (db: sqlite.Database, licenceID: number | string) => llm.LotteryLicenceTicketType[];

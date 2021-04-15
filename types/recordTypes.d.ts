@@ -149,12 +149,17 @@ export interface LotteryLicence extends Location, Record {
 }
 export interface LotteryLicenceTicketType extends Record {
     licenceID: number;
-    eventDate: number;
-    eventDateString: string;
+    ticketTypeIndex: number;
     ticketType: string;
     unitCount: number;
     distributorLocationID: number;
+    distributorLocationDisplayName?: string;
+    distributorLocationName?: string;
+    distributorLocationAddress1?: string;
     manufacturerLocationID: number;
+    manufacturerLocationDisplayName?: string;
+    manufacturerLocationName?: string;
+    manufacturerLocationAddress1?: string;
 }
 export interface LotteryLicenceTransaction extends Record {
     transactionIndex: number;

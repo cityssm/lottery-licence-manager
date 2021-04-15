@@ -53,22 +53,22 @@ const createLicence = (reqBody, reqSession) => {
     }
     if (typeof (reqBody.ticketType_ticketType) === "string") {
         db.prepare("insert into LotteryLicenceTicketTypes (" +
-            "licenceID, eventDate, ticketType," +
+            "licenceID, ticketTypeIndex, ticketType," +
             " distributorLocationID, manufacturerLocationID," +
             " unitCount, licenceFee," +
             " recordCreate_userName, recordCreate_timeMillis, recordUpdate_userName, recordUpdate_timeMillis)" +
             " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
-            .run(licenceID, dateTimeFns.dateStringToInteger(reqBody.ticketType_eventDateString), reqBody.ticketType_ticketType, (reqBody.ticketType_distributorLocationID === "" ? null : reqBody.ticketType_distributorLocationID), (reqBody.ticketType_manufacturerLocationID === "" ? null : reqBody.ticketType_manufacturerLocationID), reqBody.ticketType_unitCount, reqBody.ticketType_licenceFee, reqSession.user.userName, nowMillis, reqSession.user.userName, nowMillis);
+            .run(licenceID, 0, reqBody.ticketType_ticketType, (reqBody.ticketType_distributorLocationID === "" ? null : reqBody.ticketType_distributorLocationID), (reqBody.ticketType_manufacturerLocationID === "" ? null : reqBody.ticketType_manufacturerLocationID), reqBody.ticketType_unitCount, reqBody.ticketType_licenceFee, reqSession.user.userName, nowMillis, reqSession.user.userName, nowMillis);
     }
     else if (typeof (reqBody.ticketType_ticketType) === "object") {
         reqBody.ticketType_ticketType.forEach((ticketType, ticketTypeIndex) => {
             db.prepare("insert into LotteryLicenceTicketTypes (" +
-                "licenceID, eventDate, ticketType," +
+                "licenceID, ticketTypeIndex, ticketType," +
                 " distributorLocationID, manufacturerLocationID," +
                 " unitCount, licenceFee," +
                 " recordCreate_userName, recordCreate_timeMillis, recordUpdate_userName, recordUpdate_timeMillis)" +
                 " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
-                .run(licenceID, dateTimeFns.dateStringToInteger(reqBody.ticketType_eventDateString[ticketTypeIndex]), ticketType, (reqBody.ticketType_distributorLocationID[ticketTypeIndex] === ""
+                .run(licenceID, ticketTypeIndex, ticketType, (reqBody.ticketType_distributorLocationID[ticketTypeIndex] === ""
                 ? null
                 : reqBody.ticketType_distributorLocationID[ticketTypeIndex]), (reqBody.ticketType_manufacturerLocationID[ticketTypeIndex] === ""
                 ? null

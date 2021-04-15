@@ -100,14 +100,14 @@ export const createLicence = (reqBody: LotteryLicenceForm, reqSession: expressSe
   if (typeof (reqBody.ticketType_ticketType) === "string") {
 
     db.prepare("insert into LotteryLicenceTicketTypes (" +
-      "licenceID, eventDate, ticketType," +
+      "licenceID, ticketTypeIndex, ticketType," +
       " distributorLocationID, manufacturerLocationID," +
       " unitCount, licenceFee," +
       " recordCreate_userName, recordCreate_timeMillis, recordUpdate_userName, recordUpdate_timeMillis)" +
       " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
       .run(
         licenceID,
-        dateTimeFns.dateStringToInteger(reqBody.ticketType_eventDateString as string),
+        0,
         reqBody.ticketType_ticketType,
         (reqBody.ticketType_distributorLocationID === "" ? null : reqBody.ticketType_distributorLocationID),
         (reqBody.ticketType_manufacturerLocationID === "" ? null : reqBody.ticketType_manufacturerLocationID),
@@ -124,14 +124,14 @@ export const createLicence = (reqBody: LotteryLicenceForm, reqSession: expressSe
     reqBody.ticketType_ticketType.forEach((ticketType: string, ticketTypeIndex: number) => {
 
       db.prepare("insert into LotteryLicenceTicketTypes (" +
-        "licenceID, eventDate, ticketType," +
+        "licenceID, ticketTypeIndex, ticketType," +
         " distributorLocationID, manufacturerLocationID," +
         " unitCount, licenceFee," +
         " recordCreate_userName, recordCreate_timeMillis, recordUpdate_userName, recordUpdate_timeMillis)" +
         " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
         .run(
           licenceID,
-          dateTimeFns.dateStringToInteger(reqBody.ticketType_eventDateString[ticketTypeIndex]),
+          ticketTypeIndex,
           ticketType,
 
           (reqBody.ticketType_distributorLocationID[ticketTypeIndex] === ""

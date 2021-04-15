@@ -197,7 +197,6 @@ export const initLicencesDB = () => {
      * Licences
      */
 
-
     licencesDB.prepare("create table if not exists LotteryLicences (" +
 
       "licenceID integer primary key autoincrement," +
@@ -319,7 +318,8 @@ export const initLicencesDB = () => {
     licencesDB.prepare("create table if not exists LotteryLicenceTicketTypes (" +
 
       "licenceID integer not null," +
-      " eventDate integer not null," +
+      " ticketTypeIndex integer not null," +
+
       " ticketType varchar(5) not null," +
 
       " distributorLocationID integer," +
@@ -335,9 +335,9 @@ export const initLicencesDB = () => {
       " recordDelete_userName varchar(30)," +
       " recordDelete_timeMillis integer," +
 
-      " primary key (licenceID, eventDate, ticketType)," +
+      " primary key (licenceID, ticketTypeIndex)," +
 
-      " foreign key (licenceID, eventDate) references LotteryEvents (licenceID, eventDate)," +
+      " foreign key (licenceID) references LotteryLicences (licenceID)," +
       " foreign key (distributorLocationID) references Locations (locationID)," +
       " foreign key (manufacturerLocationID) references Locations (locationID)" +
 

@@ -905,19 +905,6 @@ declare const llm: llmGlobal;
     }
   }
 
-  const getEventDateStrings = () => {
-
-    const eventDateStrings: string[] = [];
-
-    const inputEles = document.getElementsByClassName("input--eventDateString");
-
-    for (const inputEle of inputEles) {
-      eventDateStrings.push((inputEle as HTMLInputElement).value);
-    }
-
-    return eventDateStrings.sort();
-  };
-
 
   /*
    * TICKET TYPES
@@ -926,6 +913,158 @@ declare const llm: llmGlobal;
   const ticketTypesPanelEle = document.getElementById("is-ticket-types-panel");
 
   if (ticketTypesPanelEle) {
+
+    const logTableTbodyEle = document.getElementById("ticketTypesTabPanel--log").getElementsByTagName("tbody")[0];
+
+    const summaryTableFn_renderTable = () => {
+
+    };
+
+
+    const logTableFn_addTr = (obj: {
+      ticketType: string;
+      unitCount: number;
+      licenceFee: number;
+      prizesPerDeal: number;
+      valuePerDeal: number;
+    }) => {
+
+      const ticketType = obj.ticketType;
+
+      const trEle = document.createElement("tr");
+      trEle.setAttribute("data-ticket-type", ticketType);
+
+      trEle.insertAdjacentHTML("beforeend",
+        "<td>(New Record)</td>");
+
+      trEle.insertAdjacentHTML("beforeend", "<td>" +
+        "<input name=\"ticketType_ticketType\" type=\"hidden\" value=\"" + cityssm.escapeHTML(ticketType) + "\" />" +
+        "<span>" + cityssm.escapeHTML(ticketType) + "</span>" +
+        "</td>");
+
+      // Unit count
+
+      const unitCount = obj.unitCount;
+
+      trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right\">" +
+        "<input name=\"ticketType_unitCount\" type=\"hidden\" value=\"" + unitCount.toString() + "\" />" +
+        "<span>" + unitCount.toString() + "</span>" +
+        "</td>");
+
+      // Value per deal
+
+      const valuePerDeal = obj.valuePerDeal;
+      const totalValuePerDeal = (valuePerDeal * unitCount).toFixed(2);
+
+      trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right is-nowrap\">" +
+        "<input class=\"is-total-value-per-deal\" type=\"hidden\" value=\"" + totalValuePerDeal.toString() + "\" />" +
+        "<span data-tooltip=\"$" + valuePerDeal.toFixed(2) + " value per deal\">$ " + totalValuePerDeal + "</span>" +
+        "</td>");
+
+      // Prizes per deal
+
+      const prizesPerDeal = obj.prizesPerDeal;
+      const totalPrizesPerDeal = (prizesPerDeal * unitCount).toFixed(2);
+
+      trEle.insertAdjacentHTML("beforeend",
+        "<td class=\"has-text-right is-nowrap\">" +
+        "<input class=\"is-total-prizes-per-deal\" type=\"hidden\" value=\"" + totalPrizesPerDeal.toString() + "\" />" +
+        "<span data-tooltip=\"$" + prizesPerDeal.toFixed(2) + " prizes per deal\">" +
+        "$" + totalPrizesPerDeal +
+        "</span>" +
+        "</td>");
+
+      // Delete
+
+      trEle.insertAdjacentHTML("beforeend", "<td class=\"is-hidden-print\">" +
+        "<button class=\"button is-small is-danger is-delete-ticket-type-button\"" +
+        " data-tooltip=\"Delete Ticket Type\" type=\"button\">" +
+        "<i class=\"fas fa-trash\" aria-hidden=\"true\"></i>" +
+        "<span class=\"sr-only\">Delete</span>" +
+        "</button>" +
+        "</td>");
+
+      trEle.getElementsByClassName("is-delete-ticket-type-button")[0]
+        .addEventListener("click", deleteTicketTypeFn_openConfirm);
+
+      // Licence fee
+
+      const licenceFee = obj.licenceFee;
+
+      trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right is-nowrap\">" +
+        "<input class=\"is-licence-fee\" name=\"ticketType_licenceFee\"" +
+        " type=\"hidden\" value=\"" + licenceFee.toString() + "\" />" +
+        "<span>$" + licenceFee.toFixed(2) + "</span>" +
+        "</td>");
+
+      // Manufacturer
+
+      trEle.insertAdjacentHTML("beforeend", "<td>" +
+        "<input name=\"ticketType_manufacturerLocationID\" type=\"hidden\" value=\"\" />" +
+        "<span><span class=\"has-text-grey\">(Not Set)</span><span>" +
+        "</td>");
+
+      trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right is-hidden-print\">" +
+        "<button class=\"button is-small is-amend-ticket-type-manufacturer-button\"" +
+        " data-tooltip=\"Change Manufacturer\" type=\"button\">" +
+        "<i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i>" +
+        "<span class=\"sr-only\">Change Manufacturer</span>" +
+        "</button>" +
+        "</td>");
+
+      trEle.getElementsByClassName("is-amend-ticket-type-manufacturer-button")[0]
+        .addEventListener("click", amendManufacturerFn_openModal);
+
+      // Distributor
+
+      trEle.insertAdjacentHTML("beforeend", "<td>" +
+        "<input name=\"ticketType_distributorLocationID\" type=\"hidden\" value=\"\" />" +
+        "<span><span class=\"has-text-grey\">(Not Set)</span><span>" +
+        "</td>");
+
+      trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right is-hidden-print\">" +
+        "<button class=\"button is-small is-amend-ticket-type-distributor-button\"" +
+        " data-tooltip=\"Change Distributor\" type=\"button\">" +
+        "<i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i>" +
+        "<span class=\"sr-only\">Change Distributor</span>" +
+        "</button>" +
+        "</td>");
+
+      trEle.getElementsByClassName("is-amend-ticket-type-distributor-button")[0]
+        .addEventListener("click", amendDistributorFn_openModal);
+
+      // Insert row
+
+      logTableTbodyEle.insertAdjacentElement("afterbegin", trEle);
+
+      summaryTableFn_renderTable();
+
+      setUnsavedChangesFn();
+      setDoRefreshAfterSaveFn();
+    };
+
+
+    const tabEles = ticketTypesPanelEle.querySelectorAll(".panel-tabs a");
+
+    const tabsFn_selectTab = (clickEvent: MouseEvent) => {
+      clickEvent.preventDefault();
+
+      tabEles.forEach((tabEle) => {
+        tabEle.classList.remove("is-active");
+      });
+
+      const selectedTabEle = clickEvent.currentTarget as HTMLAnchorElement;
+      selectedTabEle.classList.add("is-active");
+
+      document.getElementById("ticketTypesTabPanel--summary").classList.add("is-hidden");
+      document.getElementById("ticketTypesTabPanel--log").classList.add("is-hidden");
+
+      document.getElementById(selectedTabEle.getAttribute("aria-controls")).classList.remove("is-hidden");
+    };
+
+    tabEles.forEach((tabEle) => {
+      tabEle.addEventListener("click", tabsFn_selectTab);
+    });
 
     const licenceTypeKeyToTicketTypes: Map<string, configTypes.ConfigTicketType[]> = new Map();
 
@@ -975,20 +1114,13 @@ declare const llm: llmGlobal;
         "<td></td>" +
         "<td></td>" +
         "<td></td>" +
-        "<td></td>" +
         "<th class=\"has-text-right is-nowrap\">$ " + prizeValueTotal.toFixed(2) + "</th>" +
-        "<td class=\"is-hidden-print\"></td>" +
         "<th class=\"has-text-right is-nowrap\">$ " + licenceFeeTotal.toFixed(2) + "</th>" +
-        "<td></td>" +
-        "<td class=\"is-hidden-print\"></td>" +
-        "<td></td>" +
-        "<td class=\"is-hidden-print\"></td>" +
         "</tr>";
 
       (document.getElementById("licence--totalPrizeValue") as HTMLInputElement).value = prizeValueTotal.toFixed(2);
 
     };
-
 
     const deleteTicketTypeFn_openConfirm = (buttonEvent: Event) => {
 
@@ -1033,91 +1165,6 @@ declare const llm: llmGlobal;
         "danger",
         doDeleteTicketTypeFn
       );
-    };
-
-    const amendUnitCountFn_openModal = (buttonEvent: Event) => {
-
-      const trEle = (buttonEvent.currentTarget as HTMLButtonElement).closest("tr");
-
-      const eventDateString = trEle.getAttribute("data-event-date-string");
-      const ticketType = trEle.getAttribute("data-ticket-type");
-
-      let ticketTypeObj: configTypes.ConfigTicketType;
-
-      let amendUnitCount_closeModalFn: () => void;
-
-      const amendUnitCountFn_closeAndUpdate = (formEvent: Event) => {
-
-        formEvent.preventDefault();
-
-        const unitCount = parseInt((document.getElementById("amendUnit_unitCount") as HTMLInputElement).value, 10);
-
-        const unitCountEle: HTMLInputElement = trEle.querySelector("input[name='ticketType_unitCount']");
-        unitCountEle.value = unitCount.toString();
-        (unitCountEle.nextElementSibling as HTMLSpanElement).innerText = unitCount.toString();
-
-        const totalValueEle = trEle.getElementsByClassName("is-total-value-per-deal")[0] as HTMLInputElement;
-        totalValueEle.value = (ticketTypeObj.ticketPrice * ticketTypeObj.ticketCount * unitCount).toFixed(2);
-        (totalValueEle.nextElementSibling as HTMLSpanElement).innerText =
-          "$" + (ticketTypeObj.ticketPrice * ticketTypeObj.ticketCount * unitCount).toFixed(2);
-
-        const totalPrizesEle = trEle.getElementsByClassName("is-total-prizes-per-deal")[0] as HTMLInputElement;
-        totalPrizesEle.value = (ticketTypeObj.prizesPerDeal * unitCount).toFixed(2);
-        (totalPrizesEle.nextElementSibling as HTMLSpanElement).innerText =
-          "$" + (ticketTypeObj.prizesPerDeal * unitCount).toFixed(2);
-
-        const licenceFee = (document.getElementById("amendUnit_licenceFee") as HTMLInputElement).value;
-
-        const licenceFeeEle: HTMLInputElement = trEle.querySelector("input[name='ticketType_licenceFee']");
-        licenceFeeEle.value = licenceFee;
-        (licenceFeeEle.nextElementSibling as HTMLSpanElement).innerText = "$ " + licenceFee;
-
-        amendUnitCount_closeModalFn();
-
-        ticketTypesFn_calculateTfoot();
-        setUnsavedChangesFn();
-        setDoRefreshAfterSaveFn();
-      };
-
-      const amendUnitCountFn_calculateLicenceFee = () => {
-
-        (document.getElementById("amendUnit_licenceFee") as HTMLInputElement).value =
-          (ticketTypeObj.feePerUnit *
-            parseInt((document.getElementById("amendUnit_unitCount") as HTMLInputElement).value, 10))
-            .toFixed(2);
-      };
-
-      cityssm.openHtmlModal("licence-ticketTypeUnitAmend", {
-        onshow(modalEle): void {
-
-          (document.getElementById("amendUnit_eventDateString") as HTMLInputElement).value = eventDateString;
-          (document.getElementById("amendUnit_ticketType") as HTMLInputElement).value = ticketType;
-
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-          const unitCountCurrent = (trEle.querySelector("input[name='ticketType_unitCount']") as HTMLInputElement).value;
-
-          (document.getElementById("amendUnit_unitCountCurrent") as HTMLInputElement).value = unitCountCurrent;
-
-          const unitCountEle = document.getElementById("amendUnit_unitCount") as HTMLInputElement;
-          unitCountEle.value = unitCountCurrent;
-
-          ticketTypesFn_getAll((ticketTypes: configTypes.ConfigTicketType[]) => {
-
-            ticketTypeObj = ticketTypes.find((ele) => ele.ticketType === ticketType);
-
-            unitCountEle.addEventListener("change", amendUnitCountFn_calculateLicenceFee);
-            amendUnitCountFn_calculateLicenceFee();
-
-          });
-
-          modalEle.getElementsByTagName("form")[0].addEventListener("submit", amendUnitCountFn_closeAndUpdate);
-
-        },
-        onshown(_modalEle, closeModalFn) {
-          amendUnitCount_closeModalFn = closeModalFn;
-        }
-      });
-
     };
 
     const amendDistributorFn_openModal = (buttonEvent: Event) => {
@@ -1266,7 +1313,6 @@ declare const llm: llmGlobal;
     const addTicketType_openModal = () => {
 
       let addTicketType_closeModalFn: () => void;
-      let addTicketType_eventDateStringEle: HTMLSelectElement;
       let addTicketType_ticketTypeEle: HTMLSelectElement;
       let addTicketType_unitCountEle: HTMLInputElement;
 
@@ -1274,24 +1320,13 @@ declare const llm: llmGlobal;
 
         formEvent.preventDefault();
 
-        ticketTypesFn_addTr({
-          eventDateString: (document.getElementById("ticketTypeAdd--eventDateString") as HTMLInputElement).value,
+        logTableFn_addTr({
           ticketType: (document.getElementById("ticketTypeAdd--ticketType") as HTMLInputElement).value,
           unitCount: parseInt((document.getElementById("ticketTypeAdd--unitCount") as HTMLInputElement).value, 10),
           valuePerDeal: parseFloat((document.getElementById("ticketTypeAdd--valuePerDeal") as HTMLInputElement).value),
           prizesPerDeal: parseFloat((document.getElementById("ticketTypeAdd--prizesPerDeal") as HTMLInputElement).value),
           licenceFee: parseFloat((document.getElementById("ticketTypeAdd--licenceFee") as HTMLInputElement).value)
         });
-
-        if (!isCreate) {
-
-          formEle.insertAdjacentHTML(
-            "beforeend",
-            "<input class=\"is-removed-after-save\" name=\"ticketTypeKey_toAdd\"" +
-            " type=\"hidden\"" +
-            " value=\"" + cityssm.escapeHTML((document.getElementById("ticketTypeAdd--eventDateString") as HTMLSelectElement).value + ":" + (document.getElementById("ticketTypeAdd--ticketType") as HTMLSelectElement).value) + "\" />"
-          );
-        }
 
         addTicketType_closeModalFn();
       };
@@ -1346,10 +1381,6 @@ declare const llm: llmGlobal;
 
         for (const ticketTypeObj of ticketTypes) {
 
-          if (ticketTypesPanelEle.querySelector("tr[data-event-date-string='" + addTicketType_eventDateStringEle.value + "'][data-ticket-type='" + ticketTypeObj.ticketType + "']")) {
-            continue;
-          }
-
           const optionEle = document.createElement("option");
 
           optionEle.setAttribute("data-ticket-price", ticketTypeObj.ticketPrice.toFixed(2));
@@ -1368,20 +1399,7 @@ declare const llm: llmGlobal;
         }
 
         addTicketType_refreshTicketTypeChange();
-
       };
-
-      const eventDateStrings = getEventDateStrings();
-
-      if (eventDateStrings.length === 0) {
-
-        cityssm.alertModal("No Event Dates Available",
-          "You must add at least one event date before adding ticket types to the licence.",
-          "OK",
-          "warning");
-
-        return;
-      }
 
       ticketTypesFn_getAll((ticketTypes) => {
 
@@ -1389,20 +1407,12 @@ declare const llm: llmGlobal;
 
           onshow(modalEle): void {
 
-            addTicketType_eventDateStringEle = document.getElementById("ticketTypeAdd--eventDateString") as HTMLSelectElement;
-
-            for (const eventDateString of eventDateStrings) {
-              addTicketType_eventDateStringEle.insertAdjacentHTML("beforeend", "<option>" + cityssm.escapeHTML(eventDateString) + "</option>");
-            }
-
-            addTicketType_eventDateStringEle.addEventListener("change", () => {
-              addTicketTypeFn_populateTicketTypeSelect(ticketTypes);
-            });
-
             addTicketType_ticketTypeEle = document.getElementById("ticketTypeAdd--ticketType") as HTMLSelectElement;
-            addTicketType_ticketTypeEle.addEventListener("change", addTicketType_refreshTicketTypeChange);
-
             addTicketType_unitCountEle = document.getElementById("ticketTypeAdd--unitCount") as HTMLInputElement;
+
+            addTicketTypeFn_populateTicketTypeSelect(ticketTypes);
+
+            addTicketType_ticketTypeEle.addEventListener("change", addTicketType_refreshTicketTypeChange);
             addTicketType_unitCountEle.addEventListener("change", addTicketTypeFn_refreshUnitCountChange);
 
             modalEle.getElementsByTagName("form")[0].addEventListener("submit", addTicketTypeFn_addTicketType);
@@ -1417,155 +1427,9 @@ declare const llm: llmGlobal;
 
     };
 
-    const ticketTypesFn_addTr = (obj: {
-      eventDateString: string;
-      ticketType: string;
-      unitCount: number;
-      licenceFee: number;
-      prizesPerDeal: number;
-      valuePerDeal: number;
-    }) => {
-
-      const ticketType = obj.ticketType;
-
-      const trEle = document.createElement("tr");
-      trEle.setAttribute("data-ticket-type", ticketType);
-      trEle.setAttribute("data-event-date-string", obj.eventDateString);
-
-      trEle.insertAdjacentHTML("beforeend", "<td>" +
-        "<input name=\"ticketType_eventDateString\" type=\"hidden\" value=\"" + cityssm.escapeHTML(obj.eventDateString) + "\" />" +
-        "<span>" + cityssm.escapeHTML(obj.eventDateString) + "</span>" +
-        "</td>");
-
-      trEle.insertAdjacentHTML("beforeend", "<td>" +
-        "<input name=\"ticketType_ticketType\" type=\"hidden\" value=\"" + cityssm.escapeHTML(ticketType) + "\" />" +
-        "<span>" + cityssm.escapeHTML(ticketType) + "</span>" +
-        "</td>");
-
-      // Unit count
-
-      const unitCount = obj.unitCount;
-
-      trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right\">" +
-        "<input name=\"ticketType_unitCount\" type=\"hidden\" value=\"" + unitCount.toString() + "\" />" +
-        "<span>" + unitCount.toString() + "</span>" +
-        "</td>");
-
-      // Value per deal
-
-      const valuePerDeal = obj.valuePerDeal;
-      const totalValuePerDeal = (valuePerDeal * unitCount).toFixed(2);
-
-      trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right is-nowrap\">" +
-        "<input class=\"is-total-value-per-deal\" type=\"hidden\" value=\"" + totalValuePerDeal.toString() + "\" />" +
-        "<span data-tooltip=\"$" + valuePerDeal.toFixed(2) + " value per deal\">$ " + totalValuePerDeal + "</span>" +
-        "</td>");
-
-      // Prizes per deal
-
-      const prizesPerDeal = obj.prizesPerDeal;
-      const totalPrizesPerDeal = (prizesPerDeal * unitCount).toFixed(2);
-
-      trEle.insertAdjacentHTML("beforeend",
-        "<td class=\"has-text-right is-nowrap\">" +
-        "<input class=\"is-total-prizes-per-deal\" type=\"hidden\" value=\"" + totalPrizesPerDeal.toString() + "\" />" +
-        "<span data-tooltip=\"$" + prizesPerDeal.toFixed(2) + " prizes per deal\">" +
-        "$" + totalPrizesPerDeal +
-        "</span>" +
-        "</td>");
-
-      // Amend / delete
-
-      trEle.insertAdjacentHTML("beforeend", "<td class=\"is-hidden-print\">" +
-        "<div class=\"field has-addons\">" +
-        ("<div class=\"control\">" +
-          "<button class=\"button is-small is-amend-ticket-type-unit-count-button\"" +
-          " data-tooltip=\"Amend Units\" type=\"button\">" +
-          "Amend" +
-          "</button>" +
-          "</div>") +
-        ("<div class=\"control\">" +
-          "<button class=\"button is-small is-danger is-delete-ticket-type-button\"" +
-          " data-tooltip=\"Delete Ticket Type\" type=\"button\">" +
-          "<i class=\"fas fa-trash\" aria-hidden=\"true\"></i>" +
-          "<span class=\"sr-only\">Delete</span>" +
-          "</button>" +
-          "</div>") +
-        "</div>" +
-        "</td>");
-
-      trEle.getElementsByClassName("is-amend-ticket-type-unit-count-button")[0]
-        .addEventListener("click", amendUnitCountFn_openModal);
-
-      trEle.getElementsByClassName("is-delete-ticket-type-button")[0]
-        .addEventListener("click", deleteTicketTypeFn_openConfirm);
-
-      // Licence fee
-
-      const licenceFee = obj.licenceFee;
-
-      trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right is-nowrap\">" +
-        "<input class=\"is-licence-fee\" name=\"ticketType_licenceFee\"" +
-        " type=\"hidden\" value=\"" + licenceFee.toString() + "\" />" +
-        "<span>$" + licenceFee.toFixed(2) + "</span>" +
-        "</td>");
-
-      // Manufacturer
-
-      trEle.insertAdjacentHTML("beforeend", "<td>" +
-        "<input name=\"ticketType_manufacturerLocationID\" type=\"hidden\" value=\"\" />" +
-        "<span><span class=\"has-text-grey\">(Not Set)</span><span>" +
-        "</td>");
-
-      trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right is-hidden-print\">" +
-        "<button class=\"button is-small is-amend-ticket-type-manufacturer-button\"" +
-        " data-tooltip=\"Change Manufacturer\" type=\"button\">" +
-        "<i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i>" +
-        "<span class=\"sr-only\">Change Manufacturer</span>" +
-        "</button>" +
-        "</td>");
-
-      trEle.getElementsByClassName("is-amend-ticket-type-manufacturer-button")[0]
-        .addEventListener("click", amendManufacturerFn_openModal);
-
-      // Distributor
-
-      trEle.insertAdjacentHTML("beforeend", "<td>" +
-        "<input name=\"ticketType_distributorLocationID\" type=\"hidden\" value=\"\" />" +
-        "<span><span class=\"has-text-grey\">(Not Set)</span><span>" +
-        "</td>");
-
-      trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right is-hidden-print\">" +
-        "<button class=\"button is-small is-amend-ticket-type-distributor-button\"" +
-        " data-tooltip=\"Change Distributor\" type=\"button\">" +
-        "<i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i>" +
-        "<span class=\"sr-only\">Change Distributor</span>" +
-        "</button>" +
-        "</td>");
-
-      trEle.getElementsByClassName("is-amend-ticket-type-distributor-button")[0]
-        .addEventListener("click", amendDistributorFn_openModal);
-
-      // Insert row
-
-      ticketTypesPanelEle.getElementsByTagName("tbody")[0].insertAdjacentElement("afterbegin", trEle);
-
-      ticketTypesFn_calculateTfoot();
-
-      setUnsavedChangesFn();
-      setDoRefreshAfterSaveFn();
-    };
-
-
     ticketTypesFn_calculateTfoot();
 
     document.getElementById("is-add-ticket-type-button").addEventListener("click", addTicketType_openModal);
-
-    const amendUnitButtonEles = ticketTypesPanelEle.getElementsByClassName("is-amend-ticket-type-unit-count-button");
-
-    for (const amendUnitButtonEle of amendUnitButtonEles) {
-      amendUnitButtonEle.addEventListener("click", amendUnitCountFn_openModal);
-    }
 
     const deleteButtonEles = ticketTypesPanelEle.getElementsByClassName("is-delete-ticket-type-button");
 
