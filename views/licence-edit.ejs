@@ -520,76 +520,93 @@
           </div>
         </div>
         <div class="panel-tabs">
-          <a class="is-active" href="#ticketTypesTabPanel--summary" aria-controls="ticketTypesTabPanel--summary">Summary</a>
-          <a href="#ticketTypesTabPanel--log" aria-controls="ticketTypesTabPanel--log">Log</a>
+          <a href="#ticketTypesTabPanel--summary" aria-controls="ticketTypesTabPanel--summary">Summary</a>
+          <a class="is-active" href="#ticketTypesTabPanel--log" aria-controls="ticketTypesTabPanel--log">Log</a>
         </div>
-        <table class="table is-fullwidth" id="ticketTypesTabPanel--summary">
+        <table class="table is-fullwidth is-hidden" id="ticketTypesTabPanel--summary">
           <thead>
             <tr>
               <th>Type</th>
               <th class="has-text-right">Total Units</th>
-              <th class="has-text-right">Value</th>
-              <th class="has-text-right">Prizes</th>
-              <th class="has-text-right">Licence Fee</th>
+              <th class="has-text-right">Total Value</th>
+              <th class="has-text-right">Total Prizes</th>
+              <th class="has-text-right">Total Licence Fee</th>
             </tr>
           </thead>
           <tbody></tbody>
           <tfoot></tfoot>
         </table>
-        <table class="table is-fullwidth is-hidden" id="ticketTypesTabPanel--log">
+        <table class="table is-fullwidth" id="ticketTypesTabPanel--log">
           <thead>
             <th>Amend Date</th>
             <th>Type</th>
             <th class="has-text-right">Units</th>
             <th class="has-text-right">Value</th>
             <th class="has-text-right">Prizes</th>
-            <th class="is-hidden-print"></th>
             <th class="has-text-right">Licence Fee</th>
-            <th colspan="2">Manufacturer</th>
-            <th colspan="2">Distributor</th>
+            <th>Manufacturer / Distributor</th>
+            <th class="is-hidden-print"></th>
           </thead>
           <tbody>
             <%
               const currentDate = dateTimeFns.dateToInteger(new Date());
               for (const licenceTicketTypeObj of licence.licenceTicketTypes) {
-
+            %>
+              <%
                 const ticketType = (licenceType && licenceType.ticketTypes
                   ? licenceType.ticketTypes.find(ele => ele.ticketType === licenceTicketTypeObj.ticketType)
                   : null);
-            %>
-                <tr data-ticket-type-index="<%= licenceTicketTypeObj.ticketTypeIndex %>" data-ticket-type="<%= licenceTicketTypeObj.ticketType %>">
-                  <td>
-                    <span><%= licenceTicketTypeObj.ticketType %></span>
-                  </td>
-                  <td class="has-text-right">
-                    <span><%= licenceTicketTypeObj.unitCount %></span>
-                  </td>
-                  <td class="has-text-right is-nowrap">
-                    <%
-                      let ticketValue = (ticketType ? (ticketType.ticketPrice * ticketType.ticketCount) : 0);
-                      let totalValue = (ticketValue * licenceTicketTypeObj.unitCount).toFixed(2);
-                    %>
-                    <span data-tooltip="$<%= ticketValue %> value per deal">$ <%= totalValue %></span>
-                  </td>
-                  <td class="has-text-right is-nowrap">
-                    <%
-                      let prizesPerDeal = (ticketType ? ticketType.prizesPerDeal : 0);
-                      let totalPrizesPerDeal = (prizesPerDeal * licenceTicketTypeObj.unitCount).toFixed(2);
-                    %>
-                    <span data-tooltip="$<%= prizesPerDeal.toFixed(2) %> prizes per deal">$ <%= totalPrizesPerDeal %></span>
-                  </td>
-                  <td class="is-hidden-print">
-                    <% if (licenceTicketTypeObj.eventDate >= currentDate) { %>
-                      <button class="button is-small is-danger is-delete-ticket-type-button" data-tooltip="Delete Ticket Type" type="button">
-                        <i class="fas fa-trash" aria-hidden="true"></i>
-                        <span class="sr-only">Delete</span>
-                      </button>
+              %>
+              <tr data-ticket-type-index="<%= licenceTicketTypeObj.ticketTypeIndex %>"
+                data-ticket-type="<%= licenceTicketTypeObj.ticketType %>"
+                data-unit-count="<%= licenceTicketTypeObj.unitCount %>"
+                data-licence-fee="<%= licenceTicketTypeObj.licenceFee %>"
+                data-prizes-per-deal="<%= ticketType.prizesPerDeal %>">
+                <td>
+                  <span><%= licenceTicketTypeObj.amendmentDateString %></span>
+                </td>
+                <td>
+                  <span><%= licenceTicketTypeObj.ticketType %></span>
+                </td>
+                <td class="has-text-right">
+                  <span><%= licenceTicketTypeObj.unitCount %></span>
+                </td>
+                <td class="has-text-right is-nowrap">
+                  <%
+                    let ticketValue = (ticketType ? (ticketType.ticketPrice * ticketType.ticketCount) : 0);
+                    let totalValue = (ticketValue * licenceTicketTypeObj.unitCount).toFixed(2);
+                  %>
+                  <span data-tooltip="$<%= ticketValue.toFixed(2) %> value per deal">$<%= totalValue %></span>
+                </td>
+                <td class="has-text-right is-nowrap">
+                  <%
+                    let prizesPerDeal = (ticketType ? ticketType.prizesPerDeal : 0);
+                    let totalPrizesPerDeal = (prizesPerDeal * licenceTicketTypeObj.unitCount).toFixed(2);
+                  %>
+                  <span data-tooltip="$<%= prizesPerDeal.toFixed(2) %> prizes per deal">$<%= totalPrizesPerDeal %></span>
+                </td>
+                <td class="has-text-right is-nowrap">
+                  <span><%= "$" + licenceTicketTypeObj.licenceFee.toFixed(2) %></span>
+                </td>
+                <td class="is-size-7">
+                  <% if (licenceTicketTypeObj.manufacturerLocationID) { %>
+                    <%= licenceTicketTypeObj.manufacturerLocationDisplayName %>
+                  <% } else { %>
+                    <span class="has-text-grey">(No Manufacturer Set)</span>
+                  <% } %><br />
+                  <% if (licenceTicketTypeObj.distributorLocationID) { %>
+                    <%= licenceTicketTypeObj.distributorLocationDisplayName %>
+                    <% } else { %>
+                      <span class="has-text-grey">(No Distributor Set)</span>
                     <% } %>
-                  </td>
-                  <td class="has-text-right is-nowrap">
-                    <span><%= "$ " + licenceTicketTypeObj.licenceFee.toFixed(2) %></span>
-                  </td>
-                </tr>
+                </td>
+                <td class="is-hidden-print">
+                  <button class="button is-small is-danger has-tooltip-left is-delete-ticket-type-button" data-tooltip="Delete Ticket Type" type="button">
+                    <i class="fas fa-trash" aria-hidden="true"></i>
+                    <span class="sr-only">Delete</span>
+                  </button>
+                </td>
+              </tr>
             <% } %>
           </tbody>
         </table>

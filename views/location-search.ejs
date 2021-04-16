@@ -17,6 +17,15 @@
       Find a Location
     </h1>
 
+    <% if (user.userProperties.canCreate) { %>
+      <div class="fixed-container is-fixed-bottom-right mx-4 my-4 has-text-right is-hidden-print">
+        <a class="button is-circle is-primary has-tooltip-left" data-tooltip="Create a New Location" href="<%= urlPrefix %>/locations/new">
+          <i class="fas fa-plus" aria-hidden="true"></i>
+          <span class="sr-only">Create a New Location</span>
+        </a>
+      </div>
+    <% } %>
+
     <div class="box">
       <form id="form--searchFilters">
         <input id="filter--limit" name="limit" type="hidden" value="50" />

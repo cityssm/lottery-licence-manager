@@ -320,6 +320,7 @@ export const initLicencesDB = () => {
       "licenceID integer not null," +
       " ticketTypeIndex integer not null," +
 
+      " amendmentDate integer not null," +
       " ticketType varchar(5) not null," +
 
       " distributorLocationID integer," +

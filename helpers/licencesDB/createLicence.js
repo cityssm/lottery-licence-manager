@@ -10,7 +10,9 @@ const createEvent_1 = require("./createEvent");
 const licencesDB_1 = require("../licencesDB");
 const createLicence = (reqBody, reqSession) => {
     const db = sqlite(databasePaths_1.licencesDB);
-    const nowMillis = Date.now();
+    const nowDate = new Date();
+    const nowMillis = nowDate.getTime();
+    const nowDateInt = dateTimeFns.dateToInteger(nowDate);
     let externalLicenceNumberInteger = -1;
     try {
         externalLicenceNumberInteger = parseInt(reqBody.externalLicenceNumber, 10);
@@ -53,22 +55,26 @@ const createLicence = (reqBody, reqSession) => {
     }
     if (typeof (reqBody.ticketType_ticketType) === "string") {
         db.prepare("insert into LotteryLicenceTicketTypes (" +
-            "licenceID, ticketTypeIndex, ticketType," +
+            "licenceID, ticketTypeIndex," +
+            " amendmentDate," +
+            " ticketType," +
             " distributorLocationID, manufacturerLocationID," +
             " unitCount, licenceFee," +
             " recordCreate_userName, recordCreate_timeMillis, recordUpdate_userName, recordUpdate_timeMillis)" +
-            " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
-            .run(licenceID, 0, reqBody.ticketType_ticketType, (reqBody.ticketType_distributorLocationID === "" ? null : reqBody.ticketType_distributorLocationID), (reqBody.ticketType_manufacturerLocationID === "" ? null : reqBody.ticketType_manufacturerLocationID), reqBody.ticketType_unitCount, reqBody.ticketType_licenceFee, reqSession.user.userName, nowMillis, reqSession.user.userName, nowMillis);
+            " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
+            .run(licenceID, 0, nowDateInt, reqBody.ticketType_ticketType, (reqBody.ticketType_distributorLocationID === "" ? null : reqBody.ticketType_distributorLocationID), (reqBody.ticketType_manufacturerLocationID === "" ? null : reqBody.ticketType_manufacturerLocationID), reqBody.ticketType_unitCount, reqBody.ticketType_licenceFee, reqSession.user.userName, nowMillis, reqSession.user.userName, nowMillis);
     }
     else if (typeof (reqBody.ticketType_ticketType) === "object") {
         reqBody.ticketType_ticketType.forEach((ticketType, ticketTypeIndex) => {
             db.prepare("insert into LotteryLicenceTicketTypes (" +
-                "licenceID, ticketTypeIndex, ticketType," +
+                "licenceID, ticketTypeIndex," +
+                " amendmentDate," +
+                " ticketType," +
                 " distributorLocationID, manufacturerLocationID," +
                 " unitCount, licenceFee," +
                 " recordCreate_userName, recordCreate_timeMillis, recordUpdate_userName, recordUpdate_timeMillis)" +
-                " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
-                .run(licenceID, ticketTypeIndex, ticketType, (reqBody.ticketType_distributorLocationID[ticketTypeIndex] === ""
+                " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
+                .run(licenceID, ticketTypeIndex, nowDateInt, ticketType, (reqBody.ticketType_distributorLocationID[ticketTypeIndex] === ""
                 ? null
                 : reqBody.ticketType_distributorLocationID[ticketTypeIndex]), (reqBody.ticketType_manufacturerLocationID[ticketTypeIndex] === ""
                 ? null

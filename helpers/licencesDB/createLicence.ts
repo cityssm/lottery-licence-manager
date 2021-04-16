@@ -17,7 +17,9 @@ export const createLicence = (reqBody: LotteryLicenceForm, reqSession: expressSe
 
   const db = sqlite(dbPath);
 
-  const nowMillis = Date.now();
+  const nowDate = new Date();
+  const nowMillis = nowDate.getTime();
+  const nowDateInt = dateTimeFns.dateToInteger(nowDate);
 
   let externalLicenceNumberInteger = -1;
 
@@ -100,14 +102,17 @@ export const createLicence = (reqBody: LotteryLicenceForm, reqSession: expressSe
   if (typeof (reqBody.ticketType_ticketType) === "string") {
 
     db.prepare("insert into LotteryLicenceTicketTypes (" +
-      "licenceID, ticketTypeIndex, ticketType," +
+      "licenceID, ticketTypeIndex," +
+      " amendmentDate," +
+      " ticketType," +
       " distributorLocationID, manufacturerLocationID," +
       " unitCount, licenceFee," +
       " recordCreate_userName, recordCreate_timeMillis, recordUpdate_userName, recordUpdate_timeMillis)" +
-      " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
+      " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
       .run(
         licenceID,
         0,
+        nowDateInt,
         reqBody.ticketType_ticketType,
         (reqBody.ticketType_distributorLocationID === "" ? null : reqBody.ticketType_distributorLocationID),
         (reqBody.ticketType_manufacturerLocationID === "" ? null : reqBody.ticketType_manufacturerLocationID),
@@ -124,14 +129,17 @@ export const createLicence = (reqBody: LotteryLicenceForm, reqSession: expressSe
     reqBody.ticketType_ticketType.forEach((ticketType: string, ticketTypeIndex: number) => {
 
       db.prepare("insert into LotteryLicenceTicketTypes (" +
-        "licenceID, ticketTypeIndex, ticketType," +
+        "licenceID, ticketTypeIndex," +
+        " amendmentDate," +
+        " ticketType," +
         " distributorLocationID, manufacturerLocationID," +
         " unitCount, licenceFee," +
         " recordCreate_userName, recordCreate_timeMillis, recordUpdate_userName, recordUpdate_timeMillis)" +
-        " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
+        " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
         .run(
           licenceID,
           ticketTypeIndex,
+          nowDateInt,
           ticketType,
 
           (reqBody.ticketType_distributorLocationID[ticketTypeIndex] === ""

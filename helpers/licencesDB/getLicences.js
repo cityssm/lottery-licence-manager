@@ -67,24 +67,33 @@ const getLicences = (reqBodyOrParamsObj, reqSession, includeOptions) => {
     }
     let count = 0;
     if (includeOptions.limit !== -1) {
-        count = db.prepare("select ifnull(count(*), 0) as cnt" +
+        count = db.prepare("select ifnull(count(*), 0)" +
             " from LotteryLicences l" +
             " left join Organizations o on l.organizationID = o.organizationID" +
             " left join Locations lo on l.locationID = lo.locationID" +
             sqlWhereClause)
-            .get(sqlParams)
-            .cnt;
+            .pluck()
+            .get(sqlParams);
     }
-    let sql = "select l.licenceID, l.organizationID," +
+    let sql = "select" +
+        " 'licence' as recordType," +
+        " l.licenceID, l.organizationID," +
         (includeOptions.includeOrganization
             ? " o.organizationName,"
             : "") +
-        " l.applicationDate, l.licenceTypeKey," +
-        " l.startDate, l.startTime, l.endDate, l.endTime," +
+        " l.applicationDate, userFn_dateIntegerToString(l.applicationDate) as applicationDateString," +
+        " l.licenceTypeKey," +
+        " l.startDate, userFn_dateIntegerToString(l.startDate) as startDateString," +
+        " l.startTime, userFn_timeIntegerToString(l.startTime) as startTimeString," +
+        " l.endDate, userFn_dateIntegerToString(l.endDate) as endDateString," +
+        " l.endTime, userFn_timeIntegerToString(l.endTime) as endTimeString," +
         " l.locationID, lo.locationName, lo.locationAddress1," +
+        " iif(lo.locationName = '', lo.locationAddress1, lo.locationName) as locationDisplayName," +
         " l.municipality, l.licenceDetails, l.termsConditions," +
-        " l.externalLicenceNumber, l.issueDate," +
-        " l.recordCreate_userName, l.recordCreate_timeMillis, l.recordUpdate_userName, l.recordUpdate_timeMillis" +
+        " l.externalLicenceNumber," +
+        " l.issueDate, userFn_dateIntegerToString(l.issueDate) as issueDateString," +
+        " l.recordCreate_userName, l.recordCreate_timeMillis," +
+        " l.recordUpdate_userName, l.recordUpdate_timeMillis" +
         " from LotteryLicences l" +
         " left join Locations lo on l.locationID = lo.locationID" +
         (includeOptions.includeOrganization
@@ -96,19 +105,12 @@ const getLicences = (reqBodyOrParamsObj, reqSession, includeOptions) => {
         sql += " limit " + includeOptions.limit.toString() +
             " offset " + (includeOptions.offset || 0).toString();
     }
+    db.function("userFn_dateIntegerToString", dateTimeFns.dateIntegerToString);
+    db.function("userFn_timeIntegerToString", dateTimeFns.timeIntegerToString);
     const rows = db.prepare(sql)
         .all(sqlParams);
     db.close();
     for (const ele of rows) {
-        ele.recordType = "licence";
-        ele.applicationDateString = dateTimeFns.dateIntegerToString(ele.applicationDate || 0);
-        ele.startDateString = dateTimeFns.dateIntegerToString(ele.startDate || 0);
-        ele.endDateString = dateTimeFns.dateIntegerToString(ele.endDate || 0);
-        ele.startTimeString = dateTimeFns.timeIntegerToString(ele.startTime || 0);
-        ele.endTimeString = dateTimeFns.timeIntegerToString(ele.endTime || 0);
-        ele.issueDateString = dateTimeFns.dateIntegerToString(ele.issueDate || 0);
-        ele.locationDisplayName =
-            (ele.locationName === "" ? ele.locationAddress1 : ele.locationName);
         ele.canUpdate = licencesDB_1.canUpdateObject(ele, reqSession);
     }
     return {
