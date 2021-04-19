@@ -1,2 +1,1 @@
-import * as configOntario from "./config-ontario";
-export declare const config: typeof configOntario;
+export declare const config: import("../types/configTypes.js").Config;

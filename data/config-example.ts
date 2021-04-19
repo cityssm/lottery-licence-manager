@@ -1,4 +1,4 @@
-import * as configOntario from "./config-ontario";
+import { config as configOntario } from "./config-ontario.js";
 
 export const config = Object.assign({}, configOntario);
 

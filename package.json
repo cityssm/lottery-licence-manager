@@ -2,6 +2,10 @@
   "name": "lottery-licence-manager",
   "version": "0.13.0-dev",
   "type": "module",
+  "exports": "./app.js",
+  "engines": {
+    "node": ">=12"
+  },
   "scripts": {
     "preinstall": "npx npm-force-resolutions",
     "start": "cross-env NODE_ENV=production node ./bin/www",
