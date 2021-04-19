@@ -1,7 +1,7 @@
 import createError from "http-errors";
 import express from "express";
-import * as compression from "compression";
-import * as path from "path";
+import compression from "compression";
+import path from "path";
 import cookieParser from "cookie-parser";
 import csurf from "csurf";
 import rateLimit from "express-rate-limit";
