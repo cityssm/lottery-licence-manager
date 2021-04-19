@@ -1,7 +1,7 @@
-import * as sqlite from "better-sqlite3";
-import { licencesDB as dbPath } from "../../data/databasePaths";
+import sqlite from "better-sqlite3";
+import { licencesDB as dbPath } from "../../data/databasePaths.js";
 
-import { getApplicationSettingWithDB } from "./getApplicationSetting";
+import { getApplicationSettingWithDB } from "./getApplicationSetting.js";
 
 
 export const getNextExternalLicenceNumberFromRange = () => {

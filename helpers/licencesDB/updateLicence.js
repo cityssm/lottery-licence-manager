@@ -1,18 +1,15 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateLicence = exports.parseTicketTypeKey = void 0;
-const sqlite = require("better-sqlite3");
-const databasePaths_1 = require("../../data/databasePaths");
-const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
-const configFns = require("../configFns");
-const getLicence_1 = require("./getLicence");
-const addLicenceAmendment_1 = require("./addLicenceAmendment");
-const createEvent_1 = require("./createEvent");
-const deleteLicenceTicketType_1 = require("./deleteLicenceTicketType");
-const addLicenceTicketType_1 = require("./addLicenceTicketType");
-const updateLicenceTicketType_1 = require("./updateLicenceTicketType");
-const licencesDB_1 = require("../licencesDB");
-const parseTicketTypeKey = (unparsedTicketTypeKey) => {
+import sqlite from "better-sqlite3";
+import { licencesDB as dbPath } from "../../data/databasePaths.js";
+import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
+import * as configFns from "../configFns.js";
+import { getLicenceWithDB } from "./getLicence.js";
+import { addLicenceAmendmentWithDB } from "./addLicenceAmendment.js";
+import { createEventWithDB } from "./createEvent.js";
+import { deleteLicenceTicketTypeWithDB } from "./deleteLicenceTicketType.js";
+import { addLicenceTicketTypeWithDB } from "./addLicenceTicketType.js";
+import { updateLicenceTicketTypeWithDB } from "./updateLicenceTicketType.js";
+import { resetLicenceTableStats, resetEventTableStats } from "../licencesDB.js";
+export const parseTicketTypeKey = (unparsedTicketTypeKey) => {
     const eventDateString = unparsedTicketTypeKey.substring(0, 10);
     return {
         eventDate: dateTimeFns.dateStringToInteger(eventDateString),
@@ -20,11 +17,10 @@ const parseTicketTypeKey = (unparsedTicketTypeKey) => {
         ticketType: unparsedTicketTypeKey.substring(11)
     };
 };
-exports.parseTicketTypeKey = parseTicketTypeKey;
 ;
-const updateLicence = (reqBody, reqSession) => {
-    const db = sqlite(databasePaths_1.licencesDB);
-    const pastLicenceObj = getLicence_1.getLicenceWithDB(db, reqBody.licenceID, reqSession, {
+export const updateLicence = (reqBody, reqSession) => {
+    const db = sqlite(dbPath);
+    const pastLicenceObj = getLicenceWithDB(db, reqBody.licenceID, reqSession, {
         includeTicketTypes: true,
         includeFields: true,
         includeEvents: true,
@@ -91,19 +87,19 @@ const updateLicence = (reqBody, reqSession) => {
                 (pastLicenceObj.endTime !== endTime_now
                     ? `End Time: ${pastLicenceObj.endTime.toString()} -> ${endTime_now.toString()}` + "\n"
                     : "")).trim();
-            addLicenceAmendment_1.addLicenceAmendmentWithDB(db, reqBody.licenceID, "Date Update", amendment, 0, reqSession);
+            addLicenceAmendmentWithDB(db, reqBody.licenceID, "Date Update", amendment, 0, reqSession);
         }
         if (pastLicenceObj.organizationID !== parseInt(reqBody.organizationID, 10) &&
             configFns.getProperty("amendments.trackOrganizationUpdate")) {
-            addLicenceAmendment_1.addLicenceAmendmentWithDB(db, reqBody.licenceID, "Organization Change", "", 0, reqSession);
+            addLicenceAmendmentWithDB(db, reqBody.licenceID, "Organization Change", "", 0, reqSession);
         }
         if (pastLicenceObj.locationID !== parseInt(reqBody.locationID, 10) &&
             configFns.getProperty("amendments.trackLocationUpdate")) {
-            addLicenceAmendment_1.addLicenceAmendmentWithDB(db, reqBody.licenceID, "Location Change", "", 0, reqSession);
+            addLicenceAmendmentWithDB(db, reqBody.licenceID, "Location Change", "", 0, reqSession);
         }
         if (pastLicenceObj.licenceFee !== parseFloat(reqBody.licenceFee) &&
             configFns.getProperty("amendments.trackLicenceFeeUpdate")) {
-            addLicenceAmendment_1.addLicenceAmendmentWithDB(db, reqBody.licenceID, "Licence Fee Change", "$" + pastLicenceObj.licenceFee.toFixed(2) + " -> $" + parseFloat(reqBody.licenceFee).toFixed(2), 0, reqSession);
+            addLicenceAmendmentWithDB(db, reqBody.licenceID, "Licence Fee Change", "$" + pastLicenceObj.licenceFee.toFixed(2) + " -> $" + parseFloat(reqBody.licenceFee).toFixed(2), 0, reqSession);
         }
     }
     db.prepare("delete from LotteryLicenceFields" +
@@ -147,7 +143,7 @@ const updateLicence = (reqBody, reqSession) => {
     }
     if (eventDateStrings_toAdd) {
         for (const eventDate of eventDateStrings_toAdd) {
-            createEvent_1.createEventWithDB(db, reqBody.licenceID, eventDate, reqSession);
+            createEventWithDB(db, reqBody.licenceID, eventDate, reqSession);
         }
     }
     let ticketTypeKeys_toDelete;
@@ -159,15 +155,15 @@ const updateLicence = (reqBody, reqSession) => {
     }
     if (ticketTypeKeys_toDelete) {
         ticketTypeKeys_toDelete.forEach((ticketTypeKey_toDelete) => {
-            const parsedTicketTypeKey = exports.parseTicketTypeKey(ticketTypeKey_toDelete);
-            deleteLicenceTicketType_1.deleteLicenceTicketTypeWithDB(db, {
+            const parsedTicketTypeKey = parseTicketTypeKey(ticketTypeKey_toDelete);
+            deleteLicenceTicketTypeWithDB(db, {
                 licenceID: reqBody.licenceID,
                 eventDate: parsedTicketTypeKey.eventDate,
                 ticketType: parsedTicketTypeKey.ticketType
             }, reqSession);
             if (pastLicenceObj.trackUpdatesAsAmendments &&
                 configFns.getProperty("amendments.trackTicketTypeDelete")) {
-                addLicenceAmendment_1.addLicenceAmendmentWithDB(db, reqBody.licenceID, "Ticket Type Removed", "Removed " + ticketTypeKey_toDelete + ".", 0, reqSession);
+                addLicenceAmendmentWithDB(db, reqBody.licenceID, "Ticket Type Removed", "Removed " + ticketTypeKey_toDelete + ".", 0, reqSession);
             }
         });
     }
@@ -180,20 +176,20 @@ const updateLicence = (reqBody, reqSession) => {
     }
     if (ticketTypeKeys_toAdd) {
         ticketTypeKeys_toAdd.forEach((ticketTypeKey_toAdd) => {
-            const parsedTicketTypeKey = exports.parseTicketTypeKey(ticketTypeKey_toAdd);
-            addLicenceTicketType_1.addLicenceTicketTypeWithDB(db, {
+            const parsedTicketTypeKey = parseTicketTypeKey(ticketTypeKey_toAdd);
+            addLicenceTicketTypeWithDB(db, {
                 licenceID: reqBody.licenceID,
                 eventDate: parsedTicketTypeKey.eventDate,
                 ticketType: parsedTicketTypeKey.ticketType
             }, reqSession);
             if (pastLicenceObj.trackUpdatesAsAmendments &&
                 configFns.getProperty("amendments.trackTicketTypeNew")) {
-                addLicenceAmendment_1.addLicenceAmendmentWithDB(db, reqBody.licenceID, "New Ticket Type", "Added " + ticketTypeKey_toAdd + ".", 0, reqSession);
+                addLicenceAmendmentWithDB(db, reqBody.licenceID, "New Ticket Type", "Added " + ticketTypeKey_toAdd + ".", 0, reqSession);
             }
         });
     }
     if (typeof (reqBody.ticketType_ticketType) === "string") {
-        updateLicenceTicketType_1.updateLicenceTicketTypeWithDB(db, {
+        updateLicenceTicketTypeWithDB(db, {
             licenceID: reqBody.licenceID,
             eventDateString: reqBody.ticketType_eventDateString,
             ticketType: reqBody.ticketType_ticketType,
@@ -208,14 +204,14 @@ const updateLicence = (reqBody, reqSession) => {
             if (ticketTypeObj_past &&
                 configFns.getProperty("amendments.trackTicketTypeUpdate") &&
                 ticketTypeObj_past.unitCount !== parseInt(reqBody.ticketType_unitCount, 10)) {
-                addLicenceAmendment_1.addLicenceAmendmentWithDB(db, reqBody.licenceID, "Ticket Type Change", (reqBody.ticketType_eventDateString + ":" + reqBody.ticketType_ticketType + " Units: " +
+                addLicenceAmendmentWithDB(db, reqBody.licenceID, "Ticket Type Change", (reqBody.ticketType_eventDateString + ":" + reqBody.ticketType_ticketType + " Units: " +
                     ticketTypeObj_past.unitCount.toString() + " -> " + reqBody.ticketType_unitCount.toString()), 0, reqSession);
             }
         }
     }
     else if (typeof (reqBody.ticketType_ticketType) === "object") {
         reqBody.ticketType_ticketType.forEach((ticketType, ticketTypeIndex) => {
-            updateLicenceTicketType_1.updateLicenceTicketTypeWithDB(db, {
+            updateLicenceTicketTypeWithDB(db, {
                 licenceID: reqBody.licenceID,
                 eventDateString: reqBody.ticketType_eventDateString[ticketTypeIndex],
                 ticketType: reqBody.ticketType_ticketType[ticketTypeIndex],
@@ -229,15 +225,14 @@ const updateLicence = (reqBody, reqSession) => {
                 if (ticketTypeObj_past &&
                     configFns.getProperty("amendments.trackTicketTypeUpdate") &&
                     ticketTypeObj_past.unitCount !== parseInt(reqBody.ticketType_unitCount[ticketTypeIndex], 10)) {
-                    addLicenceAmendment_1.addLicenceAmendmentWithDB(db, reqBody.licenceID, "Ticket Type Change", (reqBody.ticketType_eventDateString[ticketTypeIndex] + ":" + ticketType + " Units: " +
+                    addLicenceAmendmentWithDB(db, reqBody.licenceID, "Ticket Type Change", (reqBody.ticketType_eventDateString[ticketTypeIndex] + ":" + ticketType + " Units: " +
                         ticketTypeObj_past.unitCount.toString() + " -> " + reqBody.ticketType_unitCount[ticketTypeIndex]), 0, reqSession);
                 }
             }
         });
     }
     db.close();
-    licencesDB_1.resetLicenceTableStats();
-    licencesDB_1.resetEventTableStats();
+    resetLicenceTableStats();
+    resetEventTableStats();
     return changeCount > 0;
 };
-exports.updateLicence = updateLicence;

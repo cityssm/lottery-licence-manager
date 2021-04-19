@@ -1,16 +1,14 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const assert = require("assert");
-const puppeteer = require("puppeteer");
-const http = require("http");
-const app = require("../app");
-const configFns = require("../helpers/configFns");
-const getLicences_1 = require("../helpers/licencesDB/getLicences");
-const getAllUsers_1 = require("../helpers/usersDB/getAllUsers");
-const createUser_1 = require("../helpers/usersDB/createUser");
-const inactivateUser_1 = require("../helpers/usersDB/inactivateUser");
-const updateUserProperty_1 = require("../helpers/usersDB/updateUserProperty");
-const _globals_1 = require("./_globals");
+import * as assert from "assert";
+import puppeteer from "puppeteer";
+import * as http from "http";
+import { app } from "../app.js";
+import * as configFns from "../helpers/configFns.js";
+import { getLicences } from "../helpers/licencesDB/getLicences.js";
+import { getAllUsers } from "../helpers/usersDB/getAllUsers.js";
+import { createUser } from "../helpers/usersDB/createUser.js";
+import { inactivateUser } from "../helpers/usersDB/inactivateUser.js";
+import { updateUserProperty } from "../helpers/usersDB/updateUserProperty.js";
+import { fakeViewOnlySession, userName } from "./_globals.js";
 describe("lottery-licence-manager", () => {
     const httpServer = http.createServer(app);
     const portNumber = 54333;
@@ -21,30 +19,30 @@ describe("lottery-licence-manager", () => {
         httpServer.on("listening", () => {
             serverStarted = true;
         });
-        inactivateUser_1.inactivateUser(_globals_1.userName);
-        password = await createUser_1.createUser({
-            userName: _globals_1.userName,
+        inactivateUser(userName);
+        password = await createUser({
+            userName,
             firstName: "Test",
             lastName: "User"
         });
-        updateUserProperty_1.updateUserProperty({
-            userName: _globals_1.userName,
+        updateUserProperty({
+            userName,
             propertyName: "isAdmin",
             propertyValue: "false"
         });
-        updateUserProperty_1.updateUserProperty({
-            userName: _globals_1.userName,
+        updateUserProperty({
+            userName,
             propertyName: "canUpdate",
             propertyValue: "true"
         });
-        updateUserProperty_1.updateUserProperty({
-            userName: _globals_1.userName,
+        updateUserProperty({
+            userName,
             propertyName: "canCreate",
             propertyValue: "true"
         });
     });
     after(() => {
-        inactivateUser_1.inactivateUser(_globals_1.userName);
+        inactivateUser(userName);
         try {
             httpServer.close();
         }
@@ -56,10 +54,10 @@ describe("lottery-licence-manager", () => {
     });
     describe("databases", () => {
         it("Ensure licences.db exists", () => {
-            assert.ok(getLicences_1.getLicences({}, _globals_1.fakeViewOnlySession, { includeOrganization: false, limit: 1, offset: 0 }));
+            assert.ok(getLicences({}, fakeViewOnlySession, { includeOrganization: false, limit: 1, offset: 0 }));
         });
         it("Ensure users.db exists", () => {
-            assert.ok(getAllUsers_1.getAllUsers());
+            assert.ok(getAllUsers());
         });
     });
     const appURL = "http://localhost:" + portNumber.toString() + configFns.getProperty("reverseProxy.urlPrefix");
@@ -157,7 +155,7 @@ describe("lottery-licence-manager", () => {
                     const page = await browser.newPage();
                     await page.goto(appURL);
                     await page.focus("#login--userName");
-                    await page.type("#login--userName", _globals_1.userName);
+                    await page.type("#login--userName", userName);
                     await page.focus("#login--password");
                     await page.type("#login--password", password);
                     const loginFormEle = await page.$("#form--login");

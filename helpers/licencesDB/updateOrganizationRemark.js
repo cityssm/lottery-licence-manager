@@ -1,10 +1,7 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateOrganizationRemark = void 0;
-const _runSQL_1 = require("./_runSQL");
-const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
-const updateOrganizationRemark = (reqBody, reqSession) => {
-    return _runSQL_1.runSQL_hasChanges("update OrganizationRemarks" +
+import { runSQL_hasChanges } from "./_runSQL.js";
+import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
+export const updateOrganizationRemark = (reqBody, reqSession) => {
+    return runSQL_hasChanges("update OrganizationRemarks" +
         " set remarkDate = ?," +
         " remarkTime = ?," +
         " remark = ?," +
@@ -24,4 +21,3 @@ const updateOrganizationRemark = (reqBody, reqSession) => {
         reqBody.remarkIndex
     ]);
 };
-exports.updateOrganizationRemark = updateOrganizationRemark;

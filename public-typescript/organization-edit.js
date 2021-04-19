@@ -1,5 +1,3 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 (() => {
     const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
     const formEle = document.getElementById("form--organization");
@@ -385,3 +383,4 @@ Object.defineProperty(exports, "__esModule", { value: true });
         inputEle.addEventListener("change", setUnsavedChangesFn);
     }
 })();
+export {};

@@ -1,11 +1,8 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteLicence = void 0;
-const sqlite = require("better-sqlite3");
-const databasePaths_1 = require("../../data/databasePaths");
-const licencesDB_1 = require("../licencesDB");
-const deleteLicence = (licenceID, reqSession) => {
-    const db = sqlite(databasePaths_1.licencesDB);
+import sqlite from "better-sqlite3";
+import { licencesDB as dbPath } from "../../data/databasePaths.js";
+import { resetEventTableStats, resetLicenceTableStats } from "../licencesDB.js";
+export const deleteLicence = (licenceID, reqSession) => {
+    const db = sqlite(dbPath);
     const nowMillis = Date.now();
     const info = db.prepare("update LotteryLicences" +
         " set recordDelete_userName = ?," +
@@ -23,8 +20,7 @@ const deleteLicence = (licenceID, reqSession) => {
             .run(reqSession.user.userName, nowMillis, licenceID);
     }
     db.close();
-    licencesDB_1.resetLicenceTableStats();
-    licencesDB_1.resetEventTableStats();
+    resetLicenceTableStats();
+    resetEventTableStats();
     return changeCount > 0;
 };
-exports.deleteLicence = deleteLicence;

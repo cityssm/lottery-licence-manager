@@ -1,12 +1,9 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.getOrganizations = void 0;
-const sqlite = require("better-sqlite3");
-const databasePaths_1 = require("../../data/databasePaths");
-const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
-const licencesDB_1 = require("../licencesDB");
-const getOrganizations = (reqBody, reqSession, includeOptions) => {
-    const db = sqlite(databasePaths_1.licencesDB, {
+import sqlite from "better-sqlite3";
+import { licencesDB as dbPath } from "../../data/databasePaths.js";
+import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
+import { canUpdateObject } from "../licencesDB.js";
+export const getOrganizations = (reqBody, reqSession, includeOptions) => {
+    const db = sqlite(dbPath, {
         readonly: true
     });
     const sqlParams = [dateTimeFns.dateToInteger(new Date())];
@@ -60,7 +57,7 @@ const getOrganizations = (reqBody, reqSession, includeOptions) => {
     for (const ele of rows) {
         ele.recordType = "organization";
         ele.licences_endDateMaxString = dateTimeFns.dateIntegerToString(ele.licences_endDateMax || 0);
-        ele.canUpdate = licencesDB_1.canUpdateObject(ele, reqSession);
+        ele.canUpdate = canUpdateObject(ele, reqSession);
         delete ele.recordCreate_userName;
         delete ele.recordCreate_timeMillis;
         delete ele.recordUpdate_userName;
@@ -68,4 +65,3 @@ const getOrganizations = (reqBody, reqSession, includeOptions) => {
     }
     return rows;
 };
-exports.getOrganizations = getOrganizations;

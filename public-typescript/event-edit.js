@@ -1,5 +1,3 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 (() => {
     const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
     const eventDateNavEle = document.getElementById("eventNav--eventDate");
@@ -162,3 +160,4 @@ Object.defineProperty(exports, "__esModule", { value: true });
     costsFn_calculateTotal("admin");
     costsFn_calculateTotal("prizesAwarded");
 })();
+export {};

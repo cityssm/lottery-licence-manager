@@ -1,9 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteOrganizationRemark = void 0;
-const _runSQL_1 = require("./_runSQL");
-const deleteOrganizationRemark = (organizationID, remarkIndex, reqSession) => {
-    return _runSQL_1.runSQL_hasChanges("update OrganizationRemarks" +
+import { runSQL_hasChanges } from "./_runSQL.js";
+export const deleteOrganizationRemark = (organizationID, remarkIndex, reqSession) => {
+    return runSQL_hasChanges("update OrganizationRemarks" +
         " set recordDelete_userName = ?," +
         " recordDelete_timeMillis = ?" +
         " where organizationID = ?" +
@@ -15,4 +12,3 @@ const deleteOrganizationRemark = (organizationID, remarkIndex, reqSession) => {
         remarkIndex
     ]);
 };
-exports.deleteOrganizationRemark = deleteOrganizationRemark;

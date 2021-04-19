@@ -1,22 +1,17 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.updatePassword = exports.updatePasswordWithDB = void 0;
-const _runSQLByName_1 = require("../_runSQLByName");
-const bcrypt = require("bcrypt");
-const userFns = require("../../helpers/userFns");
-const sqlite = require("better-sqlite3");
-const databasePaths_1 = require("../../data/databasePaths");
+import { runSQLWithDB } from "../_runSQLByName.js";
+import * as bcrypt from "bcrypt";
+import * as userFns from "../../helpers/userFns.js";
+import sqlite from "better-sqlite3";
+import { usersDB as dbPath } from "../../data/databasePaths.js";
 const encryptionRounds = 10;
-const updatePasswordWithDB = async (db, userName, passwordPlain) => {
+export const updatePasswordWithDB = async (db, userName, passwordPlain) => {
     const hash = await bcrypt.hash(userFns.getHashString(userName, passwordPlain), encryptionRounds);
-    _runSQLByName_1.runSQLWithDB(db, "update Users" +
+    runSQLWithDB(db, "update Users" +
         " set passwordHash = ?" +
         " where userName = ?", [hash, userName]);
 };
-exports.updatePasswordWithDB = updatePasswordWithDB;
-const updatePassword = async (userName, passwordPlain) => {
-    const db = sqlite(databasePaths_1.usersDB);
-    await exports.updatePasswordWithDB(db, userName, passwordPlain);
+export const updatePassword = async (userName, passwordPlain) => {
+    const db = sqlite(dbPath);
+    await updatePasswordWithDB(db, userName, passwordPlain);
     db.close();
 };
-exports.updatePassword = updatePassword;

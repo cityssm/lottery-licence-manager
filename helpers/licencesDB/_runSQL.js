@@ -1,13 +1,10 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.runSQL_hasChanges = exports.runSQL = void 0;
-const _runSQLByName_1 = require("../_runSQLByName");
-const debug_1 = require("debug");
-const debugSQL = debug_1.debug("lottery-licence-manager:licencesDB:runSQL");
-const runSQL = (sql, params = []) => {
+import { runSQLByName } from "../_runSQLByName.js";
+import debug from "debug";
+const debugSQL = debug("lottery-licence-manager:licencesDB:runSQL");
+export const runSQL = (sql, params = []) => {
     let db;
     try {
-        return _runSQLByName_1.runSQLByName("licencesDB", sql, params);
+        return runSQLByName("licencesDB", sql, params);
     }
     catch (e) {
         debugSQL(e);
@@ -19,12 +16,10 @@ const runSQL = (sql, params = []) => {
         catch (_e) { }
     }
 };
-exports.runSQL = runSQL;
-const runSQL_hasChanges = (sql, params = []) => {
-    const result = exports.runSQL(sql, params);
+export const runSQL_hasChanges = (sql, params = []) => {
+    const result = runSQL(sql, params);
     if (result) {
         return result.changes > 0;
     }
     return false;
 };
-exports.runSQL_hasChanges = runSQL_hasChanges;

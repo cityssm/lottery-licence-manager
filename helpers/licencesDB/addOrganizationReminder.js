@@ -1,12 +1,9 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.addOrganizationReminder = exports.addOrganizationReminderWithDB = void 0;
-const sqlite = require("better-sqlite3");
-const databasePaths_1 = require("../../data/databasePaths");
-const getMaxOrganizationReminderIndex_1 = require("./getMaxOrganizationReminderIndex");
-const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
-const addOrganizationReminderWithDB = (db, reminderData, reqSession) => {
-    const newReminderIndex = getMaxOrganizationReminderIndex_1.getMaxOrganizationReminderIndexWithDB(db, reminderData.organizationID) + 1;
+import sqlite from "better-sqlite3";
+import { licencesDB as dbPath } from "../../data/databasePaths.js";
+import { getMaxOrganizationReminderIndexWithDB } from "./getMaxOrganizationReminderIndex.js";
+import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
+export const addOrganizationReminderWithDB = (db, reminderData, reqSession) => {
+    const newReminderIndex = getMaxOrganizationReminderIndexWithDB(db, reminderData.organizationID) + 1;
     const nowMillis = Date.now();
     db.prepare("insert into OrganizationReminders" +
         " (organizationID, reminderIndex, reminderTypeKey, dueDate," +
@@ -35,11 +32,9 @@ const addOrganizationReminderWithDB = (db, reminderData, reqSession) => {
     };
     return reminder;
 };
-exports.addOrganizationReminderWithDB = addOrganizationReminderWithDB;
-const addOrganizationReminder = (reqBody, reqSession) => {
-    const db = sqlite(databasePaths_1.licencesDB);
-    const reminder = exports.addOrganizationReminderWithDB(db, reqBody, reqSession);
+export const addOrganizationReminder = (reqBody, reqSession) => {
+    const db = sqlite(dbPath);
+    const reminder = addOrganizationReminderWithDB(db, reqBody, reqSession);
     db.close();
     return reminder;
 };
-exports.addOrganizationReminder = addOrganizationReminder;

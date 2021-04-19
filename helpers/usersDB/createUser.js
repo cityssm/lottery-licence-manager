@@ -1,15 +1,12 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.createUser = void 0;
-const sqlite = require("better-sqlite3");
-const databasePaths_1 = require("../../data/databasePaths");
-const userFns = require("../../helpers/userFns");
-const bcrypt = require("bcrypt");
-const stringFns = require("@cityssm/expressjs-server-js/stringFns");
-const createUser = async (reqBody) => {
+import sqlite from "better-sqlite3";
+import { usersDB as dbPath } from "../../data/databasePaths.js";
+import * as userFns from "../../helpers/userFns.js";
+import * as bcrypt from "bcrypt";
+import * as stringFns from "@cityssm/expressjs-server-js/stringFns.js";
+export const createUser = async (reqBody) => {
     const newPasswordPlain = stringFns.generatePassword();
     const hash = await bcrypt.hash(userFns.getHashString(reqBody.userName, newPasswordPlain), 10);
-    const db = sqlite(databasePaths_1.usersDB);
+    const db = sqlite(dbPath);
     const row = db.prepare("select isActive" +
         " from Users" +
         " where userName = ?")
@@ -38,4 +35,3 @@ const createUser = async (reqBody) => {
     }
     return newPasswordPlain;
 };
-exports.createUser = createUser;

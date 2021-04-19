@@ -1,8 +1,8 @@
 import type { RequestHandler } from "express";
 
-import { addOrganizationBankRecord } from "../../helpers/licencesDB/addOrganizationBankRecord";
-import { updateOrganizationBankRecord } from "../../helpers/licencesDB/updateOrganizationBankRecord";
-import { deleteOrganizationBankRecord } from "../../helpers/licencesDB/deleteOrganizationBankRecord";
+import { addOrganizationBankRecord } from "../../helpers/licencesDB/addOrganizationBankRecord.js";
+import { updateOrganizationBankRecord } from "../../helpers/licencesDB/updateOrganizationBankRecord.js";
+import { deleteOrganizationBankRecord } from "../../helpers/licencesDB/deleteOrganizationBankRecord.js";
 
 import type * as llm from "../../types/recordTypes";
 

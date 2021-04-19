@@ -1,6 +1,6 @@
 import type { RequestHandler } from "express";
 
-import { getInactiveLocations } from "../../helpers/licencesDB/getInactiveLocations";
+import { getInactiveLocations } from "../../helpers/licencesDB/getInactiveLocations.js";
 
 
 export const handler: RequestHandler = (req, res) => {

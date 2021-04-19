@@ -1,7 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.addLicenceTicketTypeWithDB = void 0;
-const addLicenceTicketTypeWithDB = (db, ticketTypeDef, reqSession) => {
+export const addLicenceTicketTypeWithDB = (db, ticketTypeDef, reqSession) => {
     const nowMillis = Date.now();
     const addInfo = db
         .prepare("update LotteryLicenceTicketTypes" +
@@ -22,4 +19,3 @@ const addLicenceTicketTypeWithDB = (db, ticketTypeDef, reqSession) => {
             .run(ticketTypeDef.licenceID, ticketTypeDef.eventDate, ticketTypeDef.ticketType, 0, reqSession.user.userName, nowMillis, reqSession.user.userName, nowMillis);
     }
 };
-exports.addLicenceTicketTypeWithDB = addLicenceTicketTypeWithDB;

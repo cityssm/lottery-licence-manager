@@ -1,7 +1,7 @@
 import type { RequestHandler } from "express";
 
-import * as configFns from "../../helpers/configFns";
-import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns";
+import * as configFns from "../../helpers/configFns.js";
+import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
 
 
 export const handler: RequestHandler = (_req, res) => {

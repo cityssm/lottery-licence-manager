@@ -1,10 +1,7 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.restoreLocation = void 0;
-const _runSQL_1 = require("./_runSQL");
-const restoreLocation = (locationID, reqSession) => {
+import { runSQL_hasChanges } from "./_runSQL.js";
+export const restoreLocation = (locationID, reqSession) => {
     const nowMillis = Date.now();
-    return _runSQL_1.runSQL_hasChanges("update Locations" +
+    return runSQL_hasChanges("update Locations" +
         " set recordDelete_userName = null," +
         " recordDelete_timeMillis = null," +
         " recordUpdate_userName = ?," +
@@ -16,4 +13,3 @@ const restoreLocation = (locationID, reqSession) => {
         locationID
     ]);
 };
-exports.restoreLocation = restoreLocation;

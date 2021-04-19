@@ -1,5 +1,3 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 llm.organizationReminders = (() => {
     const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
     let reminderCategories;
@@ -286,3 +284,4 @@ llm.organizationReminders = (() => {
         getReminderType
     };
 })();
+export {};

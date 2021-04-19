@@ -1,7 +1,7 @@
-import * as sqlite from "better-sqlite3";
-import { licencesDB as dbPath } from "../../data/databasePaths";
+import sqlite from "better-sqlite3";
+import { licencesDB as dbPath } from "../../data/databasePaths.js";
 
-import { addLicenceAmendmentWithDB } from "./addLicenceAmendment";
+import { addLicenceAmendmentWithDB } from "./addLicenceAmendment.js";
 
 import type * as expressSession from "express-session";
 

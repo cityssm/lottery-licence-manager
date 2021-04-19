@@ -1,11 +1,11 @@
-import * as sqlite from "better-sqlite3";
-import { licencesDB as dbPath } from "../../data/databasePaths";
+import sqlite from "better-sqlite3";
+import { licencesDB as dbPath } from "../../data/databasePaths.js";
 
-import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns";
+import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
 
-import { getMaxTransactionIndexWithDB } from "./getMaxTransactionIndex";
-import { getLicenceWithDB } from "./getLicence";
-import { addLicenceAmendmentWithDB } from "./addLicenceAmendment";
+import { getMaxTransactionIndexWithDB } from "./getMaxTransactionIndex.js";
+import { getLicenceWithDB } from "./getLicence.js";
+import { addLicenceAmendmentWithDB } from "./addLicenceAmendment.js";
 
 import type * as expressSession from "express-session";
 

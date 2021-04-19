@@ -1,4 +1,4 @@
-import { runSQL_hasChanges } from "./_runSQL";
+import { runSQL_hasChanges } from "./_runSQL.js";
 
 import type * as llm from "../../types/recordTypes";
 import type * as expressSession from "express-session";

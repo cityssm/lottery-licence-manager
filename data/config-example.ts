@@ -1,6 +1,6 @@
 import * as configOntario from "./config-ontario";
 
-const config = Object.assign({}, configOntario);
+export const config = Object.assign({}, configOntario);
 
 
 /*
@@ -27,6 +27,3 @@ config.admin = {
  */
 
 config.defaults.city = "";
-
-
-module.exports = config;

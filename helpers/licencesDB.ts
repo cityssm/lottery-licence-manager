@@ -1,13 +1,12 @@
-import * as sqlite from "better-sqlite3";
+import sqlite from "better-sqlite3";
 
-import * as configFns from "./configFns";
-import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns";
+import * as configFns from "./configFns.js";
+import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
 import type * as llm from "../types/recordTypes";
 
-import { RawRowsColumnsReturn } from "@cityssm/expressjs-server-js/types";
+import { licencesDB as dbPath } from "../data/databasePaths.js";
 
-import { licencesDB as dbPath } from "../data/databasePaths";
-
+import type { RawRowsColumnsReturn } from "@cityssm/expressjs-server-js/types";
 import type * as expressSession from "express-session";
 
 

@@ -1,6 +1,6 @@
-import { runSQL_hasChanges } from "./_runSQL";
+import { runSQL_hasChanges } from "./_runSQL.js";
 
-import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns";
+import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
 
 import type * as expressSession from "express-session";
 

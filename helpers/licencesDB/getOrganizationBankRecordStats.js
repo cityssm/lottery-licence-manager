@@ -1,10 +1,7 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.getOrganizationBankRecordStats = void 0;
-const sqlite = require("better-sqlite3");
-const databasePaths_1 = require("../../data/databasePaths");
-const getOrganizationBankRecordStats = (organizationID) => {
-    const db = sqlite(databasePaths_1.licencesDB, {
+import sqlite from "better-sqlite3";
+import { licencesDB as dbPath } from "../../data/databasePaths.js";
+export const getOrganizationBankRecordStats = (organizationID) => {
+    const db = sqlite(dbPath, {
         readonly: true
     });
     const rows = db.prepare("select accountNumber," +
@@ -19,4 +16,3 @@ const getOrganizationBankRecordStats = (organizationID) => {
     db.close();
     return rows;
 };
-exports.getOrganizationBankRecordStats = getOrganizationBankRecordStats;

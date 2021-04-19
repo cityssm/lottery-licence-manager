@@ -1,22 +1,19 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.addTransaction = void 0;
-const sqlite = require("better-sqlite3");
-const databasePaths_1 = require("../../data/databasePaths");
-const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
-const getMaxTransactionIndex_1 = require("./getMaxTransactionIndex");
-const getLicence_1 = require("./getLicence");
-const addLicenceAmendment_1 = require("./addLicenceAmendment");
-const addTransaction = (reqBody, reqSession) => {
-    const db = sqlite(databasePaths_1.licencesDB);
-    const licenceObj = getLicence_1.getLicenceWithDB(db, reqBody.licenceID, reqSession, {
+import sqlite from "better-sqlite3";
+import { licencesDB as dbPath } from "../../data/databasePaths.js";
+import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
+import { getMaxTransactionIndexWithDB } from "./getMaxTransactionIndex.js";
+import { getLicenceWithDB } from "./getLicence.js";
+import { addLicenceAmendmentWithDB } from "./addLicenceAmendment.js";
+export const addTransaction = (reqBody, reqSession) => {
+    const db = sqlite(dbPath);
+    const licenceObj = getLicenceWithDB(db, reqBody.licenceID, reqSession, {
         includeTicketTypes: false,
         includeFields: false,
         includeEvents: false,
         includeAmendments: false,
         includeTransactions: false
     });
-    const newTransactionIndex = getMaxTransactionIndex_1.getMaxTransactionIndexWithDB(db, reqBody.licenceID) + 1;
+    const newTransactionIndex = getMaxTransactionIndexWithDB(db, reqBody.licenceID) + 1;
     const rightNow = new Date();
     const transactionDate = dateTimeFns.dateToInteger(rightNow);
     const transactionTime = dateTimeFns.dateToTimeInteger(rightNow);
@@ -29,7 +26,7 @@ const addTransaction = (reqBody, reqSession) => {
         " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
         .run(reqBody.licenceID, newTransactionIndex, transactionDate, transactionTime, reqBody.externalReceiptNumber, reqBody.transactionAmount, reqBody.transactionNote, reqSession.user.userName, rightNow.getTime(), reqSession.user.userName, rightNow.getTime());
     if (licenceObj.trackUpdatesAsAmendments) {
-        addLicenceAmendment_1.addLicenceAmendmentWithDB(db, reqBody.licenceID, "New Transaction", "", 1, reqSession);
+        addLicenceAmendmentWithDB(db, reqBody.licenceID, "New Transaction", "", 1, reqSession);
     }
     if (reqBody.issueLicence === "true") {
         db.prepare("update LotteryLicences" +
@@ -46,4 +43,3 @@ const addTransaction = (reqBody, reqSession) => {
     db.close();
     return newTransactionIndex;
 };
-exports.addTransaction = addTransaction;

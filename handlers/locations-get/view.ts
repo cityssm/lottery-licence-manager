@@ -1,11 +1,11 @@
 import type { RequestHandler } from "express";
 
-import * as configFns from "../../helpers/configFns";
+import * as configFns from "../../helpers/configFns.js";
 
-import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns";
+import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
 
-import { getLicences } from "../../helpers/licencesDB/getLicences";
-import { getLocation } from "../../helpers/licencesDB/getLocation";
+import { getLicences } from "../../helpers/licencesDB/getLicences.js";
+import { getLocation } from "../../helpers/licencesDB/getLocation.js";
 
 
 const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");

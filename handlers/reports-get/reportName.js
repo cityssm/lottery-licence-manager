@@ -1,13 +1,10 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.handler = void 0;
-const configFns = require("../../helpers/configFns");
-const licencesDB = require("../../helpers/licencesDB");
-const reportFns = require("../../helpers/reportFns");
-const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
-const stringFns_1 = require("@cityssm/expressjs-server-js/stringFns");
+import * as configFns from "../../helpers/configFns.js";
+import * as licencesDB from "../../helpers/licencesDB.js";
+import * as reportFns from "../../helpers/reportFns.js";
+import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
+import { rawToCSV } from "@cityssm/expressjs-server-js/stringFns.js";
 const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
-const handler = (req, res) => {
+export const handler = (req, res) => {
     const reportName = req.params.reportName;
     let sql = "";
     let params = [];
@@ -270,9 +267,8 @@ const handler = (req, res) => {
         return;
     }
     const rowsColumnsObj = licencesDB.getRawRowsColumns(sql, params);
-    const csv = stringFns_1.rawToCSV(rowsColumnsObj);
+    const csv = rawToCSV(rowsColumnsObj);
     res.setHeader("Content-Disposition", "attachment; filename=" + reportName + "-" + Date.now().toString() + ".csv");
     res.setHeader("Content-Type", "text/csv");
     res.send(csv);
 };
-exports.handler = handler;

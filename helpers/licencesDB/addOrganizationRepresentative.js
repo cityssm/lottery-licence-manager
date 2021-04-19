@@ -1,10 +1,7 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.addOrganizationRepresentative = void 0;
-const sqlite = require("better-sqlite3");
-const databasePaths_1 = require("../../data/databasePaths");
-const addOrganizationRepresentative = (organizationID, reqBody) => {
-    const db = sqlite(databasePaths_1.licencesDB);
+import sqlite from "better-sqlite3";
+import { licencesDB as dbPath } from "../../data/databasePaths.js";
+export const addOrganizationRepresentative = (organizationID, reqBody) => {
+    const db = sqlite(dbPath);
     const row = db.prepare("select count(representativeIndex) as indexCount," +
         " ifnull(max(representativeIndex), -1) as maxIndex" +
         " from OrganizationRepresentatives" +
@@ -39,4 +36,3 @@ const addOrganizationRepresentative = (organizationID, reqBody) => {
     };
     return representativeObj;
 };
-exports.addOrganizationRepresentative = addOrganizationRepresentative;

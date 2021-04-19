@@ -1,12 +1,9 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.getOrganization = void 0;
-const sqlite = require("better-sqlite3");
-const databasePaths_1 = require("../../data/databasePaths");
-const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
-const licencesDB_1 = require("../licencesDB");
-const getOrganization = (organizationID, reqSession) => {
-    const db = sqlite(databasePaths_1.licencesDB, {
+import sqlite from "better-sqlite3";
+import { licencesDB as dbPath } from "../../data/databasePaths.js";
+import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
+import { canUpdateObject } from "../licencesDB.js";
+export const getOrganization = (organizationID, reqSession) => {
+    const db = sqlite(dbPath, {
         readonly: true
     });
     const organizationObj = db.prepare("select * from Organizations" +
@@ -16,7 +13,7 @@ const getOrganization = (organizationID, reqSession) => {
         organizationObj.recordType = "organization";
         organizationObj.fiscalStartDateString = dateTimeFns.dateIntegerToString(organizationObj.fiscalStartDate);
         organizationObj.fiscalEndDateString = dateTimeFns.dateIntegerToString(organizationObj.fiscalEndDate);
-        organizationObj.canUpdate = licencesDB_1.canUpdateObject(organizationObj, reqSession);
+        organizationObj.canUpdate = canUpdateObject(organizationObj, reqSession);
         const representativesList = db.prepare("select * from OrganizationRepresentatives" +
             " where organizationID = ?" +
             " order by isDefault desc, representativeName")
@@ -26,4 +23,3 @@ const getOrganization = (organizationID, reqSession) => {
     db.close();
     return organizationObj;
 };
-exports.getOrganization = getOrganization;

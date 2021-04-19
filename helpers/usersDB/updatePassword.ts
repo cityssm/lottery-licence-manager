@@ -1,11 +1,11 @@
-import { runSQLWithDB } from "../_runSQLByName";
+import { runSQLWithDB } from "../_runSQLByName.js";
 
 import * as bcrypt from "bcrypt";
 
-import * as userFns from "../../helpers/userFns";
+import * as userFns from "../../helpers/userFns.js";
 
-import * as sqlite from "better-sqlite3";
-import { usersDB as dbPath } from "../../data/databasePaths";
+import sqlite from "better-sqlite3";
+import { usersDB as dbPath } from "../../data/databasePaths.js";
 
 
 const encryptionRounds = 10;

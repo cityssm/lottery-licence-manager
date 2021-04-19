@@ -1,11 +1,8 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.unissueLicence = void 0;
-const sqlite = require("better-sqlite3");
-const databasePaths_1 = require("../../data/databasePaths");
-const addLicenceAmendment_1 = require("./addLicenceAmendment");
-const unissueLicence = (licenceID, reqSession) => {
-    const db = sqlite(databasePaths_1.licencesDB);
+import sqlite from "better-sqlite3";
+import { licencesDB as dbPath } from "../../data/databasePaths.js";
+import { addLicenceAmendmentWithDB } from "./addLicenceAmendment.js";
+export const unissueLicence = (licenceID, reqSession) => {
+    const db = sqlite(dbPath);
     const nowMillis = Date.now();
     const info = db.prepare("update LotteryLicences" +
         " set issueDate = null," +
@@ -18,9 +15,8 @@ const unissueLicence = (licenceID, reqSession) => {
         .run(reqSession.user.userName, nowMillis, licenceID);
     const changeCount = info.changes;
     if (changeCount) {
-        addLicenceAmendment_1.addLicenceAmendmentWithDB(db, licenceID, "Unissue Licence", "", 1, reqSession);
+        addLicenceAmendmentWithDB(db, licenceID, "Unissue Licence", "", 1, reqSession);
     }
     db.close();
     return changeCount > 0;
 };
-exports.unissueLicence = unissueLicence;

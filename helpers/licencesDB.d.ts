@@ -1,5 +1,5 @@
 import type * as llm from "../types/recordTypes";
-import { RawRowsColumnsReturn } from "@cityssm/expressjs-server-js/types";
+import type { RawRowsColumnsReturn } from "@cityssm/expressjs-server-js/types";
 import type * as expressSession from "express-session";
 export declare const canUpdateObject: (obj: llm.Record, reqSession: expressSession.Session) => boolean;
 export declare const getRawRowsColumns: (sql: string, params: Array<string | number>) => RawRowsColumnsReturn;

@@ -1,6 +1,6 @@
 import type { RequestHandler } from "express";
 
-import { tryResetPassword } from "../../helpers/usersDB/tryResetPassword";
+import { tryResetPassword } from "../../helpers/usersDB/tryResetPassword.js";
 
 
 export const handler: RequestHandler = async(req, res) => {

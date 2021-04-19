@@ -1,24 +1,22 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const objectFns = require("../helpers/objectFns");
-const configOntario = require("./config-ontario");
-const configSSM = Object.assign({}, configOntario);
-configSSM.application = {
+import * as objectFns from "../helpers/objectFns.js";
+import { config as configOntario } from "./config-ontario.js";
+export const config = Object.assign({}, configOntario);
+config.application = {
     applicationName: "SSM Lottery Licence Manager"
 };
-configSSM.session = {
+config.session = {
     doKeepAlive: true
 };
-configSSM.defaults.city = "Sault Ste. Marie";
-configSSM.reminders = {
+config.defaults.city = "Sault Ste. Marie";
+config.reminders = {
     preferredSortOrder: "config",
     dismissingStatuses: ["Received", "Not Applicable", "Dismissed"]
 };
-configSSM.licences.externalLicenceNumber.newCalculation = "range";
-configSSM.licences.externalReceiptNumber = {
+config.licences.externalLicenceNumber.newCalculation = "range";
+config.licences.externalReceiptNumber = {
     fieldLabel: "GP Receipt Number"
 };
-configSSM.licences.feeCalculationFn = (licenceObj) => {
+config.licences.feeCalculationFn = (licenceObj) => {
     const totalPrizeValue = (licenceObj.totalPrizeValue || 0.0);
     const licenceFeeMin = 10;
     const calculatedLicenceFee = totalPrizeValue * 0.03;
@@ -60,7 +58,7 @@ configSSM.licences.feeCalculationFn = (licenceObj) => {
         licenceHasErrors
     };
 };
-const licenceTypeNevada = configSSM.licenceTypes.find((licenceType) => licenceType.licenceTypeKey === "NV");
+const licenceTypeNevada = config.licenceTypes.find((licenceType) => licenceType.licenceTypeKey === "NV");
 for (const nevadaTicketType of licenceTypeNevada.ticketTypes) {
     nevadaTicketType.feePerUnit = Math.round(nevadaTicketType.prizesPerDeal * 0.03 * 100) / 100;
 }
@@ -98,4 +96,3 @@ licenceTypeNevada.licenceFields = [
         }
     }
 ];
-module.exports = configSSM;

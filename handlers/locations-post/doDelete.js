@@ -1,9 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.handler = void 0;
-const deleteLocation_1 = require("../../helpers/licencesDB/deleteLocation");
-const handler = (req, res) => {
-    const changeCount = deleteLocation_1.deleteLocation(req.body.locationID, req.session);
+import { deleteLocation } from "../../helpers/licencesDB/deleteLocation.js";
+export const handler = (req, res) => {
+    const changeCount = deleteLocation(req.body.locationID, req.session);
     if (changeCount) {
         return res.json({
             success: true,
@@ -17,4 +14,3 @@ const handler = (req, res) => {
         });
     }
 };
-exports.handler = handler;

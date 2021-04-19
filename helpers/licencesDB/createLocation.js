@@ -1,10 +1,7 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.createLocation = void 0;
-const sqlite = require("better-sqlite3");
-const databasePaths_1 = require("../../data/databasePaths");
-const createLocation = (reqBody, reqSession) => {
-    const db = sqlite(databasePaths_1.licencesDB);
+import sqlite from "better-sqlite3";
+import { licencesDB as dbPath } from "../../data/databasePaths.js";
+export const createLocation = (reqBody, reqSession) => {
+    const db = sqlite(dbPath);
     const nowMillis = Date.now();
     const info = db.prepare("insert into Locations" +
         " (locationName, locationAddress1, locationAddress2, locationCity, locationProvince, locationPostalCode," +
@@ -15,4 +12,3 @@ const createLocation = (reqBody, reqSession) => {
     db.close();
     return info.lastInsertRowid;
 };
-exports.createLocation = createLocation;

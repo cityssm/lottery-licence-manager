@@ -1,11 +1,8 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.getOrganizationReminders = exports.getOrganizationRemindersWithDB = void 0;
-const sqlite = require("better-sqlite3");
-const databasePaths_1 = require("../../data/databasePaths");
-const configFns = require("../configFns");
-const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
-const licencesDB_1 = require("../licencesDB");
+import sqlite from "better-sqlite3";
+import { licencesDB as dbPath } from "../../data/databasePaths.js";
+import * as configFns from "../configFns.js";
+import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
+import { canUpdateObject } from "../licencesDB.js";
 const reminderTypeOrdering = {};
 const reminderCategories = configFns.getProperty("reminderCategories");
 (() => {
@@ -41,7 +38,7 @@ const sortFn_byConfig = (reminderA, reminderB) => {
     }
     return sortFn_byDate(reminderA, reminderB);
 };
-const getOrganizationRemindersWithDB = (db, organizationID, reqSession) => {
+export const getOrganizationRemindersWithDB = (db, organizationID, reqSession) => {
     const reminders = db.prepare("select reminderIndex," +
         " reminderTypeKey, dueDate, dismissedDate," +
         " reminderStatus, reminderNote," +
@@ -54,7 +51,7 @@ const getOrganizationRemindersWithDB = (db, organizationID, reqSession) => {
         reminder.recordType = "reminder";
         reminder.dueDateString = dateTimeFns.dateIntegerToString(reminder.dueDate || 0);
         reminder.dismissedDateString = dateTimeFns.dateIntegerToString(reminder.dismissedDate || 0);
-        reminder.canUpdate = licencesDB_1.canUpdateObject(reminder, reqSession);
+        reminder.canUpdate = canUpdateObject(reminder, reqSession);
     }
     switch (configFns.getProperty("reminders.preferredSortOrder")) {
         case "date":
@@ -66,13 +63,11 @@ const getOrganizationRemindersWithDB = (db, organizationID, reqSession) => {
     }
     return reminders;
 };
-exports.getOrganizationRemindersWithDB = getOrganizationRemindersWithDB;
-const getOrganizationReminders = (organizationID, reqSession) => {
-    const db = sqlite(databasePaths_1.licencesDB, {
+export const getOrganizationReminders = (organizationID, reqSession) => {
+    const db = sqlite(dbPath, {
         readonly: true
     });
-    const reminders = exports.getOrganizationRemindersWithDB(db, organizationID, reqSession);
+    const reminders = getOrganizationRemindersWithDB(db, organizationID, reqSession);
     db.close();
     return reminders;
 };
-exports.getOrganizationReminders = getOrganizationReminders;

@@ -23,6 +23,7 @@ before_test:
   - sh: chmod +x ./codeclimate-test-reporter
 
 test_script:
+  - cp ./data/config-example.js ./data/config.js
   - nyc --reporter=lcov mocha --timeout 30000
 
 after_test:

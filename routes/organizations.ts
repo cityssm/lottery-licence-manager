@@ -1,53 +1,53 @@
 import { Router } from "express";
 
-import * as permissionHandlers from "../handlers/permissions";
+import * as permissionHandlers from "../handlers/permissions.js";
 
-import { handler as handler_cleanup } from "../handlers/organizations-get/cleanup";
-import { handler as handler_new } from "../handlers/organizations-get/new";
-import { handler as handler_view } from "../handlers/organizations-get/view";
-import { handler as handler_edit } from "../handlers/organizations-get/edit";
+import { handler as handler_cleanup } from "../handlers/organizations-get/cleanup.js";
+import { handler as handler_new } from "../handlers/organizations-get/new.js";
+import { handler as handler_view } from "../handlers/organizations-get/view.js";
+import { handler as handler_edit } from "../handlers/organizations-get/edit.js";
 
-import { handler as handler_doSearch } from "../handlers/organizations-post/doSearch";
-import { handler as handler_doGetAll } from "../handlers/organizations-all/doGetAll";
+import { handler as handler_doSearch } from "../handlers/organizations-post/doSearch.js";
+import { handler as handler_doGetAll } from "../handlers/organizations-all/doGetAll.js";
 
-import { handler as handler_doSave } from "../handlers/organizations-post/doSave";
-import { handler as handler_doDelete } from "../handlers/organizations-post/doDelete";
-import { handler as handler_doRestore } from "../handlers/organizations-post/doRestore";
+import { handler as handler_doSave } from "../handlers/organizations-post/doSave.js";
+import { handler as handler_doDelete } from "../handlers/organizations-post/doDelete.js";
+import { handler as handler_doRestore } from "../handlers/organizations-post/doRestore.js";
 
-import { handler as handler_doAddRepresentative } from "../handlers/organizations-post/doAddRepresentative";
-import { handler as handler_doUpdateRepresentative } from "../handlers/organizations-post/doUpdateRepresentative";
-import { handler as handler_doDeleteRepresentative } from "../handlers/organizations-post/doDeleteRepresentative";
-import { handler as handler_doSetDefaultRepresentative } from "../handlers/organizations-post/doSetDefaultRepresentative";
+import { handler as handler_doAddRepresentative } from "../handlers/organizations-post/doAddRepresentative.js";
+import { handler as handler_doUpdateRepresentative } from "../handlers/organizations-post/doUpdateRepresentative.js";
+import { handler as handler_doDeleteRepresentative } from "../handlers/organizations-post/doDeleteRepresentative.js";
+import { handler as handler_doSetDefaultRepresentative } from "../handlers/organizations-post/doSetDefaultRepresentative.js";
 
-import { handler as handler_doGetRemarks } from "../handlers/organizations-post/doGetRemarks";
-import { handler as handler_doGetRemark } from "../handlers/organizations-post/doGetRemark";
-import { handler as handler_doAddRemark } from "../handlers/organizations-post/doAddRemark";
-import { handler as handler_doEditRemark } from "../handlers/organizations-post/doEditRemark";
-import { handler as handler_doDeleteRemark } from "../handlers/organizations-post/doDeleteRemark";
+import { handler as handler_doGetRemarks } from "../handlers/organizations-post/doGetRemarks.js";
+import { handler as handler_doGetRemark } from "../handlers/organizations-post/doGetRemark.js";
+import { handler as handler_doAddRemark } from "../handlers/organizations-post/doAddRemark.js";
+import { handler as handler_doEditRemark } from "../handlers/organizations-post/doEditRemark.js";
+import { handler as handler_doDeleteRemark } from "../handlers/organizations-post/doDeleteRemark.js";
 
-import { handler as handler_reminders } from "../handlers/organizations-get/reminders";
-import { handler as handler_doGetReminders } from "../handlers/organizations-post/doGetReminders";
-import { handler as handler_doGetReminder } from "../handlers/organizations-post/doGetReminder";
-import { handler as handler_doAddReminder } from "../handlers/organizations-post/doAddReminder";
-import { handler as handler_doEditReminder } from "../handlers/organizations-post/doEditReminder";
-import { handler as handler_doDismissReminder } from "../handlers/organizations-post/doDismissReminder";
-import { handler as handler_doDeleteReminder } from "../handlers/organizations-post/doDeleteReminder";
+import { handler as handler_reminders } from "../handlers/organizations-get/reminders.js";
+import { handler as handler_doGetReminders } from "../handlers/organizations-post/doGetReminders.js";
+import { handler as handler_doGetReminder } from "../handlers/organizations-post/doGetReminder.js";
+import { handler as handler_doAddReminder } from "../handlers/organizations-post/doAddReminder.js";
+import { handler as handler_doEditReminder } from "../handlers/organizations-post/doEditReminder.js";
+import { handler as handler_doDismissReminder } from "../handlers/organizations-post/doDismissReminder.js";
+import { handler as handler_doDeleteReminder } from "../handlers/organizations-post/doDeleteReminder.js";
 
-import { handler as handler_doGetBankRecords } from "../handlers/organizations-post/doGetBankRecords";
-import { handler as handler_doAddBankRecord } from "../handlers/organizations-post/doAddBankRecord";
-import { handler as handler_doEditBankRecord } from "../handlers/organizations-post/doEditBankRecord";
-import { handler as handler_doUpdateBankRecordsByMonth } from "../handlers/organizations-post/doUpdateBankRecordsByMonth";
-import { handler as handler_doDeleteBankRecord } from "../handlers/organizations-post/doDeleteBankRecord";
-import { handler as handler_doGetBankRecordStats } from "../handlers/organizations-post/doGetBankRecordStats";
+import { handler as handler_doGetBankRecords } from "../handlers/organizations-post/doGetBankRecords.js";
+import { handler as handler_doAddBankRecord } from "../handlers/organizations-post/doAddBankRecord.js";
+import { handler as handler_doEditBankRecord } from "../handlers/organizations-post/doEditBankRecord.js";
+import { handler as handler_doUpdateBankRecordsByMonth } from "../handlers/organizations-post/doUpdateBankRecordsByMonth.js";
+import { handler as handler_doDeleteBankRecord } from "../handlers/organizations-post/doDeleteBankRecord.js";
+import { handler as handler_doGetBankRecordStats } from "../handlers/organizations-post/doGetBankRecordStats.js";
 
-import { handler as handler_doRollForward } from "../handlers/organizations-post/doRollForward";
+import { handler as handler_doRollForward } from "../handlers/organizations-post/doRollForward.js";
 
-import { handler as handler_doGetInactive } from "../handlers/organizations-post/doGetInactive";
+import { handler as handler_doGetInactive } from "../handlers/organizations-post/doGetInactive.js";
 
-import { handler as handler_recovery } from "../handlers/organizations-get/recovery";
+import { handler as handler_recovery } from "../handlers/organizations-get/recovery.js";
 
 
-const router = Router();
+export const router = Router();
 
 
 /*
@@ -260,6 +260,3 @@ router.post("/:organizationID/doDeleteOrganizationRepresentative",
 router.post("/:organizationID/doSetDefaultRepresentative",
   permissionHandlers.createPostHandler,
   handler_doSetDefaultRepresentative);
-
-
-export = router;

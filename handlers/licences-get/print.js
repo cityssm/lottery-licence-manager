@@ -1,27 +1,24 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.handler = void 0;
-const path = require("path");
-const ejs = require("ejs");
-const configFns = require("../../helpers/configFns");
-const getOrganization_1 = require("../../helpers/licencesDB/getOrganization");
-const getLicence_1 = require("../../helpers/licencesDB/getLicence");
-const convertHTMLToPDF = require("pdf-puppeteer");
+import * as path from "path";
+import * as ejs from "ejs";
+import * as configFns from "../../helpers/configFns.js";
+import { getOrganization } from "../../helpers/licencesDB/getOrganization.js";
+import { getLicence } from "../../helpers/licencesDB/getLicence.js";
+import convertHTMLToPDF from "pdf-puppeteer";
 const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
 const printTemplate = configFns.getProperty("licences.printTemplate");
-const handler = async (req, res, next) => {
+export const handler = async (req, res, next) => {
     const licenceID = Number(req.params.licenceID);
     if (isNaN(licenceID)) {
         return next();
     }
-    const licence = getLicence_1.getLicence(licenceID, req.session);
+    const licence = getLicence(licenceID, req.session);
     if (!licence) {
         return res.redirect(urlPrefix + "/licences/?error=licenceNotFound");
     }
     else if (!licence.issueDate) {
         return res.redirect(urlPrefix + "/licences/?error=licenceNotIssued");
     }
-    const organization = getOrganization_1.getOrganization(licence.organizationID, req.session);
+    const organization = getOrganization(licence.organizationID, req.session);
     await ejs.renderFile(path.join(__dirname, "../../reports/", printTemplate), {
         configFns,
         licence,
@@ -44,4 +41,3 @@ const handler = async (req, res, next) => {
         return null;
     });
 };
-exports.handler = handler;

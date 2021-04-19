@@ -1,6 +1,6 @@
-import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns";
+import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
 
-import * as licencesDB from "../../helpers/licencesDB";
+import * as licencesDB from "../../helpers/licencesDB.js";
 
 import type { RequestHandler } from "express";
 

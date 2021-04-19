@@ -1,27 +1,27 @@
 import * as assert from "assert";
 
-import * as sqlite from "better-sqlite3";
-import { licencesDB as dbPath } from "../data/databasePaths";
+import sqlite from "better-sqlite3";
+import { licencesDB as dbPath } from "../data/databasePaths.js";
 
-import { fakeViewOnlySession } from "./_globals";
+import { fakeViewOnlySession } from "./_globals.js";
 
-import { getOrganization } from "../helpers/licencesDB/getOrganization";
-import { getOrganizations } from "../helpers/licencesDB/getOrganizations";
-import { getInactiveOrganizations } from "../helpers/licencesDB/getInactiveOrganizations";
+import { getOrganization } from "../helpers/licencesDB/getOrganization.js";
+import { getOrganizations } from "../helpers/licencesDB/getOrganizations.js";
+import { getInactiveOrganizations } from "../helpers/licencesDB/getInactiveOrganizations.js";
 
-import { getOrganizationRemark } from "../helpers/licencesDB/getOrganizationRemark";
-import { getOrganizationRemarks } from "../helpers/licencesDB/getOrganizationRemarks";
+import { getOrganizationRemark } from "../helpers/licencesDB/getOrganizationRemark.js";
+import { getOrganizationRemarks } from "../helpers/licencesDB/getOrganizationRemarks.js";
 
-import { getOrganizationReminder } from "../helpers/licencesDB/getOrganizationReminder";
-import { getOrganizationReminders } from "../helpers/licencesDB/getOrganizationReminders";
-import { getUndismissedOrganizationReminders } from "../helpers/licencesDB/getUndismissedOrganizationReminders";
+import { getOrganizationReminder } from "../helpers/licencesDB/getOrganizationReminder.js";
+import { getOrganizationReminders } from "../helpers/licencesDB/getOrganizationReminders.js";
+import { getUndismissedOrganizationReminders } from "../helpers/licencesDB/getUndismissedOrganizationReminders.js";
 
-import { getOrganizationBankRecords } from "../helpers/licencesDB/getOrganizationBankRecords";
-import { getOrganizationBankRecordStats } from "../helpers/licencesDB/getOrganizationBankRecordStats";
+import { getOrganizationBankRecords } from "../helpers/licencesDB/getOrganizationBankRecords.js";
+import { getOrganizationBankRecordStats } from "../helpers/licencesDB/getOrganizationBankRecordStats.js";
 
-import { getMaxOrganizationReminderIndexWithDB } from "../helpers/licencesDB/getMaxOrganizationReminderIndex";
-import { getMaxOrganizationRemarkIndexWithDB } from "../helpers/licencesDB/getMaxOrganizationRemarkIndex";
-import { getMaxOrganizationBankRecordIndexWithDB } from "../helpers/licencesDB/getMaxOrganizationBankRecordIndex";
+import { getMaxOrganizationReminderIndexWithDB } from "../helpers/licencesDB/getMaxOrganizationReminderIndex.js";
+import { getMaxOrganizationRemarkIndexWithDB } from "../helpers/licencesDB/getMaxOrganizationRemarkIndex.js";
+import { getMaxOrganizationBankRecordIndexWithDB } from "../helpers/licencesDB/getMaxOrganizationBankRecordIndex.js";
 
 
 describe("licencesDB/organizations", () => {

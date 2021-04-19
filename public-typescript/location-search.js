@@ -1,5 +1,3 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 (() => {
     const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
     const formEle = document.getElementById("form--searchFilters");
@@ -182,3 +180,4 @@ Object.defineProperty(exports, "__esModule", { value: true });
     document.getElementById("filter--locationIsActive").addEventListener("change", resetOffsetAndGetLocationsFn);
     resetOffsetAndGetLocationsFn();
 })();
+export {};

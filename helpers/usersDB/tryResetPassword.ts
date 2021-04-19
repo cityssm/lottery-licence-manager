@@ -1,9 +1,9 @@
-import * as sqlite from "better-sqlite3";
-import { usersDB as dbPath } from "../../data/databasePaths";
+import sqlite from "better-sqlite3";
+import { usersDB as dbPath } from "../../data/databasePaths.js";
 
-import { updatePasswordWithDB } from "./updatePassword";
+import { updatePasswordWithDB } from "./updatePassword.js";
 
-import * as userFns from "../../helpers/userFns";
+import * as userFns from "../../helpers/userFns.js";
 
 import * as bcrypt from "bcrypt";
 

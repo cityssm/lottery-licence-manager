@@ -1,5 +1,3 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 llm.organizationRemarks = (() => {
     const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
     const getRemarksByOrganizationID = (organizationID, callbackFn) => {
@@ -96,3 +94,4 @@ llm.organizationRemarks = (() => {
         deleteRemark
     };
 })();
+export {};

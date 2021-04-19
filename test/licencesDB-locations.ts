@@ -1,10 +1,10 @@
 import * as assert from "assert";
 
-import { fakeViewOnlySession } from "./_globals";
+import { fakeViewOnlySession } from "./_globals.js";
 
-import { getLocation } from "../helpers/licencesDB/getLocation";
-import { getLocations } from "../helpers/licencesDB/getLocations";
-import { getInactiveLocations } from "../helpers/licencesDB/getInactiveLocations";
+import { getLocation } from "../helpers/licencesDB/getLocation.js";
+import { getLocations } from "../helpers/licencesDB/getLocations.js";
+import { getInactiveLocations } from "../helpers/licencesDB/getInactiveLocations.js";
 
 
 describe("licencesDB/locations", () => {

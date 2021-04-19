@@ -1,8 +1,5 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.handler = void 0;
-const deleteEvent_1 = require("../../helpers/licencesDB/deleteEvent");
-const handler = (req, res) => {
+import { deleteEvent } from "../../helpers/licencesDB/deleteEvent.js";
+export const handler = (req, res) => {
     if (req.body.licenceID === "" || req.body.eventDate === "") {
         res.json({
             success: false,
@@ -10,7 +7,7 @@ const handler = (req, res) => {
         });
     }
     else {
-        const changeCount = deleteEvent_1.deleteEvent(req.body.licenceID, req.body.eventDate, req.session);
+        const changeCount = deleteEvent(req.body.licenceID, req.body.eventDate, req.session);
         if (changeCount) {
             res.json({
                 success: true,
@@ -25,4 +22,3 @@ const handler = (req, res) => {
         }
     }
 };
-exports.handler = handler;

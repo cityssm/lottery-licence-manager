@@ -1,7 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.getMaxTransactionIndexWithDB = void 0;
-const getMaxTransactionIndexWithDB = (db, licenceID) => {
+export const getMaxTransactionIndexWithDB = (db, licenceID) => {
     const result = db.prepare("select transactionIndex" +
         " from LotteryLicenceTransactions" +
         " where licenceID = ?" +
@@ -12,4 +9,3 @@ const getMaxTransactionIndexWithDB = (db, licenceID) => {
         ? result.transactionIndex
         : -1);
 };
-exports.getMaxTransactionIndexWithDB = getMaxTransactionIndexWithDB;

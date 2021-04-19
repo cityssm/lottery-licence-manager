@@ -1,10 +1,7 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.initLicencesDB = exports.initUsersDB = void 0;
-const sqlite = require("better-sqlite3");
-const debug_1 = require("debug");
-const debugSQL = debug_1.debug("lottery-licence-manager:dbInit");
-const initUsersDB = () => {
+import sqlite from "better-sqlite3";
+import debug from "debug";
+const debugSQL = debug("lottery-licence-manager:dbInit");
+export const initUsersDB = () => {
     const usersDB = sqlite("data/users.db");
     const row = usersDB.prepare("select name from sqlite_master where type = 'table' and name = 'Users'").get();
     if (!row) {
@@ -28,8 +25,7 @@ const initUsersDB = () => {
     }
     return false;
 };
-exports.initUsersDB = initUsersDB;
-const initLicencesDB = () => {
+export const initLicencesDB = () => {
     const licencesDB = sqlite("data/licences.db");
     const row = licencesDB
         .prepare("select name from sqlite_master where type = 'table' and name = 'Organizations'")
@@ -288,4 +284,3 @@ const initLicencesDB = () => {
     }
     return false;
 };
-exports.initLicencesDB = initLicencesDB;

@@ -1,20 +1,20 @@
 import * as assert from "assert";
 
-import * as sqlite from "better-sqlite3";
-import { licencesDB as dbPath } from "../data/databasePaths";
+import sqlite from "better-sqlite3";
+import { licencesDB as dbPath } from "../data/databasePaths.js";
 
-import { fakeViewOnlySession } from "./_globals";
+import { fakeViewOnlySession } from "./_globals.js";
 
-import { getLicence } from "../helpers/licencesDB/getLicence";
-import { getLicences } from "../helpers/licencesDB/getLicences";
-import { getDistinctTermsConditions } from "../helpers/licencesDB/getDistinctTermsConditions";
-import { getLicenceActivityByDateRange } from "../helpers/licencesDB/getLicenceActivityByDateRange";
-import { getNextExternalLicenceNumberFromRange } from "../helpers/licencesDB/getNextExternalLicenceNumberFromRange";
+import { getLicence } from "../helpers/licencesDB/getLicence.js";
+import { getLicences } from "../helpers/licencesDB/getLicences.js";
+import { getDistinctTermsConditions } from "../helpers/licencesDB/getDistinctTermsConditions.js";
+import { getLicenceActivityByDateRange } from "../helpers/licencesDB/getLicenceActivityByDateRange.js";
+import { getNextExternalLicenceNumberFromRange } from "../helpers/licencesDB/getNextExternalLicenceNumberFromRange.js";
 
-import { getLicenceTicketTypesWithDB } from "../helpers/licencesDB/getLicenceTicketTypes";
-import { getLicenceAmendmentsWithDB } from "../helpers/licencesDB/getLicenceAmendments";
-import { getMaxLicenceAmendmentIndexWithDB } from "../helpers/licencesDB/getMaxLicenceAmendmentIndex";
-import { getMaxTransactionIndexWithDB } from "../helpers/licencesDB/getMaxTransactionIndex";
+import { getLicenceTicketTypesWithDB } from "../helpers/licencesDB/getLicenceTicketTypes.js";
+import { getLicenceAmendmentsWithDB } from "../helpers/licencesDB/getLicenceAmendments.js";
+import { getMaxLicenceAmendmentIndexWithDB } from "../helpers/licencesDB/getMaxLicenceAmendmentIndex.js";
+import { getMaxTransactionIndexWithDB } from "../helpers/licencesDB/getMaxTransactionIndex.js";
 
 
 describe("licencesDB/licences", () => {

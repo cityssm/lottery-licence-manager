@@ -1,6 +1,6 @@
 import type { RequestHandler } from "express";
 
-import { rollForwardOrganization } from "../../helpers/licencesDB/rollForwardOrganization";
+import { rollForwardOrganization } from "../../helpers/licencesDB/rollForwardOrganization.js";
 
 
 export const handler: RequestHandler = (req, res) => {

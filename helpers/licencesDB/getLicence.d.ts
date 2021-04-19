@@ -1,4 +1,4 @@
-import * as sqlite from "better-sqlite3";
+import sqlite from "better-sqlite3";
 import type * as llm from "../../types/recordTypes";
 import type * as expressSession from "express-session";
 export declare const getLicenceWithDB: (db: sqlite.Database, licenceID: number | string, reqSession: expressSession.Session, queryOptions: {

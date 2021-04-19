@@ -1,6 +1,6 @@
 import type { RequestHandler } from "express";
 
-import { addTransaction } from "../../helpers/licencesDB/addTransaction";
+import { addTransaction } from "../../helpers/licencesDB/addTransaction.js";
 
 
 export const handler: RequestHandler = (req, res) => {

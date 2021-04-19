@@ -1,14 +1,11 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.voidTransaction = void 0;
-const sqlite = require("better-sqlite3");
-const databasePaths_1 = require("../../data/databasePaths");
-const _runSQLByName_1 = require("../_runSQLByName");
-const getLicence_1 = require("./getLicence");
-const addLicenceAmendment_1 = require("./addLicenceAmendment");
-const voidTransaction = (licenceID, transactionIndex, reqSession) => {
-    const db = sqlite(databasePaths_1.licencesDB);
-    const licenceObj = getLicence_1.getLicenceWithDB(db, licenceID, reqSession, {
+import sqlite from "better-sqlite3";
+import { licencesDB as dbPath } from "../../data/databasePaths.js";
+import { runSQLWithDB } from "../_runSQLByName.js";
+import { getLicenceWithDB } from "./getLicence.js";
+import { addLicenceAmendmentWithDB } from "./addLicenceAmendment.js";
+export const voidTransaction = (licenceID, transactionIndex, reqSession) => {
+    const db = sqlite(dbPath);
+    const licenceObj = getLicenceWithDB(db, licenceID, reqSession, {
         includeTicketTypes: false,
         includeFields: false,
         includeEvents: false,
@@ -16,7 +13,7 @@ const voidTransaction = (licenceID, transactionIndex, reqSession) => {
         includeTransactions: false
     });
     const nowMillis = Date.now();
-    const hasChanges = _runSQLByName_1.runSQLWithDB(db, "update LotteryLicenceTransactions" +
+    const hasChanges = runSQLWithDB(db, "update LotteryLicenceTransactions" +
         " set recordDelete_userName = ?," +
         " recordDelete_timeMillis = ?" +
         " where licenceID = ?" +
@@ -28,9 +25,8 @@ const voidTransaction = (licenceID, transactionIndex, reqSession) => {
         transactionIndex
     ]).changes > 0;
     if (hasChanges && licenceObj.trackUpdatesAsAmendments) {
-        addLicenceAmendment_1.addLicenceAmendmentWithDB(db, licenceID, "Transaction Voided", "", 1, reqSession);
+        addLicenceAmendmentWithDB(db, licenceID, "Transaction Voided", "", 1, reqSession);
     }
     db.close();
     return hasChanges;
 };
-exports.voidTransaction = voidTransaction;

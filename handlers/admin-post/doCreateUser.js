@@ -1,9 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.handler = void 0;
-const createUser_1 = require("../../helpers/usersDB/createUser");
-const handler = async (req, res) => {
-    const newPassword = await createUser_1.createUser(req.body);
+import { createUser } from "../../helpers/usersDB/createUser.js";
+export const handler = async (req, res) => {
+    const newPassword = await createUser(req.body);
     if (!newPassword) {
         res.json({
             success: false,
@@ -17,4 +14,3 @@ const handler = async (req, res) => {
         });
     }
 };
-exports.handler = handler;

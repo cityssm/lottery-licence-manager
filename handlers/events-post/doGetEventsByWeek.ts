@@ -1,8 +1,8 @@
 import type { RequestHandler } from "express";
 
-import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns";
+import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
 
-import { getLicenceActivityByDateRange } from "../../helpers/licencesDB/getLicenceActivityByDateRange";
+import { getLicenceActivityByDateRange } from "../../helpers/licencesDB/getLicenceActivityByDateRange.js";
 
 
 export const handler: RequestHandler = (req, res) => {

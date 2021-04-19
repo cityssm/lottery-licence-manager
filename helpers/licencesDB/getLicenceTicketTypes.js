@@ -1,8 +1,5 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.getLicenceTicketTypesWithDB = void 0;
-const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
-const getLicenceTicketTypesWithDB = (db, licenceID) => {
+import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
+export const getLicenceTicketTypesWithDB = (db, licenceID) => {
     db.function("userFn_dateIntegerToString", dateTimeFns.dateIntegerToString);
     const ticketTypesList = db.prepare("select t.ticketTypeIndex," +
         " t.amendmentDate," +
@@ -27,4 +24,3 @@ const getLicenceTicketTypesWithDB = (db, licenceID) => {
         .all(licenceID);
     return ticketTypesList;
 };
-exports.getLicenceTicketTypesWithDB = getLicenceTicketTypesWithDB;

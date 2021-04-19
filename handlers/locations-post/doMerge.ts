@@ -1,6 +1,6 @@
 import type { RequestHandler } from "express";
 
-import { mergeLocations } from "../../helpers/licencesDB/mergeLocations";
+import { mergeLocations } from "../../helpers/licencesDB/mergeLocations.js";
 
 
 export const handler: RequestHandler = (req, res) => {

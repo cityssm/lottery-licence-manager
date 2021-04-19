@@ -1,12 +1,9 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.getEvents = void 0;
-const sqlite = require("better-sqlite3");
-const databasePaths_1 = require("../../data/databasePaths");
-const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
-const licencesDB_1 = require("../licencesDB");
-const getEvents = (reqBody, reqSession) => {
-    const db = sqlite(databasePaths_1.licencesDB, {
+import sqlite from "better-sqlite3";
+import { licencesDB as dbPath } from "../../data/databasePaths.js";
+import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
+import { canUpdateObject } from "../licencesDB.js";
+export const getEvents = (reqBody, reqSession) => {
+    const db = sqlite(dbPath, {
         readonly: true
     });
     const sqlParams = [reqBody.eventYear, reqBody.eventYear];
@@ -64,11 +61,10 @@ const getEvents = (reqBody, reqSession) => {
         lotteryEvent.endTimeString = dateTimeFns.timeIntegerToString(lotteryEvent.endTime || 0);
         lotteryEvent.locationDisplayName =
             (lotteryEvent.locationName === "" ? lotteryEvent.locationAddress1 : lotteryEvent.locationName);
-        lotteryEvent.canUpdate = licencesDB_1.canUpdateObject(lotteryEvent, reqSession);
+        lotteryEvent.canUpdate = canUpdateObject(lotteryEvent, reqSession);
         delete lotteryEvent.locationName;
         delete lotteryEvent.locationAddress1;
         delete lotteryEvent.bank_name;
     }
     return events;
 };
-exports.getEvents = getEvents;

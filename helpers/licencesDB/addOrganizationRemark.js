@@ -1,13 +1,10 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.addOrganizationRemark = void 0;
-const sqlite = require("better-sqlite3");
-const getMaxOrganizationRemarkIndex_1 = require("./getMaxOrganizationRemarkIndex");
-const databasePaths_1 = require("../../data/databasePaths");
-const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
-const addOrganizationRemark = (reqBody, reqSession) => {
-    const db = sqlite(databasePaths_1.licencesDB);
-    const newRemarkIndex = getMaxOrganizationRemarkIndex_1.getMaxOrganizationRemarkIndexWithDB(db, reqBody.organizationID) + 1;
+import sqlite from "better-sqlite3";
+import { getMaxOrganizationRemarkIndexWithDB } from "./getMaxOrganizationRemarkIndex.js";
+import { licencesDB as dbPath } from "../../data/databasePaths.js";
+import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
+export const addOrganizationRemark = (reqBody, reqSession) => {
+    const db = sqlite(dbPath);
+    const newRemarkIndex = getMaxOrganizationRemarkIndexWithDB(db, reqBody.organizationID) + 1;
     const rightNow = new Date();
     const remarkDate = dateTimeFns.dateToInteger(rightNow);
     const remarkTime = dateTimeFns.dateToTimeInteger(rightNow);
@@ -21,4 +18,3 @@ const addOrganizationRemark = (reqBody, reqSession) => {
     db.close();
     return newRemarkIndex;
 };
-exports.addOrganizationRemark = addOrganizationRemark;

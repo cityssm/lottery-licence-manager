@@ -1,11 +1,8 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.getDistinctTermsConditions = void 0;
-const sqlite = require("better-sqlite3");
-const databasePaths_1 = require("../../data/databasePaths");
-const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
-const getDistinctTermsConditions = (organizationID) => {
-    const db = sqlite(databasePaths_1.licencesDB, {
+import sqlite from "better-sqlite3";
+import { licencesDB as dbPath } from "../../data/databasePaths.js";
+import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
+export const getDistinctTermsConditions = (organizationID) => {
+    const db = sqlite(dbPath, {
         readonly: true
     });
     const terms = db.prepare("select termsConditions," +
@@ -25,4 +22,3 @@ const getDistinctTermsConditions = (organizationID) => {
     }
     return terms;
 };
-exports.getDistinctTermsConditions = getDistinctTermsConditions;

@@ -1,4 +1,3 @@
-"use strict";
 var __await = (this && this.__await) || function (v) { return this instanceof __await ? (this.v = v, this) : new __await(v); }
 var __asyncGenerator = (this && this.__asyncGenerator) || function (thisArg, _arguments, generator) {
     if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
@@ -11,9 +10,7 @@ var __asyncGenerator = (this && this.__asyncGenerator) || function (thisArg, _ar
     function reject(value) { resume("throw", value); }
     function settle(f, v) { if (f(v), q.shift(), q.length) resume(q[0][0], q[0][1]); }
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.userName = exports.fakeAdminRequest = exports.fakeViewOnlyRequest = exports.fakeRequest = exports.fakeAdminSession = exports.fakeViewOnlySession = void 0;
-exports.fakeViewOnlySession = {
+export const fakeViewOnlySession = {
     id: "",
     cookie: null,
     destroy: null,
@@ -32,7 +29,7 @@ exports.fakeViewOnlySession = {
         }
     }
 };
-exports.fakeAdminSession = {
+export const fakeAdminSession = {
     id: "",
     cookie: null,
     destroy: null,
@@ -51,7 +48,7 @@ exports.fakeAdminSession = {
         }
     }
 };
-exports.fakeRequest = {
+export const fakeRequest = {
     [Symbol.asyncIterator]() { return __asyncGenerator(this, arguments, function* _a() { }); },
     _destroy: null,
     _read: null,
@@ -134,10 +131,10 @@ exports.fakeRequest = {
     wrap: null,
     xhr: null
 };
-exports.fakeViewOnlyRequest = Object.assign({}, exports.fakeRequest, {
-    session: exports.fakeViewOnlySession
+export const fakeViewOnlyRequest = Object.assign({}, fakeRequest, {
+    session: fakeViewOnlySession
 });
-exports.fakeAdminRequest = Object.assign({}, exports.fakeRequest, {
-    session: exports.fakeAdminSession
+export const fakeAdminRequest = Object.assign({}, fakeRequest, {
+    session: fakeAdminSession
 });
-exports.userName = "__testUser";
+export const userName = "__testUser";

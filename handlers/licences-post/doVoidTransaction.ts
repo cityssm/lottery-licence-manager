@@ -1,6 +1,6 @@
 import type { RequestHandler } from "express";
 
-import { voidTransaction } from "../../helpers/licencesDB/voidTransaction";
+import { voidTransaction } from "../../helpers/licencesDB/voidTransaction.js";
 
 
 export const handler: RequestHandler = (req, res) => {

@@ -1,7 +1,5 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const assert = require("assert");
-const configFns = require("../helpers/configFns");
+import * as assert from "assert";
+import * as configFns from "../helpers/configFns.js";
 describe("configFns", () => {
     describe("#getProperty", () => {
         it("Includes string value for property \"licences.externalLicenceNumber.fieldLabel\"", () => {

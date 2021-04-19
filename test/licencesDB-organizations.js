@@ -1,69 +1,67 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const assert = require("assert");
-const sqlite = require("better-sqlite3");
-const databasePaths_1 = require("../data/databasePaths");
-const _globals_1 = require("./_globals");
-const getOrganization_1 = require("../helpers/licencesDB/getOrganization");
-const getOrganizations_1 = require("../helpers/licencesDB/getOrganizations");
-const getInactiveOrganizations_1 = require("../helpers/licencesDB/getInactiveOrganizations");
-const getOrganizationRemark_1 = require("../helpers/licencesDB/getOrganizationRemark");
-const getOrganizationRemarks_1 = require("../helpers/licencesDB/getOrganizationRemarks");
-const getOrganizationReminder_1 = require("../helpers/licencesDB/getOrganizationReminder");
-const getOrganizationReminders_1 = require("../helpers/licencesDB/getOrganizationReminders");
-const getUndismissedOrganizationReminders_1 = require("../helpers/licencesDB/getUndismissedOrganizationReminders");
-const getOrganizationBankRecords_1 = require("../helpers/licencesDB/getOrganizationBankRecords");
-const getOrganizationBankRecordStats_1 = require("../helpers/licencesDB/getOrganizationBankRecordStats");
-const getMaxOrganizationReminderIndex_1 = require("../helpers/licencesDB/getMaxOrganizationReminderIndex");
-const getMaxOrganizationRemarkIndex_1 = require("../helpers/licencesDB/getMaxOrganizationRemarkIndex");
-const getMaxOrganizationBankRecordIndex_1 = require("../helpers/licencesDB/getMaxOrganizationBankRecordIndex");
+import * as assert from "assert";
+import sqlite from "better-sqlite3";
+import { licencesDB as dbPath } from "../data/databasePaths.js";
+import { fakeViewOnlySession } from "./_globals.js";
+import { getOrganization } from "../helpers/licencesDB/getOrganization.js";
+import { getOrganizations } from "../helpers/licencesDB/getOrganizations.js";
+import { getInactiveOrganizations } from "../helpers/licencesDB/getInactiveOrganizations.js";
+import { getOrganizationRemark } from "../helpers/licencesDB/getOrganizationRemark.js";
+import { getOrganizationRemarks } from "../helpers/licencesDB/getOrganizationRemarks.js";
+import { getOrganizationReminder } from "../helpers/licencesDB/getOrganizationReminder.js";
+import { getOrganizationReminders } from "../helpers/licencesDB/getOrganizationReminders.js";
+import { getUndismissedOrganizationReminders } from "../helpers/licencesDB/getUndismissedOrganizationReminders.js";
+import { getOrganizationBankRecords } from "../helpers/licencesDB/getOrganizationBankRecords.js";
+import { getOrganizationBankRecordStats } from "../helpers/licencesDB/getOrganizationBankRecordStats.js";
+import { getMaxOrganizationReminderIndexWithDB } from "../helpers/licencesDB/getMaxOrganizationReminderIndex.js";
+import { getMaxOrganizationRemarkIndexWithDB } from "../helpers/licencesDB/getMaxOrganizationRemarkIndex.js";
+import { getMaxOrganizationBankRecordIndexWithDB } from "../helpers/licencesDB/getMaxOrganizationBankRecordIndex.js";
 describe("licencesDB/organizations", () => {
     it("should execute getOrganization()", () => {
-        assert.equal(getOrganization_1.getOrganization(-1, _globals_1.fakeViewOnlySession), null);
+        assert.equal(getOrganization(-1, fakeViewOnlySession), null);
     });
     it("should execute getOrganizations()", () => {
-        assert.equal(typeof getOrganizations_1.getOrganizations({}, _globals_1.fakeViewOnlySession, { limit: 10 }), "object");
+        assert.equal(typeof getOrganizations({}, fakeViewOnlySession, { limit: 10 }), "object");
     });
     it("should execute getInactiveOrganizations()", () => {
-        assert.equal(typeof getInactiveOrganizations_1.getInactiveOrganizations(5), "object");
+        assert.equal(typeof getInactiveOrganizations(5), "object");
     });
     it("should execute getOrganizationRemark()", () => {
-        assert.equal(typeof getOrganizationRemark_1.getOrganizationRemark(-1, -1, _globals_1.fakeViewOnlySession), "undefined");
+        assert.equal(typeof getOrganizationRemark(-1, -1, fakeViewOnlySession), "undefined");
     });
     it("should execute getOrganizationRemarks()", () => {
-        assert.equal(typeof getOrganizationRemarks_1.getOrganizationRemarks(1, _globals_1.fakeViewOnlySession), "object");
+        assert.equal(typeof getOrganizationRemarks(1, fakeViewOnlySession), "object");
     });
     it("should execute getOrganizationReminder()", () => {
-        assert.equal(typeof getOrganizationReminder_1.getOrganizationReminder(1, 0, _globals_1.fakeViewOnlySession), "undefined");
+        assert.equal(typeof getOrganizationReminder(1, 0, fakeViewOnlySession), "undefined");
     });
     it("should execute getOrganizationReminders()", () => {
-        assert.equal(typeof getOrganizationReminders_1.getOrganizationReminders(1, _globals_1.fakeViewOnlySession), "object");
+        assert.equal(typeof getOrganizationReminders(1, fakeViewOnlySession), "object");
     });
     it("should execute getUndismissedOrganizationReminders()", () => {
-        assert.equal(typeof getUndismissedOrganizationReminders_1.getUndismissedOrganizationReminders(_globals_1.fakeViewOnlySession), "object");
+        assert.equal(typeof getUndismissedOrganizationReminders(fakeViewOnlySession), "object");
     });
     it("should execute getOrganizationBankRecords()", () => {
-        assert.equal(typeof getOrganizationBankRecords_1.getOrganizationBankRecords(1, "", 2020), "object");
+        assert.equal(typeof getOrganizationBankRecords(1, "", 2020), "object");
     });
     it("should execute getOrganizationBankRecordStats()", () => {
-        assert.equal(typeof getOrganizationBankRecordStats_1.getOrganizationBankRecordStats(1), "object");
+        assert.equal(typeof getOrganizationBankRecordStats(1), "object");
     });
     describe("licencesDB/organizations (with DB)", () => {
         let db;
         before(() => {
-            db = sqlite(databasePaths_1.licencesDB);
+            db = sqlite(dbPath);
         });
         after(() => {
             db.close();
         });
         it("should execute getMaxOrganizationReminderIndexWithDB()", () => {
-            assert.equal(getMaxOrganizationReminderIndex_1.getMaxOrganizationReminderIndexWithDB(db, -1), -1);
+            assert.equal(getMaxOrganizationReminderIndexWithDB(db, -1), -1);
         });
         it("should execute getMaxOrganizationRemarkIndexWithDB()", () => {
-            assert.equal(getMaxOrganizationRemarkIndex_1.getMaxOrganizationRemarkIndexWithDB(db, -1), -1);
+            assert.equal(getMaxOrganizationRemarkIndexWithDB(db, -1), -1);
         });
         it("should execute getMaxOrganizationBankRecordIndexWithDB()", () => {
-            assert.equal(getMaxOrganizationBankRecordIndex_1.getMaxOrganizationBankRecordIndexWithDB(db, -1), -1);
+            assert.equal(getMaxOrganizationBankRecordIndexWithDB(db, -1), -1);
         });
     });
 });

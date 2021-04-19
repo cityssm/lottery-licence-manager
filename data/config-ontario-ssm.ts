@@ -1,24 +1,24 @@
-import * as recordTypes from "../types/recordTypes";
-import * as configTypes from "../types/configTypes";
+import type * as recordTypes from "../types/recordTypes";
+import type * as configTypes from "../types/configTypes";
 
-import * as objectFns from "../helpers/objectFns";
+import * as objectFns from "../helpers/objectFns.js";
 
-import * as configOntario from "./config-ontario";
+import { config as configOntario } from "./config-ontario.js";
 
 
-const configSSM: configTypes.Config = Object.assign({}, configOntario);
+export const config: configTypes.Config = Object.assign({}, configOntario);
 
 
 /*
  * APPLICATION SETTINGS
  */
 
-configSSM.application = {
+config.application = {
   applicationName: "SSM Lottery Licence Manager"
 };
 
 
-configSSM.session = {
+config.session = {
   doKeepAlive: true
 };
 
@@ -27,9 +27,9 @@ configSSM.session = {
  * DEFAULT VALUES
  */
 
-configSSM.defaults.city = "Sault Ste. Marie";
+config.defaults.city = "Sault Ste. Marie";
 
-configSSM.reminders = {
+config.reminders = {
   preferredSortOrder: "config",
   dismissingStatuses: ["Received", "Not Applicable", "Dismissed"]
 };
@@ -38,14 +38,14 @@ configSSM.reminders = {
  * LICENCE SETTINGS
  */
 
-configSSM.licences.externalLicenceNumber.newCalculation = "range";
+config.licences.externalLicenceNumber.newCalculation = "range";
 
 
-configSSM.licences.externalReceiptNumber = {
+config.licences.externalReceiptNumber = {
   fieldLabel: "GP Receipt Number"
 };
 
-configSSM.licences.feeCalculationFn = (licenceObj: recordTypes.LotteryLicence) => {
+config.licences.feeCalculationFn = (licenceObj: recordTypes.LotteryLicence) => {
 
   const totalPrizeValue = (licenceObj.totalPrizeValue || 0.0);
 
@@ -131,7 +131,7 @@ configSSM.licences.feeCalculationFn = (licenceObj: recordTypes.LotteryLicence) =
  * SAULT STE MARIE SPECIFICS FOR NEVADA LICENSING
  */
 
-const licenceTypeNevada = configSSM.licenceTypes.find((licenceType) => licenceType.licenceTypeKey === "NV");
+const licenceTypeNevada = config.licenceTypes.find((licenceType) => licenceType.licenceTypeKey === "NV");
 
 
 /*
@@ -183,6 +183,3 @@ licenceTypeNevada.licenceFields = [
     }
   }
 ];
-
-
-module.exports = configSSM;

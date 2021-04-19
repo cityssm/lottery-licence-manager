@@ -1,16 +1,13 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.handler = void 0;
-const configFns = require("../../helpers/configFns");
-const createError = require("http-errors");
-const fs = require("fs");
-const path = require("path");
-const marked = require("marked");
-const sanitize = require("sanitize-filename");
+import * as configFns from "../../helpers/configFns.js";
+import createError from "http-errors";
+import * as fs from "fs";
+import * as path from "path";
+import marked from "marked";
+import sanitizeFilename from "sanitize-filename";
 const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
 const applicationName = configFns.getProperty("application.applicationName");
-const handler = (req, res, next) => {
-    const mdFileName = sanitize(req.params.mdFileName);
+export const handler = (req, res, next) => {
+    const mdFileName = sanitizeFilename(req.params.mdFileName);
     const mdPath = path.join(__dirname, "..", "..", "docs", mdFileName + (mdFileName.endsWith(".md") ? "" : ".md"));
     fs.readFile(mdPath, "utf8", (err, data) => {
         if (err) {
@@ -34,4 +31,3 @@ const handler = (req, res, next) => {
       </html>`);
     });
 };
-exports.handler = handler;

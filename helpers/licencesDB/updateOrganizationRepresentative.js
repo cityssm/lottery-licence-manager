@@ -1,9 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateOrganizationRepresentative = void 0;
-const _runSQL_1 = require("./_runSQL");
-const updateOrganizationRepresentative = (organizationID, reqBody) => {
-    _runSQL_1.runSQL("update OrganizationRepresentatives" +
+import { runSQL } from "./_runSQL.js";
+export const updateOrganizationRepresentative = (organizationID, reqBody) => {
+    runSQL("update OrganizationRepresentatives" +
         " set representativeName = ?," +
         " representativeTitle = ?," +
         " representativeAddress1 = ?," +
@@ -39,4 +36,3 @@ const updateOrganizationRepresentative = (organizationID, reqBody) => {
     };
     return representativeObj;
 };
-exports.updateOrganizationRepresentative = updateOrganizationRepresentative;

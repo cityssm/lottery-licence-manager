@@ -1,7 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.getMaxLicenceTicketTypeIndexWithDB = void 0;
-const getMaxLicenceTicketTypeIndexWithDB = (db, licenceID) => {
+export const getMaxLicenceTicketTypeIndexWithDB = (db, licenceID) => {
     const result = db.prepare("select ticketTypeIndex" +
         " from LotteryLicenceTicketTypes" +
         " where licenceID = ?" +
@@ -12,4 +9,3 @@ const getMaxLicenceTicketTypeIndexWithDB = (db, licenceID) => {
         ? result.ticketTypeIndex
         : -1);
 };
-exports.getMaxLicenceTicketTypeIndexWithDB = getMaxLicenceTicketTypeIndexWithDB;

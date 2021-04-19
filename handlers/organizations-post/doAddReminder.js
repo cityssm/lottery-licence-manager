@@ -1,9 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.handler = void 0;
-const addOrganizationReminder_1 = require("../../helpers/licencesDB/addOrganizationReminder");
-const handler = (req, res) => {
-    const reminder = addOrganizationReminder_1.addOrganizationReminder(req.body, req.session);
+import { addOrganizationReminder } from "../../helpers/licencesDB/addOrganizationReminder.js";
+export const handler = (req, res) => {
+    const reminder = addOrganizationReminder(req.body, req.session);
     if (reminder) {
         return res.json({
             success: true,
@@ -16,4 +13,3 @@ const handler = (req, res) => {
         });
     }
 };
-exports.handler = handler;

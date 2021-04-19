@@ -1,28 +1,28 @@
 import { Router } from "express";
 
-import * as permissionHandlers from "../handlers/permissions";
+import * as permissionHandlers from "../handlers/permissions.js";
 
-import { handler as handler_view } from "../handlers/events-get/view";
-import { handler as handler_edit } from "../handlers/events-get/edit";
-import { handler as handler_poke } from "../handlers/events-get/poke";
+import { handler as handler_view } from "../handlers/events-get/view.js";
+import { handler as handler_edit } from "../handlers/events-get/edit.js";
+import { handler as handler_poke } from "../handlers/events-get/poke.js";
 
-import { handler as handler_doGetEventsByWeek } from "../handlers/events-post/doGetEventsByWeek";
+import { handler as handler_doGetEventsByWeek } from "../handlers/events-post/doGetEventsByWeek.js";
 
-import { handler as handler_outstanding } from "../handlers/events-get/outstanding";
-import { handler as handler_doGetOutstandingEvents } from "../handlers/events-post/doGetOutstandingEvents";
+import { handler as handler_outstanding } from "../handlers/events-get/outstanding.js";
+import { handler as handler_doGetOutstandingEvents } from "../handlers/events-post/doGetOutstandingEvents.js";
 
-import { handler as handler_financials } from "../handlers/events-get/financials";
-import { handler as handler_doGetFinancialSummary } from "../handlers/events-post/doGetFinancialSummary";
+import { handler as handler_financials } from "../handlers/events-get/financials.js";
+import { handler as handler_doGetFinancialSummary } from "../handlers/events-post/doGetFinancialSummary.js";
 
-import { handler as handler_doSearch } from "../handlers/events-post/doSearch";
-import { handler as handler_doGetPastBankInformation } from "../handlers/events-post/doGetPastBankInformation";
-import { handler as handler_doSave } from "../handlers/events-post/doSave";
-import { handler as handler_doDelete } from "../handlers/events-post/doDelete";
+import { handler as handler_doSearch } from "../handlers/events-post/doSearch.js";
+import { handler as handler_doGetPastBankInformation } from "../handlers/events-post/doGetPastBankInformation.js";
+import { handler as handler_doSave } from "../handlers/events-post/doSave.js";
+import { handler as handler_doDelete } from "../handlers/events-post/doDelete.js";
 
-import * as licencesDB from "../helpers/licencesDB";
+import * as licencesDB from "../helpers/licencesDB.js";
 
 
-const router = Router();
+export const router = Router();
 
 
 /*
@@ -119,6 +119,3 @@ router.get("/:licenceID/:eventDate/edit",
 router.get("/:licenceID/:eventDate/poke",
   permissionHandlers.adminGetHandler,
   handler_poke);
-
-
-export = router;

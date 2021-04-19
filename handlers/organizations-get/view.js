@@ -1,28 +1,25 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.handler = void 0;
-const configFns = require("../../helpers/configFns");
-const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
-const getLicences_1 = require("../../helpers/licencesDB/getLicences");
-const getOrganization_1 = require("../../helpers/licencesDB/getOrganization");
-const getOrganizationRemarks_1 = require("../../helpers/licencesDB/getOrganizationRemarks");
-const getOrganizationReminders_1 = require("../../helpers/licencesDB/getOrganizationReminders");
+import * as configFns from "../../helpers/configFns.js";
+import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
+import { getLicences } from "../../helpers/licencesDB/getLicences.js";
+import { getOrganization } from "../../helpers/licencesDB/getOrganization.js";
+import { getOrganizationRemarks } from "../../helpers/licencesDB/getOrganizationRemarks.js";
+import { getOrganizationReminders } from "../../helpers/licencesDB/getOrganizationReminders.js";
 const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
-const handler = (req, res, next) => {
+export const handler = (req, res, next) => {
     const organizationID = Number(req.params.organizationID);
     if (isNaN(organizationID)) {
         return next();
     }
-    const organization = getOrganization_1.getOrganization(organizationID, req.session);
+    const organization = getOrganization(organizationID, req.session);
     if (!organization) {
         return res.redirect(urlPrefix + "/organizations/?error=organizationNotFound");
     }
-    const licences = getLicences_1.getLicences({ organizationID }, req.session, {
+    const licences = getLicences({ organizationID }, req.session, {
         includeOrganization: false,
         limit: -1
     }).licences || [];
-    const remarks = getOrganizationRemarks_1.getOrganizationRemarks(organizationID, req.session) || [];
-    const reminders = getOrganizationReminders_1.getOrganizationReminders(organizationID, req.session) || [];
+    const remarks = getOrganizationRemarks(organizationID, req.session) || [];
+    const reminders = getOrganizationReminders(organizationID, req.session) || [];
     res.render("organization-view", {
         headTitle: organization.organizationName,
         isViewOnly: true,
@@ -33,4 +30,3 @@ const handler = (req, res, next) => {
         currentDateInteger: dateTimeFns.dateToInteger(new Date())
     });
 };
-exports.handler = handler;

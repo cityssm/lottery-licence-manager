@@ -1,15 +1,12 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.createLicence = void 0;
-const sqlite = require("better-sqlite3");
-const databasePaths_1 = require("../../data/databasePaths");
-const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
-const configFns = require("../configFns");
-const getLicence_1 = require("./getLicence");
-const createEvent_1 = require("./createEvent");
-const licencesDB_1 = require("../licencesDB");
-const createLicence = (reqBody, reqSession) => {
-    const db = sqlite(databasePaths_1.licencesDB);
+import sqlite from "better-sqlite3";
+import { licencesDB as dbPath } from "../../data/databasePaths.js";
+import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
+import * as configFns from "../configFns.js";
+import { getLicenceWithDB } from "./getLicence.js";
+import { createEventWithDB } from "./createEvent.js";
+import { resetLicenceTableStats, resetEventTableStats } from "../licencesDB.js";
+export const createLicence = (reqBody, reqSession) => {
+    const db = sqlite(dbPath);
     const nowDate = new Date();
     const nowMillis = nowDate.getTime();
     const nowDateInt = dateTimeFns.dateToInteger(nowDate);
@@ -50,7 +47,7 @@ const createLicence = (reqBody, reqSession) => {
     }
     if (eventDateStrings_toAdd) {
         for (const eventDate of eventDateStrings_toAdd) {
-            createEvent_1.createEventWithDB(db, licenceID, eventDate, reqSession);
+            createEventWithDB(db, licenceID, eventDate, reqSession);
         }
     }
     if (typeof (reqBody.ticketType_ticketType) === "string") {
@@ -81,7 +78,7 @@ const createLicence = (reqBody, reqSession) => {
                 : reqBody.ticketType_manufacturerLocationID[ticketTypeIndex]), reqBody.ticketType_unitCount[ticketTypeIndex], reqBody.ticketType_licenceFee[ticketTypeIndex], reqSession.user.userName, nowMillis, reqSession.user.userName, nowMillis);
         });
     }
-    const licenceObj = getLicence_1.getLicenceWithDB(db, licenceID, reqSession, {
+    const licenceObj = getLicenceWithDB(db, licenceID, reqSession, {
         includeTicketTypes: true,
         includeFields: true,
         includeEvents: true,
@@ -94,8 +91,7 @@ const createLicence = (reqBody, reqSession) => {
         " where licenceID = ?")
         .run(feeCalculation.fee, licenceID);
     db.close();
-    licencesDB_1.resetLicenceTableStats();
-    licencesDB_1.resetEventTableStats();
+    resetLicenceTableStats();
+    resetEventTableStats();
     return licenceID;
 };
-exports.createLicence = createLicence;

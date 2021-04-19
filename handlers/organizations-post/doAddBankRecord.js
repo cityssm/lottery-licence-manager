@@ -1,9 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.handler = void 0;
-const addOrganizationBankRecord_1 = require("../../helpers/licencesDB/addOrganizationBankRecord");
-const handler = (req, res) => {
-    const success = addOrganizationBankRecord_1.addOrganizationBankRecord(req.body, req.session);
+import { addOrganizationBankRecord } from "../../helpers/licencesDB/addOrganizationBankRecord.js";
+export const handler = (req, res) => {
+    const success = addOrganizationBankRecord(req.body, req.session);
     if (success) {
         return res.json({
             success: true,
@@ -17,4 +14,3 @@ const handler = (req, res) => {
         });
     }
 };
-exports.handler = handler;

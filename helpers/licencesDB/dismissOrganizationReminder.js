@@ -1,11 +1,8 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.dismissOrganizationReminder = void 0;
-const _runSQL_1 = require("./_runSQL");
-const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
-const dismissOrganizationReminder = (organizationID, reminderIndex, reqSession) => {
+import { runSQL_hasChanges } from "./_runSQL.js";
+import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
+export const dismissOrganizationReminder = (organizationID, reminderIndex, reqSession) => {
     const currentDate = new Date();
-    return _runSQL_1.runSQL_hasChanges("update OrganizationReminders" +
+    return runSQL_hasChanges("update OrganizationReminders" +
         " set dismissedDate = ?," +
         " recordUpdate_userName = ?," +
         " recordUpdate_timeMillis = ?" +
@@ -20,4 +17,3 @@ const dismissOrganizationReminder = (organizationID, reminderIndex, reqSession) 
         reminderIndex
     ]);
 };
-exports.dismissOrganizationReminder = dismissOrganizationReminder;

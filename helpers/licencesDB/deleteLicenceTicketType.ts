@@ -1,4 +1,4 @@
-import { runSQLWithDB } from "../_runSQLByName";
+import { runSQLWithDB } from "../_runSQLByName.js";
 
 import type * as expressSession from "express-session";
 import type * as sqlite from "better-sqlite3";

@@ -1,4 +1,4 @@
-import { runSQL } from "./_runSQL";
+import { runSQL } from "./_runSQL.js";
 
 import type * as llm from "../../types/recordTypes";
 

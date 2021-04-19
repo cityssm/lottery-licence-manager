@@ -1,34 +1,32 @@
-"use strict";
-const createError = require("http-errors");
-const express = require("express");
-const compression = require("compression");
-const path = require("path");
-const cookieParser = require("cookie-parser");
-const csurf = require("csurf");
-const rateLimit = require("express-rate-limit");
-const session = require("express-session");
-const sqlite3 = require("connect-sqlite3");
-const packageJSON = require("./package.json");
-const routerDocs = require("./routes/docs");
-const routerLogin = require("./routes/login");
-const routerDashboard = require("./routes/dashboard");
-const routerOrganizations = require("./routes/organizations");
-const routerLicences = require("./routes/licences");
-const routerLocations = require("./routes/locations");
-const routerEvents = require("./routes/events");
-const routerReports = require("./routes/reports");
-const routerAdmin = require("./routes/admin");
-const configFns = require("./helpers/configFns");
-const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
-const stringFns = require("@cityssm/expressjs-server-js/stringFns");
-const htmlFns = require("@cityssm/expressjs-server-js/htmlFns");
-const dbInit = require("./helpers/dbInit");
-const debug_1 = require("debug");
-const debugApp = debug_1.debug("lottery-licence-manager:app");
-const SQLiteStore = sqlite3(session);
+import createError from "http-errors";
+import express from "express";
+import * as compression from "compression";
+import * as path from "path";
+import cookieParser from "cookie-parser";
+import csurf from "csurf";
+import rateLimit from "express-rate-limit";
+import session from "express-session";
+import sqlite from "connect-sqlite3";
+import { router as routerDocs } from "./routes/docs.js";
+import { router as routerLogin } from "./routes/login.js";
+import { router as routerDashboard } from "./routes/dashboard.js";
+import { router as routerOrganizations } from "./routes/organizations.js";
+import { router as routerLicences } from "./routes/licences.js";
+import { router as routerLocations } from "./routes/locations.js";
+import { router as routerEvents } from "./routes/events.js";
+import { router as routerReports } from "./routes/reports.js";
+import { router as routerAdmin } from "./routes/admin.js";
+import * as configFns from "./helpers/configFns.js";
+import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
+import * as stringFns from "@cityssm/expressjs-server-js/stringFns.js";
+import * as htmlFns from "@cityssm/expressjs-server-js/htmlFns.js";
+import * as dbInit from "./helpers/dbInit.js";
+import debug from "debug";
+const debugApp = debug("lottery-licence-manager:app");
 dbInit.initUsersDB();
 dbInit.initLicencesDB();
-const app = express();
+const __dirname = ".";
+export const app = express();
 if (!configFns.getProperty("reverseProxy.disableEtag")) {
     app.set("etag", false);
 }
@@ -38,7 +36,7 @@ if (!configFns.getProperty("reverseProxy.disableCompression")) {
     app.use(compression());
 }
 app.use((req, _res, next) => {
-    debugApp(req.method + " " + req.url);
+    debugApp(`${req.method} ${req.url}`);
     next();
 });
 app.use(express.json());
@@ -60,6 +58,7 @@ app.use(urlPrefix, express.static(path.join(__dirname, "public")));
 app.use(urlPrefix + "/docs/images", express.static(path.join(__dirname, "docs", "images")));
 app.use(urlPrefix + "/fa", express.static(path.join(__dirname, "node_modules", "@fortawesome", "fontawesome-free")));
 app.use(urlPrefix + "/cityssm-bulma-webapp-js", express.static(path.join(__dirname, "node_modules", "@cityssm", "bulma-webapp-js")));
+const SQLiteStore = sqlite(session);
 const sessionCookieName = configFns.getProperty("session.cookieName");
 app.use(session({
     store: new SQLiteStore({
@@ -86,10 +85,10 @@ const sessionChecker = (req, res, next) => {
     if (req.session.user && req.cookies[sessionCookieName]) {
         return next();
     }
-    return res.redirect(urlPrefix + "/login?redirect=" + req.originalUrl);
+    return res.redirect(`${urlPrefix}/login?redirect=${req.originalUrl}`);
 };
 app.use((req, res, next) => {
-    res.locals.buildNumber = packageJSON.version;
+    res.locals.buildNumber = process.env.npm_package_version;
     res.locals.user = req.session.user;
     res.locals.csrfToken = req.csrfToken();
     res.locals.configFns = configFns;
@@ -134,4 +133,3 @@ app.use((err, req, res, _next) => {
     res.status(err.status || 500);
     res.render("error");
 });
-module.exports = app;

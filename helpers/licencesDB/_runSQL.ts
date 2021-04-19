@@ -1,8 +1,8 @@
-import * as sqlite from "better-sqlite3";
+import sqlite from "better-sqlite3";
 
-import { runSQLByName } from "../_runSQLByName";
+import { runSQLByName } from "../_runSQLByName.js";
 
-import { debug } from "debug";
+import debug from "debug";
 const debugSQL = debug("lottery-licence-manager:licencesDB:runSQL");
 
 

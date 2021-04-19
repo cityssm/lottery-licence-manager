@@ -1,6 +1,6 @@
-import { runSQLWithDB } from "../_runSQLByName";
+import { runSQLWithDB } from "../_runSQLByName.js";
 
-import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns";
+import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
 
 import type * as sqlite from "better-sqlite3";
 import type * as expressSession from "express-session";

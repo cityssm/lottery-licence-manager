@@ -1,10 +1,7 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.setDefaultOrganizationRepresentative = void 0;
-const sqlite = require("better-sqlite3");
-const databasePaths_1 = require("../../data/databasePaths");
-const setDefaultOrganizationRepresentative = (organizationID, representativeIndex) => {
-    const db = sqlite(databasePaths_1.licencesDB);
+import sqlite from "better-sqlite3";
+import { licencesDB as dbPath } from "../../data/databasePaths.js";
+export const setDefaultOrganizationRepresentative = (organizationID, representativeIndex) => {
+    const db = sqlite(dbPath);
     db.prepare("update OrganizationRepresentatives" +
         " set isDefault = 0" +
         " where organizationID = ?")
@@ -17,4 +14,3 @@ const setDefaultOrganizationRepresentative = (organizationID, representativeInde
     db.close();
     return true;
 };
-exports.setDefaultOrganizationRepresentative = setDefaultOrganizationRepresentative;

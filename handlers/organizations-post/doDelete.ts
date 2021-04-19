@@ -1,6 +1,6 @@
 import type { RequestHandler } from "express";
 
-import { deleteOrganization } from "../../helpers/licencesDB/deleteOrganization";
+import { deleteOrganization } from "../../helpers/licencesDB/deleteOrganization.js";
 
 
 export const handler: RequestHandler = (req, res) => {

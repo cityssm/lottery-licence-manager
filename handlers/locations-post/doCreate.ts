@@ -1,6 +1,6 @@
 import type { RequestHandler } from "express";
 
-import { createLocation } from "../../helpers/licencesDB/createLocation";
+import { createLocation } from "../../helpers/licencesDB/createLocation.js";
 
 
 export const handler: RequestHandler = (req, res) => {

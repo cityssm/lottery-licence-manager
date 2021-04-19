@@ -1,14 +1,14 @@
 #!/usr/bin/env node
 
-import * as app from "../app";
+import { app } from "../app.js";
 
 import * as http from "http";
 import * as https from "https";
 import * as fs from "fs";
 
-import * as configFns from "../helpers/configFns";
+import * as configFns from "../helpers/configFns.js";
 
-import { debug } from "debug";
+import debug from "debug";
 const debugWWW = debug("lottery-licence-manager:www");
 
 

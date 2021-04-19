@@ -1,5 +1,5 @@
-import * as sqlite from "better-sqlite3";
-import { usersDB as dbPath } from "../../data/databasePaths";
+import sqlite from "better-sqlite3";
+import { usersDB as dbPath } from "../../data/databasePaths.js";
 
 import type { User } from "../../types/recordTypes";
 

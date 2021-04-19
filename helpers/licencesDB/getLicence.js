@@ -1,13 +1,10 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.getLicence = exports.getLicenceWithDB = void 0;
-const sqlite = require("better-sqlite3");
-const databasePaths_1 = require("../../data/databasePaths");
-const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
-const licencesDB_1 = require("../licencesDB");
-const getLicenceTicketTypes_1 = require("./getLicenceTicketTypes");
-const getLicenceAmendments_1 = require("./getLicenceAmendments");
-const getLicenceWithDB = (db, licenceID, reqSession, queryOptions) => {
+import sqlite from "better-sqlite3";
+import { licencesDB as dbPath } from "../../data/databasePaths.js";
+import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
+import { canUpdateObject } from "../licencesDB.js";
+import { getLicenceTicketTypesWithDB } from "./getLicenceTicketTypes.js";
+import { getLicenceAmendmentsWithDB } from "./getLicenceAmendments.js";
+export const getLicenceWithDB = (db, licenceID, reqSession, queryOptions) => {
     const licenceObj = db.prepare("select l.*," +
         " lo.locationName, lo.locationAddress1" +
         " from LotteryLicences l" +
@@ -28,10 +25,10 @@ const getLicenceWithDB = (db, licenceID, reqSession, queryOptions) => {
     licenceObj.issueTimeString = dateTimeFns.timeIntegerToString(licenceObj.issueTime || 0);
     licenceObj.locationDisplayName =
         (licenceObj.locationName === "" ? licenceObj.locationAddress1 : licenceObj.locationName);
-    licenceObj.canUpdate = licencesDB_1.canUpdateObject(licenceObj, reqSession);
+    licenceObj.canUpdate = canUpdateObject(licenceObj, reqSession);
     if (queryOptions) {
         if ("includeTicketTypes" in queryOptions && queryOptions.includeTicketTypes) {
-            licenceObj.licenceTicketTypes = getLicenceTicketTypes_1.getLicenceTicketTypesWithDB(db, licenceID);
+            licenceObj.licenceTicketTypes = getLicenceTicketTypesWithDB(db, licenceID);
         }
         if ("includeFields" in queryOptions && queryOptions.includeFields) {
             const fieldList = db.prepare("select * from LotteryLicenceFields" +
@@ -53,7 +50,7 @@ const getLicenceWithDB = (db, licenceID, reqSession, queryOptions) => {
             licenceObj.events = eventList;
         }
         if ("includeAmendments" in queryOptions && queryOptions.includeAmendments) {
-            licenceObj.licenceAmendments = getLicenceAmendments_1.getLicenceAmendmentsWithDB(db, licenceID);
+            licenceObj.licenceAmendments = getLicenceAmendmentsWithDB(db, licenceID);
         }
         if ("includeTransactions" in queryOptions && queryOptions.includeTransactions) {
             const transactions = db.prepare("select * from LotteryLicenceTransactions" +
@@ -73,12 +70,11 @@ const getLicenceWithDB = (db, licenceID, reqSession, queryOptions) => {
     }
     return licenceObj;
 };
-exports.getLicenceWithDB = getLicenceWithDB;
-const getLicence = (licenceID, reqSession) => {
-    const db = sqlite(databasePaths_1.licencesDB, {
+export const getLicence = (licenceID, reqSession) => {
+    const db = sqlite(dbPath, {
         readonly: true
     });
-    const licenceObj = exports.getLicenceWithDB(db, licenceID, reqSession, {
+    const licenceObj = getLicenceWithDB(db, licenceID, reqSession, {
         includeTicketTypes: true,
         includeFields: true,
         includeEvents: true,
@@ -88,4 +84,3 @@ const getLicence = (licenceID, reqSession) => {
     db.close();
     return licenceObj;
 };
-exports.getLicence = getLicence;

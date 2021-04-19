@@ -1,7 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.getMaxOrganizationReminderIndexWithDB = void 0;
-const getMaxOrganizationReminderIndexWithDB = (db, organizationID) => {
+export const getMaxOrganizationReminderIndexWithDB = (db, organizationID) => {
     const result = db.prepare("select reminderIndex" +
         " from OrganizationReminders" +
         " where organizationID = ?" +
@@ -12,4 +9,3 @@ const getMaxOrganizationReminderIndexWithDB = (db, organizationID) => {
         ? result.reminderIndex
         : -1);
 };
-exports.getMaxOrganizationReminderIndexWithDB = getMaxOrganizationReminderIndexWithDB;

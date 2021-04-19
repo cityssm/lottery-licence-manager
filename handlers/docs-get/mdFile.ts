@@ -1,13 +1,13 @@
 import type { RequestHandler } from "express";
 
-import * as configFns from "../../helpers/configFns";
+import * as configFns from "../../helpers/configFns.js";
 
-import * as createError from "http-errors";
+import createError from "http-errors";
 import * as fs from "fs";
 import * as path from "path";
-import * as marked from "marked";
+import marked from "marked";
 
-import sanitize = require("sanitize-filename");
+import sanitizeFilename from "sanitize-filename";
 
 
 const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
@@ -16,7 +16,7 @@ const applicationName = configFns.getProperty("application.applicationName");
 
 export const handler: RequestHandler = (req, res, next) => {
 
-  const mdFileName = sanitize(req.params.mdFileName);
+  const mdFileName = sanitizeFilename(req.params.mdFileName);
 
   const mdPath = path.join(__dirname, "..", "..", "docs",
     mdFileName + (mdFileName.endsWith(".md") ? "" : ".md"));

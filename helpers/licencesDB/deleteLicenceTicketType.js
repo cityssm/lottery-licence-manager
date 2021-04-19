@@ -1,9 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteLicenceTicketTypeWithDB = void 0;
-const _runSQLByName_1 = require("../_runSQLByName");
-const deleteLicenceTicketTypeWithDB = (db, ticketTypeDef, reqSession) => {
-    return _runSQLByName_1.runSQLWithDB(db, "update LotteryLicenceTicketTypes" +
+import { runSQLWithDB } from "../_runSQLByName.js";
+export const deleteLicenceTicketTypeWithDB = (db, ticketTypeDef, reqSession) => {
+    return runSQLWithDB(db, "update LotteryLicenceTicketTypes" +
         " set recordDelete_userName = ?," +
         " recordDelete_timeMillis = ?" +
         " where licenceID = ?" +
@@ -16,4 +13,3 @@ const deleteLicenceTicketTypeWithDB = (db, ticketTypeDef, reqSession) => {
         ticketTypeDef.ticketType
     ]);
 };
-exports.deleteLicenceTicketTypeWithDB = deleteLicenceTicketTypeWithDB;

@@ -1,9 +1,9 @@
-import * as sqlite from "better-sqlite3";
+import sqlite from "better-sqlite3";
 
-import * as configFns from "../configFns";
-import { canUpdateObject } from "../licencesDB";
-import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns";
-import { licencesDB as dbPath } from "../../data/databasePaths";
+import * as configFns from "../configFns.js";
+import { canUpdateObject } from "../licencesDB.js";
+import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
+import { licencesDB as dbPath } from "../../data/databasePaths.js";
 
 import type * as llm from "../../types/recordTypes";
 import type * as expressSession from "express-session";

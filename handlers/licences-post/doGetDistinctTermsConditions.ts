@@ -1,6 +1,6 @@
 import type { RequestHandler } from "express";
 
-import { getDistinctTermsConditions } from "../../helpers/licencesDB/getDistinctTermsConditions";
+import { getDistinctTermsConditions } from "../../helpers/licencesDB/getDistinctTermsConditions.js";
 
 
 export const handler: RequestHandler = (req, res) => {

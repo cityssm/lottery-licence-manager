@@ -1,6 +1,6 @@
 import type { RequestHandler } from "express";
 
-import * as configFns from "../../helpers/configFns";
+import * as configFns from "../../helpers/configFns.js";
 
 
 export const handler: RequestHandler = (_req, res) => {

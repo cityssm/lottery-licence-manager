@@ -1,20 +1,20 @@
 import { Router } from "express";
 
-import * as permissionHandlers from "../handlers/permissions";
+import * as permissionHandlers from "../handlers/permissions.js";
 
-import { handler as handler_applicationSettings } from "../handlers/admin-get/applicationSettings";
-import { handler as handler_doSaveApplicationSetting } from "../handlers/admin-post/doSaveApplicationSetting";
+import { handler as handler_applicationSettings } from "../handlers/admin-get/applicationSettings.js";
+import { handler as handler_doSaveApplicationSetting } from "../handlers/admin-post/doSaveApplicationSetting.js";
 
-import { handler as handler_userManagement } from "../handlers/admin-get/userManagement";
-import { handler as handler_doCreateUser } from "../handlers/admin-post/doCreateUser";
-import { handler as handler_doUpdateUser } from "../handlers/admin-post/doUpdateUser";
-import { handler as handler_doGetUserProperties } from "../handlers/admin-post/doGetUserProperties";
-import { handler as handler_doUpdateUserProperty } from "../handlers/admin-post/doUpdateUserProperty";
-import { handler as handler_doDeleteUser } from "../handlers/admin-post/doDeleteUser";
-import { handler as handler_doResetPassword } from "../handlers/admin-post/doResetPassword";
+import { handler as handler_userManagement } from "../handlers/admin-get/userManagement.js";
+import { handler as handler_doCreateUser } from "../handlers/admin-post/doCreateUser.js";
+import { handler as handler_doUpdateUser } from "../handlers/admin-post/doUpdateUser.js";
+import { handler as handler_doGetUserProperties } from "../handlers/admin-post/doGetUserProperties.js";
+import { handler as handler_doUpdateUserProperty } from "../handlers/admin-post/doUpdateUserProperty.js";
+import { handler as handler_doDeleteUser } from "../handlers/admin-post/doDeleteUser.js";
+import { handler as handler_doResetPassword } from "../handlers/admin-post/doResetPassword.js";
 
 
-const router = Router();
+export const router = Router();
 
 
 // Application Settings
@@ -65,6 +65,3 @@ router.post("/doGetUserProperties",
 router.post("/doDeleteUser",
   permissionHandlers.adminPostHandler,
   handler_doDeleteUser);
-
-
-export = router;

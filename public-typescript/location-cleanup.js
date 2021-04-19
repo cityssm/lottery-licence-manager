@@ -1,5 +1,3 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 (() => {
     const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
     const inactiveYearsFilterEle = document.getElementById("filter--inactiveYears");
@@ -103,3 +101,4 @@ Object.defineProperty(exports, "__esModule", { value: true });
     inactiveYearsFilterEle.addEventListener("change", getInactiveLocationsFn);
     getInactiveLocationsFn();
 })();
+export {};

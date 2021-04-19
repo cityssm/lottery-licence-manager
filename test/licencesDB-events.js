@@ -1,29 +1,27 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const assert = require("assert");
-const _globals_1 = require("./_globals");
-const getEvent_1 = require("../helpers/licencesDB/getEvent");
-const getEvents_1 = require("../helpers/licencesDB/getEvents");
-const getEventFinancialSummary_1 = require("../helpers/licencesDB/getEventFinancialSummary");
-const getOutstandingEvents_1 = require("../helpers/licencesDB/getOutstandingEvents");
-const getPastEventBankingInformation_1 = require("../helpers/licencesDB/getPastEventBankingInformation");
+import * as assert from "assert";
+import { fakeViewOnlySession } from "./_globals.js";
+import { getEvent } from "../helpers/licencesDB/getEvent.js";
+import { getEvents } from "../helpers/licencesDB/getEvents.js";
+import { getEventFinancialSummary } from "../helpers/licencesDB/getEventFinancialSummary.js";
+import { getOutstandingEvents } from "../helpers/licencesDB/getOutstandingEvents.js";
+import { getPastEventBankingInformation } from "../helpers/licencesDB/getPastEventBankingInformation.js";
 describe("licencesDB/events", () => {
     it("should execute getEvent()", () => {
-        assert.equal(getEvent_1.getEvent(-1, -1, _globals_1.fakeViewOnlySession), null);
+        assert.equal(getEvent(-1, -1, fakeViewOnlySession), null);
     });
     it("should execute getEvents()", () => {
-        assert.equal(typeof getEvents_1.getEvents({}, _globals_1.fakeViewOnlySession), "object");
+        assert.equal(typeof getEvents({}, fakeViewOnlySession), "object");
     });
     it("should execute getEventFinancialSummary()", () => {
-        assert.equal(typeof getEventFinancialSummary_1.getEventFinancialSummary({
+        assert.equal(typeof getEventFinancialSummary({
             eventDateStartString: "2021-01-01",
             eventDateEndString: "2021-12-31"
         }), "object");
     });
     it("should execute getOutstandingEvents()", () => {
-        assert.equal(typeof getOutstandingEvents_1.getOutstandingEvents({}, _globals_1.fakeViewOnlySession), "object");
+        assert.equal(typeof getOutstandingEvents({}, fakeViewOnlySession), "object");
     });
     it("should execute getPastEventBankingInformation()", () => {
-        assert.equal(typeof getPastEventBankingInformation_1.getPastEventBankingInformation(-1), "object");
+        assert.equal(typeof getPastEventBankingInformation(-1), "object");
     });
 });

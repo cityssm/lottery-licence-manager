@@ -1,9 +1,9 @@
 import * as assert from "assert";
 
-import { getApplicationSetting } from "../helpers/licencesDB/getApplicationSetting";
-import { getApplicationSettings } from "../helpers/licencesDB/getApplicationSettings";
+import { getApplicationSetting } from "../helpers/licencesDB/getApplicationSetting.js";
+import { getApplicationSettings } from "../helpers/licencesDB/getApplicationSettings.js";
 
-import { getDashboardStats } from "../helpers/licencesDB/getDashboardStats";
+import { getDashboardStats } from "../helpers/licencesDB/getDashboardStats.js";
 
 
 describe("licencesDB", () => {

@@ -1,8 +1,8 @@
 import type { RequestHandler } from "express";
 
-import * as configFns from "../../helpers/configFns";
+import * as configFns from "../../helpers/configFns.js";
 
-import { pokeLicence } from "../../helpers/licencesDB/pokeLicence";
+import { pokeLicence } from "../../helpers/licencesDB/pokeLicence.js";
 
 
 const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");

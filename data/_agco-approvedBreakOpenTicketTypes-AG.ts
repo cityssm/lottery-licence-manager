@@ -1,4 +1,4 @@
-import { ConfigTicketType } from "../types/configTypes";
+import { ConfigTicketType } from "../types/configTypes.js";
 
 
 /*

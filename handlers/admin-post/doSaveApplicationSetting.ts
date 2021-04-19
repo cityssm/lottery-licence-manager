@@ -1,6 +1,6 @@
 import type { RequestHandler } from "express";
 
-import { updateApplicationSetting } from "../../helpers/licencesDB/updateApplicationSetting";
+import { updateApplicationSetting } from "../../helpers/licencesDB/updateApplicationSetting.js";
 
 
 export const handler: RequestHandler = (req, res) => {

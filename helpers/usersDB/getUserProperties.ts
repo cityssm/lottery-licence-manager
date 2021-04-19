@@ -1,7 +1,7 @@
-import * as sqlite from "better-sqlite3";
-import { usersDB as dbPath } from "../../data/databasePaths";
+import sqlite from "better-sqlite3";
+import { usersDB as dbPath } from "../../data/databasePaths.js";
 
-import * as configFns from "../../helpers/configFns";
+import * as configFns from "../../helpers/configFns.js";
 
 import type { UserProperties } from "../../types/recordTypes";
 

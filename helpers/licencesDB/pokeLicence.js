@@ -1,9 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.pokeLicence = void 0;
-const _runSQL_1 = require("./_runSQL");
-const pokeLicence = (licenceID, reqSession) => {
-    return _runSQL_1.runSQL_hasChanges("update LotteryLicences" +
+import { runSQL_hasChanges } from "./_runSQL.js";
+export const pokeLicence = (licenceID, reqSession) => {
+    return runSQL_hasChanges("update LotteryLicences" +
         " set recordUpdate_userName = ?," +
         " recordUpdate_timeMillis = ?" +
         " where licenceID = ?" +
@@ -13,4 +10,3 @@ const pokeLicence = (licenceID, reqSession) => {
         licenceID
     ]);
 };
-exports.pokeLicence = pokeLicence;

@@ -1,10 +1,10 @@
 import type { RequestHandler } from "express";
 
-import * as configFns from "../../helpers/configFns";
-import * as licencesDB from "../../helpers/licencesDB";
-import * as reportFns from "../../helpers/reportFns";
-import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns";
-import { rawToCSV } from "@cityssm/expressjs-server-js/stringFns";
+import * as configFns from "../../helpers/configFns.js";
+import * as licencesDB from "../../helpers/licencesDB.js";
+import * as reportFns from "../../helpers/reportFns.js";
+import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
+import { rawToCSV } from "@cityssm/expressjs-server-js/stringFns.js";
 
 
 const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");

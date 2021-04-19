@@ -1,5 +1,3 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 (() => {
     const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
     const createUserModalEle = document.getElementById("is-create-user-modal");
@@ -155,3 +153,4 @@ Object.defineProperty(exports, "__esModule", { value: true });
         });
     });
 })();
+export {};

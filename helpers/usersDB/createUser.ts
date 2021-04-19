@@ -1,11 +1,11 @@
-import * as sqlite from "better-sqlite3";
-import { usersDB as dbPath } from "../../data/databasePaths";
+import sqlite from "better-sqlite3";
+import { usersDB as dbPath } from "../../data/databasePaths.js";
 
-import * as userFns from "../../helpers/userFns";
+import * as userFns from "../../helpers/userFns.js";
 
 import * as bcrypt from "bcrypt";
 
-import * as stringFns from "@cityssm/expressjs-server-js/stringFns";
+import * as stringFns from "@cityssm/expressjs-server-js/stringFns.js";
 
 
 export const createUser = async(reqBody: {

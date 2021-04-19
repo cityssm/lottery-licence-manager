@@ -1,11 +1,11 @@
-import * as sqlite from "better-sqlite3";
-import { usersDB as dbPath } from "../../data/databasePaths";
+import sqlite from "better-sqlite3";
+import { usersDB as dbPath } from "../../data/databasePaths.js";
 
-import * as userFns from "../../helpers/userFns";
+import * as userFns from "../../helpers/userFns.js";
 
 import * as bcrypt from "bcrypt";
 
-import * as configFns from "../../helpers/configFns";
+import * as configFns from "../../helpers/configFns.js";
 
 import type { User, UserProperties } from "../../types/recordTypes";
 

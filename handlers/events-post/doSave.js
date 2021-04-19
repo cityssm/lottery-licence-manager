@@ -1,9 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.handler = void 0;
-const updateEvent_1 = require("../../helpers/licencesDB/updateEvent");
-const handler = (req, res) => {
-    const changeCount = updateEvent_1.updateEvent(req.body, req.session);
+import { updateEvent } from "../../helpers/licencesDB/updateEvent.js";
+export const handler = (req, res) => {
+    const changeCount = updateEvent(req.body, req.session);
     if (changeCount) {
         res.json({
             success: true,
@@ -17,4 +14,3 @@ const handler = (req, res) => {
         });
     }
 };
-exports.handler = handler;

@@ -1,8 +1,5 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.handler = void 0;
-const configFns = require("../../helpers/configFns");
-const handler = (req, res) => {
+import * as configFns from "../../helpers/configFns.js";
+export const handler = (req, res) => {
     const licenceTypeKey = req.body.licenceTypeKey;
     const licenceType = configFns.getLicenceType(licenceTypeKey);
     if (licenceType) {
@@ -12,4 +9,3 @@ const handler = (req, res) => {
         res.json([]);
     }
 };
-exports.handler = handler;

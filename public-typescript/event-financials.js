@@ -1,5 +1,3 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 (() => {
     const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
     const formEle = document.getElementById("form--financialSummary");
@@ -90,3 +88,4 @@ Object.defineProperty(exports, "__esModule", { value: true });
     llm.initializeDateRangeSelector(document.querySelector(".is-date-range-selector[data-field-key='eventDate']"), getFinancialSummaryFn);
     getFinancialSummaryFn();
 })();
+export {};

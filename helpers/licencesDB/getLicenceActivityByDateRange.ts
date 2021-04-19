@@ -1,9 +1,9 @@
-import * as sqlite from "better-sqlite3";
+import sqlite from "better-sqlite3";
 
-import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns";
+import { licencesDB as dbPath } from "../../data/databasePaths.js";
+import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
+
 import type * as llm from "../../types/recordTypes";
-
-import { licencesDB as dbPath } from "../../data/databasePaths";
 
 
 export const getLicenceActivityByDateRange = (startDate: number, endDate: number) => {

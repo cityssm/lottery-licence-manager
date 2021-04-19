@@ -1,12 +1,9 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.getLocations = void 0;
-const licencesDB_1 = require("../licencesDB");
-const sqlite = require("better-sqlite3");
-const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
-const databasePaths_1 = require("../../data/databasePaths");
-const getLocations = (reqSession, queryOptions) => {
-    const db = sqlite(databasePaths_1.licencesDB, {
+import { canUpdateObject } from "../licencesDB.js";
+import sqlite from "better-sqlite3";
+import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
+import { licencesDB as dbPath } from "../../data/databasePaths.js";
+export const getLocations = (reqSession, queryOptions) => {
+    const db = sqlite(dbPath, {
         readonly: true
     });
     const sqlParams = [];
@@ -88,11 +85,10 @@ const getLocations = (reqSession, queryOptions) => {
         ele.licences_endDateMaxString = dateTimeFns.dateIntegerToString(ele.licences_endDateMax);
         ele.distributor_endDateMaxString = dateTimeFns.dateIntegerToString(ele.distributor_endDateMax);
         ele.manufacturer_endDateMaxString = dateTimeFns.dateIntegerToString(ele.manufacturer_endDateMax);
-        ele.canUpdate = licencesDB_1.canUpdateObject(ele, reqSession);
+        ele.canUpdate = canUpdateObject(ele, reqSession);
     }
     return {
         count: (queryOptions.limit === -1 ? rows.length : count),
         locations: rows
     };
 };
-exports.getLocations = getLocations;

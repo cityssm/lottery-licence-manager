@@ -1,7 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.getMaxLicenceAmendmentIndexWithDB = void 0;
-const getMaxLicenceAmendmentIndexWithDB = (db, licenceID) => {
+export const getMaxLicenceAmendmentIndexWithDB = (db, licenceID) => {
     const result = db.prepare("select amendmentIndex" +
         " from LotteryLicenceAmendments" +
         " where licenceID = ?" +
@@ -12,4 +9,3 @@ const getMaxLicenceAmendmentIndexWithDB = (db, licenceID) => {
         ? result.amendmentIndex
         : -1);
 };
-exports.getMaxLicenceAmendmentIndexWithDB = getMaxLicenceAmendmentIndexWithDB;

@@ -1,9 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.handler = void 0;
-const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
-const licencesDB = require("../../helpers/licencesDB");
-const handler = (_req, res) => {
+import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
+import * as licencesDB from "../../helpers/licencesDB.js";
+export const handler = (_req, res) => {
     const eventTableStats = licencesDB.getEventTableStats();
     const eventDate = new Date();
     eventDate.setMonth(eventDate.getMonth() - 1);
@@ -20,4 +17,3 @@ const handler = (_req, res) => {
         eventDateEndString
     });
 };
-exports.handler = handler;

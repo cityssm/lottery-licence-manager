@@ -1,5 +1,5 @@
-import * as configTypes from "../types/configTypes";
-import * as recordTypes from "../types/recordTypes";
+import type * as configTypes from "../types/configTypes";
+import type * as recordTypes from "../types/recordTypes";
 export declare function getProperty(propertyName: "admin.defaultPassword"): string;
 export declare function getProperty(propertyName: "amendments.displayCount"): number;
 export declare function getProperty(propertyName: "amendments.trackLicenceFeeUpdate"): boolean;

@@ -1,15 +1,12 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.handler = void 0;
-const configFns = require("../../helpers/configFns");
-const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
-const getOrganization_1 = require("../../helpers/licencesDB/getOrganization");
-const getNextExternalLicenceNumberFromRange_1 = require("../../helpers/licencesDB/getNextExternalLicenceNumberFromRange");
-const handler = (req, res) => {
+import * as configFns from "../../helpers/configFns.js";
+import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
+import { getOrganization } from "../../helpers/licencesDB/getOrganization.js";
+import { getNextExternalLicenceNumberFromRange } from "../../helpers/licencesDB/getNextExternalLicenceNumberFromRange.js";
+export const handler = (req, res) => {
     const organizationID = Number(req.params.organizationID);
     let organization = null;
     if (!isNaN(organizationID)) {
-        organization = getOrganization_1.getOrganization(organizationID, req.session);
+        organization = getOrganization(organizationID, req.session);
         if (organization && !organization.isEligibleForLicences) {
             organization = null;
         }
@@ -18,7 +15,7 @@ const handler = (req, res) => {
     let externalLicenceNumber = "";
     const licenceNumberCalculationType = configFns.getProperty("licences.externalLicenceNumber.newCalculation");
     if (licenceNumberCalculationType === "range") {
-        externalLicenceNumber = getNextExternalLicenceNumberFromRange_1.getNextExternalLicenceNumberFromRange().toString();
+        externalLicenceNumber = getNextExternalLicenceNumberFromRange().toString();
     }
     res.render("licence-edit", {
         headTitle: "Licence Create",
@@ -39,4 +36,3 @@ const handler = (req, res) => {
         organization
     });
 };
-exports.handler = handler;

@@ -1,6 +1,6 @@
-import { runSQL } from "./_runSQL";
+import { runSQL } from "./_runSQL.js";
 
-import * as licencesDB from "../licencesDB";
+import * as licencesDB from "../licencesDB.js";
 
 import type * as expressSession from "express-session";
 

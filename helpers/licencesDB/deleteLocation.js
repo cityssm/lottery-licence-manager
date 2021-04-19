@@ -1,9 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteLocation = void 0;
-const _runSQL_1 = require("./_runSQL");
-const deleteLocation = (locationID, reqSession) => {
-    return _runSQL_1.runSQL_hasChanges("update Locations" +
+import { runSQL_hasChanges } from "./_runSQL.js";
+export const deleteLocation = (locationID, reqSession) => {
+    return runSQL_hasChanges("update Locations" +
         " set recordDelete_userName = ?," +
         " recordDelete_timeMillis = ?" +
         " where recordDelete_timeMillis is null" +
@@ -13,4 +10,3 @@ const deleteLocation = (locationID, reqSession) => {
         locationID
     ]);
 };
-exports.deleteLocation = deleteLocation;

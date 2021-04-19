@@ -1,22 +1,7 @@
-import * as configTypes from "../types/configTypes";
-import * as recordTypes from "../types/recordTypes";
+import type * as configTypes from "../types/configTypes";
+import type * as recordTypes from "../types/recordTypes";
 
-import { debug } from "debug";
-const debugConfig = debug("lottery-licence-manager:configFns");
-
-
-/*
- * LOAD CONFIGURATION
- */
-
-let config = "";
-
-try {
-  config = require("../data/config");
-} catch (_e) {
-  debugConfig("Using data/config-example.js");
-  config = require("../data/config-example");
-}
+import { config } from "../data/config.js";
 
 
 /*

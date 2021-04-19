@@ -1,11 +1,8 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.getLocation = void 0;
-const licencesDB_1 = require("../licencesDB");
-const sqlite = require("better-sqlite3");
-const databasePaths_1 = require("../../data/databasePaths");
-const getLocation = (locationID, reqSession) => {
-    const db = sqlite(databasePaths_1.licencesDB, {
+import { canUpdateObject } from "../licencesDB.js";
+import sqlite from "better-sqlite3";
+import { licencesDB as dbPath } from "../../data/databasePaths.js";
+export const getLocation = (locationID, reqSession) => {
+    const db = sqlite(dbPath, {
         readonly: true
     });
     const locationObj = db.prepare("select * from Locations" +
@@ -15,9 +12,8 @@ const getLocation = (locationID, reqSession) => {
         locationObj.recordType = "location";
         locationObj.locationDisplayName =
             locationObj.locationName === "" ? locationObj.locationAddress1 : locationObj.locationName;
-        locationObj.canUpdate = licencesDB_1.canUpdateObject(locationObj, reqSession);
+        locationObj.canUpdate = canUpdateObject(locationObj, reqSession);
     }
     db.close();
     return locationObj;
 };
-exports.getLocation = getLocation;

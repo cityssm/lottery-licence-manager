@@ -1,6 +1,5 @@
-"use strict";
-const _agco_approvedBreakOpenTicketTypes_1 = require("./_agco-approvedBreakOpenTicketTypes");
-const config = {};
+import { ticketTypes as nevadaTicketTypes } from "./_agco-approvedBreakOpenTicketTypes.js";
+export const config = {};
 config.defaults = {
     city: "",
     province: "ON"
@@ -181,7 +180,7 @@ config.licenceTypes = [
         licenceType: "Nevada",
         totalPrizeValueMax: 300000,
         isActive: true,
-        ticketTypes: _agco_approvedBreakOpenTicketTypes_1.ticketTypes,
+        ticketTypes: nevadaTicketTypes,
         licenceFields: [],
         eventFields: [{
                 fieldKey: "retailerCommission",
@@ -404,4 +403,3 @@ config.licenceTypes = [
         }
     }
 ];
-module.exports = config;

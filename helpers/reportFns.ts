@@ -1,4 +1,4 @@
-import * as configFns from "./configFns";
+import * as configFns from "./configFns.js";
 
 
 export const getOrganizationBankRecordsFlatQuery = (includeOrganizationIDFilter: boolean) => {

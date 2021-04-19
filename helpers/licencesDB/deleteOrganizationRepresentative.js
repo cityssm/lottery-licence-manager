@@ -1,10 +1,7 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteOrganizationRepresentative = void 0;
-const sqlite = require("better-sqlite3");
-const databasePaths_1 = require("../../data/databasePaths");
-const deleteOrganizationRepresentative = (organizationID, representativeIndex) => {
-    const db = sqlite(databasePaths_1.licencesDB);
+import sqlite from "better-sqlite3";
+import { licencesDB as dbPath } from "../../data/databasePaths.js";
+export const deleteOrganizationRepresentative = (organizationID, representativeIndex) => {
+    const db = sqlite(dbPath);
     const info = db.prepare("delete from OrganizationRepresentatives" +
         " where organizationID = ?" +
         " and representativeIndex = ?")
@@ -12,4 +9,3 @@ const deleteOrganizationRepresentative = (organizationID, representativeIndex) =
     db.close();
     return info.changes > 0;
 };
-exports.deleteOrganizationRepresentative = deleteOrganizationRepresentative;

@@ -1,13 +1,10 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.tryResetPassword = void 0;
-const sqlite = require("better-sqlite3");
-const databasePaths_1 = require("../../data/databasePaths");
-const updatePassword_1 = require("./updatePassword");
-const userFns = require("../../helpers/userFns");
-const bcrypt = require("bcrypt");
-const tryResetPassword = async (userName, oldPasswordPlain, newPasswordPlain) => {
-    const db = sqlite(databasePaths_1.usersDB);
+import sqlite from "better-sqlite3";
+import { usersDB as dbPath } from "../../data/databasePaths.js";
+import { updatePasswordWithDB } from "./updatePassword.js";
+import * as userFns from "../../helpers/userFns.js";
+import * as bcrypt from "bcrypt";
+export const tryResetPassword = async (userName, oldPasswordPlain, newPasswordPlain) => {
+    const db = sqlite(dbPath);
     const row = db.prepare("select passwordHash from Users" +
         " where userName = ?" +
         " and isActive = 1")
@@ -27,11 +24,10 @@ const tryResetPassword = async (userName, oldPasswordPlain, newPasswordPlain) =>
             message: "Old password does not match."
         };
     }
-    await updatePassword_1.updatePasswordWithDB(db, userName, newPasswordPlain);
+    await updatePasswordWithDB(db, userName, newPasswordPlain);
     db.close();
     return {
         success: true,
         message: "Password updated successfully."
     };
 };
-exports.tryResetPassword = tryResetPassword;

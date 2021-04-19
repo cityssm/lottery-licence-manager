@@ -1,6 +1,6 @@
 import type { RequestHandler } from "express";
 
-import { updateUser } from "../../helpers/usersDB/updateUser";
+import { updateUser } from "../../helpers/usersDB/updateUser.js";
 
 
 export const handler: RequestHandler = (req, res) => {

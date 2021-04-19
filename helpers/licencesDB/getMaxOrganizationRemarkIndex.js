@@ -1,7 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.getMaxOrganizationRemarkIndexWithDB = void 0;
-const getMaxOrganizationRemarkIndexWithDB = (db, organizationID) => {
+export const getMaxOrganizationRemarkIndexWithDB = (db, organizationID) => {
     const result = db.prepare("select remarkIndex" +
         " from OrganizationRemarks" +
         " where organizationID = ?" +
@@ -12,4 +9,3 @@ const getMaxOrganizationRemarkIndexWithDB = (db, organizationID) => {
         ? result.remarkIndex
         : -1);
 };
-exports.getMaxOrganizationRemarkIndexWithDB = getMaxOrganizationRemarkIndexWithDB;

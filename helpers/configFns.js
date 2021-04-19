@@ -1,16 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.getLicenceTypeKeyToNameObject = exports.getLicenceType = exports.getReminderType = exports.keepAliveMillis = exports.getProperty = void 0;
-const debug_1 = require("debug");
-const debugConfig = debug_1.debug("lottery-licence-manager:configFns");
-let config = "";
-try {
-    config = require("../data/config");
-}
-catch (_e) {
-    debugConfig("Using data/config-example.js");
-    config = require("../data/config-example");
-}
+import { config } from "../data/config.js";
 const configFallbackValues = new Map();
 configFallbackValues.set("application.applicationName", "Lottery Licence System");
 configFallbackValues.set("application.logoURL", "/images/bingoBalls.png");
@@ -67,7 +55,7 @@ configFallbackValues.set("amendments.trackLocationUpdate", true);
 configFallbackValues.set("amendments.trackTicketTypeNew", true);
 configFallbackValues.set("amendments.trackTicketTypeUpdate", true);
 configFallbackValues.set("amendments.trackTicketTypeDelete", true);
-function getProperty(propertyName) {
+export function getProperty(propertyName) {
     const propertyNameSplit = propertyName.split(".");
     let currentObj = config;
     for (const propertyNamePiece of propertyNameSplit) {
@@ -80,12 +68,11 @@ function getProperty(propertyName) {
     }
     return currentObj;
 }
-exports.getProperty = getProperty;
-exports.keepAliveMillis = getProperty("session.doKeepAlive")
+export const keepAliveMillis = getProperty("session.doKeepAlive")
     ? Math.max(getProperty("session.maxAgeMillis") / 2, getProperty("session.maxAgeMillis") - (10 * 60 * 1000))
     : 0;
 const reminderTypeCache = new Map();
-const getReminderType = (reminderTypeKey) => {
+export const getReminderType = (reminderTypeKey) => {
     if (reminderTypeCache.size === 0) {
         for (const reminderCategory of getProperty("reminderCategories")) {
             for (const reminderType of reminderCategory.reminderTypes) {
@@ -96,10 +83,9 @@ const getReminderType = (reminderTypeKey) => {
     }
     return reminderTypeCache.get(reminderTypeKey);
 };
-exports.getReminderType = getReminderType;
 const licenceTypeCache = new Map();
 let licenceTypeKeyNameObject = {};
-const getLicenceType = (licenceTypeKey) => {
+export const getLicenceType = (licenceTypeKey) => {
     if (!licenceTypeCache.has(licenceTypeKey)) {
         const licenceType = getProperty("licenceTypes")
             .find((ele) => ele.licenceTypeKey === licenceTypeKey);
@@ -107,8 +93,7 @@ const getLicenceType = (licenceTypeKey) => {
     }
     return licenceTypeCache.get(licenceTypeKey);
 };
-exports.getLicenceType = getLicenceType;
-const getLicenceTypeKeyToNameObject = () => {
+export const getLicenceTypeKeyToNameObject = () => {
     if (Object.keys(licenceTypeKeyNameObject).length === 0) {
         const list = {};
         getProperty("licenceTypes")
@@ -121,4 +106,3 @@ const getLicenceTypeKeyToNameObject = () => {
     }
     return licenceTypeKeyNameObject;
 };
-exports.getLicenceTypeKeyToNameObject = getLicenceTypeKeyToNameObject;

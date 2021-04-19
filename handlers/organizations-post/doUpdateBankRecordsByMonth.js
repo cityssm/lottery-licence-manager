@@ -1,16 +1,13 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.handler = void 0;
-const addOrganizationBankRecord_1 = require("../../helpers/licencesDB/addOrganizationBankRecord");
-const updateOrganizationBankRecord_1 = require("../../helpers/licencesDB/updateOrganizationBankRecord");
-const deleteOrganizationBankRecord_1 = require("../../helpers/licencesDB/deleteOrganizationBankRecord");
+import { addOrganizationBankRecord } from "../../helpers/licencesDB/addOrganizationBankRecord.js";
+import { updateOrganizationBankRecord } from "../../helpers/licencesDB/updateOrganizationBankRecord.js";
+import { deleteOrganizationBankRecord } from "../../helpers/licencesDB/deleteOrganizationBankRecord.js";
 const bankRecordIsBlank = (bankRecord) => {
     if (bankRecord.recordDateString === "" && bankRecord.recordNote === "" && !bankRecord.recordIsNA) {
         return true;
     }
     return false;
 };
-const handler = (req, res) => {
+export const handler = (req, res) => {
     const organizationID = parseInt(req.body.organizationID, 10);
     const accountNumber = req.body.accountNumber;
     const bankingYear = parseInt(req.body.bankingYear, 10);
@@ -34,7 +31,7 @@ const handler = (req, res) => {
         };
         if (req.body["recordIndex-" + typeIndexString] === "") {
             if (!bankRecordIsBlank(bankRecord)) {
-                const addSuccess = addOrganizationBankRecord_1.addOrganizationBankRecord(bankRecord, req.session);
+                const addSuccess = addOrganizationBankRecord(bankRecord, req.session);
                 if (!addSuccess) {
                     success = false;
                 }
@@ -42,13 +39,13 @@ const handler = (req, res) => {
         }
         else {
             if (bankRecordIsBlank(bankRecord)) {
-                const deleteSuccess = deleteOrganizationBankRecord_1.deleteOrganizationBankRecord(organizationID, recordIndex, req.session);
+                const deleteSuccess = deleteOrganizationBankRecord(organizationID, recordIndex, req.session);
                 if (!deleteSuccess) {
                     success = false;
                 }
             }
             else {
-                const updateSuccess = updateOrganizationBankRecord_1.updateOrganizationBankRecord(bankRecord, req.session);
+                const updateSuccess = updateOrganizationBankRecord(bankRecord, req.session);
                 if (!updateSuccess) {
                     success = false;
                 }
@@ -67,4 +64,3 @@ const handler = (req, res) => {
         });
     }
 };
-exports.handler = handler;

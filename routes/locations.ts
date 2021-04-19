@@ -1,23 +1,23 @@
 import { Router } from "express";
 
-import * as permissionHandlers from "../handlers/permissions";
+import * as permissionHandlers from "../handlers/permissions.js";
 
-import { handler as handler_doGetLocations } from "../handlers/locations-post/doGetLocations";
-import { handler as handler_doGetInactive } from "../handlers/locations-post/doGetInactive";
-import { handler as handler_doMerge } from "../handlers/locations-post/doMerge";
+import { handler as handler_doGetLocations } from "../handlers/locations-post/doGetLocations.js";
+import { handler as handler_doGetInactive } from "../handlers/locations-post/doGetInactive.js";
+import { handler as handler_doMerge } from "../handlers/locations-post/doMerge.js";
 
-import { handler as handler_doCreate } from "../handlers/locations-post/doCreate";
-import { handler as handler_doUpdate } from "../handlers/locations-post/doUpdate";
-import { handler as handler_doDelete } from "../handlers/locations-post/doDelete";
-import { handler as handler_doRestore } from "../handlers/locations-post/doRestore";
+import { handler as handler_doCreate } from "../handlers/locations-post/doCreate.js";
+import { handler as handler_doUpdate } from "../handlers/locations-post/doUpdate.js";
+import { handler as handler_doDelete } from "../handlers/locations-post/doDelete.js";
+import { handler as handler_doRestore } from "../handlers/locations-post/doRestore.js";
 
-import { handler as handler_new } from "../handlers/locations-get/new";
-import { handler as handler_view } from "../handlers/locations-get/view";
-import { handler as handler_edit } from "../handlers/locations-get/edit";
-import { handler as handler_cleanup } from "../handlers/locations-get/cleanup";
+import { handler as handler_new } from "../handlers/locations-get/new.js";
+import { handler as handler_view } from "../handlers/locations-get/view.js";
+import { handler as handler_edit } from "../handlers/locations-get/edit.js";
+import { handler as handler_cleanup } from "../handlers/locations-get/cleanup.js";
 
 
-const router = Router();
+export const router = Router();
 
 
 router.get("/", (_req, res) => {
@@ -78,6 +78,3 @@ router.get("/:locationID",
 router.get("/:locationID/edit",
   permissionHandlers.createGetHandler,
   handler_edit);
-
-
-export = router;

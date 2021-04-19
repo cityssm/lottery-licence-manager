@@ -1,8 +1,8 @@
 import type { RequestHandler, Response } from "express";
 
-import * as configFns from "../helpers/configFns";
+import * as configFns from "../helpers/configFns.js";
 
-import * as userFns from "../helpers/userFns";
+import * as userFns from "../helpers/userFns.js";
 
 
 const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");

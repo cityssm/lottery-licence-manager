@@ -1,9 +1,5 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.handler = void 0;
-const getOrganizationReminders_1 = require("../../helpers/licencesDB/getOrganizationReminders");
-const handler = (req, res) => {
+import { getOrganizationReminders } from "../../helpers/licencesDB/getOrganizationReminders.js";
+export const handler = (req, res) => {
     const organizationID = req.body.organizationID;
-    res.json(getOrganizationReminders_1.getOrganizationReminders(organizationID, req.session));
+    res.json(getOrganizationReminders(organizationID, req.session));
 };
-exports.handler = handler;

@@ -1,9 +1,10 @@
+import { ticketTypes as nevadaTicketTypes } from "./_agco-approvedBreakOpenTicketTypes.js";
+
 import * as recordTypes from "../types/recordTypes";
 import * as configTypes from "../types/configTypes";
 
-import { ticketTypes as nevadaTicketTypes } from "./_agco-approvedBreakOpenTicketTypes";
 
-const config: configTypes.Config = {};
+export const config: configTypes.Config = {};
 
 
 config.defaults = {
@@ -432,6 +433,3 @@ config.licenceTypes = [
     }
   }
 ];
-
-
-export = config;

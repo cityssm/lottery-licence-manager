@@ -1,10 +1,8 @@
-"use strict";
-const express_1 = require("express");
-const dashboard_1 = require("../handlers/dashboard-get/dashboard");
-const doChangePassword_1 = require("../handlers/dashboard-post/doChangePassword");
-const doGetDefaultConfigProperties_1 = require("../handlers/dashboard-post/doGetDefaultConfigProperties");
-const router = express_1.Router();
-router.get("/", dashboard_1.handler);
-router.post("/doChangePassword", doChangePassword_1.handler);
-router.all("/doGetDefaultConfigProperties", doGetDefaultConfigProperties_1.handler);
-module.exports = router;
+import { Router } from "express";
+import { handler as handler_dashboard } from "../handlers/dashboard-get/dashboard.js";
+import { handler as handler_doChangePassword } from "../handlers/dashboard-post/doChangePassword.js";
+import { handler as handler_doGetDefaultConfigProperties } from "../handlers/dashboard-post/doGetDefaultConfigProperties.js";
+export const router = Router();
+router.get("/", handler_dashboard);
+router.post("/doChangePassword", handler_doChangePassword);
+router.all("/doGetDefaultConfigProperties", handler_doGetDefaultConfigProperties);

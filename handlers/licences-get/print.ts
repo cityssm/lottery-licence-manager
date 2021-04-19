@@ -3,12 +3,12 @@ import type { RequestHandler } from "express";
 import * as path from "path";
 import * as ejs from "ejs";
 
-import * as configFns from "../../helpers/configFns";
+import * as configFns from "../../helpers/configFns.js";
 
-import { getOrganization } from "../../helpers/licencesDB/getOrganization";
-import { getLicence } from "../../helpers/licencesDB/getLicence";
+import { getOrganization } from "../../helpers/licencesDB/getOrganization.js";
+import { getLicence } from "../../helpers/licencesDB/getLicence.js";
 
-import convertHTMLToPDF = require("pdf-puppeteer");
+import convertHTMLToPDF from "pdf-puppeteer";
 
 
 const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");

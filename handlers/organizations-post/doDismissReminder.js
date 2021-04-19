@@ -1,14 +1,11 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.handler = void 0;
-const dismissOrganizationReminder_1 = require("../../helpers/licencesDB/dismissOrganizationReminder");
-const getOrganizationReminder_1 = require("../../helpers/licencesDB/getOrganizationReminder");
-const handler = (req, res) => {
+import { dismissOrganizationReminder } from "../../helpers/licencesDB/dismissOrganizationReminder.js";
+import { getOrganizationReminder } from "../../helpers/licencesDB/getOrganizationReminder.js";
+export const handler = (req, res) => {
     const organizationID = req.body.organizationID;
     const reminderIndex = req.body.reminderIndex;
-    const success = dismissOrganizationReminder_1.dismissOrganizationReminder(organizationID, reminderIndex, req.session);
+    const success = dismissOrganizationReminder(organizationID, reminderIndex, req.session);
     if (success) {
-        const reminder = getOrganizationReminder_1.getOrganizationReminder(req.body.organizationID, req.body.reminderIndex, req.session);
+        const reminder = getOrganizationReminder(req.body.organizationID, req.body.reminderIndex, req.session);
         res.json({
             success: true,
             message: "Reminder dismissed.",
@@ -22,4 +19,3 @@ const handler = (req, res) => {
         });
     }
 };
-exports.handler = handler;

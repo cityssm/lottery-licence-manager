@@ -1,11 +1,8 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.getOrganizationBankRecords = void 0;
-const sqlite = require("better-sqlite3");
-const databasePaths_1 = require("../../data/databasePaths");
-const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
-const getOrganizationBankRecords = (organizationID, accountNumber, bankingYear) => {
-    const db = sqlite(databasePaths_1.licencesDB, {
+import sqlite from "better-sqlite3";
+import { licencesDB as dbPath } from "../../data/databasePaths.js";
+import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
+export const getOrganizationBankRecords = (organizationID, accountNumber, bankingYear) => {
+    const db = sqlite(dbPath, {
         readonly: true
     });
     const bankRecords = db.prepare("select recordIndex," +
@@ -24,4 +21,3 @@ const getOrganizationBankRecords = (organizationID, accountNumber, bankingYear) 
     }
     return bankRecords;
 };
-exports.getOrganizationBankRecords = getOrganizationBankRecords;

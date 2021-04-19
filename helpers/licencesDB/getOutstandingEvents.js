@@ -1,13 +1,10 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.getOutstandingEvents = void 0;
-const sqlite = require("better-sqlite3");
-const configFns = require("../configFns");
-const licencesDB_1 = require("../licencesDB");
-const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
-const databasePaths_1 = require("../../data/databasePaths");
-const getOutstandingEvents = (reqBody, reqSession) => {
-    const db = sqlite(databasePaths_1.licencesDB, {
+import sqlite from "better-sqlite3";
+import * as configFns from "../configFns.js";
+import { canUpdateObject } from "../licencesDB.js";
+import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
+import { licencesDB as dbPath } from "../../data/databasePaths.js";
+export const getOutstandingEvents = (reqBody, reqSession) => {
+    const db = sqlite(dbPath, {
         readonly: true
     });
     const sqlParams = [];
@@ -57,8 +54,7 @@ const getOutstandingEvents = (reqBody, reqSession) => {
         lotteryEvent.reportDateString = dateTimeFns.dateIntegerToString(lotteryEvent.reportDate);
         lotteryEvent.licenceType = (configFns.getLicenceType(lotteryEvent.licenceTypeKey) || {}).licenceType || "";
         lotteryEvent.bank_name_isOutstanding = (lotteryEvent.bank_name === null || lotteryEvent.bank_name === "");
-        lotteryEvent.canUpdate = licencesDB_1.canUpdateObject(lotteryEvent, reqSession);
+        lotteryEvent.canUpdate = canUpdateObject(lotteryEvent, reqSession);
     }
     return events;
 };
-exports.getOutstandingEvents = getOutstandingEvents;

@@ -1,16 +1,13 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.getNextExternalLicenceNumberFromRange = void 0;
-const sqlite = require("better-sqlite3");
-const databasePaths_1 = require("../../data/databasePaths");
-const getApplicationSetting_1 = require("./getApplicationSetting");
-const getNextExternalLicenceNumberFromRange = () => {
-    const db = sqlite(databasePaths_1.licencesDB, {
+import sqlite from "better-sqlite3";
+import { licencesDB as dbPath } from "../../data/databasePaths.js";
+import { getApplicationSettingWithDB } from "./getApplicationSetting.js";
+export const getNextExternalLicenceNumberFromRange = () => {
+    const db = sqlite(dbPath, {
         readonly: true
     });
-    const rangeStartFromConfig = getApplicationSetting_1.getApplicationSettingWithDB(db, "licences.externalLicenceNumber.range.start");
+    const rangeStartFromConfig = getApplicationSettingWithDB(db, "licences.externalLicenceNumber.range.start");
     const rangeStart = (rangeStartFromConfig === "" ? -1 : parseInt(rangeStartFromConfig, 10));
-    const rangeEnd = parseInt(getApplicationSetting_1.getApplicationSettingWithDB(db, "licences.externalLicenceNumber.range.end") || "0", 10);
+    const rangeEnd = parseInt(getApplicationSettingWithDB(db, "licences.externalLicenceNumber.range.end") || "0", 10);
     const row = db.prepare("select max(externalLicenceNumberInteger) as maxExternalLicenceNumberInteger" +
         " from LotteryLicences" +
         " where externalLicenceNumberInteger >= ?" +
@@ -30,4 +27,3 @@ const getNextExternalLicenceNumberFromRange = () => {
     }
     return newExternalLicenceNumber;
 };
-exports.getNextExternalLicenceNumberFromRange = getNextExternalLicenceNumberFromRange;

@@ -1,9 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.handler = void 0;
-const voidTransaction_1 = require("../../helpers/licencesDB/voidTransaction");
-const handler = (req, res) => {
-    const success = voidTransaction_1.voidTransaction(req.body.licenceID, req.body.transactionIndex, req.session);
+import { voidTransaction } from "../../helpers/licencesDB/voidTransaction.js";
+export const handler = (req, res) => {
+    const success = voidTransaction(req.body.licenceID, req.body.transactionIndex, req.session);
     if (success) {
         res.json({
             success: true,
@@ -17,4 +14,3 @@ const handler = (req, res) => {
         });
     }
 };
-exports.handler = handler;

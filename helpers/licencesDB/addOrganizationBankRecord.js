@@ -1,12 +1,9 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.addOrganizationBankRecord = void 0;
-const sqlite = require("better-sqlite3");
-const getMaxOrganizationBankRecordIndex_1 = require("./getMaxOrganizationBankRecordIndex");
-const databasePaths_1 = require("../../data/databasePaths");
-const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
-const addOrganizationBankRecord = (reqBody, reqSession) => {
-    const db = sqlite(databasePaths_1.licencesDB);
+import sqlite from "better-sqlite3";
+import { getMaxOrganizationBankRecordIndexWithDB } from "./getMaxOrganizationBankRecordIndex.js";
+import { licencesDB as dbPath } from "../../data/databasePaths.js";
+import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
+export const addOrganizationBankRecord = (reqBody, reqSession) => {
+    const db = sqlite(dbPath);
     const record = db.prepare("select recordIndex, recordDelete_timeMillis" +
         " from OrganizationBankRecords" +
         " where organizationID = ?" +
@@ -31,7 +28,7 @@ const addOrganizationBankRecord = (reqBody, reqSession) => {
             return false;
         }
     }
-    const newRecordIndex = getMaxOrganizationBankRecordIndex_1.getMaxOrganizationBankRecordIndexWithDB(db, reqBody.organizationID) + 1;
+    const newRecordIndex = getMaxOrganizationBankRecordIndexWithDB(db, reqBody.organizationID) + 1;
     const nowMillis = Date.now();
     const info = db.prepare("insert into OrganizationBankRecords" +
         " (organizationID, recordIndex," +
@@ -42,4 +39,3 @@ const addOrganizationBankRecord = (reqBody, reqSession) => {
     db.close();
     return info.changes > 0;
 };
-exports.addOrganizationBankRecord = addOrganizationBankRecord;

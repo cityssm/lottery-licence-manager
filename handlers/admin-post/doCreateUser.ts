@@ -1,6 +1,6 @@
 import type { RequestHandler } from "express";
 
-import { createUser } from "../../helpers/usersDB/createUser";
+import { createUser } from "../../helpers/usersDB/createUser.js";
 
 
 export const handler: RequestHandler = async(req, res) => {

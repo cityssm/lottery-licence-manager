@@ -1,4 +1,4 @@
-import { runSQLByName } from "../_runSQLByName";
+import { runSQLByName } from "../_runSQLByName.js";
 
 
 export const inactivateUser = (userName: string) => {

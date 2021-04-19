@@ -1,4 +1,4 @@
-import { FieldData } from "../types/recordTypes";
+import type { FieldData } from "../types/recordTypes";
 
 
 export const fieldDataArrayToObject = (fieldDataArray: FieldData[]): { [fieldKey: string]: string } => {

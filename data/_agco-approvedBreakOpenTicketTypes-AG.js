@@ -1,7 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.ticketTypes_AG = void 0;
-exports.ticketTypes_AG = [
+export const ticketTypes_AG = [
     {
         ticketType: "AG1",
         ticketPrice: 0.5,

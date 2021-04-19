@@ -1,5 +1,3 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 (() => {
     const mainEle = document.getElementsByTagName("main")[0];
     const urlPrefix = mainEle.getAttribute("data-url-prefix");
@@ -556,3 +554,4 @@ Object.defineProperty(exports, "__esModule", { value: true });
         }
     });
 })();
+export {};

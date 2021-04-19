@@ -1,14 +1,11 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.getEventFinancialSummary = void 0;
-const sqlite = require("better-sqlite3");
-const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
-const databasePaths_1 = require("../../data/databasePaths");
-const debug_1 = require("debug");
-const debugSQL = debug_1.debug("lottery-licence-manager:licencesDB:getEventFinancialSummary");
+import sqlite from "better-sqlite3";
+import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
+import { licencesDB as dbPath } from "../../data/databasePaths.js";
+import debug from "debug";
+const debugSQL = debug("lottery-licence-manager:licencesDB:getEventFinancialSummary");
 ;
-const getEventFinancialSummary = (reqBody) => {
-    const db = sqlite(databasePaths_1.licencesDB, {
+export const getEventFinancialSummary = (reqBody) => {
+    const db = sqlite(dbPath, {
         readonly: true
     });
     const sqlParams = [];
@@ -57,4 +54,3 @@ const getEventFinancialSummary = (reqBody) => {
     db.close();
     return rows;
 };
-exports.getEventFinancialSummary = getEventFinancialSummary;

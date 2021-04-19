@@ -1,12 +1,9 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.getOrganizationRemark = void 0;
-const sqlite = require("better-sqlite3");
-const databasePaths_1 = require("../../data/databasePaths");
-const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
-const licencesDB_1 = require("../licencesDB");
-const getOrganizationRemark = (organizationID, remarkIndex, reqSession) => {
-    const db = sqlite(databasePaths_1.licencesDB, {
+import sqlite from "better-sqlite3";
+import { licencesDB as dbPath } from "../../data/databasePaths.js";
+import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
+import { canUpdateObject } from "../licencesDB.js";
+export const getOrganizationRemark = (organizationID, remarkIndex, reqSession) => {
+    const db = sqlite(dbPath, {
         readonly: true
     });
     const remark = db.prepare("select" +
@@ -23,8 +20,7 @@ const getOrganizationRemark = (organizationID, remarkIndex, reqSession) => {
         remark.recordType = "remark";
         remark.remarkDateString = dateTimeFns.dateIntegerToString(remark.remarkDate || 0);
         remark.remarkTimeString = dateTimeFns.timeIntegerToString(remark.remarkTime || 0);
-        remark.canUpdate = licencesDB_1.canUpdateObject(remark, reqSession);
+        remark.canUpdate = canUpdateObject(remark, reqSession);
     }
     return remark;
 };
-exports.getOrganizationRemark = getOrganizationRemark;

@@ -1,1 +1,1 @@
-export declare const ticketTypes: import("../types/configTypes").ConfigTicketType[];
+export declare const ticketTypes: import("../types/configTypes.js").ConfigTicketType[];

@@ -1,13 +1,10 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateEvent = void 0;
-const sqlite = require("better-sqlite3");
-const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
-const licencesDB = require("../licencesDB");
-const databasePaths_1 = require("../../data/databasePaths");
+import sqlite from "better-sqlite3";
+import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
+import * as licencesDB from "../licencesDB.js";
+import { licencesDB as dbPath } from "../../data/databasePaths.js";
 ;
-const updateEvent = (reqBody, reqSession) => {
-    const db = sqlite(databasePaths_1.licencesDB);
+export const updateEvent = (reqBody, reqSession) => {
+    const db = sqlite(dbPath);
     const nowMillis = Date.now();
     const info = db.prepare("update LotteryEvents" +
         " set reportDate = ?," +
@@ -59,4 +56,3 @@ const updateEvent = (reqBody, reqSession) => {
     licencesDB.resetEventTableStats();
     return changeCount > 0;
 };
-exports.updateEvent = updateEvent;

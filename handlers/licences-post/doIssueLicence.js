@@ -1,9 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.handler = void 0;
-const issueLicence_1 = require("../../helpers/licencesDB/issueLicence");
-const handler = (req, res) => {
-    const success = issueLicence_1.issueLicence(req.body.licenceID, req.session);
+import { issueLicence } from "../../helpers/licencesDB/issueLicence.js";
+export const handler = (req, res) => {
+    const success = issueLicence(req.body.licenceID, req.session);
     if (success) {
         res.json({
             success: true,
@@ -17,4 +14,3 @@ const handler = (req, res) => {
         });
     }
 };
-exports.handler = handler;

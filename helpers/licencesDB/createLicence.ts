@@ -1,16 +1,15 @@
-import * as sqlite from "better-sqlite3";
-import { licencesDB as dbPath } from "../../data/databasePaths";
+import sqlite from "better-sqlite3";
+import { licencesDB as dbPath } from "../../data/databasePaths.js";
 
-import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns";
-import * as configFns from "../configFns";
+import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
+import * as configFns from "../configFns.js";
 
-import type { LotteryLicenceForm } from "./updateLicence";
-
-import { getLicenceWithDB } from "./getLicence";
-import { createEventWithDB } from "./createEvent";
-import { resetLicenceTableStats, resetEventTableStats } from "../licencesDB";
+import { getLicenceWithDB } from "./getLicence.js";
+import { createEventWithDB } from "./createEvent.js";
+import { resetLicenceTableStats, resetEventTableStats } from "../licencesDB.js";
 
 import type * as expressSession from "express-session";
+import type { LotteryLicenceForm } from "./updateLicence.js";
 
 
 export const createLicence = (reqBody: LotteryLicenceForm, reqSession: expressSession.Session) => {

@@ -1,12 +1,8 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.handler = void 0;
-const getDeletedOrganizations_1 = require("../../helpers/licencesDB/getDeletedOrganizations");
-const handler = (_req, res) => {
-    const organizations = getDeletedOrganizations_1.getDeletedOrganizations();
+import { getDeletedOrganizations } from "../../helpers/licencesDB/getDeletedOrganizations.js";
+export const handler = (_req, res) => {
+    const organizations = getDeletedOrganizations();
     res.render("organization-recovery", {
         headTitle: "Organization Recovery",
         organizations
     });
 };
-exports.handler = handler;

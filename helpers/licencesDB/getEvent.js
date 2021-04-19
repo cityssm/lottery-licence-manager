@@ -1,12 +1,9 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.getEvent = void 0;
-const sqlite = require("better-sqlite3");
-const databasePaths_1 = require("../../data/databasePaths");
-const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
-const licencesDB_1 = require("../licencesDB");
-const getEvent = (licenceID, eventDate, reqSession) => {
-    const db = sqlite(databasePaths_1.licencesDB, {
+import sqlite from "better-sqlite3";
+import { licencesDB as dbPath } from "../../data/databasePaths.js";
+import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
+import { canUpdateObject } from "../licencesDB.js";
+export const getEvent = (licenceID, eventDate, reqSession) => {
+    const db = sqlite(dbPath, {
         readonly: true
     });
     const eventObj = db.prepare("select *" +
@@ -21,7 +18,7 @@ const getEvent = (licenceID, eventDate, reqSession) => {
         eventObj.reportDateString = dateTimeFns.dateIntegerToString(eventObj.reportDate);
         eventObj.startTimeString = dateTimeFns.timeIntegerToString(eventObj.startTime || 0);
         eventObj.endTimeString = dateTimeFns.timeIntegerToString(eventObj.endTime || 0);
-        eventObj.canUpdate = licencesDB_1.canUpdateObject(eventObj, reqSession);
+        eventObj.canUpdate = canUpdateObject(eventObj, reqSession);
         let rows = db.prepare("select fieldKey, fieldValue" +
             " from LotteryEventFields" +
             " where licenceID = ? and eventDate = ?")
@@ -58,4 +55,3 @@ const getEvent = (licenceID, eventDate, reqSession) => {
     db.close();
     return eventObj;
 };
-exports.getEvent = getEvent;

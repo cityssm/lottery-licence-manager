@@ -1,10 +1,10 @@
 import type { RequestHandler } from "express";
 
-import * as configFns from "../../helpers/configFns";
-import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns";
+import * as configFns from "../../helpers/configFns.js";
+import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
 
-import { getOrganization } from "../../helpers/licencesDB/getOrganization";
-import { getNextExternalLicenceNumberFromRange } from "../../helpers/licencesDB/getNextExternalLicenceNumberFromRange";
+import { getOrganization } from "../../helpers/licencesDB/getOrganization.js";
+import { getNextExternalLicenceNumberFromRange } from "../../helpers/licencesDB/getNextExternalLicenceNumberFromRange.js";
 
 import type { Organization } from "../../types/recordTypes";
 

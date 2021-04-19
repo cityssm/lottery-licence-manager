@@ -1,9 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateLocation = void 0;
-const _runSQL_1 = require("./_runSQL");
-const updateLocation = (reqBody, reqSession) => {
-    return _runSQL_1.runSQL_hasChanges("update Locations" +
+import { runSQL_hasChanges } from "./_runSQL.js";
+export const updateLocation = (reqBody, reqSession) => {
+    return runSQL_hasChanges("update Locations" +
         " set locationName = ?," +
         " locationAddress1 = ?," +
         " locationAddress2 = ?," +
@@ -29,4 +26,3 @@ const updateLocation = (reqBody, reqSession) => {
         reqBody.locationID
     ]);
 };
-exports.updateLocation = updateLocation;

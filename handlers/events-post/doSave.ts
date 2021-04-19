@@ -1,6 +1,6 @@
 import type { RequestHandler } from "express";
 
-import { updateEvent } from "../../helpers/licencesDB/updateEvent";
+import { updateEvent } from "../../helpers/licencesDB/updateEvent.js";
 
 
 export const handler: RequestHandler = (req, res) => {

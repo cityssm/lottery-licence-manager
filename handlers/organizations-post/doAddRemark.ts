@@ -1,6 +1,6 @@
 import type { RequestHandler } from "express";
 
-import { addOrganizationRemark } from "../../helpers/licencesDB/addOrganizationRemark";
+import { addOrganizationRemark } from "../../helpers/licencesDB/addOrganizationRemark.js";
 
 
 export const handler: RequestHandler = (req, res) => {

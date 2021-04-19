@@ -1,13 +1,11 @@
 #!/usr/bin/env node
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const app = require("../app");
-const http = require("http");
-const https = require("https");
-const fs = require("fs");
-const configFns = require("../helpers/configFns");
-const debug_1 = require("debug");
-const debugWWW = debug_1.debug("lottery-licence-manager:www");
+import { app } from "../app.js";
+import * as http from "http";
+import * as https from "https";
+import * as fs from "fs";
+import * as configFns from "../helpers/configFns.js";
+import debug from "debug";
+const debugWWW = debug("lottery-licence-manager:www");
 const onError = (error) => {
     if (error.syscall !== "listen") {
         throw error;

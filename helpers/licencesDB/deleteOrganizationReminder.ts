@@ -1,9 +1,9 @@
-import { runSQLWithDB } from "../_runSQLByName";
+import { runSQLWithDB } from "../_runSQLByName.js";
+
+import { licencesDB as dbPath } from "../../data/databasePaths.js";
+import sqlite from "better-sqlite3";
 
 import type * as expressSession from "express-session";
-
-import { licencesDB as dbPath } from "../../data/databasePaths";
-import * as sqlite from "better-sqlite3";
 
 
 export const deleteOrganizationReminderWithDB =

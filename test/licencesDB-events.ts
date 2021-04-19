@@ -1,12 +1,12 @@
 import * as assert from "assert";
 
-import { fakeViewOnlySession } from "./_globals";
+import { fakeViewOnlySession } from "./_globals.js";
 
-import { getEvent } from "../helpers/licencesDB/getEvent";
-import { getEvents } from "../helpers/licencesDB/getEvents";
-import { getEventFinancialSummary } from "../helpers/licencesDB/getEventFinancialSummary";
-import { getOutstandingEvents } from "../helpers/licencesDB/getOutstandingEvents";
-import { getPastEventBankingInformation } from "../helpers/licencesDB/getPastEventBankingInformation";
+import { getEvent } from "../helpers/licencesDB/getEvent.js";
+import { getEvents } from "../helpers/licencesDB/getEvents.js";
+import { getEventFinancialSummary } from "../helpers/licencesDB/getEventFinancialSummary.js";
+import { getOutstandingEvents } from "../helpers/licencesDB/getOutstandingEvents.js";
+import { getPastEventBankingInformation } from "../helpers/licencesDB/getPastEventBankingInformation.js";
 
 
 describe("licencesDB/events", () => {

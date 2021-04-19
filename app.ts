@@ -1,39 +1,34 @@
-import * as createError from "http-errors";
-import * as express from "express";
+import createError from "http-errors";
+import express from "express";
 
 import * as compression from "compression";
 import * as path from "path";
-import * as cookieParser from "cookie-parser";
-import * as csurf from "csurf";
-import * as rateLimit from "express-rate-limit";
+import cookieParser from "cookie-parser";
+import csurf from "csurf";
+import rateLimit from "express-rate-limit";
 
-import * as session from "express-session";
-import * as sqlite3 from "connect-sqlite3";
+import session from "express-session";
+import sqlite from "connect-sqlite3";
 
-import * as packageJSON from "./package.json";
+import { router as routerDocs } from "./routes/docs.js";
+import { router as routerLogin } from "./routes/login.js";
+import { router as routerDashboard } from "./routes/dashboard.js";
+import { router as routerOrganizations } from "./routes/organizations.js";
+import { router as routerLicences } from "./routes/licences.js";
+import { router as routerLocations } from "./routes/locations.js";
+import { router as routerEvents } from "./routes/events.js";
+import { router as routerReports } from "./routes/reports.js";
+import { router as routerAdmin } from "./routes/admin.js";
 
-import * as routerDocs from "./routes/docs";
-import * as routerLogin from "./routes/login";
-import * as routerDashboard from "./routes/dashboard";
-import * as routerOrganizations from "./routes/organizations";
-import * as routerLicences from "./routes/licences";
-import * as routerLocations from "./routes/locations";
-import * as routerEvents from "./routes/events";
-import * as routerReports from "./routes/reports";
-import * as routerAdmin from "./routes/admin";
+import * as configFns from "./helpers/configFns.js";
+import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
+import * as stringFns from "@cityssm/expressjs-server-js/stringFns.js";
+import * as htmlFns from "@cityssm/expressjs-server-js/htmlFns.js";
 
-import * as configFns from "./helpers/configFns";
-import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns";
-import * as stringFns from "@cityssm/expressjs-server-js/stringFns";
-import * as htmlFns from "@cityssm/expressjs-server-js/htmlFns";
+import * as dbInit from "./helpers/dbInit.js";
 
-import * as dbInit from "./helpers/dbInit";
-
-import { debug } from "debug";
+import debug from "debug";
 const debugApp = debug("lottery-licence-manager:app");
-
-
-const SQLiteStore = sqlite3(session);
 
 
 /*
@@ -50,7 +45,9 @@ dbInit.initLicencesDB();
  */
 
 
-const app = express();
+const __dirname = ".";
+
+export const app = express();
 
 if (!configFns.getProperty("reverseProxy.disableEtag")) {
   app.set("etag", false);
@@ -65,7 +62,7 @@ if (!configFns.getProperty("reverseProxy.disableCompression")) {
 }
 
 app.use((req, _res, next) => {
-  debugApp(req.method + " " + req.url);
+  debugApp(`${req.method} ${req.url}`);
   next();
 });
 
@@ -102,7 +99,6 @@ if (urlPrefix !== "") {
   debugApp("urlPrefix = " + urlPrefix);
 }
 
-
 app.use(urlPrefix, express.static(path.join(__dirname, "public")));
 
 app.use(urlPrefix + "/docs/images",
@@ -120,6 +116,8 @@ app.use(urlPrefix + "/cityssm-bulma-webapp-js",
  */
 
 
+const SQLiteStore = sqlite(session);
+
 const sessionCookieName: string = configFns.getProperty("session.cookieName");
 
 
@@ -127,7 +125,7 @@ const sessionCookieName: string = configFns.getProperty("session.cookieName");
 app.use(session({
   store: new SQLiteStore({
     dir: "data",
-    db: "sessions.db"
+   db: "sessions.db"
   }),
   name: sessionCookieName,
   secret: configFns.getProperty("session.secret"),
@@ -157,7 +155,7 @@ const sessionChecker = (req: express.Request, res: express.Response, next: expre
     return next();
   }
 
-  return res.redirect(urlPrefix + "/login?redirect=" + req.originalUrl);
+  return res.redirect(`${urlPrefix}/login?redirect=${req.originalUrl}`);
 };
 
 
@@ -169,7 +167,7 @@ const sessionChecker = (req: express.Request, res: express.Response, next: expre
 // Make the user and config objects available to the templates
 app.use((req, res, next) => {
 
-  res.locals.buildNumber = packageJSON.version;
+  res.locals.buildNumber = process.env.npm_package_version;
 
   res.locals.user = req.session.user;
   res.locals.csrfToken = req.csrfToken();
@@ -238,6 +236,3 @@ app.use((err: { status: number; message: string },
   res.status(err.status || 500);
   res.render("error");
 });
-
-
-export = app;

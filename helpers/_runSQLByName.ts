@@ -1,8 +1,8 @@
-import * as sqlite from "better-sqlite3";
+import sqlite from "better-sqlite3";
 
-import { licencesDB, usersDB } from "../data/databasePaths";
+import { licencesDB, usersDB } from "../data/databasePaths.js";
 
-import { debug } from "debug";
+import debug from "debug";
 const debugSQL = debug("lottery-licence-manager:runSQLWithDB");
 
 

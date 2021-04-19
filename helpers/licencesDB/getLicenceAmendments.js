@@ -1,8 +1,5 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.getLicenceAmendmentsWithDB = void 0;
-const dateTimeFns = require("@cityssm/expressjs-server-js/dateTimeFns");
-const getLicenceAmendmentsWithDB = (db, licenceID) => {
+import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
+export const getLicenceAmendmentsWithDB = (db, licenceID) => {
     const amendments = db.prepare("select *" +
         " from LotteryLicenceAmendments" +
         " where licenceID = ?" +
@@ -15,4 +12,3 @@ const getLicenceAmendmentsWithDB = (db, licenceID) => {
     }
     return amendments;
 };
-exports.getLicenceAmendmentsWithDB = getLicenceAmendmentsWithDB;
