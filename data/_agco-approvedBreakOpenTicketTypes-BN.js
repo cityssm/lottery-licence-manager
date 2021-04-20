@@ -312,3 +312,4 @@ export const ticketTypes_BN = [
         prizesPerDeal: 563
     }
 ];
+export default ticketTypes_BN;

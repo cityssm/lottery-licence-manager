@@ -10,15 +10,15 @@ import rateLimit from "express-rate-limit";
 import session from "express-session";
 import sqlite from "connect-sqlite3";
 
-import { router as routerDocs } from "./routes/docs.js";
-import { router as routerLogin } from "./routes/login.js";
-import { router as routerDashboard } from "./routes/dashboard.js";
-import { router as routerOrganizations } from "./routes/organizations.js";
-import { router as routerLicences } from "./routes/licences.js";
-import { router as routerLocations } from "./routes/locations.js";
-import { router as routerEvents } from "./routes/events.js";
-import { router as routerReports } from "./routes/reports.js";
-import { router as routerAdmin } from "./routes/admin.js";
+import routerDocs from "./routes/docs.js";
+import routerLogin from "./routes/login.js";
+import routerDashboard from "./routes/dashboard.js";
+import routerOrganizations from "./routes/organizations.js";
+import routerLicences from "./routes/licences.js";
+import routerLocations from "./routes/locations.js";
+import routerEvents from "./routes/events.js";
+import routerReports from "./routes/reports.js";
+import routerAdmin from "./routes/admin.js";
 
 import * as configFns from "./helpers/configFns.js";
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
@@ -125,7 +125,7 @@ const sessionCookieName: string = configFns.getProperty("session.cookieName");
 app.use(session({
   store: new SQLiteStore({
     dir: "data",
-   db: "sessions.db"
+    db: "sessions.db"
   }),
   name: sessionCookieName,
   secret: configFns.getProperty("session.secret"),

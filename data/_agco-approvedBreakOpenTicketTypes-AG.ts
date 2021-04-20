@@ -1,4 +1,4 @@
-import { ConfigTicketType } from "../types/configTypes.js";
+import type { ConfigTicketType } from "../types/configTypes.js";
 
 
 /*
@@ -194,3 +194,6 @@ export const ticketTypes_AG: ConfigTicketType[] = [
     prizesPerDeal: 33000
   }
 ];
+
+
+export default ticketTypes_AG;

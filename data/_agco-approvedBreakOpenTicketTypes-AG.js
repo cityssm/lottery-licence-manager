@@ -162,3 +162,4 @@ export const ticketTypes_AG = [
         prizesPerDeal: 33000
     }
 ];
+export default ticketTypes_AG;

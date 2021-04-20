@@ -34,3 +34,5 @@ export const ticketTypes_PG: ConfigTicketType[] = [
     prizesPerDeal: 208
   }
 ];
+
+export default ticketTypes_PG;

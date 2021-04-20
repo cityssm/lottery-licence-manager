@@ -192,3 +192,5 @@ export const ticketTypes_SP: ConfigTicketType[] = [
     prizesPerDeal: 1890
   }
 ];
+
+export default ticketTypes_SP;

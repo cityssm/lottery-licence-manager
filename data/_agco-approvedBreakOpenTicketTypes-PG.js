@@ -24,3 +24,4 @@ export const ticketTypes_PG = [
         prizesPerDeal: 208
     }
 ];
+export default ticketTypes_PG;

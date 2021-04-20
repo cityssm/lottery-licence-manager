@@ -333,3 +333,5 @@ export const ticketTypes_BN: ConfigTicketType[] = [
     prizesPerDeal: 563
   }
 ];
+
+export default ticketTypes_BN;
