@@ -520,10 +520,10 @@
           </div>
         </div>
         <div class="panel-tabs">
-          <a href="#ticketTypesTabPanel--summary" aria-controls="ticketTypesTabPanel--summary">Summary</a>
-          <a class="is-active" href="#ticketTypesTabPanel--log" aria-controls="ticketTypesTabPanel--log">Log</a>
+          <a class="is-active" href="#ticketTypesTabPanel--summary" aria-controls="ticketTypesTabPanel--summary">Summary</a>
+          <a href="#ticketTypesTabPanel--log" aria-controls="ticketTypesTabPanel--log">Log</a>
         </div>
-        <table class="table is-fullwidth is-hidden" id="ticketTypesTabPanel--summary">
+        <table class="table is-fullwidth" id="ticketTypesTabPanel--summary">
           <thead>
             <tr>
               <th>Type</th>
@@ -536,7 +536,7 @@
           <tbody></tbody>
           <tfoot></tfoot>
         </table>
-        <table class="table is-fullwidth" id="ticketTypesTabPanel--log">
+        <table class="table is-fullwidth is-hidden" id="ticketTypesTabPanel--log">
           <thead>
             <th>Amend Date</th>
             <th>Type</th>
@@ -556,12 +556,19 @@
                 const ticketType = (licenceType && licenceType.ticketTypes
                   ? licenceType.ticketTypes.find(ele => ele.ticketType === licenceTicketTypeObj.ticketType)
                   : null);
+
+                const ticketValue = (ticketType ? (ticketType.ticketPrice * ticketType.ticketCount) : 0);
+                const totalValue = (ticketValue * licenceTicketTypeObj.unitCount).toFixed(2);
+
+                const prizesPerDeal = (ticketType ? ticketType.prizesPerDeal : 0);
+                const totalPrizesPerDeal = (prizesPerDeal * licenceTicketTypeObj.unitCount).toFixed(2);
               %>
               <tr data-ticket-type-index="<%= licenceTicketTypeObj.ticketTypeIndex %>"
                 data-ticket-type="<%= licenceTicketTypeObj.ticketType %>"
                 data-unit-count="<%= licenceTicketTypeObj.unitCount %>"
-                data-licence-fee="<%= licenceTicketTypeObj.licenceFee %>"
-                data-prizes-per-deal="<%= ticketType.prizesPerDeal %>">
+                data-total-value="<%= totalValue %>"
+                data-total-prizes="<%= totalPrizesPerDeal %>"
+                data-licence-fee="<%= licenceTicketTypeObj.licenceFee %>">
                 <td>
                   <span><%= licenceTicketTypeObj.amendmentDateString %></span>
                 </td>
@@ -572,17 +579,9 @@
                   <span><%= licenceTicketTypeObj.unitCount %></span>
                 </td>
                 <td class="has-text-right is-nowrap">
-                  <%
-                    let ticketValue = (ticketType ? (ticketType.ticketPrice * ticketType.ticketCount) : 0);
-                    let totalValue = (ticketValue * licenceTicketTypeObj.unitCount).toFixed(2);
-                  %>
                   <span data-tooltip="$<%= ticketValue.toFixed(2) %> value per deal">$<%= totalValue %></span>
                 </td>
                 <td class="has-text-right is-nowrap">
-                  <%
-                    let prizesPerDeal = (ticketType ? ticketType.prizesPerDeal : 0);
-                    let totalPrizesPerDeal = (prizesPerDeal * licenceTicketTypeObj.unitCount).toFixed(2);
-                  %>
                   <span data-tooltip="$<%= prizesPerDeal.toFixed(2) %> prizes per deal">$<%= totalPrizesPerDeal %></span>
                 </td>
                 <td class="has-text-right is-nowrap">

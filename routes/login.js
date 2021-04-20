@@ -1,6 +1,6 @@
 import { Router } from "express";
 import * as configFns from "../helpers/configFns.js";
-import * as usersDB_getUser from "../helpers/usersDB/getUser.js";
+import getUser from "../helpers/usersDB/getUser.js";
 export const router = Router();
 const getSafeRedirectURL = (possibleRedirectURL = "") => {
     const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
@@ -51,7 +51,7 @@ router.route("/")
     const userName = req.body.userName;
     const passwordPlain = req.body.password;
     const redirectURL = getSafeRedirectURL(req.body.redirect);
-    const userObj = await usersDB_getUser.getUser(userName, passwordPlain);
+    const userObj = await getUser(userName, passwordPlain);
     if (userObj) {
         req.session.user = userObj;
         res.redirect(redirectURL);
@@ -64,3 +64,4 @@ router.route("/")
         });
     }
 });
+export default router;
