@@ -996,16 +996,118 @@ declare const llm: llmGlobal;
       }
     };
 
+    /*
+     * Tables
+     */
+
+    const summaryTableEle = document.getElementById("ticketTypesTabPanel--summary");
+    const summaryTableTbodyEle = summaryTableEle.getElementsByTagName("tbody")[0];
+    const summaryTableTFootEle = summaryTableEle.getElementsByTagName("tfoot")[0];
+
     const logTableEle = document.getElementById("ticketTypesTabPanel--log");
     const logTableTbodyEle = logTableEle.getElementsByTagName("tbody")[0];
     const logTableTFootEle = logTableEle.getElementsByTagName("tfoot")[0];
 
     const summaryTableFn_renderTable = () => {
 
-    };
+      // sum up the log rows
 
-    const logTableFn_calculateFoot = () => {
+      const ticketTypeTotals = new Map<string, {
+        totalUnits: number;
+        totalValue: number;
+        totalPrizes: number;
+        totalLicenceFee: number;
+      }>();
 
+      const logTrEles = logTableTbodyEle.getElementsByTagName("tr");
+
+      for (const logTrEle of logTrEles) {
+
+        const ticketType = logTrEle.getAttribute("data-ticket-type");
+
+        let totalUnits = parseInt(logTrEle.getAttribute("data-unit-count"), 10);
+        let totalValue = parseFloat(logTrEle.getAttribute("data-total-value"));
+        let totalPrizes = parseFloat(logTrEle.getAttribute("data-total-prizes"));
+        let totalLicenceFee = parseFloat(logTrEle.getAttribute("data-licence-fee"));
+
+        if (ticketTypeTotals.has(ticketType)) {
+          totalUnits += ticketTypeTotals.get(ticketType).totalUnits;
+          totalValue += ticketTypeTotals.get(ticketType).totalValue;
+          totalPrizes += ticketTypeTotals.get(ticketType).totalPrizes;
+          totalLicenceFee += ticketTypeTotals.get(ticketType).totalLicenceFee;
+        }
+
+        ticketTypeTotals.set(ticketType, {
+          totalUnits,
+          totalValue,
+          totalPrizes,
+          totalLicenceFee
+        });
+      }
+
+      // sort ticket types
+
+      const ticketTypes: string[] = [];
+
+      for (const ticketType of ticketTypeTotals.keys()) {
+        ticketTypes.push(ticketType);
+      }
+
+      ticketTypes.sort();
+
+      // update summary table body
+
+      cityssm.clearElement(summaryTableTbodyEle);
+
+      const grandTotals = {
+        totalUnits: 0,
+        totalValue: 0,
+        totalPrizes: 0,
+        totalLicenceFee: 0
+      };
+
+      for (const ticketType of ticketTypes) {
+
+        const rowTotals = ticketTypeTotals.get(ticketType);
+
+        grandTotals.totalUnits += rowTotals.totalUnits;
+        grandTotals.totalValue += rowTotals.totalValue;
+        grandTotals.totalPrizes += rowTotals.totalPrizes;
+        grandTotals.totalLicenceFee += rowTotals.totalLicenceFee;
+
+        const summaryTrEle = document.createElement("tr");
+
+        summaryTrEle.innerHTML = ("<td>" + ticketType + "</td>") +
+          ("<td class=\"has-text-right\">" + rowTotals.totalUnits.toString() + "</td>") +
+          ("<td class=\"has-text-right\">" + llm.formatDollarsAsHTML(rowTotals.totalValue) + "</td>") +
+          ("<td class=\"has-text-right\">" + llm.formatDollarsAsHTML(rowTotals.totalPrizes) + "</td>") +
+          ("<td class=\"has-text-right\">" + llm.formatDollarsAsHTML(rowTotals.totalLicenceFee) + "</td>");
+
+        summaryTableTbodyEle.appendChild(summaryTrEle);
+      }
+
+      // update summary table footer
+
+      summaryTableTFootEle.innerHTML = "<td></td>" +
+        "<th class=\"has-text-right\">" + grandTotals.totalUnits.toString() + "</th>" +
+        "<th class=\"has-text-right\">" + llm.formatDollarsAsHTML(grandTotals.totalValue) + "</th>" +
+        "<th class=\"has-text-right\">" + llm.formatDollarsAsHTML(grandTotals.totalPrizes) + "</th>" +
+        "<th class=\"has-text-right\">" + llm.formatDollarsAsHTML(grandTotals.totalLicenceFee) + "</th>";
+
+      // update log table footer
+
+      logTableTFootEle.innerHTML = "<td></td>" +
+        "<td></td>" +
+        "<th class=\"has-text-right\">" + grandTotals.totalUnits.toString() + "</th>" +
+        "<th class=\"has-text-right\">" + llm.formatDollarsAsHTML(grandTotals.totalValue) + "</th>" +
+        "<th class=\"has-text-right\">" + llm.formatDollarsAsHTML(grandTotals.totalPrizes) + "</th>" +
+        "<th class=\"has-text-right\">" + llm.formatDollarsAsHTML(grandTotals.totalLicenceFee) + "</th>" +
+        "<td></td>" +
+        "<td class=\"is-hidden-print\"></td>";
+
+      // update total prize value
+
+      (document.getElementById("licence--totalPrizeValue") as HTMLInputElement).value = grandTotals.totalPrizes.toFixed(2);
     };
 
     const logTableFn_addTr = (obj: {
@@ -1018,7 +1120,25 @@ declare const llm: llmGlobal;
       manufacturerLocationID: number;
     }) => {
 
+      /*
+       * Calculate values
+       */
+
       const ticketType = obj.ticketType;
+
+      const unitCount = obj.unitCount;
+
+      const valuePerDeal = obj.valuePerDeal;
+      const totalValuePerDeal = (valuePerDeal * unitCount).toFixed(2);
+
+      const prizesPerDeal = obj.prizesPerDeal;
+      const totalPrizesPerDeal = (prizesPerDeal * unitCount).toFixed(2);
+
+      const licenceFee = obj.licenceFee;
+
+      /*
+       * Build row
+       */
 
       const trEle = document.createElement("tr");
 
@@ -1026,9 +1146,10 @@ declare const llm: llmGlobal;
 
       trEle.setAttribute("data-ticket-type-index", "");
       trEle.setAttribute("data-ticket-type", ticketType);
-      trEle.setAttribute("data-unit-count", obj.unitCount.toString());
+      trEle.setAttribute("data-unit-count", unitCount.toString());
+      trEle.setAttribute("data-total-value", totalValuePerDeal.toString());
+      trEle.setAttribute("data-total-prizes", totalPrizesPerDeal.toString());
       trEle.setAttribute("data-licence-fee", obj.licenceFee.toString());
-      trEle.setAttribute("data-prizes-per-deal", obj.prizesPerDeal.toString());
 
       trEle.insertAdjacentHTML("beforeend", "<td>" +
         "<input name=\"ticketType_ticketTypeIndex\" type=\"hidden\" value=\"\" />" +
@@ -1043,8 +1164,6 @@ declare const llm: llmGlobal;
 
       // Unit count
 
-      const unitCount = obj.unitCount;
-
       trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right\">" +
         "<input name=\"ticketType_unitCount\" type=\"hidden\" value=\"" + unitCount.toString() + "\" />" +
         "<span>" + unitCount.toString() + "</span>" +
@@ -1052,18 +1171,12 @@ declare const llm: llmGlobal;
 
       // Value per deal
 
-      const valuePerDeal = obj.valuePerDeal;
-      const totalValuePerDeal = (valuePerDeal * unitCount).toFixed(2);
-
       trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right is-nowrap\">" +
         "<input class=\"is-total-value-per-deal\" type=\"hidden\" value=\"" + totalValuePerDeal.toString() + "\" />" +
         "<span data-tooltip=\"$" + valuePerDeal.toFixed(2) + " value per deal\">$ " + totalValuePerDeal + "</span>" +
         "</td>");
 
       // Prizes per deal
-
-      const prizesPerDeal = obj.prizesPerDeal;
-      const totalPrizesPerDeal = (prizesPerDeal * unitCount).toFixed(2);
 
       trEle.insertAdjacentHTML("beforeend",
         "<td class=\"has-text-right is-nowrap\">" +
@@ -1074,8 +1187,6 @@ declare const llm: llmGlobal;
         "</td>");
 
       // Licence fee
-
-      const licenceFee = obj.licenceFee;
 
       trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right is-nowrap\">" +
         "<input class=\"is-licence-fee\" name=\"ticketType_licenceFee\"" +
@@ -1112,75 +1223,19 @@ declare const llm: llmGlobal;
 
       logTableTbodyEle.insertAdjacentElement("afterbegin", trEle);
 
-      logTableFn_calculateFoot();
       summaryTableFn_renderTable();
 
       setUnsavedChangesFn();
       setDoRefreshAfterSaveFn();
     };
 
-
-    const tabEles = ticketTypesPanelEle.querySelectorAll(".panel-tabs a");
-
-    const tabsFn_selectTab = (clickEvent: MouseEvent) => {
-      clickEvent.preventDefault();
-
-      tabEles.forEach((tabEle) => {
-        tabEle.classList.remove("is-active");
-      });
-
-      const selectedTabEle = clickEvent.currentTarget as HTMLAnchorElement;
-      selectedTabEle.classList.add("is-active");
-
-      document.getElementById("ticketTypesTabPanel--summary").classList.add("is-hidden");
-      document.getElementById("ticketTypesTabPanel--log").classList.add("is-hidden");
-
-      document.getElementById(selectedTabEle.getAttribute("aria-controls")).classList.remove("is-hidden");
-    };
-
-    tabEles.forEach((tabEle) => {
-      tabEle.addEventListener("click", tabsFn_selectTab);
-    });
-
-    const ticketTypesFn_calculateTfoot = () => {
-
-      let prizeValueTotal = 0;
-
-      const prizeValueEles =
-        ticketTypesPanelEle.getElementsByClassName("is-total-prizes-per-deal") as HTMLCollectionOf<HTMLInputElement>;
-
-      for (const prizeValueEle of prizeValueEles) {
-        prizeValueTotal += parseFloat(prizeValueEle.value);
-      }
-
-      let licenceFeeTotal = 0;
-
-      const licenceFeeEles =
-        ticketTypesPanelEle.getElementsByClassName("is-licence-fee") as HTMLCollectionOf<HTMLInputElement>;
-
-      for (const licenceFeeEle of licenceFeeEles) {
-        licenceFeeTotal += parseFloat(licenceFeeEle.value);
-      }
-
-      ticketTypesPanelEle.getElementsByTagName("tfoot")[0].innerHTML = "<tr>" +
-        "<td></td>" +
-        "<td></td>" +
-        "<td></td>" +
-        "<th class=\"has-text-right is-nowrap\">$ " + prizeValueTotal.toFixed(2) + "</th>" +
-        "<th class=\"has-text-right is-nowrap\">$ " + licenceFeeTotal.toFixed(2) + "</th>" +
-        "</tr>";
-
-      (document.getElementById("licence--totalPrizeValue") as HTMLInputElement).value = prizeValueTotal.toFixed(2);
-
-    };
-
     const deleteTicketTypeFn_openConfirm = (buttonEvent: Event) => {
 
       const trEle = (buttonEvent.currentTarget as HTMLButtonElement).closest("tr");
-      const eventDateString = trEle.getAttribute("data-event-date-string");
+
       const ticketType = trEle.getAttribute("data-ticket-type");
 
-      const ticketTypeKey = eventDateString + ":" + ticketType;
+      const ticketTypeIndex = trEle.getAttribute("data-ticket-type-index");
 
       const doDeleteTicketTypeFn = () => {
 
@@ -1188,23 +1243,14 @@ declare const llm: llmGlobal;
 
         if (!isCreate) {
 
-          const addEle = formEle.querySelector("input[name='ticketTypeKey_toAdd'][value='" + ticketTypeKey + "']");
-
-          if (addEle) {
-
-            addEle.remove();
-
-          } else {
-
-            formEle.insertAdjacentHTML(
-              "beforeend",
-              "<input class=\"is-removed-after-save\" name=\"ticketTypeKey_toDelete\"" +
-              " type=\"hidden\" value=\"" + cityssm.escapeHTML(ticketTypeKey) + "\" />"
-            );
-          }
+          formEle.insertAdjacentHTML(
+            "beforeend",
+            "<input class=\"is-removed-after-save\" name=\"ticketTypeIndex_toDelete\"" +
+            " type=\"hidden\" value=\"" + cityssm.escapeHTML(ticketTypeIndex) + "\" />"
+          );
         }
 
-        ticketTypesFn_calculateTfoot();
+        summaryTableFn_renderTable();
 
         setUnsavedChangesFn();
         setDoRefreshAfterSaveFn();
@@ -1361,7 +1407,7 @@ declare const llm: llmGlobal;
       });
     };
 
-    ticketTypesFn_calculateTfoot();
+    summaryTableFn_renderTable();
 
     document.getElementById("is-add-ticket-type-button").addEventListener("click", addTicketType_openModal);
 
