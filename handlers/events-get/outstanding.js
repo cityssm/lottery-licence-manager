@@ -3,3 +3,4 @@ export const handler = (_req, res) => {
         headTitle: "Outstanding Events"
     });
 };
+export default handler;

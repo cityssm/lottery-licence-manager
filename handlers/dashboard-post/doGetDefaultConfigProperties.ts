@@ -14,3 +14,6 @@ export const handler: RequestHandler = (_req, res) => {
     dismissingStatuses: configFns.getProperty("reminders.dismissingStatuses")
   });
 };
+
+
+export default handler;

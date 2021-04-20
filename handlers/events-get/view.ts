@@ -35,3 +35,6 @@ export const handler: RequestHandler = (req, res, next) => {
     organization
   });
 };
+
+
+export default handler;

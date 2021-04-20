@@ -31,3 +31,4 @@ export const handler = (req, res, next) => {
       </html>`);
     });
 };
+export default handler;

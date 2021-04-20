@@ -7,3 +7,6 @@ export const handler: RequestHandler = (_req, res) => {
     headTitle: "Outstanding Events"
   });
 };
+
+
+export default handler;

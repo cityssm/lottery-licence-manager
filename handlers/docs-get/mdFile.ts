@@ -47,5 +47,7 @@ export const handler: RequestHandler = (req, res, next) => {
       </html>`);
 
   });
-
 };
+
+
+export default handler;

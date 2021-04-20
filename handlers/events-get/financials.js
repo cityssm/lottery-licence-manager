@@ -17,3 +17,4 @@ export const handler = (_req, res) => {
         eventDateEndString
     });
 };
+export default handler;

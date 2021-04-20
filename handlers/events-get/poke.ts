@@ -21,3 +21,6 @@ export const handler: RequestHandler = (req, res, next) => {
 
   res.redirect(urlPrefix + "/events/" + licenceID.toString() + "/" + eventDate.toString());
 };
+
+
+export default handler;

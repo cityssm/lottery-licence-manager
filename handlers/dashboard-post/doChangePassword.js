@@ -6,3 +6,4 @@ export const handler = async (req, res) => {
     const result = await tryResetPassword(userName, oldPassword, newPassword);
     res.json(result);
 };
+export default handler;

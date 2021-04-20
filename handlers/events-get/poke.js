@@ -10,3 +10,4 @@ export const handler = (req, res, next) => {
     pokeEvent(licenceID, eventDate, req.session);
     res.redirect(urlPrefix + "/events/" + licenceID.toString() + "/" + eventDate.toString());
 };
+export default handler;

@@ -32,5 +32,7 @@ export const handler: RequestHandler = (_req, res) => {
     eventDateStartString,
     eventDateEndString
   });
-
 };
+
+
+export default handler;

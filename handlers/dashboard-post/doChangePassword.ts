@@ -13,3 +13,6 @@ export const handler: RequestHandler = async(req, res) => {
 
   res.json(result);
 };
+
+
+export default handler;
