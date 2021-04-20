@@ -15,3 +15,4 @@ export const handler = (_req, res) => {
         startDateEndString
     });
 };
+export default handler;

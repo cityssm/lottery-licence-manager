@@ -9,3 +9,4 @@ export const handler = (req, res, next) => {
     pokeLicence(licenceID, req.session);
     return res.redirect(urlPrefix + "/licences/" + licenceID.toString());
 };
+export default handler;

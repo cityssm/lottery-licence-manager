@@ -21,3 +21,6 @@ export const handler: RequestHandler = (req, res) => {
 
   res.json(activity);
 };
+
+
+export default handler;

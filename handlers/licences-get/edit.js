@@ -24,3 +24,4 @@ export const handler = (req, res, next) => {
         feeCalculation
     });
 };
+export default handler;

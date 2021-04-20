@@ -59,3 +59,6 @@ export const handler: RequestHandler = (req, res) => {
     organization
   });
 };
+
+
+export default handler;

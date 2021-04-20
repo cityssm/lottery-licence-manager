@@ -20,3 +20,6 @@ export const handler: RequestHandler = (req, res, next) => {
 
   return res.redirect(urlPrefix + "/licences/" + licenceID.toString());
 };
+
+
+export default handler;

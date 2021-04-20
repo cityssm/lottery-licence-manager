@@ -41,3 +41,4 @@ export const handler = async (req, res, next) => {
         return null;
     });
 };
+export default handler;

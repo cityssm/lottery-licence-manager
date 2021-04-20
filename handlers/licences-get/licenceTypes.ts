@@ -34,3 +34,6 @@ export const handler: RequestHandler = (_req, res) => {
     applicationDateEndString
   });
 };
+
+
+export default handler;

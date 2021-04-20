@@ -3,3 +3,4 @@ export const handler = (req, res) => {
     const bankInfoList = getPastEventBankingInformation(req.body.licenceID);
     res.json(bankInfoList);
 };
+export default handler;

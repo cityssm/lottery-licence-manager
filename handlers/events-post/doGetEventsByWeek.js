@@ -9,3 +9,4 @@ export const handler = (req, res) => {
     const activity = getLicenceActivityByDateRange(startDateInteger, endDateInteger);
     res.json(activity);
 };
+export default handler;

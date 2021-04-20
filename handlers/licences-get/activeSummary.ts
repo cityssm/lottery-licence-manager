@@ -33,3 +33,6 @@ export const handler: RequestHandler = (_req, res) => {
     startDateEndString
   });
 };
+
+
+export default handler;

@@ -40,3 +40,6 @@ export const handler: RequestHandler = (req, res, next) => {
     feeCalculation
   });
 };
+
+
+export default handler;

@@ -8,3 +8,6 @@ export const handler: RequestHandler = (req, res) => {
   const summary = getEventFinancialSummary(req.body);
   res.json(summary);
 };
+
+
+export default handler;

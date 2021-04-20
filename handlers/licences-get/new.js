@@ -36,3 +36,4 @@ export const handler = (req, res) => {
         organization
     });
 };
+export default handler;
