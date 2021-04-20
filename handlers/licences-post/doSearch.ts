@@ -11,3 +11,6 @@ export const handler: RequestHandler = (req, res) => {
     offset: req.body.offset
   }));
 };
+
+
+export default handler;

@@ -13,3 +13,6 @@ export const handler: RequestHandler = (req, res) => {
     transactionIndex: newTransactionIndex
   });
 };
+
+
+export default handler;

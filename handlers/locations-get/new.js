@@ -11,3 +11,4 @@ export const handler = (_req, res) => {
         isCreate: true
     });
 };
+export default handler;

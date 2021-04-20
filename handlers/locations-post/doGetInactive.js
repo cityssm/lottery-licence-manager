@@ -3,3 +3,4 @@ export const handler = (req, res) => {
     const inactiveYears = parseInt(req.body.inactiveYears, 10);
     res.json(getInactiveLocations(inactiveYears));
 };
+export default handler;

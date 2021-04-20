@@ -7,3 +7,4 @@ export const handler = (req, res) => {
         transactionIndex: newTransactionIndex
     });
 };
+export default handler;

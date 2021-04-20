@@ -10,3 +10,6 @@ export const handler: RequestHandler = (req, res) => {
   res.json(getDistinctTermsConditions(organizationID));
 
 };
+
+
+export default handler;

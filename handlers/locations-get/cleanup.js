@@ -3,3 +3,4 @@ export const handler = (_req, res) => {
         headTitle: "Location Cleanup"
     });
 };
+export default handler;

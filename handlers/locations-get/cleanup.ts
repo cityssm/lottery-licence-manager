@@ -6,3 +6,6 @@ export const handler: RequestHandler = (_req, res) => {
     headTitle: "Location Cleanup"
   });
 };
+
+
+export default handler;

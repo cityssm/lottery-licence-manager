@@ -14,3 +14,4 @@ export const handler = (req, res) => {
     });
     res.json(locations);
 };
+export default handler;

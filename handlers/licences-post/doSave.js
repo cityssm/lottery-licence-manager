@@ -1,5 +1,5 @@
-import { createLicence } from "../../helpers/licencesDB/createLicence.js";
-import { updateLicence } from "../../helpers/licencesDB/updateLicence.js";
+import createLicence from "../../helpers/licencesDB/createLicence.js";
+import updateLicence from "../../helpers/licencesDB/updateLicence.js";
 export const handler = (req, res) => {
     if (req.body.licenceID === "") {
         const newLicenceID = createLicence(req.body, req.session);
@@ -24,3 +24,4 @@ export const handler = (req, res) => {
         }
     }
 };
+export default handler;

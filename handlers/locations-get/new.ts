@@ -16,3 +16,6 @@ export const handler: RequestHandler = (_req, res) => {
     isCreate: true
   });
 };
+
+
+export default handler;

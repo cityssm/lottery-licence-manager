@@ -1,7 +1,7 @@
 import type { RequestHandler } from "express";
 
-import { createLicence } from "../../helpers/licencesDB/createLicence.js";
-import { updateLicence } from "../../helpers/licencesDB/updateLicence.js";
+import createLicence from "../../helpers/licencesDB/createLicence.js";
+import updateLicence from "../../helpers/licencesDB/updateLicence.js";
 
 
 export const handler: RequestHandler = (req, res) => {
@@ -36,3 +36,6 @@ export const handler: RequestHandler = (req, res) => {
     }
   }
 };
+
+
+export default handler;

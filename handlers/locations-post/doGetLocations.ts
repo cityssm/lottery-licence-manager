@@ -20,3 +20,6 @@ export const handler: RequestHandler = (req, res) => {
 
   res.json(locations);
 };
+
+
+export default handler;

@@ -18,3 +18,6 @@ export const handler: RequestHandler = (req, res) => {
     res.json([]);
   }
 };
+
+
+export default handler;

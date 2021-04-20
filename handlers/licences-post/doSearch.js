@@ -6,3 +6,4 @@ export const handler = (req, res) => {
         offset: req.body.offset
     }));
 };
+export default handler;

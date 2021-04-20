@@ -23,3 +23,6 @@ export const handler: RequestHandler = (req, res) => {
 
   }
 };
+
+
+export default handler;

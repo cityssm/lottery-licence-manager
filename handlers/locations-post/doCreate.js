@@ -7,3 +7,4 @@ export const handler = (req, res) => {
         locationDisplayName: (req.body.locationName === "" ? req.body.locationAddress1 : req.body.locationName)
     });
 };
+export default handler;
