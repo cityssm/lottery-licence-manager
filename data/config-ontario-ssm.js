@@ -1,5 +1,5 @@
 import * as objectFns from "../helpers/objectFns.js";
-import { config as configOntario } from "./config-ontario.js";
+import configOntario from "./config-ontario.js";
 export const config = Object.assign({}, configOntario);
 config.application = {
     applicationName: "SSM Lottery Licence Manager"
@@ -96,3 +96,4 @@ licenceTypeNevada.licenceFields = [
         }
     }
 ];
+export default config;

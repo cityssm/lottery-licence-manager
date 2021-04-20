@@ -433,3 +433,6 @@ config.licenceTypes = [
     }
   }
 ];
+
+
+export default config;

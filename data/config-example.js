@@ -7,3 +7,4 @@ config.admin = {
     defaultPassword: ""
 };
 config.defaults.city = "";
+export default config;

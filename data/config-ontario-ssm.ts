@@ -3,7 +3,7 @@ import type * as configTypes from "../types/configTypes";
 
 import * as objectFns from "../helpers/objectFns.js";
 
-import { config as configOntario } from "./config-ontario.js";
+import configOntario from "./config-ontario.js";
 
 
 export const config: configTypes.Config = Object.assign({}, configOntario);
@@ -183,3 +183,6 @@ licenceTypeNevada.licenceFields = [
     }
   }
 ];
+
+
+export default config;

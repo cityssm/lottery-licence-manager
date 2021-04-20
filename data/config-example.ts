@@ -27,3 +27,6 @@ config.admin = {
  */
 
 config.defaults.city = "";
+
+
+export default config;
