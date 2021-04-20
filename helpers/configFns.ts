@@ -1,7 +1,7 @@
+import config from "../data/config.js";
+
 import type * as configTypes from "../types/configTypes";
 import type * as recordTypes from "../types/recordTypes";
-
-import { config } from "../data/config.js";
 
 
 /*

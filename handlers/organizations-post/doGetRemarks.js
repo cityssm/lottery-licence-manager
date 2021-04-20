@@ -3,3 +3,4 @@ export const handler = (req, res) => {
     const organizationID = req.body.organizationID;
     res.json(getOrganizationRemarks(organizationID, req.session));
 };
+export default handler;

@@ -6,3 +6,4 @@ export const handler = (req, res) => {
     const result = rollForwardOrganization(organizationID, updateFiscalYear, updateReminders, req.session);
     return res.json(result);
 };
+export default handler;

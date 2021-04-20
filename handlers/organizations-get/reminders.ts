@@ -12,3 +12,6 @@ export const handler: RequestHandler = (req, res) => {
     reminders
   });
 };
+
+
+export default handler;

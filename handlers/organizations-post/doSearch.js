@@ -5,3 +5,4 @@ export const handler = (req, res) => {
         offset: 0
     }));
 };
+export default handler;

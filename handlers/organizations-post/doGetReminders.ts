@@ -9,3 +9,6 @@ export const handler: RequestHandler = (req, res) => {
 
   res.json(getOrganizationReminders(organizationID, req.session));
 };
+
+
+export default handler;

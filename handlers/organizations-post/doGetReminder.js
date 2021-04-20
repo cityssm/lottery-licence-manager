@@ -4,3 +4,4 @@ export const handler = (req, res) => {
     const reminderIndex = req.body.reminderIndex;
     res.json(getOrganizationReminder(organizationID, reminderIndex, req.session));
 };
+export default handler;

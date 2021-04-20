@@ -30,3 +30,4 @@ export const handler = (req, res, next) => {
         currentDateInteger: dateTimeFns.dateToInteger(new Date())
     });
 };
+export default handler;

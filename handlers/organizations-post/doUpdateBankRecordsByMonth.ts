@@ -82,5 +82,7 @@ export const handler: RequestHandler = (req, res) => {
       message: "Please try again."
     });
   }
-
 };
+
+
+export default handler;

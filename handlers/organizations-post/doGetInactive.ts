@@ -9,3 +9,6 @@ export const handler: RequestHandler = (req, res) => {
 
   res.json(getInactiveOrganizations(inactiveYears));
 };
+
+
+export default handler;

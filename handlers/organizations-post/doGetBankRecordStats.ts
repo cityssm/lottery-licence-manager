@@ -9,3 +9,6 @@ export const handler: RequestHandler = (req, res) => {
   res.json(getOrganizationBankRecordStats(organizationID));
 
 };
+
+
+export default handler;

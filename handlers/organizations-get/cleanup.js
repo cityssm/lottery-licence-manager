@@ -3,3 +3,4 @@ export const handler = (_req, res) => {
         headTitle: "Organization Cleanup"
     });
 };
+export default handler;

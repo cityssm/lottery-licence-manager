@@ -417,14 +417,12 @@ export const handler: RequestHandler = (req, res) => {
       params = [req.query.licenceID];
 
       break;
-
   }
 
   if (sql === "") {
 
     res.redirect(urlPrefix + "/reports/?error=reportNotFound");
     return;
-
   }
 
   const rowsColumnsObj = licencesDB.getRawRowsColumns(sql, params);
@@ -437,5 +435,7 @@ export const handler: RequestHandler = (req, res) => {
   res.setHeader("Content-Type", "text/csv");
 
   res.send(csv);
-
 };
+
+
+export default handler;

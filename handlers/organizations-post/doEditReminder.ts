@@ -22,3 +22,6 @@ export const handler: RequestHandler = (req, res) => {
     res.json({ success: false });
   }
 };
+
+
+export default handler;

@@ -4,3 +4,4 @@ export const handler = (req, res) => {
         limit: -1
     }));
 };
+export default handler;

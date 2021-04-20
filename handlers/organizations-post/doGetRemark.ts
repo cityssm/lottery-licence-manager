@@ -10,3 +10,6 @@ export const handler: RequestHandler = (req, res) => {
 
   res.json(getOrganizationRemark(organizationID, remarkIndex, req.session));
 };
+
+
+export default handler;

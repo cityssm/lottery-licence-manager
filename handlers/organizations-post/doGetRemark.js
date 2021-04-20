@@ -4,3 +4,4 @@ export const handler = (req, res) => {
     const remarkIndex = req.body.remarkIndex;
     res.json(getOrganizationRemark(organizationID, remarkIndex, req.session));
 };
+export default handler;

@@ -7,3 +7,4 @@ export const handler = (req, res) => {
         remarkIndex
     });
 };
+export default handler;

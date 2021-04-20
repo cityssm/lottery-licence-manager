@@ -5,3 +5,4 @@ export const handler = (req, res) => {
     const accountNumber = req.body.accountNumber;
     res.json(getOrganizationBankRecords(organizationID, accountNumber, bankingYear));
 };
+export default handler;

@@ -9,3 +9,6 @@ export const handler: RequestHandler = (req, res) => {
     limit: -1
   }));
 };
+
+
+export default handler;

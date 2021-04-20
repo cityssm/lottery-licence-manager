@@ -13,3 +13,4 @@ export const handler = (req, res) => {
         res.json({ success: false });
     }
 };
+export default handler;

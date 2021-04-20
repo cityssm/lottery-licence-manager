@@ -54,3 +54,6 @@ export const handler: RequestHandler = (req, res, next) => {
     currentDateInteger: dateTimeFns.dateToInteger(new Date())
   });
 };
+
+
+export default handler;

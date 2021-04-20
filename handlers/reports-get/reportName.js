@@ -272,3 +272,4 @@ export const handler = (req, res) => {
     res.setHeader("Content-Type", "text/csv");
     res.send(csv);
 };
+export default handler;

@@ -6,3 +6,4 @@ export const handler = (req, res) => {
         reminders
     });
 };
+export default handler;

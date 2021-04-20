@@ -1,4 +1,4 @@
-import { config } from "../data/config.js";
+import config from "../data/config.js";
 const configFallbackValues = new Map();
 configFallbackValues.set("application.applicationName", "Lottery Licence System");
 configFallbackValues.set("application.logoURL", "/images/bingoBalls.png");

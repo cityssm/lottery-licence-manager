@@ -7,3 +7,6 @@ export const handler: RequestHandler = (_req, res) => {
     headTitle: "Organization Cleanup"
   });
 };
+
+
+export default handler;

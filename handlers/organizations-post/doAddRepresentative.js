@@ -17,3 +17,4 @@ export const handler = (req, res, next) => {
         });
     }
 };
+export default handler;

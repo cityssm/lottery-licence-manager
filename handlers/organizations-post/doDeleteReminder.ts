@@ -10,3 +10,6 @@ export const handler: RequestHandler = (req, res) => {
 
   return res.json({ success });
 };
+
+
+export default handler;

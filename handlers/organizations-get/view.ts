@@ -47,5 +47,7 @@ export const handler: RequestHandler = (req, res, next) => {
     reminders,
     currentDateInteger: dateTimeFns.dateToInteger(new Date())
   });
-
 };
+
+
+export default handler;

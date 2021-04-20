@@ -15,3 +15,6 @@ export const handler: RequestHandler = (_req, res) => {
     }
   });
 };
+
+
+export default handler;
