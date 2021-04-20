@@ -1,4 +1,4 @@
-import * as gulp from "gulp";
+import gulp from "gulp";
 import minify from "gulp-minify";
 const publicJavascriptsMinFn = () => {
     return gulp.src("public-typescript/*.js", { allowEmpty: true })

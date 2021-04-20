@@ -3,3 +3,4 @@ export const handler = (req, res) => {
     const userProperties = getUserProperties(req.body.userName);
     res.json(userProperties);
 };
+export default handler;

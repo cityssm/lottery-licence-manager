@@ -12,3 +12,6 @@ export const handler: RequestHandler = async(req, res) => {
     newPassword
   });
 };
+
+
+export default handler;

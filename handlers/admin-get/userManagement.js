@@ -6,3 +6,4 @@ export const handler = (_req, res) => {
         users
     });
 };
+export default handler;

@@ -12,3 +12,6 @@ export const handler: RequestHandler = (_req, res) => {
     users
   });
 };
+
+
+export default handler;

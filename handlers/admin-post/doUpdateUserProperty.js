@@ -5,3 +5,4 @@ export const handler = (req, res) => {
         success: (changeCount === 1)
     });
 };
+export default handler;

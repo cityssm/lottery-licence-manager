@@ -1,5 +1,4 @@
 *.d.ts
 *.db-journal
 app.js
-gulpfile.js
 public/stylesheets/*.min.css

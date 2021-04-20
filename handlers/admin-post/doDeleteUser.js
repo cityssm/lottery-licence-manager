@@ -10,3 +10,4 @@ export const handler = (req, res) => {
         success
     });
 };
+export default handler;

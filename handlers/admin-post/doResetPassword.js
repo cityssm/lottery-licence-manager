@@ -6,3 +6,4 @@ export const handler = async (req, res) => {
         newPassword
     });
 };
+export default handler;
