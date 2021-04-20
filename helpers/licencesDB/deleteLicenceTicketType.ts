@@ -6,9 +6,8 @@ import type * as sqlite from "better-sqlite3";
 
 export const deleteLicenceTicketTypeWithDB = (db: sqlite.Database,
   ticketTypeDef: {
-    licenceID: string | number;
-    eventDate: number | string;
-    ticketType: string;
+    licenceID: number | string;
+    ticketTypeIndex: number | string;
   },
   reqSession: expressSession.Session) => {
 
@@ -16,12 +15,10 @@ export const deleteLicenceTicketTypeWithDB = (db: sqlite.Database,
     " set recordDelete_userName = ?," +
     " recordDelete_timeMillis = ?" +
     " where licenceID = ?" +
-    " and eventDate = ?" +
-    " and ticketType = ?", [
+    " and ticketTypeIndex = ?", [
       reqSession.user.userName,
       Date.now(),
       ticketTypeDef.licenceID,
-      ticketTypeDef.eventDate,
-      ticketTypeDef.ticketType
+      ticketTypeDef.ticketTypeIndex
     ]);
 };

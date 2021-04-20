@@ -64,3 +64,4 @@ export const getUser = async (userNameSubmitted, passwordPlain) => {
         userProperties
     };
 };
+export default getUser;

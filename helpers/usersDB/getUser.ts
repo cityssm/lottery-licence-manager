@@ -113,3 +113,6 @@ export const getUser = async(userNameSubmitted: string, passwordPlain: string): 
     userProperties
   };
 };
+
+
+export default getUser;

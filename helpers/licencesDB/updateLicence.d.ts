@@ -19,16 +19,16 @@ export interface LotteryLicenceForm {
     termsConditions: string;
     licenceTypeKey: string;
     totalPrizeValue: string;
-    ticketType_eventDateString: string | string[];
+    ticketType_amendmentDateString: string | string[];
     ticketType_ticketType: string | string[];
     ticketType_unitCount: string | string[];
     ticketType_licenceFee: string | string[];
     ticketType_manufacturerLocationID: string | string[];
     ticketType_distributorLocationID: string | string[];
-    ticketTypeKey_toAdd?: string | string[];
-    ticketTypeKey_toDelete?: string | string[];
+    ticketTypeIndex_toDelete?: string | string[];
     eventDateString: string | string[];
     fieldKeys: string;
     licenceFee?: string;
 }
 export declare const updateLicence: (reqBody: LotteryLicenceForm, reqSession: expressSession.Session) => boolean;
+export default updateLicence;

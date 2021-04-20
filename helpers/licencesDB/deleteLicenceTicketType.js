@@ -4,12 +4,10 @@ export const deleteLicenceTicketTypeWithDB = (db, ticketTypeDef, reqSession) => 
         " set recordDelete_userName = ?," +
         " recordDelete_timeMillis = ?" +
         " where licenceID = ?" +
-        " and eventDate = ?" +
-        " and ticketType = ?", [
+        " and ticketTypeIndex = ?", [
         reqSession.user.userName,
         Date.now(),
         ticketTypeDef.licenceID,
-        ticketTypeDef.eventDate,
-        ticketTypeDef.ticketType
+        ticketTypeDef.ticketTypeIndex
     ]);
 };

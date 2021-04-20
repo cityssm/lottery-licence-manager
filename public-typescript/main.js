@@ -1,3 +1,5 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const llm = {};
 llm.arrayToObject = (array, objectKey) => {
     const obj = {};
@@ -165,4 +167,3 @@ llm.initializeTabs = (tabsListEle, callbackFns) => {
             : listItemEle.getElementsByTagName("a")[0]).addEventListener("click", tabClickFn);
     }
 };
-export {};

@@ -6,8 +6,8 @@ import { getLicenceWithDB } from "./getLicence.js";
 import { addLicenceAmendmentWithDB } from "./addLicenceAmendment.js";
 import { createEventWithDB } from "./createEvent.js";
 import { deleteLicenceTicketTypeWithDB } from "./deleteLicenceTicketType.js";
+import { getMaxLicenceTicketTypeIndexWithDB } from "./getMaxLicenceTicketTypeIndex.js";
 import { addLicenceTicketTypeWithDB } from "./addLicenceTicketType.js";
-import { updateLicenceTicketTypeWithDB } from "./updateLicenceTicketType.js";
 import { resetLicenceTableStats, resetEventTableStats } from "../licencesDB.js";
 export const parseTicketTypeKey = (unparsedTicketTypeKey) => {
     const eventDateString = unparsedTicketTypeKey.substring(0, 10);
@@ -31,7 +31,9 @@ export const updateLicence = (reqBody, reqSession) => {
         db.close();
         return false;
     }
-    const nowMillis = Date.now();
+    const nowDate = new Date();
+    const nowDateInt = dateTimeFns.dateToInteger(nowDate);
+    const nowMillis = nowDate.getTime();
     let externalLicenceNumberInteger = -1;
     try {
         externalLicenceNumberInteger = parseInt(reqBody.externalLicenceNumber, 10);
@@ -146,88 +148,58 @@ export const updateLicence = (reqBody, reqSession) => {
             createEventWithDB(db, reqBody.licenceID, eventDate, reqSession);
         }
     }
-    let ticketTypeKeys_toDelete;
-    if (typeof (reqBody.ticketTypeKey_toDelete) === "string") {
-        ticketTypeKeys_toDelete = [reqBody.ticketTypeKey_toDelete];
+    let ticketTypeIndexes_toDelete;
+    if (typeof (reqBody.ticketTypeIndex_toDelete) === "string") {
+        ticketTypeIndexes_toDelete = [reqBody.ticketTypeIndex_toDelete];
     }
-    else if (typeof (reqBody.ticketTypeKey_toDelete) === "object") {
-        ticketTypeKeys_toDelete = reqBody.ticketTypeKey_toDelete;
+    else if (typeof (reqBody.ticketTypeIndex_toDelete) === "object") {
+        ticketTypeIndexes_toDelete = reqBody.ticketTypeIndex_toDelete;
     }
-    if (ticketTypeKeys_toDelete) {
-        ticketTypeKeys_toDelete.forEach((ticketTypeKey_toDelete) => {
-            const parsedTicketTypeKey = parseTicketTypeKey(ticketTypeKey_toDelete);
+    if (ticketTypeIndexes_toDelete) {
+        ticketTypeIndexes_toDelete.forEach((ticketTypeIndex_toDelete) => {
             deleteLicenceTicketTypeWithDB(db, {
                 licenceID: reqBody.licenceID,
-                eventDate: parsedTicketTypeKey.eventDate,
-                ticketType: parsedTicketTypeKey.ticketType
+                ticketTypeIndex: ticketTypeIndex_toDelete
             }, reqSession);
             if (pastLicenceObj.trackUpdatesAsAmendments &&
                 configFns.getProperty("amendments.trackTicketTypeDelete")) {
-                addLicenceAmendmentWithDB(db, reqBody.licenceID, "Ticket Type Removed", "Removed " + ticketTypeKey_toDelete + ".", 0, reqSession);
-            }
-        });
-    }
-    let ticketTypeKeys_toAdd;
-    if (typeof (reqBody.ticketTypeKey_toAdd) === "string") {
-        ticketTypeKeys_toAdd = [reqBody.ticketTypeKey_toAdd];
-    }
-    else if (typeof (reqBody.ticketTypeKey_toAdd) === "object") {
-        ticketTypeKeys_toAdd = reqBody.ticketTypeKey_toAdd;
-    }
-    if (ticketTypeKeys_toAdd) {
-        ticketTypeKeys_toAdd.forEach((ticketTypeKey_toAdd) => {
-            const parsedTicketTypeKey = parseTicketTypeKey(ticketTypeKey_toAdd);
-            addLicenceTicketTypeWithDB(db, {
-                licenceID: reqBody.licenceID,
-                eventDate: parsedTicketTypeKey.eventDate,
-                ticketType: parsedTicketTypeKey.ticketType
-            }, reqSession);
-            if (pastLicenceObj.trackUpdatesAsAmendments &&
-                configFns.getProperty("amendments.trackTicketTypeNew")) {
-                addLicenceAmendmentWithDB(db, reqBody.licenceID, "New Ticket Type", "Added " + ticketTypeKey_toAdd + ".", 0, reqSession);
+                addLicenceAmendmentWithDB(db, reqBody.licenceID, "Ticket Type Removed", "Removed " + ticketTypeIndex_toDelete + ".", 0, reqSession);
             }
         });
     }
     if (typeof (reqBody.ticketType_ticketType) === "string") {
-        updateLicenceTicketTypeWithDB(db, {
+        const newTicketTypeIndex = getMaxLicenceTicketTypeIndexWithDB(db, reqBody.licenceID) + 1;
+        addLicenceTicketTypeWithDB(db, {
             licenceID: reqBody.licenceID,
-            eventDateString: reqBody.ticketType_eventDateString,
+            ticketTypeIndex: newTicketTypeIndex,
+            amendmentDate: nowDateInt,
             ticketType: reqBody.ticketType_ticketType,
             unitCount: reqBody.ticketType_unitCount,
             licenceFee: reqBody.ticketType_licenceFee,
             distributorLocationID: reqBody.ticketType_distributorLocationID,
             manufacturerLocationID: reqBody.ticketType_manufacturerLocationID
         }, reqSession);
-        if (pastLicenceObj.trackUpdatesAsAmendments) {
-            const ticketTypeObj_past = pastLicenceObj.licenceTicketTypes
-                .find((ele) => ele.ticketType === reqBody.ticketType_ticketType);
-            if (ticketTypeObj_past &&
-                configFns.getProperty("amendments.trackTicketTypeUpdate") &&
-                ticketTypeObj_past.unitCount !== parseInt(reqBody.ticketType_unitCount, 10)) {
-                addLicenceAmendmentWithDB(db, reqBody.licenceID, "Ticket Type Change", (reqBody.ticketType_eventDateString + ":" + reqBody.ticketType_ticketType + " Units: " +
-                    ticketTypeObj_past.unitCount.toString() + " -> " + reqBody.ticketType_unitCount.toString()), 0, reqSession);
-            }
+        if (pastLicenceObj.trackUpdatesAsAmendments &&
+            configFns.getProperty("amendments.trackTicketTypeNew")) {
+            addLicenceAmendmentWithDB(db, reqBody.licenceID, "Added Ticket Type", reqBody.ticketType_ticketType, 0, reqSession);
         }
     }
     else if (typeof (reqBody.ticketType_ticketType) === "object") {
+        const newTicketTypeIndex = getMaxLicenceTicketTypeIndexWithDB(db, reqBody.licenceID) + 1;
         reqBody.ticketType_ticketType.forEach((ticketType, ticketTypeIndex) => {
-            updateLicenceTicketTypeWithDB(db, {
+            addLicenceTicketTypeWithDB(db, {
                 licenceID: reqBody.licenceID,
-                eventDateString: reqBody.ticketType_eventDateString[ticketTypeIndex],
-                ticketType: reqBody.ticketType_ticketType[ticketTypeIndex],
+                ticketTypeIndex: newTicketTypeIndex + ticketTypeIndex,
+                amendmentDate: nowDateInt,
+                ticketType,
                 unitCount: reqBody.ticketType_unitCount[ticketTypeIndex],
                 licenceFee: reqBody.ticketType_licenceFee[ticketTypeIndex],
                 distributorLocationID: reqBody.ticketType_distributorLocationID[ticketTypeIndex],
                 manufacturerLocationID: reqBody.ticketType_manufacturerLocationID[ticketTypeIndex]
             }, reqSession);
-            if (pastLicenceObj.trackUpdatesAsAmendments) {
-                const ticketTypeObj_past = pastLicenceObj.licenceTicketTypes.find((ele) => ele.ticketType === ticketType && ele.eventDateString === reqBody.ticketType_eventDateString[ticketTypeIndex]);
-                if (ticketTypeObj_past &&
-                    configFns.getProperty("amendments.trackTicketTypeUpdate") &&
-                    ticketTypeObj_past.unitCount !== parseInt(reqBody.ticketType_unitCount[ticketTypeIndex], 10)) {
-                    addLicenceAmendmentWithDB(db, reqBody.licenceID, "Ticket Type Change", (reqBody.ticketType_eventDateString[ticketTypeIndex] + ":" + ticketType + " Units: " +
-                        ticketTypeObj_past.unitCount.toString() + " -> " + reqBody.ticketType_unitCount[ticketTypeIndex]), 0, reqSession);
-                }
+            if (pastLicenceObj.trackUpdatesAsAmendments &&
+                configFns.getProperty("amendments.trackTicketTypeNew")) {
+                addLicenceAmendmentWithDB(db, reqBody.licenceID, "Added Ticket Type", ticketType, 0, reqSession);
             }
         });
     }
@@ -236,3 +208,4 @@ export const updateLicence = (reqBody, reqSession) => {
     resetEventTableStats();
     return changeCount > 0;
 };
+export default updateLicence;

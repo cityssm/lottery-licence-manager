@@ -4,6 +4,7 @@ import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
 import * as configFns from "../configFns.js";
 import { getLicenceWithDB } from "./getLicence.js";
 import { createEventWithDB } from "./createEvent.js";
+import { addLicenceTicketTypeWithDB } from "./addLicenceTicketType.js";
 import { resetLicenceTableStats, resetEventTableStats } from "../licencesDB.js";
 export const createLicence = (reqBody, reqSession) => {
     const db = sqlite(dbPath);
@@ -51,31 +52,29 @@ export const createLicence = (reqBody, reqSession) => {
         }
     }
     if (typeof (reqBody.ticketType_ticketType) === "string") {
-        db.prepare("insert into LotteryLicenceTicketTypes (" +
-            "licenceID, ticketTypeIndex," +
-            " amendmentDate," +
-            " ticketType," +
-            " distributorLocationID, manufacturerLocationID," +
-            " unitCount, licenceFee," +
-            " recordCreate_userName, recordCreate_timeMillis, recordUpdate_userName, recordUpdate_timeMillis)" +
-            " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
-            .run(licenceID, 0, nowDateInt, reqBody.ticketType_ticketType, (reqBody.ticketType_distributorLocationID === "" ? null : reqBody.ticketType_distributorLocationID), (reqBody.ticketType_manufacturerLocationID === "" ? null : reqBody.ticketType_manufacturerLocationID), reqBody.ticketType_unitCount, reqBody.ticketType_licenceFee, reqSession.user.userName, nowMillis, reqSession.user.userName, nowMillis);
+        addLicenceTicketTypeWithDB(db, {
+            licenceID,
+            ticketTypeIndex: 0,
+            amendmentDate: nowDateInt,
+            ticketType: reqBody.ticketType_ticketType,
+            unitCount: reqBody.ticketType_unitCount,
+            licenceFee: reqBody.ticketType_licenceFee,
+            distributorLocationID: reqBody.ticketType_distributorLocationID,
+            manufacturerLocationID: reqBody.ticketType_manufacturerLocationID
+        }, reqSession);
     }
     else if (typeof (reqBody.ticketType_ticketType) === "object") {
         reqBody.ticketType_ticketType.forEach((ticketType, ticketTypeIndex) => {
-            db.prepare("insert into LotteryLicenceTicketTypes (" +
-                "licenceID, ticketTypeIndex," +
-                " amendmentDate," +
-                " ticketType," +
-                " distributorLocationID, manufacturerLocationID," +
-                " unitCount, licenceFee," +
-                " recordCreate_userName, recordCreate_timeMillis, recordUpdate_userName, recordUpdate_timeMillis)" +
-                " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
-                .run(licenceID, ticketTypeIndex, nowDateInt, ticketType, (reqBody.ticketType_distributorLocationID[ticketTypeIndex] === ""
-                ? null
-                : reqBody.ticketType_distributorLocationID[ticketTypeIndex]), (reqBody.ticketType_manufacturerLocationID[ticketTypeIndex] === ""
-                ? null
-                : reqBody.ticketType_manufacturerLocationID[ticketTypeIndex]), reqBody.ticketType_unitCount[ticketTypeIndex], reqBody.ticketType_licenceFee[ticketTypeIndex], reqSession.user.userName, nowMillis, reqSession.user.userName, nowMillis);
+            addLicenceTicketTypeWithDB(db, {
+                licenceID,
+                ticketTypeIndex,
+                amendmentDate: nowDateInt,
+                ticketType,
+                unitCount: reqBody.ticketType_unitCount[ticketTypeIndex],
+                licenceFee: reqBody.ticketType_licenceFee[ticketTypeIndex],
+                distributorLocationID: reqBody.ticketType_distributorLocationID[ticketTypeIndex],
+                manufacturerLocationID: reqBody.ticketType_manufacturerLocationID[ticketTypeIndex]
+            }, reqSession);
         });
     }
     const licenceObj = getLicenceWithDB(db, licenceID, reqSession, {
@@ -95,3 +94,4 @@ export const createLicence = (reqBody, reqSession) => {
     resetEventTableStats();
     return licenceID;
 };
+export default createLicence;

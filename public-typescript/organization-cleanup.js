@@ -1,3 +1,5 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 (() => {
     const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
     const canUpdate = document.getElementsByTagName("main")[0].getAttribute("data-can-update") === "true";
@@ -95,4 +97,3 @@
     inactiveYearsFilterEle.addEventListener("change", getInactiveOrganizationsFn);
     getInactiveOrganizationsFn();
 })();
-export {};

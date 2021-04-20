@@ -1,3 +1,5 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 (() => {
     const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
     const filterExternalLicenceNumberEle = document.getElementById("filter--externalLicenceNumber");
@@ -90,4 +92,3 @@
     filterYearEle.addEventListener("change", getEventsFn);
     getEventsFn();
 })();
-export {};
