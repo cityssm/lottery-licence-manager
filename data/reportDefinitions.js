@@ -63,6 +63,9 @@ export const reportDefinitions = {
             " where l.recordDelete_timeMillis is null" +
             " and l.issueDate is null"
     },
+    "ticketTypes-all": {
+        sql: "select * from LotteryLicenceTicketTypes"
+    },
     "amendments-all": {
         sql: "select * from LotteryLicenceAmendments"
     },

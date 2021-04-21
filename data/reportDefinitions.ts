@@ -2,6 +2,7 @@ import type { ConfigReportDefinition } from "../types/configTypes";
 
 
 export const reportDefinitions: { [reportName: string]: ConfigReportDefinition } = {
+
   "locations-all": {
     sql: "select * from Locations"
   },
@@ -75,6 +76,10 @@ export const reportDefinitions: { [reportName: string]: ConfigReportDefinition }
       " left join Organizations o on l.organizationID = o.organizationID" +
       " where l.recordDelete_timeMillis is null" +
       " and l.issueDate is null"
+  },
+
+  "ticketTypes-all": {
+    sql: "select * from LotteryLicenceTicketTypes"
   },
 
   "amendments-all": {

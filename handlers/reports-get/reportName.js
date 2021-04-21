@@ -139,9 +139,6 @@ export const handler = (req, res) => {
                     " and l.locationID = ?";
                 params = [req.query.locationID];
                 break;
-            case "ticketTypes-all":
-                sql = "select * from LotteryLicenceTicketTypes";
-                break;
             case "ticketTypes-byLicence":
                 functions.set("userFn_ticketTypeField", (licenceTypeKey, ticketTypeKey, fieldName) => {
                     const licenceType = configFns.getLicenceType(licenceTypeKey);

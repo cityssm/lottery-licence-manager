@@ -224,11 +224,6 @@ export const handler: RequestHandler = (req, res) => {
        * Lottery Licence Ticket Types
        */
 
-      case "ticketTypes-all":
-
-        sql = "select * from LotteryLicenceTicketTypes";
-        break;
-
       case "ticketTypes-byLicence":
 
         functions.set("userFn_ticketTypeField", (licenceTypeKey: string,
