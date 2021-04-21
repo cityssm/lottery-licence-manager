@@ -28,3 +28,6 @@ export const deleteEvent = (licenceID: number, eventDate: number, reqSession: ex
 
   return changeCount > 0;
 };
+
+
+export default deleteEvent;

@@ -79,3 +79,6 @@ export const getEvent = (licenceID: number, eventDate: number, reqSession: expre
 
   return eventObj;
 };
+
+
+export default getEvent;

@@ -38,27 +38,9 @@ export const getOrganizationRemindersQuery = (includeOrganizationIDFilter) => {
         (includeOrganizationIDFilter ? " and r.organizationID = ?" : "");
     return sql;
 };
-export const getLicencesQuery = (options) => {
-    const licenceTypes = configFns.getProperty("licenceTypes");
-    const sql = "select" +
-        " l.licenceID, l.externalLicenceNumber," +
-        " o.organizationID, o.organizationName," +
-        " l.applicationDate," +
-        " case l.licenceTypeKey" +
-        licenceTypes.reduce((soFar, licenceType) => {
-            return soFar + " when '" + licenceType.licenceTypeKey + "' then '" + licenceType.licenceType.replace(/'/g, "''") + "'";
-        }, "") +
-        " else l.licenceTypeKey end as licenceType," +
-        " l.startDate, l.endDate, l.startTime, l.endTime," +
-        " lo.locationName, lo.locationAddress1," +
-        " l.municipality, l.licenceDetails, l.termsConditions," +
-        " l.totalPrizeValue, l.licenceFee, l.issueDate," +
-        " l.recordCreate_userName, l.recordCreate_timeMillis, l.recordUpdate_userName, l.recordUpdate_timeMillis" +
-        " from LotteryLicences l" +
-        " left join Locations lo on l.locationID = lo.locationID" +
-        " left join Organizations o on l.organizationID = o.organizationID" +
-        " where l.recordDelete_timeMillis is null" +
-        (options.includeOrganizationIDFilter ? " and l.organizationID = ?" : "") +
-        (options.includeLocationIDFilter ? " and l.locationID = ?" : "");
-    return sql;
+export const userFn_licenceTypeKeyToLicenceType = (licenceTypeKey) => {
+    const licenceTypeDef = configFns.getLicenceType(licenceTypeKey);
+    return (licenceTypeDef
+        ? licenceTypeDef.licenceType
+        : null);
 };

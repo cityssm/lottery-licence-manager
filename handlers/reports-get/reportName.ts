@@ -6,6 +6,8 @@ import * as reportFns from "../../helpers/reportFns.js";
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
 import { rawToCSV } from "@cityssm/expressjs-server-js/stringFns.js";
 
+import type * as configTypes from "../../types/configTypes";
+
 
 const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
 
@@ -16,6 +18,7 @@ export const handler: RequestHandler = (req, res) => {
 
   let sql = "";
   let params = [];
+  const functions = new Map<string, (...params: any) => any>();
 
   switch (reportName) {
 
@@ -216,11 +219,46 @@ export const handler: RequestHandler = (req, res) => {
       sql = "select * from LotteryLicences";
       break;
 
+    case "licences-formatted":
+
+    functions.set("userFn_licenceTypeKeyToLicenceType", reportFns.userFn_licenceTypeKeyToLicenceType);
+
+    sql = "select" +
+      " l.licenceID, l.externalLicenceNumber," +
+      " o.organizationID, o.organizationName," +
+      " l.applicationDate," +
+      " userFn_licenceTypeKeyToLicenceType(l.licenceTypeKey) as licenceType," +
+      " l.startDate, l.endDate, l.startTime, l.endTime," +
+      " lo.locationName, lo.locationAddress1," +
+      " l.municipality, l.licenceDetails, l.termsConditions," +
+      " l.totalPrizeValue, l.licenceFee, l.issueDate," +
+      " l.recordCreate_userName, l.recordCreate_timeMillis, l.recordUpdate_userName, l.recordUpdate_timeMillis" +
+      " from LotteryLicences l" +
+      " left join Locations lo on l.locationID = lo.locationID" +
+      " left join Organizations o on l.organizationID = o.organizationID" +
+      " where l.recordDelete_timeMillis is null";
+
+      break;
+
     case "licences-byOrganization":
 
-      sql = reportFns.getLicencesQuery({
-        includeOrganizationIDFilter: true
-      });
+      functions.set("userFn_licenceTypeKeyToLicenceType", reportFns.userFn_licenceTypeKeyToLicenceType);
+
+      sql = "select" +
+        " l.licenceID, l.externalLicenceNumber," +
+        " o.organizationID, o.organizationName," +
+        " l.applicationDate," +
+        " userFn_licenceTypeKeyToLicenceType(l.licenceTypeKey) as licenceType," +
+        " l.startDate, l.endDate, l.startTime, l.endTime," +
+        " lo.locationName, lo.locationAddress1," +
+        " l.municipality, l.licenceDetails, l.termsConditions," +
+        " l.totalPrizeValue, l.licenceFee, l.issueDate," +
+        " l.recordCreate_userName, l.recordCreate_timeMillis, l.recordUpdate_userName, l.recordUpdate_timeMillis" +
+        " from LotteryLicences l" +
+        " left join Locations lo on l.locationID = lo.locationID" +
+        " left join Organizations o on l.organizationID = o.organizationID" +
+        " where l.recordDelete_timeMillis is null" +
+        " and l.organizationID = ?";
 
       params = [req.query.organizationID];
 
@@ -228,9 +266,23 @@ export const handler: RequestHandler = (req, res) => {
 
     case "licences-byLocation":
 
-      sql = reportFns.getLicencesQuery({
-        includeLocationIDFilter: true
-      });
+    functions.set("userFn_licenceTypeKeyToLicenceType", reportFns.userFn_licenceTypeKeyToLicenceType);
+
+    sql = "select" +
+      " l.licenceID, l.externalLicenceNumber," +
+      " o.organizationID, o.organizationName," +
+      " l.applicationDate," +
+      " userFn_licenceTypeKeyToLicenceType(l.licenceTypeKey) as licenceType," +
+      " l.startDate, l.endDate, l.startTime, l.endTime," +
+      " lo.locationName, lo.locationAddress1," +
+      " l.municipality, l.licenceDetails, l.termsConditions," +
+      " l.totalPrizeValue, l.licenceFee, l.issueDate," +
+      " l.recordCreate_userName, l.recordCreate_timeMillis, l.recordUpdate_userName, l.recordUpdate_timeMillis" +
+      " from LotteryLicences l" +
+      " left join Locations lo on l.locationID = lo.locationID" +
+      " left join Organizations o on l.organizationID = o.organizationID" +
+      " where l.recordDelete_timeMillis is null" +
+      " and l.locationID = ?";
 
       params = [req.query.locationID];
 
@@ -265,8 +317,31 @@ export const handler: RequestHandler = (req, res) => {
 
     case "ticketTypes-byLicence":
 
-      sql = "select t.licenceID, t.eventDate, t.ticketType," +
-        " t.unitCount, t.licenceFee," +
+      functions.set("userFn_ticketTypeField", (licenceTypeKey: string,
+        ticketTypeKey: string,
+        fieldName: "ticketPrice" | "ticketCount" | "prizesPerDeal" | "feePerUnit") => {
+
+        const licenceType = configFns.getLicenceType(licenceTypeKey);
+
+        if (!licenceType) {
+          return null;
+        }
+
+        const ticketType: configTypes.ConfigTicketType = (licenceType.ticketTypes || []).find((ele) => ele.ticketType === ticketTypeKey);
+
+        if (!ticketType) {
+          return null;
+        }
+
+        return ticketType[fieldName];
+      });
+
+      sql = "select t.licenceID, t.ticketTypeIndex," +
+        " t.amendmentDate, t.ticketType," +
+        " t.unitCount," +
+        " userFn_ticketTypeField(l.licenceTypeKey, t.ticketType, 'ticketPrice') * userFn_ticketTypeField(l.licenceTypeKey, t.ticketType, 'ticketCount') as valuePerDeal," +
+        " userFn_ticketTypeField(l.licenceTypeKey, t.ticketType, 'prizesPerDeal') as prizesPerDeal," +
+        " t.licenceFee," +
 
         " t.distributorLocationID," +
         " d.locationName as distributorLocationName," +
@@ -279,6 +354,7 @@ export const handler: RequestHandler = (req, res) => {
         " t.recordCreate_userName, t.recordCreate_timeMillis, t.recordUpdate_userName, t.recordUpdate_timeMillis" +
 
         " from LotteryLicenceTicketTypes t" +
+        " left join LotteryLicences l on t.licenceID = l.licenceID" +
         " left join Locations d on distributorLocationID = d.locationID" +
         " left join Locations m on manufacturerLocationID = m.locationID" +
         " where t.recordDelete_timeMillis is null" +
@@ -425,7 +501,7 @@ export const handler: RequestHandler = (req, res) => {
     return;
   }
 
-  const rowsColumnsObj = licencesDB.getRawRowsColumns(sql, params);
+  const rowsColumnsObj = licencesDB.getRawRowsColumns(sql, params, functions);
 
   const csv = rawToCSV(rowsColumnsObj);
 

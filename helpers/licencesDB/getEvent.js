@@ -55,3 +55,4 @@ export const getEvent = (licenceID, eventDate, reqSession) => {
     db.close();
     return eventObj;
 };
+export default getEvent;

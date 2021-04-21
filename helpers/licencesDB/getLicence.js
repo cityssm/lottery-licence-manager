@@ -84,3 +84,4 @@ export const getLicence = (licenceID, reqSession) => {
     db.close();
     return licenceObj;
 };
+export default getLicence;

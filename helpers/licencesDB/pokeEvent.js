@@ -12,3 +12,4 @@ export const pokeEvent = (licenceID, eventDate, reqSession) => {
         eventDate
     ]);
 };
+export default pokeEvent;

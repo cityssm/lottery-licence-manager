@@ -42,3 +42,6 @@ export const getOrganization = (organizationID: number, reqSession: expressSessi
 
   return organizationObj;
 };
+
+
+export default getOrganization;

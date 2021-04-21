@@ -1,4 +1,4 @@
-import { deleteEvent } from "../../helpers/licencesDB/deleteEvent.js";
+import deleteEvent from "../../helpers/licencesDB/deleteEvent.js";
 export const handler = (req, res) => {
     if (req.body.licenceID === "" || req.body.eventDate === "") {
         res.json({

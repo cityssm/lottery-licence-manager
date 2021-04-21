@@ -2,7 +2,7 @@ import type * as llm from "../types/recordTypes";
 import type { RawRowsColumnsReturn } from "@cityssm/expressjs-server-js/types";
 import type * as expressSession from "express-session";
 export declare const canUpdateObject: (obj: llm.Record, reqSession: expressSession.Session) => boolean;
-export declare const getRawRowsColumns: (sql: string, params: Array<string | number>) => RawRowsColumnsReturn;
+export declare const getRawRowsColumns: (sql: string, params: Array<string | number>, userFunctions: Map<string, (...params: any) => any>) => RawRowsColumnsReturn;
 export declare const resetEventTableStats: () => void;
 export declare const resetLicenceTableStats: () => void;
 export declare const getLicenceTableStats: () => llm.LotteryLicenceStats;

@@ -17,3 +17,6 @@ export const pokeEvent = (licenceID: number, eventDate: number, reqSession: expr
       eventDate
     ]);
 };
+
+
+export default pokeEvent;

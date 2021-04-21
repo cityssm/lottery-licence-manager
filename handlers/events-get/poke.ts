@@ -2,7 +2,7 @@ import type { RequestHandler } from "express";
 
 import * as configFns from "../../helpers/configFns.js";
 
-import { pokeEvent } from "../../helpers/licencesDB/pokeEvent.js";
+import pokeEvent from "../../helpers/licencesDB/pokeEvent.js";
 
 
 const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");

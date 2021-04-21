@@ -158,3 +158,6 @@ export const getLicence = (licenceID: number, reqSession: expressSession.Session
   return licenceObj;
 
 };
+
+
+export default getLicence;

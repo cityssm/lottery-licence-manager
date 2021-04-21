@@ -23,3 +23,4 @@ export const getOrganization = (organizationID, reqSession) => {
     db.close();
     return organizationObj;
 };
+export default getOrganization;

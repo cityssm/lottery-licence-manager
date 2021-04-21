@@ -1,5 +1,5 @@
 import * as configFns from "../../helpers/configFns.js";
-import { pokeEvent } from "../../helpers/licencesDB/pokeEvent.js";
+import pokeEvent from "../../helpers/licencesDB/pokeEvent.js";
 const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
 export const handler = (req, res, next) => {
     const licenceID = Number(req.params.licenceID);

@@ -1,6 +1,6 @@
 import type { RequestHandler } from "express";
 
-import { deleteEvent } from "../../helpers/licencesDB/deleteEvent.js";
+import deleteEvent from "../../helpers/licencesDB/deleteEvent.js";
 
 
 export const handler: RequestHandler = (req, res) => {

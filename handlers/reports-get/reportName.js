@@ -8,6 +8,7 @@ export const handler = (req, res) => {
     const reportName = req.params.reportName;
     let sql = "";
     let params = [];
+    const functions = new Map();
     switch (reportName) {
         case "locations-all":
             sql = "select * from Locations";
@@ -127,16 +128,59 @@ export const handler = (req, res) => {
         case "licences-all":
             sql = "select * from LotteryLicences";
             break;
+        case "licences-formatted":
+            functions.set("userFn_licenceTypeKeyToLicenceType", reportFns.userFn_licenceTypeKeyToLicenceType);
+            sql = "select" +
+                " l.licenceID, l.externalLicenceNumber," +
+                " o.organizationID, o.organizationName," +
+                " l.applicationDate," +
+                " userFn_licenceTypeKeyToLicenceType(l.licenceTypeKey) as licenceType," +
+                " l.startDate, l.endDate, l.startTime, l.endTime," +
+                " lo.locationName, lo.locationAddress1," +
+                " l.municipality, l.licenceDetails, l.termsConditions," +
+                " l.totalPrizeValue, l.licenceFee, l.issueDate," +
+                " l.recordCreate_userName, l.recordCreate_timeMillis, l.recordUpdate_userName, l.recordUpdate_timeMillis" +
+                " from LotteryLicences l" +
+                " left join Locations lo on l.locationID = lo.locationID" +
+                " left join Organizations o on l.organizationID = o.organizationID" +
+                " where l.recordDelete_timeMillis is null";
+            break;
         case "licences-byOrganization":
-            sql = reportFns.getLicencesQuery({
-                includeOrganizationIDFilter: true
-            });
+            functions.set("userFn_licenceTypeKeyToLicenceType", reportFns.userFn_licenceTypeKeyToLicenceType);
+            sql = "select" +
+                " l.licenceID, l.externalLicenceNumber," +
+                " o.organizationID, o.organizationName," +
+                " l.applicationDate," +
+                " userFn_licenceTypeKeyToLicenceType(l.licenceTypeKey) as licenceType," +
+                " l.startDate, l.endDate, l.startTime, l.endTime," +
+                " lo.locationName, lo.locationAddress1," +
+                " l.municipality, l.licenceDetails, l.termsConditions," +
+                " l.totalPrizeValue, l.licenceFee, l.issueDate," +
+                " l.recordCreate_userName, l.recordCreate_timeMillis, l.recordUpdate_userName, l.recordUpdate_timeMillis" +
+                " from LotteryLicences l" +
+                " left join Locations lo on l.locationID = lo.locationID" +
+                " left join Organizations o on l.organizationID = o.organizationID" +
+                " where l.recordDelete_timeMillis is null" +
+                " and l.organizationID = ?";
             params = [req.query.organizationID];
             break;
         case "licences-byLocation":
-            sql = reportFns.getLicencesQuery({
-                includeLocationIDFilter: true
-            });
+            functions.set("userFn_licenceTypeKeyToLicenceType", reportFns.userFn_licenceTypeKeyToLicenceType);
+            sql = "select" +
+                " l.licenceID, l.externalLicenceNumber," +
+                " o.organizationID, o.organizationName," +
+                " l.applicationDate," +
+                " userFn_licenceTypeKeyToLicenceType(l.licenceTypeKey) as licenceType," +
+                " l.startDate, l.endDate, l.startTime, l.endTime," +
+                " lo.locationName, lo.locationAddress1," +
+                " l.municipality, l.licenceDetails, l.termsConditions," +
+                " l.totalPrizeValue, l.licenceFee, l.issueDate," +
+                " l.recordCreate_userName, l.recordCreate_timeMillis, l.recordUpdate_userName, l.recordUpdate_timeMillis" +
+                " from LotteryLicences l" +
+                " left join Locations lo on l.locationID = lo.locationID" +
+                " left join Organizations o on l.organizationID = o.organizationID" +
+                " where l.recordDelete_timeMillis is null" +
+                " and l.locationID = ?";
             params = [req.query.locationID];
             break;
         case "licences-notIssued":
@@ -158,8 +202,23 @@ export const handler = (req, res) => {
             sql = "select * from LotteryLicenceTicketTypes";
             break;
         case "ticketTypes-byLicence":
-            sql = "select t.licenceID, t.eventDate, t.ticketType," +
-                " t.unitCount, t.licenceFee," +
+            functions.set("userFn_ticketTypeField", (licenceTypeKey, ticketTypeKey, fieldName) => {
+                const licenceType = configFns.getLicenceType(licenceTypeKey);
+                if (!licenceType) {
+                    return null;
+                }
+                const ticketType = (licenceType.ticketTypes || []).find((ele) => ele.ticketType === ticketTypeKey);
+                if (!ticketType) {
+                    return null;
+                }
+                return ticketType[fieldName];
+            });
+            sql = "select t.licenceID, t.ticketTypeIndex," +
+                " t.amendmentDate, t.ticketType," +
+                " t.unitCount," +
+                " userFn_ticketTypeField(l.licenceTypeKey, t.ticketType, 'ticketPrice') * userFn_ticketTypeField(l.licenceTypeKey, t.ticketType, 'ticketCount') as valuePerDeal," +
+                " userFn_ticketTypeField(l.licenceTypeKey, t.ticketType, 'prizesPerDeal') as prizesPerDeal," +
+                " t.licenceFee," +
                 " t.distributorLocationID," +
                 " d.locationName as distributorLocationName," +
                 " d.locationAddress1 as distributorAddress1," +
@@ -168,6 +227,7 @@ export const handler = (req, res) => {
                 " m.locationAddress1 as manufacturerLocationAddress1," +
                 " t.recordCreate_userName, t.recordCreate_timeMillis, t.recordUpdate_userName, t.recordUpdate_timeMillis" +
                 " from LotteryLicenceTicketTypes t" +
+                " left join LotteryLicences l on t.licenceID = l.licenceID" +
                 " left join Locations d on distributorLocationID = d.locationID" +
                 " left join Locations m on manufacturerLocationID = m.locationID" +
                 " where t.recordDelete_timeMillis is null" +
@@ -266,7 +326,7 @@ export const handler = (req, res) => {
         res.redirect(urlPrefix + "/reports/?error=reportNotFound");
         return;
     }
-    const rowsColumnsObj = licencesDB.getRawRowsColumns(sql, params);
+    const rowsColumnsObj = licencesDB.getRawRowsColumns(sql, params, functions);
     const csv = rawToCSV(rowsColumnsObj);
     res.setHeader("Content-Disposition", "attachment; filename=" + reportName + "-" + Date.now().toString() + ".csv");
     res.setHeader("Content-Type", "text/csv");

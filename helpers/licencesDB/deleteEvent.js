@@ -17,3 +17,4 @@ export const deleteEvent = (licenceID, eventDate, reqSession) => {
     licencesDB.resetEventTableStats();
     return changeCount > 0;
 };
+export default deleteEvent;

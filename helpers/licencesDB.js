@@ -41,10 +41,15 @@ export const canUpdateObject = (obj, reqSession) => {
     }
     return canUpdate;
 };
-export const getRawRowsColumns = (sql, params) => {
+export const getRawRowsColumns = (sql, params, userFunctions) => {
     const db = sqlite(dbPath, {
         readonly: true
     });
+    if (userFunctions.size > 0) {
+        for (const functionName of userFunctions.keys()) {
+            db.function(functionName, userFunctions.get(functionName));
+        }
+    }
     const stmt = db.prepare(sql);
     stmt.raw(true);
     const rows = stmt.all(params);

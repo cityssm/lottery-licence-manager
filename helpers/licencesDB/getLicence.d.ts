@@ -9,3 +9,4 @@ export declare const getLicenceWithDB: (db: sqlite.Database, licenceID: number |
     includeTransactions: boolean;
 }) => llm.LotteryLicence;
 export declare const getLicence: (licenceID: number, reqSession: expressSession.Session) => llm.LotteryLicence;
+export default getLicence;

@@ -88,11 +88,18 @@ export const canUpdateObject = (obj: llm.Record, reqSession: expressSession.Sess
 };
 
 
-export const getRawRowsColumns = (sql: string, params: Array<string | number>): RawRowsColumnsReturn => {
+export const getRawRowsColumns = (sql: string, params: Array<string | number>, userFunctions: Map<string, (...params: any) => any>): RawRowsColumnsReturn => {
 
   const db = sqlite(dbPath, {
     readonly: true
   });
+
+  if (userFunctions.size > 0) {
+
+    for (const functionName of userFunctions.keys()) {
+      db.function(functionName, userFunctions.get(functionName));
+    }
+  }
 
   const stmt = db.prepare(sql);
 
