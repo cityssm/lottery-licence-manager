@@ -1,0 +1,17 @@
+name: Coverage Reporter
+on:
+  push:
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+      - run: npm install
+      - run: npm install -g mocha c8
+      - run: cp ./data/config-example.js ./data/config.js
+      - run: c8 --reporter=lcov mocha --timeout 30000
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
