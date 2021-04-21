@@ -32,8 +32,13 @@ export const handler: RequestHandler = (req, res, next) => {
 
   const feeCalculation = configFns.getProperty("licences.feeCalculationFn")(licence);
 
+  const headTitle =
+    configFns.getProperty("licences.externalLicenceNumber.isPreferredID")
+      ? "Licence " + licence.externalLicenceNumber
+      : "Licence #" + licenceID.toString();
+
   return res.render("licence-edit", {
-    headTitle: "Licence #" + licenceID.toString() + " Update",
+    headTitle: headTitle + " Update",
     isCreate: false,
     licence,
     organization,

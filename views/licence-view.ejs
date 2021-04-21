@@ -292,7 +292,7 @@
     </div>
 
     <% if (licence.licenceTicketTypes.length) { %>
-      <div class="panel">
+      <div class="panel" id="is-ticket-types-panel">
         <div class="panel-heading">
           <div class="level">
             <div class="level-left">
@@ -306,11 +306,14 @@
             </div>
           </div>
         </div>
-
-        <table class="table is-fullwidth">
+        <div class="panel-tabs">
+          <a class="is-active" href="#ticketTypesTabPanel--summary" aria-controls="ticketTypesTabPanel--summary">Summary</a>
+          <a href="#ticketTypesTabPanel--log" aria-controls="ticketTypesTabPanel--log">Log</a>
+        </div>
+        <table class="table is-fullwidth is-hidden" id="ticketTypesTabPanel--log">
           <thead>
             <tr>
-              <th>Event Date</th>
+              <th>Amend Date</th>
               <th>Type</th>
               <th class="has-text-right">Units</th>
               <th class="has-text-right">Value</th>
@@ -322,75 +325,175 @@
           </thead>
           <tbody>
             <%
-              let ticketTypeLicenceFeeTotal = 0;
-              let ticketTypePrizesTotal = 0;
+              const ticketTypeTotals = new Map();
 
-              for (let ticketTypeIndex = 0; ticketTypeIndex < licence.licenceTicketTypes.length; ticketTypeIndex += 1) {
-                const licenceTicketTypeObj = licence.licenceTicketTypes[ticketTypeIndex];
-                const ticketType = (licenceType && licenceType.ticketTypes ? licenceType.ticketTypes.find(ele => ele.ticketType === licenceTicketTypeObj.ticketType) : null);
+              const ticketTypeGrandTotals = {
+                totalUnits: 0,
+                totalValue: 0,
+                totalPrizes: 0,
+                totalLicenceFee: 0
+              };
 
-                ticketTypeLicenceFeeTotal += licenceTicketTypeObj.licenceFee;
+              for (const licenceTicketType of licence.licenceTicketTypes) {
             %>
-                <tr>
-                  <td><%= licenceTicketTypeObj.eventDateString %></td>
-                  <td><%= licenceTicketTypeObj.ticketType %></td>
-                  <td class="has-text-right">
-                    <%= licenceTicketTypeObj.unitCount %>
-                  </td>
-                  <td class="has-text-right">
-                    <%
-                      let ticketValue = (ticketType ? (ticketType.ticketPrice * ticketType.ticketCount) : 0);
-                      let totalValue = (ticketValue * licenceTicketTypeObj.unitCount).toFixed(2);
-                    %>
-                    <span data-tooltip="$<%= ticketValue %> value per deal">$ <%= totalValue %></span>
-                  </td>
-                  <td class="has-text-right">
-                    <%
-                      let prizesPerDeal = (ticketType ? ticketType.prizesPerDeal : 0);
-                      let totalPrizesPerDeal = (prizesPerDeal * licenceTicketTypeObj.unitCount).toFixed(2);
+              <%
+                const ticketTypeDef = (licenceType && licenceType.ticketTypes
+                  ? licenceType.ticketTypes.find(ele => ele.ticketType === licenceTicketType.ticketType)
+                  : null);
 
-                      ticketTypePrizesTotal += (prizesPerDeal * licenceTicketTypeObj.unitCount);
-                    %>
-                    <span data-tooltip="$<%= prizesPerDeal.toFixed(2) %> prizes per deal">$ <%= totalPrizesPerDeal %></span>
+                const rowUnits = licenceTicketType.unitCount;
+                let totalUnits = rowUnits;
+
+                const rowTicketValue = (ticketTypeDef ? (ticketTypeDef.ticketPrice * ticketTypeDef.ticketCount) : 0);
+                const rowValue = rowTicketValue * rowUnits;
+                let totalValue = rowValue;
+
+                const prizesPerDeal = (ticketTypeDef ? ticketTypeDef.prizesPerDeal : 0);
+                const rowPrizes = prizesPerDeal * rowUnits;
+                let totalPrizes = rowPrizes;
+
+                const rowLicenceFee = licenceTicketType.licenceFee;
+                let totalLicenceFee = rowLicenceFee;
+
+                // ticket type sums
+
+                if (ticketTypeTotals.has(licenceTicketType.ticketType)) {
+                  totalUnits += ticketTypeTotals.get(licenceTicketType.ticketType).totalUnits;
+                  totalValue += ticketTypeTotals.get(licenceTicketType.ticketType).totalValue;
+                  totalPrizes += ticketTypeTotals.get(licenceTicketType.ticketType).totalPrizes;
+                  totalLicenceFee += ticketTypeTotals.get(licenceTicketType.ticketType).totalLicenceFee;
+                }
+
+                ticketTypeTotals.set(licenceTicketType.ticketType, {
+                  totalUnits,
+                  totalValue,
+                  totalPrizes,
+                  totalLicenceFee
+                });
+
+                ticketTypeGrandTotals.totalUnits += rowUnits;
+                ticketTypeGrandTotals.totalValue += rowValue;
+                ticketTypeGrandTotals.totalPrizes += rowPrizes;
+                ticketTypeGrandTotals.totalLicenceFee += rowLicenceFee;
+              %>
+                <tr>
+                  <td><%= licenceTicketType.amendmentDateString %></td>
+                  <td><%= licenceTicketType.ticketType %></td>
+                  <td class="has-text-right">
+                    <%= rowUnits %>
                   </td>
                   <td class="has-text-right">
-                    <%= "$ " + licenceTicketTypeObj.licenceFee.toFixed(2) %>
+                    <span data-tooltip="$<%= rowTicketValue %> value per deal"><%- htmlFns.formatDollarsAsHTML(rowValue) %></span>
+                  </td>
+                  <td class="has-text-right">
+                    <span data-tooltip="<%= htmlFns.formatDollarsAsHTML(prizesPerDeal) %> prizes per deal"><%- htmlFns.formatDollarsAsHTML(rowPrizes) %></span>
+                  </td>
+                  <td class="has-text-right">
+                    <%- htmlFns.formatDollarsAsHTML(rowLicenceFee) %>
                   </td>
                   <td>
                     <span>
-                      <% if (licenceTicketTypeObj.manufacturerLocationID === null) { %>
+                      <% if (licenceTicketType.manufacturerLocationID === null) { %>
                         <span class="has-text-grey">(Not Set)</span>
                       <% } else { %>
-                        <%= licenceTicketTypeObj.manufacturerLocationDisplayName %>
+                        <%= licenceTicketType.manufacturerLocationDisplayName %>
                       <% } %>
                     </span>
                   </td>
                   <td>
                     <span>
-                      <% if (licenceTicketTypeObj.distributorLocationID === null) { %>
+                      <% if (licenceTicketType.distributorLocationID === null) { %>
                         <span class="has-text-grey">(Not Set)</span>
                       <% } else { %>
-                        <%= licenceTicketTypeObj.distributorLocationDisplayName %>
+                        <%= licenceTicketType.distributorLocationDisplayName %>
                       <% } %>
                     </span>
                   </td>
                 </tr>
-            <% } %>
+            <%
+              }
+            %>
           </tbody>
           <tfoot>
             <tr>
               <td></td>
               <td></td>
-              <td></td>
-              <td></td>
               <th class="has-text-right">
-                $ <%= ticketTypePrizesTotal.toFixed(2) %>
+                <%= ticketTypeGrandTotals.totalUnits %>
               </th>
               <th class="has-text-right">
-                $ <%= ticketTypeLicenceFeeTotal.toFixed(2) %>
+                <%- htmlFns.formatDollarsAsHTML(ticketTypeGrandTotals.totalValue) %>
+              </th>
+              <th class="has-text-right">
+                <%- htmlFns.formatDollarsAsHTML(ticketTypeGrandTotals.totalPrizes) %>
+              </th>
+              <th class="has-text-right">
+                <%- htmlFns.formatDollarsAsHTML(ticketTypeGrandTotals.totalLicenceFee) %>
               </th>
               <td></td>
               <td></td>
+            </tr>
+          </tfoot>
+        </table>
+        <table class="table is-fullwidth" id="ticketTypesTabPanel--summary">
+          <thead>
+            <tr>
+              <th>Type</th>
+              <th class="has-text-right">Total Units</th>
+              <th class="has-text-right">Total Value</th>
+              <th class="has-text-right">Total Prizes</th>
+              <th class="has-text-right">Total Licence Fee</th>
+            </tr>
+          </thead>
+          <tbody>
+            <%
+              const usedTicketTypes = [];
+
+              for (const usedTicketType of ticketTypeTotals.keys()) {
+                usedTicketTypes.push(usedTicketType);
+              }
+
+              usedTicketTypes.sort();
+
+              for (const usedTicketType of usedTicketTypes) {
+            %>
+              <%
+                const rowTotals = ticketTypeTotals.get(usedTicketType);
+              %>
+              <tr>
+                <td><%= usedTicketType %></td>
+                <td class="has-text-right">
+                  <%= rowTotals.totalUnits %>
+                </td>
+                <td class="has-text-right">
+                  <%= htmlFns.formatDollarsAsHTML(rowTotals.totalValue) %>
+                </td>
+                <td class="has-text-right">
+                  <%= htmlFns.formatDollarsAsHTML(rowTotals.totalPrizes) %>
+                </td>
+                <td class="has-text-right">
+                  <%= htmlFns.formatDollarsAsHTML(rowTotals.totalLicenceFee) %>
+                </td>
+              </tr>
+            <%
+              }
+            %>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td></td>
+              <th class="has-text-right">
+                <%= ticketTypeGrandTotals.totalUnits %>
+              </th>
+              <th class="has-text-right">
+                <%- htmlFns.formatDollarsAsHTML(ticketTypeGrandTotals.totalValue) %>
+              </th>
+              <th class="has-text-right">
+                <%- htmlFns.formatDollarsAsHTML(ticketTypeGrandTotals.totalPrizes) %>
+              </th>
+              <th class="has-text-right">
+                <%- htmlFns.formatDollarsAsHTML(ticketTypeGrandTotals.totalLicenceFee) %>
+              </th>
             </tr>
           </tfoot>
         </table>
@@ -474,5 +577,7 @@
 </div>
 
 <%- include('_footerA'); -%>
+
+<script src="<%= urlPrefix %>/javascripts/licence-viewEdit.min.js"></script>
 
 <%- include('_footerB'); -%>
