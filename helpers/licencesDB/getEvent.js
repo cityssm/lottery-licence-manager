@@ -24,14 +24,14 @@ export const getEvent = (licenceID, eventDate, reqSession) => {
             " where licenceID = ? and eventDate = ?")
             .all(licenceID, eventDate);
         eventObj.eventFields = rows || [];
-        rows = db.prepare("select t.ticketType," +
+        rows = db.prepare("select distinct t.ticketType," +
             " c.costs_receipts, c.costs_admin, c.costs_prizesAwarded" +
             " from LotteryLicenceTicketTypes t" +
-            " left join LotteryEventCosts c on t.licenceID = c.licenceID and t.eventDate = c.eventDate and t.ticketType = c.ticketType" +
+            " left join LotteryEventCosts c on t.licenceID = c.licenceID and t.ticketType = c.ticketType and c.eventDate = ?" +
             " where t.licenceID = ?" +
-            " and t.eventDate = ?" +
+            " and (t.recordDelete_timeMillis is null or c.ticketType is not null)" +
             " order by t.ticketType")
-            .all(licenceID, eventDate);
+            .all(eventDate, licenceID);
         eventObj.eventCosts = rows || [];
         if (eventObj.eventCosts.length === 0) {
             rows = db.prepare("select c.ticketType," +
