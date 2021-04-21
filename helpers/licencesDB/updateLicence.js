@@ -34,18 +34,15 @@ export const updateLicence = (reqBody, reqSession) => {
     const nowDate = new Date();
     const nowDateInt = dateTimeFns.dateToInteger(nowDate);
     const nowMillis = nowDate.getTime();
-    let externalLicenceNumberInteger = -1;
-    try {
-        externalLicenceNumberInteger = parseInt(reqBody.externalLicenceNumber, 10);
-    }
-    catch (e) {
+    let externalLicenceNumberInteger = parseInt(reqBody.externalLicenceNumber, 10);
+    if (isNaN(externalLicenceNumberInteger)) {
         externalLicenceNumberInteger = -1;
     }
     const startDate_now = dateTimeFns.dateStringToInteger(reqBody.startDateString);
     const endDate_now = dateTimeFns.dateStringToInteger(reqBody.endDateString);
     const startTime_now = dateTimeFns.timeStringToInteger(reqBody.startTimeString);
     const endTime_now = dateTimeFns.timeStringToInteger(reqBody.endTimeString);
-    const info = db.prepare("update LotteryLicences" +
+    const changeCount = db.prepare("update LotteryLicences" +
         " set organizationID = ?," +
         " applicationDate = ?," +
         " licenceTypeKey = ?," +
@@ -65,8 +62,7 @@ export const updateLicence = (reqBody, reqSession) => {
         " recordUpdate_timeMillis = ?" +
         " where licenceID = ?" +
         " and recordDelete_timeMillis is null")
-        .run(reqBody.organizationID, dateTimeFns.dateStringToInteger(reqBody.applicationDateString), reqBody.licenceTypeKey, startDate_now, endDate_now, startTime_now, endTime_now, (reqBody.locationID === "" ? null : reqBody.locationID), reqBody.municipality, reqBody.licenceDetails, reqBody.termsConditions, reqBody.totalPrizeValue, reqBody.licenceFee, reqBody.externalLicenceNumber, externalLicenceNumberInteger, reqSession.user.userName, nowMillis, reqBody.licenceID);
-    const changeCount = info.changes;
+        .run(reqBody.organizationID, dateTimeFns.dateStringToInteger(reqBody.applicationDateString), reqBody.licenceTypeKey, startDate_now, endDate_now, startTime_now, endTime_now, (reqBody.locationID === "" ? null : reqBody.locationID), reqBody.municipality, reqBody.licenceDetails, reqBody.termsConditions, reqBody.totalPrizeValue, reqBody.licenceFee, reqBody.externalLicenceNumber, externalLicenceNumberInteger, reqSession.user.userName, nowMillis, reqBody.licenceID).changes;
     if (!changeCount) {
         db.close();
         return false;

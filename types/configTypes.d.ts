@@ -137,4 +137,7 @@ interface ConfigAmendments {
     trackTicketTypeUpdate: boolean;
     trackTicketTypeDelete: boolean;
 }
+export interface ConfigReportDefinition {
+    sql: string;
+}
 export {};

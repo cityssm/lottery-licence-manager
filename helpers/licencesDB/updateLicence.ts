@@ -87,16 +87,10 @@ export const updateLicence = (reqBody: LotteryLicenceForm, reqSession: expressSe
 
   // Get integer version of external licence number for indexing
 
-  let externalLicenceNumberInteger = -1;
+  let externalLicenceNumberInteger = parseInt(reqBody.externalLicenceNumber, 10);
 
-  try {
-
-    externalLicenceNumberInteger = parseInt(reqBody.externalLicenceNumber, 10);
-
-  } catch (e) {
-
+  if (isNaN(externalLicenceNumberInteger)) {
     externalLicenceNumberInteger = -1;
-
   }
 
   // Update licence
@@ -106,7 +100,7 @@ export const updateLicence = (reqBody: LotteryLicenceForm, reqSession: expressSe
   const startTime_now = dateTimeFns.timeStringToInteger(reqBody.startTimeString);
   const endTime_now = dateTimeFns.timeStringToInteger(reqBody.endTimeString);
 
-  const info = db.prepare("update LotteryLicences" +
+  const changeCount = db.prepare("update LotteryLicences" +
     " set organizationID = ?," +
     " applicationDate = ?," +
     " licenceTypeKey = ?," +
@@ -145,12 +139,9 @@ export const updateLicence = (reqBody: LotteryLicenceForm, reqSession: expressSe
       reqSession.user.userName,
       nowMillis,
       reqBody.licenceID
-    );
-
-  const changeCount = info.changes;
+    ).changes;
 
   if (!changeCount) {
-
     db.close();
     return false;
   }
