@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 
-import { app } from "../app.js";
+import app from "../app.js";
 
-import * as http from "http";
-import * as https from "https";
-import * as fs from "fs";
+import http from "http";
+import https from "https";
+import fs from "fs";
 
 import * as configFns from "../helpers/configFns.js";
 

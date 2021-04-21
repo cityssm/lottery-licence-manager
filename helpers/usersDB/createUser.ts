@@ -53,5 +53,7 @@ export const createUser = async(reqBody: {
 
   }
 
+  db.close();
+
   return newPasswordPlain;
 };

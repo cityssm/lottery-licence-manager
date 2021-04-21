@@ -32,7 +32,6 @@ export const getUser = async(userNameSubmitted: string, passwordPlain: string): 
       if (adminPasswordPlain === "") {
 
         return null;
-
       }
 
       if (adminPasswordPlain === passwordPlain) {
@@ -45,9 +44,7 @@ export const getUser = async(userNameSubmitted: string, passwordPlain: string): 
           userName: userNameSubmitted,
           userProperties
         };
-
       }
-
     }
 
     return null;
@@ -57,7 +54,6 @@ export const getUser = async(userNameSubmitted: string, passwordPlain: string): 
     db.close();
 
     return null;
-
   }
 
   // Check if the password matches

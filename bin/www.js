@@ -1,8 +1,8 @@
 #!/usr/bin/env node
-import { app } from "../app.js";
-import * as http from "http";
-import * as https from "https";
-import * as fs from "fs";
+import app from "../app.js";
+import http from "http";
+import https from "https";
+import fs from "fs";
 import * as configFns from "../helpers/configFns.js";
 import debug from "debug";
 const debugWWW = debug("lottery-licence-manager:www");

@@ -33,5 +33,6 @@ export const createUser = async (reqBody) => {
             " values (?, ?, ?, 1, ?)")
             .run(reqBody.userName, reqBody.firstName, reqBody.lastName, hash);
     }
+    db.close();
     return newPasswordPlain;
 };

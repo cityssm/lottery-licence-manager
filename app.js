@@ -133,3 +133,4 @@ app.use((err, req, res, _next) => {
     res.status(err.status || 500);
     res.render("error");
 });
+export default app;

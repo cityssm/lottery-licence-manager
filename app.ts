@@ -236,3 +236,6 @@ app.use((err: { status: number; message: string },
   res.status(err.status || 500);
   res.render("error");
 });
+
+
+export default app;
