@@ -1,5 +1,5 @@
 import { Service } from "node-windows";
-import { serviceConfig } from "./windowsService";
+import { serviceConfig } from "./windowsService.js";
 const svc = new Service(serviceConfig);
 svc.on("uninstall", function () {
     console.log("Uninstall complete.");
