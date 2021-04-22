@@ -7,7 +7,7 @@ environment:
   CC_TEST_REPORTER_ID:
     secure: cuyl2RLaP2eJEZbRFOZq2AEhBQy2tDVZPeQKNFuDTiK0+c2jO/EdQ5YlskrLvkVE5ktJkf45K6Kx1p3ngE1dRBDgsHAtF8wRDajrWli7ktk=
 
-stack: "node 14"
+stack: "node 12"
 
 install:
   # Output useful info for debugging.
