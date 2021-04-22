@@ -44,3 +44,14 @@ export const userFn_licenceTypeKeyToLicenceType = (licenceTypeKey) => {
         ? licenceTypeDef.licenceType
         : null);
 };
+export const userFn_ticketTypeField = (licenceTypeKey, ticketTypeKey, fieldName) => {
+    const licenceType = configFns.getLicenceType(licenceTypeKey);
+    if (!licenceType) {
+        return null;
+    }
+    const ticketType = (licenceType.ticketTypes || []).find((ele) => ele.ticketType === ticketTypeKey);
+    if (!ticketType) {
+        return null;
+    }
+    return ticketType[fieldName];
+};

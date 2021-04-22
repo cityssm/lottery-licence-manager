@@ -140,17 +140,7 @@ export const handler = (req, res) => {
                 params = [req.query.locationID];
                 break;
             case "ticketTypes-byLicence":
-                functions.set("userFn_ticketTypeField", (licenceTypeKey, ticketTypeKey, fieldName) => {
-                    const licenceType = configFns.getLicenceType(licenceTypeKey);
-                    if (!licenceType) {
-                        return null;
-                    }
-                    const ticketType = (licenceType.ticketTypes || []).find((ele) => ele.ticketType === ticketTypeKey);
-                    if (!ticketType) {
-                        return null;
-                    }
-                    return ticketType[fieldName];
-                });
+                functions.set("userFn_ticketTypeField", reportFns.userFn_ticketTypeField);
                 sql = "select t.licenceID, t.ticketTypeIndex," +
                     " t.amendmentDate, t.ticketType," +
                     " t.unitCount," +

@@ -13,6 +13,7 @@ import convertHTMLToPDF from "pdf-puppeteer";
 
 const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
 const printTemplate = configFns.getProperty("licences.printTemplate");
+const __dirname = ".";
 
 
 export const handler: RequestHandler = async(req, res, next) => {
@@ -34,8 +35,12 @@ export const handler: RequestHandler = async(req, res, next) => {
 
   const organization = getOrganization(licence.organizationID, req.session);
 
+  const reportPath = path.join(__dirname, "reports", printTemplate);
+
+  console.log(reportPath);
+
   await ejs.renderFile(
-    path.join(__dirname, "../../reports/", printTemplate), {
+    reportPath, {
       configFns,
       licence,
       organization

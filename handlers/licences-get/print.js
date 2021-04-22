@@ -6,6 +6,7 @@ import { getLicence } from "../../helpers/licencesDB/getLicence.js";
 import convertHTMLToPDF from "pdf-puppeteer";
 const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
 const printTemplate = configFns.getProperty("licences.printTemplate");
+const __dirname = ".";
 export const handler = async (req, res, next) => {
     const licenceID = Number(req.params.licenceID);
     if (isNaN(licenceID)) {
@@ -19,7 +20,9 @@ export const handler = async (req, res, next) => {
         return res.redirect(urlPrefix + "/licences/?error=licenceNotIssued");
     }
     const organization = getOrganization(licence.organizationID, req.session);
-    await ejs.renderFile(path.join(__dirname, "../../reports/", printTemplate), {
+    const reportPath = path.join(__dirname, "reports", printTemplate);
+    console.log(reportPath);
+    await ejs.renderFile(reportPath, {
         configFns,
         licence,
         organization

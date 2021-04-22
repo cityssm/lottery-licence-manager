@@ -8,8 +8,6 @@ import { rawToCSV } from "@cityssm/expressjs-server-js/stringFns.js";
 
 import reportDefinitions from "../../data/reportDefinitions.js";
 
-import type * as configTypes from "../../types/configTypes";
-
 
 const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
 
@@ -226,24 +224,7 @@ export const handler: RequestHandler = (req, res) => {
 
       case "ticketTypes-byLicence":
 
-        functions.set("userFn_ticketTypeField", (licenceTypeKey: string,
-          ticketTypeKey: string,
-          fieldName: "ticketPrice" | "ticketCount" | "prizesPerDeal" | "feePerUnit") => {
-
-          const licenceType = configFns.getLicenceType(licenceTypeKey);
-
-          if (!licenceType) {
-            return null;
-          }
-
-          const ticketType: configTypes.ConfigTicketType = (licenceType.ticketTypes || []).find((ele) => ele.ticketType === ticketTypeKey);
-
-          if (!ticketType) {
-            return null;
-          }
-
-          return ticketType[fieldName];
-        });
+        functions.set("userFn_ticketTypeField", reportFns.userFn_ticketTypeField);
 
         sql = "select t.licenceID, t.ticketTypeIndex," +
           " t.amendmentDate, t.ticketType," +
