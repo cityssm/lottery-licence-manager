@@ -172,7 +172,7 @@
           <div class="column is-6">
             <p>
               <strong>Total Prize Value</strong><br />
-              $ <%= (licence.totalPrizeValue || 0).toFixed(2) %>
+              <%= htmlFns.formatDollarsAsHTML(licence.totalPrizeValue || 0) %>
             </p>
           </div>
         </div>

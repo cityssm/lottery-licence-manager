@@ -1008,6 +1008,18 @@ declare const llm: llmGlobal;
     const logTableTbodyEle = logTableEle.getElementsByTagName("tbody")[0];
     const logTableTFootEle = logTableEle.getElementsByTagName("tfoot")[0];
 
+    let lastUsedDistributorID = "";
+    let lastUsedManufacturerID = "";
+
+    if (logTableTbodyEle.getElementsByTagName("tr").length > 0) {
+
+      const trEles = logTableTbodyEle.getElementsByTagName("tr");
+      const lastTrEle = trEles[trEles.length - 1];
+
+      lastUsedDistributorID = lastTrEle.getAttribute("data-distributor-id");
+      lastUsedManufacturerID = lastTrEle.getAttribute("data-manufacturer-id");
+    }
+
     const summaryTableFn_renderTable = () => {
 
       // sum up the log rows
@@ -1199,6 +1211,9 @@ declare const llm: llmGlobal;
       const manufacturerLocationDisplayName = cache_manufacturerLocations_idToName.get(obj.manufacturerLocationID);
       const distributorLocationDisplayName = cache_distributorLocations_idToName.get(obj.distributorLocationID);
 
+      lastUsedDistributorID = obj.distributorLocationID.toString();
+      lastUsedManufacturerID = obj.manufacturerLocationID.toString();
+
       trEle.insertAdjacentHTML("beforeend", "<td class=\"is-size-7\">" +
         "<input name=\"ticketType_manufacturerLocationID\" type=\"hidden\" value=\"" + obj.manufacturerLocationID.toString() + "\" />" +
         "<input name=\"ticketType_distributorLocationID\" type=\"hidden\" value=\"" + obj.distributorLocationID.toString() + "\" />" +
@@ -1371,16 +1386,36 @@ declare const llm: llmGlobal;
       const addTicketTypeFn_populateDistributorSelect = () => {
 
         cacheFn_loadDistributorLocations((locations) => {
-          document.getElementById("ticketTypeAdd--distributorLocationID").innerHTML =
+
+          const selectEle = document.getElementById("ticketTypeAdd--distributorLocationID") as HTMLSelectElement;
+
+          selectEle.innerHTML =
             locations.reduce(addTicketTypeFn_reduceLocations, "<option value=\"\">(No Distributor)</option>");
+
+          if (lastUsedDistributorID !== "") {
+
+            if (selectEle.querySelector("[value='" + lastUsedDistributorID + "']")) {
+              selectEle.value = lastUsedDistributorID;
+            }
+          }
         });
       };
 
       const addTicketTypeFn_populateManufacturerSelect = () => {
 
         cacheFn_loadManufacturerLocations((locations) => {
-          document.getElementById("ticketTypeAdd--manufacturerLocationID").innerHTML =
+
+          const selectEle = document.getElementById("ticketTypeAdd--manufacturerLocationID") as HTMLSelectElement;
+
+          selectEle.innerHTML =
             locations.reduce(addTicketTypeFn_reduceLocations, "<option value=\"\">(No Manufacturer)</option>");
+
+            if (lastUsedManufacturerID !== "") {
+
+              if (selectEle.querySelector("[value='" + lastUsedManufacturerID + "']")) {
+                selectEle.value = lastUsedManufacturerID;
+              }
+            }
         });
       };
 
