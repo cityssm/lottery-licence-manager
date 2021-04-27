@@ -5,13 +5,11 @@
         <h2 class="has-text-weight-bold">Remarks</h2>
       </div>
       <div class="level-right has-text-weight-normal is-hidden-print">
-        <div class="field is-grouped justify-flex-end">
+        <div class="field is-grouped is-justify-content-end is-align-items-center">
           <% if (remarks.length > 0) { %>
-            <div class="control mt-2">
-              <span class="tag is-dark has-cursor-default" data-tooltip="Remarks Displayed">
-                <span id="remark--displayCount"><%= remarks.length %></span>/<%= remarks.length %>
-              </span>
-            </div>
+            <span class="tag is-dark has-cursor-default mr-3" data-tooltip="Remarks Displayed">
+              <span id="remark--displayCount"><%= remarks.length %></span>/<%= remarks.length %>
+            </span>
             <div class="control has-icons-left">
               <input class="input is-small" id="remark--searchStr" type="text" placeholder="Filter Remarks" aria-label="Remark Filter" />
               <span class="icon is-small is-left">
