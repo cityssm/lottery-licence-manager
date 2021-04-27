@@ -2,13 +2,13 @@ import { runSQLWithDB } from "../_runSQLByName.js";
 
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
 
-import type * as expressSession from "express-session";
+import type { Session } from "express-session";
 import type * as sqlite from "better-sqlite3";
 
 
 export const createEventWithDB = (db: sqlite.Database,
   licenceID: string | number, eventDateString: string,
-  reqSession: expressSession.Session) => {
+  reqSession: Session) => {
 
   const nowMillis = Date.now();
 

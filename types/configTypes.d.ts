@@ -1,4 +1,5 @@
 import type { LotteryLicence } from "./recordTypes";
+import type * as expressTypes from "express";
 export interface Config {
     application?: ConfigApplication;
     session?: ConfigSession;
@@ -139,5 +140,7 @@ interface ConfigAmendments {
 }
 export interface ConfigReportDefinition {
     sql: string;
+    params?: (req: expressTypes.Request) => any[];
+    functions?: () => Map<string, (...params: any) => any>;
 }
 export {};

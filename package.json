@@ -1,6 +1,6 @@
 {
   "name": "lottery-licence-manager",
-  "version": "0.13.0-beta",
+  "version": "0.14.0-dev",
   "type": "module",
   "exports": "./app.js",
   "engines": {
@@ -55,7 +55,6 @@
     "@types/ejs": "^3.0.6",
     "@types/express": "^4.17.11",
     "@types/express-rate-limit": "^5.1.1",
-    "@types/express-serve-static-core": "^4.17.19",
     "@types/express-session": "^1.17.3",
     "@types/gulp": "^4.0.8",
     "@types/gulp-changed": "^0.0.33",

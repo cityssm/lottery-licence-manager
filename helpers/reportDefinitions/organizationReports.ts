@@ -1,11 +1,7 @@
-import type { ConfigReportDefinition } from "../types/configTypes";
+import type { ConfigReportDefinition } from "../../types/configTypes";
 
 
-export const reportDefinitions: { [reportName: string]: ConfigReportDefinition } = {
-
-  "locations-all": {
-    sql: "select * from Locations"
-  },
+export const reports: { [reportName: string]: ConfigReportDefinition } = {
 
   "organizations-all": {
     sql: "select * from Organizations"
@@ -40,60 +36,8 @@ export const reportDefinitions: { [reportName: string]: ConfigReportDefinition }
       " o.recordDelete_userName, o.recordDelete_timeMillis" +
       " from Organizations o" +
       " where o.recordDelete_timeMillis is not null"
-  },
-
-  "representatives-all": {
-    sql: "select * from OrganizationRepresentatives"
-  },
-
-  "remarks-all": {
-    sql: "select * from OrganizationRemarks"
-  },
-
-  "reminders-all": {
-    sql: "select * from OrganizationReminders"
-  },
-
-  "bankRecords-all": {
-    sql: "select * from OrganizationBankRecords"
-  },
-
-  "licences-all": {
-    sql: "select * from LotteryLicences"
-  },
-
-  "licences-notIssued": {
-    sql: "select l.licenceID, l.externalLicenceNumber, l.applicationDate," +
-      " o.organizationID, o.organizationName," +
-      " l.licenceTypeKey," +
-      " l.startDate, l.endDate, l.startTime, l.endTime," +
-      " lo.locationName, lo.locationAddress1," +
-      " l.municipality," +
-      " l.licenceDetails, l.termsConditions, l.totalPrizeValue," +
-      " l.recordUpdate_userName, l.recordUpdate_timeMillis" +
-      " from LotteryLicences l" +
-      " left join Locations lo on l.locationID = lo.locationID" +
-      " left join Organizations o on l.organizationID = o.organizationID" +
-      " where l.recordDelete_timeMillis is null" +
-      " and l.issueDate is null"
-  },
-
-  "ticketTypes-all": {
-    sql: "select * from LotteryLicenceTicketTypes"
-  },
-
-  "amendments-all": {
-    sql: "select * from LotteryLicenceAmendments"
-  },
-
-  "transactions-all": {
-    sql: "select * from LotteryLicenceTransactions"
-  },
-
-  "events-all": {
-    sql: "select * from LotteryEvents"
   }
 };
 
 
-export default reportDefinitions;
+export default reports;
