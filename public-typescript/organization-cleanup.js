@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 (() => {
     const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
+    const safeUrlPrefix = cityssm.escapeHTML(urlPrefix);
     const canUpdate = document.getElementsByTagName("main")[0].getAttribute("data-can-update") === "true";
     const inactiveYearsFilterEle = document.getElementById("filter--inactiveYears");
     const searchResultsEle = document.getElementById("container--searchResults");
@@ -57,7 +58,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 const safeOrganizationName = cityssm.escapeHTML(organizationObj.organizationName);
                 trEle.innerHTML = ("<td>" +
                     "<a data-tooltip=\"View Organization\"" +
-                    " href=\"" + urlPrefix + "/organizations/" + organizationObj.organizationID.toString() + "\">" +
+                    " href=\"" + safeUrlPrefix + "/organizations/" + organizationObj.organizationID.toString() + "\">" +
                     safeOrganizationName +
                     "</a>" +
                     "</td>") +

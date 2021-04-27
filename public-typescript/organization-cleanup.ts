@@ -7,6 +7,7 @@ declare const cityssm: cityssmGlobal;
 (() => {
 
   const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
+  const safeUrlPrefix = cityssm.escapeHTML(urlPrefix);
 
   const canUpdate = document.getElementsByTagName("main")[0].getAttribute("data-can-update") === "true";
 
@@ -96,7 +97,7 @@ declare const cityssm: cityssmGlobal;
 
           trEle.innerHTML = ("<td>" +
             "<a data-tooltip=\"View Organization\"" +
-            " href=\"" + urlPrefix + "/organizations/" + organizationObj.organizationID.toString() + "\">" +
+            " href=\"" + safeUrlPrefix + "/organizations/" + organizationObj.organizationID.toString() + "\">" +
             safeOrganizationName +
             "</a>" +
             "</td>") +

@@ -6,6 +6,7 @@ declare const cityssm: cityssmGlobal;
 (() => {
 
   const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
+  const safeUrlPrefix = cityssm.escapeHTML(urlPrefix);
 
   const currentDateString = cityssm.dateToString(new Date());
 
@@ -150,7 +151,7 @@ declare const cityssm: cityssmGlobal;
             "<td colspan=\"" + licenceColspan.toString() + "\">" +
             "<a class=\"button has-text-left is-small is-block has-height-auto is-wrap is-primary is-light\"" +
             " data-tooltip=\"View Licence\"" +
-            " href=\"" + urlPrefix + "/licences/" + licenceRecord.licenceID.toString() + "\">" +
+            " href=\"" + safeUrlPrefix + "/licences/" + licenceRecord.licenceID.toString() + "\">" +
 
             ("<div class=\"columns mb-0 is-variable is-1\">" +
               "<div class=\"column pb-2 is-narrow\">" +
@@ -222,7 +223,7 @@ declare const cityssm: cityssmGlobal;
             "beforeend",
             "<a class=\"button mb-2 has-text-left is-small is-block has-height-auto is-wrap is-link is-light\"" +
             " data-tooltip=\"View Event\"" +
-            " href=\"" + urlPrefix + "/events/" + eventRecord.licenceID.toString() + "/" + eventRecord.eventDate.toString() + "\">" +
+            " href=\"" + safeUrlPrefix + "/events/" + eventRecord.licenceID.toString() + "/" + eventRecord.eventDate.toString() + "\">" +
 
             ("<div class=\"columns mb-0 is-variable is-1\">" +
               "<div class=\"column pb-2 is-narrow\">" +
