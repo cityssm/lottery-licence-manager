@@ -1,5 +1,10 @@
 import * as reportFns from "../reportFns.js";
-const baseQuery = "select" +
+const baseFunctions = () => {
+    const func = new Map();
+    func.set("userFn_licenceTypeKeyToLicenceType", reportFns.userFn_licenceTypeKeyToLicenceType);
+    return func;
+};
+const baseSQL = "select" +
     " l.licenceID, l.externalLicenceNumber," +
     " o.organizationID, o.organizationName," +
     " l.applicationDate," +
@@ -18,51 +23,21 @@ export const reports = {
         sql: "select * from LotteryLicences"
     },
     "licences-notIssued": {
-        functions: () => {
-            const func = new Map();
-            func.set("userFn_licenceTypeKeyToLicenceType", reportFns.userFn_licenceTypeKeyToLicenceType);
-            return func;
-        },
-        sql: "select l.licenceID, l.externalLicenceNumber, l.applicationDate," +
-            " o.organizationID, o.organizationName," +
-            " userFn_licenceTypeKeyToLicenceType(l.licenceTypeKey) as licenceType," +
-            " l.startDate, l.endDate, l.startTime, l.endTime," +
-            " lo.locationName, lo.locationAddress1," +
-            " l.municipality," +
-            " l.licenceDetails, l.termsConditions, l.totalPrizeValue," +
-            " l.recordUpdate_userName, l.recordUpdate_timeMillis" +
-            " from LotteryLicences l" +
-            " left join Locations lo on l.locationID = lo.locationID" +
-            " left join Organizations o on l.organizationID = o.organizationID" +
-            " where l.recordDelete_timeMillis is null" +
-            " and l.issueDate is null"
+        functions: baseFunctions,
+        sql: baseSQL + " and l.issueDate is null"
     },
     "licences-formatted": {
-        functions: () => {
-            const func = new Map();
-            func.set("userFn_licenceTypeKeyToLicenceType", reportFns.userFn_licenceTypeKeyToLicenceType);
-            return func;
-        },
-        sql: baseQuery
+        functions: baseFunctions,
+        sql: baseSQL
     },
     "licences-byOrganization": {
-        functions: () => {
-            const func = new Map();
-            func.set("userFn_licenceTypeKeyToLicenceType", reportFns.userFn_licenceTypeKeyToLicenceType);
-            return func;
-        },
-        sql: baseQuery +
-            " and l.organizationID = ?",
+        functions: baseFunctions,
+        sql: baseSQL + " and l.organizationID = ?",
         params: (req) => [req.query.organizationID]
     },
     "licences-byLocation": {
-        functions: () => {
-            const func = new Map();
-            func.set("userFn_licenceTypeKeyToLicenceType", reportFns.userFn_licenceTypeKeyToLicenceType);
-            return func;
-        },
-        sql: baseQuery +
-            " and l.locationID = ?",
+        functions: baseFunctions,
+        sql: baseSQL + " and l.locationID = ?",
         params: (req) => [req.query.locationID]
     }
 };
