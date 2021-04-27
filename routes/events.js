@@ -1,5 +1,6 @@
 import { Router } from "express";
 import * as permissionHandlers from "../handlers/permissions.js";
+import handler_search from "../handlers/events-get/search.js";
 import handler_view from "../handlers/events-get/view.js";
 import handler_edit from "../handlers/events-get/edit.js";
 import handler_poke from "../handlers/events-get/poke.js";
@@ -14,13 +15,7 @@ import handler_doSave from "../handlers/events-post/doSave.js";
 import handler_doDelete from "../handlers/events-post/doDelete.js";
 import * as licencesDB from "../helpers/licencesDB.js";
 export const router = Router();
-router.get("/", (_req, res) => {
-    const eventTableStats = licencesDB.getEventTableStats();
-    res.render("event-search", {
-        headTitle: "Lottery Events",
-        eventTableStats
-    });
-});
+router.get("/", handler_search);
 router.post("/doSearch", handler_doSearch);
 router.get("/byWeek", (_req, res) => {
     res.render("event-byWeek", {
