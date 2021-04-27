@@ -3,6 +3,22 @@ import * as reportFns from "../reportFns.js";
 import type { ConfigReportDefinition } from "../../types/configTypes";
 
 
+const baseQuery = "select" +
+  " l.licenceID, l.externalLicenceNumber," +
+  " o.organizationID, o.organizationName," +
+  " l.applicationDate," +
+  " userFn_licenceTypeKeyToLicenceType(l.licenceTypeKey) as licenceType," +
+  " l.startDate, l.endDate, l.startTime, l.endTime," +
+  " lo.locationName, lo.locationAddress1," +
+  " l.municipality, l.licenceDetails, l.termsConditions," +
+  " l.totalPrizeValue, l.licenceFee, l.issueDate," +
+  " l.recordCreate_userName, l.recordCreate_timeMillis, l.recordUpdate_userName, l.recordUpdate_timeMillis" +
+  " from LotteryLicences l" +
+  " left join Locations lo on l.locationID = lo.locationID" +
+  " left join Organizations o on l.organizationID = o.organizationID" +
+  " where l.recordDelete_timeMillis is null";
+
+
 export const reports: { [reportName: string]: ConfigReportDefinition } = {
 
   "licences-all": {
@@ -43,20 +59,7 @@ export const reports: { [reportName: string]: ConfigReportDefinition } = {
       return func;
     },
 
-    sql: "select" +
-      " l.licenceID, l.externalLicenceNumber," +
-      " o.organizationID, o.organizationName," +
-      " l.applicationDate," +
-      " userFn_licenceTypeKeyToLicenceType(l.licenceTypeKey) as licenceType," +
-      " l.startDate, l.endDate, l.startTime, l.endTime," +
-      " lo.locationName, lo.locationAddress1," +
-      " l.municipality, l.licenceDetails, l.termsConditions," +
-      " l.totalPrizeValue, l.licenceFee, l.issueDate," +
-      " l.recordCreate_userName, l.recordCreate_timeMillis, l.recordUpdate_userName, l.recordUpdate_timeMillis" +
-      " from LotteryLicences l" +
-      " left join Locations lo on l.locationID = lo.locationID" +
-      " left join Organizations o on l.organizationID = o.organizationID" +
-      " where l.recordDelete_timeMillis is null"
+    sql: baseQuery
   },
 
   "licences-byOrganization": {
@@ -67,20 +70,7 @@ export const reports: { [reportName: string]: ConfigReportDefinition } = {
       return func;
     },
 
-    sql: "select" +
-      " l.licenceID, l.externalLicenceNumber," +
-      " o.organizationID, o.organizationName," +
-      " l.applicationDate," +
-      " userFn_licenceTypeKeyToLicenceType(l.licenceTypeKey) as licenceType," +
-      " l.startDate, l.endDate, l.startTime, l.endTime," +
-      " lo.locationName, lo.locationAddress1," +
-      " l.municipality, l.licenceDetails, l.termsConditions," +
-      " l.totalPrizeValue, l.licenceFee, l.issueDate," +
-      " l.recordCreate_userName, l.recordCreate_timeMillis, l.recordUpdate_userName, l.recordUpdate_timeMillis" +
-      " from LotteryLicences l" +
-      " left join Locations lo on l.locationID = lo.locationID" +
-      " left join Organizations o on l.organizationID = o.organizationID" +
-      " where l.recordDelete_timeMillis is null" +
+    sql: baseQuery +
       " and l.organizationID = ?",
 
     params: (req) => [req.query.organizationID]
@@ -94,20 +84,7 @@ export const reports: { [reportName: string]: ConfigReportDefinition } = {
       return func;
     },
 
-    sql: "select" +
-      " l.licenceID, l.externalLicenceNumber," +
-      " o.organizationID, o.organizationName," +
-      " l.applicationDate," +
-      " userFn_licenceTypeKeyToLicenceType(l.licenceTypeKey) as licenceType," +
-      " l.startDate, l.endDate, l.startTime, l.endTime," +
-      " lo.locationName, lo.locationAddress1," +
-      " l.municipality, l.licenceDetails, l.termsConditions," +
-      " l.totalPrizeValue, l.licenceFee, l.issueDate," +
-      " l.recordCreate_userName, l.recordCreate_timeMillis, l.recordUpdate_userName, l.recordUpdate_timeMillis" +
-      " from LotteryLicences l" +
-      " left join Locations lo on l.locationID = lo.locationID" +
-      " left join Organizations o on l.organizationID = o.organizationID" +
-      " where l.recordDelete_timeMillis is null" +
+    sql: baseQuery +
       " and l.locationID = ?",
 
     params: (req) => [req.query.locationID]
