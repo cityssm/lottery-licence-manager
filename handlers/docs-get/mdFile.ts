@@ -10,6 +10,8 @@ import marked from "marked";
 import sanitizeFilename from "sanitize-filename";
 
 
+const __dirname = ".";
+
 const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
 const applicationName = configFns.getProperty("application.applicationName");
 
@@ -18,7 +20,7 @@ export const handler: RequestHandler = (req, res, next) => {
 
   const mdFileName = sanitizeFilename(req.params.mdFileName);
 
-  const mdPath = path.join(__dirname, "..", "..", "docs",
+  const mdPath = path.join(__dirname, "docs",
     mdFileName + (mdFileName.endsWith(".md") ? "" : ".md"));
 
   fs.readFile(mdPath, "utf8", (err, data) => {
