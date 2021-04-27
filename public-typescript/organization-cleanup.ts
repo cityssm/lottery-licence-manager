@@ -96,7 +96,7 @@ declare const cityssm: cityssmGlobal;
 
           trEle.innerHTML = ("<td>" +
             "<a data-tooltip=\"View Organization\"" +
-            " href=\"/organizations/" + organizationObj.organizationID.toString() + "\">" +
+            " href=\"" + urlPrefix + "/organizations/" + organizationObj.organizationID.toString() + "\">" +
             safeOrganizationName +
             "</a>" +
             "</td>") +

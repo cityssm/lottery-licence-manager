@@ -57,7 +57,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 const safeOrganizationName = cityssm.escapeHTML(organizationObj.organizationName);
                 trEle.innerHTML = ("<td>" +
                     "<a data-tooltip=\"View Organization\"" +
-                    " href=\"/organizations/" + organizationObj.organizationID.toString() + "\">" +
+                    " href=\"" + urlPrefix + "/organizations/" + organizationObj.organizationID.toString() + "\">" +
                     safeOrganizationName +
                     "</a>" +
                     "</td>") +
