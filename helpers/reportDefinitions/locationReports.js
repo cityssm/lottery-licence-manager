@@ -42,6 +42,20 @@ export const reports = {
             threeYearsAgo.setFullYear(threeYearsAgo.getFullYear() - 3);
             return [dateTimeFns.dateToInteger(threeYearsAgo)];
         }
+    },
+    "locations-distributors": {
+        sql: "select locationID, locationName," +
+            " locationAddress1, locationAddress2, locationCity, locationProvince, locationPostalCode" +
+            " from Locations" +
+            " where locationIsDistributor = 1" +
+            " and recordDelete_timeMillis is null"
+    },
+    "locations-manufacturers": {
+        sql: "select locationID, locationName," +
+            " locationAddress1, locationAddress2, locationCity, locationProvince, locationPostalCode" +
+            " from Locations" +
+            " where locationIsManufacturer = 1" +
+            " and recordDelete_timeMillis is null"
     }
 };
 export default reports;
