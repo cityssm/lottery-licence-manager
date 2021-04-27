@@ -14,27 +14,23 @@ export const handler: RequestHandler = (req, res) => {
 
   const reportName = req.params.reportName;
 
-  let sql = "";
-  let params = [];
-  let functions = new Map<string, (...params: any) => any>();
-
-  if (reportDefinitions[reportName]) {
-
-    const def = reportDefinitions[reportName];
-    sql = def.sql;
-
-    if (def.params) {
-      params = def.params(req);
-    }
-
-    if (def.functions) {
-      functions = def.functions();
-    }
-
-  } else {
+  if (!reportDefinitions[reportName]) {
     res.redirect(urlPrefix + "/reports/?error=reportNotFound");
     return;
   }
+
+  const def = reportDefinitions[reportName];
+
+  const sql = def.sql;
+
+  const params = def.params
+    ? def.params(req)
+    : [];
+
+  const functions = def.functions
+    ? def.functions()
+    : new Map<string, (...params: any) => any>();
+
 
   const rowsColumnsObj = licencesDB.getRawRowsColumns(sql, params, functions);
 

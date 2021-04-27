@@ -5,23 +5,18 @@ import reportDefinitions from "../../helpers/reportDefinitions/reportDefinitions
 const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
 export const handler = (req, res) => {
     const reportName = req.params.reportName;
-    let sql = "";
-    let params = [];
-    let functions = new Map();
-    if (reportDefinitions[reportName]) {
-        const def = reportDefinitions[reportName];
-        sql = def.sql;
-        if (def.params) {
-            params = def.params(req);
-        }
-        if (def.functions) {
-            functions = def.functions();
-        }
-    }
-    else {
+    if (!reportDefinitions[reportName]) {
         res.redirect(urlPrefix + "/reports/?error=reportNotFound");
         return;
     }
+    const def = reportDefinitions[reportName];
+    const sql = def.sql;
+    const params = def.params
+        ? def.params(req)
+        : [];
+    const functions = def.functions
+        ? def.functions()
+        : new Map();
     const rowsColumnsObj = licencesDB.getRawRowsColumns(sql, params, functions);
     const csv = rawToCSV(rowsColumnsObj);
     res.setHeader("Content-Disposition", "attachment; filename=" + reportName + "-" + Date.now().toString() + ".csv");
