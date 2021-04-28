@@ -37,8 +37,6 @@ export const handler: RequestHandler = async(req, res, next) => {
 
   const reportPath = path.join(__dirname, "reports", printTemplate);
 
-  console.log(reportPath);
-
   await ejs.renderFile(
     reportPath, {
       configFns,

@@ -21,7 +21,6 @@ export const handler = async (req, res, next) => {
     }
     const organization = getOrganization(licence.organizationID, req.session);
     const reportPath = path.join(__dirname, "reports", printTemplate);
-    console.log(reportPath);
     await ejs.renderFile(reportPath, {
         configFns,
         licence,
