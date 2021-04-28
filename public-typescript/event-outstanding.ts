@@ -1,10 +1,13 @@
 import type { cityssmGlobal } from "@cityssm/bulma-webapp-js/src/types";
+import type { DateDiff } from "@cityssm/date-diff/types";
 import type * as llmTypes from "../types/recordTypes";
 
 declare const cityssm: cityssmGlobal;
 
 
 (() => {
+
+  const dateDiff: DateDiff = exports.dateDiff;
 
   const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
 
@@ -18,6 +21,8 @@ declare const cityssm: cityssmGlobal;
     cityssm.postJSON(urlPrefix + "/events/doGetOutstandingEvents",
       formEle,
       (outstandingEvents: llmTypes.LotteryEvent[]) => {
+
+        const nowDate = new Date();
 
         let currentOrganizationID = -1;
 
@@ -53,10 +58,15 @@ declare const cityssm: cityssmGlobal;
             outstandingEventObj.licenceID.toString() + "/" +
             outstandingEventObj.eventDate.toString();
 
+          const eventDate = cityssm.dateStringToDate(outstandingEventObj.eventDateString);
+
           trEle.insertAdjacentHTML("beforeend", "<td>" +
             "<a href=\"" + cityssm.escapeHTML(eventURL) + "\" data-tooltip=\"View Event\" target=\"_blank\">" +
             cityssm.escapeHTML(outstandingEventObj.eventDateString) +
             "</a>" +
+            (eventDate < nowDate
+              ? "<br /><span class=\"is-size-7\">" + dateDiff(eventDate, nowDate).formatted + " ago</span>"
+              : "") +
             "</td>");
 
           trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-centered\">" +

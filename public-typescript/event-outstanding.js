@@ -1,12 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 (() => {
+    const dateDiff = exports.dateDiff;
     const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
     const formEle = document.getElementById("form--outstandingEvents");
     const tbodyEle = document.getElementById("tbody--outstandingEvents");
     const getOutstandingEventsFn = () => {
         cityssm.clearElement(tbodyEle);
         cityssm.postJSON(urlPrefix + "/events/doGetOutstandingEvents", formEle, (outstandingEvents) => {
+            const nowDate = new Date();
             let currentOrganizationID = -1;
             for (const outstandingEventObj of outstandingEvents) {
                 if (currentOrganizationID !== outstandingEventObj.organizationID) {
@@ -30,10 +32,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 const eventURL = urlPrefix + "/events/" +
                     outstandingEventObj.licenceID.toString() + "/" +
                     outstandingEventObj.eventDate.toString();
+                const eventDate = cityssm.dateStringToDate(outstandingEventObj.eventDateString);
                 trEle.insertAdjacentHTML("beforeend", "<td>" +
                     "<a href=\"" + cityssm.escapeHTML(eventURL) + "\" data-tooltip=\"View Event\" target=\"_blank\">" +
                     cityssm.escapeHTML(outstandingEventObj.eventDateString) +
                     "</a>" +
+                    (eventDate < nowDate
+                        ? "<br /><span class=\"is-size-7\">" + dateDiff(eventDate, nowDate).formatted + " ago</span>"
+                        : "") +
                     "</td>");
                 trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-centered\">" +
                     (outstandingEventObj.reportDate === null || outstandingEventObj.reportDate === 0

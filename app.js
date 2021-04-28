@@ -56,8 +56,9 @@ if (urlPrefix !== "") {
 }
 app.use(urlPrefix, express.static(path.join(__dirname, "public")));
 app.use(urlPrefix + "/docs/images", express.static(path.join(__dirname, "docs", "images")));
-app.use(urlPrefix + "/fa", express.static(path.join(__dirname, "node_modules", "@fortawesome", "fontawesome-free")));
-app.use(urlPrefix + "/cityssm-bulma-webapp-js", express.static(path.join(__dirname, "node_modules", "@cityssm", "bulma-webapp-js")));
+app.use(urlPrefix + "/lib/fa", express.static(path.join(__dirname, "node_modules", "@fortawesome", "fontawesome-free")));
+app.use(urlPrefix + "/lib/cityssm-bulma-webapp-js", express.static(path.join(__dirname, "node_modules", "@cityssm", "bulma-webapp-js")));
+app.use(urlPrefix + "/lib/date-diff", express.static(path.join(__dirname, "node_modules", "@cityssm", "date-diff", "es2015")));
 const SQLiteStore = sqlite(session);
 const sessionCookieName = configFns.getProperty("session.cookieName");
 app.use(session({
