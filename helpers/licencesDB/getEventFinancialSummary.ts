@@ -4,9 +4,6 @@ import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
 
 import { licencesDB as dbPath } from "../../data/databasePaths.js";
 
-import debug from "debug";
-const debugSQL = debug("lottery-licence-manager:licencesDB:getEventFinancialSummary");
-
 
 export interface EventFinancialSummary {
   licenceTypeKey: string;
@@ -73,8 +70,6 @@ export const getEventFinancialSummary = (reqBody: {
   sql += " group by l.licenceID, l.licenceTypeKey, l.licenceFee" +
     " ) t" +
     " group by licenceTypeKey";
-
-  debugSQL(sql);
 
   const rows: EventFinancialSummary[] = db.prepare(sql).all(sqlParams);
 

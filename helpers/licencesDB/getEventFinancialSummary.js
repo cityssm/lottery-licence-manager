@@ -1,8 +1,6 @@
 import sqlite from "better-sqlite3";
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
 import { licencesDB as dbPath } from "../../data/databasePaths.js";
-import debug from "debug";
-const debugSQL = debug("lottery-licence-manager:licencesDB:getEventFinancialSummary");
 ;
 export const getEventFinancialSummary = (reqBody) => {
     const db = sqlite(dbPath, {
@@ -49,7 +47,6 @@ export const getEventFinancialSummary = (reqBody) => {
     sql += " group by l.licenceID, l.licenceTypeKey, l.licenceFee" +
         " ) t" +
         " group by licenceTypeKey";
-    debugSQL(sql);
     const rows = db.prepare(sql).all(sqlParams);
     db.close();
     return rows;
