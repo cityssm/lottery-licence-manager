@@ -149,7 +149,7 @@
               <div class="column">
                 <p>
                   <strong>Account Balance</strong><br />
-                  <%= (event.bank_accountBalance ? "$ " + event.bank_accountBalance.toFixed(2) : "") %>
+                  <%= (event.bank_accountBalance ? htmlFns.formatDollarsAsHTML(event.bank_accountBalance) : "") %>
                 </p>
               </div>
             </div>
