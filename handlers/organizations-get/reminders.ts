@@ -1,5 +1,7 @@
 import type { RequestHandler } from "express";
 
+import * as dateDiff from "@cityssm/date-diff";
+
 import { getUndismissedOrganizationReminders } from "../../helpers/licencesDB/getUndismissedOrganizationReminders.js";
 
 
@@ -9,7 +11,8 @@ export const handler: RequestHandler = (req, res) => {
 
   res.render("organization-reminders", {
     headTitle: "Organization Reminders",
-    reminders
+    reminders,
+    dateDiff: dateDiff.dateDiff
   });
 };
 

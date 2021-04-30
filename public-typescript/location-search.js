@@ -1,12 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 (() => {
+    const dateDiff = exports.dateDiff;
     const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
     const formEle = document.getElementById("form--searchFilters");
     const limitEle = document.getElementById("filter--limit");
     const offsetEle = document.getElementById("filter--offset");
     const searchResultsEle = document.getElementById("container--searchResults");
     const canCreate = document.getElementsByTagName("main")[0].getAttribute("data-can-create") === "true";
+    let nowDate = new Date();
     let displayedLocationList = [];
     const renderLocationTrEleFn = (locationObj, locationIndex) => {
         const trEle = document.createElement("tr");
@@ -27,10 +29,18 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     ? ""
                     : "<small>" + cityssm.escapeHTML(locationObj.locationCity) + ", " + locationObj.locationProvince + "</small>");
         trEle.insertAdjacentElement("beforeend", addressTdEle);
+        let timeAgoHTML = "";
+        if (locationObj.licences_endDateMaxString !== "") {
+            const endDate = cityssm.dateStringToDate(locationObj.licences_endDateMaxString);
+            if (endDate < nowDate) {
+                timeAgoHTML = "<br />" +
+                    "<span class=\"is-size-7\">" + dateDiff(endDate, nowDate).formatted + " ago</span>";
+            }
+        }
         trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-centered\">" +
             (locationObj.licences_endDateMaxString === ""
                 ? "<span class=\"has-text-grey\">Not Used</span>"
-                : locationObj.licences_endDateMaxString) +
+                : locationObj.licences_endDateMaxString + timeAgoHTML) +
             "</td>");
         trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-centered\">" +
             (locationObj.locationIsManufacturer
@@ -95,6 +105,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     "</div>";
                 return;
             }
+            nowDate = new Date();
             searchResultsEle.innerHTML = "<table class=\"table is-fullwidth is-striped is-hoverable\">" +
                 "<thead><tr>" +
                 "<th>Location</th>" +

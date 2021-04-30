@@ -1,10 +1,14 @@
 import type { cityssmGlobal } from "@cityssm/bulma-webapp-js/src/types";
+import type { DateDiff } from "@cityssm/date-diff/types";
 import type * as llmTypes from "../types/recordTypes";
 
 declare const cityssm: cityssmGlobal;
 
 
 (() => {
+
+  const dateDiff: DateDiff = exports.dateDiff;
+
 
   const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
 
@@ -16,6 +20,8 @@ declare const cityssm: cityssmGlobal;
   const searchResultsEle = document.getElementById("container--searchResults");
 
   const canCreate = document.getElementsByTagName("main")[0].getAttribute("data-can-create") === "true";
+
+  let nowDate = new Date();
 
 
   let displayedLocationList: llmTypes.Location[] = [];
@@ -49,13 +55,27 @@ declare const cityssm: cityssmGlobal;
 
     trEle.insertAdjacentElement("beforeend", addressTdEle);
 
+    // Event Date
+
+    let timeAgoHTML = "";
+
+    if (locationObj.licences_endDateMaxString !== "") {
+
+      const endDate = cityssm.dateStringToDate(locationObj.licences_endDateMaxString);
+
+      if (endDate < nowDate) {
+        timeAgoHTML = "<br />" +
+        "<span class=\"is-size-7\">" + dateDiff(endDate, nowDate).formatted + " ago</span>";
+      }
+    }
+
 
     trEle.insertAdjacentHTML(
       "beforeend",
       "<td class=\"has-text-centered\">" +
       (locationObj.licences_endDateMaxString === ""
         ? "<span class=\"has-text-grey\">Not Used</span>"
-        : locationObj.licences_endDateMaxString) +
+        : locationObj.licences_endDateMaxString + timeAgoHTML) +
       "</td>"
     );
 
@@ -159,6 +179,8 @@ declare const cityssm: cityssmGlobal;
           return;
         }
 
+        nowDate = new Date();
+
         searchResultsEle.innerHTML = "<table class=\"table is-fullwidth is-striped is-hoverable\">" +
           "<thead><tr>" +
           "<th>Location</th>" +
@@ -210,7 +232,6 @@ declare const cityssm: cityssmGlobal;
             });
 
             paginationEle.insertAdjacentElement("beforeend", previousEle);
-
           }
 
           if (currentLimit + currentOffset < locationResults.count) {

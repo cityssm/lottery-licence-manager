@@ -29,21 +29,29 @@
       let count_past = 0;
       let count_upcoming = 0;
 
-      let currentDateInteger = dateTimeFns.dateToInteger(new Date());
+      let currentDate = new Date();
+      let currentDateInteger = dateTimeFns.dateToInteger(currentDate);
 
       for (const reminder of reminders) {
 
         const reminderType = configFns.getReminderType(reminder.reminderTypeKey);
 
+        let dueDateDiffHTML = "";
+
+        if (reminder.dueDateString !== "" && reminder.dueDate < currentDateInteger) {
+          const dueDate = dateTimeFns.dateStringToDate(reminder.dueDateString);
+          dueDateDiffHTML = "<br /><span class=\"is-size-7\">" + dateDiff(dueDate, currentDate).formatted + " ago</span>";
+        }
+
         const trHTML = "<tr" +
-          (reminder.reminderDate === currentDateInteger
+          (reminder.dueDate === currentDateInteger
             ? " class=\"has-background-primary-light\""
             : "") +
           ">" +
           "<td>" +
           (reminder.dueDateString === ""
             ? "(No Date Set)"
-            : reminder.dueDateString) +
+            : reminder.dueDateString + dueDateDiffHTML) +
           "</td>" +
           "<td>" +
             "<a data-tooltip=\"View Organization\" href=\"" + urlPrefix + "/organizations/" + reminder.organizationID + "\">" +
