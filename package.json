@@ -39,7 +39,7 @@
     "ejs": "^3.1.6",
     "express": "^4.17.1",
     "express-rate-limit": "^5.2.6",
-    "express-session": "^1.17.1",
+    "express-session": "^1.17.2",
     "http-errors": "^1.8.0",
     "marked": "^2.0.3",
     "pdf-puppeteer": "^1.1.10",
