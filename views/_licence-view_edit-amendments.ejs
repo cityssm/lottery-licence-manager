@@ -1,10 +1,16 @@
-<div class="panel">
+<div class="panel is-warning">
   <div class="panel-heading">
-    <div class="level">
-      <div class="level-left">
-        <h2 class="has-text-weight-bold">Amendments</h2>
+    <div class="columns is-mobile">
+      <div class="column">
+        <a class="is-flex" id="is-licence-amendment-toggle" href="#">
+          <span class="icon"><i class="fas fa-caret-down" aria-hidden="true"></i></span>
+          <h2 class="has-text-weight-bold">
+            Amendments
+          </h2>
+          <span class="tag is-danger ml-2"><%= licence.licenceAmendments.length %></span>
+        </a>
       </div>
-      <div class="level-right has-text-weight-normal has-text-right is-hidden-print">
+      <div class="column is-narrow has-text-weight-normal has-text-right is-hidden-print">
         <a class="button is-small has-tooltip-left" data-tooltip="Export Amendments" href="<%= urlPrefix %>/reports/amendments-byLicence?licenceID=<%= licence.licenceID %>" download>
           <i class="fas fa-file-download" aria-hidden="true"></i>
           <span class="sr-only">Export</span>
@@ -15,17 +21,23 @@
   <%
     const amendmentDisplayLimit = configFns.getProperty("amendments.displayCount");
 
+    const rightNow = new Date();
+
     for (let amendmentIndex = licence.licenceAmendments.length - 1; amendmentIndex >= Math.max(0, licence.licenceAmendments.length - amendmentDisplayLimit); amendmentIndex -= 1) {
       const amendmentObj = licence.licenceAmendments[amendmentIndex];
+      const amendmentDate = new Date(amendmentObj.amendmentDateString + " " + amendmentObj.amendmentTimeString);
   %>
-  <div class="panel-block is-block is-size-7">
-    <p>
-      <strong><%= amendmentObj.amendmentType %></strong><br />
-      <span class="has-newline-chars"><%= amendmentObj.amendment %></span>
-    </p>
-    <p class="has-text-right is-italic">
-      <%= amendmentObj.amendmentDateString %> <%= amendmentObj.amendmentTimeString %>
-    </p>
+  <div class="panel-block is-block is-licence-amendment-block is-hidden">
+    <div class="columns">
+      <div class="column">
+        <strong><%= amendmentObj.amendmentType %></strong><br />
+        <span class="has-newline-chars"><%= amendmentObj.amendment %></span>
+      </div>
+      <div class="column is-narrow has-text-right is-italic">
+        <%= amendmentObj.amendmentDateString %> <%= amendmentObj.amendmentTimeString %><br />
+        <span class="is-size-7"><%= dateDiff(amendmentDate, rightNow).formatted %> ago</span>
+      </div>
+    </div>
   </div>
   <%
     }
@@ -33,7 +45,7 @@
     if (licence.licenceAmendments.length > amendmentDisplayLimit) {
       const amendmentHiddenCount = licence.licenceAmendments.length - amendmentDisplayLimit;
   %>
-    <div class="panel-block is-block">
+    <div class="panel-block is-block is-licence-amendment-block is-hidden">
       <div class="message is-small is-warning">
         <p class="message-body">
           <strong>

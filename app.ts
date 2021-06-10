@@ -24,6 +24,7 @@ import * as configFns from "./helpers/configFns.js";
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
 import * as stringFns from "@cityssm/expressjs-server-js/stringFns.js";
 import * as htmlFns from "@cityssm/expressjs-server-js/htmlFns.js";
+import dateDiff from "@cityssm/date-diff";
 
 import * as dbInit from "./helpers/dbInit.js";
 
@@ -99,19 +100,19 @@ if (urlPrefix !== "") {
   debugApp("urlPrefix = " + urlPrefix);
 }
 
-app.use(urlPrefix, express.static(path.join(__dirname, "public")));
+app.use(urlPrefix, express.static(path.join("public")));
 
 app.use(urlPrefix + "/docs/images",
-  express.static(path.join(__dirname, "docs", "images")));
+  express.static(path.join("docs", "images")));
 
 app.use(urlPrefix + "/lib/fa",
-  express.static(path.join(__dirname, "node_modules", "@fortawesome", "fontawesome-free")));
+  express.static(path.join("node_modules", "@fortawesome", "fontawesome-free")));
 
 app.use(urlPrefix + "/lib/cityssm-bulma-webapp-js",
-  express.static(path.join(__dirname, "node_modules", "@cityssm", "bulma-webapp-js")));
+  express.static(path.join("node_modules", "@cityssm", "bulma-webapp-js")));
 
 app.use(urlPrefix + "/lib/date-diff",
-  express.static(path.join(__dirname, "node_modules", "@cityssm", "date-diff", "es2015")));
+  express.static(path.join("node_modules", "@cityssm", "date-diff", "es2015")));
 
 
 /*
@@ -177,6 +178,7 @@ app.use((req, res, next) => {
 
   res.locals.configFns = configFns;
   res.locals.dateTimeFns = dateTimeFns;
+  res.locals.dateDiff = dateDiff;
   res.locals.stringFns = stringFns;
   res.locals.htmlFns = htmlFns;
 

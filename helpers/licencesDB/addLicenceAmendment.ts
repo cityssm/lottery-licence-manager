@@ -11,7 +11,7 @@ export const addLicenceAmendmentWithDB = (db: sqlite.Database,
   licenceID: number | string, amendmentType: string, amendment: string, isHidden: number,
   reqSession: expressSession.Session) => {
 
-  const newAmendmentIndex = getMaxLicenceAmendmentIndexWithDB(db, licenceID);
+  const newAmendmentIndex = getMaxLicenceAmendmentIndexWithDB(db, licenceID) + 1;
 
   const nowDate = new Date();
 

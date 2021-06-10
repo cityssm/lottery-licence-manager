@@ -1,7 +1,7 @@
 import { getMaxLicenceAmendmentIndexWithDB } from "./getMaxLicenceAmendmentIndex.js";
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
 export const addLicenceAmendmentWithDB = (db, licenceID, amendmentType, amendment, isHidden, reqSession) => {
-    const newAmendmentIndex = getMaxLicenceAmendmentIndexWithDB(db, licenceID);
+    const newAmendmentIndex = getMaxLicenceAmendmentIndexWithDB(db, licenceID) + 1;
     const nowDate = new Date();
     const amendmentDate = dateTimeFns.dateToInteger(nowDate);
     const amendmentTime = dateTimeFns.dateToTimeInteger(nowDate);

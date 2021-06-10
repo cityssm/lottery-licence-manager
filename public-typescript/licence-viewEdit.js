@@ -1,4 +1,14 @@
 (() => {
+    const amendmentToggleLinkEle = document.getElementById("is-licence-amendment-toggle");
+    if (amendmentToggleLinkEle) {
+        amendmentToggleLinkEle.addEventListener("click", (event) => {
+            event.preventDefault();
+            const amendmentBlockEles = document.getElementsByClassName("is-licence-amendment-block");
+            for (const blockEle of amendmentBlockEles) {
+                blockEle.classList.toggle("is-hidden");
+            }
+        });
+    }
     const ticketTypesPanelEle = document.getElementById("is-ticket-types-panel");
     if (ticketTypesPanelEle) {
         const tabEles = ticketTypesPanelEle.querySelectorAll(".panel-tabs a");
