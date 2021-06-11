@@ -3,25 +3,41 @@ import * as reportFns from "../../helpers/reportFns.js";
 import type { ConfigReportDefinition } from "../../types/configTypes";
 
 
+const reminderFunctions = () => {
+  const func = new Map();
+  func.set("userFn_reminderTypeKeyToReminderType", reportFns.userFn_reminderTypeKeyToReminderType);
+  return func;
+};
+
+
 export const reports: { [reportName: string]: ConfigReportDefinition } = {
 
   "reminders-all": {
     sql: "select * from OrganizationReminders"
   },
 
-  "reminders-byOrganization": {
+  "reminders-formatted": {
 
-    functions: () => {
-      const func = new Map();
-      func.set("userFn_reminderTypeKeyToReminderType", reportFns.userFn_reminderTypeKeyToReminderType);
-      return func;
-    },
+    functions: reminderFunctions,
 
-    sql: "select r.organizationID, o.organizationName," +
+    sql: "select o.organizationName," +
       " userFn_reminderTypeKeyToReminderType(reminderTypeKey) as reminderType," +
       " dueDate, dismissedDate," +
-      " reminderStatus, reminderNote," +
-      " r.recordCreate_userName, r.recordCreate_timeMillis, r.recordUpdate_userName, r.recordUpdate_timeMillis" +
+      " reminderStatus, reminderNote" +
+      " from OrganizationReminders r" +
+      " left join Organizations o on r.organizationID = o.organizationID" +
+      " where r.recordDelete_timeMillis is null" +
+      " and o.recordDelete_timeMillis is null"
+  },
+
+  "reminders-byOrganization": {
+
+    functions: reminderFunctions,
+
+    sql: "select o.organizationName," +
+      " userFn_reminderTypeKeyToReminderType(reminderTypeKey) as reminderType," +
+      " dueDate, dismissedDate," +
+      " reminderStatus, reminderNote" +
       " from OrganizationReminders r" +
       " left join Organizations o on r.organizationID = o.organizationID" +
       " where r.recordDelete_timeMillis is null" +

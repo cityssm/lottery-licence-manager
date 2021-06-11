@@ -75,6 +75,7 @@
         <div class="columns">
           <div class="column">
             <div class="panel">
+              <h2 class="panel-heading">Organizations</h2>
               <a class="panel-block align-items-flex-start" href="<%= urlPrefix %>/reports/organizations-withDefaultRepresentatives" download>
                 <div class="has-text-centered my-2 ml-2 mr-3">
                   <span class="icon has-text-info">
@@ -119,9 +120,85 @@
                 </div>
               </a>
             </div>
+            <div class="panel">
+              <h2 class="panel-heading">Formatted Reports</h2>
+              <div class="panel-block is-block">
+                <div class="message is-info">
+                  <p class="message-body is-size-7">
+                    Versions of these exports filtered by organization
+                    are available from the organization views.
+                  </p>
+                </div>
+              </div>
+              <a class="panel-block align-items-flex-start" href="<%= urlPrefix %>/reports/representatives-formatted" download>
+                <div class="has-text-centered my-2 ml-2 mr-3">
+                  <span class="icon has-text-info">
+                    <i class="fas fa-2x fa-file " aria-hidden="true"></i>
+                  </span><br />
+                  <span class="tag is-info">CSV</span>
+                </div>
+                <div>
+                  <h3 class="title is-5 is-marginless">Full Representative List</h3>
+                  <p>
+                    A full representative list for all active organizations.
+                  </p>
+                </div>
+              </a>
+              <a class="panel-block align-items-flex-start" href="<%= urlPrefix %>/reports/remarks-formatted" download>
+                <div class="has-text-centered my-2 ml-2 mr-3">
+                  <span class="icon has-text-info">
+                    <i class="fas fa-2x fa-file " aria-hidden="true"></i>
+                  </span><br />
+                  <span class="tag is-info">CSV</span>
+                </div>
+                <div>
+                  <h3 class="title is-5 is-marginless">Full Remarks List</h3>
+                  <p>
+                    A full list of remarks for all active organizations.
+                  </p>
+                </div>
+              </a>
+              <a class="panel-block align-items-flex-start" href="<%= urlPrefix %>/reports/reminders-formatted" download>
+                <div class="has-text-centered my-2 ml-2 mr-3">
+                  <span class="icon has-text-info">
+                    <i class="fas fa-2x fa-file " aria-hidden="true"></i>
+                  </span><br />
+                  <span class="tag is-info">CSV</span>
+                </div>
+                <div>
+                  <h3 class="title is-5 is-marginless">Full Reminders List</h3>
+                  <p>
+                    A full list of reminders for all active organizations.
+                  </p>
+                </div>
+              </a>
+              <a class="panel-block align-items-flex-start" href="<%= urlPrefix %>/reports/bankRecordsFlat-formatted" download>
+                <div class="has-text-centered my-2 ml-2 mr-3">
+                  <span class="icon has-text-info">
+                    <i class="fas fa-2x fa-file " aria-hidden="true"></i>
+                  </span><br />
+                  <span class="tag is-info">CSV</span>
+                </div>
+                <div>
+                  <h3 class="title is-5 is-marginless">Full Bank Records List</h3>
+                  <p>
+                    A full list of bank records for all active organizations.
+                  </p>
+                </div>
+              </a>
+            </div>
           </div>
           <div class="column">
             <div class="panel">
+              <h2 class="panel-heading">Table Exports</h2>
+              <div class="panel-block">
+                <div class="message is-info">
+                  <p class="message-body is-size-7">
+                    Note that table exports are full, unfiltered, and unformatted exports.
+                    They may contain deleted records that have not been fully purged.
+                  </p>
+                </div>
+              </div>
               <a class="panel-block align-items-flex-start" href="<%= urlPrefix %>/reports/organizations-all" download>
                 <div class="has-text-centered my-2 ml-2 mr-3">
                   <span class="icon has-text-info">
@@ -133,9 +210,6 @@
                   <h3 class="title is-5 is-marginless">Full Organization Table</h3>
                   <p>
                     All the data in the Organizations table unfiltered.
-                  </p>
-                  <p class="is-size-7 is-italic">
-                    Includes deleted records that have not been fully purged.
                   </p>
                 </div>
               </a>
@@ -165,9 +239,6 @@
                   <p>
                     All the data in the OrganizationRemarks table unfiltered.
                   </p>
-                  <p class="is-size-7 is-italic">
-                    Includes deleted records that have not been fully purged.
-                  </p>
                 </div>
               </a>
               <a class="panel-block align-items-flex-start" href="<%= urlPrefix %>/reports/reminders-all" download>
@@ -181,9 +252,6 @@
                   <h3 class="title is-5 is-marginless">Full Reminders Table</h3>
                   <p>
                     All the data in the OrganizationReminders table unfiltered.
-                  </p>
-                  <p class="is-size-7 is-italic">
-                    Includes deleted records that have not been fully purged.
                   </p>
                 </div>
               </a>
@@ -199,9 +267,6 @@
                   <p>
                     All the data in the OrganizationBankRecords table unfiltered.
                   </p>
-                  <p class="is-size-7 is-italic">
-                    Includes deleted records that have not been fully purged.
-                  </p>
                 </div>
               </a>
             </div>
@@ -215,6 +280,7 @@
         <div class="columns">
           <div class="column">
             <div class="panel">
+              <h2 class="panel-heading">Licences</h2>
               <a class="panel-block align-items-flex-start" href="<%= urlPrefix %>/reports/licences-formatted" download>
                 <div class="has-text-centered my-2 ml-2 mr-3">
                   <span class="icon has-text-info">
@@ -244,9 +310,49 @@
                 </div>
               </a>
             </div>
+            <div class="panel">
+              <h2 class="panel-heading">Formatted Reports</h2>
+              <div class="panel-block is-block">
+                <div class="message is-info">
+                  <p class="message-body is-size-7">
+                    Versions of these exports filtered by licence
+                    are available from the licence views.
+                  </p>
+                </div>
+              </div>
+              <a class="panel-block align-items-flex-start" href="<%= urlPrefix %>/reports/amendments-formatted" download>
+                <div class="has-text-centered my-2 ml-2 mr-3">
+                  <span class="icon has-text-info">
+                    <i class="fas fa-2x fa-file" aria-hidden="true"></i>
+                  </span><br />
+                  <span class="tag is-info">CSV</span>
+                </div>
+                <div>
+                  <h3 class="title is-5 is-marginless">Full Licence Amendments Log</h3>
+                  <p>
+                    All amendments on all active lottery licences.
+                  </p>
+                </div>
+              </a>
+              <a class="panel-block align-items-flex-start" href="<%= urlPrefix %>/reports/ticketTypes-formatted" download>
+                <div class="has-text-centered my-2 ml-2 mr-3">
+                  <span class="icon has-text-info">
+                    <i class="fas fa-2x fa-file" aria-hidden="true"></i>
+                  </span><br />
+                  <span class="tag is-info">CSV</span>
+                </div>
+                <div>
+                  <h3 class="title is-5 is-marginless">Full Licence Ticket Types List</h3>
+                  <p>
+                    All ticket types on all active lottery licences.
+                  </p>
+                </div>
+              </a>
+            </div>
           </div>
           <div class="column">
             <div class="panel">
+              <h2 class="panel-heading">Interactive Reports</h2>
               <a class="panel-block align-items-flex-start" href="<%= urlPrefix %>/licences/licenceTypes">
                 <div class="has-text-centered my-2 ml-2 mr-3">
                   <span class="icon has-text-info">
@@ -278,6 +384,15 @@
               </a>
             </div>
             <div class="panel">
+              <h2 class="panel-heading">Table Exports</h2>
+              <div class="panel-block">
+                <div class="message is-info">
+                  <p class="message-body is-size-7">
+                    Note that table exports are full, unfiltered, and unformatted exports.
+                    They may contain deleted records that have not been fully purged.
+                  </p>
+                </div>
+              </div>
               <a class="panel-block align-items-flex-start" href="<%= urlPrefix %>/reports/licences-all" download>
                 <div class="has-text-centered my-2 ml-2 mr-3">
                   <span class="icon has-text-info">
@@ -290,11 +405,8 @@
                   <p>
                     All the data from the LotteryLicences table unfiltered.
                   </p>
-                  <p class="is-size-7 is-italic">
-                    Includes deleted records that have not been fully purged.
-                  </p>
                 </div>
-                </a>
+              </a>
               <a class="panel-block align-items-flex-start" href="<%= urlPrefix %>/reports/amendments-all" download>
                 <div class="has-text-centered my-2 ml-2 mr-3">
                   <span class="icon has-text-info">
@@ -306,9 +418,6 @@
                   <h3 class="title is-5 is-marginless">Full Amendments Table</h3>
                   <p>
                     All the data from the LotteryLicenceAmendments table unfiltered.
-                  </p>
-                  <p class="is-size-7 is-italic">
-                    Includes deleted records that have not been fully purged.
                   </p>
                 </div>
               </a>
@@ -324,9 +433,6 @@
                   <p>
                     All the data from the LotteryLicenceTicketTypes table unfiltered.
                   </p>
-                  <p class="is-size-7 is-italic">
-                    Includes deleted records that have not been fully purged.
-                  </p>
                 </div>
               </a>
             </div>
@@ -340,6 +446,7 @@
         <div class="columns">
           <div class="column">
             <div class="panel">
+              <h2 class="panel-heading">Transactions</h2>
               <div class="panel-block align-items-flex-start">
                 <div class="has-text-centered my-2 ml-2 mr-3">
                   <span class="icon has-text-info">
@@ -373,6 +480,15 @@
           </div>
           <div class="column">
             <div class="panel">
+              <h2 class="panel-heading">Table Exports</h2>
+              <div class="panel-block">
+                <div class="message is-info">
+                  <p class="message-body is-size-7">
+                    Note that table exports are full, unfiltered, and unformatted exports.
+                    They may contain deleted records that have not been fully purged.
+                  </p>
+                </div>
+              </div>
               <a class="panel-block align-items-flex-start" href="<%= urlPrefix %>/reports/transactions-all" download>
                 <div class="has-text-centered my-2 ml-2 mr-3">
                   <span class="icon has-text-info">
@@ -384,9 +500,6 @@
                   <h3 class="title is-5 is-marginless">Full Transactions Table</h3>
                   <p>
                     All the data from the LotteryLicenceTransactions table unfiltered.
-                  </p>
-                  <p class="is-size-7 is-italic">
-                    Includes deleted records that have not been fully purged.
                   </p>
                 </div>
               </a>
@@ -401,6 +514,7 @@
         <div class="columns">
           <div class="column">
             <div class="panel">
+              <h2 class="panel-heading">Events</h2>
               <a class="panel-block align-items-flex-start" href="<%= urlPrefix %>/reports/events-upcoming" download>
                 <div class="has-text-centered my-2 ml-2 mr-3">
                   <span class="icon has-text-info">
@@ -433,6 +547,7 @@
           </div>
           <div class="column">
             <div class="panel">
+              <h2 class="panel-heading">Interactive Reports</h2>
               <a class="panel-block align-items-flex-start" href="<%= urlPrefix %>/events/outstanding">
                 <div class="has-text-centered my-2 ml-2 mr-3">
                   <span class="icon has-text-info">
@@ -463,6 +578,15 @@
               </a>
             </div>
             <div class="panel">
+              <h2 class="panel-heading">Table Exports</h2>
+              <div class="panel-block">
+                <div class="message is-info">
+                  <p class="message-body is-size-7">
+                    Note that table exports are full, unfiltered, and unformatted exports.
+                    They may contain deleted records that have not been fully purged.
+                  </p>
+                </div>
+              </div>
               <a class="panel-block align-items-flex-start" href="<%= urlPrefix %>/reports/events-all" download>
                 <div class="has-text-centered my-2 ml-2 mr-3">
                   <span class="icon has-text-info">
@@ -491,6 +615,7 @@
         <div class="columns">
           <div class="column">
             <div class="panel">
+              <h2 class="panel-heading">Locations</h2>
               <a class="panel-block align-items-flex-start" href="<%= urlPrefix %>/reports/locations-unused" download>
                 <div class="has-text-centered my-2 ml-2 mr-3">
                   <span class="icon has-text-info">
@@ -537,6 +662,15 @@
           </div>
           <div class="column">
             <div class="panel">
+              <h2 class="panel-heading">Table Exports</h2>
+              <div class="panel-block">
+                <div class="message is-info">
+                  <p class="message-body is-size-7">
+                    Note that table exports are full, unfiltered, and unformatted exports.
+                    They may contain deleted records that have not been fully purged.
+                  </p>
+                </div>
+              </div>
               <a class="panel-block align-items-flex-start" href="<%= urlPrefix %>/reports/locations-all" download>
                 <div class="has-text-centered my-2 ml-2 mr-3">
                   <span class="icon has-text-info">

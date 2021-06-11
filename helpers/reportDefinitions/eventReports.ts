@@ -4,6 +4,13 @@ import * as reportFns from "../reportFns.js";
 import type { ConfigReportDefinition } from "../../types/configTypes";
 
 
+const baseFunctions = () => {
+  const func = new Map();
+  func.set("userFn_licenceTypeKeyToLicenceType", reportFns.userFn_licenceTypeKeyToLicenceType);
+  return func;
+};
+
+
 export const reports: { [reportName: string]: ConfigReportDefinition } = {
 
   "events-all": {
@@ -11,14 +18,10 @@ export const reports: { [reportName: string]: ConfigReportDefinition } = {
   },
 
   "events-upcoming": {
-    functions: () => {
-      const func = new Map();
-      func.set("userFn_licenceTypeKeyToLicenceType", reportFns.userFn_licenceTypeKeyToLicenceType);
-      return func;
-    },
-    sql: "select e.licenceID," +
+    functions: baseFunctions,
+    sql: "select e.licenceID, l.externalLicenceNumber," +
+      " o.organizationName," +
       " e.eventDate, l.startTime, l.endTime," +
-      " l.externalLicenceNumber, o.organizationName," +
       " userFn_licenceTypeKeyToLicenceType(l.licenceTypeKey) as licenceType," +
       " l.licenceDetails" +
       " from LotteryEvents e" +
@@ -32,17 +35,13 @@ export const reports: { [reportName: string]: ConfigReportDefinition } = {
   },
 
   "events-pastUnreported": {
-    functions: () => {
-      const func = new Map();
-      func.set("userFn_licenceTypeKeyToLicenceType", reportFns.userFn_licenceTypeKeyToLicenceType);
-      return func;
-    },
-    sql: "select e.licenceID, e.eventDate, e.reportDate," +
+    functions: baseFunctions,
+    sql: "select e.licenceID, l.externalLicenceNumber," +
+      " e.eventDate, e.reportDate," +
       " e.bank_name, e.bank_address, e.bank_accountNumber, e.bank_accountBalance," +
-      " l.externalLicenceNumber," +
       " userFn_licenceTypeKeyToLicenceType(l.licenceTypeKey) as licenceType," +
       " l.licenceDetails," +
-      " o.organizationID, o.organizationName," +
+      " o.organizationName," +
       " o.organizationAddress1, o.organizationAddress2," +
       " o.organizationCity, o.organizationProvince, o.organizationPostalCode," +
       " r.representativeName, r.representativeTitle, r.representativeAddress1, r.representativeAddress2," +
