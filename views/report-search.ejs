@@ -172,7 +172,7 @@
                   </p>
                 </div>
               </a>
-              <a class="panel-block align-items-flex-start" href="<%= urlPrefix %>/reports/bankRecordsFlat-formatted" download>
+              <div class="panel-block align-items-flex-start">
                 <div class="has-text-centered my-2 ml-2 mr-3">
                   <span class="icon has-text-info">
                     <i class="fas fa-2x fa-file " aria-hidden="true"></i>
@@ -180,12 +180,27 @@
                   <span class="tag is-info">CSV</span>
                 </div>
                 <div>
-                  <h3 class="title is-5 is-marginless">Full Bank Records List</h3>
+                  <h3 class="title is-5 is-marginless">Full Bank Records List by Year</h3>
                   <p>
-                    A full list of bank records for all active organizations.
+                    All bank records for all active organizations for a given year.
                   </p>
+                  <form action="<%= urlPrefix %>/reports/bankRecordsFlat-byBankingYear" method="get">
+                    <div class="field has-addons mt-2">
+                      <div class="control is-expanded has-icons-left" data-tooltip="Banking Year">
+                        <input class="input" name="bankingYear" type="number" value="<%= new Date().getFullYear() %>" max="<%= new Date().getFullYear() + 1 %>" required />
+                        <span class="icon is-left">
+                          <i class="fas fa-calendar" aria-hidden="true"></i>
+                        </span>
+                      </div>
+                      <div class="control">
+                        <button class="button is-info" type="submit">
+                          Export
+                        </button>
+                      </div>
+                    </div>
+                  </form>
                 </div>
-              </a>
+              </div>
             </div>
           </div>
           <div class="column">
@@ -616,6 +631,20 @@
           <div class="column">
             <div class="panel">
               <h2 class="panel-heading">Locations</h2>
+              <a class="panel-block align-items-flex-start" href="<%= urlPrefix %>/reports/locations-formatted" download>
+                <div class="has-text-centered my-2 ml-2 mr-3">
+                  <span class="icon has-text-info">
+                    <i class="fas fa-2x fa-file " aria-hidden="true"></i>
+                  </span><br />
+                  <span class="tag is-info">CSV</span>
+                </div>
+                <div>
+                  <h3 class="title is-5 is-marginless">Event Locations List</h3>
+                  <p>
+                    Includes all locations where lottery events have taken place.
+                  </p>
+                </div>
+              </a>
               <a class="panel-block align-items-flex-start" href="<%= urlPrefix %>/reports/locations-unused" download>
                 <div class="has-text-centered my-2 ml-2 mr-3">
                   <span class="icon has-text-info">

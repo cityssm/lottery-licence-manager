@@ -167,6 +167,20 @@ export const initLicencesDB = () => {
 
       ") without rowid").run();
 
+    licencesDB.prepare("create table BankingMonths (bankingMonth integer primary key not null)").run();
+    licencesDB.prepare("insert into BankingMonths (bankingMonth) values (1)").run();
+    licencesDB.prepare("insert into BankingMonths (bankingMonth) values (2)").run();
+    licencesDB.prepare("insert into BankingMonths (bankingMonth) values (3)").run();
+    licencesDB.prepare("insert into BankingMonths (bankingMonth) values (4)").run();
+    licencesDB.prepare("insert into BankingMonths (bankingMonth) values (5)").run();
+    licencesDB.prepare("insert into BankingMonths (bankingMonth) values (6)").run();
+    licencesDB.prepare("insert into BankingMonths (bankingMonth) values (7)").run();
+    licencesDB.prepare("insert into BankingMonths (bankingMonth) values (8)").run();
+    licencesDB.prepare("insert into BankingMonths (bankingMonth) values (9)").run();
+    licencesDB.prepare("insert into BankingMonths (bankingMonth) values (10)").run();
+    licencesDB.prepare("insert into BankingMonths (bankingMonth) values (11)").run();
+    licencesDB.prepare("insert into BankingMonths (bankingMonth) values (12)").run();
+
     licencesDB.prepare("create table if not exists OrganizationBankRecords (" +
 
       "organizationID integer not null," +

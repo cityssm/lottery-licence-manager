@@ -6,11 +6,11 @@ export const reports = {
         sql: "select o.organizationName," +
             " representativeName, representativeTitle," +
             " representativeAddress1, representativeAddress2, representativeCity, representativeProvince," +
-            " representativePostalCode, representativePhoneNumber, representativePhoneNumber2, representativeEmailAddress," +
-            " isDefault" +
+            " representativePostalCode, representativePhoneNumber, representativePhoneNumber2, representativeEmailAddress" +
             " from OrganizationRepresentatives r" +
             " left join Organizations o on r.organizationID = o.organizationID" +
-            " where o.recordDelete_timeMillis is null"
+            " where o.recordDelete_timeMillis is null" +
+            " order by organizationName, representativeName"
     },
     "representatives-byOrganization": {
         sql: "select o.organizationName," +
@@ -20,7 +20,8 @@ export const reports = {
             " isDefault" +
             " from OrganizationRepresentatives r" +
             " left join Organizations o on r.organizationID = o.organizationID" +
-            " where r.organizationID = ?",
+            " where r.organizationID = ?" +
+            " order by representativeName",
         params: (req) => [req.query.organizationID]
     }
 };

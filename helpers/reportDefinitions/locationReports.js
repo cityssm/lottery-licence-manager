@@ -3,6 +3,14 @@ export const reports = {
     "locations-all": {
         sql: "select * from Locations"
     },
+    "locations-formatted": {
+        sql: "select locationName," +
+            " locationAddress1, locationAddress2, locationCity, locationProvince, locationPostalCode" +
+            " from Locations" +
+            " where locationID in (select locationID from LotteryLicences)" +
+            " and recordDelete_timeMillis is null" +
+            " order by locationName"
+    },
     "locations-unused": {
         sql: "select lo.locationID, lo.locationName," +
             " lo.locationAddress1, lo.locationAddress2, lo.locationCity, lo.locationProvince," +

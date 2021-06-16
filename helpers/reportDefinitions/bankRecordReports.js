@@ -1,20 +1,27 @@
 import * as configFns from "../configFns.js";
-const sql_bankRecordsFlat = (() => {
+const sql_bankRecordsFlatByBankingYear = (() => {
     const bankRecordTypes = configFns.getProperty("bankRecordTypes");
     const sql = "select o.organizationName," +
-        " b.accountNumber, b.bankingYear, b.bankingMonth" +
+        " r1.accountNumber, m.bankingYear, m.bankingMonth" +
         bankRecordTypes.reduce((soFar, bankRecordType) => {
             const bankRecordTypeKey = bankRecordType.bankRecordType;
             return soFar +
-                ", max(case when bankRecordType = '" + bankRecordTypeKey + "' then recordDate end) as " + bankRecordTypeKey + "_recordDate" +
-                ", max(case when bankRecordType = '" + bankRecordTypeKey + "' then recordIsNA end) as " + bankRecordTypeKey + "_recordIsNA" +
-                ", max(case when bankRecordType = '" + bankRecordTypeKey + "' then recordNote end) as " + bankRecordTypeKey + "_recordNote";
+                ", max(case" +
+                " when r2.bankRecordType = '" + bankRecordTypeKey + "' and r2.recordIsNA = 1 then 'Not Applicable'" +
+                " when r2.bankRecordType = '" + bankRecordTypeKey + "' and r2.recordDate is not null then 'Received'" +
+                " else '' end) as " + bankRecordTypeKey + "_status" +
+                ", max(case when r2.bankRecordType = '" + bankRecordTypeKey + "' then r2.recordNote end) as " + bankRecordTypeKey + "_recordNote";
         }, "") +
-        " from OrganizationBankRecords b" +
-        " left join Organizations o on b.organizationID = o.organizationID" +
-        " where b.recordDelete_timeMillis is null" +
+        " from (select ? as bankingYear, bankingMonth from BankingMonths) as m" +
+        " left join (select distinct organizationID, accountNumber, bankingYear from OrganizationBankRecords) r1 on m.bankingYear = r1.bankingYear" +
+        " left join OrganizationBankRecords r2" +
+        " on r1.organizationID = r2.organizationID and r1.accountNumber = r2.accountNumber" +
+        " and m.bankingYear = r2.bankingYear and m.bankingMonth = r2.bankingMonth" +
+        " left join Organizations o on r1.organizationID = o.organizationID" +
+        " where r2.recordDelete_timeMillis is null" +
         " and o.recordDelete_timeMillis is null" +
-        " group by b.organizationID, o.organizationName, b.accountNumber, b.bankingYear, b.bankingMonth";
+        " group by o.organizationName, r1.accountNumber, m.bankingYear, m.bankingMonth";
+    console.log(sql);
     return sql;
 })();
 const sql_bankRecordsFlatByOrganization = (() => {
@@ -39,8 +46,9 @@ export const reports = {
     "bankRecords-all": {
         sql: "select * from OrganizationBankRecords"
     },
-    "bankRecordsFlat-formatted": {
-        sql: sql_bankRecordsFlat
+    "bankRecordsFlat-byBankingYear": {
+        sql: sql_bankRecordsFlatByBankingYear,
+        params: (req) => [req.query.bankingYear]
     },
     "bankRecordsFlat-byOrganization": {
         sql: sql_bankRecordsFlatByOrganization,
