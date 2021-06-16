@@ -41,7 +41,7 @@
     "express-rate-limit": "^5.2.6",
     "express-session": "^1.17.2",
     "http-errors": "^1.8.0",
-    "marked": "^2.0.7",
+    "marked": "^2.1.0",
     "pdf-puppeteer": "^1.1.10",
     "sanitize-filename": "^1.6.3"
   },
