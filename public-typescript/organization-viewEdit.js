@@ -219,8 +219,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
             getBankRecordsFn();
         });
     };
-    bankRecordsBankingYearFilterEle.addEventListener("change", getBankRecordsFn);
+    const setExportURLFn = () => {
+        document.getElementById("bankRecords--export").href = urlPrefix + "/reports/bankRecordsFlat-byOrganizationAndBankingYear" +
+            "?organizationID=" + organizationID +
+            "&bankingYear=" + bankRecordsBankingYearFilterEle.value;
+    };
+    setExportURLFn();
     bankRecordsAccountNumberFilterEle.addEventListener("change", getBankRecordsFn);
+    bankRecordsBankingYearFilterEle.addEventListener("change", getBankRecordsFn);
+    bankRecordsBankingYearFilterEle.addEventListener("change", setExportURLFn);
     if (canCreate) {
         const openBankRecordEditModalFn = (buttonEvent) => {
             const isNavBlockedByPage = cityssm.isNavBlockerEnabled();

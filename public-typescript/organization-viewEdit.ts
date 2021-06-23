@@ -354,8 +354,19 @@ declare const llm: llmGlobal;
       });
   };
 
-  bankRecordsBankingYearFilterEle.addEventListener("change", getBankRecordsFn);
+  const setExportURLFn = () => {
+
+    (document.getElementById("bankRecords--export") as HTMLAnchorElement).href = urlPrefix + "/reports/bankRecordsFlat-byOrganizationAndBankingYear" +
+      "?organizationID=" + organizationID +
+      "&bankingYear=" + bankRecordsBankingYearFilterEle.value;
+  };
+
+  setExportURLFn();
+
   bankRecordsAccountNumberFilterEle.addEventListener("change", getBankRecordsFn);
+
+  bankRecordsBankingYearFilterEle.addEventListener("change", getBankRecordsFn);
+  bankRecordsBankingYearFilterEle.addEventListener("change", setExportURLFn);
 
   if (canCreate) {
 
