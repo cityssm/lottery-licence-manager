@@ -1,35 +1,35 @@
 import sqlite from "better-sqlite3";
-import { licencesDB as dbPath } from "../../data/databasePaths.js";
+import { licencesDB as databasePath } from "../../data/databasePaths.js";
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
 import { getMaxTransactionIndexWithDB } from "./getMaxTransactionIndex.js";
 import { getLicenceWithDB } from "./getLicence.js";
 import { addLicenceAmendmentWithDB } from "./addLicenceAmendment.js";
-export const addTransaction = (reqBody, reqSession) => {
-    const db = sqlite(dbPath);
-    const licenceObj = getLicenceWithDB(db, reqBody.licenceID, reqSession, {
+export const addTransaction = (requestBody, requestSession) => {
+    const database = sqlite(databasePath);
+    const licenceObject = getLicenceWithDB(database, requestBody.licenceID, requestSession, {
         includeTicketTypes: false,
         includeFields: false,
         includeEvents: false,
         includeAmendments: false,
         includeTransactions: false
     });
-    const newTransactionIndex = getMaxTransactionIndexWithDB(db, reqBody.licenceID) + 1;
+    const newTransactionIndex = getMaxTransactionIndexWithDB(database, requestBody.licenceID) + 1;
     const rightNow = new Date();
     const transactionDate = dateTimeFns.dateToInteger(rightNow);
     const transactionTime = dateTimeFns.dateToTimeInteger(rightNow);
-    db.prepare("insert into LotteryLicenceTransactions (" +
+    database.prepare("insert into LotteryLicenceTransactions (" +
         "licenceID, transactionIndex," +
         " transactionDate, transactionTime," +
         " externalReceiptNumber, transactionAmount, transactionNote," +
         " recordCreate_userName, recordCreate_timeMillis," +
         " recordUpdate_userName, recordUpdate_timeMillis)" +
         " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
-        .run(reqBody.licenceID, newTransactionIndex, transactionDate, transactionTime, reqBody.externalReceiptNumber, reqBody.transactionAmount, reqBody.transactionNote, reqSession.user.userName, rightNow.getTime(), reqSession.user.userName, rightNow.getTime());
-    if (licenceObj.trackUpdatesAsAmendments) {
-        addLicenceAmendmentWithDB(db, reqBody.licenceID, "New Transaction", "", 1, reqSession);
+        .run(requestBody.licenceID, newTransactionIndex, transactionDate, transactionTime, requestBody.externalReceiptNumber, requestBody.transactionAmount, requestBody.transactionNote, requestSession.user.userName, rightNow.getTime(), requestSession.user.userName, rightNow.getTime());
+    if (licenceObject.trackUpdatesAsAmendments) {
+        addLicenceAmendmentWithDB(database, requestBody.licenceID, "New Transaction", "", 1, requestSession);
     }
-    if (reqBody.issueLicence === "true") {
-        db.prepare("update LotteryLicences" +
+    if (requestBody.issueLicence === "true") {
+        database.prepare("update LotteryLicences" +
             " set issueDate = ?," +
             " issueTime = ?," +
             " trackUpdatesAsAmendments = 1," +
@@ -38,8 +38,8 @@ export const addTransaction = (reqBody, reqSession) => {
             " where licenceID = ?" +
             " and recordDelete_timeMillis is null" +
             " and issueDate is null")
-            .run(transactionDate, transactionTime, reqSession.user.userName, rightNow.getTime(), reqBody.licenceID);
+            .run(transactionDate, transactionTime, requestSession.user.userName, rightNow.getTime(), requestBody.licenceID);
     }
-    db.close();
+    database.close();
     return newTransactionIndex;
 };

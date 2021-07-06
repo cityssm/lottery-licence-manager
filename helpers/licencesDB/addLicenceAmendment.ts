@@ -7,18 +7,18 @@ import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
 import type * as expressSession from "express-session";
 
 
-export const addLicenceAmendmentWithDB = (db: sqlite.Database,
+export const addLicenceAmendmentWithDB = (database: sqlite.Database,
   licenceID: number | string, amendmentType: string, amendment: string, isHidden: number,
-  reqSession: expressSession.Session) => {
+  requestSession: expressSession.Session): number => {
 
-  const newAmendmentIndex = getMaxLicenceAmendmentIndexWithDB(db, licenceID) + 1;
+  const newAmendmentIndex = getMaxLicenceAmendmentIndexWithDB(database, licenceID) + 1;
 
   const nowDate = new Date();
 
   const amendmentDate = dateTimeFns.dateToInteger(nowDate);
   const amendmentTime = dateTimeFns.dateToTimeInteger(nowDate);
 
-  db.prepare("insert into LotteryLicenceAmendments" +
+  database.prepare("insert into LotteryLicenceAmendments" +
     " (licenceID, amendmentIndex, amendmentDate, amendmentTime, amendmentType, amendment, isHidden," +
     " recordCreate_userName, recordCreate_timeMillis, recordUpdate_userName, recordUpdate_timeMillis)" +
     " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
@@ -30,9 +30,9 @@ export const addLicenceAmendmentWithDB = (db: sqlite.Database,
       amendmentType,
       amendment,
       isHidden,
-      reqSession.user.userName,
+      requestSession.user.userName,
       nowDate.getTime(),
-      reqSession.user.userName,
+      requestSession.user.userName,
       nowDate.getTime()
     );
 

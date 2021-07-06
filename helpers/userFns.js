@@ -1,22 +1,22 @@
-export const userIsAdmin = (req) => {
+export const userIsAdmin = (request) => {
     var _a;
-    const user = (_a = req.session) === null || _a === void 0 ? void 0 : _a.user;
+    const user = (_a = request.session) === null || _a === void 0 ? void 0 : _a.user;
     if (!user) {
         return false;
     }
     return user.userProperties.isAdmin;
 };
-export const userCanUpdate = (req) => {
+export const userCanUpdate = (request) => {
     var _a;
-    const user = (_a = req.session) === null || _a === void 0 ? void 0 : _a.user;
+    const user = (_a = request.session) === null || _a === void 0 ? void 0 : _a.user;
     if (!user) {
         return false;
     }
     return user.userProperties.canUpdate;
 };
-export const userCanCreate = (req) => {
+export const userCanCreate = (request) => {
     var _a;
-    const user = (_a = req.session) === null || _a === void 0 ? void 0 : _a.user;
+    const user = (_a = request.session) === null || _a === void 0 ? void 0 : _a.user;
     if (!user) {
         return false;
     }

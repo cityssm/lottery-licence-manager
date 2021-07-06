@@ -3,10 +3,10 @@ import * as reportFns from "../reportFns.js";
 import type { ConfigReportDefinition } from "../../types/configTypes";
 
 
-const baseFunctions = () => {
-  const func = new Map();
-  func.set("userFn_ticketTypeField", reportFns.userFn_ticketTypeField);
-  return func;
+const baseFunctions = (): Map<string, () => unknown> => {
+  const functions = new Map();
+  functions.set("userFn_ticketTypeField", reportFns.userFn_ticketTypeField);
+  return functions;
 };
 
 
@@ -67,7 +67,7 @@ export const reports: { [reportName: string]: ConfigReportDefinition } = {
       " where t.recordDelete_timeMillis is null" +
       " and t.licenceID = ?",
 
-    params: (req) => [req.query.licenceID]
+    params: (request) => [request.query.licenceID]
   }
 };
 

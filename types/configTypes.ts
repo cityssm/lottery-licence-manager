@@ -86,7 +86,7 @@ export interface ConfigBankRecordType {
 }
 
 interface ConfigLicences {
-  feeCalculationFn: (licenceObj: LotteryLicence) =>
+  feeCalculationFn: (licenceObject: LotteryLicence) =>
     { fee: string | number; message: string; licenceHasErrors: boolean };
   printTemplate: string;
   externalLicenceNumber?: ConfigExternalLicenceNumber;
@@ -111,7 +111,7 @@ export interface ConfigLicenceType {
   licenceFields: ConfigLicenceField[];
   eventFields: ConfigEventField[];
   ticketTypes?: ConfigTicketType[];
-  printSettings?: {};
+  printSettings?: Record<string, unknown>;
 }
 
 interface ConfigLicenceField {
@@ -158,6 +158,6 @@ interface ConfigAmendments {
 
 export interface ConfigReportDefinition {
   sql: string;
-  params?: (req: expressTypes.Request) => any[];
-  functions?: () => Map<string, (...params: any) => any>;
-};
+  params?: (request: expressTypes.Request) => any[];
+  functions?: () => Map<string, (...parameters: any) => any>;
+}

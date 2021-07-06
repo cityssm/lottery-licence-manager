@@ -3,10 +3,10 @@ import * as reportFns from "../reportFns.js";
 import type { ConfigReportDefinition } from "../../types/configTypes";
 
 
-const baseFunctions = () => {
-  const func = new Map();
-  func.set("userFn_licenceTypeKeyToLicenceType", reportFns.userFn_licenceTypeKeyToLicenceType);
-  return func;
+const baseFunctions = (): Map<string, () => unknown> => {
+  const functions = new Map();
+  functions.set("userFn_licenceTypeKeyToLicenceType", reportFns.userFn_licenceTypeKeyToLicenceType);
+  return functions;
 };
 
 
@@ -44,13 +44,13 @@ export const reports: { [reportName: string]: ConfigReportDefinition } = {
   "licences-byOrganization": {
     functions: baseFunctions,
     sql: baseSQL + " and l.organizationID = ?",
-    params: (req) => [req.query.organizationID]
+    params: (request) => [request.query.organizationID]
   },
 
   "licences-byLocation": {
     functions: baseFunctions,
     sql: baseSQL + " and l.locationID = ?",
-    params: (req) => [req.query.locationID]
+    params: (request) => [request.query.locationID]
   }
 };
 

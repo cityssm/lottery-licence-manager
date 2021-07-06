@@ -34,7 +34,7 @@ export const reports: { [reportName: string]: ConfigReportDefinition } = {
       " where a.recordDelete_timeMillis is null" +
       " and a.licenceID = ?",
 
-    params: (req) => [req.query.licenceID]
+    params: (request) => [request.query.licenceID]
   }
 };
 

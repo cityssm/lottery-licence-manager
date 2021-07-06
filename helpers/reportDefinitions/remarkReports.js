@@ -21,7 +21,7 @@ export const reports = {
             " where r.recordDelete_timeMillis is null" +
             " and r.organizationID = ?" +
             " order by remarkDate, remarkTime, remarkIndex",
-        params: (req) => [req.query.organizationID]
+        params: (request) => [request.query.organizationID]
     }
 };
 export default reports;

@@ -4,10 +4,10 @@ import * as reportFns from "../reportFns.js";
 import type { ConfigReportDefinition } from "../../types/configTypes";
 
 
-const baseFunctions = () => {
-  const func = new Map();
-  func.set("userFn_licenceTypeKeyToLicenceType", reportFns.userFn_licenceTypeKeyToLicenceType);
-  return func;
+const baseFunctions = (): Map<string, () => unknown> => {
+  const functions = new Map();
+  functions.set("userFn_licenceTypeKeyToLicenceType", reportFns.userFn_licenceTypeKeyToLicenceType);
+  return functions;
 };
 
 
@@ -61,9 +61,9 @@ export const reports: { [reportName: string]: ConfigReportDefinition } = {
 
   "events-byLicence": {
     functions: () => {
-      const func = new Map();
-      func.set("userFn_licenceTypeKeyToLicenceType", reportFns.userFn_licenceTypeKeyToLicenceType);
-      return func;
+      const functions = new Map();
+      functions.set("userFn_licenceTypeKeyToLicenceType", reportFns.userFn_licenceTypeKeyToLicenceType);
+      return functions;
     },
     sql: "select e.licenceID, l.externalLicenceNumber, e.eventDate," +
       " o.organizationName," +
@@ -81,7 +81,7 @@ export const reports: { [reportName: string]: ConfigReportDefinition } = {
       " and l.recordDelete_timeMillis is null" +
       " and e.licenceID = ?",
 
-    params: (req) => [req.query.licenceID]
+    params: (request) => [request.query.licenceID]
   }
 };
 

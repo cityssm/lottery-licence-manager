@@ -29,7 +29,7 @@ export const reports: { [reportName: string]: ConfigReportDefinition } = {
       " where r.organizationID = ?" +
       " order by representativeName",
 
-    params: (req) => [req.query.organizationID]
+    params: (request) => [request.query.organizationID]
   }
 };
 

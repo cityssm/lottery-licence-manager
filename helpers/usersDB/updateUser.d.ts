@@ -1,5 +1,5 @@
-export declare const updateUser: (reqBody: {
+export declare const updateUser: (requestBody: {
     userName: string;
     lastName: string;
     firstName: string;
-}) => number;
+}) => boolean;

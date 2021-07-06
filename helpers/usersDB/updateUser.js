@@ -1,12 +1,12 @@
 import { runSQLByName } from "../_runSQLByName.js";
-export const updateUser = (reqBody) => {
+export const updateUser = (requestBody) => {
     return runSQLByName("usersDB", "update Users" +
         " set firstName = ?," +
         " lastName = ?" +
         " where userName = ?" +
         " and isActive = 1", [
-        reqBody.firstName,
-        reqBody.lastName,
-        reqBody.userName
-    ]).changes;
+        requestBody.firstName,
+        requestBody.lastName,
+        requestBody.userName
+    ]).changes > 0;
 };

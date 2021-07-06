@@ -1,10 +1,10 @@
 import sqlite from "better-sqlite3";
 
 import debug from "debug";
-const debugSQL = debug("lottery-licence-manager:dbInit");
+const debugSQL = debug("lottery-licence-manager:databaseInitializer");
 
 
-export const initUsersDB = () => {
+export const initUsersDB = (): boolean => {
 
   const usersDB = sqlite("data/users.db");
 
@@ -40,7 +40,7 @@ export const initUsersDB = () => {
 
 };
 
-export const initLicencesDB = () => {
+export const initLicencesDB = (): boolean => {
 
   const licencesDB = sqlite("data/licences.db");
 

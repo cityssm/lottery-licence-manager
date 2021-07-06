@@ -1,5 +1,5 @@
-export declare const createUser: (reqBody: {
+export declare const createUser: (requestBody: {
     userName: string;
     lastName: string;
     firstName: string;
-}) => Promise<string | false>;
+}) => Promise<string>;

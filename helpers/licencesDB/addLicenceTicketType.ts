@@ -3,8 +3,8 @@ import sqlite from "better-sqlite3";
 import type * as expressSession from "express-session";
 
 
-export const addLicenceTicketTypeWithDB = (db: sqlite.Database,
-  ticketTypeDef: {
+export const addLicenceTicketTypeWithDB = (database: sqlite.Database,
+  ticketTypeDefinition: {
     licenceID: number | string;
     ticketTypeIndex: number | string;
     amendmentDate?: number | string;
@@ -14,11 +14,11 @@ export const addLicenceTicketTypeWithDB = (db: sqlite.Database,
     distributorLocationID?: number | string;
     manufacturerLocationID?: number | string;
   },
-  reqSession: expressSession.Session) => {
+  requestSession: expressSession.Session): void => {
 
   const nowMillis = Date.now();
 
-  db.prepare("insert into LotteryLicenceTicketTypes" +
+  database.prepare("insert into LotteryLicenceTicketTypes" +
     " (licenceID, ticketTypeIndex," +
     " amendmentDate, ticketType," +
     " unitCount, licenceFee," +
@@ -26,23 +26,23 @@ export const addLicenceTicketTypeWithDB = (db: sqlite.Database,
     " recordCreate_userName, recordCreate_timeMillis, recordUpdate_userName, recordUpdate_timeMillis)" +
     " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
     .run(
-      ticketTypeDef.licenceID,
-      ticketTypeDef.ticketTypeIndex,
-      ticketTypeDef.amendmentDate,
-      ticketTypeDef.ticketType,
-      ticketTypeDef.unitCount,
-      ticketTypeDef.licenceFee,
-      (ticketTypeDef.distributorLocationID === ""
-        ? null
-        : ticketTypeDef.distributorLocationID),
+      ticketTypeDefinition.licenceID,
+      ticketTypeDefinition.ticketTypeIndex,
+      ticketTypeDefinition.amendmentDate,
+      ticketTypeDefinition.ticketType,
+      ticketTypeDefinition.unitCount,
+      ticketTypeDefinition.licenceFee,
+      (ticketTypeDefinition.distributorLocationID === ""
+        ? undefined
+        : ticketTypeDefinition.distributorLocationID),
 
-      (ticketTypeDef.manufacturerLocationID === ""
-        ? null
-        : ticketTypeDef.manufacturerLocationID),
+      (ticketTypeDefinition.manufacturerLocationID === ""
+        ? undefined
+        : ticketTypeDefinition.manufacturerLocationID),
 
-      reqSession.user.userName,
+      requestSession.user.userName,
       nowMillis,
-      reqSession.user.userName,
+      requestSession.user.userName,
       nowMillis
     );
 };

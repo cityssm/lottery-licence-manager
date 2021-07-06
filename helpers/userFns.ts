@@ -1,9 +1,9 @@
 import type { Request } from "express";
 
 
-export const userIsAdmin = (req: Request) => {
+export const userIsAdmin = (request: Request): boolean => {
 
-  const user = req.session?.user;
+  const user = request.session?.user;
 
   if (!user) {
     return false;
@@ -13,9 +13,9 @@ export const userIsAdmin = (req: Request) => {
 };
 
 
-export const userCanUpdate = (req: Request) => {
+export const userCanUpdate = (request: Request): boolean => {
 
-  const user = req.session?.user;
+  const user = request.session?.user;
 
   if (!user) {
     return false;
@@ -25,9 +25,9 @@ export const userCanUpdate = (req: Request) => {
 };
 
 
-export const userCanCreate = (req: Request) => {
+export const userCanCreate = (request: Request): boolean => {
 
-  const user = req.session?.user;
+  const user = request.session?.user;
 
   if (!user) {
     return false;
@@ -37,6 +37,6 @@ export const userCanCreate = (req: Request) => {
 };
 
 
-export const getHashString = (userName: string, passwordPlain: string) => {
+export const getHashString = (userName: string, passwordPlain: string): string => {
   return userName + "::" + passwordPlain;
 };

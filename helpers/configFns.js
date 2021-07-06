@@ -1,4 +1,4 @@
-import config from "../data/config.js";
+import { config } from "../data/config.js";
 const configFallbackValues = new Map();
 configFallbackValues.set("application.applicationName", "Lottery Licence System");
 configFallbackValues.set("application.logoURL", "/images/bingoBalls.png");
@@ -38,7 +38,7 @@ configFallbackValues.set("licences.externalLicenceNumber.fieldLabel", "External 
 configFallbackValues.set("licences.externalLicenceNumber.newCalculation", "");
 configFallbackValues.set("licences.externalLicenceNumber.isPreferredID", false);
 configFallbackValues.set("licences.externalReceiptNumber.fieldLabel", "Receipt Number");
-configFallbackValues.set("licences.feeCalculationFn", (_licenceObj) => {
+configFallbackValues.set("licences.feeCalculationFn", () => {
     return {
         fee: 10,
         message: "Using base licence fee.",
@@ -57,16 +57,16 @@ configFallbackValues.set("amendments.trackTicketTypeUpdate", true);
 configFallbackValues.set("amendments.trackTicketTypeDelete", true);
 export function getProperty(propertyName) {
     const propertyNameSplit = propertyName.split(".");
-    let currentObj = config;
+    let currentObject = config;
     for (const propertyNamePiece of propertyNameSplit) {
-        if (currentObj.hasOwnProperty(propertyNamePiece)) {
-            currentObj = currentObj[propertyNamePiece];
+        if (currentObject[propertyNamePiece]) {
+            currentObject = currentObject[propertyNamePiece];
         }
         else {
             return configFallbackValues.get(propertyName);
         }
     }
-    return currentObj;
+    return currentObject;
 }
 export const keepAliveMillis = getProperty("session.doKeepAlive")
     ? Math.max(getProperty("session.maxAgeMillis") / 2, getProperty("session.maxAgeMillis") - (10 * 60 * 1000))
@@ -96,12 +96,11 @@ export const getLicenceType = (licenceTypeKey) => {
 export const getLicenceTypeKeyToNameObject = () => {
     if (Object.keys(licenceTypeKeyNameObject).length === 0) {
         const list = {};
-        getProperty("licenceTypes")
-            .forEach((ele) => {
+        for (const ele of getProperty("licenceTypes")) {
             if (ele.isActive) {
                 list[ele.licenceTypeKey] = ele.licenceType;
             }
-        });
+        }
         licenceTypeKeyNameObject = list;
     }
     return licenceTypeKeyNameObject;

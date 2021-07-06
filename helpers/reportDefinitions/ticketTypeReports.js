@@ -1,8 +1,8 @@
 import * as reportFns from "../reportFns.js";
 const baseFunctions = () => {
-    const func = new Map();
-    func.set("userFn_ticketTypeField", reportFns.userFn_ticketTypeField);
-    return func;
+    const functions = new Map();
+    functions.set("userFn_ticketTypeField", reportFns.userFn_ticketTypeField);
+    return functions;
 };
 export const reports = {
     "ticketTypes-all": {
@@ -47,7 +47,7 @@ export const reports = {
             " left join Locations m on manufacturerLocationID = m.locationID" +
             " where t.recordDelete_timeMillis is null" +
             " and t.licenceID = ?",
-        params: (req) => [req.query.licenceID]
+        params: (request) => [request.query.licenceID]
     }
 };
 export default reports;

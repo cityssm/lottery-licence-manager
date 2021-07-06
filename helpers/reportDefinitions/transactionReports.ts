@@ -19,7 +19,7 @@ export const reports: { [reportName: string]: ConfigReportDefinition } = {
       " where transactionDate = ?" +
       " and t.recordDelete_timeMillis is null",
 
-    params: (req) => [(req.query.transactionDate as string).replace(/-/g, "")]
+    params: (request) => [(request.query.transactionDate as string).replace(/-/g, "")]
   },
 
   "transactions-byLicence": {
@@ -31,7 +31,7 @@ export const reports: { [reportName: string]: ConfigReportDefinition } = {
       " where licenceID = ?" +
       " and recordDelete_timeMillis is null",
 
-    params: (req) => [req.query.licenceID]
+    params: (request) => [request.query.licenceID]
   }
 };
 

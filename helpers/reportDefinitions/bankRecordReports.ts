@@ -84,12 +84,12 @@ export const reports: { [reportName: string]: ConfigReportDefinition } = {
 
   "bankRecordsFlat-byBankingYear": {
     sql: sql_bankRecordsFlatByBankingYear,
-    params: (req) => [req.query.bankingYear]
+    params: (request) => [request.query.bankingYear]
   },
 
   "bankRecordsFlat-byOrganizationAndBankingYear": {
     sql: sql_bankRecordsFlatByOrganizationAndBankingYear,
-    params: (req) => [req.query.bankingYear, req.query.organizationID]
+    params: (request) => [request.query.bankingYear, request.query.organizationID]
   }
 };
 

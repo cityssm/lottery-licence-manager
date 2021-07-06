@@ -1,5 +1,5 @@
 import sqlite from "better-sqlite3";
-import { usersDB as dbPath } from "../../data/databasePaths.js";
+import { usersDB as databasePath } from "../../data/databasePaths.js";
 
 import { updatePasswordWithDB } from "./updatePassword.js";
 
@@ -8,18 +8,24 @@ import * as userFns from "../../helpers/userFns.js";
 import * as bcrypt from "bcrypt";
 
 
-export const tryResetPassword = async(userName: string, oldPasswordPlain: string, newPasswordPlain: string) => {
+interface TryResetPasswordReturn {
+    success: boolean;
+    message: string;
+}
 
-  const db = sqlite(dbPath);
 
-  const row = db.prepare("select passwordHash from Users" +
+export const tryResetPassword = async(userName: string, oldPasswordPlain: string, newPasswordPlain: string): Promise<TryResetPasswordReturn> => {
+
+  const database = sqlite(databasePath);
+
+  const row = database.prepare("select passwordHash from Users" +
     " where userName = ?" +
     " and isActive = 1")
     .get(userName);
 
   if (!row) {
 
-    db.close();
+    database.close();
 
     return {
       success: false,
@@ -31,7 +37,7 @@ export const tryResetPassword = async(userName: string, oldPasswordPlain: string
 
   if (!oldPasswordMatches) {
 
-    db.close();
+    database.close();
 
     return {
       success: false,
@@ -39,9 +45,9 @@ export const tryResetPassword = async(userName: string, oldPasswordPlain: string
     };
   }
 
-  await updatePasswordWithDB(db, userName, newPasswordPlain);
+  await updatePasswordWithDB(database, userName, newPasswordPlain);
 
-  db.close();
+  database.close();
 
   return {
     success: true,

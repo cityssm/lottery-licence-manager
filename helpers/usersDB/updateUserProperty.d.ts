@@ -1,5 +1,5 @@
-export declare const updateUserProperty: (reqBody: {
+export declare const updateUserProperty: (requestBody: {
     userName: string;
     propertyName: "isAdmin" | "canUpdate" | "canCreate";
     propertyValue: string;
-}) => number;
+}) => boolean;

@@ -25,7 +25,7 @@ export const reports = {
             " left join Organizations o on l.organizationID = o.organizationID" +
             " where a.recordDelete_timeMillis is null" +
             " and a.licenceID = ?",
-        params: (req) => [req.query.licenceID]
+        params: (request) => [request.query.licenceID]
     }
 };
 export default reports;

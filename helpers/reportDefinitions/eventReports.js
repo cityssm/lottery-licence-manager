@@ -1,9 +1,9 @@
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
 import * as reportFns from "../reportFns.js";
 const baseFunctions = () => {
-    const func = new Map();
-    func.set("userFn_licenceTypeKeyToLicenceType", reportFns.userFn_licenceTypeKeyToLicenceType);
-    return func;
+    const functions = new Map();
+    functions.set("userFn_licenceTypeKeyToLicenceType", reportFns.userFn_licenceTypeKeyToLicenceType);
+    return functions;
 };
 export const reports = {
     "events-all": {
@@ -49,9 +49,9 @@ export const reports = {
     },
     "events-byLicence": {
         functions: () => {
-            const func = new Map();
-            func.set("userFn_licenceTypeKeyToLicenceType", reportFns.userFn_licenceTypeKeyToLicenceType);
-            return func;
+            const functions = new Map();
+            functions.set("userFn_licenceTypeKeyToLicenceType", reportFns.userFn_licenceTypeKeyToLicenceType);
+            return functions;
         },
         sql: "select e.licenceID, l.externalLicenceNumber, e.eventDate," +
             " o.organizationName," +
@@ -68,7 +68,7 @@ export const reports = {
             " where e.recordDelete_timeMillis is null" +
             " and l.recordDelete_timeMillis is null" +
             " and e.licenceID = ?",
-        params: (req) => [req.query.licenceID]
+        params: (request) => [request.query.licenceID]
     }
 };
 export default reports;

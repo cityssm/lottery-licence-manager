@@ -1,1 +1,1 @@
-export declare const inactivateUser: (userName: string) => number;
+export declare const inactivateUser: (userName: string) => boolean;

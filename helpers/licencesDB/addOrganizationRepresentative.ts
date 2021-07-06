@@ -1,15 +1,15 @@
 import sqlite from "better-sqlite3";
 
-import { licencesDB as dbPath } from "../../data/databasePaths.js";
+import { licencesDB as databasePath } from "../../data/databasePaths.js";
 
 import type * as llm from "../../types/recordTypes";
 
 
-export const addOrganizationRepresentative = (organizationID: number, reqBody: llm.OrganizationRepresentative) => {
+export const addOrganizationRepresentative = (organizationID: number, requestBody: llm.OrganizationRepresentative): llm.OrganizationRepresentative => {
 
-  const db = sqlite(dbPath);
+  const database = sqlite(databasePath);
 
-  const row = db.prepare("select count(representativeIndex) as indexCount," +
+  const row = database.prepare("select count(representativeIndex) as indexCount," +
     " ifnull(max(representativeIndex), -1) as maxIndex" +
     " from OrganizationRepresentatives" +
     " where organizationID = ?")
@@ -18,7 +18,7 @@ export const addOrganizationRepresentative = (organizationID: number, reqBody: l
   const newRepresentativeIndex = row.maxIndex as number + 1;
   const newIsDefault = (row.indexCount === 0 ? 1 : 0);
 
-  db.prepare("insert into OrganizationRepresentatives (" +
+  database.prepare("insert into OrganizationRepresentatives (" +
     "organizationID, representativeIndex," +
     " representativeName, representativeTitle," +
     " representativeAddress1, representativeAddress2," +
@@ -28,30 +28,30 @@ export const addOrganizationRepresentative = (organizationID: number, reqBody: l
     " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
     .run(
       organizationID, newRepresentativeIndex,
-      reqBody.representativeName, reqBody.representativeTitle,
-      reqBody.representativeAddress1, reqBody.representativeAddress2,
-      reqBody.representativeCity, reqBody.representativeProvince, reqBody.representativePostalCode,
-      reqBody.representativePhoneNumber, reqBody.representativePhoneNumber2, reqBody.representativeEmailAddress,
+      requestBody.representativeName, requestBody.representativeTitle,
+      requestBody.representativeAddress1, requestBody.representativeAddress2,
+      requestBody.representativeCity, requestBody.representativeProvince, requestBody.representativePostalCode,
+      requestBody.representativePhoneNumber, requestBody.representativePhoneNumber2, requestBody.representativeEmailAddress,
       newIsDefault
     );
 
-  db.close();
+  database.close();
 
-  const representativeObj: llm.OrganizationRepresentative = {
+  const representativeObject: llm.OrganizationRepresentative = {
     organizationID,
     representativeIndex: newRepresentativeIndex,
-    representativeName: reqBody.representativeName,
-    representativeTitle: reqBody.representativeTitle,
-    representativeAddress1: reqBody.representativeAddress1,
-    representativeAddress2: reqBody.representativeAddress2,
-    representativeCity: reqBody.representativeCity,
-    representativeProvince: reqBody.representativeProvince,
-    representativePostalCode: reqBody.representativePostalCode,
-    representativePhoneNumber: reqBody.representativePhoneNumber,
-    representativePhoneNumber2: reqBody.representativePhoneNumber2,
-    representativeEmailAddress: reqBody.representativeEmailAddress,
+    representativeName: requestBody.representativeName,
+    representativeTitle: requestBody.representativeTitle,
+    representativeAddress1: requestBody.representativeAddress1,
+    representativeAddress2: requestBody.representativeAddress2,
+    representativeCity: requestBody.representativeCity,
+    representativeProvince: requestBody.representativeProvince,
+    representativePostalCode: requestBody.representativePostalCode,
+    representativePhoneNumber: requestBody.representativePhoneNumber,
+    representativePhoneNumber2: requestBody.representativePhoneNumber2,
+    representativeEmailAddress: requestBody.representativeEmailAddress,
     isDefault: newIsDefault === 1
   };
 
-  return representativeObj;
+  return representativeObject;
 };

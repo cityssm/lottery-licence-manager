@@ -1,11 +1,11 @@
 import { runSQLByName } from "../_runSQLByName.js";
 
 
-export const updateUser = (reqBody: {
+export const updateUser = (requestBody: {
   userName: string;
   lastName: string;
   firstName: string;
-}) => {
+}): boolean => {
 
   return runSQLByName("usersDB",
     "update Users" +
@@ -13,8 +13,8 @@ export const updateUser = (reqBody: {
     " lastName = ?" +
     " where userName = ?" +
     " and isActive = 1", [
-      reqBody.firstName,
-      reqBody.lastName,
-      reqBody.userName
-    ]).changes;
+      requestBody.firstName,
+      requestBody.lastName,
+      requestBody.userName
+    ]).changes > 0;
 };

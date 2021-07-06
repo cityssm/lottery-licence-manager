@@ -6,28 +6,30 @@ import debug from "debug";
 const debugSQL = debug("lottery-licence-manager:runSQLWithDB");
 
 
-export const runSQLWithDB = (db: sqlite.Database, sql: string, params: any[] = []): sqlite.RunResult => {
+export const runSQLWithDB = (database: sqlite.Database, sql: string, parameters: any[] = []): sqlite.RunResult => {
 
   try {
-    return db.prepare(sql).run(params);
-  } catch (e) {
-    debugSQL(e);
+    return database.prepare(sql).run(parameters);
+  } catch (error) {
+    debugSQL(error);
   }
 };
 
 
-export const runSQLByName = (dbName: "licencesDB" | "usersDB", sql: string, params: any[] = []) => {
+export const runSQLByName = (databaseName: "licencesDB" | "usersDB", sql: string, parameters: any[] = []): sqlite.RunResult => {
 
-  let db: sqlite.Database;
+  let database: sqlite.Database;
 
   try {
-    db = sqlite(dbName === "licencesDB" ? licencesDB : usersDB);
-    return runSQLWithDB(db, sql, params);
-  } catch (e) {
-    debugSQL(e);
+    database = sqlite(databaseName === "licencesDB" ? licencesDB : usersDB);
+    return runSQLWithDB(database, sql, parameters);
+  } catch (error) {
+    debugSQL(error);
   } finally {
     try {
-      db.close();
-    } catch (_e) { }
+      database.close();
+    } catch {
+      // ignore
+    }
   }
 };

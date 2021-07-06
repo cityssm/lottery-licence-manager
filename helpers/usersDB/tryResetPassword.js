@@ -1,16 +1,16 @@
 import sqlite from "better-sqlite3";
-import { usersDB as dbPath } from "../../data/databasePaths.js";
+import { usersDB as databasePath } from "../../data/databasePaths.js";
 import { updatePasswordWithDB } from "./updatePassword.js";
 import * as userFns from "../../helpers/userFns.js";
 import * as bcrypt from "bcrypt";
 export const tryResetPassword = async (userName, oldPasswordPlain, newPasswordPlain) => {
-    const db = sqlite(dbPath);
-    const row = db.prepare("select passwordHash from Users" +
+    const database = sqlite(databasePath);
+    const row = database.prepare("select passwordHash from Users" +
         " where userName = ?" +
         " and isActive = 1")
         .get(userName);
     if (!row) {
-        db.close();
+        database.close();
         return {
             success: false,
             message: "User record not found."
@@ -18,14 +18,14 @@ export const tryResetPassword = async (userName, oldPasswordPlain, newPasswordPl
     }
     const oldPasswordMatches = await bcrypt.compare(userFns.getHashString(userName, oldPasswordPlain), row.passwordHash);
     if (!oldPasswordMatches) {
-        db.close();
+        database.close();
         return {
             success: false,
             message: "Old password does not match."
         };
     }
-    await updatePasswordWithDB(db, userName, newPasswordPlain);
-    db.close();
+    await updatePasswordWithDB(database, userName, newPasswordPlain);
+    database.close();
     return {
         success: true,
         message: "Password updated successfully."

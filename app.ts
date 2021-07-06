@@ -10,6 +10,7 @@ import rateLimit from "express-rate-limit";
 import session from "express-session";
 import sqlite from "connect-sqlite3";
 
+// eslint-disable-next-line unicorn/prevent-abbreviations
 import routerDocs from "./routes/docs.js";
 import routerLogin from "./routes/login.js";
 import routerDashboard from "./routes/dashboard.js";
@@ -24,9 +25,9 @@ import * as configFns from "./helpers/configFns.js";
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
 import * as stringFns from "@cityssm/expressjs-server-js/stringFns.js";
 import * as htmlFns from "@cityssm/expressjs-server-js/htmlFns.js";
-import dateDiff from "@cityssm/date-diff";
+import { dateDiff } from "@cityssm/date-diff";
 
-import * as dbInit from "./helpers/dbInit.js";
+import * as databaseInitializer from "./helpers/databaseInitializer.js";
 
 import debug from "debug";
 const debugApp = debug("lottery-licence-manager:app");
@@ -37,8 +38,8 @@ const debugApp = debug("lottery-licence-manager:app");
  */
 
 
-dbInit.initUsersDB();
-dbInit.initLicencesDB();
+databaseInitializer.initUsersDB();
+databaseInitializer.initLicencesDB();
 
 
 /*
@@ -62,8 +63,8 @@ if (!configFns.getProperty("reverseProxy.disableCompression")) {
   app.use(compression());
 }
 
-app.use((req, _res, next) => {
-  debugApp(`${req.method} ${req.url}`);
+app.use((request, _response, next) => {
+  debugApp(`${request.method} ${request.url}`);
   next();
 });
 
@@ -143,23 +144,23 @@ app.use(session({
 }));
 
 // Clear cookie if no corresponding session
-app.use((req, res, next) => {
+app.use((request, response, next) => {
 
-  if (req.cookies[sessionCookieName] && !req.session.user) {
-    res.clearCookie(sessionCookieName);
+  if (request.cookies[sessionCookieName] && !request.session.user) {
+    response.clearCookie(sessionCookieName);
   }
 
   next();
 });
 
 // Redirect logged in users
-const sessionChecker = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+const sessionChecker = (request: express.Request, response: express.Response, next: express.NextFunction) => {
 
-  if (req.session.user && req.cookies[sessionCookieName]) {
+  if (request.session.user && request.cookies[sessionCookieName]) {
     return next();
   }
 
-  return res.redirect(`${urlPrefix}/login?redirect=${req.originalUrl}`);
+  return response.redirect(`${urlPrefix}/login?redirect=${request.originalUrl}`);
 };
 
 
@@ -169,27 +170,27 @@ const sessionChecker = (req: express.Request, res: express.Response, next: expre
 
 
 // Make the user and config objects available to the templates
-app.use((req, res, next) => {
+app.use((request, response, next) => {
 
-  res.locals.buildNumber = process.env.npm_package_version;
+  response.locals.buildNumber = process.env.npm_package_version;
 
-  res.locals.user = req.session.user;
-  res.locals.csrfToken = req.csrfToken();
+  response.locals.user = request.session.user;
+  response.locals.csrfToken = request.csrfToken();
 
-  res.locals.configFns = configFns;
-  res.locals.dateTimeFns = dateTimeFns;
-  res.locals.dateDiff = dateDiff;
-  res.locals.stringFns = stringFns;
-  res.locals.htmlFns = htmlFns;
+  response.locals.configFns = configFns;
+  response.locals.dateTimeFns = dateTimeFns;
+  response.locals.dateDiff = dateDiff;
+  response.locals.stringFns = stringFns;
+  response.locals.htmlFns = htmlFns;
 
-  res.locals.urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
+  response.locals.urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
 
   next();
 });
 
 
-app.get(urlPrefix + "/", sessionChecker, (_req, res) => {
-  res.redirect(urlPrefix + "/dashboard");
+app.get(urlPrefix + "/", sessionChecker, (_request, response) => {
+  response.redirect(urlPrefix + "/dashboard");
 });
 
 app.use(urlPrefix + "/docs", routerDocs);
@@ -202,44 +203,45 @@ app.use(urlPrefix + "/events", sessionChecker, routerEvents);
 app.use(urlPrefix + "/reports", sessionChecker, routerReports);
 app.use(urlPrefix + "/admin", sessionChecker, routerAdmin);
 
-app.all(urlPrefix + "/keepAlive", (_req, res) => {
-  res.json(true);
+app.all(urlPrefix + "/keepAlive", (_request, response) => {
+  response.json(true);
 });
 
 app.use(urlPrefix + "/login", routerLogin);
 
-app.get(urlPrefix + "/logout", (req, res) => {
+app.get(urlPrefix + "/logout", (request, response) => {
 
-  if (req.session.user && req.cookies[sessionCookieName]) {
+  if (request.session.user && request.cookies[sessionCookieName]) {
 
-    req.session.destroy(null);
-    req.session = null;
-    res.clearCookie(sessionCookieName);
-    res.redirect(urlPrefix + "/");
+    // eslint-disable-next-line unicorn/no-null
+    request.session.destroy(null);
+    request.session = undefined;
+    response.clearCookie(sessionCookieName);
+    response.redirect(urlPrefix + "/");
 
   } else {
 
-    res.redirect(urlPrefix + "/login");
+    response.redirect(urlPrefix + "/login");
   }
 });
 
 
 // Catch 404 and forward to error handler
-app.use((_req, _res, next) => {
+app.use((_request, _response, next) => {
   next(createError(404));
 });
 
 // Error handler
-app.use((err: { status: number; message: string },
-  req: express.Request, res: express.Response, _next: express.NextFunction) => {
+app.use((error: { status: number; message: string },
+  request: express.Request, response: express.Response) => {
 
   // Set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get("env") === "development" ? err : {};
+  response.locals.message = error.message;
+  response.locals.error = request.app.get("env") === "development" ? error : {};
 
   // Render the error page
-  res.status(err.status || 500);
-  res.render("error");
+  response.status(error.status || 500);
+  response.render("error");
 });
 
 

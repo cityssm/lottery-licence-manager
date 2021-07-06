@@ -22,7 +22,7 @@ export const reports = {
             " left join Organizations o on r.organizationID = o.organizationID" +
             " where r.organizationID = ?" +
             " order by representativeName",
-        params: (req) => [req.query.organizationID]
+        params: (request) => [request.query.organizationID]
     }
 };
 export default reports;

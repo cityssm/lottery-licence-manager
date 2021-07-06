@@ -1,3 +1,5 @@
+/* eslint-disable unicorn/filename-case */
+
 import sqlite from "better-sqlite3";
 
 import { runSQLByName } from "../_runSQLByName.js";
@@ -6,25 +8,27 @@ import debug from "debug";
 const debugSQL = debug("lottery-licence-manager:licencesDB:runSQL");
 
 
-export const runSQL = (sql: string, params: any[] = []): sqlite.RunResult => {
+export const runSQL = (sql: string, parameters = []): sqlite.RunResult => {
 
-  let db: sqlite.Database;
+  let database: sqlite.Database;
 
   try {
-    return runSQLByName("licencesDB", sql, params);
-  } catch (e) {
-    debugSQL(e);
+    return runSQLByName("licencesDB", sql, parameters);
+  } catch (error) {
+    debugSQL(error);
   } finally {
     try {
-      db.close();
-    } catch (_e) { }
+      database.close();
+    } catch {
+      // ignore
+    }
   }
 };
 
 
-export const runSQL_hasChanges = (sql: string, params: any[] = []): boolean => {
+export const runSQL_hasChanges = (sql: string, parameters = []): boolean => {
 
-  const result = runSQL(sql, params);
+  const result = runSQL(sql, parameters);
 
   if (result) {
     return result.changes > 0;

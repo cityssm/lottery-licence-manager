@@ -22,7 +22,7 @@ export declare function getProperty(propertyName: "licences.externalLicenceNumbe
 export declare function getProperty(propertyName: "licences.externalLicenceNumber.newCalculation"): "" | "range";
 export declare function getProperty(propertyName: "licences.externalLicenceNumber.isPreferredID"): boolean;
 export declare function getProperty(propertyName: "licences.externalReceiptNumber.fieldLabel"): string;
-export declare function getProperty(propertyName: "licences.feeCalculationFn"): (licenceObj: recordTypes.LotteryLicence) => {
+export declare function getProperty(propertyName: "licences.feeCalculationFn"): (licenceObject: recordTypes.LotteryLicence) => {
     fee: number;
     message: string;
     licenceHasErrors: boolean;
@@ -42,4 +42,6 @@ export declare function getProperty(propertyName: "user.defaultProperties"): rec
 export declare const keepAliveMillis: number;
 export declare const getReminderType: (reminderTypeKey: string) => configTypes.ConfigReminderType;
 export declare const getLicenceType: (licenceTypeKey: string) => configTypes.ConfigLicenceType;
-export declare const getLicenceTypeKeyToNameObject: () => {};
+export declare const getLicenceTypeKeyToNameObject: () => {
+    [licenceTpyeKey: string]: string;
+};

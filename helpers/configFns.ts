@@ -1,4 +1,5 @@
-import config from "../data/config.js";
+// eslint-disable-next-line node/no-unpublished-import
+import { config } from "../data/config.js";
 
 import type * as configTypes from "../types/configTypes";
 import type * as recordTypes from "../types/recordTypes";
@@ -8,7 +9,7 @@ import type * as recordTypes from "../types/recordTypes";
  * SET UP FALLBACK VALUES
  */
 
-const configFallbackValues = new Map<string, any>();
+const configFallbackValues = new Map<string, unknown>();
 
 configFallbackValues.set("application.applicationName", "Lottery Licence System");
 configFallbackValues.set("application.logoURL", "/images/bingoBalls.png");
@@ -59,7 +60,7 @@ configFallbackValues.set("licences.externalLicenceNumber.isPreferredID", false);
 
 configFallbackValues.set("licences.externalReceiptNumber.fieldLabel", "Receipt Number");
 
-configFallbackValues.set("licences.feeCalculationFn", (_licenceObj: recordTypes.LotteryLicence) => {
+configFallbackValues.set("licences.feeCalculationFn", () => {
 
   return {
     fee: 10,
@@ -119,7 +120,7 @@ export function getProperty(propertyName: "licences.externalLicenceNumber.isPref
 
 export function getProperty(propertyName: "licences.externalReceiptNumber.fieldLabel"): string;
 
-export function getProperty(propertyName: "licences.feeCalculationFn"): (licenceObj: recordTypes.LotteryLicence) => { fee: number; message: string; licenceHasErrors: boolean };
+export function getProperty(propertyName: "licences.feeCalculationFn"): (licenceObject: recordTypes.LotteryLicence) => { fee: number; message: string; licenceHasErrors: boolean };
 
 export function getProperty(propertyName: "licences.printTemplate"): string;
 
@@ -139,22 +140,22 @@ export function getProperty(propertyName: "session.secret"): string;
 export function getProperty(propertyName: "user.createUpdateWindowMillis"): number;
 export function getProperty(propertyName: "user.defaultProperties"): recordTypes.UserProperties;
 
-export function getProperty(propertyName: string): any {
+export function getProperty(propertyName: string): unknown {
 
   const propertyNameSplit = propertyName.split(".");
 
-  let currentObj = config;
+  let currentObject = config;
 
   for (const propertyNamePiece of propertyNameSplit) {
 
-    if (currentObj.hasOwnProperty(propertyNamePiece)) {
-      currentObj = currentObj[propertyNamePiece];
+    if (currentObject[propertyNamePiece]) {
+      currentObject = currentObject[propertyNamePiece];
     } else {
       return configFallbackValues.get(propertyName);
     }
   }
 
-  return currentObj;
+  return currentObject;
 
 }
 
@@ -210,19 +211,18 @@ export const getLicenceType = (licenceTypeKey: string): configTypes.ConfigLicenc
   return licenceTypeCache.get(licenceTypeKey);
 };
 
-export const getLicenceTypeKeyToNameObject = () => {
+export const getLicenceTypeKeyToNameObject = (): { [licenceTpyeKey: string]: string } => {
 
   if (Object.keys(licenceTypeKeyNameObject).length === 0) {
 
     const list = {};
 
-    getProperty("licenceTypes")
-      .forEach((ele) => {
+    for (const ele of getProperty("licenceTypes")) {
 
         if (ele.isActive) {
           list[ele.licenceTypeKey] = ele.licenceType;
         }
-      });
+      }
 
     licenceTypeKeyNameObject = list;
   }

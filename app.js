@@ -20,12 +20,12 @@ import * as configFns from "./helpers/configFns.js";
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
 import * as stringFns from "@cityssm/expressjs-server-js/stringFns.js";
 import * as htmlFns from "@cityssm/expressjs-server-js/htmlFns.js";
-import dateDiff from "@cityssm/date-diff";
-import * as dbInit from "./helpers/dbInit.js";
+import { dateDiff } from "@cityssm/date-diff";
+import * as databaseInitializer from "./helpers/databaseInitializer.js";
 import debug from "debug";
 const debugApp = debug("lottery-licence-manager:app");
-dbInit.initUsersDB();
-dbInit.initLicencesDB();
+databaseInitializer.initUsersDB();
+databaseInitializer.initLicencesDB();
 const __dirname = ".";
 export const app = express();
 if (!configFns.getProperty("reverseProxy.disableEtag")) {
@@ -36,8 +36,8 @@ app.set("view engine", "ejs");
 if (!configFns.getProperty("reverseProxy.disableCompression")) {
     app.use(compression());
 }
-app.use((req, _res, next) => {
-    debugApp(`${req.method} ${req.url}`);
+app.use((request, _response, next) => {
+    debugApp(`${request.method} ${request.url}`);
     next();
 });
 app.use(express.json());
@@ -77,32 +77,32 @@ app.use(session({
         sameSite: "strict"
     }
 }));
-app.use((req, res, next) => {
-    if (req.cookies[sessionCookieName] && !req.session.user) {
-        res.clearCookie(sessionCookieName);
+app.use((request, response, next) => {
+    if (request.cookies[sessionCookieName] && !request.session.user) {
+        response.clearCookie(sessionCookieName);
     }
     next();
 });
-const sessionChecker = (req, res, next) => {
-    if (req.session.user && req.cookies[sessionCookieName]) {
+const sessionChecker = (request, response, next) => {
+    if (request.session.user && request.cookies[sessionCookieName]) {
         return next();
     }
-    return res.redirect(`${urlPrefix}/login?redirect=${req.originalUrl}`);
+    return response.redirect(`${urlPrefix}/login?redirect=${request.originalUrl}`);
 };
-app.use((req, res, next) => {
-    res.locals.buildNumber = process.env.npm_package_version;
-    res.locals.user = req.session.user;
-    res.locals.csrfToken = req.csrfToken();
-    res.locals.configFns = configFns;
-    res.locals.dateTimeFns = dateTimeFns;
-    res.locals.dateDiff = dateDiff;
-    res.locals.stringFns = stringFns;
-    res.locals.htmlFns = htmlFns;
-    res.locals.urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
+app.use((request, response, next) => {
+    response.locals.buildNumber = process.env.npm_package_version;
+    response.locals.user = request.session.user;
+    response.locals.csrfToken = request.csrfToken();
+    response.locals.configFns = configFns;
+    response.locals.dateTimeFns = dateTimeFns;
+    response.locals.dateDiff = dateDiff;
+    response.locals.stringFns = stringFns;
+    response.locals.htmlFns = htmlFns;
+    response.locals.urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
     next();
 });
-app.get(urlPrefix + "/", sessionChecker, (_req, res) => {
-    res.redirect(urlPrefix + "/dashboard");
+app.get(urlPrefix + "/", sessionChecker, (_request, response) => {
+    response.redirect(urlPrefix + "/dashboard");
 });
 app.use(urlPrefix + "/docs", routerDocs);
 app.use(urlPrefix + "/dashboard", sessionChecker, routerDashboard);
@@ -112,28 +112,28 @@ app.use(urlPrefix + "/locations", sessionChecker, routerLocations);
 app.use(urlPrefix + "/events", sessionChecker, routerEvents);
 app.use(urlPrefix + "/reports", sessionChecker, routerReports);
 app.use(urlPrefix + "/admin", sessionChecker, routerAdmin);
-app.all(urlPrefix + "/keepAlive", (_req, res) => {
-    res.json(true);
+app.all(urlPrefix + "/keepAlive", (_request, response) => {
+    response.json(true);
 });
 app.use(urlPrefix + "/login", routerLogin);
-app.get(urlPrefix + "/logout", (req, res) => {
-    if (req.session.user && req.cookies[sessionCookieName]) {
-        req.session.destroy(null);
-        req.session = null;
-        res.clearCookie(sessionCookieName);
-        res.redirect(urlPrefix + "/");
+app.get(urlPrefix + "/logout", (request, response) => {
+    if (request.session.user && request.cookies[sessionCookieName]) {
+        request.session.destroy(null);
+        request.session = undefined;
+        response.clearCookie(sessionCookieName);
+        response.redirect(urlPrefix + "/");
     }
     else {
-        res.redirect(urlPrefix + "/login");
+        response.redirect(urlPrefix + "/login");
     }
 });
-app.use((_req, _res, next) => {
+app.use((_request, _response, next) => {
     next(createError(404));
 });
-app.use((err, req, res, _next) => {
-    res.locals.message = err.message;
-    res.locals.error = req.app.get("env") === "development" ? err : {};
-    res.status(err.status || 500);
-    res.render("error");
+app.use((error, request, response) => {
+    response.locals.message = error.message;
+    response.locals.error = request.app.get("env") === "development" ? error : {};
+    response.status(error.status || 500);
+    response.render("error");
 });
 export default app;

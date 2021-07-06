@@ -1,20 +1,20 @@
 import sqlite from "better-sqlite3";
-import { usersDB as dbPath } from "../../data/databasePaths.js";
+import { usersDB as databasePath } from "../../data/databasePaths.js";
 import * as userFns from "../../helpers/userFns.js";
 import * as bcrypt from "bcrypt";
 import * as configFns from "../../helpers/configFns.js";
 export const getUser = async (userNameSubmitted, passwordPlain) => {
-    const db = sqlite(dbPath);
-    const row = db.prepare("select userName, passwordHash, isActive" +
+    const database = sqlite(databasePath);
+    const row = database.prepare("select userName, passwordHash, isActive" +
         " from Users" +
         " where userName = ?")
         .get(userNameSubmitted);
     if (!row) {
-        db.close();
+        database.close();
         if (userNameSubmitted === "admin") {
             const adminPasswordPlain = configFns.getProperty("admin.defaultPassword");
             if (adminPasswordPlain === "") {
-                return null;
+                return undefined;
             }
             if (adminPasswordPlain === passwordPlain) {
                 const userProperties = Object.assign({}, configFns.getProperty("user.defaultProperties"));
@@ -26,21 +26,21 @@ export const getUser = async (userNameSubmitted, passwordPlain) => {
                 };
             }
         }
-        return null;
+        return undefined;
     }
     else if (row.isActive === 0) {
-        db.close();
-        return null;
+        database.close();
+        return undefined;
     }
     const databaseUserName = row.userName;
     const passwordIsValid = await bcrypt.compare(userFns.getHashString(databaseUserName, passwordPlain), row.passwordHash);
     if (!passwordIsValid) {
-        db.close();
-        return null;
+        database.close();
+        return undefined;
     }
     const userProperties = Object.assign({}, configFns.getProperty("user.defaultProperties"));
     userProperties.isDefaultAdmin = false;
-    const userPropertyRows = db.prepare("select propertyName, propertyValue" +
+    const userPropertyRows = database.prepare("select propertyName, propertyValue" +
         " from UserProperties" +
         " where userName = ?")
         .all(databaseUserName);
@@ -58,7 +58,7 @@ export const getUser = async (userNameSubmitted, passwordPlain) => {
                 break;
         }
     }
-    db.close();
+    database.close();
     return {
         userName: databaseUserName,
         userProperties

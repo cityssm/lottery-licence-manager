@@ -4,7 +4,7 @@ import * as configFns from "./configFns.js";
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
 import type * as llm from "../types/recordTypes";
 
-import { licencesDB as dbPath } from "../data/databasePaths.js";
+import { licencesDB as databasePath } from "../data/databasePaths.js";
 
 import type { RawRowsColumnsReturn } from "@cityssm/expressjs-server-js/types";
 import type * as expressSession from "express-session";
@@ -15,19 +15,19 @@ import type * as expressSession from "express-session";
  */
 
 
-export const canUpdateObject = (obj: llm.Record, reqSession: expressSession.Session) => {
+export const canUpdateObject = (object: llm.Record, requestSession: expressSession.Session): boolean => {
 
-  const userProperties = reqSession.user.userProperties;
+  const userProperties = requestSession.user.userProperties;
 
   // Check user permissions
 
   let canUpdate = false;
 
-  if (!reqSession) {
+  if (!requestSession) {
 
     canUpdate = false;
 
-  } else if (obj.recordDelete_timeMillis) {
+  } else if (object.recordDelete_timeMillis) {
 
     // Deleted records cannot be updated
     canUpdate = false;
@@ -37,8 +37,8 @@ export const canUpdateObject = (obj: llm.Record, reqSession: expressSession.Sess
     canUpdate = true;
 
   } else if (userProperties.canCreate &&
-    (obj.recordCreate_userName === reqSession.user.userName || obj.recordUpdate_userName === reqSession.user.userName) &&
-    obj.recordUpdate_timeMillis + configFns.getProperty("user.createUpdateWindowMillis") > Date.now()) {
+    (object.recordCreate_userName === requestSession.user.userName || object.recordUpdate_userName === requestSession.user.userName) &&
+    object.recordUpdate_timeMillis + configFns.getProperty("user.createUpdateWindowMillis") > Date.now()) {
 
     // Users with only create permission can update their own records within the time window
     canUpdate = true;
@@ -46,7 +46,7 @@ export const canUpdateObject = (obj: llm.Record, reqSession: expressSession.Sess
 
   // If recently updated, send back permission
 
-  if (obj.recordUpdate_timeMillis + configFns.getProperty("user.createUpdateWindowMillis") > Date.now()) {
+  if (object.recordUpdate_timeMillis + configFns.getProperty("user.createUpdateWindowMillis") > Date.now()) {
 
     return canUpdate;
 
@@ -56,7 +56,7 @@ export const canUpdateObject = (obj: llm.Record, reqSession: expressSession.Sess
 
   if (canUpdate) {
 
-    switch (obj.recordType) {
+    switch (object.recordType) {
 
       case "licence":
 
@@ -65,7 +65,7 @@ export const canUpdateObject = (obj: llm.Record, reqSession: expressSession.Sess
 
         const lockDateInteger = dateTimeFns.dateToInteger(lockDate);
 
-        if ((obj as llm.LotteryLicence).endDate < lockDateInteger) {
+        if ((object as llm.LotteryLicence).endDate < lockDateInteger) {
           canUpdate = false;
         }
 
@@ -73,7 +73,7 @@ export const canUpdateObject = (obj: llm.Record, reqSession: expressSession.Sess
 
       case "event":
 
-        if ((obj as llm.LotteryEvent).bank_name !== "" && (obj as llm.LotteryEvent).reportDate) {
+        if ((object as llm.LotteryEvent).bank_name !== "" && (object as llm.LotteryEvent).reportDate) {
           canUpdate = false;
         }
 
@@ -88,29 +88,29 @@ export const canUpdateObject = (obj: llm.Record, reqSession: expressSession.Sess
 };
 
 
-export const getRawRowsColumns = (sql: string, params: Array<string | number>, userFunctions: Map<string, (...params: any) => any>): RawRowsColumnsReturn => {
+export const getRawRowsColumns = (sql: string, parameters: Array<string | number>, userFunctions: Map<string, (...parameters: any) => any>): RawRowsColumnsReturn => {
 
-  const db = sqlite(dbPath, {
+  const database = sqlite(databasePath, {
     readonly: true
   });
 
   if (userFunctions.size > 0) {
 
     for (const functionName of userFunctions.keys()) {
-      db.function(functionName, userFunctions.get(functionName));
+      database.function(functionName, userFunctions.get(functionName));
     }
   }
 
-  const stmt = db.prepare(sql);
+  const stmt = database.prepare(sql);
 
   stmt.raw(true);
 
-  const rows = stmt.all(params);
+  const rows = stmt.all(parameters);
   const columns = stmt.columns();
 
   stmt.raw(false);
 
-  db.close();
+  database.close();
 
   return {
     rows,
@@ -133,11 +133,11 @@ let licenceTableStats: llm.LotteryLicenceStats = {
 
 let licenceTableStatsExpiryMillis = -1;
 
-export const resetEventTableStats = () => {
+export const resetEventTableStats = (): void => {
   eventTableStatsExpiryMillis = -1;
 };
 
-export const resetLicenceTableStats = () => {
+export const resetLicenceTableStats = (): void => {
   licenceTableStatsExpiryMillis = -1;
 };
 
@@ -148,17 +148,17 @@ let eventTableStats: llm.LotteryEventStats = {
 let eventTableStatsExpiryMillis = -1;
 
 
-export const getLicenceTableStats = () => {
+export const getLicenceTableStats = (): llm.LotteryLicenceStats => {
 
   if (Date.now() < licenceTableStatsExpiryMillis) {
     return licenceTableStats;
   }
 
-  const db = sqlite(dbPath, {
+  const database = sqlite(databasePath, {
     readonly: true
   });
 
-  licenceTableStats = db.prepare("select" +
+  licenceTableStats = database.prepare("select" +
     " min(applicationDate / 10000) as applicationYearMin," +
     " min(startDate / 10000) as startYearMin," +
     " max(endDate / 10000) as endYearMax" +
@@ -168,24 +168,24 @@ export const getLicenceTableStats = () => {
 
   licenceTableStatsExpiryMillis = Date.now() + (3600 * 1000);
 
-  db.close();
+  database.close();
 
   return licenceTableStats;
 
 };
 
 
-export const getLicenceTypeSummary = (reqBody: {
+export const getLicenceTypeSummary = (requestBody: {
   applicationDateStartString?: string;
   applicationDateEndString?: string;
   licenceTypeKey?: string;
-}) => {
+}): any[] => {
 
-  const db = sqlite(dbPath, {
+  const database = sqlite(databasePath, {
     readonly: true
   });
 
-  const sqlParams = [];
+  const sqlParameters = [];
 
   let sql = "select l.licenceID, l.externalLicenceNumber," +
     " l.applicationDate, l.issueDate," +
@@ -198,29 +198,26 @@ export const getLicenceTypeSummary = (reqBody: {
     " left join LotteryLicenceTransactions t on l.licenceID = t.licenceID and t.recordDelete_timeMillis is null" +
     " where l.recordDelete_timeMillis is null";
 
-  if (reqBody.applicationDateStartString && reqBody.applicationDateStartString !== "") {
+  if (requestBody.applicationDateStartString && requestBody.applicationDateStartString !== "") {
 
-    const applicationDateStart = dateTimeFns.dateStringToInteger(reqBody.applicationDateStartString);
+    const applicationDateStart = dateTimeFns.dateStringToInteger(requestBody.applicationDateStartString);
 
     sql += " and l.applicationDate >= ?";
-    sqlParams.push(applicationDateStart);
-
+    sqlParameters.push(applicationDateStart);
   }
 
-  if (reqBody.applicationDateEndString && reqBody.applicationDateEndString !== "") {
+  if (requestBody.applicationDateEndString && requestBody.applicationDateEndString !== "") {
 
-    const applicationDateEnd = dateTimeFns.dateStringToInteger(reqBody.applicationDateEndString);
+    const applicationDateEnd = dateTimeFns.dateStringToInteger(requestBody.applicationDateEndString);
 
     sql += " and l.applicationDate <= ?";
-    sqlParams.push(applicationDateEnd);
-
+    sqlParameters.push(applicationDateEnd);
   }
 
-  if (reqBody.licenceTypeKey && reqBody.licenceTypeKey !== "") {
+  if (requestBody.licenceTypeKey && requestBody.licenceTypeKey !== "") {
 
     sql += " and l.licenceTypeKey = ?";
-    sqlParams.push(reqBody.licenceTypeKey);
-
+    sqlParameters.push(requestBody.licenceTypeKey);
   }
 
   sql += " group by l.licenceID, l.externalLicenceNumber," +
@@ -229,9 +226,9 @@ export const getLicenceTypeSummary = (reqBody: {
     " l.licenceTypeKey, l.totalPrizeValue, l.licenceFee" +
     " order by o.organizationName, o.organizationID, l.applicationDate, l.externalLicenceNumber";
 
-  const rows = db.prepare(sql).all(sqlParams);
+  const rows = database.prepare(sql).all(sqlParameters);
 
-  db.close();
+  database.close();
 
   for (const record of rows) {
 
@@ -245,22 +242,21 @@ export const getLicenceTypeSummary = (reqBody: {
   }
 
   return rows;
-
 };
 
 
-export const getActiveLicenceSummary = (reqBody: {
+export const getActiveLicenceSummary = (requestBody: {
   startEndDateStartString: string;
   startEndDateEndString: string;
-}, reqSession: expressSession.Session) => {
+}, requestSession: expressSession.Session): llm.LotteryLicence[] => {
 
-  const db = sqlite(dbPath, {
+  const database = sqlite(databasePath, {
     readonly: true
   });
 
 
-  const startEndDateStart = dateTimeFns.dateStringToInteger(reqBody.startEndDateStartString);
-  const startEndDateEnd = dateTimeFns.dateStringToInteger(reqBody.startEndDateEndString);
+  const startEndDateStart = dateTimeFns.dateStringToInteger(requestBody.startEndDateStartString);
+  const startEndDateEnd = dateTimeFns.dateStringToInteger(requestBody.startEndDateEndString);
 
 
   const sql = "select l.licenceID, l.externalLicenceNumber," +
@@ -279,14 +275,14 @@ export const getActiveLicenceSummary = (reqBody: {
     " or (l.startDate >= ? and l.endDate <= ?)" +
     ")";
 
-  const sqlParams = [startEndDateStart, startEndDateStart,
+  const sqlParameters = [startEndDateStart, startEndDateStart,
     startEndDateEnd, startEndDateEnd,
     startEndDateStart, startEndDateEnd];
 
 
-  const licences: llm.LotteryLicence[] = db.prepare(sql).all(sqlParams);
+  const licences: llm.LotteryLicence[] = database.prepare(sql).all(sqlParameters);
 
-  db.close();
+  database.close();
 
   for (const licence of licences) {
 
@@ -300,7 +296,7 @@ export const getActiveLicenceSummary = (reqBody: {
     licence.locationDisplayName =
       (licence.locationName === "" ? licence.locationAddress1 : licence.locationName);
 
-    licence.canUpdate = canUpdateObject(licence, reqSession);
+    licence.canUpdate = canUpdateObject(licence, requestSession);
   }
 
   return licences;
@@ -312,17 +308,17 @@ export const getActiveLicenceSummary = (reqBody: {
  */
 
 
-export const getEventTableStats = () => {
+export const getEventTableStats = (): llm.LotteryEventStats => {
 
   if (Date.now() < eventTableStatsExpiryMillis) {
     return eventTableStats;
   }
 
-  const db = sqlite(dbPath, {
+  const database = sqlite(databasePath, {
     readonly: true
   });
 
-  eventTableStats = db.prepare("select" +
+  eventTableStats = database.prepare("select" +
     " min(eventDate / 10000) as eventYearMin," +
     " max(eventDate / 10000) as eventYearMax" +
     " from LotteryEvents" +
@@ -332,20 +328,20 @@ export const getEventTableStats = () => {
 
   eventTableStatsExpiryMillis = Date.now() + (3600 * 1000);
 
-  db.close();
+  database.close();
 
   return eventTableStats;
 };
 
 
-export const getRecentlyUpdateEvents = (reqSession: expressSession.Session) => {
+export const getRecentlyUpdateEvents = (requestSession: expressSession.Session): llm.LotteryEvent[] => {
 
-  const db = sqlite(dbPath, {
+  const database = sqlite(databasePath, {
     readonly: true
   });
 
   const events: llm.LotteryEvent[] =
-    db.prepare("select e.eventDate, e.reportDate," +
+    database.prepare("select e.eventDate, e.reportDate," +
       " l.licenceID, l.externalLicenceNumber, l.licenceTypeKey, l.licenceDetails," +
       " o.organizationName," +
       " e.recordCreate_userName, e.recordCreate_timeMillis, e.recordUpdate_userName, e.recordUpdate_timeMillis" +
@@ -361,7 +357,7 @@ export const getRecentlyUpdateEvents = (reqSession: expressSession.Session) => {
       " limit 100")
       .all();
 
-  db.close();
+  database.close();
 
   for (const lotteryEvent of events) {
 
@@ -373,7 +369,7 @@ export const getRecentlyUpdateEvents = (reqSession: expressSession.Session) => {
     lotteryEvent.recordUpdate_dateString = dateTimeFns.dateToString(new Date(lotteryEvent.recordUpdate_timeMillis));
     lotteryEvent.recordUpdate_timeString = dateTimeFns.dateToTimeString(new Date(lotteryEvent.recordUpdate_timeMillis));
 
-    lotteryEvent.canUpdate = canUpdateObject(lotteryEvent, reqSession);
+    lotteryEvent.canUpdate = canUpdateObject(lotteryEvent, requestSession);
   }
 
   return events;

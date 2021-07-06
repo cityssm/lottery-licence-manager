@@ -12,7 +12,7 @@ export const reports = {
             " left join Organizations o on l.organizationID = o.organizationID" +
             " where transactionDate = ?" +
             " and t.recordDelete_timeMillis is null",
-        params: (req) => [req.query.transactionDate.replace(/-/g, "")]
+        params: (request) => [request.query.transactionDate.replace(/-/g, "")]
     },
     "transactions-byLicence": {
         sql: "select licenceID, transactionIndex," +
@@ -21,7 +21,7 @@ export const reports = {
             " from LotteryLicenceTransactions t" +
             " where licenceID = ?" +
             " and recordDelete_timeMillis is null",
-        params: (req) => [req.query.licenceID]
+        params: (request) => [request.query.licenceID]
     }
 };
 export default reports;

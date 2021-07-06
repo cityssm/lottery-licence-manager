@@ -5,16 +5,16 @@ import * as bcrypt from "bcrypt";
 import * as userFns from "../../helpers/userFns.js";
 
 import sqlite from "better-sqlite3";
-import { usersDB as dbPath } from "../../data/databasePaths.js";
+import { usersDB as databasePath } from "../../data/databasePaths.js";
 
 
 const encryptionRounds = 10;
 
-export const updatePasswordWithDB = async(db: sqlite.Database, userName: string, passwordPlain: string) => {
+export const updatePasswordWithDB = async(database: sqlite.Database, userName: string, passwordPlain: string): Promise<void> => {
 
   const hash = await bcrypt.hash(userFns.getHashString(userName, passwordPlain), encryptionRounds);
 
-  runSQLWithDB(db,
+  runSQLWithDB(database,
     "update Users" +
     " set passwordHash = ?" +
     " where userName = ?",
@@ -22,9 +22,9 @@ export const updatePasswordWithDB = async(db: sqlite.Database, userName: string,
 };
 
 
-export const updatePassword = async(userName: string, passwordPlain: string) => {
+export const updatePassword = async(userName: string, passwordPlain: string): Promise<void> => {
 
-  const db = sqlite(dbPath);
-  await updatePasswordWithDB(db, userName, passwordPlain);
-  db.close();
+  const database = sqlite(databasePath);
+  await updatePasswordWithDB(database, userName, passwordPlain);
+  database.close();
 };

@@ -1,6 +1,6 @@
 import sqlite from "better-sqlite3";
 import debug from "debug";
-const debugSQL = debug("lottery-licence-manager:dbInit");
+const debugSQL = debug("lottery-licence-manager:databaseInitializer");
 export const initUsersDB = () => {
     const usersDB = sqlite("data/users.db");
     const row = usersDB.prepare("select name from sqlite_master where type = 'table' and name = 'Users'").get();

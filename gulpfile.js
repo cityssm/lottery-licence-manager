@@ -1,21 +1,21 @@
 import gulp from "gulp";
 import changed from "gulp-changed";
 import minify from "gulp-minify";
-const publicJavascriptsDest = "public/javascripts";
-const publicJavascriptsMinFn = () => {
+const publicJavascriptsDestination = "public/javascripts";
+const publicJavascriptsMinFunction = () => {
     return gulp.src("public-typescript/*.js", { allowEmpty: true })
-        .pipe(changed(publicJavascriptsDest, {
+        .pipe(changed(publicJavascriptsDestination, {
         extension: ".min.js"
     }))
         .pipe(minify({ noSource: true, ext: { min: ".min.js" } }))
-        .pipe(gulp.dest(publicJavascriptsDest));
+        .pipe(gulp.dest(publicJavascriptsDestination));
 };
-gulp.task("public-javascript-min", publicJavascriptsMinFn);
-const watchFn = () => {
-    gulp.watch("public-typescript/*.js", publicJavascriptsMinFn);
+gulp.task("public-javascript-min", publicJavascriptsMinFunction);
+const watchFunction = () => {
+    gulp.watch("public-typescript/*.js", publicJavascriptsMinFunction);
 };
-gulp.task("watch", watchFn);
+gulp.task("watch", watchFunction);
 gulp.task("default", () => {
-    publicJavascriptsMinFn();
-    watchFn();
+    publicJavascriptsMinFunction();
+    watchFunction();
 });

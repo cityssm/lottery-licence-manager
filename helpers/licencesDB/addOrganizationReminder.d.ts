@@ -8,6 +8,6 @@ interface ReminderData {
     reminderStatus: string;
     reminderNote: string;
 }
-export declare const addOrganizationReminderWithDB: (db: sqlite.Database, reminderData: ReminderData, reqSession: expressSession.Session) => llm.OrganizationReminder;
-export declare const addOrganizationReminder: (reqBody: ReminderData, reqSession: expressSession.Session) => llm.OrganizationReminder;
+export declare const addOrganizationReminderWithDB: (database: sqlite.Database, reminderData: ReminderData, requestSession: expressSession.Session) => llm.OrganizationReminder;
+export declare const addOrganizationReminder: (requestBody: ReminderData, requestSession: expressSession.Session) => llm.OrganizationReminder;
 export {};

@@ -4,5 +4,5 @@ export const inactivateUser = (userName) => {
         " set isActive = 0" +
         " where userName = ?" +
         " and isActive = 1", [userName])
-        .changes;
+        .changes > 0;
 };

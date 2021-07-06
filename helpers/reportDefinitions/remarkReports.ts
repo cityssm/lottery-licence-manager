@@ -30,7 +30,7 @@ export const reports: { [reportName: string]: ConfigReportDefinition } = {
       " and r.organizationID = ?" +
       " order by remarkDate, remarkTime, remarkIndex",
 
-    params: (req) => [req.query.organizationID]
+    params: (request) => [request.query.organizationID]
   }
 };
 

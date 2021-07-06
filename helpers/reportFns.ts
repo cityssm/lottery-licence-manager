@@ -3,40 +3,40 @@ import * as configFns from "./configFns.js";
 import type * as configTypes from "../types/configTypes";
 
 
-export const userFn_reminderTypeKeyToReminderType = (reminderTypeKey: string) => {
+export const userFn_reminderTypeKeyToReminderType = (reminderTypeKey: string): string => {
 
   const reminderTypeDef = configFns.getReminderType(reminderTypeKey);
 
   return (reminderTypeDef
     ? reminderTypeDef.reminderType
-    : null);
+    : undefined);
 };
 
 
-export const userFn_licenceTypeKeyToLicenceType = (licenceTypeKey: string) => {
+export const userFn_licenceTypeKeyToLicenceType = (licenceTypeKey: string): string => {
 
   const licenceTypeDef = configFns.getLicenceType(licenceTypeKey);
 
   return (licenceTypeDef
     ? licenceTypeDef.licenceType
-    : null);
+    : undefined);
 };
 
 
 export const userFn_ticketTypeField = (licenceTypeKey: string,
   ticketTypeKey: string,
-  fieldName: "ticketPrice" | "ticketCount" | "prizesPerDeal" | "feePerUnit") => {
+  fieldName: "ticketPrice" | "ticketCount" | "prizesPerDeal" | "feePerUnit"): unknown => {
 
   const licenceType = configFns.getLicenceType(licenceTypeKey);
 
   if (!licenceType) {
-    return null;
+    return undefined;
   }
 
   const ticketType: configTypes.ConfigTicketType = (licenceType.ticketTypes || []).find((ele) => ele.ticketType === ticketTypeKey);
 
   if (!ticketType) {
-    return null;
+    return undefined;
   }
 
   return ticketType[fieldName];

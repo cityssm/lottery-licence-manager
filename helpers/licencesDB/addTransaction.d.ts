@@ -1,8 +1,8 @@
 import type * as expressSession from "express-session";
-export declare const addTransaction: (reqBody: {
+export declare const addTransaction: (requestBody: {
     licenceID: string;
     transactionAmount: string;
     transactionNote: string;
     externalReceiptNumber: string;
     issueLicence: "" | "true";
-}, reqSession: expressSession.Session) => number;
+}, requestSession: expressSession.Session) => number;

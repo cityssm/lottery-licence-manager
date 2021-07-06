@@ -2,27 +2,28 @@ import sqlite from "better-sqlite3";
 import { licencesDB, usersDB } from "../data/databasePaths.js";
 import debug from "debug";
 const debugSQL = debug("lottery-licence-manager:runSQLWithDB");
-export const runSQLWithDB = (db, sql, params = []) => {
+export const runSQLWithDB = (database, sql, parameters = []) => {
     try {
-        return db.prepare(sql).run(params);
+        return database.prepare(sql).run(parameters);
     }
-    catch (e) {
-        debugSQL(e);
+    catch (error) {
+        debugSQL(error);
     }
 };
-export const runSQLByName = (dbName, sql, params = []) => {
-    let db;
+export const runSQLByName = (databaseName, sql, parameters = []) => {
+    let database;
     try {
-        db = sqlite(dbName === "licencesDB" ? licencesDB : usersDB);
-        return runSQLWithDB(db, sql, params);
+        database = sqlite(databaseName === "licencesDB" ? licencesDB : usersDB);
+        return runSQLWithDB(database, sql, parameters);
     }
-    catch (e) {
-        debugSQL(e);
+    catch (error) {
+        debugSQL(error);
     }
     finally {
         try {
-            db.close();
+            database.close();
         }
-        catch (_e) { }
+        catch (_a) {
+        }
     }
 };
