@@ -1,28 +1,27 @@
 import { canUpdateObject } from "../licencesDB.js";
 import sqlite from "better-sqlite3";
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
-import { licencesDB as dbPath } from "../../data/databasePaths.js";
-export const getLocations = (reqSession, queryOptions) => {
-    const db = sqlite(dbPath, {
+import { licencesDB as databasePath } from "../../data/databasePaths.js";
+export const getLocations = (requestSession, queryOptions) => {
+    const database = sqlite(databasePath, {
         readonly: true
     });
-    const sqlParams = [];
+    const sqlParameters = [];
     let sqlWhereClause = " where lo.recordDelete_timeMillis is null";
     if (queryOptions.locationNameAddress && queryOptions.locationNameAddress !== "") {
         const locationNameAddressSplit = queryOptions.locationNameAddress.toLowerCase().split(" ");
         for (const locationPiece of locationNameAddressSplit) {
             sqlWhereClause += " and (instr(lower(lo.locationName), ?) or instr(lower(lo.locationAddress1),?))";
-            sqlParams.push(locationPiece);
-            sqlParams.push(locationPiece);
+            sqlParameters.push(locationPiece, locationPiece);
         }
     }
     if (queryOptions.locationIsDistributor !== -1) {
         sqlWhereClause += " and lo.locationIsDistributor = ?";
-        sqlParams.push(queryOptions.locationIsDistributor);
+        sqlParameters.push(queryOptions.locationIsDistributor);
     }
     if (queryOptions.locationIsManufacturer !== -1) {
         sqlWhereClause += " and lo.locationIsManufacturer = ?";
-        sqlParams.push(queryOptions.locationIsManufacturer);
+        sqlParameters.push(queryOptions.locationIsManufacturer);
     }
     if (queryOptions.locationIsActive) {
         const currentDate = dateTimeFns.dateToInteger(new Date());
@@ -30,14 +29,14 @@ export const getLocations = (reqSession, queryOptions) => {
             "select lx.locationID from LotteryLicences lx" +
             " where lx.recordDelete_timeMillis is null" +
             " and lx.issueDate is not null and lx.endDate >= ?))";
-        sqlParams.push(currentDate);
+        sqlParameters.push(currentDate);
     }
     let count = 0;
     if (queryOptions.limit !== -1) {
-        count = db.prepare("select ifnull(count(*), 0) as cnt" +
+        count = database.prepare("select ifnull(count(*), 0) as cnt" +
             " from Locations lo" +
             sqlWhereClause)
-            .get(sqlParams)
+            .get(sqlParameters)
             .cnt;
     }
     let sql = "select lo.locationID, lo.locationName," +
@@ -76,8 +75,8 @@ export const getLocations = (reqSession, queryOptions) => {
         sql += " limit " + queryOptions.limit.toString() +
             " offset " + queryOptions.offset.toString();
     }
-    const rows = db.prepare(sql).all(sqlParams);
-    db.close();
+    const rows = database.prepare(sql).all(sqlParameters);
+    database.close();
     for (const ele of rows) {
         ele.recordType = "location";
         ele.locationDisplayName =
@@ -85,7 +84,7 @@ export const getLocations = (reqSession, queryOptions) => {
         ele.licences_endDateMaxString = dateTimeFns.dateIntegerToString(ele.licences_endDateMax);
         ele.distributor_endDateMaxString = dateTimeFns.dateIntegerToString(ele.distributor_endDateMax);
         ele.manufacturer_endDateMaxString = dateTimeFns.dateIntegerToString(ele.manufacturer_endDateMax);
-        ele.canUpdate = canUpdateObject(ele, reqSession);
+        ele.canUpdate = canUpdateObject(ele, requestSession);
     }
     return {
         count: (queryOptions.limit === -1 ? rows.length : count),

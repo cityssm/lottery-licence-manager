@@ -1,7 +1,7 @@
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
-export const getLicenceTicketTypesWithDB = (db, licenceID) => {
-    db.function("userFn_dateIntegerToString", dateTimeFns.dateIntegerToString);
-    const ticketTypesList = db.prepare("select t.ticketTypeIndex," +
+export const getLicenceTicketTypesWithDB = (database, licenceID) => {
+    database.function("userFn_dateIntegerToString", dateTimeFns.dateIntegerToString);
+    const ticketTypesList = database.prepare("select t.ticketTypeIndex," +
         " t.amendmentDate," +
         " userFn_dateIntegerToString(t.amendmentDate) as amendmentDateString," +
         " t.ticketType," +

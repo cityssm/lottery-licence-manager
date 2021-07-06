@@ -1,11 +1,11 @@
 import type * as sqlite from "better-sqlite3";
 
 
-export const getMaxLicenceTicketTypeIndexWithDB = (db: sqlite.Database, licenceID: number | string) => {
+export const getMaxLicenceTicketTypeIndexWithDB = (database: sqlite.Database, licenceID: number | string): number => {
 
   const result: {
     ticketTypeIndex: number;
-  } = db.prepare("select ticketTypeIndex" +
+  } = database.prepare("select ticketTypeIndex" +
     " from LotteryLicenceTicketTypes" +
     " where licenceID = ?" +
     " order by ticketTypeIndex desc" +

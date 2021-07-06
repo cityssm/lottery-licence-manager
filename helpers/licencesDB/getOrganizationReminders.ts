@@ -1,5 +1,5 @@
 import sqlite from "better-sqlite3";
-import { licencesDB as dbPath } from "../../data/databasePaths.js";
+import { licencesDB as databasePath } from "../../data/databasePaths.js";
 
 import * as configFns from "../configFns.js";
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
@@ -25,7 +25,7 @@ const reminderCategories = configFns.getProperty("reminderCategories");
 })();
 
 
-const sortFn_byDate = (reminderA: llm.OrganizationReminder, reminderB: llm.OrganizationReminder) => {
+const sortFunction_byDate = (reminderA: llm.OrganizationReminder, reminderB: llm.OrganizationReminder) => {
 
   /*
    * Dismissed Date
@@ -70,20 +70,20 @@ const sortFn_byDate = (reminderA: llm.OrganizationReminder, reminderB: llm.Organ
   return reminderTypeOrdering[reminderA.reminderTypeKey] - reminderTypeOrdering[reminderB.reminderTypeKey];
 };
 
-const sortFn_byConfig = (reminderA: llm.OrganizationReminder, reminderB: llm.OrganizationReminder) => {
+const sortFunction_byConfig = (reminderA: llm.OrganizationReminder, reminderB: llm.OrganizationReminder) => {
 
   if (reminderA.reminderTypeKey !== reminderB.reminderTypeKey) {
     return reminderTypeOrdering[reminderA.reminderTypeKey] - reminderTypeOrdering[reminderB.reminderTypeKey];
   }
 
-  return sortFn_byDate(reminderA, reminderB);
+  return sortFunction_byDate(reminderA, reminderB);
 };
 
 
-export const getOrganizationRemindersWithDB = (db: sqlite.Database, organizationID: number, reqSession: expressSession.Session) => {
+export const getOrganizationRemindersWithDB = (database: sqlite.Database, organizationID: number, requestSession: expressSession.Session): llm.OrganizationReminder[] => {
 
   const reminders: llm.OrganizationReminder[] =
-    db.prepare("select reminderIndex," +
+    database.prepare("select reminderIndex," +
       " reminderTypeKey, dueDate, dismissedDate," +
       " reminderStatus, reminderNote," +
       " recordCreate_userName, recordCreate_timeMillis, recordUpdate_userName, recordUpdate_timeMillis" +
@@ -99,17 +99,17 @@ export const getOrganizationRemindersWithDB = (db: sqlite.Database, organization
     reminder.dueDateString = dateTimeFns.dateIntegerToString(reminder.dueDate || 0);
     reminder.dismissedDateString = dateTimeFns.dateIntegerToString(reminder.dismissedDate || 0);
 
-    reminder.canUpdate = canUpdateObject(reminder, reqSession);
+    reminder.canUpdate = canUpdateObject(reminder, requestSession);
   }
 
   switch (configFns.getProperty("reminders.preferredSortOrder")) {
 
     case "date":
-      reminders.sort(sortFn_byDate);
+      reminders.sort(sortFunction_byDate);
       break;
 
     case "config":
-      reminders.sort(sortFn_byConfig);
+      reminders.sort(sortFunction_byConfig);
       break;
   }
 
@@ -117,15 +117,15 @@ export const getOrganizationRemindersWithDB = (db: sqlite.Database, organization
 };
 
 
-export const getOrganizationReminders = (organizationID: number, reqSession: expressSession.Session) => {
+export const getOrganizationReminders = (organizationID: number, requestSession: expressSession.Session): llm.OrganizationReminder[] => {
 
-  const db = sqlite(dbPath, {
+  const database = sqlite(databasePath, {
     readonly: true
   });
 
-  const reminders = getOrganizationRemindersWithDB(db, organizationID, reqSession);
+  const reminders = getOrganizationRemindersWithDB(database, organizationID, requestSession);
 
-  db.close();
+  database.close();
 
   return reminders;
 };

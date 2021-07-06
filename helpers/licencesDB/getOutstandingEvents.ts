@@ -3,22 +3,22 @@ import sqlite from "better-sqlite3";
 import * as configFns from "../configFns.js";
 import { canUpdateObject } from "../licencesDB.js";
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
-import { licencesDB as dbPath } from "../../data/databasePaths.js";
+import { licencesDB as databasePath } from "../../data/databasePaths.js";
 
 import type * as llm from "../../types/recordTypes";
 import type * as expressSession from "express-session";
 
 
-export const getOutstandingEvents = (reqBody: {
+export const getOutstandingEvents = (requestBody: {
   eventDateType?: string;
   licenceTypeKey?: string;
-}, reqSession: expressSession.Session) => {
+}, requestSession: expressSession.Session): llm.LotteryEvent[] => {
 
-  const db = sqlite(dbPath, {
+  const database = sqlite(databasePath, {
     readonly: true
   });
 
-  const sqlParams = [];
+  const sqlParameters = [];
 
   let sql = "select" +
     " o.organizationID, o.organizationName," +
@@ -41,22 +41,22 @@ export const getOutstandingEvents = (reqBody: {
       // " or e.costs_receipts is null or e.costs_receipts = 0" +
       ")");
 
-  if (reqBody.licenceTypeKey && reqBody.licenceTypeKey !== "") {
+  if (requestBody.licenceTypeKey && requestBody.licenceTypeKey !== "") {
 
     sql += " and l.licenceTypeKey = ?";
-    sqlParams.push(reqBody.licenceTypeKey);
+    sqlParameters.push(requestBody.licenceTypeKey);
   }
 
-  if (reqBody.eventDateType) {
+  if (requestBody.eventDateType) {
 
     const currentDate = dateTimeFns.dateToInteger(new Date());
 
-    if (reqBody.eventDateType === "past") {
+    if (requestBody.eventDateType === "past") {
       sql += " and e.eventDate < ?";
-      sqlParams.push(currentDate);
-    } else if (reqBody.eventDateType === "upcoming") {
+      sqlParameters.push(currentDate);
+    } else if (requestBody.eventDateType === "upcoming") {
       sql += " and e.eventDate >= ?";
-      sqlParams.push(currentDate);
+      sqlParameters.push(currentDate);
     }
   }
 
@@ -69,9 +69,9 @@ export const getOutstandingEvents = (reqBody: {
   " order by o.organizationName, o.organizationID, e.eventDate, l.licenceID";
 
   const events: llm.LotteryEvent[] =
-    db.prepare(sql).all(sqlParams);
+    database.prepare(sql).all(sqlParameters);
 
-  db.close();
+  database.close();
 
   for (const lotteryEvent of events) {
     lotteryEvent.recordType = "event";
@@ -83,7 +83,7 @@ export const getOutstandingEvents = (reqBody: {
 
     lotteryEvent.bank_name_isOutstanding = (lotteryEvent.bank_name === null || lotteryEvent.bank_name === "");
 
-    lotteryEvent.canUpdate = canUpdateObject(lotteryEvent, reqSession);
+    lotteryEvent.canUpdate = canUpdateObject(lotteryEvent, requestSession);
   }
 
   return events;

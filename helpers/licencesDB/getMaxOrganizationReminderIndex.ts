@@ -1,11 +1,11 @@
 import type * as sqlite from "better-sqlite3";
 
 
-export const getMaxOrganizationReminderIndexWithDB = (db: sqlite.Database, organizationID: number | string) => {
+export const getMaxOrganizationReminderIndexWithDB = (database: sqlite.Database, organizationID: number | string): number => {
 
   const result: {
     reminderIndex: number;
-  } = db.prepare("select reminderIndex" +
+  } = database.prepare("select reminderIndex" +
     " from OrganizationReminders" +
     " where organizationID = ?" +
     " order by reminderIndex desc" +

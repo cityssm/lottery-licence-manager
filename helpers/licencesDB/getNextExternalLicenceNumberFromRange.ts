@@ -1,28 +1,28 @@
 import sqlite from "better-sqlite3";
-import { licencesDB as dbPath } from "../../data/databasePaths.js";
+import { licencesDB as databasePath } from "../../data/databasePaths.js";
 
 import { getApplicationSettingWithDB } from "./getApplicationSetting.js";
 
 
-export const getNextExternalLicenceNumberFromRange = () => {
+export const getNextExternalLicenceNumberFromRange = (): number => {
 
-  const db = sqlite(dbPath, {
+  const database = sqlite(databasePath, {
     readonly: true
   });
 
-  const rangeStartFromConfig = getApplicationSettingWithDB(db, "licences.externalLicenceNumber.range.start");
+  const rangeStartFromConfig = getApplicationSettingWithDB(database, "licences.externalLicenceNumber.range.start");
 
-  const rangeStart = (rangeStartFromConfig === "" ? -1 : parseInt(rangeStartFromConfig, 10));
+  const rangeStart = (rangeStartFromConfig === "" ? -1 : Number.parseInt(rangeStartFromConfig, 10));
 
-  const rangeEnd = parseInt(getApplicationSettingWithDB(db, "licences.externalLicenceNumber.range.end") || "0", 10);
+  const rangeEnd = Number.parseInt(getApplicationSettingWithDB(database, "licences.externalLicenceNumber.range.end") || "0", 10);
 
-  const row = db.prepare("select max(externalLicenceNumberInteger) as maxExternalLicenceNumberInteger" +
+  const row = database.prepare("select max(externalLicenceNumberInteger) as maxExternalLicenceNumberInteger" +
     " from LotteryLicences" +
     " where externalLicenceNumberInteger >= ?" +
     " and externalLicenceNumberInteger <= ?")
     .get(rangeStart, rangeEnd);
 
-  db.close();
+  database.close();
 
   if (!row) {
 

@@ -1,13 +1,15 @@
 import type * as llm from "../../types/recordTypes";
 import type * as expressSession from "express-session";
-export declare const getLocations: (reqSession: expressSession.Session, queryOptions: {
+interface GetLocationsReturn {
+    count: number;
+    locations: llm.Location[];
+}
+export declare const getLocations: (requestSession: expressSession.Session, queryOptions: {
     limit: number;
     offset: number;
     locationNameAddress?: string;
     locationIsDistributor: number;
     locationIsManufacturer: number;
     locationIsActive?: "on";
-}) => {
-    count: number;
-    locations: llm.Location[];
-};
+}) => GetLocationsReturn;
+export {};

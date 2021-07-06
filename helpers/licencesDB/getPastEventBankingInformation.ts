@@ -1,6 +1,6 @@
 import sqlite from "better-sqlite3";
 
-import { licencesDB as dbPath } from "../../data/databasePaths.js";
+import { licencesDB as databasePath } from "../../data/databasePaths.js";
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
 
 
@@ -10,15 +10,15 @@ export interface PastEventBankingInformation {
   bank_accountNumber: string;
   eventDateMax: number;
   eventDateMaxString: string;
-};
+}
 
-export const getPastEventBankingInformation = (licenceID: number | string) => {
+export const getPastEventBankingInformation = (licenceID: number | string): PastEventBankingInformation[] => {
 
-  const db = sqlite(dbPath, {
+  const database = sqlite(databasePath, {
     readonly: true
   });
 
-  const organizationIDResult = db.prepare("select organizationID from LotteryLicences" +
+  const organizationIDResult = database.prepare("select organizationID from LotteryLicences" +
     " where licenceID = ?")
     .get(licenceID);
 
@@ -28,9 +28,9 @@ export const getPastEventBankingInformation = (licenceID: number | string) => {
 
   const organizationID = organizationIDResult.organizationID;
 
-  const cutoffDateInteger = dateTimeFns.dateToInteger(new Date()) - 50000;
+  const cutoffDateInteger = dateTimeFns.dateToInteger(new Date()) - 50_000;
 
-  const bankInfoList: PastEventBankingInformation[] = db.prepare("select bank_name, bank_address, bank_accountNumber," +
+  const bankInfoList: PastEventBankingInformation[] = database.prepare("select bank_name, bank_address, bank_accountNumber," +
     " max(eventDate) as eventDateMax" +
     " from LotteryEvents" +
     (" where licenceID in (" +
@@ -45,7 +45,7 @@ export const getPastEventBankingInformation = (licenceID: number | string) => {
     " order by max(eventDate) desc")
     .all(organizationID, licenceID, cutoffDateInteger);
 
-  db.close();
+  database.close();
 
   for (const record of bankInfoList) {
     record.eventDateMaxString = dateTimeFns.dateIntegerToString(record.eventDateMax);

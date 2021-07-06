@@ -1,33 +1,33 @@
 import { canUpdateObject } from "../licencesDB.js";
 import sqlite from "better-sqlite3";
 
-import { licencesDB as dbPath } from "../../data/databasePaths.js";
+import { licencesDB as databasePath } from "../../data/databasePaths.js";
 
 import type * as llm from "../../types/recordTypes";
 import type * as expressSession from "express-session";
 
 
-export const getLocation = (locationID: number, reqSession: expressSession.Session) => {
+export const getLocation = (locationID: number, requestSession: expressSession.Session): llm.Location => {
 
-  const db = sqlite(dbPath, {
+  const database = sqlite(databasePath, {
     readonly: true
   });
 
-  const locationObj: llm.Location =
-    db.prepare("select * from Locations" +
+  const locationObject: llm.Location =
+    database.prepare("select * from Locations" +
       " where locationID = ?")
       .get(locationID);
 
-  if (locationObj) {
-    locationObj.recordType = "location";
+  if (locationObject) {
+    locationObject.recordType = "location";
 
-    locationObj.locationDisplayName =
-      locationObj.locationName === "" ? locationObj.locationAddress1 : locationObj.locationName;
+    locationObject.locationDisplayName =
+      locationObject.locationName === "" ? locationObject.locationAddress1 : locationObject.locationName;
 
-    locationObj.canUpdate = canUpdateObject(locationObj, reqSession);
+    locationObject.canUpdate = canUpdateObject(locationObject, requestSession);
   }
 
-  db.close();
+  database.close();
 
-  return locationObj;
+  return locationObject;
 };

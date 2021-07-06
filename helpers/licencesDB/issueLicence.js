@@ -1,6 +1,6 @@
 import { runSQL_hasChanges } from "./_runSQL.js";
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
-export const issueLicence = (licenceID, reqSession) => {
+export const issueLicence = (licenceID, requestSession) => {
     const nowDate = new Date();
     const issueDate = dateTimeFns.dateToInteger(nowDate);
     const issueTime = dateTimeFns.dateToTimeInteger(nowDate);
@@ -15,7 +15,7 @@ export const issueLicence = (licenceID, reqSession) => {
         " and issueDate is null", [
         issueDate,
         issueTime,
-        reqSession.user.userName,
+        requestSession.user.userName,
         nowDate.getTime(),
         licenceID
     ]);

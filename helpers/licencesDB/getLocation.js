@@ -1,19 +1,19 @@
 import { canUpdateObject } from "../licencesDB.js";
 import sqlite from "better-sqlite3";
-import { licencesDB as dbPath } from "../../data/databasePaths.js";
-export const getLocation = (locationID, reqSession) => {
-    const db = sqlite(dbPath, {
+import { licencesDB as databasePath } from "../../data/databasePaths.js";
+export const getLocation = (locationID, requestSession) => {
+    const database = sqlite(databasePath, {
         readonly: true
     });
-    const locationObj = db.prepare("select * from Locations" +
+    const locationObject = database.prepare("select * from Locations" +
         " where locationID = ?")
         .get(locationID);
-    if (locationObj) {
-        locationObj.recordType = "location";
-        locationObj.locationDisplayName =
-            locationObj.locationName === "" ? locationObj.locationAddress1 : locationObj.locationName;
-        locationObj.canUpdate = canUpdateObject(locationObj, reqSession);
+    if (locationObject) {
+        locationObject.recordType = "location";
+        locationObject.locationDisplayName =
+            locationObject.locationName === "" ? locationObject.locationAddress1 : locationObject.locationName;
+        locationObject.canUpdate = canUpdateObject(locationObject, requestSession);
     }
-    db.close();
-    return locationObj;
+    database.close();
+    return locationObject;
 };

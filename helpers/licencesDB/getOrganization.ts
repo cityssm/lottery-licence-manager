@@ -1,5 +1,5 @@
 import sqlite from "better-sqlite3";
-import { licencesDB as dbPath } from "../../data/databasePaths.js";
+import { licencesDB as databasePath } from "../../data/databasePaths.js";
 
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
 import { canUpdateObject } from "../licencesDB.js";
@@ -8,39 +8,39 @@ import type * as llm from "../../types/recordTypes";
 import type * as expressSession from "express-session";
 
 
-export const getOrganization = (organizationID: number, reqSession: expressSession.Session): llm.Organization => {
+export const getOrganization = (organizationID: number, requestSession: expressSession.Session): llm.Organization => {
 
-  const db = sqlite(dbPath, {
+  const database = sqlite(databasePath, {
     readonly: true
   });
 
-  const organizationObj: llm.Organization =
-    db.prepare("select * from Organizations" +
+  const organizationObject: llm.Organization =
+    database.prepare("select * from Organizations" +
       " where organizationID = ?")
       .get(organizationID);
 
-  if (organizationObj) {
+  if (organizationObject) {
 
-    organizationObj.recordType = "organization";
+    organizationObject.recordType = "organization";
 
-    organizationObj.fiscalStartDateString = dateTimeFns.dateIntegerToString(organizationObj.fiscalStartDate);
-    organizationObj.fiscalEndDateString = dateTimeFns.dateIntegerToString(organizationObj.fiscalEndDate);
+    organizationObject.fiscalStartDateString = dateTimeFns.dateIntegerToString(organizationObject.fiscalStartDate);
+    organizationObject.fiscalEndDateString = dateTimeFns.dateIntegerToString(organizationObject.fiscalEndDate);
 
-    organizationObj.canUpdate = canUpdateObject(organizationObj, reqSession);
+    organizationObject.canUpdate = canUpdateObject(organizationObject, requestSession);
 
     const representativesList: llm.OrganizationRepresentative[] =
-      db.prepare("select * from OrganizationRepresentatives" +
+      database.prepare("select * from OrganizationRepresentatives" +
         " where organizationID = ?" +
         " order by isDefault desc, representativeName")
         .all(organizationID);
 
-    organizationObj.organizationRepresentatives = representativesList;
+    organizationObject.organizationRepresentatives = representativesList;
 
   }
 
-  db.close();
+  database.close();
 
-  return organizationObj;
+  return organizationObject;
 };
 
 

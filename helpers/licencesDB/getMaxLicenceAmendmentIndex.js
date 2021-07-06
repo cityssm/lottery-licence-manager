@@ -1,5 +1,5 @@
-export const getMaxLicenceAmendmentIndexWithDB = (db, licenceID) => {
-    const result = db.prepare("select amendmentIndex" +
+export const getMaxLicenceAmendmentIndexWithDB = (database, licenceID) => {
+    const result = database.prepare("select amendmentIndex" +
         " from LotteryLicenceAmendments" +
         " where licenceID = ?" +
         " order by amendmentIndex desc" +

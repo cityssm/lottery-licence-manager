@@ -1,5 +1,5 @@
-export const getMaxOrganizationBankRecordIndexWithDB = (db, organizationID) => {
-    const result = db.prepare("select recordIndex" +
+export const getMaxOrganizationBankRecordIndexWithDB = (database, organizationID) => {
+    const result = database.prepare("select recordIndex" +
         " from OrganizationBankRecords" +
         " where organizationID = ?" +
         " order by recordIndex desc" +

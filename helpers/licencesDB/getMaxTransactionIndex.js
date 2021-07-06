@@ -1,5 +1,5 @@
-export const getMaxTransactionIndexWithDB = (db, licenceID) => {
-    const result = db.prepare("select transactionIndex" +
+export const getMaxTransactionIndexWithDB = (database, licenceID) => {
+    const result = database.prepare("select transactionIndex" +
         " from LotteryLicenceTransactions" +
         " where licenceID = ?" +
         " order by transactionIndex desc" +

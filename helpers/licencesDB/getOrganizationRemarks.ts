@@ -1,5 +1,5 @@
 import sqlite from "better-sqlite3";
-import { licencesDB as dbPath } from "../../data/databasePaths.js";
+import { licencesDB as databasePath } from "../../data/databasePaths.js";
 
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
 import { canUpdateObject } from "../licencesDB.js";
@@ -8,14 +8,14 @@ import type * as llm from "../../types/recordTypes";
 import type * as expressSession from "express-session";
 
 
-export const getOrganizationRemarks = (organizationID: number, reqSession: expressSession.Session) => {
+export const getOrganizationRemarks = (organizationID: number, requestSession: expressSession.Session): llm.OrganizationRemark[] => {
 
-  const db = sqlite(dbPath, {
+  const database = sqlite(databasePath, {
     readonly: true
   });
 
   const remarks: llm.OrganizationRemark[] =
-    db.prepare("select remarkIndex," +
+    database.prepare("select remarkIndex," +
       " remarkDate, remarkTime," +
       " remark, isImportant," +
       " recordCreate_userName, recordCreate_timeMillis, recordUpdate_userName, recordUpdate_timeMillis" +
@@ -25,7 +25,7 @@ export const getOrganizationRemarks = (organizationID: number, reqSession: expre
       " order by remarkDate desc, remarkTime desc")
       .all(organizationID);
 
-  db.close();
+  database.close();
 
   for (const remark of remarks) {
 
@@ -34,7 +34,7 @@ export const getOrganizationRemarks = (organizationID: number, reqSession: expre
     remark.remarkDateString = dateTimeFns.dateIntegerToString(remark.remarkDate || 0);
     remark.remarkTimeString = dateTimeFns.timeIntegerToString(remark.remarkTime || 0);
 
-    remark.canUpdate = canUpdateObject(remark, reqSession);
+    remark.canUpdate = canUpdateObject(remark, requestSession);
   }
 
   return remarks;

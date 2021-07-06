@@ -1,5 +1,5 @@
 import sqlite from "better-sqlite3";
-import { licencesDB as dbPath } from "../../data/databasePaths.js";
+import { licencesDB as databasePath } from "../../data/databasePaths.js";
 
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
 import { canUpdateObject } from "../licencesDB.js";
@@ -8,21 +8,21 @@ import type * as llm from "../../types/recordTypes";
 import type * as expressSession from "express-session";
 
 
-export const getOrganizations = (reqBody: {
+export const getOrganizations = (requestBody: {
   organizationName?: string;
   representativeName?: string;
   isEligibleForLicences?: string;
   organizationIsActive?: string;
-}, reqSession: expressSession.Session, includeOptions: {
+}, requestSession: expressSession.Session, includeOptions: {
   limit: number;
   offset?: number;
-}) => {
+}): llm.Organization[] => {
 
-  const db = sqlite(dbPath, {
+  const database = sqlite(databasePath, {
     readonly: true
   });
 
-  const sqlParams: Array<string | number> = [dateTimeFns.dateToInteger(new Date())];
+  const sqlParameters: Array<string | number> = [dateTimeFns.dateToInteger(new Date())];
 
   let sql = "select o.organizationID, o.organizationName, o.isEligibleForLicences, o.organizationNote," +
     " r.representativeName," +
@@ -34,20 +34,20 @@ export const getOrganizations = (reqBody: {
     " left join LotteryLicences l on o.organizationID = l.organizationID and l.recordDelete_timeMillis is null" +
     " where o.recordDelete_timeMillis is null";
 
-  if (reqBody.organizationName && reqBody.organizationName !== "") {
+  if (requestBody.organizationName && requestBody.organizationName !== "") {
 
-    const organizationNamePieces = reqBody.organizationName.toLowerCase().split(" ");
+    const organizationNamePieces = requestBody.organizationName.toLowerCase().split(" ");
 
     for (const organizationPiece of organizationNamePieces) {
 
       sql += " and instr(lower(o.organizationName), ?)";
-      sqlParams.push(organizationPiece);
+      sqlParameters.push(organizationPiece);
     }
   }
 
-  if (reqBody.representativeName && reqBody.representativeName !== "") {
+  if (requestBody.representativeName && requestBody.representativeName !== "") {
 
-    const representativeNamePieces = reqBody.representativeName.toLowerCase().split(" ");
+    const representativeNamePieces = requestBody.representativeName.toLowerCase().split(" ");
 
     for (const representativePiece of representativeNamePieces) {
 
@@ -55,18 +55,18 @@ export const getOrganizations = (reqBody: {
         "select organizationID from OrganizationRepresentatives where instr(lower(representativeName), ?)" +
         ")";
 
-      sqlParams.push(representativePiece);
+      sqlParameters.push(representativePiece);
     }
   }
 
-  if (reqBody.isEligibleForLicences && reqBody.isEligibleForLicences !== "") {
+  if (requestBody.isEligibleForLicences && requestBody.isEligibleForLicences !== "") {
 
     sql += " and o.isEligibleForLicences = ?";
-    sqlParams.push(reqBody.isEligibleForLicences);
+    sqlParameters.push(requestBody.isEligibleForLicences);
 
   }
 
-  if (reqBody.organizationIsActive && reqBody.organizationIsActive !== "") {
+  if (requestBody.organizationIsActive && requestBody.organizationIsActive !== "") {
 
     const currentDate = dateTimeFns.dateToInteger(new Date());
 
@@ -75,7 +75,7 @@ export const getOrganizations = (reqBody: {
       " where lx.recordDelete_timeMillis is null" +
       " and lx.issueDate is not null and lx.endDate >= ?)";
 
-    sqlParams.push(currentDate);
+    sqlParameters.push(currentDate);
   }
 
   sql += " group by o.organizationID, o.organizationName, o.isEligibleForLicences, o.organizationNote," +
@@ -90,9 +90,9 @@ export const getOrganizations = (reqBody: {
 
   }
 
-  const rows: llm.Organization[] = db.prepare(sql).all(sqlParams);
+  const rows: llm.Organization[] = database.prepare(sql).all(sqlParameters);
 
-  db.close();
+  database.close();
 
   for (const ele of rows) {
 
@@ -100,7 +100,7 @@ export const getOrganizations = (reqBody: {
 
     ele.licences_endDateMaxString = dateTimeFns.dateIntegerToString(ele.licences_endDateMax || 0);
 
-    ele.canUpdate = canUpdateObject(ele, reqSession);
+    ele.canUpdate = canUpdateObject(ele, requestSession);
 
     delete ele.recordCreate_userName;
     delete ele.recordCreate_timeMillis;

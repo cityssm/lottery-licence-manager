@@ -1,20 +1,20 @@
 import sqlite from "better-sqlite3";
 
-import { licencesDB as dbPath } from "../../data/databasePaths.js";
+import { licencesDB as databasePath } from "../../data/databasePaths.js";
 
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
 
 import type * as llm from "../../types/recordTypes";
 
 
-export const getOrganizationBankRecords = (organizationID: number, accountNumber: string, bankingYear: number) => {
+export const getOrganizationBankRecords = (organizationID: number, accountNumber: string, bankingYear: number): llm.OrganizationBankRecord[] => {
 
-  const db = sqlite(dbPath, {
+  const database = sqlite(databasePath, {
     readonly: true
   });
 
   const bankRecords: llm.OrganizationBankRecord[] =
-    db.prepare("select recordIndex," +
+    database.prepare("select recordIndex," +
       " bankingMonth, bankRecordType," +
       " recordDate, recordNote, recordIsNA," +
       " recordCreate_userName, recordCreate_timeMillis, recordUpdate_userName, recordUpdate_timeMillis" +
@@ -25,7 +25,7 @@ export const getOrganizationBankRecords = (organizationID: number, accountNumber
       " and bankingYear = ?")
       .all(organizationID, accountNumber, bankingYear);
 
-  db.close();
+  database.close();
 
   for (const bankRecord of bankRecords) {
     bankRecord.recordDateString = dateTimeFns.dateIntegerToString(bankRecord.recordDate);

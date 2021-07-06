@@ -1,76 +1,73 @@
 import sqlite from "better-sqlite3";
-import { licencesDB as dbPath } from "../../data/databasePaths.js";
+import { licencesDB as databasePath } from "../../data/databasePaths.js";
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
 import { canUpdateObject } from "../licencesDB.js";
-export const getLicences = (reqBodyOrParamsObj, reqSession, includeOptions) => {
-    if (reqBodyOrParamsObj.organizationName && reqBodyOrParamsObj.organizationName !== "") {
+export const getLicences = (requestBodyOrParametersObject, requestSession, includeOptions) => {
+    if (requestBodyOrParametersObject.organizationName && requestBodyOrParametersObject.organizationName !== "") {
         includeOptions.includeOrganization = true;
     }
-    const db = sqlite(dbPath, {
+    const database = sqlite(databasePath, {
         readonly: true
     });
-    const sqlParams = [];
+    const sqlParameters = [];
     let sqlWhereClause = " where l.recordDelete_timeMillis is null";
-    if (reqBodyOrParamsObj.externalLicenceNumber && reqBodyOrParamsObj.externalLicenceNumber !== "") {
-        const externalLicenceNumberPieces = reqBodyOrParamsObj.externalLicenceNumber.toLowerCase().split(" ");
+    if (requestBodyOrParametersObject.externalLicenceNumber && requestBodyOrParametersObject.externalLicenceNumber !== "") {
+        const externalLicenceNumberPieces = requestBodyOrParametersObject.externalLicenceNumber.toLowerCase().split(" ");
         for (const externalLicenceNumberPiece of externalLicenceNumberPieces) {
             sqlWhereClause += " and instr(lower(l.externalLicenceNumber), ?)";
-            sqlParams.push(externalLicenceNumberPiece);
+            sqlParameters.push(externalLicenceNumberPiece);
         }
     }
-    if (reqBodyOrParamsObj.organizationID && reqBodyOrParamsObj.organizationID !== "") {
+    if (requestBodyOrParametersObject.organizationID && requestBodyOrParametersObject.organizationID !== "") {
         sqlWhereClause += " and l.organizationID = ?";
-        sqlParams.push(reqBodyOrParamsObj.organizationID);
+        sqlParameters.push(requestBodyOrParametersObject.organizationID);
     }
-    if (reqBodyOrParamsObj.organizationName && reqBodyOrParamsObj.organizationName !== "") {
-        const organizationNamePieces = reqBodyOrParamsObj.organizationName.toLowerCase().split(" ");
+    if (requestBodyOrParametersObject.organizationName && requestBodyOrParametersObject.organizationName !== "") {
+        const organizationNamePieces = requestBodyOrParametersObject.organizationName.toLowerCase().split(" ");
         for (const organizationNamePiece of organizationNamePieces) {
             sqlWhereClause += " and instr(lower(o.organizationName), ?)";
-            sqlParams.push(organizationNamePiece);
+            sqlParameters.push(organizationNamePiece);
         }
     }
-    if (reqBodyOrParamsObj.licenceTypeKey && reqBodyOrParamsObj.licenceTypeKey !== "") {
+    if (requestBodyOrParametersObject.licenceTypeKey && requestBodyOrParametersObject.licenceTypeKey !== "") {
         sqlWhereClause += " and l.licenceTypeKey = ?";
-        sqlParams.push(reqBodyOrParamsObj.licenceTypeKey);
+        sqlParameters.push(requestBodyOrParametersObject.licenceTypeKey);
     }
-    if (reqBodyOrParamsObj.licenceStatus) {
-        if (reqBodyOrParamsObj.licenceStatus === "past") {
+    if (requestBodyOrParametersObject.licenceStatus) {
+        if (requestBodyOrParametersObject.licenceStatus === "past") {
             sqlWhereClause += " and l.endDate < ?";
-            sqlParams.push(dateTimeFns.dateToInteger(new Date()));
+            sqlParameters.push(dateTimeFns.dateToInteger(new Date()));
         }
-        else if (reqBodyOrParamsObj.licenceStatus === "active") {
+        else if (requestBodyOrParametersObject.licenceStatus === "active") {
             sqlWhereClause += " and l.endDate >= ?";
-            sqlParams.push(dateTimeFns.dateToInteger(new Date()));
+            sqlParameters.push(dateTimeFns.dateToInteger(new Date()));
         }
     }
-    if (reqBodyOrParamsObj.locationID) {
+    if (requestBodyOrParametersObject.locationID) {
         sqlWhereClause += " and (l.locationID = ?" +
             " or l.licenceID in (" +
             "select licenceID from LotteryLicenceTicketTypes" +
             " where recordDelete_timeMillis is null and (distributorLocationID = ? or manufacturerLocationID = ?)" +
             ")" +
             ")";
-        sqlParams.push(reqBodyOrParamsObj.locationID);
-        sqlParams.push(reqBodyOrParamsObj.locationID);
-        sqlParams.push(reqBodyOrParamsObj.locationID);
+        sqlParameters.push(requestBodyOrParametersObject.locationID, requestBodyOrParametersObject.locationID, requestBodyOrParametersObject.locationID);
     }
-    if (reqBodyOrParamsObj.locationName && reqBodyOrParamsObj.locationName !== "") {
-        const locationNamePieces = reqBodyOrParamsObj.locationName.toLowerCase().split(" ");
+    if (requestBodyOrParametersObject.locationName && requestBodyOrParametersObject.locationName !== "") {
+        const locationNamePieces = requestBodyOrParametersObject.locationName.toLowerCase().split(" ");
         for (const locationNamePiece of locationNamePieces) {
             sqlWhereClause += " and (instr(lower(lo.locationName), ?) or instr(lower(lo.locationAddress1), ?))";
-            sqlParams.push(locationNamePiece);
-            sqlParams.push(locationNamePiece);
+            sqlParameters.push(locationNamePiece, locationNamePiece);
         }
     }
     let count = 0;
     if (includeOptions.limit !== -1) {
-        count = db.prepare("select ifnull(count(*), 0)" +
+        count = database.prepare("select ifnull(count(*), 0)" +
             " from LotteryLicences l" +
             " left join Organizations o on l.organizationID = o.organizationID" +
             " left join Locations lo on l.locationID = lo.locationID" +
             sqlWhereClause)
             .pluck()
-            .get(sqlParams);
+            .get(sqlParameters);
     }
     let sql = "select" +
         " 'licence' as recordType," +
@@ -102,13 +99,13 @@ export const getLicences = (reqBodyOrParamsObj, reqSession, includeOptions) => {
         sql += " limit " + includeOptions.limit.toString() +
             " offset " + (includeOptions.offset || 0).toString();
     }
-    db.function("userFn_dateIntegerToString", dateTimeFns.dateIntegerToString);
-    db.function("userFn_timeIntegerToString", dateTimeFns.timeIntegerToString);
-    const rows = db.prepare(sql)
-        .all(sqlParams);
-    db.close();
+    database.function("userFn_dateIntegerToString", dateTimeFns.dateIntegerToString);
+    database.function("userFn_timeIntegerToString", dateTimeFns.timeIntegerToString);
+    const rows = database.prepare(sql)
+        .all(sqlParameters);
+    database.close();
     for (const ele of rows) {
-        ele.canUpdate = canUpdateObject(ele, reqSession);
+        ele.canUpdate = canUpdateObject(ele, requestSession);
     }
     return {
         count: (includeOptions.limit === -1 ? rows.length : count),

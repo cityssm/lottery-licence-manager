@@ -1,5 +1,5 @@
-export const getMaxOrganizationReminderIndexWithDB = (db, organizationID) => {
-    const result = db.prepare("select reminderIndex" +
+export const getMaxOrganizationReminderIndexWithDB = (database, organizationID) => {
+    const result = database.prepare("select reminderIndex" +
         " from OrganizationReminders" +
         " where organizationID = ?" +
         " order by reminderIndex desc" +

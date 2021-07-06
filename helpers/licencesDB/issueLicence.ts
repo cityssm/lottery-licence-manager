@@ -5,7 +5,7 @@ import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
 import type * as expressSession from "express-session";
 
 
-export const issueLicence = (licenceID: number, reqSession: expressSession.Session) => {
+export const issueLicence = (licenceID: number, requestSession: expressSession.Session): boolean => {
 
   const nowDate = new Date();
 
@@ -23,7 +23,7 @@ export const issueLicence = (licenceID: number, reqSession: expressSession.Sessi
     " and issueDate is null", [
       issueDate,
       issueTime,
-      reqSession.user.userName,
+      requestSession.user.userName,
       nowDate.getTime(),
       licenceID
     ]);

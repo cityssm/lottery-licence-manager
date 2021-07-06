@@ -1,5 +1,5 @@
-export const getMaxOrganizationRemarkIndexWithDB = (db, organizationID) => {
-    const result = db.prepare("select remarkIndex" +
+export const getMaxOrganizationRemarkIndexWithDB = (database, organizationID) => {
+    const result = database.prepare("select remarkIndex" +
         " from OrganizationRemarks" +
         " where organizationID = ?" +
         " order by remarkIndex desc" +

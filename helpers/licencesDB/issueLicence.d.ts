@@ -1,2 +1,2 @@
 import type * as expressSession from "express-session";
-export declare const issueLicence: (licenceID: number, reqSession: expressSession.Session) => boolean;
+export declare const issueLicence: (licenceID: number, requestSession: expressSession.Session) => boolean;

@@ -1,5 +1,5 @@
-export const getMaxLicenceTicketTypeIndexWithDB = (db, licenceID) => {
-    const result = db.prepare("select ticketTypeIndex" +
+export const getMaxLicenceTicketTypeIndexWithDB = (database, licenceID) => {
+    const result = database.prepare("select ticketTypeIndex" +
         " from LotteryLicenceTicketTypes" +
         " where licenceID = ?" +
         " order by ticketTypeIndex desc" +

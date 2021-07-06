@@ -1,11 +1,11 @@
 import type * as sqlite from "better-sqlite3";
 
 
-export const getMaxOrganizationRemarkIndexWithDB = (db: sqlite.Database, organizationID: number) => {
+export const getMaxOrganizationRemarkIndexWithDB = (database: sqlite.Database, organizationID: number): number => {
 
   const result: {
     remarkIndex: number;
-  } = db.prepare("select remarkIndex" +
+  } = database.prepare("select remarkIndex" +
     " from OrganizationRemarks" +
     " where organizationID = ?" +
     " order by remarkIndex desc" +

@@ -1,26 +1,26 @@
 import sqlite from "better-sqlite3";
-import { licencesDB as dbPath } from "../../data/databasePaths.js";
+import { licencesDB as databasePath } from "../../data/databasePaths.js";
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
 import { canUpdateObject } from "../licencesDB.js";
-export const getOrganization = (organizationID, reqSession) => {
-    const db = sqlite(dbPath, {
+export const getOrganization = (organizationID, requestSession) => {
+    const database = sqlite(databasePath, {
         readonly: true
     });
-    const organizationObj = db.prepare("select * from Organizations" +
+    const organizationObject = database.prepare("select * from Organizations" +
         " where organizationID = ?")
         .get(organizationID);
-    if (organizationObj) {
-        organizationObj.recordType = "organization";
-        organizationObj.fiscalStartDateString = dateTimeFns.dateIntegerToString(organizationObj.fiscalStartDate);
-        organizationObj.fiscalEndDateString = dateTimeFns.dateIntegerToString(organizationObj.fiscalEndDate);
-        organizationObj.canUpdate = canUpdateObject(organizationObj, reqSession);
-        const representativesList = db.prepare("select * from OrganizationRepresentatives" +
+    if (organizationObject) {
+        organizationObject.recordType = "organization";
+        organizationObject.fiscalStartDateString = dateTimeFns.dateIntegerToString(organizationObject.fiscalStartDate);
+        organizationObject.fiscalEndDateString = dateTimeFns.dateIntegerToString(organizationObject.fiscalEndDate);
+        organizationObject.canUpdate = canUpdateObject(organizationObject, requestSession);
+        const representativesList = database.prepare("select * from OrganizationRepresentatives" +
             " where organizationID = ?" +
             " order by isDefault desc, representativeName")
             .all(organizationID);
-        organizationObj.organizationRepresentatives = representativesList;
+        organizationObject.organizationRepresentatives = representativesList;
     }
-    db.close();
-    return organizationObj;
+    database.close();
+    return organizationObject;
 };
 export default getOrganization;

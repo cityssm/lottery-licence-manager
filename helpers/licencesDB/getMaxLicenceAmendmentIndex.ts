@@ -1,11 +1,11 @@
 import type * as sqlite from "better-sqlite3";
 
 
-export const getMaxLicenceAmendmentIndexWithDB = (db: sqlite.Database, licenceID: number | string) => {
+export const getMaxLicenceAmendmentIndexWithDB = (database: sqlite.Database, licenceID: number | string): number => {
 
   const result: {
     amendmentIndex: number;
-  } = db.prepare("select amendmentIndex" +
+  } = database.prepare("select amendmentIndex" +
     " from LotteryLicenceAmendments" +
     " where licenceID = ?" +
     " order by amendmentIndex desc" +

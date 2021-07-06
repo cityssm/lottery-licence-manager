@@ -1,11 +1,11 @@
 import type * as sqlite from "better-sqlite3";
 
 
-export const getMaxTransactionIndexWithDB = (db: sqlite.Database, licenceID: number | string) => {
+export const getMaxTransactionIndexWithDB = (database: sqlite.Database, licenceID: number | string): number => {
 
   const result: {
     transactionIndex: number;
-  } = db.prepare("select transactionIndex" +
+  } = database.prepare("select transactionIndex" +
     " from LotteryLicenceTransactions" +
     " where licenceID = ?" +
     " order by transactionIndex desc" +

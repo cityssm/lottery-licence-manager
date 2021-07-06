@@ -1,5 +1,5 @@
 import sqlite from "better-sqlite3";
-import { licencesDB as dbPath } from "../../data/databasePaths.js";
+import { licencesDB as databasePath } from "../../data/databasePaths.js";
 
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
 import { canUpdateObject } from "../licencesDB.js";
@@ -8,14 +8,14 @@ import type * as llm from "../../types/recordTypes";
 import type * as expressSession from "express-session";
 
 
-export const getUndismissedOrganizationReminders = (reqSession: expressSession.Session) => {
+export const getUndismissedOrganizationReminders = (requestSession: expressSession.Session): llm.OrganizationReminder[] => {
 
-  const db = sqlite(dbPath, {
+  const database = sqlite(databasePath, {
     readonly: true
   });
 
   const reminders: llm.OrganizationReminder[] =
-    db.prepare("select r.organizationID, o.organizationName, r.reminderIndex," +
+    database.prepare("select r.organizationID, o.organizationName, r.reminderIndex," +
       " r.reminderTypeKey, r.dueDate," +
       " r.reminderStatus, r.reminderNote," +
       " r.recordUpdate_userName, r.recordUpdate_timeMillis" +
@@ -27,7 +27,7 @@ export const getUndismissedOrganizationReminders = (reqSession: expressSession.S
       " order by r.dueDate, o.organizationName, r.reminderTypeKey")
       .all();
 
-  db.close();
+  database.close();
 
   for (const reminder of reminders) {
 
@@ -35,7 +35,7 @@ export const getUndismissedOrganizationReminders = (reqSession: expressSession.S
 
     reminder.dueDateString = dateTimeFns.dateIntegerToString(reminder.dueDate || 0);
 
-    reminder.canUpdate = canUpdateObject(reminder, reqSession);
+    reminder.canUpdate = canUpdateObject(reminder, requestSession);
   }
 
   return reminders;

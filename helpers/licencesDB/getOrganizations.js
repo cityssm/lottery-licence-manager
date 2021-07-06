@@ -1,12 +1,12 @@
 import sqlite from "better-sqlite3";
-import { licencesDB as dbPath } from "../../data/databasePaths.js";
+import { licencesDB as databasePath } from "../../data/databasePaths.js";
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
 import { canUpdateObject } from "../licencesDB.js";
-export const getOrganizations = (reqBody, reqSession, includeOptions) => {
-    const db = sqlite(dbPath, {
+export const getOrganizations = (requestBody, requestSession, includeOptions) => {
+    const database = sqlite(databasePath, {
         readonly: true
     });
-    const sqlParams = [dateTimeFns.dateToInteger(new Date())];
+    const sqlParameters = [dateTimeFns.dateToInteger(new Date())];
     let sql = "select o.organizationID, o.organizationName, o.isEligibleForLicences, o.organizationNote," +
         " r.representativeName," +
         " sum(case when l.endDate >= ? then 1 else 0 end) as licences_activeCount," +
@@ -16,33 +16,33 @@ export const getOrganizations = (reqBody, reqSession, includeOptions) => {
         " left join OrganizationRepresentatives r on o.organizationID = r.organizationID and r.isDefault = 1" +
         " left join LotteryLicences l on o.organizationID = l.organizationID and l.recordDelete_timeMillis is null" +
         " where o.recordDelete_timeMillis is null";
-    if (reqBody.organizationName && reqBody.organizationName !== "") {
-        const organizationNamePieces = reqBody.organizationName.toLowerCase().split(" ");
+    if (requestBody.organizationName && requestBody.organizationName !== "") {
+        const organizationNamePieces = requestBody.organizationName.toLowerCase().split(" ");
         for (const organizationPiece of organizationNamePieces) {
             sql += " and instr(lower(o.organizationName), ?)";
-            sqlParams.push(organizationPiece);
+            sqlParameters.push(organizationPiece);
         }
     }
-    if (reqBody.representativeName && reqBody.representativeName !== "") {
-        const representativeNamePieces = reqBody.representativeName.toLowerCase().split(" ");
+    if (requestBody.representativeName && requestBody.representativeName !== "") {
+        const representativeNamePieces = requestBody.representativeName.toLowerCase().split(" ");
         for (const representativePiece of representativeNamePieces) {
             sql += " and o.organizationID in (" +
                 "select organizationID from OrganizationRepresentatives where instr(lower(representativeName), ?)" +
                 ")";
-            sqlParams.push(representativePiece);
+            sqlParameters.push(representativePiece);
         }
     }
-    if (reqBody.isEligibleForLicences && reqBody.isEligibleForLicences !== "") {
+    if (requestBody.isEligibleForLicences && requestBody.isEligibleForLicences !== "") {
         sql += " and o.isEligibleForLicences = ?";
-        sqlParams.push(reqBody.isEligibleForLicences);
+        sqlParameters.push(requestBody.isEligibleForLicences);
     }
-    if (reqBody.organizationIsActive && reqBody.organizationIsActive !== "") {
+    if (requestBody.organizationIsActive && requestBody.organizationIsActive !== "") {
         const currentDate = dateTimeFns.dateToInteger(new Date());
         sql += " and o.organizationID in (" +
             "select lx.organizationID from LotteryLicences lx" +
             " where lx.recordDelete_timeMillis is null" +
             " and lx.issueDate is not null and lx.endDate >= ?)";
-        sqlParams.push(currentDate);
+        sqlParameters.push(currentDate);
     }
     sql += " group by o.organizationID, o.organizationName, o.isEligibleForLicences, o.organizationNote," +
         " r.representativeName," +
@@ -52,12 +52,12 @@ export const getOrganizations = (reqBody, reqSession, includeOptions) => {
         sql += " limit " + includeOptions.limit.toString() +
             " offset " + (includeOptions.offset || 0).toString();
     }
-    const rows = db.prepare(sql).all(sqlParams);
-    db.close();
+    const rows = database.prepare(sql).all(sqlParameters);
+    database.close();
     for (const ele of rows) {
         ele.recordType = "organization";
         ele.licences_endDateMaxString = dateTimeFns.dateIntegerToString(ele.licences_endDateMax || 0);
-        ele.canUpdate = canUpdateObject(ele, reqSession);
+        ele.canUpdate = canUpdateObject(ele, requestSession);
         delete ele.recordCreate_userName;
         delete ele.recordCreate_timeMillis;
         delete ele.recordUpdate_userName;

@@ -3,28 +3,34 @@ import sqlite from "better-sqlite3";
 
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
 
-import { licencesDB as dbPath } from "../../data/databasePaths.js";
+import { licencesDB as databasePath } from "../../data/databasePaths.js";
 
 import type * as llm from "../../types/recordTypes";
 import type * as expressSession from "express-session";
 
 
-export const getLocations = (reqSession: expressSession.Session, queryOptions: {
+interface GetLocationsReturn {
+  count: number;
+  locations: llm.Location[];
+}
+
+
+export const getLocations = (requestSession: expressSession.Session, queryOptions: {
   limit: number;
   offset: number;
   locationNameAddress?: string;
   locationIsDistributor: number;
   locationIsManufacturer: number;
   locationIsActive?: "on";
-}) => {
+}): GetLocationsReturn => {
 
-  const db = sqlite(dbPath, {
+  const database = sqlite(databasePath, {
     readonly: true
   });
 
   // build where clause
 
-  const sqlParams = [];
+  const sqlParameters = [];
 
   let sqlWhereClause = " where lo.recordDelete_timeMillis is null";
 
@@ -35,22 +41,21 @@ export const getLocations = (reqSession: expressSession.Session, queryOptions: {
     for (const locationPiece of locationNameAddressSplit) {
 
       sqlWhereClause += " and (instr(lower(lo.locationName), ?) or instr(lower(lo.locationAddress1),?))";
-      sqlParams.push(locationPiece);
-      sqlParams.push(locationPiece);
+      sqlParameters.push(locationPiece, locationPiece);
     }
   }
 
   if (queryOptions.locationIsDistributor !== -1) {
 
     sqlWhereClause += " and lo.locationIsDistributor = ?";
-    sqlParams.push(queryOptions.locationIsDistributor);
+    sqlParameters.push(queryOptions.locationIsDistributor);
 
   }
 
   if (queryOptions.locationIsManufacturer !== -1) {
 
     sqlWhereClause += " and lo.locationIsManufacturer = ?";
-    sqlParams.push(queryOptions.locationIsManufacturer);
+    sqlParameters.push(queryOptions.locationIsManufacturer);
 
   }
 
@@ -63,7 +68,7 @@ export const getLocations = (reqSession: expressSession.Session, queryOptions: {
       " where lx.recordDelete_timeMillis is null" +
       " and lx.issueDate is not null and lx.endDate >= ?))";
 
-    sqlParams.push(currentDate);
+    sqlParameters.push(currentDate);
   }
 
   // if limit is used, get the count
@@ -72,10 +77,10 @@ export const getLocations = (reqSession: expressSession.Session, queryOptions: {
 
   if (queryOptions.limit !== -1) {
 
-    count = db.prepare("select ifnull(count(*), 0) as cnt" +
+    count = database.prepare("select ifnull(count(*), 0) as cnt" +
       " from Locations lo" +
       sqlWhereClause)
-      .get(sqlParams)
+      .get(sqlParameters)
       .cnt;
   }
 
@@ -123,9 +128,9 @@ export const getLocations = (reqSession: expressSession.Session, queryOptions: {
   }
 
   const rows: llm.Location[] =
-    db.prepare(sql).all(sqlParams);
+    database.prepare(sql).all(sqlParameters);
 
-  db.close();
+  database.close();
 
   for (const ele of rows) {
 
@@ -138,7 +143,7 @@ export const getLocations = (reqSession: expressSession.Session, queryOptions: {
     ele.distributor_endDateMaxString = dateTimeFns.dateIntegerToString(ele.distributor_endDateMax);
     ele.manufacturer_endDateMaxString = dateTimeFns.dateIntegerToString(ele.manufacturer_endDateMax);
 
-    ele.canUpdate = canUpdateObject(ele, reqSession);
+    ele.canUpdate = canUpdateObject(ele, requestSession);
   }
 
 

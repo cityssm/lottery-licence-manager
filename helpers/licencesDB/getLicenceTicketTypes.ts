@@ -5,11 +5,11 @@ import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
 import type * as llm from "../../types/recordTypes";
 
 
-export const getLicenceTicketTypesWithDB = (db: sqlite.Database, licenceID: number | string) => {
+export const getLicenceTicketTypesWithDB = (database: sqlite.Database, licenceID: number | string): llm.LotteryLicenceTicketType[] => {
 
-  db.function("userFn_dateIntegerToString", dateTimeFns.dateIntegerToString);
+  database.function("userFn_dateIntegerToString", dateTimeFns.dateIntegerToString);
 
-  const ticketTypesList: llm.LotteryLicenceTicketType[] = db.prepare(
+  const ticketTypesList: llm.LotteryLicenceTicketType[] = database.prepare(
     "select t.ticketTypeIndex," +
     " t.amendmentDate," +
     " userFn_dateIntegerToString(t.amendmentDate) as amendmentDateString," +
