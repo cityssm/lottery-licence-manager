@@ -1,5 +1,5 @@
 import sqlite from "better-sqlite3";
-import { licencesDB as dbPath } from "../../data/databasePaths.js";
+import { licencesDB as databasePath } from "../../data/databasePaths.js";
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
 export const getDashboardStats = () => {
     const windowDate = new Date();
@@ -8,10 +8,10 @@ export const getDashboardStats = () => {
     const windowEndDateInteger = dateTimeFns.dateToInteger(windowDate);
     windowDate.setDate(windowDate.getDate() - 14);
     const windowStartDateInteger = dateTimeFns.dateToInteger(windowDate);
-    const db = sqlite(dbPath, {
+    const database = sqlite(databasePath, {
         readonly: true
     });
-    const licenceStats = db.prepare("select ifnull(count(licenceID), 0) as licenceCount," +
+    const licenceStats = database.prepare("select ifnull(count(licenceID), 0) as licenceCount," +
         " ifnull(count(distinct organizationID), 0) as distinctOrganizationCount," +
         " ifnull(count(distinct locationID), 0) as distinctLocationCount" +
         " from LotteryLicences" +
@@ -19,7 +19,7 @@ export const getDashboardStats = () => {
         " and issueDate is not NULL" +
         " and endDate >= ?")
         .get(currentDateInteger);
-    const eventStats = db.prepare("select ifnull(sum(case when eventDate = ? then 1 else 0 end), 0) as todayCount," +
+    const eventStats = database.prepare("select ifnull(sum(case when eventDate = ? then 1 else 0 end), 0) as todayCount," +
         " ifnull(sum(case when eventDate < ? then 1 else 0 end), 0) as pastCount," +
         " ifnull(sum(case when eventDate > ? then 1 else 0 end), 0) as upcomingCount" +
         " from LotteryEvents" +
@@ -29,7 +29,7 @@ export const getDashboardStats = () => {
         .get(currentDateInteger, currentDateInteger, currentDateInteger, windowStartDateInteger, windowEndDateInteger);
     let events = [];
     if (eventStats.todayCount > 0 || eventStats.upcomingCount > 0) {
-        events = db.prepare("select e.eventDate, l.licenceID, l.externalLicenceNumber," +
+        events = database.prepare("select e.eventDate, l.licenceID, l.externalLicenceNumber," +
             " l.licenceTypeKey," +
             " lo.locationName, lo.locationAddress1," +
             " o.organizationName" +
@@ -49,7 +49,7 @@ export const getDashboardStats = () => {
                 (eventRecord.locationName === "" ? eventRecord.locationAddress1 : eventRecord.locationName);
         }
     }
-    const reminderStats = db.prepare("select ifnull(sum(case when dueDate = ? then 1 else 0 end), 0) as todayCount," +
+    const reminderStats = database.prepare("select ifnull(sum(case when dueDate = ? then 1 else 0 end), 0) as todayCount," +
         " ifnull(sum(case when dueDate < ? then 1 else 0 end), 0) as pastCount," +
         " ifnull(sum(case when dueDate > ? then 1 else 0 end), 0) as upcomingCount" +
         " from OrganizationReminders" +
@@ -59,7 +59,7 @@ export const getDashboardStats = () => {
         .get(currentDateInteger, currentDateInteger, currentDateInteger, windowEndDateInteger);
     let reminders = [];
     if (reminderStats.todayCount > 0 || reminderStats.upcomingCount > 0) {
-        reminders = db.prepare("select r.organizationID, o.organizationName," +
+        reminders = database.prepare("select r.organizationID, o.organizationName," +
             " r.reminderTypeKey, r.dueDate" +
             " from OrganizationReminders r" +
             " left join Organizations o on r.organizationID = o.organizationID" +
@@ -74,7 +74,7 @@ export const getDashboardStats = () => {
             reminder.dueDateString = dateTimeFns.dateIntegerToString(reminder.dueDate);
         }
     }
-    db.close();
+    database.close();
     const result = {
         currentDate: currentDateInteger,
         currentDateString: dateTimeFns.dateIntegerToString(currentDateInteger),

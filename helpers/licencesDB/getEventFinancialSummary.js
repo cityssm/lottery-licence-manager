@@ -1,12 +1,11 @@
 import sqlite from "better-sqlite3";
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
-import { licencesDB as dbPath } from "../../data/databasePaths.js";
-;
-export const getEventFinancialSummary = (reqBody) => {
-    const db = sqlite(dbPath, {
+import { licencesDB as databasePath } from "../../data/databasePaths.js";
+export const getEventFinancialSummary = (requestBody) => {
+    const database = sqlite(databasePath, {
         readonly: true
     });
-    const sqlParams = [];
+    const sqlParameters = [];
     let sql = "select licenceTypeKey," +
         " count(licenceID) as licenceCount," +
         " sum(eventCount) as eventCount," +
@@ -36,18 +35,18 @@ export const getEventFinancialSummary = (reqBody) => {
         " group by licenceID, eventDate" +
         ") c on e.licenceID = c.licenceID and e.eventDate = c.eventDate" +
         " where l.recordDelete_timeMillis is null";
-    if (reqBody.eventDateStartString && reqBody.eventDateStartString !== "") {
+    if (requestBody.eventDateStartString && requestBody.eventDateStartString !== "") {
         sql += " and e.eventDate >= ?";
-        sqlParams.push(dateTimeFns.dateStringToInteger(reqBody.eventDateStartString));
+        sqlParameters.push(dateTimeFns.dateStringToInteger(requestBody.eventDateStartString));
     }
-    if (reqBody.eventDateEndString && reqBody.eventDateEndString !== "") {
+    if (requestBody.eventDateEndString && requestBody.eventDateEndString !== "") {
         sql += " and e.eventDate <= ?";
-        sqlParams.push(dateTimeFns.dateStringToInteger(reqBody.eventDateEndString));
+        sqlParameters.push(dateTimeFns.dateStringToInteger(requestBody.eventDateEndString));
     }
     sql += " group by l.licenceID, l.licenceTypeKey, l.licenceFee" +
         " ) t" +
         " group by licenceTypeKey";
-    const rows = db.prepare(sql).all(sqlParams);
-    db.close();
+    const rows = database.prepare(sql).all(sqlParameters);
+    database.close();
     return rows;
 };

@@ -1,7 +1,9 @@
 import type * as llm from "../../types/recordTypes";
-export declare const getLicenceActivityByDateRange: (startDate: number, endDate: number) => {
+interface GetLicenceActivityByDateRangeReturn {
     startDateString: string;
     endDateString: string;
-    licences: llm.LotteryLicence[];
-    events: llm.LotteryEvent[];
-};
+    licences?: llm.LotteryLicence[];
+    events?: llm.LotteryEvent[];
+}
+export declare const getLicenceActivityByDateRange: (startDate: number, endDate: number) => GetLicenceActivityByDateRangeReturn;
+export {};

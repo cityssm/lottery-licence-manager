@@ -1,11 +1,11 @@
 import sqlite from "better-sqlite3";
-import { licencesDB as dbPath } from "../../data/databasePaths.js";
+import { licencesDB as databasePath } from "../../data/databasePaths.js";
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
 export const getDistinctTermsConditions = (organizationID) => {
-    const db = sqlite(dbPath, {
+    const database = sqlite(databasePath, {
         readonly: true
     });
-    const terms = db.prepare("select termsConditions," +
+    const terms = database.prepare("select termsConditions," +
         " count(licenceID) as termsConditionsCount," +
         " max(case when l.issueDate is null then 0 else 1 end) as isIssued," +
         " max(startDate) as startDateMax" +
@@ -16,7 +16,7 @@ export const getDistinctTermsConditions = (organizationID) => {
         " group by l.termsConditions" +
         " order by startDateMax desc")
         .all(organizationID);
-    db.close();
+    database.close();
     for (const term of terms) {
         term.startDateMaxString = dateTimeFns.dateIntegerToString(term.startDateMax);
     }

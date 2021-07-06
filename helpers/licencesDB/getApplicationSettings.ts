@@ -1,16 +1,16 @@
 import sqlite from "better-sqlite3";
-import { licencesDB as dbPath } from "../../data/databasePaths.js";
+import { licencesDB as databasePath } from "../../data/databasePaths.js";
 
 
 export const getApplicationSettings = () => {
 
-  const db = sqlite(dbPath, {
+  const database = sqlite(databasePath, {
     readonly: true
   });
 
-  const rows = db.prepare("select * from ApplicationSettings order by orderNumber, settingKey").all();
+  const rows = database.prepare("select * from ApplicationSettings order by orderNumber, settingKey").all();
 
-  db.close();
+  database.close();
 
   return rows;
 };

@@ -1,28 +1,33 @@
 import sqlite from "better-sqlite3";
 
-import { licencesDB as dbPath } from "../../data/databasePaths.js";
+import { licencesDB as databasePath } from "../../data/databasePaths.js";
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
 
 import type * as llm from "../../types/recordTypes";
 
+interface GetLicenceActivityByDateRangeReturn {
+  startDateString: string;
+  endDateString: string;
+  licences?: llm.LotteryLicence[];
+  events?: llm.LotteryEvent[];
+}
 
-export const getLicenceActivityByDateRange = (startDate: number, endDate: number) => {
 
-  const db = sqlite(dbPath, {
+export const getLicenceActivityByDateRange = (startDate: number, endDate: number): GetLicenceActivityByDateRangeReturn => {
+
+  const database = sqlite(databasePath, {
     readonly: true
   });
 
-  const activity = {
+  const activity: GetLicenceActivityByDateRangeReturn = {
     startDateString: dateTimeFns.dateIntegerToString(startDate),
-    endDateString: dateTimeFns.dateIntegerToString(endDate),
-    licences: null as llm.LotteryLicence[],
-    events: null as llm.LotteryEvent[]
+    endDateString: dateTimeFns.dateIntegerToString(endDate)
   };
 
   // Get licences
 
   activity.licences =
-    db.prepare("select l.licenceID, l.externalLicenceNumber," +
+    database.prepare("select l.licenceID, l.externalLicenceNumber," +
       " l.startDate, l.endDate," +
       " l.licenceTypeKey, l.licenceDetails," +
       " o.organizationName, lo.locationName, lo.locationAddress1" +
@@ -46,7 +51,7 @@ export const getLicenceActivityByDateRange = (startDate: number, endDate: number
   // Get events
 
   activity.events =
-    db.prepare("select e.eventDate, l.licenceID, l.externalLicenceNumber," +
+    database.prepare("select e.eventDate, l.licenceID, l.externalLicenceNumber," +
       " l.startTime, l.endTime," +
       " l.licenceTypeKey, l.licenceDetails," +
       " o.organizationName, lo.locationName, lo.locationAddress1" +
@@ -66,7 +71,7 @@ export const getLicenceActivityByDateRange = (startDate: number, endDate: number
     record.endTimeString = dateTimeFns.timeIntegerToString(record.endTime);
   }
 
-  db.close();
+  database.close();
 
   return activity;
 };

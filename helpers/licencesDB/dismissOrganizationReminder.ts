@@ -6,7 +6,7 @@ import type * as expressSession from "express-session";
 
 
 export const dismissOrganizationReminder =
-  (organizationID: number, reminderIndex: number, reqSession: expressSession.Session) => {
+  (organizationID: number, reminderIndex: number, requestSession: expressSession.Session): boolean => {
 
     const currentDate = new Date();
 
@@ -19,7 +19,7 @@ export const dismissOrganizationReminder =
       " and dismissedDate is null" +
       " and recordDelete_timeMillis is null", [
         dateTimeFns.dateToInteger(currentDate),
-        reqSession.user.userName,
+        requestSession.user.userName,
         currentDate.getTime(),
         organizationID,
         reminderIndex]);

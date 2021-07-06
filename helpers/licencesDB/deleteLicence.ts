@@ -1,24 +1,24 @@
 import sqlite from "better-sqlite3";
-import { licencesDB as dbPath } from "../../data/databasePaths.js";
+import { licencesDB as databasePath } from "../../data/databasePaths.js";
 
 import { resetEventTableStats, resetLicenceTableStats } from "../licencesDB.js";
 
 import type * as expressSession from "express-session";
 
 
-export const deleteLicence = (licenceID: number, reqSession: expressSession.Session) => {
+export const deleteLicence = (licenceID: number, requestSession: expressSession.Session): boolean => {
 
-  const db = sqlite(dbPath);
+  const database = sqlite(databasePath);
 
   const nowMillis = Date.now();
 
-  const info = db.prepare("update LotteryLicences" +
+  const info = database.prepare("update LotteryLicences" +
     " set recordDelete_userName = ?," +
     " recordDelete_timeMillis = ?" +
     " where licenceID = ?" +
     " and recordDelete_timeMillis is null")
     .run(
-      reqSession.user.userName,
+      requestSession.user.userName,
       nowMillis,
       licenceID
     );
@@ -27,20 +27,20 @@ export const deleteLicence = (licenceID: number, reqSession: expressSession.Sess
 
   if (changeCount) {
 
-    db.prepare("update LotteryEvents" +
+    database.prepare("update LotteryEvents" +
       " set recordDelete_userName = ?," +
       " recordDelete_timeMillis = ?" +
       " where licenceID = ?" +
       " and recordDelete_timeMillis is null")
       .run(
-        reqSession.user.userName,
+        requestSession.user.userName,
         nowMillis,
         licenceID
       );
 
   }
 
-  db.close();
+  database.close();
 
   // Reset the cached stats
   resetLicenceTableStats();

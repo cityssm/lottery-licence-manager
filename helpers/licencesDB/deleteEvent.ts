@@ -5,7 +5,7 @@ import * as licencesDB from "../licencesDB.js";
 import type * as expressSession from "express-session";
 
 
-export const deleteEvent = (licenceID: number, eventDate: number, reqSession: expressSession.Session) => {
+export const deleteEvent = (licenceID: number, eventDate: number, requestSession: expressSession.Session): boolean => {
 
   const nowMillis = Date.now();
 
@@ -15,7 +15,7 @@ export const deleteEvent = (licenceID: number, eventDate: number, reqSession: ex
     " where licenceID = ?" +
     " and eventDate = ?" +
     " and recordDelete_timeMillis is null", [
-      reqSession.user.userName,
+      requestSession.user.userName,
       nowMillis,
       licenceID,
       eventDate

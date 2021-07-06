@@ -2,7 +2,7 @@ import sqlite from "better-sqlite3";
 
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
 
-import { licencesDB as dbPath } from "../../data/databasePaths.js";
+import { licencesDB as databasePath } from "../../data/databasePaths.js";
 
 
 export interface EventFinancialSummary {
@@ -11,19 +11,19 @@ export interface EventFinancialSummary {
   eventCount: number;
   reportDateCount: number;
   licenceFeeSum: number;
-};
+}
 
 
-export const getEventFinancialSummary = (reqBody: {
+export const getEventFinancialSummary = (requestBody: {
   eventDateStartString: string;
   eventDateEndString: string;
-}) => {
+}): EventFinancialSummary[] => {
 
-  const db = sqlite(dbPath, {
+  const database = sqlite(databasePath, {
     readonly: true
   });
 
-  const sqlParams = [];
+  const sqlParameters = [];
 
   let sql = "select licenceTypeKey," +
     " count(licenceID) as licenceCount," +
@@ -55,25 +55,25 @@ export const getEventFinancialSummary = (reqBody: {
     ") c on e.licenceID = c.licenceID and e.eventDate = c.eventDate" +
     " where l.recordDelete_timeMillis is null";
 
-  if (reqBody.eventDateStartString && reqBody.eventDateStartString !== "") {
+  if (requestBody.eventDateStartString && requestBody.eventDateStartString !== "") {
 
     sql += " and e.eventDate >= ?";
-    sqlParams.push(dateTimeFns.dateStringToInteger(reqBody.eventDateStartString));
+    sqlParameters.push(dateTimeFns.dateStringToInteger(requestBody.eventDateStartString));
   }
 
-  if (reqBody.eventDateEndString && reqBody.eventDateEndString !== "") {
+  if (requestBody.eventDateEndString && requestBody.eventDateEndString !== "") {
 
     sql += " and e.eventDate <= ?";
-    sqlParams.push(dateTimeFns.dateStringToInteger(reqBody.eventDateEndString));
+    sqlParameters.push(dateTimeFns.dateStringToInteger(requestBody.eventDateEndString));
   }
 
   sql += " group by l.licenceID, l.licenceTypeKey, l.licenceFee" +
     " ) t" +
     " group by licenceTypeKey";
 
-  const rows: EventFinancialSummary[] = db.prepare(sql).all(sqlParams);
+  const rows: EventFinancialSummary[] = database.prepare(sql).all(sqlParameters);
 
-  db.close();
+  database.close();
 
   return rows;
 };

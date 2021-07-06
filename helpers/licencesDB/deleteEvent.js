@@ -1,6 +1,6 @@
 import { runSQL } from "./_runSQL.js";
 import * as licencesDB from "../licencesDB.js";
-export const deleteEvent = (licenceID, eventDate, reqSession) => {
+export const deleteEvent = (licenceID, eventDate, requestSession) => {
     const nowMillis = Date.now();
     const result = runSQL("update LotteryEvents" +
         " set recordDelete_userName = ?," +
@@ -8,7 +8,7 @@ export const deleteEvent = (licenceID, eventDate, reqSession) => {
         " where licenceID = ?" +
         " and eventDate = ?" +
         " and recordDelete_timeMillis is null", [
-        reqSession.user.userName,
+        requestSession.user.userName,
         nowMillis,
         licenceID,
         eventDate

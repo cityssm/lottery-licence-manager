@@ -1,12 +1,12 @@
 import sqlite from "better-sqlite3";
-import { licencesDB as dbPath } from "../../data/databasePaths.js";
+import { licencesDB as databasePath } from "../../data/databasePaths.js";
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
 import { canUpdateObject } from "../licencesDB.js";
-export const getEvents = (reqBody, reqSession) => {
-    const db = sqlite(dbPath, {
+export const getEvents = (requestBody, requestSession) => {
+    const database = sqlite(databasePath, {
         readonly: true
     });
-    const sqlParams = [reqBody.eventYear, reqBody.eventYear];
+    const sqlParameters = [requestBody.eventYear, requestBody.eventYear];
     let sql = "select e.eventDate, e.bank_name," +
         " sum(coalesce(c.costs_receipts, 0)) as costs_receiptsSum," +
         " l.licenceID, l.externalLicenceNumber, l.licenceTypeKey, l.licenceDetails," +
@@ -23,27 +23,26 @@ export const getEvents = (reqBody, reqSession) => {
         " and l.recordDelete_timeMillis is null" +
         " and e.eventDate > (? * 10000)" +
         " and e.eventDate < (? * 10000) + 9999";
-    if (reqBody.externalLicenceNumber && reqBody.externalLicenceNumber !== "") {
+    if (requestBody.externalLicenceNumber && requestBody.externalLicenceNumber !== "") {
         sql += " and instr(lower(l.externalLicenceNumber), ?) > 0";
-        sqlParams.push(reqBody.externalLicenceNumber);
+        sqlParameters.push(requestBody.externalLicenceNumber);
     }
-    if (reqBody.licenceTypeKey && reqBody.licenceTypeKey !== "") {
+    if (requestBody.licenceTypeKey && requestBody.licenceTypeKey !== "") {
         sql += " and l.licenceTypeKey = ?";
-        sqlParams.push(reqBody.licenceTypeKey);
+        sqlParameters.push(requestBody.licenceTypeKey);
     }
-    if (reqBody.organizationName && reqBody.organizationName !== "") {
-        const organizationNamePieces = reqBody.organizationName.toLowerCase().split(" ");
+    if (requestBody.organizationName && requestBody.organizationName !== "") {
+        const organizationNamePieces = requestBody.organizationName.toLowerCase().split(" ");
         for (const organizationNamePiece of organizationNamePieces) {
             sql += " and instr(lower(o.organizationName), ?)";
-            sqlParams.push(organizationNamePiece);
+            sqlParameters.push(organizationNamePiece);
         }
     }
-    if (reqBody.locationName && reqBody.locationName !== "") {
-        const locationNamePieces = reqBody.locationName.toLowerCase().split(" ");
+    if (requestBody.locationName && requestBody.locationName !== "") {
+        const locationNamePieces = requestBody.locationName.toLowerCase().split(" ");
         for (const locationNamePiece of locationNamePieces) {
             sql += " and (instr(lower(lo.locationName), ?) or instr(lower(lo.locationAddress1), ?))";
-            sqlParams.push(locationNamePiece);
-            sqlParams.push(locationNamePiece);
+            sqlParameters.push(locationNamePiece, locationNamePiece);
         }
     }
     sql += " group by e.eventDate, e.bank_name," +
@@ -51,9 +50,9 @@ export const getEvents = (reqBody, reqSession) => {
         " lo.locationName, lo.locationAddress1, l.startTime, l.endTime, o.organizationName," +
         " e.recordCreate_userName, e.recordCreate_timeMillis, e.recordUpdate_userName, e.recordUpdate_timeMillis" +
         " order by e.eventDate, l.startTime";
-    const events = db.prepare(sql)
-        .all(sqlParams);
-    db.close();
+    const events = database.prepare(sql)
+        .all(sqlParameters);
+    database.close();
     for (const lotteryEvent of events) {
         lotteryEvent.recordType = "event";
         lotteryEvent.eventDateString = dateTimeFns.dateIntegerToString(lotteryEvent.eventDate);
@@ -61,7 +60,7 @@ export const getEvents = (reqBody, reqSession) => {
         lotteryEvent.endTimeString = dateTimeFns.timeIntegerToString(lotteryEvent.endTime || 0);
         lotteryEvent.locationDisplayName =
             (lotteryEvent.locationName === "" ? lotteryEvent.locationAddress1 : lotteryEvent.locationName);
-        lotteryEvent.canUpdate = canUpdateObject(lotteryEvent, reqSession);
+        lotteryEvent.canUpdate = canUpdateObject(lotteryEvent, requestSession);
         delete lotteryEvent.locationName;
         delete lotteryEvent.locationAddress1;
         delete lotteryEvent.bank_name;

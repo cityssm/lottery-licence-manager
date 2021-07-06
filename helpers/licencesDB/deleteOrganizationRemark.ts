@@ -4,7 +4,7 @@ import type * as expressSession from "express-session";
 
 
 export const deleteOrganizationRemark =
-  (organizationID: number, remarkIndex: number, reqSession: expressSession.Session) => {
+  (organizationID: number, remarkIndex: number, requestSession: expressSession.Session): boolean => {
 
     return runSQL_hasChanges("update OrganizationRemarks" +
       " set recordDelete_userName = ?," +
@@ -12,7 +12,7 @@ export const deleteOrganizationRemark =
       " where organizationID = ?" +
       " and remarkIndex = ?" +
       " and recordDelete_timeMillis is null", [
-        reqSession.user.userName,
+        requestSession.user.userName,
         Date.now(),
         organizationID,
         remarkIndex

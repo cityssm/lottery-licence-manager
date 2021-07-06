@@ -1,18 +1,18 @@
 import sqlite from "better-sqlite3";
 
-import { licencesDB as dbPath } from "../../data/databasePaths.js";
+import { licencesDB as databasePath } from "../../data/databasePaths.js";
 
 import type * as llm from "../../types/recordTypes";
 import type * as expressSession from "express-session";
 
 
-export const createOrganization = (reqBody: llm.Organization, reqSession: expressSession.Session) => {
+export const createOrganization = (requestBody: llm.Organization, requestSession: expressSession.Session): number => {
 
-  const db = sqlite(dbPath);
+  const database = sqlite(databasePath);
 
   const nowMillis = Date.now();
 
-  const info = db.prepare("insert into Organizations (" +
+  const info = database.prepare("insert into Organizations (" +
     "organizationName, organizationAddress1, organizationAddress2," +
     " organizationCity, organizationProvince, organizationPostalCode," +
     " organizationNote," +
@@ -20,20 +20,20 @@ export const createOrganization = (reqBody: llm.Organization, reqSession: expres
     " recordUpdate_userName, recordUpdate_timeMillis)" +
     " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
     .run(
-      reqBody.organizationName,
-      reqBody.organizationAddress1,
-      reqBody.organizationAddress2,
-      reqBody.organizationCity,
-      reqBody.organizationProvince,
-      reqBody.organizationPostalCode,
+      requestBody.organizationName,
+      requestBody.organizationAddress1,
+      requestBody.organizationAddress2,
+      requestBody.organizationCity,
+      requestBody.organizationProvince,
+      requestBody.organizationPostalCode,
       "",
-      reqSession.user.userName,
+      requestSession.user.userName,
       nowMillis,
-      reqSession.user.userName,
+      requestSession.user.userName,
       nowMillis
     );
 
-  db.close();
+  database.close();
 
   return Number(info.lastInsertRowid);
 };

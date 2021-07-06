@@ -1,5 +1,5 @@
 import sqlite from "better-sqlite3";
-import { licencesDB as dbPath } from "../../data/databasePaths.js";
+import { licencesDB as databasePath } from "../../data/databasePaths.js";
 
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
 import { canUpdateObject } from "../licencesDB.js";
@@ -8,40 +8,40 @@ import type * as llm from "../../types/recordTypes";
 import type * as expressSession from "express-session";
 
 
-export const getEvent = (licenceID: number, eventDate: number, reqSession: expressSession.Session) => {
+export const getEvent = (licenceID: number, eventDate: number, requestSession: expressSession.Session): llm.LotteryEvent => {
 
-  const db = sqlite(dbPath, {
+  const database = sqlite(databasePath, {
     readonly: true
   });
 
-  const eventObj: llm.LotteryEvent = db.prepare("select *" +
+  const eventObject: llm.LotteryEvent = database.prepare("select *" +
     " from LotteryEvents" +
     " where recordDelete_timeMillis is null" +
     " and licenceID = ?" +
     " and eventDate = ?")
     .get(licenceID, eventDate);
 
-  if (eventObj) {
+  if (eventObject) {
 
-    eventObj.recordType = "event";
+    eventObject.recordType = "event";
 
-    eventObj.eventDateString = dateTimeFns.dateIntegerToString(eventObj.eventDate);
+    eventObject.eventDateString = dateTimeFns.dateIntegerToString(eventObject.eventDate);
 
-    eventObj.reportDateString = dateTimeFns.dateIntegerToString(eventObj.reportDate);
+    eventObject.reportDateString = dateTimeFns.dateIntegerToString(eventObject.reportDate);
 
-    eventObj.startTimeString = dateTimeFns.timeIntegerToString(eventObj.startTime || 0);
-    eventObj.endTimeString = dateTimeFns.timeIntegerToString(eventObj.endTime || 0);
+    eventObject.startTimeString = dateTimeFns.timeIntegerToString(eventObject.startTime || 0);
+    eventObject.endTimeString = dateTimeFns.timeIntegerToString(eventObject.endTime || 0);
 
-    eventObj.canUpdate = canUpdateObject(eventObj, reqSession);
+    eventObject.canUpdate = canUpdateObject(eventObject, requestSession);
 
-    let rows = db.prepare("select fieldKey, fieldValue" +
+    let rows = database.prepare("select fieldKey, fieldValue" +
       " from LotteryEventFields" +
       " where licenceID = ? and eventDate = ?")
       .all(licenceID, eventDate);
 
-    eventObj.eventFields = rows || [];
+    eventObject.eventFields = rows || [];
 
-    rows = db.prepare("select distinct t.ticketType," +
+    rows = database.prepare("select distinct t.ticketType," +
       " c.costs_receipts, c.costs_admin, c.costs_prizesAwarded" +
       " from LotteryLicenceTicketTypes t" +
       " left join LotteryEventCosts c on t.licenceID = c.licenceID and t.ticketType = c.ticketType and c.eventDate = ?" +
@@ -50,11 +50,11 @@ export const getEvent = (licenceID: number, eventDate: number, reqSession: expre
       " order by t.ticketType")
       .all(eventDate, licenceID);
 
-    eventObj.eventCosts = rows || [];
+    eventObject.eventCosts = rows || [];
 
-    if (eventObj.eventCosts.length === 0) {
+    if (eventObject.eventCosts.length === 0) {
 
-      rows = db.prepare("select c.ticketType," +
+      rows = database.prepare("select c.ticketType," +
         " c.costs_receipts, c.costs_admin, c.costs_prizesAwarded" +
         " from LotteryEventCosts c" +
         " where c.licenceID = ?" +
@@ -62,22 +62,22 @@ export const getEvent = (licenceID: number, eventDate: number, reqSession: expre
         " order by c.ticketType")
         .all(licenceID, eventDate);
 
-      eventObj.eventCosts = rows || [];
+      eventObject.eventCosts = rows || [];
     }
 
-    if (eventObj.eventCosts.length === 0) {
-      eventObj.eventCosts.push({
-        ticketType: null,
-        costs_receipts: null,
-        costs_admin: null,
-        costs_prizesAwarded: null
+    if (eventObject.eventCosts.length === 0) {
+      eventObject.eventCosts.push({
+        ticketType: undefined,
+        costs_receipts: undefined,
+        costs_admin: undefined,
+        costs_prizesAwarded: undefined
       });
     }
   }
 
-  db.close();
+  database.close();
 
-  return eventObj;
+  return eventObject;
 };
 
 

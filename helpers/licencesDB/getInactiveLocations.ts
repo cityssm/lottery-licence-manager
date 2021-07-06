@@ -1,24 +1,24 @@
 import sqlite from "better-sqlite3";
 
-import { licencesDB as dbPath } from "../../data/databasePaths.js";
+import { licencesDB as databasePath } from "../../data/databasePaths.js";
 
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
 
 import * as llm from "../../types/recordTypes";
 
 
-export const getInactiveLocations = (inactiveYears: number) => {
+export const getInactiveLocations = (inactiveYears: number): llm.Location[] => {
 
   const cutoffDate = new Date();
   cutoffDate.setFullYear(cutoffDate.getFullYear() - inactiveYears);
 
   const cutoffDateInteger = dateTimeFns.dateToInteger(cutoffDate);
 
-  const db = sqlite(dbPath, {
+  const database = sqlite(databasePath, {
     readonly: true
   });
 
-  const rows: llm.Location[] = db.prepare("select lo.locationID, lo.locationName, lo.locationAddress1," +
+  const rows: llm.Location[] = database.prepare("select lo.locationID, lo.locationName, lo.locationAddress1," +
     " lo.recordUpdate_timeMillis, lo.recordUpdate_userName," +
     " l.licences_endDateMax, d.distributor_endDateMax, m.manufacturer_endDateMax" +
     " from Locations lo" +
@@ -54,20 +54,20 @@ export const getInactiveLocations = (inactiveYears: number) => {
     " order by lo.locationName, lo.locationAddress1, lo.locationID")
     .all(cutoffDateInteger);
 
-  db.close();
+  database.close();
 
-  for (const locationObj of rows) {
+  for (const locationObject of rows) {
 
-    locationObj.locationDisplayName =
-      locationObj.locationName === "" ? locationObj.locationAddress1 : locationObj.locationName;
+    locationObject.locationDisplayName =
+      locationObject.locationName === "" ? locationObject.locationAddress1 : locationObject.locationName;
 
-    locationObj.recordUpdate_dateString = dateTimeFns.dateToString(new Date(locationObj.recordUpdate_timeMillis));
+    locationObject.recordUpdate_dateString = dateTimeFns.dateToString(new Date(locationObject.recordUpdate_timeMillis));
 
-    locationObj.licences_endDateMaxString = dateTimeFns.dateIntegerToString(locationObj.licences_endDateMax || 0);
-    locationObj.distributor_endDateMaxString = dateTimeFns.dateIntegerToString(locationObj.distributor_endDateMax || 0);
+    locationObject.licences_endDateMaxString = dateTimeFns.dateIntegerToString(locationObject.licences_endDateMax || 0);
+    locationObject.distributor_endDateMaxString = dateTimeFns.dateIntegerToString(locationObject.distributor_endDateMax || 0);
 
-    locationObj.manufacturer_endDateMaxString =
-      dateTimeFns.dateIntegerToString(locationObj.manufacturer_endDateMax || 0);
+    locationObject.manufacturer_endDateMaxString =
+      dateTimeFns.dateIntegerToString(locationObject.manufacturer_endDateMax || 0);
   }
 
   return rows;

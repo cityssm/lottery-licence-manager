@@ -1,5 +1,5 @@
 import sqlite from "better-sqlite3";
-import { licencesDB as dbPath } from "../../data/databasePaths.js";
+import { licencesDB as databasePath } from "../../data/databasePaths.js";
 
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
 import { canUpdateObject } from "../licencesDB.js";
@@ -8,19 +8,19 @@ import type * as llm from "../../types/recordTypes";
 import type * as expressSession from "express-session";
 
 
-export const getEvents = (reqBody: {
+export const getEvents = (requestBody: {
   externalLicenceNumber?: string;
   licenceTypeKey?: string;
   organizationName?: string;
   locationName?: string;
   eventYear?: string;
-}, reqSession: expressSession.Session) => {
+}, requestSession: expressSession.Session): llm.LotteryEvent[] => {
 
-  const db = sqlite(dbPath, {
+  const database = sqlite(databasePath, {
     readonly: true
   });
 
-  const sqlParams = [reqBody.eventYear, reqBody.eventYear];
+  const sqlParameters = [requestBody.eventYear, requestBody.eventYear];
 
   let sql = "select e.eventDate, e.bank_name," +
     " sum(coalesce(c.costs_receipts, 0)) as costs_receiptsSum," +
@@ -39,35 +39,34 @@ export const getEvents = (reqBody: {
     " and e.eventDate > (? * 10000)" +
     " and e.eventDate < (? * 10000) + 9999";
 
-  if (reqBody.externalLicenceNumber && reqBody.externalLicenceNumber !== "") {
+  if (requestBody.externalLicenceNumber && requestBody.externalLicenceNumber !== "") {
     sql += " and instr(lower(l.externalLicenceNumber), ?) > 0";
-    sqlParams.push(reqBody.externalLicenceNumber);
+    sqlParameters.push(requestBody.externalLicenceNumber);
   }
 
-  if (reqBody.licenceTypeKey && reqBody.licenceTypeKey !== "") {
+  if (requestBody.licenceTypeKey && requestBody.licenceTypeKey !== "") {
     sql += " and l.licenceTypeKey = ?";
-    sqlParams.push(reqBody.licenceTypeKey);
+    sqlParameters.push(requestBody.licenceTypeKey);
   }
 
-  if (reqBody.organizationName && reqBody.organizationName !== "") {
+  if (requestBody.organizationName && requestBody.organizationName !== "") {
 
-    const organizationNamePieces = reqBody.organizationName.toLowerCase().split(" ");
+    const organizationNamePieces = requestBody.organizationName.toLowerCase().split(" ");
 
     for (const organizationNamePiece of organizationNamePieces) {
       sql += " and instr(lower(o.organizationName), ?)";
-      sqlParams.push(organizationNamePiece);
+      sqlParameters.push(organizationNamePiece);
     }
   }
 
-  if (reqBody.locationName && reqBody.locationName !== "") {
+  if (requestBody.locationName && requestBody.locationName !== "") {
 
-    const locationNamePieces = reqBody.locationName.toLowerCase().split(" ");
+    const locationNamePieces = requestBody.locationName.toLowerCase().split(" ");
 
     for (const locationNamePiece of locationNamePieces) {
       sql += " and (instr(lower(lo.locationName), ?) or instr(lower(lo.locationAddress1), ?))";
 
-      sqlParams.push(locationNamePiece);
-      sqlParams.push(locationNamePiece);
+      sqlParameters.push(locationNamePiece, locationNamePiece);
     }
   }
 
@@ -78,10 +77,10 @@ export const getEvents = (reqBody: {
     " order by e.eventDate, l.startTime";
 
   const events: llm.LotteryEvent[] =
-    db.prepare(sql)
-      .all(sqlParams);
+    database.prepare(sql)
+      .all(sqlParameters);
 
-  db.close();
+  database.close();
 
   for (const lotteryEvent of events) {
 
@@ -95,7 +94,7 @@ export const getEvents = (reqBody: {
     lotteryEvent.locationDisplayName =
       (lotteryEvent.locationName === "" ? lotteryEvent.locationAddress1 : lotteryEvent.locationName);
 
-    lotteryEvent.canUpdate = canUpdateObject(lotteryEvent, reqSession);
+    lotteryEvent.canUpdate = canUpdateObject(lotteryEvent, requestSession);
 
     delete lotteryEvent.locationName;
     delete lotteryEvent.locationAddress1;

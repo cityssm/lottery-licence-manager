@@ -1,11 +1,11 @@
 import sqlite from "better-sqlite3";
-import { licencesDB as dbPath } from "../../data/databasePaths.js";
+import { licencesDB as databasePath } from "../../data/databasePaths.js";
 export const deleteOrganizationRepresentative = (organizationID, representativeIndex) => {
-    const db = sqlite(dbPath);
-    const info = db.prepare("delete from OrganizationRepresentatives" +
+    const database = sqlite(databasePath);
+    const info = database.prepare("delete from OrganizationRepresentatives" +
         " where organizationID = ?" +
         " and representativeIndex = ?")
         .run(organizationID, representativeIndex);
-    db.close();
+    database.close();
     return info.changes > 0;
 };

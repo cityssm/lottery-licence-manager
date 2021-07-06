@@ -1,5 +1,5 @@
 import sqlite from "better-sqlite3";
-import { licencesDB as dbPath } from "../../data/databasePaths.js";
+import { licencesDB as databasePath } from "../../data/databasePaths.js";
 
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
 
@@ -18,7 +18,7 @@ export const getDashboardStats = () => {
   const windowStartDateInteger = dateTimeFns.dateToInteger(windowDate);
 
 
-  const db = sqlite(dbPath, {
+  const database = sqlite(databasePath, {
     readonly: true
   });
 
@@ -26,7 +26,7 @@ export const getDashboardStats = () => {
     licenceCount: number;
     distinctOrganizationCount: number;
     distinctLocationCount: number;
-  } = db.prepare("select ifnull(count(licenceID), 0) as licenceCount," +
+  } = database.prepare("select ifnull(count(licenceID), 0) as licenceCount," +
     " ifnull(count(distinct organizationID), 0) as distinctOrganizationCount," +
     " ifnull(count(distinct locationID), 0) as distinctLocationCount" +
     " from LotteryLicences" +
@@ -40,7 +40,7 @@ export const getDashboardStats = () => {
     todayCount: number;
     pastCount: number;
     upcomingCount: number;
-  } = db.prepare("select ifnull(sum(case when eventDate = ? then 1 else 0 end), 0) as todayCount," +
+  } = database.prepare("select ifnull(sum(case when eventDate = ? then 1 else 0 end), 0) as todayCount," +
     " ifnull(sum(case when eventDate < ? then 1 else 0 end), 0) as pastCount," +
     " ifnull(sum(case when eventDate > ? then 1 else 0 end), 0) as upcomingCount" +
     " from LotteryEvents" +
@@ -54,7 +54,7 @@ export const getDashboardStats = () => {
 
   if (eventStats.todayCount > 0 || eventStats.upcomingCount > 0) {
 
-    events = db.prepare("select e.eventDate, l.licenceID, l.externalLicenceNumber," +
+    events = database.prepare("select e.eventDate, l.licenceID, l.externalLicenceNumber," +
       " l.licenceTypeKey," +
       " lo.locationName, lo.locationAddress1," +
       " o.organizationName" +
@@ -83,7 +83,7 @@ export const getDashboardStats = () => {
     todayCount: number;
     pastCount: number;
     upcomingCount: number;
-  } = db.prepare("select ifnull(sum(case when dueDate = ? then 1 else 0 end), 0) as todayCount," +
+  } = database.prepare("select ifnull(sum(case when dueDate = ? then 1 else 0 end), 0) as todayCount," +
     " ifnull(sum(case when dueDate < ? then 1 else 0 end), 0) as pastCount," +
     " ifnull(sum(case when dueDate > ? then 1 else 0 end), 0) as upcomingCount" +
     " from OrganizationReminders" +
@@ -97,7 +97,7 @@ export const getDashboardStats = () => {
 
   if (reminderStats.todayCount > 0 || reminderStats.upcomingCount > 0) {
 
-    reminders = db.prepare("select r.organizationID, o.organizationName," +
+    reminders = database.prepare("select r.organizationID, o.organizationName," +
       " r.reminderTypeKey, r.dueDate" +
       " from OrganizationReminders r" +
       " left join Organizations o on r.organizationID = o.organizationID" +
@@ -115,7 +115,7 @@ export const getDashboardStats = () => {
   }
 
 
-  db.close();
+  database.close();
 
 
   const result = {

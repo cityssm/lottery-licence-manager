@@ -1,24 +1,24 @@
 import sqlite from "better-sqlite3";
 
-import { licencesDB as dbPath } from "../../data/databasePaths.js";
+import { licencesDB as databasePath } from "../../data/databasePaths.js";
 
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
 
 import type * as llm from "../../types/recordTypes";
 
 
-export const getInactiveOrganizations = (inactiveYears: number) => {
+export const getInactiveOrganizations = (inactiveYears: number): llm.Organization[] => {
 
   const cutoffDate = new Date();
   cutoffDate.setFullYear(cutoffDate.getFullYear() - inactiveYears);
 
   const cutoffDateInteger = dateTimeFns.dateToInteger(cutoffDate);
 
-  const db = sqlite(dbPath, {
+  const database = sqlite(databasePath, {
     readonly: true
   });
 
-  const rows: llm.Organization[] = db.prepare("select o.organizationID, o.organizationName," +
+  const rows: llm.Organization[] = database.prepare("select o.organizationID, o.organizationName," +
     " o.recordCreate_timeMillis, o.recordCreate_userName," +
     " o.recordUpdate_timeMillis, o.recordUpdate_userName," +
     " l.licences_endDateMax" +
@@ -33,7 +33,7 @@ export const getInactiveOrganizations = (inactiveYears: number) => {
     " order by o.organizationName, o.organizationID")
     .all(cutoffDateInteger);
 
-  db.close();
+  database.close();
 
   for (const organization of rows) {
 

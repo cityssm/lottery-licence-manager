@@ -1,5 +1,5 @@
 import sqlite from "better-sqlite3";
-import { licencesDB as dbPath } from "../../data/databasePaths.js";
+import { licencesDB as databasePath } from "../../data/databasePaths.js";
 
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
 import * as configFns from "../configFns.js";
@@ -13,9 +13,9 @@ import type * as expressSession from "express-session";
 import type { LotteryLicenceForm } from "./updateLicence.js";
 
 
-export const createLicence = (reqBody: LotteryLicenceForm, reqSession: expressSession.Session) => {
+export const createLicence = (requestBody: LotteryLicenceForm, requestSession: expressSession.Session): number => {
 
-  const db = sqlite(dbPath);
+  const database = sqlite(databasePath);
 
   const nowDate = new Date();
   const nowMillis = nowDate.getTime();
@@ -24,13 +24,13 @@ export const createLicence = (reqBody: LotteryLicenceForm, reqSession: expressSe
   let externalLicenceNumberInteger = -1;
 
   try {
-    externalLicenceNumberInteger = parseInt(reqBody.externalLicenceNumber, 10);
+    externalLicenceNumberInteger = Number.parseInt(requestBody.externalLicenceNumber, 10);
 
-  } catch (e) {
+  } catch {
     externalLicenceNumberInteger = -1;
   }
 
-  const info = db.prepare("insert into LotteryLicences (" +
+  const info = database.prepare("insert into LotteryLicences (" +
     "organizationID, applicationDate, licenceTypeKey," +
     " startDate, endDate, startTime, endTime," +
     " locationID, municipality, licenceDetails, termsConditions, totalPrizeValue," +
@@ -39,41 +39,41 @@ export const createLicence = (reqBody: LotteryLicenceForm, reqSession: expressSe
     " recordUpdate_userName, recordUpdate_timeMillis)" +
     " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
     .run(
-      reqBody.organizationID,
-      dateTimeFns.dateStringToInteger(reqBody.applicationDateString),
-      reqBody.licenceTypeKey,
-      dateTimeFns.dateStringToInteger(reqBody.startDateString),
-      dateTimeFns.dateStringToInteger(reqBody.endDateString),
-      dateTimeFns.timeStringToInteger(reqBody.startTimeString),
-      dateTimeFns.timeStringToInteger(reqBody.endTimeString),
-      (reqBody.locationID === "" ? null : reqBody.locationID),
-      reqBody.municipality,
-      reqBody.licenceDetails,
-      reqBody.termsConditions,
-      reqBody.totalPrizeValue,
-      reqBody.externalLicenceNumber,
+      requestBody.organizationID,
+      dateTimeFns.dateStringToInteger(requestBody.applicationDateString),
+      requestBody.licenceTypeKey,
+      dateTimeFns.dateStringToInteger(requestBody.startDateString),
+      dateTimeFns.dateStringToInteger(requestBody.endDateString),
+      dateTimeFns.timeStringToInteger(requestBody.startTimeString),
+      dateTimeFns.timeStringToInteger(requestBody.endTimeString),
+      (requestBody.locationID === "" ? undefined : requestBody.locationID),
+      requestBody.municipality,
+      requestBody.licenceDetails,
+      requestBody.termsConditions,
+      requestBody.totalPrizeValue,
+      requestBody.externalLicenceNumber,
       externalLicenceNumberInteger,
-      reqSession.user.userName,
+      requestSession.user.userName,
       nowMillis,
-      reqSession.user.userName,
+      requestSession.user.userName,
       nowMillis
     );
 
-  const licenceID: number = Number(info.lastInsertRowid);
+  const licenceID = Number(info.lastInsertRowid);
 
   // Fields
 
-  const fieldKeys = reqBody.fieldKeys.substring(1).split(",");
+  const fieldKeys = requestBody.fieldKeys.slice(1).split(",");
 
   for (const fieldKey of fieldKeys) {
 
-    const fieldValue = reqBody[fieldKey];
+    const fieldValue = requestBody[fieldKey];
 
     if (fieldKey === "" || fieldValue === "") {
       continue;
     }
 
-    db.prepare("insert into LotteryLicenceFields" +
+    database.prepare("insert into LotteryLicenceFields" +
       " (licenceID, fieldKey, fieldValue)" +
       " values (?, ?, ?)")
       .run(licenceID, fieldKey, fieldValue);
@@ -83,55 +83,55 @@ export const createLicence = (reqBody: LotteryLicenceForm, reqSession: expressSe
 
   let eventDateStrings_toAdd: string[];
 
-  if (typeof (reqBody.eventDateString) === "string") {
-    eventDateStrings_toAdd = [reqBody.eventDateString];
-  } else if (typeof (reqBody.eventDateString) === "object") {
-    eventDateStrings_toAdd = reqBody.eventDateString;
+  if (typeof (requestBody.eventDateString) === "string") {
+    eventDateStrings_toAdd = [requestBody.eventDateString];
+  } else if (typeof (requestBody.eventDateString) === "object") {
+    eventDateStrings_toAdd = requestBody.eventDateString;
   }
 
   if (eventDateStrings_toAdd) {
     for (const eventDate of eventDateStrings_toAdd) {
-      createEventWithDB(db,
+      createEventWithDB(database,
         licenceID, eventDate,
-        reqSession);
+        requestSession);
     }
   }
 
   // Ticket types
 
-  if (typeof (reqBody.ticketType_ticketType) === "string") {
+  if (typeof (requestBody.ticketType_ticketType) === "string") {
 
-    addLicenceTicketTypeWithDB(db, {
+    addLicenceTicketTypeWithDB(database, {
       licenceID,
       ticketTypeIndex: 0,
       amendmentDate: nowDateInt,
-      ticketType: reqBody.ticketType_ticketType,
-      unitCount: (reqBody.ticketType_unitCount as string),
-      licenceFee: (reqBody.ticketType_licenceFee as string),
-      distributorLocationID: (reqBody.ticketType_distributorLocationID as string),
-      manufacturerLocationID: (reqBody.ticketType_manufacturerLocationID as string)
-    }, reqSession);
+      ticketType: requestBody.ticketType_ticketType,
+      unitCount: (requestBody.ticketType_unitCount as string),
+      licenceFee: (requestBody.ticketType_licenceFee as string),
+      distributorLocationID: (requestBody.ticketType_distributorLocationID as string),
+      manufacturerLocationID: (requestBody.ticketType_manufacturerLocationID as string)
+    }, requestSession);
 
-  } else if (typeof (reqBody.ticketType_ticketType) === "object") {
+  } else if (typeof (requestBody.ticketType_ticketType) === "object") {
 
-    reqBody.ticketType_ticketType.forEach((ticketType: string, ticketTypeIndex: number) => {
+    for (const [ticketTypeIndex, ticketType] of requestBody.ticketType_ticketType) {
 
-      addLicenceTicketTypeWithDB(db, {
+      addLicenceTicketTypeWithDB(database, {
         licenceID,
         ticketTypeIndex,
         amendmentDate: nowDateInt,
         ticketType,
-        unitCount: reqBody.ticketType_unitCount[ticketTypeIndex],
-        licenceFee: reqBody.ticketType_licenceFee[ticketTypeIndex],
-        distributorLocationID: reqBody.ticketType_distributorLocationID[ticketTypeIndex],
-        manufacturerLocationID: reqBody.ticketType_manufacturerLocationID[ticketTypeIndex]
-      }, reqSession);
-    });
+        unitCount: requestBody.ticketType_unitCount[ticketTypeIndex],
+        licenceFee: requestBody.ticketType_licenceFee[ticketTypeIndex],
+        distributorLocationID: requestBody.ticketType_distributorLocationID[ticketTypeIndex],
+        manufacturerLocationID: requestBody.ticketType_manufacturerLocationID[ticketTypeIndex]
+      }, requestSession);
+    }
   }
 
   // Calculate licence fee
 
-  const licenceObj = getLicenceWithDB(db, licenceID, reqSession, {
+  const licenceObject = getLicenceWithDB(database, licenceID, requestSession, {
     includeTicketTypes: true,
     includeFields: true,
     includeEvents: true,
@@ -139,14 +139,14 @@ export const createLicence = (reqBody: LotteryLicenceForm, reqSession: expressSe
     includeTransactions: true
   });
 
-  const feeCalculation = configFns.getProperty("licences.feeCalculationFn")(licenceObj);
+  const feeCalculation = configFns.getProperty("licences.feeCalculationFn")(licenceObject);
 
-  db.prepare("update LotteryLicences" +
+  database.prepare("update LotteryLicences" +
     " set licenceFee = ?" +
     " where licenceID = ?")
     .run(feeCalculation.fee, licenceID);
 
-  db.close();
+  database.close();
 
   // Reset the cached stats
   resetLicenceTableStats();

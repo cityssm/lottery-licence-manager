@@ -176,7 +176,9 @@ export interface LotteryLicenceTransaction extends Record {
 export interface LotteryLicenceAmendment extends Record {
     amendmentIndex: number;
     amendmentDate: number;
+    amendmentDateString?: string;
     amendmentTime: number;
+    amendmentTimeString?: string;
     amendmentType: string;
     amendment: string;
     isHidden: boolean;

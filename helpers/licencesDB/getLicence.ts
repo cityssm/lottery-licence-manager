@@ -1,5 +1,5 @@
 import sqlite from "better-sqlite3";
-import { licencesDB as dbPath } from "../../data/databasePaths.js";
+import { licencesDB as databasePath } from "../../data/databasePaths.js";
 
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
 
@@ -11,18 +11,18 @@ import type * as llm from "../../types/recordTypes";
 import type * as expressSession from "express-session";
 
 
-export const getLicenceWithDB = (db: sqlite.Database, licenceID: number | string,
-  reqSession: expressSession.Session,
+export const getLicenceWithDB = (database: sqlite.Database, licenceID: number | string,
+  requestSession: expressSession.Session,
   queryOptions: {
     includeTicketTypes: boolean;
     includeFields: boolean;
     includeEvents: boolean;
     includeAmendments: boolean;
     includeTransactions: boolean;
-  }) => {
+  }): llm.LotteryLicence => {
 
-  const licenceObj: llm.LotteryLicence =
-    db.prepare("select l.*," +
+  const licenceObject: llm.LotteryLicence =
+    database.prepare("select l.*," +
       " lo.locationName, lo.locationAddress1" +
       " from LotteryLicences l" +
       " left join Locations lo on l.locationID = lo.locationID" +
@@ -30,27 +30,27 @@ export const getLicenceWithDB = (db: sqlite.Database, licenceID: number | string
       " and l.licenceID = ?")
       .get(licenceID);
 
-  if (!licenceObj) {
-    return null;
+  if (!licenceObject) {
+    return undefined;
   }
 
-  licenceObj.recordType = "licence";
+  licenceObject.recordType = "licence";
 
-  licenceObj.applicationDateString = dateTimeFns.dateIntegerToString(licenceObj.applicationDate || 0);
+  licenceObject.applicationDateString = dateTimeFns.dateIntegerToString(licenceObject.applicationDate || 0);
 
-  licenceObj.startDateString = dateTimeFns.dateIntegerToString(licenceObj.startDate || 0);
-  licenceObj.endDateString = dateTimeFns.dateIntegerToString(licenceObj.endDate || 0);
+  licenceObject.startDateString = dateTimeFns.dateIntegerToString(licenceObject.startDate || 0);
+  licenceObject.endDateString = dateTimeFns.dateIntegerToString(licenceObject.endDate || 0);
 
-  licenceObj.startTimeString = dateTimeFns.timeIntegerToString(licenceObj.startTime || 0);
-  licenceObj.endTimeString = dateTimeFns.timeIntegerToString(licenceObj.endTime || 0);
+  licenceObject.startTimeString = dateTimeFns.timeIntegerToString(licenceObject.startTime || 0);
+  licenceObject.endTimeString = dateTimeFns.timeIntegerToString(licenceObject.endTime || 0);
 
-  licenceObj.issueDateString = dateTimeFns.dateIntegerToString(licenceObj.issueDate || 0);
-  licenceObj.issueTimeString = dateTimeFns.timeIntegerToString(licenceObj.issueTime || 0);
+  licenceObject.issueDateString = dateTimeFns.dateIntegerToString(licenceObject.issueDate || 0);
+  licenceObject.issueTimeString = dateTimeFns.timeIntegerToString(licenceObject.issueTime || 0);
 
-  licenceObj.locationDisplayName =
-    (licenceObj.locationName === "" ? licenceObj.locationAddress1 : licenceObj.locationName);
+  licenceObject.locationDisplayName =
+    (licenceObject.locationName === "" ? licenceObject.locationAddress1 : licenceObject.locationName);
 
-  licenceObj.canUpdate = canUpdateObject(licenceObj, reqSession);
+  licenceObject.canUpdate = canUpdateObject(licenceObject, requestSession);
 
   if (queryOptions) {
 
@@ -59,7 +59,7 @@ export const getLicenceWithDB = (db: sqlite.Database, licenceID: number | string
      */
 
     if ("includeTicketTypes" in queryOptions && queryOptions.includeTicketTypes) {
-      licenceObj.licenceTicketTypes = getLicenceTicketTypesWithDB(db, licenceID);
+      licenceObject.licenceTicketTypes = getLicenceTicketTypesWithDB(database, licenceID);
     }
 
     /*
@@ -68,11 +68,11 @@ export const getLicenceWithDB = (db: sqlite.Database, licenceID: number | string
 
     if ("includeFields" in queryOptions && queryOptions.includeFields) {
 
-      const fieldList = db.prepare("select * from LotteryLicenceFields" +
+      const fieldList = database.prepare("select * from LotteryLicenceFields" +
         " where licenceID = ?")
         .all(licenceID);
 
-      licenceObj.licenceFields = fieldList;
+      licenceObject.licenceFields = fieldList;
 
     }
 
@@ -82,7 +82,7 @@ export const getLicenceWithDB = (db: sqlite.Database, licenceID: number | string
 
     if ("includeEvents" in queryOptions && queryOptions.includeEvents) {
 
-      const eventList = db.prepare("select eventDate," +
+      const eventList = database.prepare("select eventDate," +
         " costs_amountDonated" +
         " from LotteryEvents" +
         " where licenceID = ?" +
@@ -90,12 +90,12 @@ export const getLicenceWithDB = (db: sqlite.Database, licenceID: number | string
         " order by eventDate")
         .all(licenceID);
 
-      for (const eventObj of eventList) {
+      for (const eventObject of eventList) {
 
-        eventObj.eventDateString = dateTimeFns.dateIntegerToString(eventObj.eventDate);
+        eventObject.eventDateString = dateTimeFns.dateIntegerToString(eventObject.eventDate);
       }
 
-      licenceObj.events = eventList;
+      licenceObject.events = eventList;
     }
 
     /*
@@ -103,7 +103,7 @@ export const getLicenceWithDB = (db: sqlite.Database, licenceID: number | string
      */
 
     if ("includeAmendments" in queryOptions && queryOptions.includeAmendments) {
-      licenceObj.licenceAmendments = getLicenceAmendmentsWithDB(db, licenceID);
+      licenceObject.licenceAmendments = getLicenceAmendmentsWithDB(database, licenceID);
     }
 
     /*
@@ -113,7 +113,7 @@ export const getLicenceWithDB = (db: sqlite.Database, licenceID: number | string
     if ("includeTransactions" in queryOptions && queryOptions.includeTransactions) {
 
       const transactions: llm.LotteryLicenceTransaction[] =
-        db.prepare("select * from LotteryLicenceTransactions" +
+        database.prepare("select * from LotteryLicenceTransactions" +
           " where licenceID = ?" +
           " and recordDelete_timeMillis is null" +
           " order by transactionDate, transactionTime, transactionIndex")
@@ -121,31 +121,31 @@ export const getLicenceWithDB = (db: sqlite.Database, licenceID: number | string
 
       let licenceTransactionTotal = 0;
 
-      for (const transactionObj of transactions) {
+      for (const transactionObject of transactions) {
 
-        transactionObj.transactionDateString = dateTimeFns.dateIntegerToString(transactionObj.transactionDate);
-        transactionObj.transactionTimeString = dateTimeFns.timeIntegerToString(transactionObj.transactionTime);
+        transactionObject.transactionDateString = dateTimeFns.dateIntegerToString(transactionObject.transactionDate);
+        transactionObject.transactionTimeString = dateTimeFns.timeIntegerToString(transactionObject.transactionTime);
 
-        licenceTransactionTotal += transactionObj.transactionAmount;
+        licenceTransactionTotal += transactionObject.transactionAmount;
       }
 
-      licenceObj.licenceTransactions = transactions;
-      licenceObj.licenceTransactionTotal = licenceTransactionTotal;
+      licenceObject.licenceTransactions = transactions;
+      licenceObject.licenceTransactionTotal = licenceTransactionTotal;
 
     }
   }
 
-  return licenceObj;
+  return licenceObject;
 };
 
 
-export const getLicence = (licenceID: number, reqSession: expressSession.Session): llm.LotteryLicence => {
+export const getLicence = (licenceID: number, requestSession: expressSession.Session): llm.LotteryLicence => {
 
-  const db = sqlite(dbPath, {
+  const database = sqlite(databasePath, {
     readonly: true
   });
 
-  const licenceObj = getLicenceWithDB(db, licenceID, reqSession, {
+  const licenceObject = getLicenceWithDB(database, licenceID, requestSession, {
     includeTicketTypes: true,
     includeFields: true,
     includeEvents: true,
@@ -153,9 +153,9 @@ export const getLicence = (licenceID: number, reqSession: expressSession.Session
     includeTransactions: true
   });
 
-  db.close();
+  database.close();
 
-  return licenceObj;
+  return licenceObject;
 
 };
 

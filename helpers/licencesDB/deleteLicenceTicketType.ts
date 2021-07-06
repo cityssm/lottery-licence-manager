@@ -4,21 +4,21 @@ import type * as expressSession from "express-session";
 import type * as sqlite from "better-sqlite3";
 
 
-export const deleteLicenceTicketTypeWithDB = (db: sqlite.Database,
-  ticketTypeDef: {
+export const deleteLicenceTicketTypeWithDB = (database: sqlite.Database,
+  ticketTypeDefinition: {
     licenceID: number | string;
     ticketTypeIndex: number | string;
   },
-  reqSession: expressSession.Session) => {
+  requestSession: expressSession.Session): sqlite.RunResult => {
 
-  return runSQLWithDB(db, "update LotteryLicenceTicketTypes" +
+  return runSQLWithDB(database, "update LotteryLicenceTicketTypes" +
     " set recordDelete_userName = ?," +
     " recordDelete_timeMillis = ?" +
     " where licenceID = ?" +
     " and ticketTypeIndex = ?", [
-      reqSession.user.userName,
+      requestSession.user.userName,
       Date.now(),
-      ticketTypeDef.licenceID,
-      ticketTypeDef.ticketTypeIndex
+      ticketTypeDefinition.licenceID,
+      ticketTypeDefinition.ticketTypeIndex
     ]);
 };

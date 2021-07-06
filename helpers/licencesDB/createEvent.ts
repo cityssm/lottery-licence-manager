@@ -6,13 +6,13 @@ import type { Session } from "express-session";
 import type * as sqlite from "better-sqlite3";
 
 
-export const createEventWithDB = (db: sqlite.Database,
+export const createEventWithDB = (database: sqlite.Database,
   licenceID: string | number, eventDateString: string,
-  reqSession: Session) => {
+  requestSession: Session): void => {
 
   const nowMillis = Date.now();
 
-  runSQLWithDB(db,
+  runSQLWithDB(database,
     "insert or ignore into LotteryEvents (" +
     "licenceID, eventDate," +
     " recordCreate_userName, recordCreate_timeMillis," +
@@ -20,9 +20,9 @@ export const createEventWithDB = (db: sqlite.Database,
     " values (?, ?, ?, ?, ?, ?)", [
       licenceID,
       dateTimeFns.dateStringToInteger(eventDateString),
-      reqSession.user.userName,
+      requestSession.user.userName,
       nowMillis,
-      reqSession.user.userName,
+      requestSession.user.userName,
       nowMillis
     ]);
 };

@@ -1,7 +1,7 @@
 import sqlite from "better-sqlite3";
-import { licencesDB as dbPath } from "../../data/databasePaths.js";
-export const getApplicationSettingWithDB = (db, settingKey) => {
-    const row = db.prepare("select settingValue" +
+import { licencesDB as databasePath } from "../../data/databasePaths.js";
+export const getApplicationSettingWithDB = (database, settingKey) => {
+    const row = database.prepare("select settingValue" +
         " from ApplicationSettings" +
         " where settingKey = ?")
         .get(settingKey);
@@ -11,10 +11,10 @@ export const getApplicationSettingWithDB = (db, settingKey) => {
     return "";
 };
 export const getApplicationSetting = (settingKey) => {
-    const db = sqlite(dbPath, {
+    const database = sqlite(databasePath, {
         readonly: true
     });
-    const settingValue = getApplicationSettingWithDB(db, settingKey);
-    db.close();
+    const settingValue = getApplicationSettingWithDB(database, settingKey);
+    database.close();
     return settingValue;
 };

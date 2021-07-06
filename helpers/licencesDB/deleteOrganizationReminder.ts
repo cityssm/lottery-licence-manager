@@ -1,38 +1,40 @@
 import { runSQLWithDB } from "../_runSQLByName.js";
 
-import { licencesDB as dbPath } from "../../data/databasePaths.js";
+import { licencesDB as databasePath } from "../../data/databasePaths.js";
 import sqlite from "better-sqlite3";
 
 import type * as expressSession from "express-session";
 
 
 export const deleteOrganizationReminderWithDB =
-  (db: sqlite.Database, organizationID: number, reminderIndex: number, reqSession: expressSession.Session) => {
+  (database: sqlite.Database, organizationID: number, reminderIndex: number, requestSession: expressSession.Session): boolean => {
 
-    return runSQLWithDB(db,
+    const result = runSQLWithDB(database,
       "update OrganizationReminders" +
       " set recordDelete_userName = ?," +
       " recordDelete_timeMillis = ?" +
       " where organizationID = ?" +
       " and reminderIndex = ?" +
       " and recordDelete_timeMillis is null", [
-        reqSession.user.userName,
+        requestSession.user.userName,
         Date.now(),
         organizationID,
         reminderIndex]);
+
+      return result.changes > 0;
   };
 
 
 export const deleteOrganizationReminder =
-  (organizationID: number, reminderIndex: number, reqSession: expressSession.Session) => {
+  (organizationID: number, reminderIndex: number, requestSession: expressSession.Session): boolean => {
 
-    const db = sqlite(dbPath);
+    const database = sqlite(databasePath);
 
-    const result = deleteOrganizationReminderWithDB(db,
+    const hasChanges = deleteOrganizationReminderWithDB(database,
       organizationID, reminderIndex,
-      reqSession);
+      requestSession);
 
-    db.close();
+    database.close();
 
-    return result;
+    return hasChanges;
   };

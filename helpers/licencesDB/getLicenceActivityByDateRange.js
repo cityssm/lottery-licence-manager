@@ -1,18 +1,16 @@
 import sqlite from "better-sqlite3";
-import { licencesDB as dbPath } from "../../data/databasePaths.js";
+import { licencesDB as databasePath } from "../../data/databasePaths.js";
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
 export const getLicenceActivityByDateRange = (startDate, endDate) => {
-    const db = sqlite(dbPath, {
+    const database = sqlite(databasePath, {
         readonly: true
     });
     const activity = {
         startDateString: dateTimeFns.dateIntegerToString(startDate),
-        endDateString: dateTimeFns.dateIntegerToString(endDate),
-        licences: null,
-        events: null
+        endDateString: dateTimeFns.dateIntegerToString(endDate)
     };
     activity.licences =
-        db.prepare("select l.licenceID, l.externalLicenceNumber," +
+        database.prepare("select l.licenceID, l.externalLicenceNumber," +
             " l.startDate, l.endDate," +
             " l.licenceTypeKey, l.licenceDetails," +
             " o.organizationName, lo.locationName, lo.locationAddress1" +
@@ -32,7 +30,7 @@ export const getLicenceActivityByDateRange = (startDate, endDate) => {
         record.endDateString = dateTimeFns.dateIntegerToString(record.endDate);
     }
     activity.events =
-        db.prepare("select e.eventDate, l.licenceID, l.externalLicenceNumber," +
+        database.prepare("select e.eventDate, l.licenceID, l.externalLicenceNumber," +
             " l.startTime, l.endTime," +
             " l.licenceTypeKey, l.licenceDetails," +
             " o.organizationName, lo.locationName, lo.locationAddress1" +
@@ -50,6 +48,6 @@ export const getLicenceActivityByDateRange = (startDate, endDate) => {
         record.startTimeString = dateTimeFns.timeIntegerToString(record.startTime);
         record.endTimeString = dateTimeFns.timeIntegerToString(record.endTime);
     }
-    db.close();
+    database.close();
     return activity;
 };

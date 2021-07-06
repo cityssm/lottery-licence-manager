@@ -1,13 +1,13 @@
 import { runSQLWithDB } from "../_runSQLByName.js";
-export const deleteLicenceTicketTypeWithDB = (db, ticketTypeDef, reqSession) => {
-    return runSQLWithDB(db, "update LotteryLicenceTicketTypes" +
+export const deleteLicenceTicketTypeWithDB = (database, ticketTypeDefinition, requestSession) => {
+    return runSQLWithDB(database, "update LotteryLicenceTicketTypes" +
         " set recordDelete_userName = ?," +
         " recordDelete_timeMillis = ?" +
         " where licenceID = ?" +
         " and ticketTypeIndex = ?", [
-        reqSession.user.userName,
+        requestSession.user.userName,
         Date.now(),
-        ticketTypeDef.licenceID,
-        ticketTypeDef.ticketTypeIndex
+        ticketTypeDefinition.licenceID,
+        ticketTypeDefinition.ticketTypeIndex
     ]);
 };
