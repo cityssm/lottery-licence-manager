@@ -1,3 +1,5 @@
+/* eslint-disable unicorn/filename-case */
+
 import type { cityssmGlobal } from "@cityssm/bulma-webapp-js/src/types";
 import type { llmGlobal } from "./types";
 
@@ -10,13 +12,13 @@ declare const llm: llmGlobal;
 
 llm.organizationReminders = (() => {
 
-  const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
+  const urlPrefix = document.querySelector("main").dataset.urlPrefix;
 
   let reminderCategories: configTypes.ConfigReminderCategory[];
   const reminderTypeCache = new Map<string, configTypes.ConfigReminderType>();
   let dismissingStatuses = [];
 
-  const loadReminderTypeCache = (callbackFn?: () => void) => {
+  const loadReminderTypeCache = (callbackFunction?: () => void) => {
 
     if (reminderTypeCache.size === 0) {
 
@@ -36,13 +38,13 @@ llm.organizationReminders = (() => {
             }
           }
 
-          if (callbackFn) {
-            callbackFn();
+          if (callbackFunction) {
+            callbackFunction();
           }
         });
 
-    } else if (callbackFn) {
-      callbackFn();
+    } else if (callbackFunction) {
+      callbackFunction();
     }
 
   };
@@ -52,33 +54,33 @@ llm.organizationReminders = (() => {
   };
 
   const getRemindersByOrganizationID = (organizationID: number,
-    callbackFn: (reminderList: recordTypes.OrganizationReminder[]) => void) => {
+    callbackFunction: (reminderList: recordTypes.OrganizationReminder[]) => void) => {
 
     cityssm.postJSON(urlPrefix + "/organizations/doGetReminders", {
       organizationID
     },
-      callbackFn
+      callbackFunction
     );
   };
 
   const getReminderByID = (organizationID: number, reminderIndex: number,
-    callbackFn: (reminder: recordTypes.OrganizationReminder) => void) => {
+    callbackFunction: (reminder: recordTypes.OrganizationReminder) => void) => {
 
     cityssm.postJSON(urlPrefix + "/organizations/doGetReminder", {
       organizationID,
       reminderIndex
     },
-      callbackFn
+      callbackFunction
     );
   };
 
 
   const openAddReminderModal = (organizationID: number,
-    updateCallbackFn: (reminderObj: recordTypes.OrganizationReminder) => void) => {
+    updateCallbackFunction: (reminderObject: recordTypes.OrganizationReminder) => void) => {
 
-    let addReminderCloseModalFn: () => void;
+    let addReminderCloseModalFunction: () => void;
 
-    const submitFn = (formEvent: Event) => {
+    const submitFunction = (formEvent: Event) => {
       formEvent.preventDefault();
 
       cityssm.postJSON(urlPrefix + "/organizations/doAddReminder",
@@ -86,52 +88,52 @@ llm.organizationReminders = (() => {
         (responseJSON: { success: boolean; reminder: recordTypes.OrganizationReminder }) => {
 
           if (responseJSON.success) {
-            addReminderCloseModalFn();
+            addReminderCloseModalFunction();
 
-            if (updateCallbackFn) {
-              updateCallbackFn(responseJSON.reminder);
+            if (updateCallbackFunction) {
+              updateCallbackFunction(responseJSON.reminder);
             }
           }
         }
       );
     };
 
-    const reminderTypeKeyChangeFn = (changeEvent: Event) => {
+    const reminderTypeKeyChangeFunction = (changeEvent: Event) => {
 
       const reminderTypeKey = (changeEvent.currentTarget as HTMLSelectElement).value;
 
       const reminderType = reminderTypeCache.get(reminderTypeKey);
 
-      const reminderStatusSelectEle = document.getElementById("addReminder--reminderStatus") as HTMLSelectElement;
+      const reminderStatusSelectElement = document.querySelector("#addReminder--reminderStatus") as HTMLSelectElement;
 
-      reminderStatusSelectEle.value = "";
-      reminderStatusSelectEle.innerHTML = "<option value=\"\">(Not Set)</option>";
+      reminderStatusSelectElement.value = "";
+      reminderStatusSelectElement.innerHTML = "<option value=\"\">(Not Set)</option>";
 
       for (const reminderStatus of reminderType.reminderStatuses) {
 
-        const optionEle = document.createElement("option");
-        optionEle.value = reminderStatus;
-        optionEle.innerText = reminderStatus;
-        reminderStatusSelectEle.appendChild(optionEle);
+        const optionElement = document.createElement("option");
+        optionElement.value = reminderStatus;
+        optionElement.textContent = reminderStatus;
+        reminderStatusSelectElement.append(optionElement);
       }
     };
 
-    const openModalFn = () => {
+    const openModalFunction = () => {
 
       cityssm.openHtmlModal("reminderAdd", {
 
         onshow() {
 
-          (document.getElementById("addReminder--organizationID") as HTMLInputElement).value =
+          (document.querySelector("#addReminder--organizationID") as HTMLInputElement).value =
             organizationID.toString();
 
-          document.getElementById("addReminder--dueDateString")
+          document.querySelector("#addReminder--dueDateString")
             .setAttribute("min", cityssm.dateToString(new Date()));
 
           getRemindersByOrganizationID(organizationID, (reminderList) => {
 
-            const reminderTypeKeySelectEle =
-              document.getElementById("addReminder--reminderTypeKey") as HTMLSelectElement;
+            const reminderTypeKeySelectElement =
+              document.querySelector("#addReminder--reminderTypeKey") as HTMLSelectElement;
 
             for (const reminderCategory of reminderCategories) {
 
@@ -139,8 +141,8 @@ llm.organizationReminders = (() => {
                 continue;
               }
 
-              const optgroupEle = document.createElement("optgroup");
-              optgroupEle.label = reminderCategory.reminderCategory;
+              const optgroupElement = document.createElement("optgroup");
+              optgroupElement.label = reminderCategory.reminderCategory;
 
               for (const reminderType of reminderCategory.reminderTypes) {
 
@@ -160,41 +162,40 @@ llm.organizationReminders = (() => {
                   }
                 }
 
-                const optionEle = document.createElement("option");
-                optionEle.value = reminderType.reminderTypeKey;
-                optionEle.innerText = reminderType.reminderType;
-                optgroupEle.appendChild(optionEle);
+                const optionElement = document.createElement("option");
+                optionElement.value = reminderType.reminderTypeKey;
+                optionElement.textContent = reminderType.reminderType;
+                optgroupElement.append(optionElement);
               }
 
-              reminderTypeKeySelectEle.appendChild(optgroupEle);
+              reminderTypeKeySelectElement.append(optgroupElement);
             }
 
-            reminderTypeKeySelectEle.addEventListener("change", reminderTypeKeyChangeFn);
+            reminderTypeKeySelectElement.addEventListener("change", reminderTypeKeyChangeFunction);
 
-            reminderTypeKeySelectEle.closest(".select").classList.remove("is-loading");
+            reminderTypeKeySelectElement.closest(".select").classList.remove("is-loading");
           });
 
-          document.getElementById("form--addReminder").addEventListener("submit", submitFn);
+          document.querySelector("#form--addReminder").addEventListener("submit", submitFunction);
         },
-        onshown(_modalEle, closeModalFn) {
-
-          addReminderCloseModalFn = closeModalFn;
+        onshown(_modalElement, closeModalFunction) {
+          addReminderCloseModalFunction = closeModalFunction;
         }
       });
     };
 
-    loadReminderTypeCache(openModalFn);
+    loadReminderTypeCache(openModalFunction);
   };
 
 
   const openEditReminderModal = (organizationID: number, reminderIndex: number,
-    updateCallbackFn: (reminderObj: recordTypes.OrganizationReminder) => void) => {
+    updateCallbackFunction: (reminderObject: recordTypes.OrganizationReminder) => void) => {
 
     let dismissedDateSetByUser = false;
 
-    let editReminderCloseModalFn: () => void;
+    let editReminderCloseModalFunction: () => void;
 
-    const submitFn = (formEvent: Event) => {
+    const submitFunction = (formEvent: Event) => {
 
       formEvent.preventDefault();
 
@@ -206,43 +207,43 @@ llm.organizationReminders = (() => {
         }) => {
 
           if (responseJSON.success) {
-            editReminderCloseModalFn();
+            editReminderCloseModalFunction();
 
-            if (updateCallbackFn) {
-              updateCallbackFn(responseJSON.reminder);
+            if (updateCallbackFunction) {
+              updateCallbackFunction(responseJSON.reminder);
             }
           }
         }
       );
     };
 
-    const reminderTypeKeyChangeFn = () => {
+    const reminderTypeKeyChangeFunction = () => {
 
       const reminderTypeKey =
-        (document.getElementById("editReminder--reminderTypeKey") as HTMLSelectElement).value;
+        (document.querySelector("#editReminder--reminderTypeKey") as HTMLSelectElement).value;
 
       const reminderType = reminderTypeCache.get(reminderTypeKey);
 
-      const reminderStatusSelectEle =
-        document.getElementById("editReminder--reminderStatus") as HTMLSelectElement;
+      const reminderStatusSelectElement =
+        document.querySelector("#editReminder--reminderStatus") as HTMLSelectElement;
 
-      reminderStatusSelectEle.value = "";
-      reminderStatusSelectEle.innerHTML = "<option data-is-dismissing=\"0\" value=\"\">(Not Set)</option>";
+      reminderStatusSelectElement.value = "";
+      reminderStatusSelectElement.innerHTML = "<option data-is-dismissing=\"0\" value=\"\">(Not Set)</option>";
 
       for (const reminderStatus of reminderType.reminderStatuses) {
 
-        const optionEle = document.createElement("option");
-        optionEle.value = reminderStatus;
-        optionEle.innerText = reminderStatus;
+        const optionElement = document.createElement("option");
+        optionElement.value = reminderStatus;
+        optionElement.textContent = reminderStatus;
 
-        optionEle.setAttribute("data-is-dismissing",
-          dismissingStatuses.includes(reminderStatus) ? "1" : "0");
+        optionElement.dataset.isDismissing =
+          dismissingStatuses.includes(reminderStatus) ? "1" : "0";
 
-        reminderStatusSelectEle.appendChild(optionEle);
+        reminderStatusSelectElement.append(optionElement);
       }
     };
 
-    const reminderStatusChangeFn = (selectChangeEvent: Event) => {
+    const reminderStatusChangeFunction = (selectChangeEvent: Event) => {
 
       if (dismissedDateSetByUser) {
         return;
@@ -250,30 +251,30 @@ llm.organizationReminders = (() => {
 
       const isDismissing = (selectChangeEvent.currentTarget as HTMLSelectElement)
         .selectedOptions[0]
-        .getAttribute("data-is-dismissing") === "1";
+        .dataset.isDismissing === "1";
 
-      (document.getElementById("editReminder--dismissedDateString") as HTMLInputElement).value =
+      (document.querySelector("#editReminder--dismissedDateString") as HTMLInputElement).value =
         (isDismissing
           ? cityssm.dateToString(new Date())
           : "");
     };
 
-    const openModalFn = () => {
+    const openModalFunction = () => {
       cityssm.openHtmlModal("reminderEdit", {
 
         onshow() {
 
-          (document.getElementById("editReminder--organizationID") as HTMLInputElement).value =
+          (document.querySelector("#editReminder--organizationID") as HTMLInputElement).value =
             organizationID.toString();
 
-          (document.getElementById("editReminder--reminderIndex") as HTMLInputElement).value =
+          (document.querySelector("#editReminder--reminderIndex") as HTMLInputElement).value =
             reminderIndex.toString();
 
-          document.getElementById("form--editReminder").addEventListener("submit", submitFn);
+          document.querySelector("#form--editReminder").addEventListener("submit", submitFunction);
         },
-        onshown(_modalEle, closeModalFn) {
+        onshown(_modalElement, closeModalFunction) {
 
-          editReminderCloseModalFn = closeModalFn;
+          editReminderCloseModalFunction = closeModalFunction;
 
           getRemindersByOrganizationID(organizationID, (reminderList) => {
 
@@ -284,20 +285,20 @@ llm.organizationReminders = (() => {
             });
 
             if (!reminder) {
-              editReminderCloseModalFn();
+              editReminderCloseModalFunction();
               cityssm.alertModal("Reminder Not Found", "", "OK", "danger");
               return;
             }
 
-            const reminderTypeKeySelectEle =
-              document.getElementById("editReminder--reminderTypeKey") as HTMLSelectElement;
+            const reminderTypeKeySelectElement =
+              document.querySelector("#editReminder--reminderTypeKey") as HTMLSelectElement;
 
             // Show current reminder type, and active, unused types
 
             for (const reminderCategory of reminderCategories) {
 
-              const optgroupEle = document.createElement("optgroup");
-              optgroupEle.label = reminderCategory.reminderCategory;
+              const optgroupElement = document.createElement("optgroup");
+              optgroupElement.label = reminderCategory.reminderCategory;
 
               for (const reminderType of reminderCategory.reminderTypes) {
 
@@ -320,74 +321,74 @@ llm.organizationReminders = (() => {
                   }
                 }
 
-                const optionEle = document.createElement("option");
-                optionEle.value = reminderType.reminderTypeKey;
-                optionEle.innerText = reminderType.reminderType;
+                const optionElement = document.createElement("option");
+                optionElement.value = reminderType.reminderTypeKey;
+                optionElement.textContent = reminderType.reminderType;
 
-                optgroupEle.appendChild(optionEle);
+                optgroupElement.append(optionElement);
               }
 
-              if (optgroupEle.children.length > 0) {
-                reminderTypeKeySelectEle.appendChild(optgroupEle);
+              if (optgroupElement.children.length > 0) {
+                reminderTypeKeySelectElement.append(optgroupElement);
               }
             }
 
-            reminderTypeKeySelectEle.value = reminder.reminderTypeKey;
-            reminderTypeKeySelectEle.addEventListener("change", reminderTypeKeyChangeFn);
-            reminderTypeKeySelectEle.closest(".select").classList.remove("is-loading");
+            reminderTypeKeySelectElement.value = reminder.reminderTypeKey;
+            reminderTypeKeySelectElement.addEventListener("change", reminderTypeKeyChangeFunction);
+            reminderTypeKeySelectElement.closest(".select").classList.remove("is-loading");
 
             // Due date
 
-            (document.getElementById("editReminder--dueDateString") as HTMLInputElement).value =
+            (document.querySelector("#editReminder--dueDateString") as HTMLInputElement).value =
               reminder.dueDateString;
 
             // Initialize the reminder status select
 
-            reminderTypeKeyChangeFn();
+            reminderTypeKeyChangeFunction();
 
-            const reminderStatusSelectEle =
-              document.getElementById("editReminder--reminderStatus") as HTMLSelectElement;
+            const reminderStatusSelectElement =
+              document.querySelector("#editReminder--reminderStatus") as HTMLSelectElement;
 
             if (reminder.reminderStatus && reminder.reminderStatus !== "") {
 
               let currentStatusOptionFound = false;
 
-              for (const possibleOptionEle of reminderStatusSelectEle.options) {
-                if (possibleOptionEle.value === reminder.reminderStatus) {
+              for (const possibleOptionElement of reminderStatusSelectElement.options) {
+                if (possibleOptionElement.value === reminder.reminderStatus) {
                   currentStatusOptionFound = true;
                   break;
                 }
               }
 
               if (!currentStatusOptionFound) {
-                const missingOptionEle = document.createElement("option");
-                missingOptionEle.innerText = reminder.reminderStatus;
-                missingOptionEle.value = reminder.reminderStatus;
-                reminderStatusSelectEle.appendChild(missingOptionEle);
+                const missingOptionElement = document.createElement("option");
+                missingOptionElement.textContent = reminder.reminderStatus;
+                missingOptionElement.value = reminder.reminderStatus;
+                reminderStatusSelectElement.append(missingOptionElement);
               }
 
-              reminderStatusSelectEle.value = reminder.reminderStatus;
+              reminderStatusSelectElement.value = reminder.reminderStatus;
             }
 
-            reminderStatusSelectEle.addEventListener("change", reminderStatusChangeFn);
+            reminderStatusSelectElement.addEventListener("change", reminderStatusChangeFunction);
 
             // Reminder note
 
-            (document.getElementById("editReminder--reminderNote") as HTMLTextAreaElement).value =
+            (document.querySelector("#editReminder--reminderNote") as HTMLTextAreaElement).value =
               reminder.reminderNote;
 
             // Dismissed date
 
-            const dismissedDateEle = document.getElementById("editReminder--dismissedDateString") as HTMLInputElement;
+            const dismissedDateElement = document.querySelector("#editReminder--dismissedDateString") as HTMLInputElement;
 
-            dismissedDateEle.value = reminder.dismissedDateString;
-            dismissedDateEle.setAttribute("max", cityssm.dateToString(new Date()));
+            dismissedDateElement.value = reminder.dismissedDateString;
+            dismissedDateElement.setAttribute("max", cityssm.dateToString(new Date()));
 
             if (reminder.dismissedDateString !== "") {
               dismissedDateSetByUser = true;
             }
 
-            dismissedDateEle.addEventListener("change", () => {
+            dismissedDateElement.addEventListener("change", () => {
               dismissedDateSetByUser = true;
             });
           });
@@ -395,11 +396,11 @@ llm.organizationReminders = (() => {
       });
     };
 
-    loadReminderTypeCache(openModalFn);
+    loadReminderTypeCache(openModalFunction);
   };
 
 
-  const doDismissReminder = (organizationID: number, reminderIndex: number, callbackFn: (response: {
+  const doDismissReminder = (organizationID: number, reminderIndex: number, callbackFunction: (response: {
     success: boolean;
     message: string;
     reminder: recordTypes.OrganizationReminder;
@@ -409,13 +410,13 @@ llm.organizationReminders = (() => {
       organizationID,
       reminderIndex
     },
-      callbackFn
+      callbackFunction
     );
   };
 
 
   const dismissReminder = (organizationID: number, reminderIndex: number, doConfirm: boolean,
-    dismissCallbackFn: (response: {
+    dismissCallbackFunction: (response: {
       success: boolean;
       message: string;
     }) => void) => {
@@ -428,16 +429,16 @@ llm.organizationReminders = (() => {
         "Yes, Dismiss",
         "warning",
         () => {
-          doDismissReminder(organizationID, reminderIndex, dismissCallbackFn);
+          doDismissReminder(organizationID, reminderIndex, dismissCallbackFunction);
         }
       );
 
     } else {
-      doDismissReminder(organizationID, reminderIndex, dismissCallbackFn);
+      doDismissReminder(organizationID, reminderIndex, dismissCallbackFunction);
     }
   };
 
-  const doDeleteReminder = (organizationID: number, reminderIndex: number, callbackFn: (response: {
+  const doDeleteReminder = (organizationID: number, reminderIndex: number, callbackFunction: (response: {
     success: boolean;
     message: string;
   }) => void) => {
@@ -446,13 +447,13 @@ llm.organizationReminders = (() => {
       organizationID,
       reminderIndex
     },
-      callbackFn
+      callbackFunction
     );
   };
 
 
   const deleteReminder = (organizationID: number, reminderIndex: number, doConfirm: boolean,
-    deleteCallbackFn: (response: {
+    deleteCallbackFunction: (response: {
       success: boolean;
       message: string;
     }) => void) => {
@@ -465,12 +466,12 @@ llm.organizationReminders = (() => {
         "Yes, Delete",
         "danger",
         () => {
-          doDeleteReminder(organizationID, reminderIndex, deleteCallbackFn);
+          doDeleteReminder(organizationID, reminderIndex, deleteCallbackFunction);
         }
       );
 
     } else {
-      doDeleteReminder(organizationID, reminderIndex, deleteCallbackFn);
+      doDeleteReminder(organizationID, reminderIndex, deleteCallbackFunction);
     }
   };
 

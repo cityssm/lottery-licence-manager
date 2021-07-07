@@ -1,16 +1,18 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 (() => {
-    const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
-    const formEle = document.getElementById("form--organization");
-    const formMessageEle = document.getElementById("container--form-message");
-    const organizationIDString = document.getElementById("organization--organizationID").value;
+    const urlPrefix = document.querySelector("main").dataset.urlPrefix;
+    const formElement = document.querySelector("#form--organization");
+    const formMessageElement = document.querySelector("#container--form-message");
+    const organizationIDString = document.querySelector("#organization--organizationID").value;
     const isCreate = organizationIDString === "";
-    const organizationID = (organizationIDString === "" ? null : parseInt(organizationIDString, 10));
-    formEle.addEventListener("submit", (formEvent) => {
+    const organizationID = (organizationIDString === ""
+        ? undefined
+        : Number.parseInt(organizationIDString, 10));
+    formElement.addEventListener("submit", (formEvent) => {
         formEvent.preventDefault();
-        formMessageEle.innerHTML = "Saving... <i class=\"fas fa-circle-notch fa-spin\" aria-hidden=\"true\"></i>";
-        cityssm.postJSON(urlPrefix + "/organizations/doSave", formEle, (responseJSON) => {
+        formMessageElement.innerHTML = "Saving... <i class=\"fas fa-circle-notch fa-spin\" aria-hidden=\"true\"></i>";
+        cityssm.postJSON(urlPrefix + "/organizations/doSave", formElement, (responseJSON) => {
             if (responseJSON.success) {
                 cityssm.disableNavBlocker();
             }
@@ -18,13 +20,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 window.location.href = urlPrefix + "/organizations/" + responseJSON.organizationID.toString() + "/edit";
             }
             else {
-                formMessageEle.innerHTML = "";
+                formMessageElement.innerHTML = "";
                 cityssm.alertModal(responseJSON.message, "", "OK", responseJSON.success ? "success" : "danger");
             }
         });
     });
     if (!isCreate) {
-        const deleteOrganizationFn = () => {
+        const deleteOrganizationFunction = () => {
             cityssm.postJSON(urlPrefix + "/organizations/doDelete", {
                 organizationID
             }, (responseJSON) => {
@@ -33,45 +35,45 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 }
             });
         };
-        formEle.getElementsByClassName("is-delete-button")[0].addEventListener("click", () => {
+        formElement.querySelector(".is-delete-button").addEventListener("click", () => {
             cityssm.confirmModal("Delete Organization?", ("Are you sure you want to delete this organization?<br />" +
-                "Note that any active licences issued to this organization will remain active."), "Yes, Delete Organization", "warning", deleteOrganizationFn);
+                "Note that any active licences issued to this organization will remain active."), "Yes, Delete Organization", "warning", deleteOrganizationFunction);
         });
-        formEle.getElementsByClassName("is-rollforward-button")[0].addEventListener("click", () => {
-            let rollForwardCloseModalFn;
-            let formEle;
+        formElement.querySelector(".is-rollforward-button").addEventListener("click", () => {
+            let rollForwardCloseModalFunction;
+            let formElement;
             let isSubmitting = false;
-            const submitFn = (formEvent) => {
+            const submitFunction = (formEvent) => {
                 formEvent.preventDefault();
                 if (isSubmitting) {
                     return;
                 }
                 isSubmitting = true;
-                cityssm.postJSON(urlPrefix + "/organizations/doRollForward", formEle, (responseJSON) => {
+                cityssm.postJSON(urlPrefix + "/organizations/doRollForward", formElement, (responseJSON) => {
                     if (responseJSON.success) {
                         window.location.reload();
                     }
                     else {
                         isSubmitting = false;
-                        rollForwardCloseModalFn();
+                        rollForwardCloseModalFunction();
                         cityssm.alertModal("Roll Forward Failed", responseJSON.message, "OK", "danger");
                     }
                 });
             };
             cityssm.openHtmlModal("organization-rollforward", {
-                onshown: (_modalEle, closeModalFn) => {
-                    rollForwardCloseModalFn = closeModalFn;
-                    document.getElementById("rollforward--organizationID").value =
+                onshown: (_modalElement, closeModalFunction) => {
+                    rollForwardCloseModalFunction = closeModalFunction;
+                    document.querySelector("#rollforward--organizationID").value =
                         organizationIDString;
-                    formEle = document.getElementById("form--rollforward");
-                    formEle.addEventListener("submit", submitFn);
+                    formElement = document.querySelector("#form--rollforward");
+                    formElement.addEventListener("submit", submitFunction);
                 }
             });
         });
-        const representativeTbodyEle = document.getElementsByClassName("is-representative-table")[0].getElementsByTagName("tbody")[0];
+        const representativeTbodyElement = document.querySelector(".is-representative-table tbody");
         const showNoRepresentativesWarning = () => {
-            if (representativeTbodyEle.getElementsByTagName("tr").length === 0) {
-                representativeTbodyEle.innerHTML = "<tr class=\"has-background-warning is-empty-warning\">" +
+            if (representativeTbodyElement.querySelectorAll("tr").length === 0) {
+                representativeTbodyElement.innerHTML = "<tr class=\"has-background-warning is-empty-warning\">" +
                     "<td class=\"has-text-centered\" colspan=\"6\">" +
                     "<strong>There are no representatives associated with this organization.</strong>" +
                     "</td>" +
@@ -79,37 +81,38 @@ Object.defineProperty(exports, "__esModule", { value: true });
             }
         };
         showNoRepresentativesWarning();
-        const updateDefaultRepresentativeFn = (changeEvent) => {
+        const updateDefaultRepresentativeFunction = (changeEvent) => {
             const defaultRepresentativeIndex = changeEvent.currentTarget.value;
             cityssm.postJSON(urlPrefix + "/organizations/" + organizationIDString + "/doSetDefaultRepresentative", {
                 isDefaultRepresentativeIndex: defaultRepresentativeIndex
-            }, () => { });
+            }, () => {
+            });
         };
-        const radioEles = representativeTbodyEle.getElementsByTagName("input");
-        for (const radioEle of radioEles) {
-            radioEle.addEventListener("change", updateDefaultRepresentativeFn);
+        const radioElements = representativeTbodyElement.querySelectorAll("input");
+        for (const radioElement of radioElements) {
+            radioElement.addEventListener("change", updateDefaultRepresentativeFunction);
         }
-        const deleteRepresentativeFn = (clickEvent) => {
+        const deleteRepresentativeFunction = (clickEvent) => {
             clickEvent.preventDefault();
-            const trEle = clickEvent.currentTarget.closest("tr");
-            const representativeName = trEle.getAttribute("data-representative-name");
+            const trElement = clickEvent.currentTarget.closest("tr");
+            const representativeName = trElement.getAttribute("data-representative-name");
             cityssm.confirmModal("Delete a Representative?", `<p>Are you sure you want to delete the representative "${cityssm.escapeHTML(representativeName)}"?</p>`, "Yes, Delete", "danger", () => {
                 cityssm.postJSON(urlPrefix + "/organizations/" + organizationIDString + "/doDeleteOrganizationRepresentative", {
-                    representativeIndex: trEle.getAttribute("data-representative-index")
+                    representativeIndex: trElement.getAttribute("data-representative-index")
                 }, (responseJSON) => {
                     if (responseJSON.success) {
-                        trEle.remove();
+                        trElement.remove();
                         showNoRepresentativesWarning();
                     }
                 });
             });
         };
-        const deleteBtnEles = representativeTbodyEle.getElementsByClassName("is-delete-representative-button");
-        for (const deleteBtnEle of deleteBtnEles) {
-            deleteBtnEle.addEventListener("click", deleteRepresentativeFn);
+        const deleteButtonElements = representativeTbodyElement.querySelectorAll(".is-delete-representative-button");
+        for (const deleteButtonElement of deleteButtonElements) {
+            deleteButtonElement.addEventListener("click", deleteRepresentativeFunction);
         }
-        const editRepresentativeModalEle = document.getElementsByClassName("is-edit-representative-modal")[0];
-        const editRepresentativeFormEle = editRepresentativeModalEle.getElementsByTagName("form")[0];
+        const editRepresentativeModalElement = document.querySelector(".is-edit-representative-modal");
+        const editRepresentativeFormEle = editRepresentativeModalElement.getElementsByTagName("form")[0];
         let editRepresentativeTrEle;
         const openEditRepresentativeModalFn = (clickEvent) => {
             editRepresentativeTrEle = clickEvent.currentTarget.closest("tr");
@@ -139,7 +142,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 document.getElementById("representative-isDefault--" + representativeIndex).checked
                     ? "1"
                     : "0";
-            cityssm.showModal(editRepresentativeModalEle);
+            cityssm.showModal(editRepresentativeModalElement);
         };
         const insertRepresentativeRowFn = (representativeObj) => {
             const trEle = document.createElement("tr");
@@ -163,7 +166,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 "<label for=\"representative-isDefault--" + representativeObj.representativeIndex.toString() + "\"></label>" +
                 "</div>" +
                 "</td>");
-            trEle.getElementsByTagName("input")[0].addEventListener("change", updateDefaultRepresentativeFn);
+            trEle.getElementsByTagName("input")[0].addEventListener("change", updateDefaultRepresentativeFunction);
             let tdEle = document.createElement("td");
             tdEle.innerHTML = cityssm.escapeHTML(representativeObj.representativeName) + "<br />" +
                 "<small>" + cityssm.escapeHTML(representativeObj.representativeTitle) + "</small>";
@@ -198,14 +201,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
             trEle.getElementsByClassName("is-edit-representative-button")[0]
                 .addEventListener("click", openEditRepresentativeModalFn);
             trEle.getElementsByClassName("is-delete-representative-button")[0]
-                .addEventListener("click", deleteRepresentativeFn);
-            representativeTbodyEle.insertAdjacentElement("beforeend", trEle);
+                .addEventListener("click", deleteRepresentativeFunction);
+            representativeTbodyElement.insertAdjacentElement("beforeend", trEle);
         };
-        const editBtnEles = representativeTbodyEle.getElementsByClassName("is-edit-representative-button");
+        const editBtnEles = representativeTbodyElement.getElementsByClassName("is-edit-representative-button");
         for (const editBtnEle of editBtnEles) {
             editBtnEle.addEventListener("click", openEditRepresentativeModalFn);
         }
-        let cancelButtonEles = editRepresentativeModalEle.getElementsByClassName("is-cancel-button");
+        let cancelButtonEles = editRepresentativeModalElement.getElementsByClassName("is-cancel-button");
         for (const cancelButtonEle of cancelButtonEles) {
             cancelButtonEle.addEventListener("click", cityssm.hideModal);
         }
@@ -216,7 +219,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     editRepresentativeTrEle.remove();
                     editRepresentativeTrEle = null;
                     insertRepresentativeRowFn(responseJSON.organizationRepresentative);
-                    cityssm.hideModal(editRepresentativeModalEle);
+                    cityssm.hideModal(editRepresentativeModalElement);
                 }
             });
         });
@@ -235,7 +238,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
             formEvent.preventDefault();
             cityssm.postJSON(urlPrefix + "/organizations/" + organizationIDString + "/doAddOrganizationRepresentative", formEvent.currentTarget, (responseJSON) => {
                 if (responseJSON.success) {
-                    const emptyWarningEle = representativeTbodyEle.getElementsByClassName("is-empty-warning");
+                    const emptyWarningEle = representativeTbodyElement.getElementsByClassName("is-empty-warning");
                     if (emptyWarningEle.length > 0) {
                         emptyWarningEle[0].remove();
                     }
@@ -375,12 +378,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
     }
     const setUnsavedChangesFn = () => {
         cityssm.enableNavBlocker();
-        formMessageEle.innerHTML = "<span class=\"tag is-light is-info is-medium\">" +
+        formMessageElement.innerHTML = "<span class=\"tag is-light is-info is-medium\">" +
             "<span class=\"icon\"><i class=\"fas fa-exclamation-triangle\" aria-hidden=\"true\"></i></span>" +
             " <span>Unsaved Changes</span>" +
             "</div>";
     };
-    const inputEles = formEle.querySelectorAll("input, select, textarea");
+    const inputEles = formElement.querySelectorAll("input, select, textarea");
     for (const inputEle of inputEles) {
         inputEle.addEventListener("change", setUnsavedChangesFn);
     }

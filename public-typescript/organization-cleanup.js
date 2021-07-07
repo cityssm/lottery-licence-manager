@@ -1,49 +1,49 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 (() => {
-    const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
+    const urlPrefix = document.querySelector("main").dataset.urlPrefix;
     const safeUrlPrefix = cityssm.escapeHTML(urlPrefix);
-    const canUpdate = document.getElementsByTagName("main")[0].getAttribute("data-can-update") === "true";
-    const inactiveYearsFilterEle = document.getElementById("filter--inactiveYears");
-    const searchResultsEle = document.getElementById("container--searchResults");
-    const confirmDeleteOrganizationFn = (clickEvent) => {
-        const buttonEle = clickEvent.currentTarget;
-        const organizationName = buttonEle.getAttribute("data-organization-name");
-        const deleteFn = () => {
-            const organizationID = buttonEle.getAttribute("data-organization-id");
+    const canUpdate = document.querySelector("main").dataset.canUpdate === "true";
+    const inactiveYearsFilterElement = document.querySelector("#filter--inactiveYears");
+    const searchResultsElement = document.querySelector("#container--searchResults");
+    const confirmDeleteOrganizationFunction = (clickEvent) => {
+        const buttonElement = clickEvent.currentTarget;
+        const organizationName = buttonElement.getAttribute("data-organization-name");
+        const deleteFunction = () => {
+            const organizationID = buttonElement.getAttribute("data-organization-id");
             cityssm.postJSON(urlPrefix + "/organizations/doDelete", {
                 organizationID
             }, (responseJSON) => {
                 if (responseJSON.success) {
                     cityssm.alertModal(responseJSON.message, "", "OK", "success");
-                    buttonEle.closest("tr").remove();
+                    buttonElement.closest("tr").remove();
                 }
                 else {
                     cityssm.alertModal(responseJSON.message, "", "OK", "danger");
                 }
             });
         };
-        cityssm.confirmModal("Delete Organization?", "Are you sure you want delete " + cityssm.escapeHTML(organizationName) + "?", "Yes, Delete", "danger", deleteFn);
+        cityssm.confirmModal("Delete Organization?", "Are you sure you want delete " + cityssm.escapeHTML(organizationName) + "?", "Yes, Delete", "danger", deleteFunction);
     };
-    const getInactiveOrganizationsFn = () => {
-        searchResultsEle.innerHTML = "<p class=\"has-text-centered has-text-grey-lighter\">" +
+    const getInactiveOrganizationsFunction = () => {
+        searchResultsElement.innerHTML = "<p class=\"has-text-centered has-text-grey-lighter\">" +
             "<i class=\"fas fa-3x fa-circle-notch fa-spin\" aria-hidden=\"true\"></i><br />" +
             "<em>Loading organizations...</em>" +
             "</p>";
         cityssm.postJSON(urlPrefix + "/organizations/doGetInactive", {
-            inactiveYears: inactiveYearsFilterEle.value
+            inactiveYears: inactiveYearsFilterElement.value
         }, (inactiveList) => {
             if (inactiveList.length === 0) {
-                searchResultsEle.innerHTML = "<div class=\"message is-info\">" +
+                searchResultsElement.innerHTML = "<div class=\"message is-info\">" +
                     "<p class=\"message-body\">" +
                     "There are no inactive organizations to report." +
                     "</p>" +
                     "</div>";
                 return;
             }
-            const tableEle = document.createElement("table");
-            tableEle.className = "table is-fullwidth is-striped is-hoverable";
-            tableEle.innerHTML = "<thead>" +
+            const tableElement = document.createElement("table");
+            tableElement.className = "table is-fullwidth is-striped is-hoverable";
+            tableElement.innerHTML = "<thead>" +
                 "<tr>" +
                 "<th>Organization</th>" +
                 "<th class=\"has-text-centered\">Last Licence End Date</th>" +
@@ -52,49 +52,49 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 (canUpdate ? "<th><span class=\"sr-only\">Delete</span></th>" : "") +
                 "</tr>" +
                 "</thead>";
-            const tbodyEle = document.createElement("tbody");
-            for (const organizationObj of inactiveList) {
-                const trEle = document.createElement("tr");
-                const safeOrganizationName = cityssm.escapeHTML(organizationObj.organizationName);
-                trEle.innerHTML = ("<td>" +
+            const tbodyElement = document.createElement("tbody");
+            for (const organizationObject of inactiveList) {
+                const trElement = document.createElement("tr");
+                const safeOrganizationName = cityssm.escapeHTML(organizationObject.organizationName);
+                trElement.innerHTML = ("<td>" +
                     "<a data-tooltip=\"View Organization\"" +
-                    " href=\"" + safeUrlPrefix + "/organizations/" + organizationObj.organizationID.toString() + "\">" +
+                    " href=\"" + safeUrlPrefix + "/organizations/" + organizationObject.organizationID.toString() + "\">" +
                     safeOrganizationName +
                     "</a>" +
                     "</td>") +
                     ("<td class=\"has-text-centered\">" +
-                        (organizationObj.licences_endDateMax
-                            ? organizationObj.licences_endDateMaxString
+                        (organizationObject.licences_endDateMax
+                            ? organizationObject.licences_endDateMaxString
                             : "<span class=\"tag is-light is-danger\">No Licences</span>") +
                         "</td>") +
                     ("<td class=\"has-text-centered\">" +
-                        "<span data-tooltip=\"Created by " + organizationObj.recordCreate_userName + "\">" +
-                        organizationObj.recordCreate_dateString +
+                        "<span data-tooltip=\"Created by " + organizationObject.recordCreate_userName + "\">" +
+                        organizationObject.recordCreate_dateString +
                         "</span>" +
                         "</td>") +
                     ("<td class=\"has-text-centered\">" +
-                        "<span data-tooltip=\"Updated by " + organizationObj.recordUpdate_userName + "\">" +
-                        organizationObj.recordUpdate_dateString +
+                        "<span data-tooltip=\"Updated by " + organizationObject.recordUpdate_userName + "\">" +
+                        organizationObject.recordUpdate_dateString +
                         "</span>" +
                         "</td>");
                 if (canUpdate) {
-                    trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right\">" +
+                    trElement.insertAdjacentHTML("beforeend", "<td class=\"has-text-right\">" +
                         "<button class=\"button is-small is-danger\"" +
                         " data-tooltip=\"Delete Organization\"" +
-                        " data-organization-id=\"" + organizationObj.organizationID.toString() + "\"" +
+                        " data-organization-id=\"" + organizationObject.organizationID.toString() + "\"" +
                         " data-organization-name=\"" + safeOrganizationName + "\" type=\"button\">" +
                         "<span class=\"icon\"><i class=\"fas fa-trash\" aria-hidden=\"true\"></i></span> <span>Delete</span>" +
                         "</button>" +
                         "</td>");
-                    trEle.getElementsByTagName("button")[0].addEventListener("click", confirmDeleteOrganizationFn);
+                    trElement.querySelector("button").addEventListener("click", confirmDeleteOrganizationFunction);
                 }
-                tbodyEle.appendChild(trEle);
+                tbodyElement.append(trElement);
             }
-            tableEle.appendChild(tbodyEle);
-            cityssm.clearElement(searchResultsEle);
-            searchResultsEle.appendChild(tableEle);
+            tableElement.append(tbodyElement);
+            cityssm.clearElement(searchResultsElement);
+            searchResultsElement.append(tableElement);
         });
     };
-    inactiveYearsFilterEle.addEventListener("change", getInactiveOrganizationsFn);
-    getInactiveOrganizationsFn();
+    inactiveYearsFilterElement.addEventListener("change", getInactiveOrganizationsFunction);
+    getInactiveOrganizationsFunction();
 })();

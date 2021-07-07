@@ -47,6 +47,9 @@
           "eles": {
             "elements": true
           },
+          "fns": {
+            "functions": true
+          },
           "res": {
             "result": false
           }

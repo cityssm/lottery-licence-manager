@@ -1,11 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 llm.organizationReminders = (() => {
-    const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
+    const urlPrefix = document.querySelector("main").dataset.urlPrefix;
     let reminderCategories;
     const reminderTypeCache = new Map();
     let dismissingStatuses = [];
-    const loadReminderTypeCache = (callbackFn) => {
+    const loadReminderTypeCache = (callbackFunction) => {
         if (reminderTypeCache.size === 0) {
             llm.getDefaultConfigProperty("dismissingStatuses", (statuses) => {
                 dismissingStatuses = statuses;
@@ -18,70 +18,70 @@ llm.organizationReminders = (() => {
                         reminderTypeCache.set(reminderType.reminderTypeKey, reminderType);
                     }
                 }
-                if (callbackFn) {
-                    callbackFn();
+                if (callbackFunction) {
+                    callbackFunction();
                 }
             });
         }
-        else if (callbackFn) {
-            callbackFn();
+        else if (callbackFunction) {
+            callbackFunction();
         }
     };
     const getReminderType = (reminderTypeKey) => {
         return reminderTypeCache.get(reminderTypeKey);
     };
-    const getRemindersByOrganizationID = (organizationID, callbackFn) => {
+    const getRemindersByOrganizationID = (organizationID, callbackFunction) => {
         cityssm.postJSON(urlPrefix + "/organizations/doGetReminders", {
             organizationID
-        }, callbackFn);
+        }, callbackFunction);
     };
-    const getReminderByID = (organizationID, reminderIndex, callbackFn) => {
+    const getReminderByID = (organizationID, reminderIndex, callbackFunction) => {
         cityssm.postJSON(urlPrefix + "/organizations/doGetReminder", {
             organizationID,
             reminderIndex
-        }, callbackFn);
+        }, callbackFunction);
     };
-    const openAddReminderModal = (organizationID, updateCallbackFn) => {
-        let addReminderCloseModalFn;
-        const submitFn = (formEvent) => {
+    const openAddReminderModal = (organizationID, updateCallbackFunction) => {
+        let addReminderCloseModalFunction;
+        const submitFunction = (formEvent) => {
             formEvent.preventDefault();
             cityssm.postJSON(urlPrefix + "/organizations/doAddReminder", formEvent.currentTarget, (responseJSON) => {
                 if (responseJSON.success) {
-                    addReminderCloseModalFn();
-                    if (updateCallbackFn) {
-                        updateCallbackFn(responseJSON.reminder);
+                    addReminderCloseModalFunction();
+                    if (updateCallbackFunction) {
+                        updateCallbackFunction(responseJSON.reminder);
                     }
                 }
             });
         };
-        const reminderTypeKeyChangeFn = (changeEvent) => {
+        const reminderTypeKeyChangeFunction = (changeEvent) => {
             const reminderTypeKey = changeEvent.currentTarget.value;
             const reminderType = reminderTypeCache.get(reminderTypeKey);
-            const reminderStatusSelectEle = document.getElementById("addReminder--reminderStatus");
-            reminderStatusSelectEle.value = "";
-            reminderStatusSelectEle.innerHTML = "<option value=\"\">(Not Set)</option>";
+            const reminderStatusSelectElement = document.querySelector("#addReminder--reminderStatus");
+            reminderStatusSelectElement.value = "";
+            reminderStatusSelectElement.innerHTML = "<option value=\"\">(Not Set)</option>";
             for (const reminderStatus of reminderType.reminderStatuses) {
-                const optionEle = document.createElement("option");
-                optionEle.value = reminderStatus;
-                optionEle.innerText = reminderStatus;
-                reminderStatusSelectEle.appendChild(optionEle);
+                const optionElement = document.createElement("option");
+                optionElement.value = reminderStatus;
+                optionElement.textContent = reminderStatus;
+                reminderStatusSelectElement.append(optionElement);
             }
         };
-        const openModalFn = () => {
+        const openModalFunction = () => {
             cityssm.openHtmlModal("reminderAdd", {
                 onshow() {
-                    document.getElementById("addReminder--organizationID").value =
+                    document.querySelector("#addReminder--organizationID").value =
                         organizationID.toString();
-                    document.getElementById("addReminder--dueDateString")
+                    document.querySelector("#addReminder--dueDateString")
                         .setAttribute("min", cityssm.dateToString(new Date()));
                     getRemindersByOrganizationID(organizationID, (reminderList) => {
-                        const reminderTypeKeySelectEle = document.getElementById("addReminder--reminderTypeKey");
+                        const reminderTypeKeySelectElement = document.querySelector("#addReminder--reminderTypeKey");
                         for (const reminderCategory of reminderCategories) {
                             if (!reminderCategory.isActive) {
                                 continue;
                             }
-                            const optgroupEle = document.createElement("optgroup");
-                            optgroupEle.label = reminderCategory.reminderCategory;
+                            const optgroupElement = document.createElement("optgroup");
+                            optgroupElement.label = reminderCategory.reminderCategory;
                             for (const reminderType of reminderCategory.reminderTypes) {
                                 if (!reminderType.isActive) {
                                     continue;
@@ -95,89 +95,90 @@ llm.organizationReminders = (() => {
                                         continue;
                                     }
                                 }
-                                const optionEle = document.createElement("option");
-                                optionEle.value = reminderType.reminderTypeKey;
-                                optionEle.innerText = reminderType.reminderType;
-                                optgroupEle.appendChild(optionEle);
+                                const optionElement = document.createElement("option");
+                                optionElement.value = reminderType.reminderTypeKey;
+                                optionElement.textContent = reminderType.reminderType;
+                                optgroupElement.append(optionElement);
                             }
-                            reminderTypeKeySelectEle.appendChild(optgroupEle);
+                            reminderTypeKeySelectElement.append(optgroupElement);
                         }
-                        reminderTypeKeySelectEle.addEventListener("change", reminderTypeKeyChangeFn);
-                        reminderTypeKeySelectEle.closest(".select").classList.remove("is-loading");
+                        reminderTypeKeySelectElement.addEventListener("change", reminderTypeKeyChangeFunction);
+                        reminderTypeKeySelectElement.closest(".select").classList.remove("is-loading");
                     });
-                    document.getElementById("form--addReminder").addEventListener("submit", submitFn);
+                    document.querySelector("#form--addReminder").addEventListener("submit", submitFunction);
                 },
-                onshown(_modalEle, closeModalFn) {
-                    addReminderCloseModalFn = closeModalFn;
+                onshown(_modalElement, closeModalFunction) {
+                    addReminderCloseModalFunction = closeModalFunction;
                 }
             });
         };
-        loadReminderTypeCache(openModalFn);
+        loadReminderTypeCache(openModalFunction);
     };
-    const openEditReminderModal = (organizationID, reminderIndex, updateCallbackFn) => {
+    const openEditReminderModal = (organizationID, reminderIndex, updateCallbackFunction) => {
         let dismissedDateSetByUser = false;
-        let editReminderCloseModalFn;
-        const submitFn = (formEvent) => {
+        let editReminderCloseModalFunction;
+        const submitFunction = (formEvent) => {
             formEvent.preventDefault();
             cityssm.postJSON(urlPrefix + "/organizations/doEditReminder", formEvent.currentTarget, (responseJSON) => {
                 if (responseJSON.success) {
-                    editReminderCloseModalFn();
-                    if (updateCallbackFn) {
-                        updateCallbackFn(responseJSON.reminder);
+                    editReminderCloseModalFunction();
+                    if (updateCallbackFunction) {
+                        updateCallbackFunction(responseJSON.reminder);
                     }
                 }
             });
         };
-        const reminderTypeKeyChangeFn = () => {
-            const reminderTypeKey = document.getElementById("editReminder--reminderTypeKey").value;
+        const reminderTypeKeyChangeFunction = () => {
+            const reminderTypeKey = document.querySelector("#editReminder--reminderTypeKey").value;
             const reminderType = reminderTypeCache.get(reminderTypeKey);
-            const reminderStatusSelectEle = document.getElementById("editReminder--reminderStatus");
-            reminderStatusSelectEle.value = "";
-            reminderStatusSelectEle.innerHTML = "<option data-is-dismissing=\"0\" value=\"\">(Not Set)</option>";
+            const reminderStatusSelectElement = document.querySelector("#editReminder--reminderStatus");
+            reminderStatusSelectElement.value = "";
+            reminderStatusSelectElement.innerHTML = "<option data-is-dismissing=\"0\" value=\"\">(Not Set)</option>";
             for (const reminderStatus of reminderType.reminderStatuses) {
-                const optionEle = document.createElement("option");
-                optionEle.value = reminderStatus;
-                optionEle.innerText = reminderStatus;
-                optionEle.setAttribute("data-is-dismissing", dismissingStatuses.includes(reminderStatus) ? "1" : "0");
-                reminderStatusSelectEle.appendChild(optionEle);
+                const optionElement = document.createElement("option");
+                optionElement.value = reminderStatus;
+                optionElement.textContent = reminderStatus;
+                optionElement.dataset.isDismissing =
+                    dismissingStatuses.includes(reminderStatus) ? "1" : "0";
+                reminderStatusSelectElement.append(optionElement);
             }
         };
-        const reminderStatusChangeFn = (selectChangeEvent) => {
+        const reminderStatusChangeFunction = (selectChangeEvent) => {
             if (dismissedDateSetByUser) {
                 return;
             }
             const isDismissing = selectChangeEvent.currentTarget
                 .selectedOptions[0]
-                .getAttribute("data-is-dismissing") === "1";
-            document.getElementById("editReminder--dismissedDateString").value =
+                .dataset.isDismissing === "1";
+            document.querySelector("#editReminder--dismissedDateString").value =
                 (isDismissing
                     ? cityssm.dateToString(new Date())
                     : "");
         };
-        const openModalFn = () => {
+        const openModalFunction = () => {
             cityssm.openHtmlModal("reminderEdit", {
                 onshow() {
-                    document.getElementById("editReminder--organizationID").value =
+                    document.querySelector("#editReminder--organizationID").value =
                         organizationID.toString();
-                    document.getElementById("editReminder--reminderIndex").value =
+                    document.querySelector("#editReminder--reminderIndex").value =
                         reminderIndex.toString();
-                    document.getElementById("form--editReminder").addEventListener("submit", submitFn);
+                    document.querySelector("#form--editReminder").addEventListener("submit", submitFunction);
                 },
-                onshown(_modalEle, closeModalFn) {
-                    editReminderCloseModalFn = closeModalFn;
+                onshown(_modalElement, closeModalFunction) {
+                    editReminderCloseModalFunction = closeModalFunction;
                     getRemindersByOrganizationID(organizationID, (reminderList) => {
                         const reminder = reminderList.find((possibleReminder) => {
                             return possibleReminder.reminderIndex === reminderIndex;
                         });
                         if (!reminder) {
-                            editReminderCloseModalFn();
+                            editReminderCloseModalFunction();
                             cityssm.alertModal("Reminder Not Found", "", "OK", "danger");
                             return;
                         }
-                        const reminderTypeKeySelectEle = document.getElementById("editReminder--reminderTypeKey");
+                        const reminderTypeKeySelectElement = document.querySelector("#editReminder--reminderTypeKey");
                         for (const reminderCategory of reminderCategories) {
-                            const optgroupEle = document.createElement("optgroup");
-                            optgroupEle.label = reminderCategory.reminderCategory;
+                            const optgroupElement = document.createElement("optgroup");
+                            optgroupElement.label = reminderCategory.reminderCategory;
                             for (const reminderType of reminderCategory.reminderTypes) {
                                 if (reminderType.reminderTypeKey !== reminder.reminderTypeKey) {
                                     if (!reminderType.isActive || !reminderCategory.isActive) {
@@ -193,86 +194,86 @@ llm.organizationReminders = (() => {
                                         }
                                     }
                                 }
-                                const optionEle = document.createElement("option");
-                                optionEle.value = reminderType.reminderTypeKey;
-                                optionEle.innerText = reminderType.reminderType;
-                                optgroupEle.appendChild(optionEle);
+                                const optionElement = document.createElement("option");
+                                optionElement.value = reminderType.reminderTypeKey;
+                                optionElement.textContent = reminderType.reminderType;
+                                optgroupElement.append(optionElement);
                             }
-                            if (optgroupEle.children.length > 0) {
-                                reminderTypeKeySelectEle.appendChild(optgroupEle);
+                            if (optgroupElement.children.length > 0) {
+                                reminderTypeKeySelectElement.append(optgroupElement);
                             }
                         }
-                        reminderTypeKeySelectEle.value = reminder.reminderTypeKey;
-                        reminderTypeKeySelectEle.addEventListener("change", reminderTypeKeyChangeFn);
-                        reminderTypeKeySelectEle.closest(".select").classList.remove("is-loading");
-                        document.getElementById("editReminder--dueDateString").value =
+                        reminderTypeKeySelectElement.value = reminder.reminderTypeKey;
+                        reminderTypeKeySelectElement.addEventListener("change", reminderTypeKeyChangeFunction);
+                        reminderTypeKeySelectElement.closest(".select").classList.remove("is-loading");
+                        document.querySelector("#editReminder--dueDateString").value =
                             reminder.dueDateString;
-                        reminderTypeKeyChangeFn();
-                        const reminderStatusSelectEle = document.getElementById("editReminder--reminderStatus");
+                        reminderTypeKeyChangeFunction();
+                        const reminderStatusSelectElement = document.querySelector("#editReminder--reminderStatus");
                         if (reminder.reminderStatus && reminder.reminderStatus !== "") {
                             let currentStatusOptionFound = false;
-                            for (const possibleOptionEle of reminderStatusSelectEle.options) {
-                                if (possibleOptionEle.value === reminder.reminderStatus) {
+                            for (const possibleOptionElement of reminderStatusSelectElement.options) {
+                                if (possibleOptionElement.value === reminder.reminderStatus) {
                                     currentStatusOptionFound = true;
                                     break;
                                 }
                             }
                             if (!currentStatusOptionFound) {
-                                const missingOptionEle = document.createElement("option");
-                                missingOptionEle.innerText = reminder.reminderStatus;
-                                missingOptionEle.value = reminder.reminderStatus;
-                                reminderStatusSelectEle.appendChild(missingOptionEle);
+                                const missingOptionElement = document.createElement("option");
+                                missingOptionElement.textContent = reminder.reminderStatus;
+                                missingOptionElement.value = reminder.reminderStatus;
+                                reminderStatusSelectElement.append(missingOptionElement);
                             }
-                            reminderStatusSelectEle.value = reminder.reminderStatus;
+                            reminderStatusSelectElement.value = reminder.reminderStatus;
                         }
-                        reminderStatusSelectEle.addEventListener("change", reminderStatusChangeFn);
-                        document.getElementById("editReminder--reminderNote").value =
+                        reminderStatusSelectElement.addEventListener("change", reminderStatusChangeFunction);
+                        document.querySelector("#editReminder--reminderNote").value =
                             reminder.reminderNote;
-                        const dismissedDateEle = document.getElementById("editReminder--dismissedDateString");
-                        dismissedDateEle.value = reminder.dismissedDateString;
-                        dismissedDateEle.setAttribute("max", cityssm.dateToString(new Date()));
+                        const dismissedDateElement = document.querySelector("#editReminder--dismissedDateString");
+                        dismissedDateElement.value = reminder.dismissedDateString;
+                        dismissedDateElement.setAttribute("max", cityssm.dateToString(new Date()));
                         if (reminder.dismissedDateString !== "") {
                             dismissedDateSetByUser = true;
                         }
-                        dismissedDateEle.addEventListener("change", () => {
+                        dismissedDateElement.addEventListener("change", () => {
                             dismissedDateSetByUser = true;
                         });
                     });
                 }
             });
         };
-        loadReminderTypeCache(openModalFn);
+        loadReminderTypeCache(openModalFunction);
     };
-    const doDismissReminder = (organizationID, reminderIndex, callbackFn) => {
+    const doDismissReminder = (organizationID, reminderIndex, callbackFunction) => {
         cityssm.postJSON(urlPrefix + "/organizations/doDismissReminder", {
             organizationID,
             reminderIndex
-        }, callbackFn);
+        }, callbackFunction);
     };
-    const dismissReminder = (organizationID, reminderIndex, doConfirm, dismissCallbackFn) => {
+    const dismissReminder = (organizationID, reminderIndex, doConfirm, dismissCallbackFunction) => {
         if (doConfirm) {
             cityssm.confirmModal("Dismiss Reminder?", "Are you sure you want to dismiss this reminder?", "Yes, Dismiss", "warning", () => {
-                doDismissReminder(organizationID, reminderIndex, dismissCallbackFn);
+                doDismissReminder(organizationID, reminderIndex, dismissCallbackFunction);
             });
         }
         else {
-            doDismissReminder(organizationID, reminderIndex, dismissCallbackFn);
+            doDismissReminder(organizationID, reminderIndex, dismissCallbackFunction);
         }
     };
-    const doDeleteReminder = (organizationID, reminderIndex, callbackFn) => {
+    const doDeleteReminder = (organizationID, reminderIndex, callbackFunction) => {
         cityssm.postJSON(urlPrefix + "/organizations/doDeleteReminder", {
             organizationID,
             reminderIndex
-        }, callbackFn);
+        }, callbackFunction);
     };
-    const deleteReminder = (organizationID, reminderIndex, doConfirm, deleteCallbackFn) => {
+    const deleteReminder = (organizationID, reminderIndex, doConfirm, deleteCallbackFunction) => {
         if (doConfirm) {
             cityssm.confirmModal("Delete Reminder?", "Are you sure you want to delete this reminder?", "Yes, Delete", "danger", () => {
-                doDeleteReminder(organizationID, reminderIndex, deleteCallbackFn);
+                doDeleteReminder(organizationID, reminderIndex, deleteCallbackFunction);
             });
         }
         else {
-            doDeleteReminder(organizationID, reminderIndex, deleteCallbackFn);
+            doDeleteReminder(organizationID, reminderIndex, deleteCallbackFunction);
         }
     };
     return {

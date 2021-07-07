@@ -2,31 +2,28 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const llm = {};
 llm.arrayToObject = (array, objectKey) => {
-    const obj = {};
+    const object = {};
     for (const arrayEntry of array) {
-        obj[arrayEntry[objectKey]] = arrayEntry;
+        object[arrayEntry[objectKey]] = arrayEntry;
     }
-    return obj;
+    return object;
 };
 llm.formatDollarsAsHTML = (dollarAmt) => {
-    if (dollarAmt < 0) {
-        return "<span class=\"has-text-danger\">($" + (dollarAmt * -1).toFixed(2) + ")</span>";
-    }
-    else {
-        return "$" + dollarAmt.toFixed(2);
-    }
+    return dollarAmt < 0
+        ? "<span class=\"has-text-danger\">($" + (dollarAmt * -1).toFixed(2) + ")</span>"
+        : "$" + dollarAmt.toFixed(2);
 };
-llm.initializeDateRangeSelector = (containerEle, changeFn) => {
-    const rangeTypeSelectEle = containerEle.querySelector("[data-field='rangeType']").getElementsByTagName("select")[0];
-    const rangeSelectEle = containerEle.querySelector("[data-field='range']").getElementsByTagName("select")[0];
-    const dateOptionEle = rangeSelectEle.querySelector("[data-range-type='']");
-    const yearOptgroupEle = rangeSelectEle.querySelector("[data-range-type='year']");
-    const quarterOptgroupEle = rangeSelectEle.querySelector("[data-range-type='quarter']");
-    const monthOptgroupEle = rangeSelectEle.querySelector("[data-range-type='month']");
-    const startDateEle = containerEle.querySelector("[data-field='start']").getElementsByTagName("input")[0];
-    const endDateEle = containerEle.querySelector("[data-field='end']").getElementsByTagName("input")[0];
-    const setStartEndDatesFromRangeFn = () => {
-        const rangeValue = rangeSelectEle.value;
+llm.initializeDateRangeSelector = (containerElement, changeFunction) => {
+    const rangeTypeSelectElement = containerElement.querySelector("[data-field='rangeType']").querySelector("select");
+    const rangeSelectElement = containerElement.querySelector("[data-field='range']").querySelector("select");
+    const dateOptionElement = rangeSelectElement.querySelector("[data-range-type='']");
+    const yearOptgroupElement = rangeSelectElement.querySelector("[data-range-type='year']");
+    const quarterOptgroupElement = rangeSelectElement.querySelector("[data-range-type='quarter']");
+    const monthOptgroupElement = rangeSelectElement.querySelector("[data-range-type='month']");
+    const startDateElement = containerElement.querySelector("[data-field='start']").querySelector("input");
+    const endDateElement = containerElement.querySelector("[data-field='end']").querySelector("input");
+    const setStartEndDatesFromRangeFunction = () => {
+        const rangeValue = rangeSelectElement.value;
         if (rangeValue === "") {
             return;
         }
@@ -38,132 +35,132 @@ llm.initializeDateRangeSelector = (containerEle, changeFn) => {
             endDateString = range[0] + "-12-31";
         }
         else if (range[1] === "q") {
-            const jsQuarterStartMonth = (parseInt(range[2], 10) - 1) * 3;
+            const jsQuarterStartMonth = (Number.parseInt(range[2], 10) - 1) * 3;
             startDateString = range[0] + "-" + ("0" + (jsQuarterStartMonth + 1).toString()).slice(-2) + "-01";
-            const endDate = new Date(parseInt(range[0], 10), jsQuarterStartMonth + 3, 0);
+            const endDate = new Date(Number.parseInt(range[0], 10), jsQuarterStartMonth + 3, 0);
             endDateString = range[0] + "-" +
                 ("0" + (endDate.getMonth() + 1).toString()).slice(-2) + "-" +
                 endDate.getDate().toString();
         }
         else {
-            const jsQuarterStartMonth = (parseInt(range[1], 10) - 1);
+            const jsQuarterStartMonth = (Number.parseInt(range[1], 10) - 1);
             startDateString = range[0] + "-" + ("0" + (jsQuarterStartMonth + 1).toString()).slice(-2) + "-01";
-            const endDate = new Date(parseInt(range[0], 10), jsQuarterStartMonth + 1, 0);
+            const endDate = new Date(Number.parseInt(range[0], 10), jsQuarterStartMonth + 1, 0);
             endDateString = range[0] + "-" +
                 ("0" + (endDate.getMonth() + 1).toString()).slice(-2) + "-" +
                 endDate.getDate().toString();
         }
-        startDateEle.value = startDateString;
-        endDateEle.setAttribute("min", startDateString);
-        endDateEle.value = endDateString;
-        if (changeFn) {
-            changeFn();
+        startDateElement.value = startDateString;
+        endDateElement.setAttribute("min", startDateString);
+        endDateElement.value = endDateString;
+        if (changeFunction) {
+            changeFunction();
         }
     };
-    rangeTypeSelectEle.addEventListener("change", () => {
-        const rangeType = rangeTypeSelectEle.value;
+    rangeTypeSelectElement.addEventListener("change", () => {
+        const rangeType = rangeTypeSelectElement.value;
         if (rangeType === "") {
-            rangeSelectEle.setAttribute("readonly", "readonly");
-            rangeSelectEle.classList.add("is-readonly");
-            dateOptionEle.classList.remove("is-hidden");
-            yearOptgroupEle.classList.add("is-hidden");
-            quarterOptgroupEle.classList.add("is-hidden");
-            monthOptgroupEle.classList.add("is-hidden");
-            rangeSelectEle.value = "";
-            startDateEle.removeAttribute("readonly");
-            startDateEle.classList.remove("is-readonly");
-            endDateEle.removeAttribute("readonly");
-            endDateEle.classList.remove("is-readonly");
+            rangeSelectElement.setAttribute("readonly", "readonly");
+            rangeSelectElement.classList.add("is-readonly");
+            dateOptionElement.classList.remove("is-hidden");
+            yearOptgroupElement.classList.add("is-hidden");
+            quarterOptgroupElement.classList.add("is-hidden");
+            monthOptgroupElement.classList.add("is-hidden");
+            rangeSelectElement.value = "";
+            startDateElement.removeAttribute("readonly");
+            startDateElement.classList.remove("is-readonly");
+            endDateElement.removeAttribute("readonly");
+            endDateElement.classList.remove("is-readonly");
         }
         else {
-            rangeSelectEle.removeAttribute("readonly");
-            rangeSelectEle.classList.remove("is-readonly");
+            rangeSelectElement.removeAttribute("readonly");
+            rangeSelectElement.classList.remove("is-readonly");
             if (rangeType === "year") {
-                yearOptgroupEle.classList.remove("is-hidden");
-                rangeSelectEle.value = yearOptgroupEle.children[0].value;
+                yearOptgroupElement.classList.remove("is-hidden");
+                rangeSelectElement.value = yearOptgroupElement.children[0].value;
             }
             else {
-                yearOptgroupEle.classList.add("is-hidden");
+                yearOptgroupElement.classList.add("is-hidden");
             }
             if (rangeType === "quarter") {
-                quarterOptgroupEle.classList.remove("is-hidden");
-                rangeSelectEle.value = quarterOptgroupEle.children[0].value;
+                quarterOptgroupElement.classList.remove("is-hidden");
+                rangeSelectElement.value = quarterOptgroupElement.children[0].value;
             }
             else {
-                quarterOptgroupEle.classList.add("is-hidden");
+                quarterOptgroupElement.classList.add("is-hidden");
             }
             if (rangeType === "month") {
-                monthOptgroupEle.classList.remove("is-hidden");
-                rangeSelectEle.value = monthOptgroupEle.children[0].value;
+                monthOptgroupElement.classList.remove("is-hidden");
+                rangeSelectElement.value = monthOptgroupElement.children[0].value;
             }
             else {
-                monthOptgroupEle.classList.add("is-hidden");
+                monthOptgroupElement.classList.add("is-hidden");
             }
-            dateOptionEle.classList.add("is-hidden");
-            startDateEle.setAttribute("readonly", "readonly");
-            startDateEle.classList.add("is-readonly");
-            endDateEle.setAttribute("readonly", "readonly");
-            endDateEle.classList.add("is-readonly");
-            setStartEndDatesFromRangeFn();
+            dateOptionElement.classList.add("is-hidden");
+            startDateElement.setAttribute("readonly", "readonly");
+            startDateElement.classList.add("is-readonly");
+            endDateElement.setAttribute("readonly", "readonly");
+            endDateElement.classList.add("is-readonly");
+            setStartEndDatesFromRangeFunction();
         }
     });
-    rangeSelectEle.addEventListener("change", setStartEndDatesFromRangeFn);
-    startDateEle.addEventListener("change", () => {
-        endDateEle.setAttribute("min", startDateEle.value);
-        changeFn();
+    rangeSelectElement.addEventListener("change", setStartEndDatesFromRangeFunction);
+    startDateElement.addEventListener("change", () => {
+        endDateElement.setAttribute("min", startDateElement.value);
+        changeFunction();
     });
-    endDateEle.addEventListener("change", changeFn);
+    endDateElement.addEventListener("change", changeFunction);
 };
-llm.getDefaultConfigProperty = (propertyName, propertyValueCallbackFn) => {
+llm.getDefaultConfigProperty = (propertyName, propertyValueCallbackFunction) => {
     try {
         const defaultConfigPropertiesString = window.localStorage.getItem("defaultConfigProperties");
         if (defaultConfigPropertiesString) {
             const defaultConfigProperties = JSON.parse(defaultConfigPropertiesString);
-            propertyValueCallbackFn(defaultConfigProperties[propertyName]);
+            propertyValueCallbackFunction(defaultConfigProperties[propertyName]);
             return;
         }
     }
-    catch (_e) {
+    catch (_a) {
     }
-    const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
+    const urlPrefix = document.querySelector("main").dataset.urlPrefix;
     cityssm.postJSON(urlPrefix + "/dashboard/doGetDefaultConfigProperties", {}, (defaultConfigProperties) => {
         try {
             window.localStorage.setItem("defaultConfigProperties", JSON.stringify(defaultConfigProperties));
         }
-        catch (_e) {
+        catch (_a) {
         }
-        propertyValueCallbackFn(defaultConfigProperties[propertyName]);
+        propertyValueCallbackFunction(defaultConfigProperties[propertyName]);
     });
 };
-llm.initializeTabs = (tabsListEle, callbackFns) => {
-    if (!tabsListEle) {
+llm.initializeTabs = (tabsListElement, callbackFunctions) => {
+    if (!tabsListElement) {
         return;
     }
-    const isPanelOrMenuListTabs = tabsListEle.classList.contains("panel-tabs") || tabsListEle.classList.contains("menu-list");
-    const listItemEles = tabsListEle.getElementsByTagName(isPanelOrMenuListTabs ? "a" : "li");
-    const tabLinkEles = (isPanelOrMenuListTabs ? listItemEles : tabsListEle.getElementsByTagName("a"));
-    const tabClickFn = (clickEvent) => {
+    const isPanelOrMenuListTabs = tabsListElement.classList.contains("panel-tabs") || tabsListElement.classList.contains("menu-list");
+    const listItemElements = tabsListElement.querySelectorAll(isPanelOrMenuListTabs ? "a" : "li");
+    const tabLinkElements = (isPanelOrMenuListTabs ? listItemElements : tabsListElement.querySelectorAll("a"));
+    const tabClickFunction = (clickEvent) => {
         clickEvent.preventDefault();
-        const tabLinkEle = clickEvent.currentTarget;
-        const tabContentEle = document.getElementById(tabLinkEle.getAttribute("href").substring(1));
-        for (let index = 0; index < listItemEles.length; index += 1) {
-            listItemEles[index].classList.remove("is-active");
-            tabLinkEles[index].setAttribute("aria-selected", "false");
+        const tabLinkElement = clickEvent.currentTarget;
+        const selectedTabContentElement = document.querySelector(tabLinkElement.getAttribute("href"));
+        for (const [index, listItemElement] of listItemElements.entries()) {
+            listItemElement.classList.remove("is-active");
+            tabLinkElements[index].setAttribute("aria-selected", "false");
         }
-        (isPanelOrMenuListTabs ? tabLinkEle : tabLinkEle.parentElement).classList.add("is-active");
-        tabLinkEle.setAttribute("aria-selected", "true");
-        const tabContentEles = tabContentEle.parentElement.getElementsByClassName("tab-content");
-        for (const tabContentEle of tabContentEles) {
-            tabContentEle.classList.remove("is-active");
+        (isPanelOrMenuListTabs ? tabLinkElement : tabLinkElement.parentElement).classList.add("is-active");
+        tabLinkElement.setAttribute("aria-selected", "true");
+        const allTabContentElements = selectedTabContentElement.parentElement.querySelectorAll(".tab-content");
+        for (const tabContentElement of allTabContentElements) {
+            tabContentElement.classList.remove("is-active");
         }
-        tabContentEle.classList.add("is-active");
-        if (callbackFns === null || callbackFns === void 0 ? void 0 : callbackFns.onshown) {
-            callbackFns.onshown(tabContentEle);
+        selectedTabContentElement.classList.add("is-active");
+        if (callbackFunctions === null || callbackFunctions === void 0 ? void 0 : callbackFunctions.onshown) {
+            callbackFunctions.onshown(selectedTabContentElement);
         }
     };
-    for (const listItemEle of listItemEles) {
+    for (const listItemElement of listItemElements) {
         (isPanelOrMenuListTabs
-            ? listItemEle
-            : listItemEle.getElementsByTagName("a")[0]).addEventListener("click", tabClickFn);
+            ? listItemElement
+            : listItemElement.querySelector("a")).addEventListener("click", tabClickFunction);
     }
 };

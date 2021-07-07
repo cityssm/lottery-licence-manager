@@ -140,7 +140,7 @@ interface ConfigAmendments {
 }
 export interface ConfigReportDefinition {
     sql: string;
-    params?: (request: expressTypes.Request) => any[];
-    functions?: () => Map<string, (...parameters: any) => any>;
+    params?: (request: expressTypes.Request) => unknown[];
+    functions?: () => Map<string, (...parameters: unknown[]) => unknown>;
 }
 export {};
