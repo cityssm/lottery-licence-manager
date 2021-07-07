@@ -1,48 +1,50 @@
+/* eslint-disable unicorn/filename-case */
+
 (() => {
 
   // licence amendments
 
-  const amendmentToggleLinkEle = document.getElementById("is-licence-amendment-toggle");
+  const amendmentToggleLinkElement = document.querySelector("#is-licence-amendment-toggle");
 
-  if (amendmentToggleLinkEle) {
+  if (amendmentToggleLinkElement) {
 
-    amendmentToggleLinkEle.addEventListener("click", (event) => {
+    amendmentToggleLinkElement.addEventListener("click", (event) => {
       event.preventDefault();
 
-      const amendmentBlockEles = document.getElementsByClassName("is-licence-amendment-block");
+      const amendmentBlockElements = document.querySelectorAll(".is-licence-amendment-block");
 
-      for (const blockEle of amendmentBlockEles) {
-        blockEle.classList.toggle("is-hidden");
+      for (const blockElement of amendmentBlockElements) {
+        blockElement.classList.toggle("is-hidden");
       }
     });
   }
 
   // ticket types
 
-  const ticketTypesPanelEle = document.getElementById("is-ticket-types-panel");
+  const ticketTypesPanelElement = document.querySelector("#is-ticket-types-panel");
 
-  if (ticketTypesPanelEle) {
+  if (ticketTypesPanelElement) {
 
-    const tabEles = ticketTypesPanelEle.querySelectorAll(".panel-tabs a");
+    const tabElements = ticketTypesPanelElement.querySelectorAll(".panel-tabs a");
 
-    const tabsFn_selectTab = (clickEvent: MouseEvent) => {
+    const tabsFunction_selectTab = (clickEvent: MouseEvent) => {
       clickEvent.preventDefault();
 
-      tabEles.forEach((tabEle) => {
-        tabEle.classList.remove("is-active");
-      });
+      for (const tabElement of tabElements) {
+        tabElement.classList.remove("is-active");
+      }
 
-      const selectedTabEle = clickEvent.currentTarget as HTMLAnchorElement;
-      selectedTabEle.classList.add("is-active");
+      const selectedTabElement = clickEvent.currentTarget as HTMLAnchorElement;
+      selectedTabElement.classList.add("is-active");
 
-      document.getElementById("ticketTypesTabPanel--summary").classList.add("is-hidden");
-      document.getElementById("ticketTypesTabPanel--log").classList.add("is-hidden");
+      document.querySelector("#ticketTypesTabPanel--summary").classList.add("is-hidden");
+      document.querySelector("#ticketTypesTabPanel--log").classList.add("is-hidden");
 
-      document.getElementById(selectedTabEle.getAttribute("aria-controls")).classList.remove("is-hidden");
+      document.querySelector("#" + selectedTabElement.getAttribute("aria-controls")).classList.remove("is-hidden");
     };
 
-    tabEles.forEach((tabEle) => {
-      tabEle.addEventListener("click", tabsFn_selectTab);
-    });
+    for (const tabElement of tabElements) {
+      tabElement.addEventListener("click", tabsFunction_selectTab);
+    }
   }
 })();

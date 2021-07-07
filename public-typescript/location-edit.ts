@@ -1,3 +1,5 @@
+/* eslint-disable unicorn/filename-case */
+
 import type { cityssmGlobal } from "@cityssm/bulma-webapp-js/src/types";
 import type * as llmTypes from "../types/recordTypes";
 
@@ -6,25 +8,25 @@ declare const cityssm: cityssmGlobal;
 
 (() => {
 
-  const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
+  const urlPrefix = document.querySelector("main").dataset.urlPrefix;
 
-  const formEle = document.getElementById("form--location") as HTMLFormElement;
-  const formMessageEle = document.getElementById("container--form-message");
-  const locationID = (document.getElementById("location--locationID") as HTMLInputElement).value;
+  const formElement = document.querySelector("#form--location") as HTMLFormElement;
+  const formMessageElement = document.querySelector("#container--form-message");
+  const locationID = (document.querySelector("#location--locationID") as HTMLInputElement).value;
 
   let hasUnsavedChanges = false;
 
   const isCreate = locationID === "";
-  const isAdmin = (document.getElementsByTagName("main")[0].getAttribute("data-is-admin") === "true");
+  const isAdmin = (document.querySelector("main").dataset.isAdmin === "true");
 
-  formEle.addEventListener("submit", (formEvent) => {
+  formElement.addEventListener("submit", (formEvent) => {
 
     formEvent.preventDefault();
 
-    formMessageEle.innerHTML = "Saving... <i class=\"fas fa-circle-notch fa-spin\" aria-hidden=\"true\"></i>";
+    formMessageElement.innerHTML = "Saving... <i class=\"fas fa-circle-notch fa-spin\" aria-hidden=\"true\"></i>";
 
     cityssm.postJSON(urlPrefix + (isCreate ? "/locations/doCreate" : "/locations/doUpdate"),
-      formEle,
+      formElement,
       (responseJSON: { success: boolean; message?: string; locationID?: number }) => {
 
         if (responseJSON.success) {
@@ -39,7 +41,7 @@ declare const cityssm: cityssmGlobal;
 
         } else {
 
-          formMessageEle.innerHTML = "";
+          formMessageElement.innerHTML = "";
 
           cityssm.alertModal(
             responseJSON.message, "", "OK",
@@ -54,7 +56,7 @@ declare const cityssm: cityssmGlobal;
 
   if (!isCreate) {
 
-    const deleteLocationFn = () => {
+    const deleteLocationFunction = () => {
 
       cityssm.postJSON(urlPrefix + "/locations/doDelete", {
         locationID
@@ -68,7 +70,7 @@ declare const cityssm: cityssmGlobal;
       );
     };
 
-    formEle.getElementsByClassName("is-delete-button")[0].addEventListener("click", (clickEvent) => {
+    formElement.querySelector(".is-delete-button").addEventListener("click", (clickEvent) => {
 
       clickEvent.preventDefault();
 
@@ -78,7 +80,7 @@ declare const cityssm: cityssmGlobal;
           "Note that any active licences associated with this location will remain active."),
         "Yes, Delete Location",
         "warning",
-        deleteLocationFn
+        deleteLocationFunction
       );
     });
   }
@@ -86,9 +88,9 @@ declare const cityssm: cityssmGlobal;
 
   if (!isCreate && isAdmin) {
 
-    const intLocationID = parseInt(locationID, 10);
+    const intLocationID = Number.parseInt(locationID, 10);
 
-    formEle.getElementsByClassName("is-merge-button")[0].addEventListener("click", (mergeButton_clickEvent) => {
+    formElement.querySelector(".is-merge-button").addEventListener("click", (mergeButton_clickEvent) => {
 
       mergeButton_clickEvent.preventDefault();
 
@@ -105,10 +107,10 @@ declare const cityssm: cityssmGlobal;
 
       // get location display name
 
-      const locationName_target = (document.getElementById("location--locationName") as HTMLInputElement).value;
+      const locationName_target = (document.querySelector("#location--locationName") as HTMLInputElement).value;
 
       const locationDisplayNameAndID_target = (locationName_target === ""
-        ? (document.getElementById("location--locationAddress1") as HTMLInputElement).value
+        ? (document.querySelector("#location--locationAddress1") as HTMLInputElement).value
         : locationName_target) +
         ", #" + locationID;
 
@@ -117,11 +119,11 @@ declare const cityssm: cityssmGlobal;
       let locationID_source = "";
 
       let locationsList: llmTypes.Location[] = [];
-      let locationFilterEle = null;
-      let sourceLocationsContainerEle = null;
-      let closeMergeLocationModalFn = null;
+      let locationFilterElement: HTMLInputElement;
+      let sourceLocationsContainerElement: HTMLElement;
+      let closeMergeLocationModalFunction: () => void;
 
-      const doMergeFn = () => {
+      const doMergeFunction = () => {
 
         cityssm.postJSON(urlPrefix + "/locations/doMerge", {
           targetLocationID: locationID,
@@ -139,42 +141,42 @@ declare const cityssm: cityssmGlobal;
         );
       };
 
-      const clickFn_selectSourceLocation = (clickEvent: Event) => {
+      const clickFunction_selectSourceLocation = (clickEvent: Event) => {
 
         clickEvent.preventDefault();
 
-        const sourceLocationLinkEle = clickEvent.currentTarget as HTMLAnchorElement;
+        const sourceLocationLinkElement = clickEvent.currentTarget as HTMLAnchorElement;
 
-        locationID_source = sourceLocationLinkEle.getAttribute("data-location-id");
-        const locationDisplayName_source = sourceLocationLinkEle.getAttribute("data-location-display-name");
+        locationID_source = sourceLocationLinkElement.getAttribute("data-location-id");
+        const locationDisplayName_source = sourceLocationLinkElement.getAttribute("data-location-display-name");
 
-        closeMergeLocationModalFn();
+        closeMergeLocationModalFunction();
 
         cityssm.confirmModal(
           "Confirm Merge",
-          "Are you sure you want to update all licences associated with" +
-          " <em>" + locationDisplayName_source + ", #" + locationID_source + "</em>" +
-          " and associate them with" +
-          " <em>" + locationDisplayNameAndID_target + "</em>?",
+          ("Are you sure you want to update all licences associated with" +
+            " <em>" + locationDisplayName_source + ", #" + locationID_source + "</em>" +
+            " and associate them with" +
+            " <em>" + locationDisplayNameAndID_target + "</em>?"),
           "Yes, Complete Merge", "warning",
-          doMergeFn
+          doMergeFunction
         );
 
       };
 
-      const filterLocationsFn = () => {
+      const filterLocationsFunction = () => {
 
-        const filterSplit = locationFilterEle.value
+        const filterSplit = locationFilterElement.value
           .trim()
           .toLowerCase()
           .split(" ");
 
-        const listEle = document.createElement("div");
-        listEle.className = "panel";
+        const listElement = document.createElement("div");
+        listElement.className = "panel";
 
-        for (const locationObj of locationsList) {
+        for (const locationObject of locationsList) {
 
-          if (locationObj.locationID === intLocationID) {
+          if (locationObject.locationID === intLocationID) {
             continue;
           }
 
@@ -182,7 +184,7 @@ declare const cityssm: cityssmGlobal;
 
           for (const filterString of filterSplit) {
 
-            if (!locationObj.locationName.toLowerCase().includes(filterString)) {
+            if (!locationObject.locationName.toLowerCase().includes(filterString)) {
               showLocation = false;
               break;
             }
@@ -192,74 +194,74 @@ declare const cityssm: cityssmGlobal;
             continue;
           }
 
-          const listItemEle = document.createElement("a");
-          listItemEle.className = "panel-block is-block";
-          listItemEle.setAttribute("data-location-id", locationObj.locationID.toString());
-          listItemEle.setAttribute("data-location-display-name", locationObj.locationDisplayName);
-          listItemEle.addEventListener("click", clickFn_selectSourceLocation);
+          const listItemElement = document.createElement("a");
+          listItemElement.className = "panel-block is-block";
+          listItemElement.dataset.locationId = locationObject.locationID.toString();
+          listItemElement.dataset.locationDisplayName = locationObject.locationDisplayName;
+          listItemElement.addEventListener("click", clickFunction_selectSourceLocation);
 
-          listItemEle.innerHTML = "<div class=\"level is-marginless\">" +
+          listItemElement.innerHTML = "<div class=\"level is-marginless\">" +
             ("<div class=\"level-left\">" +
               "<div>" +
-              cityssm.escapeHTML(locationObj.locationDisplayName) + "<br />" +
+              cityssm.escapeHTML(locationObject.locationDisplayName) + "<br />" +
               "<small>" +
-              cityssm.escapeHTML(locationObj.locationAddress1) +
+              cityssm.escapeHTML(locationObject.locationAddress1) +
               "</small>" +
               "</div>" +
               "</div>") +
             ("<div class=\"level-right\">" +
-              "#" + locationObj.locationID.toString() +
+              "#" + locationObject.locationID.toString() +
               "</div>") +
             "</div>" +
             "<div class=\"has-text-right\">" +
-            (locationObj.licences_count > 0
+            (locationObject.licences_count > 0
               ? " <span class=\"tag is-info has-tooltip-left\" data-tooltip=\"Licence Count\">" +
               "<span class=\"icon\"><i class=\"fas fa-certificate\" aria-hidden=\"true\"></i></span>" +
-              " <span>" + locationObj.licences_count.toString() + "</span></span>"
+              " <span>" + locationObject.licences_count.toString() + "</span></span>"
               : "") +
-            (locationObj.distributor_count > 0
+            (locationObject.distributor_count > 0
               ? " <span class=\"tag is-info has-tooltip-left\" data-tooltip=\"Distributor Count\">" +
               "<span class=\"icon\"><i class=\"fas fa-truck-moving\" aria-hidden=\"true\"></i></span>" +
-              " <span>" + locationObj.distributor_count.toString() + "</span></span>"
+              " <span>" + locationObject.distributor_count.toString() + "</span></span>"
               : "") +
-            (locationObj.manufacturer_count > 0
+            (locationObject.manufacturer_count > 0
               ? " <span class=\"tag is-info has-tooltip-left\" data-tooltip=\"Manufacturer Count\">" +
               "<span class=\"icon\"><i class=\"fas fa-print\" aria-hidden=\"true\"></i></span>" +
-              " <span>" + locationObj.manufacturer_count.toString() + "</span></span>"
+              " <span>" + locationObject
               : "") +
             "</div>";
 
-          listEle.insertAdjacentElement("beforeend", listItemEle);
+          listElement.append(listItemElement);
         }
 
-        cityssm.clearElement(sourceLocationsContainerEle);
-        sourceLocationsContainerEle.insertAdjacentElement("beforeend", listEle);
+        cityssm.clearElement(sourceLocationsContainerElement);
+        sourceLocationsContainerElement.append(listElement);
       };
 
       cityssm.openHtmlModal("locationMerge", {
-        onshow(modalEle: HTMLElement): void {
+        onshow(modalElement) {
 
           // Location name - target
 
-          const locationDisplayNameAndID_target_eles =
-            modalEle.getElementsByClassName("mergeLocation--locationDisplayNameAndID_target") as
-            HTMLCollectionOf<HTMLSpanElement>;
+          const locationDisplayNameAndID_target_elements =
+            modalElement.querySelectorAll(".mergeLocation--locationDisplayNameAndID_target") as
+            NodeListOf<HTMLSpanElement>;
 
-          for (const locationDisplayNameAndID_target_ele of locationDisplayNameAndID_target_eles) {
-            locationDisplayNameAndID_target_ele.innerText = locationDisplayNameAndID_target;
+          for (const locationDisplayNameAndID_target_element of locationDisplayNameAndID_target_elements) {
+            locationDisplayNameAndID_target_element.textContent = locationDisplayNameAndID_target;
           }
 
           // Locations - source
 
-          sourceLocationsContainerEle = document.getElementById("container--sourceLocations");
+          sourceLocationsContainerElement = document.querySelector("#container--sourceLocations");
 
-          locationFilterEle = document.getElementById("mergeLocation--locationFilter");
-          locationFilterEle.addEventListener("keyup", filterLocationsFn);
+          locationFilterElement = document.querySelector("#mergeLocation--locationFilter");
+          locationFilterElement.addEventListener("keyup", filterLocationsFunction);
 
         },
-        onshown(_modalEle: HTMLElement, closeModalFn: () => void): void {
+        onshown(_modalElement, closeModalFunction) {
 
-          closeMergeLocationModalFn = closeModalFn;
+          closeMergeLocationModalFunction = closeModalFunction;
 
           cityssm.postJSON(urlPrefix + "/locations/doGetLocations", {
             limit: -1
@@ -268,10 +270,10 @@ declare const cityssm: cityssmGlobal;
 
               locationsList = responseJSON.locations;
 
-              locationFilterEle.removeAttribute("disabled");
-              locationFilterEle.focus();
+              locationFilterElement.removeAttribute("disabled");
+              locationFilterElement.focus();
 
-              filterLocationsFn();
+              filterLocationsFunction();
             }
           );
         }
@@ -282,49 +284,49 @@ declare const cityssm: cityssmGlobal;
 
   // Nav blocker
 
-  const setUnsavedChangesFn = () => {
+  const setUnsavedChangesFunction = () => {
 
     hasUnsavedChanges = true;
 
     cityssm.enableNavBlocker();
 
-    formMessageEle.innerHTML = "<span class=\"tag is-light is-info is-medium\">" +
+    formMessageElement.innerHTML = "<span class=\"tag is-light is-info is-medium\">" +
       "<span class=\"icon\"><i class=\"fas fa-exclamation-triangle\" aria-hidden=\"true\"></i></span>" +
       " <span>Unsaved Changes</span>" +
       "</div>";
 
   };
 
-  const inputEles = formEle.getElementsByTagName("input");
+  const inputElements = formElement.querySelectorAll("input");
 
-  for (const inputEle of inputEles) {
-    inputEle.addEventListener("change", setUnsavedChangesFn);
+  for (const inputElement of inputElements) {
+    inputElement.addEventListener("change", setUnsavedChangesFunction);
   }
 
-  const locationNameEle = document.getElementById("location--locationName");
+  const locationNameElement = document.querySelector("#location--locationName") as HTMLInputElement;
 
   if (isCreate) {
-    locationNameEle.focus();
+    locationNameElement.focus();
   }
 
   // Location Name is required for manufacturers and distributors
 
-  const locationIsDistributorCheckboxEle =
-    document.getElementById("location--locationIsDistributor") as HTMLInputElement;
+  const locationIsDistributorCheckboxElement =
+    document.querySelector("#location--locationIsDistributor") as HTMLInputElement;
 
-  const locationIsManufacturerCheckboxEle =
-    document.getElementById("location--locationIsManufacturer") as HTMLInputElement;
+  const locationIsManufacturerCheckboxElement =
+    document.querySelector("#location--locationIsManufacturer") as HTMLInputElement;
 
-  const setLocationNameRequiredFn = () => {
+  const setLocationNameRequiredFunction = () => {
 
-    if (locationIsDistributorCheckboxEle.checked || locationIsManufacturerCheckboxEle.checked) {
-      locationNameEle.setAttribute("required", "required");
+    if (locationIsDistributorCheckboxElement.checked || locationIsManufacturerCheckboxElement.checked) {
+      locationNameElement.setAttribute("required", "required");
 
     } else {
-      locationNameEle.removeAttribute("required");
+      locationNameElement.removeAttribute("required");
     }
   };
 
-  locationIsDistributorCheckboxEle.addEventListener("change", setLocationNameRequiredFn);
-  locationIsManufacturerCheckboxEle.addEventListener("change", setLocationNameRequiredFn);
+  locationIsDistributorCheckboxElement.addEventListener("change", setLocationNameRequiredFunction);
+  locationIsManufacturerCheckboxElement.addEventListener("change", setLocationNameRequiredFunction);
 })();

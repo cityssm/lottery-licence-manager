@@ -1,27 +1,27 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 (() => {
-    const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
-    const formEle = document.getElementById("form--licenceTypes");
-    const containerEle = document.getElementById("container--licenceTypes");
+    const urlPrefix = document.querySelector("main").getAttribute("data-url-prefix");
+    const formElement = document.querySelector("#form--licenceTypes");
+    const containerElement = document.querySelector("#container--licenceTypes");
     let externalLicenceNumberLabel = "";
-    const getLicenceTypeSummaryFn = () => {
-        cityssm.clearElement(containerEle);
-        containerEle.innerHTML = "<p class=\"has-text-centered has-text-grey-lighter\">" +
+    const getLicenceTypeSummaryFunction = () => {
+        cityssm.clearElement(containerElement);
+        containerElement.innerHTML = "<p class=\"has-text-centered has-text-grey-lighter\">" +
             "<i class=\"fas fa-3x fa-circle-notch fa-spin\" aria-hidden=\"true\"></i><br />" +
             "<em>Loading report...</em>" +
             "</p>";
-        cityssm.postJSON(urlPrefix + "/licences/doGetLicenceTypeSummary", formEle, (licenceList) => {
-            cityssm.clearElement(containerEle);
+        cityssm.postJSON(urlPrefix + "/licences/doGetLicenceTypeSummary", formElement, (licenceList) => {
+            cityssm.clearElement(containerElement);
             if (licenceList.length === 0) {
-                containerEle.innerHTML = "<div class=\"message is-info\">" +
+                containerElement.innerHTML = "<div class=\"message is-info\">" +
                     "<p class=\"message-body\">There are no licences available that meet your search criteria.</p>" +
                     "</div>";
                 return;
             }
-            const tableEle = document.createElement("table");
-            tableEle.className = "table is-fullwidth is-striped is-hoverable";
-            tableEle.innerHTML = "<thead><tr>" +
+            const tableElement = document.createElement("table");
+            tableElement.className = "table is-fullwidth is-striped is-hoverable";
+            tableElement.innerHTML = "<thead><tr>" +
                 "<th>Application Date</th>" +
                 "<th>Issue Date</th>" +
                 "<th>" + externalLicenceNumberLabel + "</th>" +
@@ -30,38 +30,38 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 "<th class=\"has-text-right\">Prize Value</th>" +
                 "<th class=\"has-text-right\">Licence Fee</th>" +
                 "</tr></thead>";
-            const tbodyEle = document.createElement("tbody");
+            const tbodyElement = document.createElement("tbody");
             let issueDateCount = 0;
             let totalPrizeValueSum = 0;
             let licenceFeeSum = 0;
-            for (const licenceObj of licenceList) {
-                const trEle = document.createElement("tr");
-                trEle.insertAdjacentHTML("beforeend", "<td>" + licenceObj.applicationDateString + "</td>");
-                trEle.insertAdjacentHTML("beforeend", "<td>" + licenceObj.issueDateString + "</td>");
-                trEle.insertAdjacentHTML("beforeend", "<td>" +
-                    "<a data-tooltip=\"View Licence\" href=\"" + cityssm.escapeHTML(urlPrefix) + "/licences/" + licenceObj.licenceID.toString() + "\">" +
-                    cityssm.escapeHTML(licenceObj.externalLicenceNumber) + "<br />" +
-                    "<small>Licence #" + licenceObj.licenceID.toString() + "</small>" +
+            for (const licenceObject of licenceList) {
+                const trElement = document.createElement("tr");
+                trElement.insertAdjacentHTML("beforeend", "<td>" + licenceObject.applicationDateString + "</td>");
+                trElement.insertAdjacentHTML("beforeend", "<td>" + licenceObject.issueDateString + "</td>");
+                trElement.insertAdjacentHTML("beforeend", "<td>" +
+                    "<a data-tooltip=\"View Licence\" href=\"" + cityssm.escapeHTML(urlPrefix) + "/licences/" + licenceObject.licenceID.toString() + "\">" +
+                    cityssm.escapeHTML(licenceObject.externalLicenceNumber) + "<br />" +
+                    "<small>Licence #" + licenceObject.licenceID.toString() + "</small>" +
                     "</a>" +
                     "</td>");
-                trEle.insertAdjacentHTML("beforeend", "<td>" + cityssm.escapeHTML(licenceObj.organizationName) + "</td>");
-                trEle.insertAdjacentHTML("beforeend", "<td>" +
-                    (licenceObj.locationDisplayName
-                        ? cityssm.escapeHTML(licenceObj.locationDisplayName)
+                trElement.insertAdjacentHTML("beforeend", "<td>" + cityssm.escapeHTML(licenceObject.organizationName) + "</td>");
+                trElement.insertAdjacentHTML("beforeend", "<td>" +
+                    (licenceObject.locationDisplayName
+                        ? cityssm.escapeHTML(licenceObject.locationDisplayName)
                         : "<span class=\"has-text-grey\">(No Location)</span>") +
                     "</td>");
-                trEle.insertAdjacentHTML("beforeend", "<td class=\"is-nowrap has-text-right\">$ " + licenceObj.totalPrizeValue.toFixed(2) + "</td>");
-                trEle.insertAdjacentHTML("beforeend", "<td class=\"is-nowrap has-text-right\">$ " + licenceObj.licenceFee.toFixed(2) + "</td>");
-                tbodyEle.insertAdjacentElement("beforeend", trEle);
-                if (licenceObj.issueDate && licenceObj.issueDate > 0) {
+                trElement.insertAdjacentHTML("beforeend", "<td class=\"is-nowrap has-text-right\">$ " + licenceObject.totalPrizeValue.toFixed(2) + "</td>");
+                trElement.insertAdjacentHTML("beforeend", "<td class=\"is-nowrap has-text-right\">$ " + licenceObject.licenceFee.toFixed(2) + "</td>");
+                tbodyElement.append(trElement);
+                if (licenceObject.issueDate && licenceObject.issueDate > 0) {
                     issueDateCount += 1;
                 }
-                totalPrizeValueSum += licenceObj.totalPrizeValue;
-                licenceFeeSum += licenceObj.licenceFee;
+                totalPrizeValueSum += licenceObject.totalPrizeValue;
+                licenceFeeSum += licenceObject.licenceFee;
             }
-            tableEle.insertAdjacentElement("beforeend", tbodyEle);
-            const tfootEle = document.createElement("tfoot");
-            tfootEle.innerHTML = "<tr>" +
+            tableElement.append(tbodyElement);
+            const tfootElement = document.createElement("tfoot");
+            tfootElement.innerHTML = "<tr>" +
                 "<th>" +
                 licenceList.length.toString() + " licence" + (licenceList.length === 1 ? "" : "s") +
                 "</th>" +
@@ -74,14 +74,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 "<th class=\"is-nowrap has-text-right\">$ " + totalPrizeValueSum.toFixed(2) + "</th>" +
                 "<th class=\"is-nowrap has-text-right\">$ " + licenceFeeSum.toFixed(2) + "</th>" +
                 "</tr>";
-            tableEle.insertAdjacentElement("beforeend", tfootEle);
-            containerEle.insertAdjacentElement("beforeend", tableEle);
+            tableElement.append(tfootElement);
+            containerElement.append(tableElement);
         });
     };
-    llm.initializeDateRangeSelector(document.querySelector(".is-date-range-selector[data-field-key='applicationDate']"), getLicenceTypeSummaryFn);
-    document.getElementById("filter--licenceTypeKey").addEventListener("change", getLicenceTypeSummaryFn);
+    llm.initializeDateRangeSelector(document.querySelector(".is-date-range-selector[data-field-key='applicationDate']"), getLicenceTypeSummaryFunction);
+    document.querySelector("#filter--licenceTypeKey").addEventListener("change", getLicenceTypeSummaryFunction);
     llm.getDefaultConfigProperty("externalLicenceNumber_fieldLabel", (fieldLabel) => {
         externalLicenceNumberLabel = fieldLabel;
-        getLicenceTypeSummaryFn();
+        getLicenceTypeSummaryFunction();
     });
 })();

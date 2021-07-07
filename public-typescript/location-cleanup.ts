@@ -1,3 +1,5 @@
+/* eslint-disable unicorn/filename-case */
+
 import type { cityssmGlobal } from "@cityssm/bulma-webapp-js/src/types";
 import type * as llmTypes from "../types/recordTypes";
 
@@ -6,20 +8,20 @@ declare const cityssm: cityssmGlobal;
 
 (() => {
 
-  const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
+  const urlPrefix = document.querySelector("main").dataset.urlPrefix;
 
-  const inactiveYearsFilterEle = document.getElementById("filter--inactiveYears") as HTMLSelectElement;
+  const inactiveYearsFilterElement = document.querySelector("#filter--inactiveYears") as HTMLSelectElement;
 
-  const searchResultsEle = document.getElementById("container--searchResults");
+  const searchResultsElement = document.querySelector("#container--searchResults") as HTMLElement;
 
-  const confirmDeleteLocationFn = (clickEvent: Event) => {
+  const confirmDeleteLocationFunction = (clickEvent: Event) => {
 
-    const buttonEle = clickEvent.currentTarget as HTMLButtonElement;
-    const locationDisplayName = cityssm.escapeHTML(buttonEle.getAttribute("data-location-display-name"));
+    const buttonElement = clickEvent.currentTarget as HTMLButtonElement;
+    const locationDisplayName = cityssm.escapeHTML(buttonElement.dataset.locationDisplayName);
 
-    const deleteFn = () => {
+    const deleteFunction = () => {
 
-      const locationID = buttonEle.getAttribute("data-location-id");
+      const locationID = buttonElement.dataset.locationId;
 
       cityssm.postJSON(urlPrefix + "/locations/doDelete", {
           locationID
@@ -31,7 +33,7 @@ declare const cityssm: cityssmGlobal;
 
           if (responseJSON.success) {
             cityssm.alertModal(responseJSON.message, "", "OK", "success");
-            buttonEle.closest("tr").remove();
+            buttonElement.closest("tr").remove();
 
           } else {
             cityssm.alertModal(responseJSON.message, "", "OK", "danger");
@@ -44,25 +46,25 @@ declare const cityssm: cityssmGlobal;
       `Are you sure you want delete ${cityssm.escapeHTML(locationDisplayName)}?`,
       "Yes, Delete",
       "danger",
-      deleteFn
+      deleteFunction
     );
   };
 
-  const getInactiveLocationsFn = () => {
+  const getInactiveLocationsFunction = () => {
 
-    searchResultsEle.innerHTML = "<p class=\"has-text-centered has-text-grey-lighter\">" +
+    searchResultsElement.innerHTML = "<p class=\"has-text-centered has-text-grey-lighter\">" +
       "<i class=\"fas fa-3x fa-circle-notch fa-spin\" aria-hidden=\"true\"></i><br />" +
       "<em>Loading locations...</em>" +
       "</p>";
 
     cityssm.postJSON(urlPrefix + "/locations/doGetInactive", {
-      inactiveYears: inactiveYearsFilterEle.value
+      inactiveYears: inactiveYearsFilterElement.value
     },
       (inactiveList: llmTypes.Location[]) => {
 
         if (inactiveList.length === 0) {
 
-          searchResultsEle.innerHTML = "<div class=\"message is-info\">" +
+          searchResultsElement.innerHTML = "<div class=\"message is-info\">" +
             "<p class=\"message-body\">" +
             "There are no inactive locations to report." +
             "</p>" +
@@ -72,10 +74,10 @@ declare const cityssm: cityssmGlobal;
 
         }
 
-        const tableEle = document.createElement("table");
-        tableEle.className = "table is-fullwidth is-striped is-hoverable";
+        const tableElement = document.createElement("table");
+        tableElement.className = "table is-fullwidth is-striped is-hoverable";
 
-        tableEle.innerHTML = "<thead>" +
+        tableElement.innerHTML = "<thead>" +
           "<tr>" +
           "<th>Location</th>" +
           "<th class=\"has-text-centered\">Last Licence End Date</th>" +
@@ -84,79 +86,78 @@ declare const cityssm: cityssmGlobal;
           "</tr>" +
           "</thead>";
 
-        const tbodyEle = document.createElement("tbody");
+        const tbodyElement = document.createElement("tbody");
 
-        for (const locationObj of inactiveList) {
+        for (const locationObject of inactiveList) {
 
-          const trEle = document.createElement("tr");
+          const trElement = document.createElement("tr");
 
-          const safeLocationDisplayName = cityssm.escapeHTML(locationObj.locationDisplayName);
+          const safeLocationDisplayName = cityssm.escapeHTML(locationObject.locationDisplayName);
 
-          trEle.insertAdjacentHTML("beforeend", "<td>" +
+          trElement.insertAdjacentHTML("beforeend", "<td>" +
             "<a data-tooltip=\"View Location\"" +
-            " href=\"" + cityssm.escapeHTML(urlPrefix) + "/locations/" + locationObj.locationID.toString() + "\">" +
+            " href=\"" + cityssm.escapeHTML(urlPrefix) + "/locations/" + locationObject.locationID.toString() + "\">" +
             safeLocationDisplayName +
             "</a>" +
-            (locationObj.locationDisplayName === locationObj.locationAddress1 ? "" : "<br />" +
-              "<small>" + cityssm.escapeHTML(locationObj.locationAddress1) + "</small>") +
+            (locationObject.locationDisplayName === locationObject.locationAddress1 ? "" : "<br />" +
+              "<small>" + cityssm.escapeHTML(locationObject.locationAddress1) + "</small>") +
             "</td>");
 
-          let dateMax = locationObj.licences_endDateMax;
-          let dateMaxString = locationObj.licences_endDateMaxString;
+          let dateMax = locationObject.licences_endDateMax;
+          let dateMaxString = locationObject.licences_endDateMaxString;
           let dateTag = "Licence Location";
 
-          if (locationObj.distributor_endDateMax && (!dateMax || dateMax < locationObj.distributor_endDateMax)) {
+          if (locationObject.distributor_endDateMax && (!dateMax || dateMax < locationObject.distributor_endDateMax)) {
 
-            dateMax = locationObj.distributor_endDateMax;
-            dateMaxString = locationObj.distributor_endDateMaxString;
+            dateMax = locationObject.distributor_endDateMax;
+            dateMaxString = locationObject.distributor_endDateMaxString;
             dateTag = "Distributor";
           }
 
-          if (locationObj.manufacturer_endDateMax && (!dateMax || dateMax < locationObj.manufacturer_endDateMax)) {
+          if (locationObject.manufacturer_endDateMax && (!dateMax || dateMax < locationObject.manufacturer_endDateMax)) {
 
-            dateMax = locationObj.manufacturer_endDateMax;
-            dateMaxString = locationObj.manufacturer_endDateMaxString;
+            dateMax = locationObject.manufacturer_endDateMax;
+            dateMaxString = locationObject.manufacturer_endDateMaxString;
             dateTag = "Manufacturer";
           }
 
-
-          trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-centered\">" +
+          trElement.insertAdjacentHTML("beforeend", "<td class=\"has-text-centered\">" +
             (dateMax
               ? dateMaxString + "<br /><span class=\"tag is-light is-info\">" + dateTag + "</span>"
               : "<span class=\"tag is-light is-danger\">No Licences</span>") +
             "</td>");
 
-          trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-centered\">" +
-            "<span data-tooltip=\"Updated by " + locationObj.recordUpdate_userName + "\">" +
-            locationObj.recordUpdate_dateString +
+          trElement.insertAdjacentHTML("beforeend", "<td class=\"has-text-centered\">" +
+            "<span data-tooltip=\"Updated by " + locationObject.recordUpdate_userName + "\">" +
+            locationObject.recordUpdate_dateString +
             "</span>" +
             "</td>");
 
-          trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right\">" +
+          trElement.insertAdjacentHTML("beforeend", "<td class=\"has-text-right\">" +
             "<button class=\"button is-small is-danger\"" +
             " data-tooltip=\"Delete Location\"" +
-            " data-location-id=\"" + locationObj.locationID.toString() + "\"" +
+            " data-location-id=\"" + locationObject.locationID.toString() + "\"" +
             " data-location-display-name=\"" + safeLocationDisplayName + "\" type=\"button\">" +
             "<span class=\"icon\"><i class=\"fas fa-trash\" aria-hidden=\"true\"></i></span> <span>Delete</span>" +
             "</button>" +
             "</td>");
 
-          trEle.getElementsByTagName("button")[0].addEventListener("click", confirmDeleteLocationFn);
+          trElement.querySelector("button").addEventListener("click", confirmDeleteLocationFunction);
 
-          tbodyEle.insertAdjacentElement("beforeend", trEle);
+          tbodyElement.append(trElement);
 
         }
 
-        tableEle.insertAdjacentElement("beforeend", tbodyEle);
+        tableElement.append(tbodyElement);
 
-        cityssm.clearElement(searchResultsEle);
+        cityssm.clearElement(searchResultsElement);
 
-        searchResultsEle.insertAdjacentElement("beforeend", tableEle);
+        searchResultsElement.append(tableElement);
       });
 
   };
 
-  inactiveYearsFilterEle.addEventListener("change", getInactiveLocationsFn);
+  inactiveYearsFilterElement.addEventListener("change", getInactiveLocationsFunction);
 
-  getInactiveLocationsFn();
+  getInactiveLocationsFunction();
 })();

@@ -1,91 +1,91 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 llm.organizationRemarks = (() => {
-    const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
-    const getRemarksByOrganizationID = (organizationID, callbackFn) => {
+    const urlPrefix = document.querySelector("main").dataset.urlPrefix;
+    const getRemarksByOrganizationID = (organizationID, callbackFunction) => {
         cityssm.postJSON(urlPrefix + "/organizations/doGetRemarks", {
             organizationID
-        }, callbackFn);
+        }, callbackFunction);
     };
-    const getRemarkByID = (organizationID, remarkIndex, callbackFn) => {
+    const getRemarkByID = (organizationID, remarkIndex, callbackFunction) => {
         cityssm.postJSON(urlPrefix + "/organizations/doGetRemark", {
             organizationID,
             remarkIndex
-        }, callbackFn);
+        }, callbackFunction);
     };
-    const doAddRemark = (formEle, callbackFn) => {
-        cityssm.postJSON(urlPrefix + "/organizations/doAddRemark", formEle, callbackFn);
+    const doAddRemark = (formElement, callbackFunction) => {
+        cityssm.postJSON(urlPrefix + "/organizations/doAddRemark", formElement, callbackFunction);
     };
-    const openAddRemarkModal = (organizationID, updateCallbackFn) => {
-        let addRemarkCloseModalFn;
-        const addFormFn = (formEvent) => {
+    const openAddRemarkModal = (organizationID, updateCallbackFunction) => {
+        let addRemarkCloseModalFunction;
+        const addFormFunction = (formEvent) => {
             formEvent.preventDefault();
             doAddRemark(formEvent.currentTarget, () => {
-                addRemarkCloseModalFn();
-                if (updateCallbackFn) {
-                    updateCallbackFn();
+                addRemarkCloseModalFunction();
+                if (updateCallbackFunction) {
+                    updateCallbackFunction();
                 }
             });
         };
         cityssm.openHtmlModal("remarkAdd", {
-            onshown(modalEle, closeModalFn) {
-                document.getElementById("addRemark--organizationID").value = organizationID.toString();
-                document.getElementById("addRemark--remark").focus();
-                modalEle.getElementsByTagName("form")[0].addEventListener("submit", addFormFn);
-                addRemarkCloseModalFn = closeModalFn;
+            onshown(modalElement, closeModalFunction) {
+                document.querySelector("#addRemark--organizationID").value = organizationID.toString();
+                document.querySelector("#addRemark--remark").focus();
+                modalElement.querySelector("form").addEventListener("submit", addFormFunction);
+                addRemarkCloseModalFunction = closeModalFunction;
             }
         });
     };
-    const doEditRemark = (formEle, callbackFn) => {
-        cityssm.postJSON(urlPrefix + "/organizations/doEditRemark", formEle, callbackFn);
+    const doEditRemark = (formElement, callbackFunction) => {
+        cityssm.postJSON(urlPrefix + "/organizations/doEditRemark", formElement, callbackFunction);
     };
-    const openEditRemarkModal = (organizationID, remarkIndex, updateCallbackFn) => {
-        let editRemarkCloseModalFn;
-        const formFn_edit = (formEvent) => {
+    const openEditRemarkModal = (organizationID, remarkIndex, updateCallbackFunction) => {
+        let editRemarkCloseModalFunction;
+        const formFunction_edit = (formEvent) => {
             formEvent.preventDefault();
             doEditRemark(formEvent.currentTarget, () => {
-                editRemarkCloseModalFn();
-                if (updateCallbackFn) {
-                    updateCallbackFn();
+                editRemarkCloseModalFunction();
+                if (updateCallbackFunction) {
+                    updateCallbackFunction();
                 }
             });
         };
         cityssm.openHtmlModal("remarkEdit", {
-            onshow(modalEle) {
-                document.getElementById("editRemark--organizationID").value = organizationID.toString();
-                document.getElementById("editRemark--remarkIndex").value = remarkIndex.toString();
+            onshow(modalElement) {
+                document.querySelector("#editRemark--organizationID").value = organizationID.toString();
+                document.querySelector("#editRemark--remarkIndex").value = remarkIndex.toString();
                 getRemarkByID(organizationID, remarkIndex, (remark) => {
-                    const remarkEle = document.getElementById("editRemark--remark");
-                    remarkEle.value = remark.remark;
-                    remarkEle.removeAttribute("placeholder");
-                    document.getElementById("editRemark--remarkDateString").value = remark.remarkDateString;
-                    document.getElementById("editRemark--remarkTimeString").value = remark.remarkTimeString;
+                    const remarkElement = document.querySelector("#editRemark--remark");
+                    remarkElement.value = remark.remark;
+                    remarkElement.removeAttribute("placeholder");
+                    document.querySelector("#editRemark--remarkDateString").value = remark.remarkDateString;
+                    document.querySelector("#editRemark--remarkTimeString").value = remark.remarkTimeString;
                     if (remark.isImportant) {
-                        document.getElementById("editRemark--isImportant").setAttribute("checked", "checked");
+                        document.querySelector("#editRemark--isImportant").setAttribute("checked", "checked");
                     }
                 });
-                modalEle.getElementsByTagName("form")[0].addEventListener("submit", formFn_edit);
+                modalElement.querySelector("form").addEventListener("submit", formFunction_edit);
             },
-            onshown(_modalEle, closeModalFn) {
-                editRemarkCloseModalFn = closeModalFn;
-                document.getElementById("editRemark--remark").focus();
+            onshown(_modalElement, closeModalFunction) {
+                editRemarkCloseModalFunction = closeModalFunction;
+                document.querySelector("#editRemark--remark").focus();
             }
         });
     };
-    const doDeleteRemark = (organizationID, remarkIndex, callbackFn) => {
+    const doDeleteRemark = (organizationID, remarkIndex, callbackFunction) => {
         cityssm.postJSON(urlPrefix + "/organizations/doDeleteRemark", {
             organizationID,
             remarkIndex
-        }, callbackFn);
+        }, callbackFunction);
     };
-    const deleteRemark = (organizationID, remarkIndex, doConfirm, deleteCallbackFn) => {
+    const deleteRemark = (organizationID, remarkIndex, doConfirm, deleteCallbackFunction) => {
         if (doConfirm) {
             cityssm.confirmModal("Delete Remark?", "Are you sure you want to delete this remark?", "Yes, Delete", "danger", () => {
-                doDeleteRemark(organizationID, remarkIndex, deleteCallbackFn);
+                doDeleteRemark(organizationID, remarkIndex, deleteCallbackFunction);
             });
         }
         else {
-            doDeleteRemark(organizationID, remarkIndex, deleteCallbackFn);
+            doDeleteRemark(organizationID, remarkIndex, deleteCallbackFunction);
         }
     };
     return {

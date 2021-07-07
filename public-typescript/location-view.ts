@@ -1,3 +1,5 @@
+/* eslint-disable unicorn/filename-case */
+
 import type { cityssmGlobal } from "@cityssm/bulma-webapp-js/src/types";
 
 declare const cityssm: cityssmGlobal;
@@ -5,16 +7,16 @@ declare const cityssm: cityssmGlobal;
 
 (() => {
 
-  const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
+  const urlPrefix = document.querySelector("main").dataset.urlPrefix;
 
-  const restoreButtonEle = document.getElementById("is-location-restore-button");
+  const restoreButtonElement = document.querySelector("#is-location-restore-button");
 
-  if (restoreButtonEle) {
+  if (restoreButtonElement) {
 
-    const restoreFn = () => {
+    const restoreFunction = () => {
 
       cityssm.postJSON(urlPrefix + "/locations/doRestore", {
-        locationID: restoreButtonEle.getAttribute("data-location-id")
+        locationID: restoreButtonElement.getAttribute("data-location-id")
       },
         (responseJSON: { success: boolean }) => {
 
@@ -24,14 +26,14 @@ declare const cityssm: cityssmGlobal;
         });
     };
 
-    restoreButtonEle.addEventListener("click", () => {
+    restoreButtonElement.addEventListener("click", () => {
 
       cityssm.confirmModal(
         "Restore Location?",
         "Are you sure you want to restore this location, and make it available for use again?",
         "Yes, Restore",
         "warning",
-        restoreFn
+        restoreFunction
       );
     });
   }

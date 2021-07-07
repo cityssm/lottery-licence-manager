@@ -1,3 +1,5 @@
+/* eslint-disable unicorn/filename-case, unicorn/prefer-module */
+
 import type { cityssmGlobal } from "@cityssm/bulma-webapp-js/src/types";
 import type { DateDiff } from "@cityssm/date-diff/types";
 import type * as llmTypes from "../types/recordTypes";
@@ -10,16 +12,16 @@ declare const cityssm: cityssmGlobal;
   const dateDiff: DateDiff = exports.dateDiff;
 
 
-  const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
+  const urlPrefix = document.querySelector("main").dataset.urlPrefix;
 
-  const formEle = document.getElementById("form--searchFilters") as HTMLFormElement;
+  const formElement = document.querySelector("#form--searchFilters") as HTMLFormElement;
 
-  const limitEle = document.getElementById("filter--limit") as HTMLInputElement;
-  const offsetEle = document.getElementById("filter--offset") as HTMLInputElement;
+  const limitElement = document.querySelector("#filter--limit") as HTMLInputElement;
+  const offsetElement = document.querySelector("#filter--offset") as HTMLInputElement;
 
-  const searchResultsEle = document.getElementById("container--searchResults");
+  const searchResultsElement = document.querySelector("#container--searchResults");
 
-  const canCreate = document.getElementsByTagName("main")[0].getAttribute("data-can-create") === "true";
+  const canCreate = document.querySelector("main").dataset.canCreate === "true";
 
   let nowDate = new Date();
 
@@ -27,41 +29,41 @@ declare const cityssm: cityssmGlobal;
   let displayedLocationList: llmTypes.Location[] = [];
 
 
-  const renderLocationTrEleFn = (locationObj: llmTypes.Location, locationIndex: number) => {
+  const renderLocationTrElementFunction = (locationObject: llmTypes.Location, locationIndex: number) => {
 
-    const trEle = document.createElement("tr");
-    trEle.innerHTML = "<td></td>";
+    const trElement = document.createElement("tr");
+    trElement.innerHTML = "<td></td>";
 
-    const locationDisplayNameLinkEle = document.createElement("a");
+    const locationDisplayNameLinkElement = document.createElement("a");
 
-    locationDisplayNameLinkEle.innerText = locationObj.locationDisplayName;
-    locationDisplayNameLinkEle.href = urlPrefix + "/locations/" + locationObj.locationID.toString();
-    trEle.getElementsByTagName("td")[0].insertAdjacentElement("beforeend", locationDisplayNameLinkEle);
+    locationDisplayNameLinkElement.textContent = locationObject.locationDisplayName;
+    locationDisplayNameLinkElement.href = urlPrefix + "/locations/" + locationObject.locationID.toString();
+    trElement.querySelector("td").append(locationDisplayNameLinkElement);
 
     // Address
 
-    const addressTdEle = document.createElement("td");
+    const addressTdElement = document.createElement("td");
 
-    addressTdEle.innerHTML =
-      (locationObj.locationAddress1 === ""
+    addressTdElement.innerHTML =
+      (locationObject.locationAddress1 === ""
         ? ""
-        : cityssm.escapeHTML(locationObj.locationAddress1) + "<br />") +
-      (locationObj.locationAddress2 === ""
+        : cityssm.escapeHTML(locationObject.locationAddress1) + "<br />") +
+      (locationObject.locationAddress2 === ""
         ? ""
-        : "<small>" + cityssm.escapeHTML(locationObj.locationAddress2) + "</small><br />") +
-      (locationObj.locationCity === ""
+        : "<small>" + cityssm.escapeHTML(locationObject.locationAddress2) + "</small><br />") +
+      (locationObject.locationCity === ""
         ? ""
-        : "<small>" + cityssm.escapeHTML(locationObj.locationCity) + ", " + locationObj.locationProvince + "</small>");
+        : "<small>" + cityssm.escapeHTML(locationObject.locationCity) + ", " + locationObject.locationProvince + "</small>");
 
-    trEle.insertAdjacentElement("beforeend", addressTdEle);
+    trElement.append(addressTdElement);
 
     // Event Date
 
     let timeAgoHTML = "";
 
-    if (locationObj.licences_endDateMaxString !== "") {
+    if (locationObject.licences_endDateMaxString !== "") {
 
-      const endDate = cityssm.dateStringToDate(locationObj.licences_endDateMaxString);
+      const endDate = cityssm.dateStringToDate(locationObject.licences_endDateMaxString);
 
       if (endDate < nowDate) {
         timeAgoHTML = "<br />" +
@@ -70,25 +72,25 @@ declare const cityssm: cityssmGlobal;
     }
 
 
-    trEle.insertAdjacentHTML(
+    trElement.insertAdjacentHTML(
       "beforeend",
       "<td class=\"has-text-centered\">" +
-      (locationObj.licences_endDateMaxString === ""
+      (locationObject.licences_endDateMaxString === ""
         ? "<span class=\"has-text-grey\">Not Used</span>"
-        : locationObj.licences_endDateMaxString + timeAgoHTML) +
+        : locationObject.licences_endDateMaxString + timeAgoHTML) +
       "</td>"
     );
 
 
-    trEle.insertAdjacentHTML(
+    trElement.insertAdjacentHTML(
       "beforeend",
       "<td class=\"has-text-centered\">" +
-      (locationObj.locationIsManufacturer
+      (locationObject.locationIsManufacturer
         ? "<span data-tooltip=\"Manufacturer\">" +
         "<span class=\"tag is-success\">Yes</span><br />" +
-        (locationObj.manufacturer_endDateMaxString === ""
+        (locationObject.manufacturer_endDateMaxString === ""
           ? "<span class=\"has-text-grey\">Never Used</span>"
-          : locationObj.manufacturer_endDateMaxString) +
+          : locationObject.manufacturer_endDateMaxString) +
         "</span>"
         : "<span class=\"sr-only\">No</span>"
       ) +
@@ -96,15 +98,15 @@ declare const cityssm: cityssmGlobal;
     );
 
 
-    trEle.insertAdjacentHTML(
+    trElement.insertAdjacentHTML(
       "beforeend",
       "<td class=\"has-text-centered\">" +
-      (locationObj.locationIsDistributor
+      (locationObject.locationIsDistributor
         ? "<span data-tooltip=\"Distributor\">" +
         "<span class=\"tag is-success\">Yes</span><br />" +
-        (locationObj.distributor_endDateMaxString === ""
+        (locationObject.distributor_endDateMaxString === ""
           ? "<span class=\"has-text-grey\">Never Used</span>"
-          : locationObj.distributor_endDateMaxString) +
+          : locationObject.distributor_endDateMaxString) +
         "</span>"
         : "<span class=\"sr-only\">No</span>"
       ) +
@@ -114,16 +116,16 @@ declare const cityssm: cityssmGlobal;
 
     if (canCreate) {
 
-      const canDeleteLocation = locationObj.canUpdate && locationObj.licences_count === 0 &&
-        locationObj.distributor_count === 0 && locationObj.manufacturer_count === 0;
+      const canDeleteLocation = locationObject.canUpdate && locationObject.licences_count === 0 &&
+        locationObject.distributor_count === 0 && locationObject.manufacturer_count === 0;
 
-      trEle.insertAdjacentHTML(
+      trElement.insertAdjacentHTML(
         "beforeend",
         "<td class=\"is-hidden-print has-text-right is-nowrap\">" +
 
-        (locationObj.canUpdate
+        (locationObject.canUpdate
           ? "<a class=\"button is-small\" data-tooltip=\"Edit Location\"" +
-          " href=\"/locations/" + locationObj.locationID.toString() + "/edit\">" +
+          " href=\"/locations/" + locationObject.locationID.toString() + "/edit\">" +
           "<span class=\"icon\"><i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i></span> <span>Edit</span>" +
           "</a>"
           : "") +
@@ -140,36 +142,36 @@ declare const cityssm: cityssmGlobal;
       );
 
       if (canDeleteLocation) {
-        trEle.getElementsByClassName("is-delete-location-button")[0].addEventListener("click", deleteLocationClickFn);
+        trElement.querySelector(".is-delete-location-button").addEventListener("click", deleteLocationClickFunction);
       }
 
     }
 
-    return trEle;
+    return trElement;
   };
 
 
-  const getLocationsFn = () => {
+  const getLocationsFunction = () => {
 
-    const currentLimit = parseInt(limitEle.value, 10);
-    const currentOffset = parseInt(offsetEle.value, 10);
+    const currentLimit = Number.parseInt(limitElement.value, 10);
+    const currentOffset = Number.parseInt(offsetElement.value, 10);
 
     displayedLocationList = [];
 
-    searchResultsEle.innerHTML = "<p class=\"has-text-centered has-text-grey-lighter\">" +
+    searchResultsElement.innerHTML = "<p class=\"has-text-centered has-text-grey-lighter\">" +
       "<i class=\"fas fa-3x fa-circle-notch fa-spin\" aria-hidden=\"true\"></i><br />" +
       "<em>Loading locations...</em>" +
       "</p>";
 
     cityssm.postJSON(urlPrefix + "/locations/doGetLocations",
-      formEle,
+      formElement,
       (locationResults: { count: number; locations: llmTypes.Location[] }) => {
 
         displayedLocationList = locationResults.locations;
 
         if (displayedLocationList.length === 0) {
 
-          searchResultsEle.innerHTML = "<div class=\"message is-info\">" +
+          searchResultsElement.innerHTML = "<div class=\"message is-info\">" +
             "<div class=\"message-body\">" +
             "<strong>Your search returned no results.</strong><br />" +
             "Please try expanding your search criteria." +
@@ -181,7 +183,7 @@ declare const cityssm: cityssmGlobal;
 
         nowDate = new Date();
 
-        searchResultsEle.innerHTML = "<table class=\"table is-fullwidth is-striped is-hoverable\">" +
+        searchResultsElement.innerHTML = "<table class=\"table is-fullwidth is-striped is-hoverable\">" +
           "<thead><tr>" +
           "<th>Location</th>" +
           "<th>Address</th>" +
@@ -193,14 +195,14 @@ declare const cityssm: cityssmGlobal;
           "<tbody></tbody>" +
           "</table>";
 
-        const tbodyEle = searchResultsEle.getElementsByTagName("tbody")[0];
+        const tbodyElement = searchResultsElement.querySelector("tbody");
 
-        displayedLocationList.forEach((location, locationIndex) => {
-          const locationTrEle = renderLocationTrEleFn(location, locationIndex);
-          tbodyEle.insertAdjacentElement("beforeend", locationTrEle);
-        });
+        for (const [locationIndex, location] of displayedLocationList.entries()) {
+          const locationTrElement = renderLocationTrElementFunction(location, locationIndex);
+          tbodyElement.append(locationTrElement);
+        }
 
-        searchResultsEle.insertAdjacentHTML("beforeend", "<div class=\"level is-block-print\">" +
+        searchResultsElement.insertAdjacentHTML("beforeend", "<div class=\"level is-block-print\">" +
           "<div class=\"level-left has-text-weight-bold\">" +
           "Displaying locations " +
           (currentOffset + 1).toString() +
@@ -213,77 +215,74 @@ declare const cityssm: cityssmGlobal;
 
         if (currentLimit < locationResults.count) {
 
-          const paginationEle = document.createElement("nav");
-          paginationEle.className = "level-right is-hidden-print";
-          paginationEle.setAttribute("role", "pagination");
-          paginationEle.setAttribute("aria-label", "pagination");
+          const paginationElement = document.createElement("nav");
+          paginationElement.className = "level-right is-hidden-print";
+          paginationElement.setAttribute("role", "pagination");
+          paginationElement.setAttribute("aria-label", "pagination");
 
           if (currentOffset > 0) {
 
-            const previousEle = document.createElement("a");
-            previousEle.className = "button";
-            previousEle.innerText = "Previous";
-            previousEle.addEventListener("click", (clickEvent) => {
+            const previousElement = document.createElement("a");
+            previousElement.className = "button";
+            previousElement.textContent = "Previous";
 
+            previousElement.addEventListener("click", (clickEvent) => {
               clickEvent.preventDefault();
-              offsetEle.value = Math.max(0, currentOffset - currentLimit).toString();
-              getLocationsFn();
-
+              offsetElement.value = Math.max(0, currentOffset - currentLimit).toString();
+              getLocationsFunction();
             });
 
-            paginationEle.insertAdjacentElement("beforeend", previousEle);
+            paginationElement.append(previousElement);
           }
 
           if (currentLimit + currentOffset < locationResults.count) {
 
-            const nextEle = document.createElement("a");
-            nextEle.className = "button ml-3";
-            nextEle.innerHTML = "<span>Next Locations</span><span class=\"icon\">" +
+            const nextElement = document.createElement("a");
+            nextElement.className = "button ml-3";
+            nextElement.innerHTML = "<span>Next Locations</span><span class=\"icon\">" +
               "<i class=\"fas fa-chevron-right\" aria-hidden=\"true\"></i>" +
               "</span>";
-            nextEle.addEventListener("click", (clickEvent) => {
 
+            nextElement.addEventListener("click", (clickEvent) => {
               clickEvent.preventDefault();
-              offsetEle.value = (currentOffset + currentLimit).toString();
-              getLocationsFn();
-
+              offsetElement.value = (currentOffset + currentLimit).toString();
+              getLocationsFunction();
             });
 
-            paginationEle.insertAdjacentElement("beforeend", nextEle);
+            paginationElement.append(nextElement);
           }
 
-          searchResultsEle.getElementsByClassName("level")[0].insertAdjacentElement("beforeend", paginationEle);
+          searchResultsElement.querySelector(".level").append(paginationElement);
         }
       }
     );
-
   };
 
 
-  const resetOffsetAndGetLocationsFn = () => {
-    offsetEle.value = "0";
-    getLocationsFn();
+  const resetOffsetAndGetLocationsFunction = () => {
+    offsetElement.value = "0";
+    getLocationsFunction();
   };
 
 
-  const deleteLocationClickFn = (clickEvent: Event) => {
+  const deleteLocationClickFunction = (clickEvent: Event) => {
 
     clickEvent.preventDefault();
 
     const locationIndex =
-      parseInt((clickEvent.currentTarget as HTMLButtonElement).getAttribute("data-location-index"), 10);
+      Number.parseInt((clickEvent.currentTarget as HTMLButtonElement).dataset.locationIndex, 10);
 
-    const locationObj = displayedLocationList[locationIndex];
+    const locationObject = displayedLocationList[locationIndex];
 
-    const deleteFn = () => {
+    const deleteFunction = () => {
 
       cityssm.postJSON(urlPrefix + "/locations/doDelete", {
-          locationID: locationObj.locationID
+          locationID: locationObject.locationID
         },
         (responseJSON: { success: boolean }) => {
 
           if (responseJSON.success) {
-            getLocationsFn();
+            getLocationsFunction();
           }
         }
       );
@@ -292,25 +291,25 @@ declare const cityssm: cityssmGlobal;
 
     cityssm.confirmModal(
       "Delete Location",
-      `Are you sure you want to delete ${cityssm.escapeHTML(locationObj.locationDisplayName)}?`,
+      `Are you sure you want to delete ${cityssm.escapeHTML(locationObject.locationDisplayName)}?`,
       "Yes, Delete",
       "warning",
-      deleteFn
+      deleteFunction
     );
   };
 
 
-  formEle.addEventListener("submit", (formEvent) => {
+  formElement.addEventListener("submit", (formEvent) => {
     formEvent.preventDefault();
   });
 
 
-  document.getElementById("filter--locationNameAddress").addEventListener("change", resetOffsetAndGetLocationsFn);
-  document.getElementById("filter--locationIsDistributor").addEventListener("change", resetOffsetAndGetLocationsFn);
-  document.getElementById("filter--locationIsManufacturer").addEventListener("change", resetOffsetAndGetLocationsFn);
-  document.getElementById("filter--locationIsActive").addEventListener("change", resetOffsetAndGetLocationsFn);
+  document.querySelector("#filter--locationNameAddress").addEventListener("change", resetOffsetAndGetLocationsFunction);
+  document.querySelector("#filter--locationIsDistributor").addEventListener("change", resetOffsetAndGetLocationsFunction);
+  document.querySelector("#filter--locationIsManufacturer").addEventListener("change", resetOffsetAndGetLocationsFunction);
+  document.querySelector("#filter--locationIsActive").addEventListener("change", resetOffsetAndGetLocationsFunction);
 
 
-  resetOffsetAndGetLocationsFn();
+  resetOffsetAndGetLocationsFunction();
 
 })();

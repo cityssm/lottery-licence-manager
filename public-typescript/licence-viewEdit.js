@@ -1,30 +1,30 @@
 (() => {
-    const amendmentToggleLinkEle = document.getElementById("is-licence-amendment-toggle");
-    if (amendmentToggleLinkEle) {
-        amendmentToggleLinkEle.addEventListener("click", (event) => {
+    const amendmentToggleLinkElement = document.querySelector("#is-licence-amendment-toggle");
+    if (amendmentToggleLinkElement) {
+        amendmentToggleLinkElement.addEventListener("click", (event) => {
             event.preventDefault();
-            const amendmentBlockEles = document.getElementsByClassName("is-licence-amendment-block");
-            for (const blockEle of amendmentBlockEles) {
-                blockEle.classList.toggle("is-hidden");
+            const amendmentBlockElements = document.querySelectorAll(".is-licence-amendment-block");
+            for (const blockElement of amendmentBlockElements) {
+                blockElement.classList.toggle("is-hidden");
             }
         });
     }
-    const ticketTypesPanelEle = document.getElementById("is-ticket-types-panel");
-    if (ticketTypesPanelEle) {
-        const tabEles = ticketTypesPanelEle.querySelectorAll(".panel-tabs a");
-        const tabsFn_selectTab = (clickEvent) => {
+    const ticketTypesPanelElement = document.querySelector("#is-ticket-types-panel");
+    if (ticketTypesPanelElement) {
+        const tabElements = ticketTypesPanelElement.querySelectorAll(".panel-tabs a");
+        const tabsFunction_selectTab = (clickEvent) => {
             clickEvent.preventDefault();
-            tabEles.forEach((tabEle) => {
-                tabEle.classList.remove("is-active");
-            });
-            const selectedTabEle = clickEvent.currentTarget;
-            selectedTabEle.classList.add("is-active");
-            document.getElementById("ticketTypesTabPanel--summary").classList.add("is-hidden");
-            document.getElementById("ticketTypesTabPanel--log").classList.add("is-hidden");
-            document.getElementById(selectedTabEle.getAttribute("aria-controls")).classList.remove("is-hidden");
+            for (const tabElement of tabElements) {
+                tabElement.classList.remove("is-active");
+            }
+            const selectedTabElement = clickEvent.currentTarget;
+            selectedTabElement.classList.add("is-active");
+            document.querySelector("#ticketTypesTabPanel--summary").classList.add("is-hidden");
+            document.querySelector("#ticketTypesTabPanel--log").classList.add("is-hidden");
+            document.querySelector("#" + selectedTabElement.getAttribute("aria-controls")).classList.remove("is-hidden");
         };
-        tabEles.forEach((tabEle) => {
-            tabEle.addEventListener("click", tabsFn_selectTab);
-        });
+        for (const tabElement of tabElements) {
+            tabElement.addEventListener("click", tabsFunction_selectTab);
+        }
     }
 })();

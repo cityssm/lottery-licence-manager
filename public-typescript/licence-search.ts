@@ -1,3 +1,5 @@
+/* eslint-disable unicorn/filename-case */
+
 import type { cityssmGlobal } from "@cityssm/bulma-webapp-js/src/types";
 import type * as llmTypes from "../types/recordTypes";
 
@@ -6,39 +8,39 @@ declare const cityssm: cityssmGlobal;
 
 (() => {
 
-  const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
+  const urlPrefix = document.querySelector("main").dataset.urlPrefix;
 
   const licenceType_keyToName = new Map<string, string>();
 
-  const formEle = document.getElementById("form--filters") as HTMLFormElement;
+  const formElement = document.querySelector("#form--filters") as HTMLFormElement;
 
-  const limitEle = document.getElementById("filter--limit") as HTMLInputElement;
-  const offsetEle = document.getElementById("filter--offset") as HTMLInputElement;
+  const limitElement = document.querySelector("#filter--limit") as HTMLInputElement;
+  const offsetElement = document.querySelector("#filter--offset") as HTMLInputElement;
 
-  const searchResultsEle = document.getElementById("container--searchResults");
+  const searchResultsElement = document.querySelector("#container--searchResults") as HTMLElement;
 
-  const externalLicenceNumberLabel = searchResultsEle.getAttribute("data-external-licence-number-label");
+  const externalLicenceNumberLabel = searchResultsElement.getAttribute("data-external-licence-number-label");
 
 
-  const doLicenceSearchFn = () => {
+  const doLicenceSearchFunction = () => {
 
-    const currentLimit = parseInt(limitEle.value, 10);
-    const currentOffset = parseInt(offsetEle.value, 10);
+    const currentLimit = Number.parseInt(limitElement.value, 10);
+    const currentOffset = Number.parseInt(offsetElement.value, 10);
 
-    searchResultsEle.innerHTML = "<p class=\"has-text-centered has-text-grey-lighter\">" +
+    searchResultsElement.innerHTML = "<p class=\"has-text-centered has-text-grey-lighter\">" +
       "<i class=\"fas fa-3x fa-circle-notch fa-spin\" aria-hidden=\"true\"></i><br />" +
       "<em>Loading licences...</em>" +
       "</p>";
 
     cityssm.postJSON(urlPrefix + "/licences/doSearch",
-      formEle,
+      formElement,
       (licenceResults: { count: number; licences: llmTypes.LotteryLicence[] }) => {
 
         const licenceList = licenceResults.licences;
 
         if (licenceList.length === 0) {
 
-          searchResultsEle.innerHTML = "<div class=\"message is-info\">" +
+          searchResultsElement.innerHTML = "<div class=\"message is-info\">" +
             "<div class=\"message-body\">" +
             "<strong>Your search returned no results.</strong><br />" +
             "Please try expanding your search criteria." +
@@ -48,7 +50,7 @@ declare const cityssm: cityssmGlobal;
           return;
         }
 
-        searchResultsEle.innerHTML = "<table class=\"table is-fullwidth is-striped is-hoverable\">" +
+        searchResultsElement.innerHTML = "<table class=\"table is-fullwidth is-striped is-hoverable\">" +
           "<thead><tr>" +
           "<th>" + cityssm.escapeHTML(externalLicenceNumberLabel) + "</th>" +
           "<th>Licence</th>" +
@@ -60,44 +62,41 @@ declare const cityssm: cityssmGlobal;
           "<tbody></tbody>" +
           "</table>";
 
-        const tbodyEle = searchResultsEle.getElementsByTagName("tbody")[0];
+        const tbodyElement = searchResultsElement.querySelector("tbody");
 
-        for (const licenceObj of licenceList) {
+        for (const licenceObject of licenceList) {
 
-          const licenceType = licenceType_keyToName.get(licenceObj.licenceTypeKey);
+          const licenceType = licenceType_keyToName.get(licenceObject.licenceTypeKey);
 
-          const trEle = document.createElement("tr");
+          const trElement = document.createElement("tr");
 
           let locationHTML = "";
 
-          if (licenceObj.locationID) {
-
-            locationHTML = "<a data-tooltip=\"View Location\" href=\"" + cityssm.escapeHTML(urlPrefix) + "/locations/" + licenceObj.locationID.toString() + "\">" +
-              cityssm.escapeHTML(licenceObj.locationDisplayName) +
+          locationHTML = licenceObject.locationID
+            ? ("<a data-tooltip=\"View Location\" href=\"" + cityssm.escapeHTML(urlPrefix) + "/locations/" + licenceObject.locationID.toString() + "\">" +
+              cityssm.escapeHTML(licenceObject.locationDisplayName) +
               "</a>" +
-              (licenceObj.locationDisplayName === licenceObj.locationAddress1
+              (licenceObject.locationDisplayName === licenceObject.locationAddress1
                 ? ""
-                : `<br /> <small>${cityssm.escapeHTML(licenceObj.locationAddress1)} </small>`);
-          } else {
-            locationHTML = "<span class=\"has-text-grey\">(No Location Set)</span>";
-          }
+                : `<br /> <small>${cityssm.escapeHTML(licenceObject.locationAddress1)} </small>`))
+            : "<span class=\"has-text-grey\">(No Location Set)</span>";
 
-          trEle.innerHTML =
+          trElement.innerHTML =
             ("<td>" +
-              "<a data-tooltip=\"View Licence\" href=\"" + cityssm.escapeHTML(urlPrefix) + "/licences/" + licenceObj.licenceID.toString() + "\">" +
-              cityssm.escapeHTML(licenceObj.externalLicenceNumber) + "<br />" +
-              "<small>Licence #" + licenceObj.licenceID.toString() + "</small>" +
+              "<a data-tooltip=\"View Licence\" href=\"" + cityssm.escapeHTML(urlPrefix) + "/licences/" + licenceObject.licenceID.toString() + "\">" +
+              cityssm.escapeHTML(licenceObject.externalLicenceNumber) + "<br />" +
+              "<small>Licence #" + licenceObject.licenceID.toString() + "</small>" +
               "</a>" +
               "</td>") +
 
-            ("<td>" + cityssm.escapeHTML(licenceType || licenceObj.licenceTypeKey) + "<br />" +
-              "<small>" + cityssm.escapeHTML(licenceObj.licenceDetails) + "</small>" +
+            ("<td>" + cityssm.escapeHTML(licenceType || licenceObject.licenceTypeKey) + "<br />" +
+              "<small>" + cityssm.escapeHTML(licenceObject.licenceDetails) + "</small>" +
               "</td>") +
 
             ("<td>" +
               "<a data-tooltip=\"View Organization\"" +
-              " href=\"" + cityssm.escapeHTML(urlPrefix) + "/organizations/" + licenceObj.organizationID.toString() + "\">" +
-              cityssm.escapeHTML(licenceObj.organizationName) +
+              " href=\"" + cityssm.escapeHTML(urlPrefix) + "/organizations/" + licenceObject.organizationID.toString() + "\">" +
+              cityssm.escapeHTML(licenceObject.organizationName) +
               "</a>" +
               "</td>") +
 
@@ -105,26 +104,26 @@ declare const cityssm: cityssmGlobal;
 
             ("<td class=\"is-nowrap\">" +
               "<span class=\"has-cursor-default has-tooltip-right\" data-tooltip=\"Start Date\">" +
-              "<i class=\"fas fa-fw fa-play\" aria-hidden=\"true\"></i> " + licenceObj.startDateString +
+              "<i class=\"fas fa-fw fa-play\" aria-hidden=\"true\"></i> " + licenceObject.startDateString +
               "</span><br />" +
               "<span class=\"has-cursor-default has-tooltip-right\" data-tooltip=\"End Date\">" +
-              "<i class=\"fas fa-fw fa-stop\" aria-hidden=\"true\"></i> " + licenceObj.endDateString +
+              "<i class=\"fas fa-fw fa-stop\" aria-hidden=\"true\"></i> " + licenceObject.endDateString +
               "</span>" +
               "</td>") +
 
             "<td class=\"has-text-right is-nowrap is-hidden-print\">" +
 
-            (licenceObj.canUpdate
+            (licenceObject.canUpdate
               ? "<a class=\"button is-small\" data-tooltip=\"Edit Licence\"" +
-              " href=\"" + cityssm.escapeHTML(urlPrefix) + "/licences/" + licenceObj.licenceID.toString() + "/edit\">" +
+              " href=\"" + cityssm.escapeHTML(urlPrefix) + "/licences/" + licenceObject.licenceID.toString() + "/edit\">" +
               "<span class=\"icon\"><i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i></span>" +
               "<span>Edit</span>" +
               "</a> "
               : "") +
 
-            (licenceObj.issueDate
+            (licenceObject.issueDate
               ? "<a class=\"button is-small\" data-tooltip=\"Print Licence\"" +
-              " href=\"" + cityssm.escapeHTML(urlPrefix) + "/licences/" + licenceObj.licenceID.toString() + "/print\" download>" +
+              " href=\"" + cityssm.escapeHTML(urlPrefix) + "/licences/" + licenceObject.licenceID.toString() + "/print\" download>" +
               "<i class=\"fas fa-print\" aria-hidden=\"true\"></i>" +
               "<span class=\"sr-only\">Print</span>" +
               "</a>"
@@ -133,11 +132,11 @@ declare const cityssm: cityssmGlobal;
 
             "</td>";
 
-          tbodyEle.insertAdjacentElement("beforeend", trEle);
+          tbodyElement.append(trElement);
 
         }
 
-        searchResultsEle.insertAdjacentHTML("beforeend", "<div class=\"level is-block-print\">" +
+        searchResultsElement.insertAdjacentHTML("beforeend", "<div class=\"level is-block-print\">" +
           "<div class=\"level-left has-text-weight-bold\">" +
           "Displaying licences " +
           (currentOffset + 1).toString() +
@@ -150,80 +149,77 @@ declare const cityssm: cityssmGlobal;
 
         if (currentLimit < licenceResults.count) {
 
-          const paginationEle = document.createElement("nav");
-          paginationEle.className = "level-right is-hidden-print";
-          paginationEle.setAttribute("role", "pagination");
-          paginationEle.setAttribute("aria-label", "pagination");
+          const paginationElement = document.createElement("nav");
+          paginationElement.className = "level-right is-hidden-print";
+          paginationElement.setAttribute("role", "pagination");
+          paginationElement.setAttribute("aria-label", "pagination");
 
           if (currentOffset > 0) {
 
-            const previousEle = document.createElement("a");
-            previousEle.className = "button";
-            previousEle.innerText = "Previous";
-            previousEle.addEventListener("click", (clickEvent) => {
+            const previousElement = document.createElement("a");
+            previousElement.className = "button";
+            previousElement.textContent = "Previous";
+            previousElement.addEventListener("click", (clickEvent) => {
 
               clickEvent.preventDefault();
-              offsetEle.value = Math.max(0, currentOffset - currentLimit).toString();
-              doLicenceSearchFn();
+              offsetElement.value = Math.max(0, currentOffset - currentLimit).toString();
+              doLicenceSearchFunction();
 
             });
 
-            paginationEle.insertAdjacentElement("beforeend", previousEle);
-
+            paginationElement.append(previousElement);
           }
 
           if (currentLimit + currentOffset < licenceResults.count) {
 
-            const nextEle = document.createElement("a");
-            nextEle.className = "button ml-3";
+            const nextElement = document.createElement("a");
+            nextElement.className = "button ml-3";
 
-            nextEle.innerHTML =
+            nextElement.innerHTML =
               "<span>Next Licences</span>" +
               "<span class=\"icon\"><i class=\"fas fa-chevron-right\" aria-hidden=\"true\"></i></span>";
 
-            nextEle.addEventListener("click", (clickEvent) => {
+            nextElement.addEventListener("click", (clickEvent) => {
 
               clickEvent.preventDefault();
-              offsetEle.value = (currentOffset + currentLimit).toString();
-              doLicenceSearchFn();
-
+              offsetElement.value = (currentOffset + currentLimit).toString();
+              doLicenceSearchFunction();
             });
 
-            paginationEle.insertAdjacentElement("beforeend", nextEle);
+            paginationElement.append(nextElement);
           }
 
-          searchResultsEle.getElementsByClassName("level")[0].insertAdjacentElement("beforeend", paginationEle);
+          searchResultsElement.querySelector(".level").append(paginationElement);
         }
       }
     );
   };
 
 
-  const resetOffsetAndDoLicenceSearchFn = () => {
-    offsetEle.value = "0";
-    doLicenceSearchFn();
+  const resetOffsetAndDoLicenceSearchFunction = () => {
+    offsetElement.value = "0";
+    doLicenceSearchFunction();
   };
 
-  const licenceTypeOptionEles = document.getElementById("filter--licenceTypeKey").getElementsByTagName("option");
+  const licenceTypeOptionElements = document.querySelectorAll("#filter--licenceTypeKey option") as NodeListOf<HTMLOptionElement>;
 
   // Start at 1 to skip the blank first record
-  for (let optionIndex = 1; optionIndex < licenceTypeOptionEles.length; optionIndex += 1) {
+  for (let optionIndex = 1; optionIndex < licenceTypeOptionElements.length; optionIndex += 1) {
 
-    const optionEle = licenceTypeOptionEles[optionIndex];
-    licenceType_keyToName.set(optionEle.value, optionEle.innerText);
+    const optionElement = licenceTypeOptionElements[optionIndex];
+    licenceType_keyToName.set(optionElement.value, optionElement.textContent);
   }
 
 
-  formEle.addEventListener("submit", (formEvent) => {
+  formElement.addEventListener("submit", (formEvent) => {
     formEvent.preventDefault();
   });
 
-  const inputEles = formEle.querySelectorAll(".input, .select select");
+  const inputElements = formElement.querySelectorAll(".input, .select select");
 
-  for (const inputEle of inputEles) {
-    inputEle.addEventListener("change", resetOffsetAndDoLicenceSearchFn);
+  for (const inputElement of inputElements) {
+    inputElement.addEventListener("change", resetOffsetAndDoLicenceSearchFunction);
   }
 
-  resetOffsetAndDoLicenceSearchFn();
-
+  resetOffsetAndDoLicenceSearchFunction();
 })();

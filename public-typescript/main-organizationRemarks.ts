@@ -1,3 +1,5 @@
+/* eslint-disable unicorn/filename-case */
+
 import type { cityssmGlobal } from "@cityssm/bulma-webapp-js/src/types";
 import type { llmGlobal } from "./types";
 import type * as llmTypes from "../types/recordTypes";
@@ -8,131 +10,131 @@ declare const llm: llmGlobal;
 
 llm.organizationRemarks = (() => {
 
-  const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
+  const urlPrefix = document.querySelector("main").dataset.urlPrefix;
 
   const getRemarksByOrganizationID = (organizationID: number,
-    callbackFn: (remarkList: llmTypes.OrganizationRemark[]) => void) => {
+    callbackFunction: (remarkList: llmTypes.OrganizationRemark[]) => void) => {
 
     cityssm.postJSON(urlPrefix + "/organizations/doGetRemarks", {
       organizationID
     },
-      callbackFn
+      callbackFunction
     );
   };
 
   const getRemarkByID = (organizationID: number, remarkIndex: number,
-    callbackFn: (remark: llmTypes.OrganizationRemark) => void) => {
+    callbackFunction: (remark: llmTypes.OrganizationRemark) => void) => {
 
     cityssm.postJSON(urlPrefix + "/organizations/doGetRemark", {
       organizationID,
       remarkIndex
     },
-      callbackFn
+      callbackFunction
     );
   };
 
 
-  const doAddRemark = (formEle: HTMLFormElement, callbackFn: (response: {
+  const doAddRemark = (formElement: HTMLFormElement, callbackFunction: (response: {
     success: boolean;
     message: string;
     remarkIndex: number;
   }) => void) => {
 
     cityssm.postJSON(urlPrefix + "/organizations/doAddRemark",
-      formEle, callbackFn);
+      formElement, callbackFunction);
   };
 
-  const openAddRemarkModal = (organizationID: number, updateCallbackFn: () => void) => {
+  const openAddRemarkModal = (organizationID: number, updateCallbackFunction: () => void) => {
 
-    let addRemarkCloseModalFn: () => void;
+    let addRemarkCloseModalFunction: () => void;
 
-    const addFormFn = (formEvent: Event) => {
+    const addFormFunction = (formEvent: Event) => {
 
       formEvent.preventDefault();
 
       doAddRemark(formEvent.currentTarget as HTMLFormElement, () => {
 
-        addRemarkCloseModalFn();
+        addRemarkCloseModalFunction();
 
-        if (updateCallbackFn) {
-          updateCallbackFn();
+        if (updateCallbackFunction) {
+          updateCallbackFunction();
         }
       });
     };
 
     cityssm.openHtmlModal("remarkAdd", {
-      onshown(modalEle: HTMLElement, closeModalFn: () => void): void {
+      onshown(modalElement, closeModalFunction) {
 
-        (document.getElementById("addRemark--organizationID") as HTMLInputElement).value = organizationID.toString();
-        document.getElementById("addRemark--remark").focus();
+        (document.querySelector("#addRemark--organizationID") as HTMLInputElement).value = organizationID.toString();
+        (document.querySelector("#addRemark--remark") as HTMLTextAreaElement).focus();
 
-        modalEle.getElementsByTagName("form")[0].addEventListener("submit", addFormFn);
+        modalElement.querySelector("form").addEventListener("submit", addFormFunction);
 
-        addRemarkCloseModalFn = closeModalFn;
+        addRemarkCloseModalFunction = closeModalFunction;
       }
     });
-
   };
 
-  const doEditRemark = (formEle: HTMLFormElement, callbackFn: (response: {
+  const doEditRemark = (formElement: HTMLFormElement, callbackFunction: (response: {
     success: boolean;
     message: string;
   }) => void) => {
 
     cityssm.postJSON(urlPrefix + "/organizations/doEditRemark",
-      formEle, callbackFn);
+      formElement,
+      callbackFunction);
   };
 
-  const openEditRemarkModal = (organizationID: number, remarkIndex: number, updateCallbackFn: () => void) => {
+  const openEditRemarkModal = (organizationID: number, remarkIndex: number, updateCallbackFunction: () => void) => {
 
-    let editRemarkCloseModalFn: () => void;
+    let editRemarkCloseModalFunction: () => void;
 
-    const formFn_edit = (formEvent: Event) => {
+    const formFunction_edit = (formEvent: Event) => {
 
       formEvent.preventDefault();
 
       doEditRemark(formEvent.currentTarget as HTMLFormElement, () => {
 
-        editRemarkCloseModalFn();
+        editRemarkCloseModalFunction();
 
-        if (updateCallbackFn) {
-          updateCallbackFn();
+        if (updateCallbackFunction) {
+          updateCallbackFunction();
         }
       });
     };
 
     cityssm.openHtmlModal("remarkEdit", {
-      onshow(modalEle: HTMLElement): void {
+      onshow(modalElement) {
 
-        (document.getElementById("editRemark--organizationID") as HTMLInputElement).value = organizationID.toString();
-        (document.getElementById("editRemark--remarkIndex") as HTMLInputElement).value = remarkIndex.toString();
+        (document.querySelector("#editRemark--organizationID") as HTMLInputElement).value = organizationID.toString();
+        (document.querySelector("#editRemark--remarkIndex") as HTMLInputElement).value = remarkIndex.toString();
 
         getRemarkByID(organizationID, remarkIndex, (remark) => {
 
-          const remarkEle = document.getElementById("editRemark--remark") as HTMLTextAreaElement;
-          remarkEle.value = remark.remark;
-          remarkEle.removeAttribute("placeholder");
+          const remarkElement = document.querySelector("#editRemark--remark") as HTMLTextAreaElement;
+          remarkElement.value = remark.remark;
+          remarkElement.removeAttribute("placeholder");
 
-          (document.getElementById("editRemark--remarkDateString") as HTMLInputElement).value = remark.remarkDateString;
-          (document.getElementById("editRemark--remarkTimeString") as HTMLInputElement).value = remark.remarkTimeString;
+          (document.querySelector("#editRemark--remarkDateString") as HTMLInputElement).value = remark.remarkDateString;
+          (document.querySelector("#editRemark--remarkTimeString") as HTMLInputElement).value = remark.remarkTimeString;
 
           if (remark.isImportant) {
-            document.getElementById("editRemark--isImportant").setAttribute("checked", "checked");
+            document.querySelector("#editRemark--isImportant").setAttribute("checked", "checked");
           }
         });
 
-        modalEle.getElementsByTagName("form")[0].addEventListener("submit", formFn_edit);
+        modalElement.querySelector("form").addEventListener("submit", formFunction_edit);
 
       },
-      onshown(_modalEle: HTMLElement, closeModalFn: () => void): void {
+      onshown(_modalElement, closeModalFunction) {
 
-        editRemarkCloseModalFn = closeModalFn;
-        document.getElementById("editRemark--remark").focus();
+        editRemarkCloseModalFunction = closeModalFunction;
+        (document.querySelector("#editRemark--remark") as HTMLTextAreaElement).focus();
       }
     });
   };
 
-  const doDeleteRemark = (organizationID: number, remarkIndex: number, callbackFn: (response: {
+  const doDeleteRemark = (organizationID: number, remarkIndex: number, callbackFunction: (response: {
     success: boolean;
     message: string;
   }) => void) => {
@@ -141,12 +143,12 @@ llm.organizationRemarks = (() => {
       organizationID,
       remarkIndex
     },
-      callbackFn
+      callbackFunction
     );
   };
 
   const deleteRemark = (organizationID: number, remarkIndex: number, doConfirm: boolean,
-    deleteCallbackFn: (response: {
+    deleteCallbackFunction: (response: {
       success: boolean;
       message: string;
     }) => void) => {
@@ -159,12 +161,12 @@ llm.organizationRemarks = (() => {
         "Yes, Delete",
         "danger",
         () => {
-          doDeleteRemark(organizationID, remarkIndex, deleteCallbackFn);
+          doDeleteRemark(organizationID, remarkIndex, deleteCallbackFunction);
         }
       );
 
     } else {
-      doDeleteRemark(organizationID, remarkIndex, deleteCallbackFn);
+      doDeleteRemark(organizationID, remarkIndex, deleteCallbackFunction);
     }
   };
 
@@ -176,5 +178,4 @@ llm.organizationRemarks = (() => {
     openEditRemarkModal,
     deleteRemark
   };
-
 })();
