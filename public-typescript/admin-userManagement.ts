@@ -1,3 +1,5 @@
+/* eslint-disable unicorn/filename-case */
+
 import type { cityssmGlobal } from "@cityssm/bulma-webapp-js/src/types";
 import type { llmGlobal } from "./types";
 import type * as llmTypes from "../types/recordTypes";
@@ -8,15 +10,15 @@ declare const llm: llmGlobal;
 
 (() => {
 
-  const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
+  const urlPrefix = document.querySelectorAll("main")[0].getAttribute("data-url-prefix");
 
   /*
    * Create user
    */
 
-  const createUserModalEle = document.getElementById("is-create-user-modal");
+  const createUserModalElement = document.querySelector("#is-create-user-modal") as HTMLElement;
 
-  createUserModalEle.getElementsByTagName("form")[0].addEventListener("submit", (formEvent) => {
+  createUserModalElement.querySelectorAll("form")[0].addEventListener("submit", (formEvent) => {
 
     formEvent.preventDefault();
 
@@ -31,41 +33,41 @@ declare const llm: llmGlobal;
     );
   });
 
-  document.getElementById("is-create-user-button").addEventListener("click", () => {
-    cityssm.showModal(createUserModalEle);
+  document.querySelector("#is-create-user-button").addEventListener("click", () => {
+    cityssm.showModal(createUserModalElement);
   });
 
-  let cancelButtonEles = createUserModalEle.getElementsByClassName("is-cancel-button");
+  let cancelButtonElements = createUserModalElement.querySelectorAll(".is-cancel-button") as NodeListOf<HTMLButtonElement>;
 
-  for (const cancelButtonEle of cancelButtonEles) {
-    cancelButtonEle.addEventListener("click", cityssm.hideModal);
+  for (const cancelButtonElement of cancelButtonElements) {
+    cancelButtonElement.addEventListener("click", cityssm.hideModal);
   }
 
   // Existing users
 
-  const userContainerEle = document.getElementById("container--users");
+  const userContainerElement = document.querySelector("#container--users");
 
   /*
    * Delete users
    */
 
-  const deleteUserFn = (clickEvent: Event) => {
+  const deleteUserFunction = (clickEvent: Event) => {
 
     clickEvent.preventDefault();
 
-    const deleteButtonEle = clickEvent.currentTarget as HTMLButtonElement;
+    const deleteButtonElement = clickEvent.currentTarget as HTMLButtonElement;
 
-    const userNameToDelete = deleteButtonEle.getAttribute("data-user-name");
-    const trEle = deleteButtonEle.closest("tr");
+    const userNameToDelete = deleteButtonElement.getAttribute("data-user-name");
+    const trElement = deleteButtonElement.closest("tr");
 
-    const doDeleteFn = () => {
+    const doDeleteFunction = () => {
 
       cityssm.postJSON(urlPrefix + "/admin/doDeleteUser", {
         userName: userNameToDelete
       }, (resultJSON: { success: boolean }) => {
 
         if (resultJSON.success) {
-          trEle.remove();
+          trElement.remove();
         }
       });
     };
@@ -75,95 +77,95 @@ declare const llm: llmGlobal;
       "Are you sure you want to delete <em>" + cityssm.escapeHTML(userNameToDelete) + "</em>?<br />",
       "Yes, Delete",
       "warning",
-      doDeleteFn
+      doDeleteFunction
     );
 
   };
 
-  const deleteUserButtonEles = userContainerEle.getElementsByClassName("is-delete-user-button");
+  const deleteUserButtonElements = userContainerElement.querySelectorAll(".is-delete-user-button");
 
-  for (const deleteUserButtonEle of deleteUserButtonEles) {
-    deleteUserButtonEle.addEventListener("click", deleteUserFn);
+  for (const deleteUserButtonElement of deleteUserButtonElements) {
+    deleteUserButtonElement.addEventListener("click", deleteUserFunction);
   }
 
   /*
    * Update user
    */
 
-  const updateUserModalEle = document.getElementById("is-update-user-modal");
-  const updateUserUserNameSpanEles =
-    updateUserModalEle.getElementsByClassName("container--userName") as HTMLCollectionOf<HTMLSpanElement>;
+  const updateUserModalElement = document.querySelector("#is-update-user-modal") as HTMLElement;
+  const updateUserUserNameSpanElements =
+    updateUserModalElement.querySelectorAll(".container--userName") as NodeListOf<HTMLSpanElement>;
 
-  llm.initializeTabs(updateUserModalEle.getElementsByClassName("tabs")[0].getElementsByTagName("ul")[0]);
+  llm.initializeTabs(updateUserModalElement.querySelector(".tabs").querySelector("ul"));
 
-  const submitFn_updateUserSetting = (formEvent: Event) => {
+  const submitFunction_updateUserSetting = (formEvent: Event) => {
 
     formEvent.preventDefault();
 
-    const formEle = formEvent.currentTarget as HTMLFormElement;
+    const formElement = formEvent.currentTarget as HTMLFormElement;
 
     cityssm.postJSON(urlPrefix + "/admin/doUpdateUserProperty",
-      formEle,
+      formElement,
       (responseJSON: { success: boolean }) => {
 
         if (responseJSON.success) {
 
-          const inputEle = formEle.getElementsByClassName("input")[0];
+          const inputElement = formElement.querySelector(".input");
 
-          inputEle.classList.add("is-success");
-          inputEle.classList.remove("is-danger");
+          inputElement.classList.add("is-success");
+          inputElement.classList.remove("is-danger");
 
-          const submitBtnEle = formEle.getElementsByTagName("button")[0];
+          const submitButtonElement = formElement.querySelector("button");
 
-          submitBtnEle.classList.add("is-success");
-          submitBtnEle.classList.remove("is-danger");
+          submitButtonElement.classList.add("is-success");
+          submitButtonElement.classList.remove("is-danger");
         }
       }
     );
   };
 
-  const keyupFn_markSettingUnsaved = (keyupEvent: Event) => {
+  const keyupFunction_markSettingUnsaved = (keyupEvent: Event) => {
 
-    const inputEle = keyupEvent.currentTarget as HTMLInputElement;
+    const inputElement = keyupEvent.currentTarget as HTMLInputElement;
 
-    inputEle.classList.add("is-danger");
-    inputEle.classList.remove("is-primary");
-    inputEle.classList.remove("is-success");
+    inputElement.classList.add("is-danger");
+    inputElement.classList.remove("is-primary");
+    inputElement.classList.remove("is-success");
 
-    const submitBtnEle = inputEle.closest(".field").getElementsByTagName("button")[0];
+    const submitButtonElement = inputElement.closest(".field").querySelector("button");
 
-    submitBtnEle.classList.add("is-danger");
-    submitBtnEle.classList.remove("is-primary");
-    submitBtnEle.classList.remove("is-success");
+    submitButtonElement.classList.add("is-danger");
+    submitButtonElement.classList.remove("is-primary");
+    submitButtonElement.classList.remove("is-success");
   };
 
-  const clickFn_updateUser = (clickEvent: Event) => {
+  const clickFunction_updateUser = (clickEvent: Event) => {
 
     clickEvent.preventDefault();
 
-    const linkEle = clickEvent.currentTarget as HTMLAnchorElement;
+    const linkElement = clickEvent.currentTarget as HTMLAnchorElement;
 
-    const userName = linkEle.getAttribute("data-user-name");
-    const firstName = linkEle.getAttribute("data-first-name");
-    const lastName = linkEle.getAttribute("data-last-name");
+    const userName = linkElement.getAttribute("data-user-name");
+    const firstName = linkElement.getAttribute("data-first-name");
+    const lastName = linkElement.getAttribute("data-last-name");
 
     // Spans
 
-    for (const updateUserUserNameSpanEle of updateUserUserNameSpanEles) {
-      updateUserUserNameSpanEle.innerText = userName;
+    for (const updateUserUserNameSpanElement of updateUserUserNameSpanElements) {
+      updateUserUserNameSpanElement.textContent = userName;
     }
 
     // Name form
 
-    (document.getElementById("updateUser--userName") as HTMLInputElement).value = userName;
-    (document.getElementById("updateUser--firstName") as HTMLInputElement).value = firstName;
-    (document.getElementById("updateUser--lastName") as HTMLInputElement).value = lastName;
+    (document.querySelector("#updateUser--userName") as HTMLInputElement).value = userName;
+    (document.querySelector("#updateUser--firstName") as HTMLInputElement).value = firstName;
+    (document.querySelector("#updateUser--lastName") as HTMLInputElement).value = lastName;
 
     // Properties form
 
-    const userPropertiesContainerEle = document.getElementById("container--userProperties");
+    const userPropertiesContainerElement = document.querySelector("#container--userProperties") as HTMLElement;
 
-    cityssm.clearElement(userPropertiesContainerEle);
+    cityssm.clearElement(userPropertiesContainerElement);
 
     cityssm.postJSON(urlPrefix + "/admin/doGetUserProperties", {
         userName
@@ -174,15 +176,15 @@ declare const llm: llmGlobal;
 
         for (const propertyName in userPropertiesJSON) {
 
-          if (userPropertiesJSON.hasOwnProperty(propertyName)) {
+          if (Object.prototype.hasOwnProperty.call(userPropertiesJSON,propertyName)) {
 
             propertyIndex += 1;
 
             const propertyValue = userPropertiesJSON[propertyName];
 
-            const formEle = document.createElement("form");
+            const formElement = document.createElement("form");
 
-            formEle.innerHTML =
+            formElement.innerHTML =
               "<input name=\"userName\" type=\"hidden\" value=\"" + userName + "\" />" +
               "<input name=\"propertyName\" type=\"hidden\" value=\"" + propertyName + "\" />" +
               "<div class=\"columns\">" +
@@ -208,11 +210,11 @@ declare const llm: llmGlobal;
                 "</div>") +
               "</div>";
 
-            formEle.getElementsByClassName("input")[0].addEventListener("keyup", keyupFn_markSettingUnsaved);
+            formElement.querySelector(".input").addEventListener("keyup", keyupFunction_markSettingUnsaved);
 
-            formEle.addEventListener("submit", submitFn_updateUserSetting);
+            formElement.addEventListener("submit", submitFunction_updateUserSetting);
 
-            userPropertiesContainerEle.insertAdjacentElement("beforeend", formEle);
+            userPropertiesContainerElement.append(formElement);
 
           }
         }
@@ -221,30 +223,30 @@ declare const llm: llmGlobal;
 
 
     // Password form
-    (document.getElementById("resetPassword--userName") as HTMLInputElement).value = userName;
+    (document.querySelector("#resetPassword--userName") as HTMLInputElement).value = userName;
 
-    document.getElementById("resetPassword--newPassword")
+    document.querySelector("#resetPassword--newPassword")
       .closest(".message")
       .setAttribute("hidden", "hidden");
 
-    cityssm.showModal(updateUserModalEle);
+    cityssm.showModal(updateUserModalElement);
   };
 
-  const updateUserButtonEles = userContainerEle.getElementsByClassName("is-update-user-button");
+  const updateUserButtonElements = userContainerElement.querySelectorAll(".is-update-user-button") as NodeListOf<HTMLButtonElement>;
 
-  for (const updateUserButtonEle of updateUserButtonEles) {
-    updateUserButtonEle.addEventListener("click", clickFn_updateUser);
+  for (const updateUserButtonElement of updateUserButtonElements) {
+    updateUserButtonElement.addEventListener("click", clickFunction_updateUser);
   }
 
-  cancelButtonEles = updateUserModalEle.getElementsByClassName("is-cancel-button");
+  cancelButtonElements = updateUserModalElement.querySelectorAll(".is-cancel-button");
 
-  for (const cancelButtonEle of cancelButtonEles) {
-    cancelButtonEle.addEventListener("click", cityssm.hideModal);
+  for (const cancelButtonElement of cancelButtonElements) {
+    cancelButtonElement.addEventListener("click", cityssm.hideModal);
   }
 
   // User name
 
-  document.getElementById("tab--updateUser-name").getElementsByTagName("form")[0]
+  document.querySelector("#tab--updateUser-name").querySelector("form")
     .addEventListener("submit", (formEvent) => {
 
       formEvent.preventDefault();
@@ -262,7 +264,7 @@ declare const llm: llmGlobal;
 
   // Reset password
 
-  document.getElementById("tab--updateUser-password").getElementsByTagName("form")[0]
+  document.querySelector("#tab--updateUser-password").querySelector("form")
     .addEventListener("submit", (formEvent) => {
 
       formEvent.preventDefault();
@@ -273,11 +275,11 @@ declare const llm: llmGlobal;
 
           if (responseJSON.success) {
 
-            const newPasswordEle = document.getElementById("resetPassword--newPassword");
+            const newPasswordElement = document.querySelector("#resetPassword--newPassword");
 
-            newPasswordEle.innerText = responseJSON.newPassword;
+            newPasswordElement.textContent = responseJSON.newPassword;
 
-            newPasswordEle.closest(".message").removeAttribute("hidden");
+            newPasswordElement.closest(".message").removeAttribute("hidden");
           }
         }
       );

@@ -44,6 +44,9 @@
           "ele": {
             "element": true
           },
+          "eles": {
+            "elements": true
+          },
           "res": {
             "result": false
           }

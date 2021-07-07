@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 (() => {
-    const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
-    const createUserModalEle = document.getElementById("is-create-user-modal");
-    createUserModalEle.getElementsByTagName("form")[0].addEventListener("submit", (formEvent) => {
+    const urlPrefix = document.querySelectorAll("main")[0].getAttribute("data-url-prefix");
+    const createUserModalElement = document.querySelector("#is-create-user-modal");
+    createUserModalElement.querySelectorAll("form")[0].addEventListener("submit", (formEvent) => {
         formEvent.preventDefault();
         cityssm.postJSON(urlPrefix + "/admin/doCreateUser", formEvent.currentTarget, (responseJSON) => {
             if (responseJSON.success) {
@@ -11,85 +11,85 @@ Object.defineProperty(exports, "__esModule", { value: true });
             }
         });
     });
-    document.getElementById("is-create-user-button").addEventListener("click", () => {
-        cityssm.showModal(createUserModalEle);
+    document.querySelector("#is-create-user-button").addEventListener("click", () => {
+        cityssm.showModal(createUserModalElement);
     });
-    let cancelButtonEles = createUserModalEle.getElementsByClassName("is-cancel-button");
-    for (const cancelButtonEle of cancelButtonEles) {
-        cancelButtonEle.addEventListener("click", cityssm.hideModal);
+    let cancelButtonElements = createUserModalElement.querySelectorAll(".is-cancel-button");
+    for (const cancelButtonElement of cancelButtonElements) {
+        cancelButtonElement.addEventListener("click", cityssm.hideModal);
     }
-    const userContainerEle = document.getElementById("container--users");
-    const deleteUserFn = (clickEvent) => {
+    const userContainerElement = document.querySelector("#container--users");
+    const deleteUserFunction = (clickEvent) => {
         clickEvent.preventDefault();
-        const deleteButtonEle = clickEvent.currentTarget;
-        const userNameToDelete = deleteButtonEle.getAttribute("data-user-name");
-        const trEle = deleteButtonEle.closest("tr");
-        const doDeleteFn = () => {
+        const deleteButtonElement = clickEvent.currentTarget;
+        const userNameToDelete = deleteButtonElement.getAttribute("data-user-name");
+        const trElement = deleteButtonElement.closest("tr");
+        const doDeleteFunction = () => {
             cityssm.postJSON(urlPrefix + "/admin/doDeleteUser", {
                 userName: userNameToDelete
             }, (resultJSON) => {
                 if (resultJSON.success) {
-                    trEle.remove();
+                    trElement.remove();
                 }
             });
         };
-        cityssm.confirmModal("Delete User?", "Are you sure you want to delete <em>" + cityssm.escapeHTML(userNameToDelete) + "</em>?<br />", "Yes, Delete", "warning", doDeleteFn);
+        cityssm.confirmModal("Delete User?", "Are you sure you want to delete <em>" + cityssm.escapeHTML(userNameToDelete) + "</em>?<br />", "Yes, Delete", "warning", doDeleteFunction);
     };
-    const deleteUserButtonEles = userContainerEle.getElementsByClassName("is-delete-user-button");
-    for (const deleteUserButtonEle of deleteUserButtonEles) {
-        deleteUserButtonEle.addEventListener("click", deleteUserFn);
+    const deleteUserButtonElements = userContainerElement.querySelectorAll(".is-delete-user-button");
+    for (const deleteUserButtonElement of deleteUserButtonElements) {
+        deleteUserButtonElement.addEventListener("click", deleteUserFunction);
     }
-    const updateUserModalEle = document.getElementById("is-update-user-modal");
-    const updateUserUserNameSpanEles = updateUserModalEle.getElementsByClassName("container--userName");
-    llm.initializeTabs(updateUserModalEle.getElementsByClassName("tabs")[0].getElementsByTagName("ul")[0]);
-    const submitFn_updateUserSetting = (formEvent) => {
+    const updateUserModalElement = document.querySelector("#is-update-user-modal");
+    const updateUserUserNameSpanElements = updateUserModalElement.querySelectorAll(".container--userName");
+    llm.initializeTabs(updateUserModalElement.querySelector(".tabs").querySelector("ul"));
+    const submitFunction_updateUserSetting = (formEvent) => {
         formEvent.preventDefault();
-        const formEle = formEvent.currentTarget;
-        cityssm.postJSON(urlPrefix + "/admin/doUpdateUserProperty", formEle, (responseJSON) => {
+        const formElement = formEvent.currentTarget;
+        cityssm.postJSON(urlPrefix + "/admin/doUpdateUserProperty", formElement, (responseJSON) => {
             if (responseJSON.success) {
-                const inputEle = formEle.getElementsByClassName("input")[0];
-                inputEle.classList.add("is-success");
-                inputEle.classList.remove("is-danger");
-                const submitBtnEle = formEle.getElementsByTagName("button")[0];
-                submitBtnEle.classList.add("is-success");
-                submitBtnEle.classList.remove("is-danger");
+                const inputElement = formElement.querySelector(".input");
+                inputElement.classList.add("is-success");
+                inputElement.classList.remove("is-danger");
+                const submitButtonElement = formElement.querySelector("button");
+                submitButtonElement.classList.add("is-success");
+                submitButtonElement.classList.remove("is-danger");
             }
         });
     };
-    const keyupFn_markSettingUnsaved = (keyupEvent) => {
-        const inputEle = keyupEvent.currentTarget;
-        inputEle.classList.add("is-danger");
-        inputEle.classList.remove("is-primary");
-        inputEle.classList.remove("is-success");
-        const submitBtnEle = inputEle.closest(".field").getElementsByTagName("button")[0];
-        submitBtnEle.classList.add("is-danger");
-        submitBtnEle.classList.remove("is-primary");
-        submitBtnEle.classList.remove("is-success");
+    const keyupFunction_markSettingUnsaved = (keyupEvent) => {
+        const inputElement = keyupEvent.currentTarget;
+        inputElement.classList.add("is-danger");
+        inputElement.classList.remove("is-primary");
+        inputElement.classList.remove("is-success");
+        const submitButtonElement = inputElement.closest(".field").querySelector("button");
+        submitButtonElement.classList.add("is-danger");
+        submitButtonElement.classList.remove("is-primary");
+        submitButtonElement.classList.remove("is-success");
     };
-    const clickFn_updateUser = (clickEvent) => {
+    const clickFunction_updateUser = (clickEvent) => {
         clickEvent.preventDefault();
-        const linkEle = clickEvent.currentTarget;
-        const userName = linkEle.getAttribute("data-user-name");
-        const firstName = linkEle.getAttribute("data-first-name");
-        const lastName = linkEle.getAttribute("data-last-name");
-        for (const updateUserUserNameSpanEle of updateUserUserNameSpanEles) {
-            updateUserUserNameSpanEle.innerText = userName;
+        const linkElement = clickEvent.currentTarget;
+        const userName = linkElement.getAttribute("data-user-name");
+        const firstName = linkElement.getAttribute("data-first-name");
+        const lastName = linkElement.getAttribute("data-last-name");
+        for (const updateUserUserNameSpanElement of updateUserUserNameSpanElements) {
+            updateUserUserNameSpanElement.textContent = userName;
         }
-        document.getElementById("updateUser--userName").value = userName;
-        document.getElementById("updateUser--firstName").value = firstName;
-        document.getElementById("updateUser--lastName").value = lastName;
-        const userPropertiesContainerEle = document.getElementById("container--userProperties");
-        cityssm.clearElement(userPropertiesContainerEle);
+        document.querySelector("#updateUser--userName").value = userName;
+        document.querySelector("#updateUser--firstName").value = firstName;
+        document.querySelector("#updateUser--lastName").value = lastName;
+        const userPropertiesContainerElement = document.querySelector("#container--userProperties");
+        cityssm.clearElement(userPropertiesContainerElement);
         cityssm.postJSON(urlPrefix + "/admin/doGetUserProperties", {
             userName
         }, (userPropertiesJSON) => {
             let propertyIndex = 0;
             for (const propertyName in userPropertiesJSON) {
-                if (userPropertiesJSON.hasOwnProperty(propertyName)) {
+                if (Object.prototype.hasOwnProperty.call(userPropertiesJSON, propertyName)) {
                     propertyIndex += 1;
                     const propertyValue = userPropertiesJSON[propertyName];
-                    const formEle = document.createElement("form");
-                    formEle.innerHTML =
+                    const formElement = document.createElement("form");
+                    formElement.innerHTML =
                         "<input name=\"userName\" type=\"hidden\" value=\"" + userName + "\" />" +
                             "<input name=\"propertyName\" type=\"hidden\" value=\"" + propertyName + "\" />" +
                             "<div class=\"columns\">" +
@@ -114,27 +114,27 @@ Object.defineProperty(exports, "__esModule", { value: true });
                                 "</div>" +
                                 "</div>") +
                             "</div>";
-                    formEle.getElementsByClassName("input")[0].addEventListener("keyup", keyupFn_markSettingUnsaved);
-                    formEle.addEventListener("submit", submitFn_updateUserSetting);
-                    userPropertiesContainerEle.insertAdjacentElement("beforeend", formEle);
+                    formElement.querySelector(".input").addEventListener("keyup", keyupFunction_markSettingUnsaved);
+                    formElement.addEventListener("submit", submitFunction_updateUserSetting);
+                    userPropertiesContainerElement.append(formElement);
                 }
             }
         });
-        document.getElementById("resetPassword--userName").value = userName;
-        document.getElementById("resetPassword--newPassword")
+        document.querySelector("#resetPassword--userName").value = userName;
+        document.querySelector("#resetPassword--newPassword")
             .closest(".message")
             .setAttribute("hidden", "hidden");
-        cityssm.showModal(updateUserModalEle);
+        cityssm.showModal(updateUserModalElement);
     };
-    const updateUserButtonEles = userContainerEle.getElementsByClassName("is-update-user-button");
-    for (const updateUserButtonEle of updateUserButtonEles) {
-        updateUserButtonEle.addEventListener("click", clickFn_updateUser);
+    const updateUserButtonElements = userContainerElement.querySelectorAll(".is-update-user-button");
+    for (const updateUserButtonElement of updateUserButtonElements) {
+        updateUserButtonElement.addEventListener("click", clickFunction_updateUser);
     }
-    cancelButtonEles = updateUserModalEle.getElementsByClassName("is-cancel-button");
-    for (const cancelButtonEle of cancelButtonEles) {
-        cancelButtonEle.addEventListener("click", cityssm.hideModal);
+    cancelButtonElements = updateUserModalElement.querySelectorAll(".is-cancel-button");
+    for (const cancelButtonElement of cancelButtonElements) {
+        cancelButtonElement.addEventListener("click", cityssm.hideModal);
     }
-    document.getElementById("tab--updateUser-name").getElementsByTagName("form")[0]
+    document.querySelector("#tab--updateUser-name").querySelector("form")
         .addEventListener("submit", (formEvent) => {
         formEvent.preventDefault();
         cityssm.postJSON(urlPrefix + "/admin/doUpdateUser", formEvent.currentTarget, (responseJSON) => {
@@ -143,14 +143,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
             }
         });
     });
-    document.getElementById("tab--updateUser-password").getElementsByTagName("form")[0]
+    document.querySelector("#tab--updateUser-password").querySelector("form")
         .addEventListener("submit", (formEvent) => {
         formEvent.preventDefault();
         cityssm.postJSON(urlPrefix + "/admin/doResetPassword", formEvent.currentTarget, (responseJSON) => {
             if (responseJSON.success) {
-                const newPasswordEle = document.getElementById("resetPassword--newPassword");
-                newPasswordEle.innerText = responseJSON.newPassword;
-                newPasswordEle.closest(".message").removeAttribute("hidden");
+                const newPasswordElement = document.querySelector("#resetPassword--newPassword");
+                newPasswordElement.textContent = responseJSON.newPassword;
+                newPasswordElement.closest(".message").removeAttribute("hidden");
             }
         });
     });

@@ -1,36 +1,36 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 (() => {
-    const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
-    const changePasswordModalEle = document.getElementById("is-change-password-modal");
-    if (changePasswordModalEle) {
-        changePasswordModalEle.getElementsByTagName("form")[0].addEventListener("submit", (formEvent) => {
+    const urlPrefix = document.querySelector("main").getAttribute("data-url-prefix");
+    const changePasswordModalElement = document.querySelector("#is-change-password-modal");
+    if (changePasswordModalElement) {
+        changePasswordModalElement.querySelector("form").addEventListener("submit", (formEvent) => {
             formEvent.preventDefault();
-            const formEle = formEvent.currentTarget;
-            cityssm.postJSON(urlPrefix + "/dashboard/doChangePassword", formEle, (responseJSON) => {
+            const formElement = formEvent.currentTarget;
+            cityssm.postJSON(urlPrefix + "/dashboard/doChangePassword", formElement, (responseJSON) => {
                 if (responseJSON.success) {
-                    cityssm.hideModal(changePasswordModalEle);
+                    cityssm.hideModal(changePasswordModalElement);
                     cityssm.alertModal("Password Updated Successfully", "", "OK", "success");
                 }
             });
         });
-        document.getElementsByClassName("is-change-password-button")[0].addEventListener("click", () => {
-            changePasswordModalEle.getElementsByTagName("form")[0].reset();
-            cityssm.showModal(changePasswordModalEle);
-            document.getElementById("changePassword--oldPassword").focus();
+        document.querySelector(".is-change-password-button").addEventListener("click", () => {
+            changePasswordModalElement.querySelector("form").reset();
+            cityssm.showModal(changePasswordModalElement);
+            document.querySelector("#changePassword--oldPassword").focus();
         });
-        const toggleVisibilityFn = (buttonEvent) => {
-            const inputEle = buttonEvent.currentTarget
-                .closest(".field").getElementsByClassName("input")[0];
-            inputEle.setAttribute("type", inputEle.getAttribute("type") === "text" ? "password" : "text");
+        const toggleVisibilityFunction = (buttonEvent) => {
+            const inputElement = buttonEvent.currentTarget
+                .closest(".field").querySelector(".input");
+            inputElement.setAttribute("type", inputElement.getAttribute("type") === "text" ? "password" : "text");
         };
-        const toggleVisibilityButtonEles = changePasswordModalEle.getElementsByClassName("is-toggle-visibility-button");
-        for (const toggleVisibilityButtonEle of toggleVisibilityButtonEles) {
-            toggleVisibilityButtonEle.addEventListener("click", toggleVisibilityFn);
+        const toggleVisibilityButtonElements = changePasswordModalElement.querySelectorAll(".is-toggle-visibility-button");
+        for (const toggleVisibilityButtonElement of toggleVisibilityButtonElements) {
+            toggleVisibilityButtonElement.addEventListener("click", toggleVisibilityFunction);
         }
-        const cancelButtonEles = changePasswordModalEle.getElementsByClassName("is-cancel-button");
-        for (const cancelButtonEle of cancelButtonEles) {
-            cancelButtonEle.addEventListener("click", cityssm.hideModal);
+        const cancelButtonElements = changePasswordModalElement.querySelectorAll(".is-cancel-button");
+        for (const cancelButtonElement of cancelButtonElements) {
+            cancelButtonElement.addEventListener("click", cityssm.hideModal);
         }
     }
 })();

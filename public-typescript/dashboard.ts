@@ -4,25 +4,25 @@ declare const cityssm: cityssmGlobal;
 
 (() => {
 
-  const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
+  const urlPrefix = document.querySelector("main").getAttribute("data-url-prefix");
 
-  const changePasswordModalEle = document.getElementById("is-change-password-modal");
+  const changePasswordModalElement = document.querySelector("#is-change-password-modal") as HTMLElement;
 
-  if (changePasswordModalEle) {
+  if (changePasswordModalElement) {
 
-    changePasswordModalEle.getElementsByTagName("form")[0].addEventListener("submit", (formEvent) => {
+    changePasswordModalElement.querySelector("form").addEventListener("submit", (formEvent) => {
 
       formEvent.preventDefault();
 
-      const formEle = formEvent.currentTarget;
+      const formElement = formEvent.currentTarget;
 
       cityssm.postJSON(urlPrefix + "/dashboard/doChangePassword",
-        formEle,
+        formElement,
         (responseJSON: { success: boolean }) => {
 
           if (responseJSON.success) {
 
-            cityssm.hideModal(changePasswordModalEle);
+            cityssm.hideModal(changePasswordModalElement);
             cityssm.alertModal("Password Updated Successfully", "", "OK", "success");
           }
         }
@@ -30,35 +30,35 @@ declare const cityssm: cityssmGlobal;
     });
 
 
-    document.getElementsByClassName("is-change-password-button")[0].addEventListener("click", () => {
+    document.querySelector(".is-change-password-button").addEventListener("click", () => {
 
-      changePasswordModalEle.getElementsByTagName("form")[0].reset();
-      cityssm.showModal(changePasswordModalEle);
-      document.getElementById("changePassword--oldPassword").focus();
+      changePasswordModalElement.querySelector("form").reset();
+      cityssm.showModal(changePasswordModalElement);
+      (document.querySelector("#changePassword--oldPassword") as HTMLInputElement).focus();
 
     });
 
-    const toggleVisibilityFn = (buttonEvent: Event) => {
+    const toggleVisibilityFunction = (buttonEvent: Event) => {
 
-      const inputEle = (buttonEvent.currentTarget as HTMLButtonElement)
-        .closest(".field").getElementsByClassName("input")[0];
+      const inputElement = (buttonEvent.currentTarget as HTMLButtonElement)
+        .closest(".field").querySelector(".input");
 
-      inputEle.setAttribute(
+      inputElement.setAttribute(
         "type",
-        inputEle.getAttribute("type") === "text" ? "password" : "text"
+        inputElement.getAttribute("type") === "text" ? "password" : "text"
       );
     };
 
-    const toggleVisibilityButtonEles = changePasswordModalEle.getElementsByClassName("is-toggle-visibility-button");
+    const toggleVisibilityButtonElements = changePasswordModalElement.querySelectorAll(".is-toggle-visibility-button");
 
-    for (const toggleVisibilityButtonEle of toggleVisibilityButtonEles) {
-      toggleVisibilityButtonEle.addEventListener("click", toggleVisibilityFn);
+    for (const toggleVisibilityButtonElement of toggleVisibilityButtonElements) {
+      toggleVisibilityButtonElement.addEventListener("click", toggleVisibilityFunction);
     }
 
-    const cancelButtonEles = changePasswordModalEle.getElementsByClassName("is-cancel-button");
+    const cancelButtonElements = changePasswordModalElement.querySelectorAll(".is-cancel-button");
 
-    for (const cancelButtonEle of cancelButtonEles) {
-      cancelButtonEle.addEventListener("click", cityssm.hideModal);
+    for (const cancelButtonElement of cancelButtonElements) {
+      cancelButtonElement.addEventListener("click", cityssm.hideModal);
     }
   }
 })();

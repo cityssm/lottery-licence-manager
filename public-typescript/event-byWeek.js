@@ -1,26 +1,26 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 (() => {
-    const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
+    const urlPrefix = document.querySelector("main").getAttribute("data-url-prefix");
     const safeUrlPrefix = cityssm.escapeHTML(urlPrefix);
     const currentDateString = cityssm.dateToString(new Date());
-    const eventDateFilterEle = document.getElementById("filter--eventDate");
-    const showLicencesCheckboxEle = document.getElementById("filter--showLicences");
-    const eventContainerEle = document.getElementById("container--events");
+    const eventDateFilterElement = document.querySelector("#filter--eventDate");
+    const showLicencesCheckboxElement = document.querySelector("#filter--showLicences");
+    const eventContainerElement = document.querySelector("#container--events");
     const dayNames = exports.config_days;
     delete exports.config_days;
     const licenceTypes = exports.config_licenceTypes;
     delete exports.config_licenceTypes;
-    const refreshEventsFn = () => {
-        cityssm.clearElement(eventContainerEle);
-        if (eventDateFilterEle.value === "") {
-            eventDateFilterEle.value = cityssm.dateToString(new Date());
+    const refreshEventsFunction = () => {
+        cityssm.clearElement(eventContainerElement);
+        if (eventDateFilterElement.value === "") {
+            eventDateFilterElement.value = cityssm.dateToString(new Date());
         }
         cityssm.postJSON(urlPrefix + "/events/doGetEventsByWeek", {
-            eventDate: eventDateFilterEle.value
+            eventDate: eventDateFilterElement.value
         }, (responseJSON) => {
             if (responseJSON.licences.length === 0 && responseJSON.events.length === 0) {
-                eventContainerEle.innerHTML = `<div class="message is-info">
+                eventContainerElement.innerHTML = `<div class="message is-info">
             <p class="message-body">
             There are no licences or events with activity between
             ${responseJSON.startDateString} and ${responseJSON.endDateString}.
@@ -28,8 +28,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
             </div>`;
                 return;
             }
-            const tableEle = document.createElement("table");
-            tableEle.className = "table is-fixed is-fullwidth is-bordered";
+            const tableElement = document.createElement("table");
+            tableElement.className = "table is-fixed is-fullwidth is-bordered";
             let headerTheadHTML = "<thead><tr>";
             const headerDate = cityssm.dateStringToDate(responseJSON.startDateString);
             for (let weekDayIndex = 0; weekDayIndex <= 6; weekDayIndex += 1) {
@@ -44,11 +44,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 headerDate.setDate(headerDate.getDate() + 1);
             }
             headerTheadHTML += "</tr></thead>";
-            tableEle.innerHTML = headerTheadHTML;
-            const licenceTbodyEle = document.createElement("tbody");
-            licenceTbodyEle.id = "tbody--licences";
-            if (!showLicencesCheckboxEle.checked) {
-                licenceTbodyEle.className = "is-hidden";
+            tableElement.innerHTML = headerTheadHTML;
+            const licenceTbodyElement = document.createElement("tbody");
+            licenceTbodyElement.id = "tbody--licences";
+            if (!showLicencesCheckboxElement.checked) {
+                licenceTbodyElement.className = "is-hidden";
             }
             for (const licenceRecord of responseJSON.licences) {
                 let fillerSize = 0;
@@ -69,7 +69,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     rightSideFiller += "<td></td>";
                 }
                 const licenceType = licenceTypes[licenceRecord.licenceTypeKey];
-                licenceTbodyEle.insertAdjacentHTML("beforeend", "<tr>" +
+                licenceTbodyElement.insertAdjacentHTML("beforeend", "<tr>" +
                     leftSideFiller +
                     "<td colspan=\"" + licenceColspan.toString() + "\">" +
                     "<a class=\"button has-text-left is-small is-block has-height-auto is-wrap is-primary is-light\"" +
@@ -116,8 +116,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     rightSideFiller +
                     "</tr>");
             }
-            tableEle.appendChild(licenceTbodyEle);
-            const eventTdEles = [
+            tableElement.append(licenceTbodyElement);
+            const eventTdElements = [
                 document.createElement("td"),
                 document.createElement("td"),
                 document.createElement("td"),
@@ -129,7 +129,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
             for (const eventRecord of responseJSON.events) {
                 const licenceType = licenceTypes[eventRecord.licenceTypeKey];
                 const tdIndex = cityssm.dateStringToDate(eventRecord.eventDateString).getDay();
-                eventTdEles[tdIndex].insertAdjacentHTML("beforeend", "<a class=\"button mb-2 has-text-left is-small is-block has-height-auto is-wrap is-link is-light\"" +
+                eventTdElements[tdIndex].insertAdjacentHTML("beforeend", "<a class=\"button mb-2 has-text-left is-small is-block has-height-auto is-wrap is-link is-light\"" +
                     " data-tooltip=\"View Event\"" +
                     " href=\"" + safeUrlPrefix + "/events/" + eventRecord.licenceID.toString() + "/" + eventRecord.eventDate.toString() + "\">" +
                     ("<div class=\"columns mb-0 is-variable is-1\">" +
@@ -169,24 +169,24 @@ Object.defineProperty(exports, "__esModule", { value: true });
                         "</div>") +
                     "</a>");
             }
-            const eventTrEle = document.createElement("tr");
-            for (const eventTdEle of eventTdEles) {
-                eventTrEle.appendChild(eventTdEle);
+            const eventTrElement = document.createElement("tr");
+            for (const eventTdElement of eventTdElements) {
+                eventTrElement.append(eventTdElement);
             }
-            const eventTbodyEle = document.createElement("tbody");
-            eventTbodyEle.appendChild(eventTrEle);
-            tableEle.appendChild(eventTbodyEle);
-            eventContainerEle.appendChild(tableEle);
+            const eventTbodyElement = document.createElement("tbody");
+            eventTbodyElement.append(eventTrElement);
+            tableElement.append(eventTbodyElement);
+            eventContainerElement.append(tableElement);
         });
     };
-    eventDateFilterEle.addEventListener("change", refreshEventsFn);
-    refreshEventsFn();
-    showLicencesCheckboxEle.addEventListener("change", () => {
-        if (showLicencesCheckboxEle.checked) {
-            document.getElementById("tbody--licences").classList.remove("is-hidden");
+    eventDateFilterElement.addEventListener("change", refreshEventsFunction);
+    refreshEventsFunction();
+    showLicencesCheckboxElement.addEventListener("change", () => {
+        if (showLicencesCheckboxElement.checked) {
+            document.querySelector("#tbody--licences").classList.remove("is-hidden");
         }
         else {
-            document.getElementById("tbody--licences").classList.add("is-hidden");
+            document.querySelector("#tbody--licences").classList.add("is-hidden");
         }
     });
 })();

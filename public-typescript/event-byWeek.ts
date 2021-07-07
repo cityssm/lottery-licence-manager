@@ -1,3 +1,5 @@
+/* eslint-disable unicorn/filename-case, unicorn/prefer-module */
+
 import type { cityssmGlobal } from "@cityssm/bulma-webapp-js/src/types";
 
 declare const cityssm: cityssmGlobal;
@@ -5,14 +7,14 @@ declare const cityssm: cityssmGlobal;
 
 (() => {
 
-  const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
+  const urlPrefix = document.querySelector("main").getAttribute("data-url-prefix");
   const safeUrlPrefix = cityssm.escapeHTML(urlPrefix);
 
   const currentDateString = cityssm.dateToString(new Date());
 
-  const eventDateFilterEle = document.getElementById("filter--eventDate") as HTMLInputElement;
-  const showLicencesCheckboxEle = document.getElementById("filter--showLicences") as HTMLInputElement;
-  const eventContainerEle = document.getElementById("container--events");
+  const eventDateFilterElement = document.querySelector("#filter--eventDate") as HTMLInputElement;
+  const showLicencesCheckboxElement = document.querySelector("#filter--showLicences") as HTMLInputElement;
+  const eventContainerElement = document.querySelector("#container--events") as HTMLElement;
 
   const dayNames = exports.config_days as string[];
   delete exports.config_days;
@@ -20,16 +22,16 @@ declare const cityssm: cityssmGlobal;
   const licenceTypes = exports.config_licenceTypes as { [licenceTypeKey: string]: string };
   delete exports.config_licenceTypes;
 
-  const refreshEventsFn = () => {
+  const refreshEventsFunction = () => {
 
-    cityssm.clearElement(eventContainerEle);
+    cityssm.clearElement(eventContainerElement);
 
-    if (eventDateFilterEle.value === "") {
-      eventDateFilterEle.value = cityssm.dateToString(new Date());
+    if (eventDateFilterElement.value === "") {
+      eventDateFilterElement.value = cityssm.dateToString(new Date());
     }
 
     cityssm.postJSON(urlPrefix + "/events/doGetEventsByWeek", {
-      eventDate: eventDateFilterEle.value
+      eventDate: eventDateFilterElement.value
     },
       (responseJSON: {
         startDateString: string;
@@ -59,7 +61,7 @@ declare const cityssm: cityssmGlobal;
 
         if (responseJSON.licences.length === 0 && responseJSON.events.length === 0) {
 
-          eventContainerEle.innerHTML = `<div class="message is-info">
+          eventContainerElement.innerHTML = `<div class="message is-info">
             <p class="message-body">
             There are no licences or events with activity between
             ${responseJSON.startDateString} and ${responseJSON.endDateString}.
@@ -70,8 +72,8 @@ declare const cityssm: cityssmGlobal;
 
         }
 
-        const tableEle = document.createElement("table");
-        tableEle.className = "table is-fixed is-fullwidth is-bordered";
+        const tableElement = document.createElement("table");
+        tableElement.className = "table is-fixed is-fullwidth is-bordered";
 
         // Construct header
 
@@ -96,16 +98,16 @@ declare const cityssm: cityssmGlobal;
 
         headerTheadHTML += "</tr></thead>";
 
-        tableEle.innerHTML = headerTheadHTML;
+        tableElement.innerHTML = headerTheadHTML;
 
         // Construct licences tbody
 
-        const licenceTbodyEle = document.createElement("tbody");
-        licenceTbodyEle.id = "tbody--licences";
+        const licenceTbodyElement = document.createElement("tbody");
+        licenceTbodyElement.id = "tbody--licences";
 
-        if (!showLicencesCheckboxEle.checked) {
+        if (!showLicencesCheckboxElement.checked) {
 
-          licenceTbodyEle.className = "is-hidden";
+          licenceTbodyElement.className = "is-hidden";
 
         }
 
@@ -146,7 +148,7 @@ declare const cityssm: cityssmGlobal;
 
           const licenceType = licenceTypes[licenceRecord.licenceTypeKey];
 
-          licenceTbodyEle.insertAdjacentHTML("beforeend", "<tr>" +
+          licenceTbodyElement.insertAdjacentHTML("beforeend", "<tr>" +
             leftSideFiller +
             "<td colspan=\"" + licenceColspan.toString() + "\">" +
             "<a class=\"button has-text-left is-small is-block has-height-auto is-wrap is-primary is-light\"" +
@@ -199,11 +201,11 @@ declare const cityssm: cityssmGlobal;
             "</tr>");
         }
 
-        tableEle.appendChild(licenceTbodyEle);
+        tableElement.append(licenceTbodyElement);
 
         // Construct events tbody
 
-        const eventTdEles = [
+        const eventTdElements = [
           document.createElement("td"),
           document.createElement("td"),
           document.createElement("td"),
@@ -219,7 +221,7 @@ declare const cityssm: cityssmGlobal;
 
           const tdIndex = cityssm.dateStringToDate(eventRecord.eventDateString).getDay();
 
-          eventTdEles[tdIndex].insertAdjacentHTML(
+          eventTdElements[tdIndex].insertAdjacentHTML(
             "beforeend",
             "<a class=\"button mb-2 has-text-left is-small is-block has-height-auto is-wrap is-link is-light\"" +
             " data-tooltip=\"View Event\"" +
@@ -270,33 +272,33 @@ declare const cityssm: cityssmGlobal;
 
         }
 
-        const eventTrEle = document.createElement("tr");
+        const eventTrElement = document.createElement("tr");
 
-        for (const eventTdEle of eventTdEles) {
-          eventTrEle.appendChild(eventTdEle);
+        for (const eventTdElement of eventTdElements) {
+          eventTrElement.append(eventTdElement);
         }
 
-        const eventTbodyEle = document.createElement("tbody");
-        eventTbodyEle.appendChild(eventTrEle);
+        const eventTbodyElement = document.createElement("tbody");
+        eventTbodyElement.append(eventTrElement);
 
-        tableEle.appendChild(eventTbodyEle);
+        tableElement.append(eventTbodyElement);
 
         // Display table
 
-        eventContainerEle.appendChild(tableEle);
+        eventContainerElement.append(tableElement);
       });
   };
 
-  eventDateFilterEle.addEventListener("change", refreshEventsFn);
+  eventDateFilterElement.addEventListener("change", refreshEventsFunction);
 
-  refreshEventsFn();
+  refreshEventsFunction();
 
-  showLicencesCheckboxEle.addEventListener("change", () => {
+  showLicencesCheckboxElement.addEventListener("change", () => {
 
-    if (showLicencesCheckboxEle.checked) {
-      document.getElementById("tbody--licences").classList.remove("is-hidden");
+    if (showLicencesCheckboxElement.checked) {
+      document.querySelector("#tbody--licences").classList.remove("is-hidden");
     } else {
-      document.getElementById("tbody--licences").classList.add("is-hidden");
+      document.querySelector("#tbody--licences").classList.add("is-hidden");
     }
   });
 })();

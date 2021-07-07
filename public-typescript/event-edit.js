@@ -1,27 +1,27 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 (() => {
-    const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
-    const eventDateNavEle = document.getElementById("eventNav--eventDate");
-    const formEle = document.getElementById("form--event");
-    const formMessageEle = document.getElementById("container--form-message");
-    const licenceID = document.getElementById("event--licenceID").value;
-    const eventDate = document.getElementById("event--eventDate").value;
-    formEle.addEventListener("submit", (formEvent) => {
+    const urlPrefix = document.querySelector("main").getAttribute("data-url-prefix");
+    const eventDateNavElement = document.querySelector("#eventNav--eventDate");
+    const formElement = document.querySelector("#form--event");
+    const formMessageElement = document.querySelector("#container--form-message");
+    const licenceID = document.querySelector("#event--licenceID").value;
+    const eventDate = document.querySelector("#event--eventDate").value;
+    formElement.addEventListener("submit", (formEvent) => {
         formEvent.preventDefault();
-        formMessageEle.innerHTML = "Saving... <i class=\"fas fa-circle-notch fa-spin\" aria-hidden=\"true\"></i>";
-        cityssm.postJSON(urlPrefix + "/events/doSave", formEle, (responseJSON) => {
+        formMessageElement.innerHTML = "Saving... <i class=\"fas fa-circle-notch fa-spin\" aria-hidden=\"true\"></i>";
+        cityssm.postJSON(urlPrefix + "/events/doSave", formElement, (responseJSON) => {
             if (responseJSON.success) {
                 cityssm.disableNavBlocker();
-                if (eventDateNavEle) {
-                    eventDateNavEle.removeAttribute("disabled");
+                if (eventDateNavElement) {
+                    eventDateNavElement.removeAttribute("disabled");
                 }
             }
-            formMessageEle.innerHTML = "";
+            formMessageElement.innerHTML = "";
             cityssm.alertModal(responseJSON.message, "", "OK", responseJSON.success ? "success" : "danger");
         });
     });
-    document.getElementById("is-delete-event-button").addEventListener("click", (clickEvent) => {
+    document.querySelector("#is-delete-event-button").addEventListener("click", (clickEvent) => {
         clickEvent.preventDefault();
         cityssm.confirmModal("Delete Event?", "Are you sure you want to delete this event?", "Yes, Delete", "danger", () => {
             cityssm.postJSON(urlPrefix + "/events/doDelete", {
@@ -35,55 +35,55 @@ Object.defineProperty(exports, "__esModule", { value: true });
             });
         });
     });
-    const setUnsavedChangesFn = () => {
+    const setUnsavedChangesFunction = () => {
         cityssm.enableNavBlocker();
-        if (eventDateNavEle) {
-            eventDateNavEle.setAttribute("disabled", "disabled");
+        if (eventDateNavElement) {
+            eventDateNavElement.setAttribute("disabled", "disabled");
         }
-        formMessageEle.innerHTML = "<span class=\"tag is-light is-info is-medium\">" +
+        formMessageElement.innerHTML = "<span class=\"tag is-light is-info is-medium\">" +
             "<span class=\"icon\"><i class=\"fas fa-exclamation-triangle\" aria-hidden=\"true\"></i></span>" +
             " <span>Unsaved Changes</span>" +
             "</div>";
     };
-    const inputEles = formEle.querySelectorAll("input, select, textarea");
-    for (const inputEle of inputEles) {
-        if (inputEle.name !== "") {
-            inputEle.addEventListener("change", setUnsavedChangesFn);
+    const inputElements = formElement.querySelectorAll("input, select, textarea");
+    for (const inputElement of inputElements) {
+        if (inputElement.name !== "") {
+            inputElement.addEventListener("change", setUnsavedChangesFunction);
         }
     }
-    document.getElementById("is-bank-information-lookup-button").addEventListener("click", (clickEvent) => {
+    document.querySelector("#is-bank-information-lookup-button").addEventListener("click", (clickEvent) => {
         clickEvent.preventDefault();
-        let bankInfoCloseModalFn;
+        let bankInfoCloseModalFunction;
         let savedBankInfoList;
-        const setPastBankInformationFn = (bankInfoClickEvent) => {
+        const setPastBankInformationFunction = (bankInfoClickEvent) => {
             bankInfoClickEvent.preventDefault();
-            const listIndex = parseInt(bankInfoClickEvent.currentTarget.getAttribute("data-list-index"), 10);
+            const listIndex = Number.parseInt(bankInfoClickEvent.currentTarget.getAttribute("data-list-index"), 10);
             const record = savedBankInfoList[listIndex];
-            document.getElementById("event--bank_name").value = record.bank_name;
-            document.getElementById("event--bank_address").value = record.bank_address;
-            document.getElementById("event--bank_accountNumber").value = record.bank_accountNumber;
-            setUnsavedChangesFn();
-            bankInfoCloseModalFn();
+            document.querySelector("#event--bank_name").value = record.bank_name;
+            document.querySelector("#event--bank_address").value = record.bank_address;
+            document.querySelector("#event--bank_accountNumber").value = record.bank_accountNumber;
+            setUnsavedChangesFunction();
+            bankInfoCloseModalFunction();
         };
-        const getPastBankInformationFn = () => {
-            const containerEle = document.getElementById("container--bankInformationLookup");
+        const getPastBankInformationFunction = () => {
+            const containerElement = document.querySelector("#container--bankInformationLookup");
             cityssm.postJSON(urlPrefix + "/events/doGetPastBankInformation", {
                 licenceID
             }, (bankInfoList) => {
                 savedBankInfoList = bankInfoList;
                 if (bankInfoList.length === 0) {
-                    containerEle.innerHTML = "<div class=\"message is-info\">" +
+                    containerElement.innerHTML = "<div class=\"message is-info\">" +
                         "<p class=\"message-body\">There is no previously used banking information available.</p>" +
                         "</div>";
                     return;
                 }
-                const listEle = document.createElement("div");
-                listEle.className = "panel mb-3";
-                savedBankInfoList.forEach((record, index) => {
-                    const listItemEle = document.createElement("a");
-                    listItemEle.className = "panel-block is-block";
-                    listItemEle.setAttribute("data-list-index", index.toString());
-                    listItemEle.innerHTML = `<div class="columns">
+                const listElement = document.createElement("div");
+                listElement.className = "panel mb-3";
+                for (const [index, record] of savedBankInfoList.entries()) {
+                    const listItemElement = document.createElement("a");
+                    listItemElement.className = "panel-block is-block";
+                    listItemElement.dataset.listIndex = index.toString();
+                    listItemElement.innerHTML = `<div class="columns">
             <div class="column">${cityssm.escapeHTML(record.bank_name)}</div>
             <div class="column">${cityssm.escapeHTML(record.bank_address)}</div>
             <div class="column">${cityssm.escapeHTML(record.bank_accountNumber)}</div>
@@ -93,17 +93,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
             ${record.eventDateMaxString}
             </span>
             </div>`;
-                    listItemEle.addEventListener("click", setPastBankInformationFn);
-                    listEle.insertAdjacentElement("beforeend", listItemEle);
-                });
-                cityssm.clearElement(containerEle);
-                containerEle.insertAdjacentElement("beforeend", listEle);
+                    listItemElement.addEventListener("click", setPastBankInformationFunction);
+                    listElement.append(listItemElement);
+                }
+                cityssm.clearElement(containerElement);
+                containerElement.append(listElement);
             });
         };
         cityssm.openHtmlModal("event-bankInformationLookup", {
-            onshow: getPastBankInformationFn,
-            onshown(_modalEle, closeModalFn) {
-                bankInfoCloseModalFn = closeModalFn;
+            onshow: getPastBankInformationFunction,
+            onshown(_modalElement, closeModalFunction) {
+                bankInfoCloseModalFunction = closeModalFunction;
             }
         });
     });
@@ -112,53 +112,53 @@ Object.defineProperty(exports, "__esModule", { value: true });
         admin: 0,
         prizesAwarded: 0
     };
-    const costs_tableEle = document.getElementById("event--costs");
-    const costsFn_calculateRow = (keyupEvent) => {
+    const costs_tableElement = document.querySelector("#event--costs");
+    const costsFunction_calculateRow = (keyupEvent) => {
         let netProceeds = 0;
-        const trEle = keyupEvent.currentTarget.closest("tr");
-        const inputEles = trEle.getElementsByTagName("input");
-        for (let inputIndex = 0; inputIndex < inputEles.length; inputIndex += 1) {
-            const value = parseFloat(inputEles[inputIndex].value || "0");
-            netProceeds += (inputEles[inputIndex].getAttribute("data-cost") === "receipts" ? 1 : -1) * value;
+        const trElement = keyupEvent.currentTarget.closest("tr");
+        const inputElements = trElement.querySelectorAll("input");
+        for (const element of inputElements) {
+            const value = Number.parseFloat(element.value || "0");
+            netProceeds += (element.getAttribute("data-cost") === "receipts" ? 1 : -1) * value;
         }
-        document.getElementById("event--costs_netProceeds-" + trEle.getAttribute("data-ticket-type"))
+        document.querySelector("#event--costs_netProceeds-" + trElement.getAttribute("data-ticket-type"))
             .innerHTML = llm.formatDollarsAsHTML(netProceeds);
     };
-    const costsFn_calculateTotal = (columnName) => {
+    const costsFunction_calculateTotal = (columnName) => {
         costs_sums[columnName] = 0;
-        costs_tableEle.querySelectorAll("input[data-cost='" + columnName + "']").forEach((inputEle) => {
-            costs_sums[columnName] += parseFloat(inputEle.value || "0");
-        });
-        document.getElementById("event--costs_" + columnName + "Sum").innerHTML = llm.formatDollarsAsHTML(costs_sums[columnName]);
-        document.getElementById("event--costs_netProceedsSum").innerHTML =
+        const inputElements = costs_tableElement.querySelectorAll("input[data-cost='" + columnName + "']");
+        for (const inputElement of inputElements) {
+            costs_sums[columnName] += Number.parseFloat(inputElement.value || "0");
+        }
+        document.querySelector("#event--costs_" + columnName + "Sum").innerHTML = llm.formatDollarsAsHTML(costs_sums[columnName]);
+        document.querySelector("#event--costs_netProceedsSum").innerHTML =
             llm.formatDollarsAsHTML(costs_sums.receipts - costs_sums.admin - costs_sums.prizesAwarded);
     };
-    const costsFn_calculateReceipts = () => {
-        costsFn_calculateTotal("receipts");
+    const costsFunction_calculateReceipts = () => {
+        costsFunction_calculateTotal("receipts");
     };
-    const costsFn_calculateAdmin = () => {
-        costsFn_calculateTotal("admin");
+    const costsFunction_calculateAdmin = () => {
+        costsFunction_calculateTotal("admin");
     };
-    const costsFn_calculatePrizesAwarded = () => {
-        costsFn_calculateTotal("prizesAwarded");
+    const costsFunction_calculatePrizesAwarded = () => {
+        costsFunction_calculateTotal("prizesAwarded");
     };
-    const costsInputEles = costs_tableEle.getElementsByTagName("input");
-    for (let inputIndex = 0; inputIndex < costsInputEles.length; inputIndex += 1) {
-        const inputEle = costsInputEles[inputIndex];
-        inputEle.addEventListener("keyup", costsFn_calculateRow);
-        switch (inputEle.getAttribute("data-cost")) {
+    const costsInputElements = costs_tableElement.querySelectorAll("input");
+    for (const inputElement of costsInputElements) {
+        inputElement.addEventListener("keyup", costsFunction_calculateRow);
+        switch (inputElement.getAttribute("data-cost")) {
             case "receipts":
-                inputEle.addEventListener("keyup", costsFn_calculateReceipts);
+                inputElement.addEventListener("keyup", costsFunction_calculateReceipts);
                 break;
             case "admin":
-                inputEle.addEventListener("keyup", costsFn_calculateAdmin);
+                inputElement.addEventListener("keyup", costsFunction_calculateAdmin);
                 break;
             case "prizesAwarded":
-                inputEle.addEventListener("keyup", costsFn_calculatePrizesAwarded);
+                inputElement.addEventListener("keyup", costsFunction_calculatePrizesAwarded);
                 break;
         }
     }
-    costsFn_calculateTotal("receipts");
-    costsFn_calculateTotal("admin");
-    costsFn_calculateTotal("prizesAwarded");
+    costsFunction_calculateTotal("receipts");
+    costsFunction_calculateTotal("admin");
+    costsFunction_calculateTotal("prizesAwarded");
 })();

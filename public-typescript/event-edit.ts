@@ -1,3 +1,5 @@
+/* eslint-disable unicorn/filename-case */
+
 import type { PastEventBankingInformation } from "../helpers/licencesDB/getPastEventBankingInformation";
 import type { cityssmGlobal } from "@cityssm/bulma-webapp-js/src/types";
 import type { llmGlobal } from "./types";
@@ -7,37 +9,37 @@ declare const llm: llmGlobal;
 
 (() => {
 
-  const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
+  const urlPrefix = document.querySelector("main").getAttribute("data-url-prefix");
 
-  const eventDateNavEle = document.getElementById("eventNav--eventDate") as HTMLSelectElement;
+  const eventDateNavElement = document.querySelector("#eventNav--eventDate") as HTMLSelectElement;
 
-  const formEle = document.getElementById("form--event") as HTMLFormElement;
-  const formMessageEle = document.getElementById("container--form-message");
+  const formElement = document.querySelector("#form--event") as HTMLFormElement;
+  const formMessageElement = document.querySelector("#container--form-message");
 
-  const licenceID = (document.getElementById("event--licenceID") as HTMLInputElement).value;
-  const eventDate = (document.getElementById("event--eventDate") as HTMLInputElement).value;
+  const licenceID = (document.querySelector("#event--licenceID") as HTMLInputElement).value;
+  const eventDate = (document.querySelector("#event--eventDate") as HTMLInputElement).value;
 
 
-  formEle.addEventListener("submit", (formEvent) => {
+  formElement.addEventListener("submit", (formEvent) => {
 
     formEvent.preventDefault();
 
-    formMessageEle.innerHTML = "Saving... <i class=\"fas fa-circle-notch fa-spin\" aria-hidden=\"true\"></i>";
+    formMessageElement.innerHTML = "Saving... <i class=\"fas fa-circle-notch fa-spin\" aria-hidden=\"true\"></i>";
 
     cityssm.postJSON(urlPrefix + "/events/doSave",
-      formEle,
+      formElement,
       (responseJSON: { success: boolean; message?: string }) => {
 
         if (responseJSON.success) {
 
           cityssm.disableNavBlocker();
 
-          if (eventDateNavEle) {
-            eventDateNavEle.removeAttribute("disabled");
+          if (eventDateNavElement) {
+            eventDateNavElement.removeAttribute("disabled");
           }
         }
 
-        formMessageEle.innerHTML = "";
+        formMessageElement.innerHTML = "";
 
         cityssm.alertModal(
           responseJSON.message,
@@ -49,7 +51,7 @@ declare const llm: llmGlobal;
     );
   });
 
-  document.getElementById("is-delete-event-button").addEventListener("click", (clickEvent) => {
+  document.querySelector("#is-delete-event-button").addEventListener("click", (clickEvent) => {
 
     clickEvent.preventDefault();
 
@@ -79,27 +81,27 @@ declare const llm: llmGlobal;
 
   // Nav blocker
 
-  const setUnsavedChangesFn = () => {
+  const setUnsavedChangesFunction = () => {
 
     cityssm.enableNavBlocker();
 
-    if (eventDateNavEle) {
-      eventDateNavEle.setAttribute("disabled", "disabled");
+    if (eventDateNavElement) {
+      eventDateNavElement.setAttribute("disabled", "disabled");
     }
 
-    formMessageEle.innerHTML = "<span class=\"tag is-light is-info is-medium\">" +
+    formMessageElement.innerHTML = "<span class=\"tag is-light is-info is-medium\">" +
       "<span class=\"icon\"><i class=\"fas fa-exclamation-triangle\" aria-hidden=\"true\"></i></span>" +
       " <span>Unsaved Changes</span>" +
       "</div>";
   };
 
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-  const inputEles = formEle.querySelectorAll("input, select, textarea") as
+  const inputElements = formElement.querySelectorAll("input, select, textarea") as
     NodeListOf<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>;
 
-  for (const inputEle of inputEles) {
-    if (inputEle.name !== "") {
-      inputEle.addEventListener("change", setUnsavedChangesFn);
+  for (const inputElement of inputElements) {
+    if (inputElement.name !== "") {
+      inputElement.addEventListener("change", setUnsavedChangesFunction);
     }
   }
 
@@ -109,34 +111,34 @@ declare const llm: llmGlobal;
    */
 
 
-  document.getElementById("is-bank-information-lookup-button").addEventListener("click", (clickEvent) => {
+  document.querySelector("#is-bank-information-lookup-button").addEventListener("click", (clickEvent) => {
 
     clickEvent.preventDefault();
 
-    let bankInfoCloseModalFn: Function;
+    let bankInfoCloseModalFunction: () => void;
     let savedBankInfoList: PastEventBankingInformation[];
 
-    const setPastBankInformationFn = (bankInfoClickEvent: Event) => {
+    const setPastBankInformationFunction = (bankInfoClickEvent: Event) => {
 
       bankInfoClickEvent.preventDefault();
 
       const listIndex =
-        parseInt((bankInfoClickEvent.currentTarget as HTMLAnchorElement).getAttribute("data-list-index"), 10);
+        Number.parseInt((bankInfoClickEvent.currentTarget as HTMLAnchorElement).getAttribute("data-list-index"), 10);
 
       const record = savedBankInfoList[listIndex];
 
-      (document.getElementById("event--bank_name") as HTMLInputElement).value = record.bank_name;
-      (document.getElementById("event--bank_address") as HTMLInputElement).value = record.bank_address;
-      (document.getElementById("event--bank_accountNumber") as HTMLInputElement).value = record.bank_accountNumber;
+      (document.querySelector("#event--bank_name") as HTMLInputElement).value = record.bank_name;
+      (document.querySelector("#event--bank_address") as HTMLInputElement).value = record.bank_address;
+      (document.querySelector("#event--bank_accountNumber") as HTMLInputElement).value = record.bank_accountNumber;
 
-      setUnsavedChangesFn();
+      setUnsavedChangesFunction();
 
-      bankInfoCloseModalFn();
+      bankInfoCloseModalFunction();
     };
 
-    const getPastBankInformationFn = () => {
+    const getPastBankInformationFunction = () => {
 
-      const containerEle = document.getElementById("container--bankInformationLookup");
+      const containerElement = document.querySelector("#container--bankInformationLookup") as HTMLElement;
 
       cityssm.postJSON(urlPrefix + "/events/doGetPastBankInformation", {
         licenceID
@@ -145,23 +147,23 @@ declare const llm: llmGlobal;
         savedBankInfoList = bankInfoList;
 
         if (bankInfoList.length === 0) {
-          containerEle.innerHTML = "<div class=\"message is-info\">" +
+          containerElement.innerHTML = "<div class=\"message is-info\">" +
             "<p class=\"message-body\">There is no previously used banking information available.</p>" +
             "</div>";
           return;
         }
 
-        const listEle = document.createElement("div");
-        listEle.className = "panel mb-3";
+        const listElement = document.createElement("div");
+        listElement.className = "panel mb-3";
 
-        savedBankInfoList.forEach((record, index) => {
+        for (const [index, record] of savedBankInfoList.entries()) {
 
-          const listItemEle = document.createElement("a");
+          const listItemElement = document.createElement("a");
 
-          listItemEle.className = "panel-block is-block";
-          listItemEle.setAttribute("data-list-index", index.toString());
+          listItemElement.className = "panel-block is-block";
+          listItemElement.dataset.listIndex = index.toString();
 
-          listItemEle.innerHTML = `<div class="columns">
+          listItemElement.innerHTML = `<div class="columns">
             <div class="column">${cityssm.escapeHTML(record.bank_name)}</div>
             <div class="column">${cityssm.escapeHTML(record.bank_address)}</div>
             <div class="column">${cityssm.escapeHTML(record.bank_accountNumber)}</div>
@@ -172,15 +174,15 @@ declare const llm: llmGlobal;
             </span>
             </div>`;
 
-          listItemEle.addEventListener("click", setPastBankInformationFn);
+          listItemElement.addEventListener("click", setPastBankInformationFunction);
 
-          listEle.insertAdjacentElement("beforeend", listItemEle);
+          listElement.append(listItemElement);
 
-        });
+        }
 
-        cityssm.clearElement(containerEle);
+        cityssm.clearElement(containerElement);
 
-        containerEle.insertAdjacentElement("beforeend", listEle);
+        containerElement.append(listElement);
 
       });
 
@@ -188,10 +190,10 @@ declare const llm: llmGlobal;
 
     cityssm.openHtmlModal("event-bankInformationLookup", {
 
-      onshow: getPastBankInformationFn,
+      onshow: getPastBankInformationFunction,
 
-      onshown(_modalEle: HTMLElement, closeModalFn: () => void): void {
-        bankInfoCloseModalFn = closeModalFn;
+      onshown(_modalElement: HTMLElement, closeModalFunction: () => void): void {
+        bankInfoCloseModalFunction = closeModalFunction;
       }
     });
   });
@@ -208,79 +210,79 @@ declare const llm: llmGlobal;
     prizesAwarded: 0
   };
 
-  const costs_tableEle = document.getElementById("event--costs");
+  const costs_tableElement = document.querySelector("#event--costs");
 
-  const costsFn_calculateRow = (keyupEvent: Event) => {
+  const costsFunction_calculateRow = (keyupEvent: Event) => {
 
     let netProceeds = 0;
 
-    const trEle = (keyupEvent.currentTarget as HTMLElement).closest("tr");
+    const trElement = (keyupEvent.currentTarget as HTMLElement).closest("tr");
 
-    const inputEles = trEle.getElementsByTagName("input");
+    const inputElements = trElement.querySelectorAll("input");
 
-    for (let inputIndex = 0; inputIndex < inputEles.length; inputIndex += 1) {
+    for (const element of inputElements) {
 
-      const value = parseFloat(inputEles[inputIndex].value || "0");
+      const value = Number.parseFloat(element.value || "0");
 
-      netProceeds += (inputEles[inputIndex].getAttribute("data-cost") === "receipts" ? 1 : -1) * value;
+      netProceeds += (element.getAttribute("data-cost") === "receipts" ? 1 : -1) * value;
     }
 
-    document.getElementById("event--costs_netProceeds-" + trEle.getAttribute("data-ticket-type"))
+    document.querySelector("#event--costs_netProceeds-" + trElement.getAttribute("data-ticket-type"))
       .innerHTML = llm.formatDollarsAsHTML(netProceeds);
 
   };
 
-  const costsFn_calculateTotal = (columnName: "receipts" | "admin" | "prizesAwarded") => {
+  const costsFunction_calculateTotal = (columnName: "receipts" | "admin" | "prizesAwarded") => {
 
     costs_sums[columnName] = 0;
 
-    costs_tableEle.querySelectorAll("input[data-cost='" + columnName + "']").forEach((inputEle: HTMLInputElement) => {
-      costs_sums[columnName] += parseFloat(inputEle.value || "0");
-    });
+    const inputElements = costs_tableElement.querySelectorAll("input[data-cost='" + columnName + "']") as NodeListOf<HTMLInputElement>;
 
-    document.getElementById("event--costs_" + columnName + "Sum").innerHTML = llm.formatDollarsAsHTML(costs_sums[columnName]);
+    for (const inputElement of inputElements) {
+      costs_sums[columnName] += Number.parseFloat(inputElement.value || "0");
+    }
 
-    document.getElementById("event--costs_netProceedsSum").innerHTML =
+    document.querySelector("#event--costs_" + columnName + "Sum").innerHTML = llm.formatDollarsAsHTML(costs_sums[columnName]);
+
+    document.querySelector("#event--costs_netProceedsSum").innerHTML =
       llm.formatDollarsAsHTML(costs_sums.receipts - costs_sums.admin - costs_sums.prizesAwarded);
   };
 
-  const costsFn_calculateReceipts = () => {
-    costsFn_calculateTotal("receipts");
+  const costsFunction_calculateReceipts = () => {
+    costsFunction_calculateTotal("receipts");
   };
 
-  const costsFn_calculateAdmin = () => {
-    costsFn_calculateTotal("admin");
+  const costsFunction_calculateAdmin = () => {
+    costsFunction_calculateTotal("admin");
   };
 
-  const costsFn_calculatePrizesAwarded = () => {
-    costsFn_calculateTotal("prizesAwarded");
+  const costsFunction_calculatePrizesAwarded = () => {
+    costsFunction_calculateTotal("prizesAwarded");
   };
 
-  const costsInputEles = costs_tableEle.getElementsByTagName("input");
+  const costsInputElements = costs_tableElement.querySelectorAll("input");
 
-  for (let inputIndex = 0; inputIndex < costsInputEles.length; inputIndex += 1) {
+  for (const inputElement of costsInputElements) {
 
-    const inputEle = costsInputEles[inputIndex];
+    inputElement.addEventListener("keyup", costsFunction_calculateRow);
 
-    inputEle.addEventListener("keyup", costsFn_calculateRow);
-
-    switch (inputEle.getAttribute("data-cost")) {
+    switch (inputElement.getAttribute("data-cost")) {
 
       case "receipts":
-        inputEle.addEventListener("keyup", costsFn_calculateReceipts);
+        inputElement.addEventListener("keyup", costsFunction_calculateReceipts);
         break;
 
       case "admin":
-        inputEle.addEventListener("keyup", costsFn_calculateAdmin);
+        inputElement.addEventListener("keyup", costsFunction_calculateAdmin);
         break;
 
       case "prizesAwarded":
-        inputEle.addEventListener("keyup", costsFn_calculatePrizesAwarded);
+        inputElement.addEventListener("keyup", costsFunction_calculatePrizesAwarded);
         break;
     }
   }
 
-  costsFn_calculateTotal("receipts");
-  costsFn_calculateTotal("admin");
-  costsFn_calculateTotal("prizesAwarded");
+  costsFunction_calculateTotal("receipts");
+  costsFunction_calculateTotal("admin");
+  costsFunction_calculateTotal("prizesAwarded");
 })();
