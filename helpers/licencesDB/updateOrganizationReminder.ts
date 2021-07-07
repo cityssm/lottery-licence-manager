@@ -5,7 +5,7 @@ import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
 import type * as expressSession from "express-session";
 
 
-export const updateOrganizationReminder = (reqBody: {
+export const updateOrganizationReminder = (requestBody: {
   organizationID: string;
   reminderIndex: string;
   reminderTypeKey: string;
@@ -13,7 +13,7 @@ export const updateOrganizationReminder = (reqBody: {
   reminderStatus: string;
   reminderNote: string;
   dismissedDateString: string;
-}, reqSession: expressSession.Session) => {
+}, requestSession: expressSession.Session): boolean => {
 
   return runSQL_hasChanges("update OrganizationReminders" +
     " set reminderTypeKey = ?," +
@@ -26,18 +26,18 @@ export const updateOrganizationReminder = (reqBody: {
     " where organizationID = ?" +
     " and reminderIndex = ?" +
     " and recordDelete_timeMillis is null", [
-      reqBody.reminderTypeKey,
-      (reqBody.dueDateString === ""
-        ? null
-        : dateTimeFns.dateStringToInteger(reqBody.dueDateString)),
-      reqBody.reminderStatus,
-      reqBody.reminderNote,
-      (reqBody.dismissedDateString === ""
-        ? null
-        : dateTimeFns.dateStringToInteger(reqBody.dismissedDateString)),
-      reqSession.user.userName,
+      requestBody.reminderTypeKey,
+      (requestBody.dueDateString === ""
+        ? undefined
+        : dateTimeFns.dateStringToInteger(requestBody.dueDateString)),
+      requestBody.reminderStatus,
+      requestBody.reminderNote,
+      (requestBody.dismissedDateString === ""
+        ? undefined
+        : dateTimeFns.dateStringToInteger(requestBody.dismissedDateString)),
+      requestSession.user.userName,
       Date.now(),
-      reqBody.organizationID,
-      reqBody.reminderIndex
+      requestBody.organizationID,
+      requestBody.reminderIndex
     ]);
 };

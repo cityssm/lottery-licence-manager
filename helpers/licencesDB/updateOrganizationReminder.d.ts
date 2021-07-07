@@ -1,5 +1,5 @@
 import type * as expressSession from "express-session";
-export declare const updateOrganizationReminder: (reqBody: {
+export declare const updateOrganizationReminder: (requestBody: {
     organizationID: string;
     reminderIndex: string;
     reminderTypeKey: string;
@@ -7,4 +7,4 @@ export declare const updateOrganizationReminder: (reqBody: {
     reminderStatus: string;
     reminderNote: string;
     dismissedDateString: string;
-}, reqSession: expressSession.Session) => boolean;
+}, requestSession: expressSession.Session) => boolean;

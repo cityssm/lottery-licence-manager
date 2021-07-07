@@ -4,7 +4,7 @@ import type * as expressSession from "express-session";
 
 
 export const updateApplicationSetting =
-  (settingKey: string, settingValue: string, reqSession: expressSession.Session) => {
+  (settingKey: string, settingValue: string, requestSession: expressSession.Session): boolean => {
 
     return runSQL_hasChanges("update ApplicationSettings" +
       " set settingValue = ?," +
@@ -12,7 +12,7 @@ export const updateApplicationSetting =
       " recordUpdate_timeMillis = ?" +
       " where settingKey = ?", [
         settingValue,
-        reqSession.user.userName,
+        requestSession.user.userName,
         Date.now(),
         settingKey
       ]);

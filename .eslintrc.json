@@ -41,6 +41,9 @@
           "def": {
             "definition": true
           },
+          "ele": {
+            "element": true
+          },
           "res": {
             "result": false
           }

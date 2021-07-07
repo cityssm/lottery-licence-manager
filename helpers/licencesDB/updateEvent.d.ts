@@ -11,5 +11,5 @@ interface UpdateEventForm {
     fieldKeys: string;
     ticketTypes: string;
 }
-export declare const updateEvent: (reqBody: UpdateEventForm, reqSession: expressSession.Session) => boolean;
+export declare const updateEvent: (requestBody: UpdateEventForm, requestSession: expressSession.Session) => boolean;
 export {};

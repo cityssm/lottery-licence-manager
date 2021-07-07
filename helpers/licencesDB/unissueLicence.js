@@ -1,10 +1,10 @@
 import sqlite from "better-sqlite3";
-import { licencesDB as dbPath } from "../../data/databasePaths.js";
+import { licencesDB as databasePath } from "../../data/databasePaths.js";
 import { addLicenceAmendmentWithDB } from "./addLicenceAmendment.js";
-export const unissueLicence = (licenceID, reqSession) => {
-    const db = sqlite(dbPath);
+export const unissueLicence = (licenceID, requestSession) => {
+    const database = sqlite(databasePath);
     const nowMillis = Date.now();
-    const info = db.prepare("update LotteryLicences" +
+    const info = database.prepare("update LotteryLicences" +
         " set issueDate = null," +
         " issueTime = null," +
         " recordUpdate_userName = ?," +
@@ -12,11 +12,11 @@ export const unissueLicence = (licenceID, reqSession) => {
         " where licenceID = ?" +
         " and recordDelete_timeMillis is null" +
         " and issueDate is not null")
-        .run(reqSession.user.userName, nowMillis, licenceID);
+        .run(requestSession.user.userName, nowMillis, licenceID);
     const changeCount = info.changes;
     if (changeCount) {
-        addLicenceAmendmentWithDB(db, licenceID, "Unissue Licence", "", 1, reqSession);
+        addLicenceAmendmentWithDB(database, licenceID, "Unissue Licence", "", 1, requestSession);
     }
-    db.close();
+    database.close();
     return changeCount > 0;
 };

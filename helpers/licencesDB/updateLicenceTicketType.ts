@@ -6,8 +6,8 @@ import type * as sqlite from "better-sqlite3";
 import type * as expressSession from "express-session";
 
 
-export const updateLicenceTicketTypeWithDB = (db: sqlite.Database,
-  ticketTypeDef: {
+export const updateLicenceTicketTypeWithDB = (database: sqlite.Database,
+  ticketTypeDefinition: {
     licenceID: number | string;
     eventDateString: string;
     ticketType: string;
@@ -16,11 +16,11 @@ export const updateLicenceTicketTypeWithDB = (db: sqlite.Database,
     distributorLocationID: number | string;
     manufacturerLocationID: number | string;
   },
-  reqSession: expressSession.Session) => {
+  requestSession: expressSession.Session): void => {
 
   const nowMillis = Date.now();
 
-  runSQLWithDB(db,
+  runSQLWithDB(database,
     "update LotteryLicenceTicketTypes" +
     " set distributorLocationID = ?," +
     " manufacturerLocationID = ?," +
@@ -33,20 +33,20 @@ export const updateLicenceTicketTypeWithDB = (db: sqlite.Database,
     " and ticketType = ?" +
     " and recordDelete_timeMillis is null", [
 
-      (ticketTypeDef.distributorLocationID === ""
-        ? null
-        : ticketTypeDef.distributorLocationID),
+      (ticketTypeDefinition.distributorLocationID === ""
+        ? undefined
+        : ticketTypeDefinition.distributorLocationID),
 
-      (ticketTypeDef.manufacturerLocationID === ""
-        ? null
-        : ticketTypeDef.manufacturerLocationID),
+      (ticketTypeDefinition.manufacturerLocationID === ""
+        ? undefined
+        : ticketTypeDefinition.manufacturerLocationID),
 
-      ticketTypeDef.unitCount,
-      ticketTypeDef.licenceFee,
-      reqSession.user.userName,
+      ticketTypeDefinition.unitCount,
+      ticketTypeDefinition.licenceFee,
+      requestSession.user.userName,
       nowMillis,
-      ticketTypeDef.licenceID,
-      dateTimeFns.dateStringToInteger(ticketTypeDef.eventDateString),
-      ticketTypeDef.ticketType
+      ticketTypeDefinition.licenceID,
+      dateTimeFns.dateStringToInteger(ticketTypeDefinition.eventDateString),
+      ticketTypeDefinition.ticketType
     ]);
 };

@@ -6,7 +6,7 @@ import type * as llm from "../../types/recordTypes";
 import type * as expressSession from "express-session";
 
 
-export const updateOrganizationRemark = (reqBody: llm.OrganizationRemark, reqSession: expressSession.Session) => {
+export const updateOrganizationRemark = (requestBody: llm.OrganizationRemark, requestSession: expressSession.Session): boolean => {
 
   return runSQL_hasChanges("update OrganizationRemarks" +
     " set remarkDate = ?," +
@@ -18,13 +18,13 @@ export const updateOrganizationRemark = (reqBody: llm.OrganizationRemark, reqSes
     " where organizationID = ?" +
     " and remarkIndex = ?" +
     " and recordDelete_timeMillis is null", [
-      dateTimeFns.dateStringToInteger(reqBody.remarkDateString),
-      dateTimeFns.timeStringToInteger(reqBody.remarkTimeString),
-      reqBody.remark,
-      reqBody.isImportant ? 1 : 0,
-      reqSession.user.userName,
+      dateTimeFns.dateStringToInteger(requestBody.remarkDateString),
+      dateTimeFns.timeStringToInteger(requestBody.remarkTimeString),
+      requestBody.remark,
+      requestBody.isImportant ? 1 : 0,
+      requestSession.user.userName,
       Date.now(),
-      reqBody.organizationID,
-      reqBody.remarkIndex
+      requestBody.organizationID,
+      requestBody.remarkIndex
     ]);
 };

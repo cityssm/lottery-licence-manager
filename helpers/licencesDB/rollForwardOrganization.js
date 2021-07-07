@@ -1,34 +1,34 @@
 import sqlite from "better-sqlite3";
-import { licencesDB as dbPath } from "../../data/databasePaths.js";
+import { licencesDB as databasePath } from "../../data/databasePaths.js";
 import { getOrganizationRemindersWithDB } from "./getOrganizationReminders.js";
 import { deleteOrganizationReminderWithDB } from "./deleteOrganizationReminder.js";
 import { addOrganizationReminderWithDB } from "./addOrganizationReminder.js";
 import * as configFns from "../configFns.js";
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
-export const rollForwardOrganization = (organizationID, updateFiscalYear, updateReminders, reqSession) => {
+export const rollForwardOrganization = (organizationID, updateFiscalYear, updateReminders, requestSession) => {
     const rightNowMillis = Date.now();
-    const db = sqlite(dbPath);
-    const organizationRow = db.prepare("select fiscalStartDate, fiscalEndDate" +
+    const database = sqlite(databasePath);
+    const organizationRow = database.prepare("select fiscalStartDate, fiscalEndDate" +
         " from Organizations" +
         " where organizationID = ?" +
         " and recordDelete_timeMillis is null")
         .get(organizationID);
     if (!organizationRow) {
-        db.close();
+        database.close();
         return {
             success: false,
             message: "The organization is unavailable."
         };
     }
     else if (!organizationRow.fiscalStartDate) {
-        db.close();
+        database.close();
         return {
             success: false,
             message: "The fiscal start date is not set.  Please set it, and try again."
         };
     }
     else if (!organizationRow.fiscalEndDate) {
-        db.close();
+        database.close();
         return {
             success: false,
             message: "The fiscal end date is not set.  Please set it, and try again."
@@ -39,20 +39,20 @@ export const rollForwardOrganization = (organizationID, updateFiscalYear, update
         newFiscalStartDate.setFullYear(newFiscalStartDate.getFullYear() + 1);
         const newFiscalEndDate = dateTimeFns.dateIntegerToDate(organizationRow.fiscalEndDate);
         newFiscalEndDate.setFullYear(newFiscalEndDate.getFullYear() + 1);
-        db.prepare("update Organizations" +
+        database.prepare("update Organizations" +
             " set fiscalStartDate = ?," +
             " fiscalEndDate = ?," +
             " recordUpdate_userName = ?," +
             " recordUpdate_timeMillis = ?" +
             " where organizationID = ?")
-            .run(dateTimeFns.dateToInteger(newFiscalStartDate), dateTimeFns.dateToInteger(newFiscalEndDate), reqSession.user.userName, rightNowMillis, organizationID);
+            .run(dateTimeFns.dateToInteger(newFiscalStartDate), dateTimeFns.dateToInteger(newFiscalEndDate), requestSession.user.userName, rightNowMillis, organizationID);
     }
     if (updateReminders) {
-        const organizationReminders = getOrganizationRemindersWithDB(db, organizationID, reqSession);
+        const organizationReminders = getOrganizationRemindersWithDB(database, organizationID, requestSession);
         for (const reminder of organizationReminders) {
             const reminderType = configFns.getReminderType(reminder.reminderTypeKey);
             if (reminderType.isBasedOnFiscalYear) {
-                deleteOrganizationReminderWithDB(db, organizationID, reminder.reminderIndex, reqSession);
+                deleteOrganizationReminderWithDB(database, organizationID, reminder.reminderIndex, requestSession);
             }
         }
         const reminderCategories = configFns.getProperty("reminderCategories");
@@ -62,17 +62,17 @@ export const rollForwardOrganization = (organizationID, updateFiscalYear, update
             }
             for (const reminderType of reminderCategory.reminderTypes) {
                 if (reminderType.isActive && reminderType.isBasedOnFiscalYear) {
-                    addOrganizationReminderWithDB(db, {
+                    addOrganizationReminderWithDB(database, {
                         organizationID: organizationID.toString(),
                         reminderTypeKey: reminderType.reminderTypeKey,
-                        reminderStatus: null,
+                        reminderStatus: undefined,
                         reminderNote: ""
-                    }, reqSession);
+                    }, requestSession);
                 }
             }
         }
     }
-    db.close();
+    database.close();
     return {
         success: true
     };

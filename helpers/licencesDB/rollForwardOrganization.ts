@@ -1,5 +1,5 @@
 import sqlite from "better-sqlite3";
-import { licencesDB as dbPath } from "../../data/databasePaths.js";
+import { licencesDB as databasePath } from "../../data/databasePaths.js";
 
 import { getOrganizationRemindersWithDB } from "./getOrganizationReminders.js";
 import { deleteOrganizationReminderWithDB } from "./deleteOrganizationReminder.js";
@@ -11,16 +11,22 @@ import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
 import type * as expressSession from "express-session";
 
 
+interface RollForwardOrganizationReturn {
+  success: boolean;
+  message?: string;
+}
+
+
 export const rollForwardOrganization = (organizationID: number,
   updateFiscalYear: boolean,
   updateReminders: boolean,
-  reqSession: expressSession.Session) => {
+  requestSession: expressSession.Session): RollForwardOrganizationReturn => {
 
   const rightNowMillis = Date.now();
 
-  const db = sqlite(dbPath);
+  const database = sqlite(databasePath);
 
-  const organizationRow = db.prepare("select fiscalStartDate, fiscalEndDate" +
+  const organizationRow = database.prepare("select fiscalStartDate, fiscalEndDate" +
     " from Organizations" +
     " where organizationID = ?" +
     " and recordDelete_timeMillis is null")
@@ -28,7 +34,7 @@ export const rollForwardOrganization = (organizationID: number,
 
   if (!organizationRow) {
 
-    db.close();
+    database.close();
 
     return {
       success: false,
@@ -37,7 +43,7 @@ export const rollForwardOrganization = (organizationID: number,
 
   } else if (!organizationRow.fiscalStartDate) {
 
-    db.close();
+    database.close();
 
     return {
       success: false,
@@ -46,7 +52,7 @@ export const rollForwardOrganization = (organizationID: number,
 
   } else if (!organizationRow.fiscalEndDate) {
 
-    db.close();
+    database.close();
 
     return {
       success: false,
@@ -62,7 +68,7 @@ export const rollForwardOrganization = (organizationID: number,
     const newFiscalEndDate: Date = dateTimeFns.dateIntegerToDate(organizationRow.fiscalEndDate);
     newFiscalEndDate.setFullYear(newFiscalEndDate.getFullYear() + 1);
 
-    db.prepare("update Organizations" +
+    database.prepare("update Organizations" +
       " set fiscalStartDate = ?," +
       " fiscalEndDate = ?," +
       " recordUpdate_userName = ?," +
@@ -71,7 +77,7 @@ export const rollForwardOrganization = (organizationID: number,
       .run(
         dateTimeFns.dateToInteger(newFiscalStartDate),
         dateTimeFns.dateToInteger(newFiscalEndDate),
-        reqSession.user.userName,
+        requestSession.user.userName,
         rightNowMillis,
         organizationID
       );
@@ -81,14 +87,14 @@ export const rollForwardOrganization = (organizationID: number,
 
     // Purge reminders
 
-    const organizationReminders = getOrganizationRemindersWithDB(db, organizationID, reqSession);
+    const organizationReminders = getOrganizationRemindersWithDB(database, organizationID, requestSession);
 
     for (const reminder of organizationReminders) {
 
       const reminderType = configFns.getReminderType(reminder.reminderTypeKey);
 
       if (reminderType.isBasedOnFiscalYear) {
-        deleteOrganizationReminderWithDB(db, organizationID, reminder.reminderIndex, reqSession);
+        deleteOrganizationReminderWithDB(database, organizationID, reminder.reminderIndex, requestSession);
       }
     }
 
@@ -106,18 +112,18 @@ export const rollForwardOrganization = (organizationID: number,
 
         if (reminderType.isActive && reminderType.isBasedOnFiscalYear) {
 
-          addOrganizationReminderWithDB(db, {
+          addOrganizationReminderWithDB(database, {
             organizationID: organizationID.toString(),
             reminderTypeKey: reminderType.reminderTypeKey,
-            reminderStatus: null,
+            reminderStatus: undefined,
             reminderNote: ""
-          }, reqSession);
+          }, requestSession);
         }
       }
     }
   }
 
-  db.close();
+  database.close();
 
   return {
     success: true

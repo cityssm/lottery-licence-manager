@@ -6,7 +6,7 @@ import type * as llm from "../../types/recordTypes";
 import type * as expressSession from "express-session";
 
 
-export const updateOrganization = (reqBody: llm.Organization, reqSession: expressSession.Session): boolean => {
+export const updateOrganization = (requestBody: llm.Organization, requestSession: expressSession.Session): boolean => {
 
   return runSQL_hasChanges("update Organizations" +
     " set organizationName = ?," +
@@ -24,19 +24,19 @@ export const updateOrganization = (reqBody: llm.Organization, reqSession: expres
     " recordUpdate_timeMillis = ?" +
     " where organizationID = ?" +
     " and recordDelete_timeMillis is null", [
-      reqBody.organizationName,
-      reqBody.organizationAddress1,
-      reqBody.organizationAddress2,
-      reqBody.organizationCity,
-      reqBody.organizationProvince,
-      reqBody.organizationPostalCode,
-      reqBody.trustAccountNumber,
-      dateTimeFns.dateStringToInteger(reqBody.fiscalStartDateString),
-      dateTimeFns.dateStringToInteger(reqBody.fiscalEndDateString),
-      reqBody.isEligibleForLicences,
-      reqBody.organizationNote,
-      reqSession.user.userName,
+      requestBody.organizationName,
+      requestBody.organizationAddress1,
+      requestBody.organizationAddress2,
+      requestBody.organizationCity,
+      requestBody.organizationProvince,
+      requestBody.organizationPostalCode,
+      requestBody.trustAccountNumber,
+      dateTimeFns.dateStringToInteger(requestBody.fiscalStartDateString),
+      dateTimeFns.dateStringToInteger(requestBody.fiscalEndDateString),
+      requestBody.isEligibleForLicences,
+      requestBody.organizationNote,
+      requestSession.user.userName,
       Date.now(),
-      reqBody.organizationID
+      requestBody.organizationID
     ]);
 };

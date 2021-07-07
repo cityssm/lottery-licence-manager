@@ -1,5 +1,5 @@
 import { runSQL_hasChanges } from "./_runSQL.js";
-export const restoreOrganization = (organizationID, reqSession) => {
+export const restoreOrganization = (organizationID, requestSession) => {
     const nowMillis = Date.now();
     return runSQL_hasChanges("update Organizations" +
         " set recordDelete_userName = null," +
@@ -8,7 +8,7 @@ export const restoreOrganization = (organizationID, reqSession) => {
         " recordUpdate_timeMillis = ?" +
         " where organizationID = ?" +
         " and recordDelete_timeMillis is not null", [
-        reqSession.user.userName,
+        requestSession.user.userName,
         nowMillis,
         organizationID
     ]);

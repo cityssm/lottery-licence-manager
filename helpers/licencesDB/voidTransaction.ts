@@ -1,5 +1,5 @@
 import sqlite from "better-sqlite3";
-import { licencesDB as dbPath } from "../../data/databasePaths.js";
+import { licencesDB as databasePath } from "../../data/databasePaths.js";
 
 import { runSQLWithDB } from "../_runSQLByName.js";
 
@@ -10,11 +10,11 @@ import type * as expressSession from "express-session";
 
 
 export const voidTransaction =
-  (licenceID: number, transactionIndex: number, reqSession: expressSession.Session) => {
+  (licenceID: number, transactionIndex: number, requestSession: expressSession.Session): boolean => {
 
-    const db = sqlite(dbPath);
+    const database = sqlite(databasePath);
 
-    const licenceObj = getLicenceWithDB(db, licenceID, reqSession, {
+    const licenceObject = getLicenceWithDB(database, licenceID, requestSession, {
       includeTicketTypes: false,
       includeFields: false,
       includeEvents: false,
@@ -24,33 +24,33 @@ export const voidTransaction =
 
     const nowMillis = Date.now();
 
-    const hasChanges = runSQLWithDB(db,
+    const hasChanges = runSQLWithDB(database,
       "update LotteryLicenceTransactions" +
       " set recordDelete_userName = ?," +
       " recordDelete_timeMillis = ?" +
       " where licenceID = ?" +
       " and transactionIndex = ?" +
       " and recordDelete_timeMillis is null", [
-        reqSession.user.userName,
+        requestSession.user.userName,
         nowMillis,
         licenceID,
         transactionIndex
       ]).changes > 0;
 
-    if (hasChanges && licenceObj.trackUpdatesAsAmendments) {
+    if (hasChanges && licenceObject.trackUpdatesAsAmendments) {
 
       addLicenceAmendmentWithDB(
-        db,
+        database,
         licenceID,
         "Transaction Voided",
         "",
         1,
-        reqSession
+        requestSession
       );
 
     }
 
-    db.close();
+    database.close();
 
     return hasChanges;
   };

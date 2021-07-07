@@ -1,6 +1,6 @@
 import { runSQL_hasChanges } from "./_runSQL.js";
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
-export const updateOrganizationReminder = (reqBody, reqSession) => {
+export const updateOrganizationReminder = (requestBody, requestSession) => {
     return runSQL_hasChanges("update OrganizationReminders" +
         " set reminderTypeKey = ?," +
         " dueDate = ?," +
@@ -12,18 +12,18 @@ export const updateOrganizationReminder = (reqBody, reqSession) => {
         " where organizationID = ?" +
         " and reminderIndex = ?" +
         " and recordDelete_timeMillis is null", [
-        reqBody.reminderTypeKey,
-        (reqBody.dueDateString === ""
-            ? null
-            : dateTimeFns.dateStringToInteger(reqBody.dueDateString)),
-        reqBody.reminderStatus,
-        reqBody.reminderNote,
-        (reqBody.dismissedDateString === ""
-            ? null
-            : dateTimeFns.dateStringToInteger(reqBody.dismissedDateString)),
-        reqSession.user.userName,
+        requestBody.reminderTypeKey,
+        (requestBody.dueDateString === ""
+            ? undefined
+            : dateTimeFns.dateStringToInteger(requestBody.dueDateString)),
+        requestBody.reminderStatus,
+        requestBody.reminderNote,
+        (requestBody.dismissedDateString === ""
+            ? undefined
+            : dateTimeFns.dateStringToInteger(requestBody.dismissedDateString)),
+        requestSession.user.userName,
         Date.now(),
-        reqBody.organizationID,
-        reqBody.reminderIndex
+        requestBody.organizationID,
+        requestBody.reminderIndex
     ]);
 };

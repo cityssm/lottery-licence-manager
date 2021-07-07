@@ -3,7 +3,7 @@ import { runSQL_hasChanges } from "./_runSQL.js";
 import type * as expressSession from "express-session";
 
 
-export const restoreLocation = (locationID: number, reqSession: expressSession.Session): boolean => {
+export const restoreLocation = (locationID: number, requestSession: expressSession.Session): boolean => {
 
   const nowMillis = Date.now();
 
@@ -14,7 +14,7 @@ export const restoreLocation = (locationID: number, reqSession: expressSession.S
     " recordUpdate_timeMillis = ?" +
     " where recordDelete_timeMillis is not null" +
     " and locationID = ?", [
-      reqSession.user.userName,
+      requestSession.user.userName,
       nowMillis,
       locationID
     ]);

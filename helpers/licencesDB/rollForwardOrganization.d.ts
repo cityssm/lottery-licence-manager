@@ -1,8 +1,7 @@
 import type * as expressSession from "express-session";
-export declare const rollForwardOrganization: (organizationID: number, updateFiscalYear: boolean, updateReminders: boolean, reqSession: expressSession.Session) => {
+interface RollForwardOrganizationReturn {
     success: boolean;
-    message: string;
-} | {
-    success: boolean;
-    message?: undefined;
-};
+    message?: string;
+}
+export declare const rollForwardOrganization: (organizationID: number, updateFiscalYear: boolean, updateReminders: boolean, requestSession: expressSession.Session) => RollForwardOrganizationReturn;
+export {};

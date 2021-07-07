@@ -1,18 +1,18 @@
 import sqlite from "better-sqlite3";
-import { licencesDB as dbPath } from "../../data/databasePaths.js";
+import { licencesDB as databasePath } from "../../data/databasePaths.js";
 
 import { addLicenceAmendmentWithDB } from "./addLicenceAmendment.js";
 
 import type * as expressSession from "express-session";
 
 
-export const unissueLicence = (licenceID: number, reqSession: expressSession.Session) => {
+export const unissueLicence = (licenceID: number, requestSession: expressSession.Session): boolean => {
 
-  const db = sqlite(dbPath);
+  const database = sqlite(databasePath);
 
   const nowMillis = Date.now();
 
-  const info = db.prepare("update LotteryLicences" +
+  const info = database.prepare("update LotteryLicences" +
     " set issueDate = null," +
     " issueTime = null," +
     " recordUpdate_userName = ?," +
@@ -21,7 +21,7 @@ export const unissueLicence = (licenceID: number, reqSession: expressSession.Ses
     " and recordDelete_timeMillis is null" +
     " and issueDate is not null")
     .run(
-      reqSession.user.userName,
+      requestSession.user.userName,
       nowMillis,
       licenceID
     );
@@ -31,17 +31,17 @@ export const unissueLicence = (licenceID: number, reqSession: expressSession.Ses
   if (changeCount) {
 
     addLicenceAmendmentWithDB(
-      db,
+      database,
       licenceID,
       "Unissue Licence",
       "",
       1,
-      reqSession
+      requestSession
     );
 
   }
 
-  db.close();
+  database.close();
 
   return changeCount > 0;
 };

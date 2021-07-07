@@ -1,5 +1,5 @@
 import sqlite from "better-sqlite3";
-import { licencesDB as dbPath } from "../../data/databasePaths.js";
+import { licencesDB as databasePath } from "../../data/databasePaths.js";
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
 import * as configFns from "../configFns.js";
 import { getLicenceWithDB } from "./getLicence.js";
@@ -10,39 +10,38 @@ import { getMaxLicenceTicketTypeIndexWithDB } from "./getMaxLicenceTicketTypeInd
 import { addLicenceTicketTypeWithDB } from "./addLicenceTicketType.js";
 import { resetLicenceTableStats, resetEventTableStats } from "../licencesDB.js";
 export const parseTicketTypeKey = (unparsedTicketTypeKey) => {
-    const eventDateString = unparsedTicketTypeKey.substring(0, 10);
+    const eventDateString = unparsedTicketTypeKey.slice(0, 10);
     return {
         eventDate: dateTimeFns.dateStringToInteger(eventDateString),
         eventDateString,
-        ticketType: unparsedTicketTypeKey.substring(11)
+        ticketType: unparsedTicketTypeKey.slice(11)
     };
 };
-;
-export const updateLicence = (reqBody, reqSession) => {
-    const db = sqlite(dbPath);
-    const pastLicenceObj = getLicenceWithDB(db, reqBody.licenceID, reqSession, {
+export const updateLicence = (requestBody, requestSession) => {
+    const database = sqlite(databasePath);
+    const pastLicenceObject = getLicenceWithDB(database, requestBody.licenceID, requestSession, {
         includeTicketTypes: true,
         includeFields: true,
         includeEvents: true,
         includeAmendments: false,
         includeTransactions: true
     });
-    if (!pastLicenceObj.canUpdate) {
-        db.close();
+    if (!pastLicenceObject.canUpdate) {
+        database.close();
         return false;
     }
     const nowDate = new Date();
     const nowDateInt = dateTimeFns.dateToInteger(nowDate);
     const nowMillis = nowDate.getTime();
-    let externalLicenceNumberInteger = parseInt(reqBody.externalLicenceNumber, 10);
-    if (isNaN(externalLicenceNumberInteger)) {
+    let externalLicenceNumberInteger = Number.parseInt(requestBody.externalLicenceNumber, 10);
+    if (Number.isNaN(externalLicenceNumberInteger)) {
         externalLicenceNumberInteger = -1;
     }
-    const startDate_now = dateTimeFns.dateStringToInteger(reqBody.startDateString);
-    const endDate_now = dateTimeFns.dateStringToInteger(reqBody.endDateString);
-    const startTime_now = dateTimeFns.timeStringToInteger(reqBody.startTimeString);
-    const endTime_now = dateTimeFns.timeStringToInteger(reqBody.endTimeString);
-    const changeCount = db.prepare("update LotteryLicences" +
+    const startDate_now = dateTimeFns.dateStringToInteger(requestBody.startDateString);
+    const endDate_now = dateTimeFns.dateStringToInteger(requestBody.endDateString);
+    const startTime_now = dateTimeFns.timeStringToInteger(requestBody.startTimeString);
+    const endTime_now = dateTimeFns.timeStringToInteger(requestBody.endTimeString);
+    const changeCount = database.prepare("update LotteryLicences" +
         " set organizationID = ?," +
         " applicationDate = ?," +
         " licenceTypeKey = ?," +
@@ -62,144 +61,144 @@ export const updateLicence = (reqBody, reqSession) => {
         " recordUpdate_timeMillis = ?" +
         " where licenceID = ?" +
         " and recordDelete_timeMillis is null")
-        .run(reqBody.organizationID, dateTimeFns.dateStringToInteger(reqBody.applicationDateString), reqBody.licenceTypeKey, startDate_now, endDate_now, startTime_now, endTime_now, (reqBody.locationID === "" ? null : reqBody.locationID), reqBody.municipality, reqBody.licenceDetails, reqBody.termsConditions, reqBody.totalPrizeValue, reqBody.licenceFee, reqBody.externalLicenceNumber, externalLicenceNumberInteger, reqSession.user.userName, nowMillis, reqBody.licenceID).changes;
+        .run(requestBody.organizationID, dateTimeFns.dateStringToInteger(requestBody.applicationDateString), requestBody.licenceTypeKey, startDate_now, endDate_now, startTime_now, endTime_now, (requestBody.locationID === "" ? undefined : requestBody.locationID), requestBody.municipality, requestBody.licenceDetails, requestBody.termsConditions, requestBody.totalPrizeValue, requestBody.licenceFee, requestBody.externalLicenceNumber, externalLicenceNumberInteger, requestSession.user.userName, nowMillis, requestBody.licenceID).changes;
     if (!changeCount) {
-        db.close();
+        database.close();
         return false;
     }
-    if (pastLicenceObj.trackUpdatesAsAmendments) {
+    if (pastLicenceObject.trackUpdatesAsAmendments) {
         if (configFns.getProperty("amendments.trackDateTimeUpdate") &&
-            (pastLicenceObj.startDate !== startDate_now ||
-                pastLicenceObj.endDate !== endDate_now ||
-                pastLicenceObj.startTime !== startTime_now ||
-                pastLicenceObj.endTime !== endTime_now)) {
-            const amendment = ((pastLicenceObj.startDate !== startDate_now
-                ? `Start Date: ${pastLicenceObj.startDate.toString()} -> ${startDate_now.toString()}` + "\n"
+            (pastLicenceObject.startDate !== startDate_now ||
+                pastLicenceObject.endDate !== endDate_now ||
+                pastLicenceObject.startTime !== startTime_now ||
+                pastLicenceObject.endTime !== endTime_now)) {
+            const amendment = ((pastLicenceObject.startDate !== startDate_now
+                ? `Start Date: ${pastLicenceObject.startDate.toString()} -> ${startDate_now.toString()}` + "\n"
                 : "") +
-                (pastLicenceObj.endDate !== endDate_now
-                    ? `End Date: ${pastLicenceObj.endDate.toString()} -> ${endDate_now.toString()}` + "\n"
+                (pastLicenceObject.endDate !== endDate_now
+                    ? `End Date: ${pastLicenceObject.endDate.toString()} -> ${endDate_now.toString()}` + "\n"
                     : "") +
-                (pastLicenceObj.startTime !== startTime_now
-                    ? `Start Time: ${pastLicenceObj.startTime.toString()} -> ${startTime_now.toString()}` + "\n"
+                (pastLicenceObject.startTime !== startTime_now
+                    ? `Start Time: ${pastLicenceObject.startTime.toString()} -> ${startTime_now.toString()}` + "\n"
                     : "") +
-                (pastLicenceObj.endTime !== endTime_now
-                    ? `End Time: ${pastLicenceObj.endTime.toString()} -> ${endTime_now.toString()}` + "\n"
+                (pastLicenceObject.endTime !== endTime_now
+                    ? `End Time: ${pastLicenceObject.endTime.toString()} -> ${endTime_now.toString()}` + "\n"
                     : "")).trim();
-            addLicenceAmendmentWithDB(db, reqBody.licenceID, "Date Update", amendment, 0, reqSession);
+            addLicenceAmendmentWithDB(database, requestBody.licenceID, "Date Update", amendment, 0, requestSession);
         }
-        if (pastLicenceObj.organizationID !== parseInt(reqBody.organizationID, 10) &&
+        if (pastLicenceObject.organizationID !== Number.parseInt(requestBody.organizationID, 10) &&
             configFns.getProperty("amendments.trackOrganizationUpdate")) {
-            addLicenceAmendmentWithDB(db, reqBody.licenceID, "Organization Change", "", 0, reqSession);
+            addLicenceAmendmentWithDB(database, requestBody.licenceID, "Organization Change", "", 0, requestSession);
         }
-        if (pastLicenceObj.locationID !== parseInt(reqBody.locationID, 10) &&
+        if (pastLicenceObject.locationID !== Number.parseInt(requestBody.locationID, 10) &&
             configFns.getProperty("amendments.trackLocationUpdate")) {
-            addLicenceAmendmentWithDB(db, reqBody.licenceID, "Location Change", "", 0, reqSession);
+            addLicenceAmendmentWithDB(database, requestBody.licenceID, "Location Change", "", 0, requestSession);
         }
-        if (pastLicenceObj.licenceFee !== parseFloat(reqBody.licenceFee) &&
+        if (pastLicenceObject.licenceFee !== Number.parseFloat(requestBody.licenceFee) &&
             configFns.getProperty("amendments.trackLicenceFeeUpdate")) {
-            addLicenceAmendmentWithDB(db, reqBody.licenceID, "Licence Fee Change", "$" + pastLicenceObj.licenceFee.toFixed(2) + " -> $" + parseFloat(reqBody.licenceFee).toFixed(2), 0, reqSession);
+            addLicenceAmendmentWithDB(database, requestBody.licenceID, "Licence Fee Change", "$" + pastLicenceObject.licenceFee.toFixed(2) + " -> $" + Number.parseFloat(requestBody.licenceFee).toFixed(2), 0, requestSession);
         }
     }
-    db.prepare("delete from LotteryLicenceFields" +
+    database.prepare("delete from LotteryLicenceFields" +
         " where licenceID = ?")
-        .run(reqBody.licenceID);
-    const fieldKeys = reqBody.fieldKeys.substring(1).split(",");
+        .run(requestBody.licenceID);
+    const fieldKeys = requestBody.fieldKeys.slice(1).split(",");
     for (const fieldKey of fieldKeys) {
-        const fieldValue = reqBody[fieldKey];
+        const fieldValue = requestBody[fieldKey];
         if (fieldKey === "" || fieldValue === "") {
             continue;
         }
-        db.prepare("insert into LotteryLicenceFields" +
+        database.prepare("insert into LotteryLicenceFields" +
             " (licenceID, fieldKey, fieldValue)" +
             " values (?, ?, ?)")
-            .run(reqBody.licenceID, fieldKey, fieldValue);
+            .run(requestBody.licenceID, fieldKey, fieldValue);
     }
-    if (typeof (reqBody.eventDateString) !== "undefined") {
-        db.prepare("delete from LotteryEventFields" +
+    if (typeof (requestBody.eventDateString) !== "undefined") {
+        database.prepare("delete from LotteryEventFields" +
             " where licenceID = ?" +
             (" and eventDate in (" +
                 "select eventDate from LotteryEvents where licenceID = ? and recordDelete_timeMillis is not null" +
                 ")"))
-            .run(reqBody.licenceID, reqBody.licenceID);
-        db.prepare("delete from LotteryEventCosts" +
+            .run(requestBody.licenceID, requestBody.licenceID);
+        database.prepare("delete from LotteryEventCosts" +
             " where licenceID = ?" +
             (" and eventDate in (" +
                 "select eventDate from LotteryEvents where licenceID = ? and recordDelete_timeMillis is not null" +
                 ")"))
-            .run(reqBody.licenceID, reqBody.licenceID);
-        db.prepare("delete from LotteryEvents" +
+            .run(requestBody.licenceID, requestBody.licenceID);
+        database.prepare("delete from LotteryEvents" +
             " where licenceID = ?" +
             " and recordDelete_timeMillis is not null")
-            .run(reqBody.licenceID);
+            .run(requestBody.licenceID);
     }
     let eventDateStrings_toAdd;
-    if (typeof (reqBody.eventDateString) === "string") {
-        eventDateStrings_toAdd = [reqBody.eventDateString];
+    if (typeof (requestBody.eventDateString) === "string") {
+        eventDateStrings_toAdd = [requestBody.eventDateString];
     }
-    else if (typeof (reqBody.eventDateString) === "object") {
-        eventDateStrings_toAdd = reqBody.eventDateString;
+    else if (typeof (requestBody.eventDateString) === "object") {
+        eventDateStrings_toAdd = requestBody.eventDateString;
     }
     if (eventDateStrings_toAdd) {
         for (const eventDate of eventDateStrings_toAdd) {
-            createEventWithDB(db, reqBody.licenceID, eventDate, reqSession);
+            createEventWithDB(database, requestBody.licenceID, eventDate, requestSession);
         }
     }
     let ticketTypeIndexes_toDelete;
-    if (typeof (reqBody.ticketTypeIndex_toDelete) === "string") {
-        ticketTypeIndexes_toDelete = [reqBody.ticketTypeIndex_toDelete];
+    if (typeof (requestBody.ticketTypeIndex_toDelete) === "string") {
+        ticketTypeIndexes_toDelete = [requestBody.ticketTypeIndex_toDelete];
     }
-    else if (typeof (reqBody.ticketTypeIndex_toDelete) === "object") {
-        ticketTypeIndexes_toDelete = reqBody.ticketTypeIndex_toDelete;
+    else if (typeof (requestBody.ticketTypeIndex_toDelete) === "object") {
+        ticketTypeIndexes_toDelete = requestBody.ticketTypeIndex_toDelete;
     }
     if (ticketTypeIndexes_toDelete) {
-        ticketTypeIndexes_toDelete.forEach((ticketTypeIndex_toDelete) => {
-            deleteLicenceTicketTypeWithDB(db, {
-                licenceID: reqBody.licenceID,
+        for (const ticketTypeIndex_toDelete of ticketTypeIndexes_toDelete) {
+            deleteLicenceTicketTypeWithDB(database, {
+                licenceID: requestBody.licenceID,
                 ticketTypeIndex: ticketTypeIndex_toDelete
-            }, reqSession);
-            if (pastLicenceObj.trackUpdatesAsAmendments &&
+            }, requestSession);
+            if (pastLicenceObject.trackUpdatesAsAmendments &&
                 configFns.getProperty("amendments.trackTicketTypeDelete")) {
-                addLicenceAmendmentWithDB(db, reqBody.licenceID, "Ticket Type Removed", "Removed " + ticketTypeIndex_toDelete + ".", 0, reqSession);
+                addLicenceAmendmentWithDB(database, requestBody.licenceID, "Ticket Type Removed", "Removed " + ticketTypeIndex_toDelete + ".", 0, requestSession);
             }
-        });
-    }
-    if (typeof (reqBody.ticketType_ticketType) === "string") {
-        const newTicketTypeIndex = getMaxLicenceTicketTypeIndexWithDB(db, reqBody.licenceID) + 1;
-        addLicenceTicketTypeWithDB(db, {
-            licenceID: reqBody.licenceID,
-            ticketTypeIndex: newTicketTypeIndex,
-            amendmentDate: nowDateInt,
-            ticketType: reqBody.ticketType_ticketType,
-            unitCount: reqBody.ticketType_unitCount,
-            licenceFee: reqBody.ticketType_licenceFee,
-            distributorLocationID: reqBody.ticketType_distributorLocationID,
-            manufacturerLocationID: reqBody.ticketType_manufacturerLocationID
-        }, reqSession);
-        if (pastLicenceObj.trackUpdatesAsAmendments &&
-            configFns.getProperty("amendments.trackTicketTypeNew")) {
-            addLicenceAmendmentWithDB(db, reqBody.licenceID, "Added Ticket Type", reqBody.ticketType_ticketType, 0, reqSession);
         }
     }
-    else if (typeof (reqBody.ticketType_ticketType) === "object") {
-        const newTicketTypeIndex = getMaxLicenceTicketTypeIndexWithDB(db, reqBody.licenceID) + 1;
-        reqBody.ticketType_ticketType.forEach((ticketType, ticketTypeIndex) => {
-            addLicenceTicketTypeWithDB(db, {
-                licenceID: reqBody.licenceID,
+    if (typeof (requestBody.ticketType_ticketType) === "string") {
+        const newTicketTypeIndex = getMaxLicenceTicketTypeIndexWithDB(database, requestBody.licenceID) + 1;
+        addLicenceTicketTypeWithDB(database, {
+            licenceID: requestBody.licenceID,
+            ticketTypeIndex: newTicketTypeIndex,
+            amendmentDate: nowDateInt,
+            ticketType: requestBody.ticketType_ticketType,
+            unitCount: requestBody.ticketType_unitCount,
+            licenceFee: requestBody.ticketType_licenceFee,
+            distributorLocationID: requestBody.ticketType_distributorLocationID,
+            manufacturerLocationID: requestBody.ticketType_manufacturerLocationID
+        }, requestSession);
+        if (pastLicenceObject.trackUpdatesAsAmendments &&
+            configFns.getProperty("amendments.trackTicketTypeNew")) {
+            addLicenceAmendmentWithDB(database, requestBody.licenceID, "Added Ticket Type", requestBody.ticketType_ticketType, 0, requestSession);
+        }
+    }
+    else if (typeof (requestBody.ticketType_ticketType) === "object") {
+        const newTicketTypeIndex = getMaxLicenceTicketTypeIndexWithDB(database, requestBody.licenceID) + 1;
+        for (const [ticketTypeIndex, ticketType] of requestBody.ticketType_ticketType) {
+            addLicenceTicketTypeWithDB(database, {
+                licenceID: requestBody.licenceID,
                 ticketTypeIndex: newTicketTypeIndex + ticketTypeIndex,
                 amendmentDate: nowDateInt,
                 ticketType,
-                unitCount: reqBody.ticketType_unitCount[ticketTypeIndex],
-                licenceFee: reqBody.ticketType_licenceFee[ticketTypeIndex],
-                distributorLocationID: reqBody.ticketType_distributorLocationID[ticketTypeIndex],
-                manufacturerLocationID: reqBody.ticketType_manufacturerLocationID[ticketTypeIndex]
-            }, reqSession);
-            if (pastLicenceObj.trackUpdatesAsAmendments &&
+                unitCount: requestBody.ticketType_unitCount[ticketTypeIndex],
+                licenceFee: requestBody.ticketType_licenceFee[ticketTypeIndex],
+                distributorLocationID: requestBody.ticketType_distributorLocationID[ticketTypeIndex],
+                manufacturerLocationID: requestBody.ticketType_manufacturerLocationID[ticketTypeIndex]
+            }, requestSession);
+            if (pastLicenceObject.trackUpdatesAsAmendments &&
                 configFns.getProperty("amendments.trackTicketTypeNew")) {
-                addLicenceAmendmentWithDB(db, reqBody.licenceID, "Added Ticket Type", ticketType, 0, reqSession);
+                addLicenceAmendmentWithDB(database, requestBody.licenceID, "Added Ticket Type", ticketType, 0, requestSession);
             }
-        });
+        }
     }
-    db.close();
+    database.close();
     resetLicenceTableStats();
     resetEventTableStats();
     return changeCount > 0;

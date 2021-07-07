@@ -1,5 +1,5 @@
 import { runSQL_hasChanges } from "./_runSQL.js";
-export const updateLocation = (reqBody, reqSession) => {
+export const updateLocation = (requestBody, requestSession) => {
     return runSQL_hasChanges("update Locations" +
         " set locationName = ?," +
         " locationAddress1 = ?," +
@@ -13,16 +13,16 @@ export const updateLocation = (reqBody, reqSession) => {
         " recordUpdate_timeMillis = ?" +
         " where recordDelete_timeMillis is null" +
         " and locationID = ?", [
-        reqBody.locationName,
-        reqBody.locationAddress1,
-        reqBody.locationAddress2,
-        reqBody.locationCity,
-        reqBody.locationProvince,
-        reqBody.locationPostalCode,
-        reqBody.locationIsDistributor ? 1 : 0,
-        reqBody.locationIsManufacturer ? 1 : 0,
-        reqSession.user.userName,
+        requestBody.locationName,
+        requestBody.locationAddress1,
+        requestBody.locationAddress2,
+        requestBody.locationCity,
+        requestBody.locationProvince,
+        requestBody.locationPostalCode,
+        requestBody.locationIsDistributor ? 1 : 0,
+        requestBody.locationIsManufacturer ? 1 : 0,
+        requestSession.user.userName,
         Date.now(),
-        reqBody.locationID
+        requestBody.locationID
     ]);
 };

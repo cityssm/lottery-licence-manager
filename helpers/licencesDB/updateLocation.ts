@@ -4,7 +4,7 @@ import type * as llm from "../../types/recordTypes";
 import type * as expressSession from "express-session";
 
 
-export const updateLocation = (reqBody: llm.Location, reqSession: expressSession.Session): boolean => {
+export const updateLocation = (requestBody: llm.Location, requestSession: expressSession.Session): boolean => {
 
   return runSQL_hasChanges("update Locations" +
     " set locationName = ?," +
@@ -19,16 +19,16 @@ export const updateLocation = (reqBody: llm.Location, reqSession: expressSession
     " recordUpdate_timeMillis = ?" +
     " where recordDelete_timeMillis is null" +
     " and locationID = ?", [
-      reqBody.locationName,
-      reqBody.locationAddress1,
-      reqBody.locationAddress2,
-      reqBody.locationCity,
-      reqBody.locationProvince,
-      reqBody.locationPostalCode,
-      reqBody.locationIsDistributor ? 1 : 0,
-      reqBody.locationIsManufacturer ? 1 : 0,
-      reqSession.user.userName,
+      requestBody.locationName,
+      requestBody.locationAddress1,
+      requestBody.locationAddress2,
+      requestBody.locationCity,
+      requestBody.locationProvince,
+      requestBody.locationPostalCode,
+      requestBody.locationIsDistributor ? 1 : 0,
+      requestBody.locationIsManufacturer ? 1 : 0,
+      requestSession.user.userName,
       Date.now(),
-      reqBody.locationID
+      requestBody.locationID
     ]);
 };

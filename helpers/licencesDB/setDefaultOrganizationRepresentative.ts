@@ -1,24 +1,24 @@
 import sqlite from "better-sqlite3";
 
-import { licencesDB as dbPath } from "../../data/databasePaths.js";
+import { licencesDB as databasePath } from "../../data/databasePaths.js";
 
 
-export const setDefaultOrganizationRepresentative = (organizationID: number, representativeIndex: number) => {
+export const setDefaultOrganizationRepresentative = (organizationID: number, representativeIndex: number): boolean => {
 
-  const db = sqlite(dbPath);
+  const database = sqlite(databasePath);
 
-  db.prepare("update OrganizationRepresentatives" +
+  database.prepare("update OrganizationRepresentatives" +
     " set isDefault = 0" +
     " where organizationID = ?")
     .run(organizationID);
 
-  db.prepare("update OrganizationRepresentatives" +
+  database.prepare("update OrganizationRepresentatives" +
     " set isDefault = 1" +
     " where organizationID = ?" +
     " and representativeIndex = ?")
     .run(organizationID, representativeIndex);
 
-  db.close();
+  database.close();
 
   return true;
 };

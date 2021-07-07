@@ -1,6 +1,6 @@
 import { runSQL_hasChanges } from "./_runSQL.js";
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
-export const updateOrganizationRemark = (reqBody, reqSession) => {
+export const updateOrganizationRemark = (requestBody, requestSession) => {
     return runSQL_hasChanges("update OrganizationRemarks" +
         " set remarkDate = ?," +
         " remarkTime = ?," +
@@ -11,13 +11,13 @@ export const updateOrganizationRemark = (reqBody, reqSession) => {
         " where organizationID = ?" +
         " and remarkIndex = ?" +
         " and recordDelete_timeMillis is null", [
-        dateTimeFns.dateStringToInteger(reqBody.remarkDateString),
-        dateTimeFns.timeStringToInteger(reqBody.remarkTimeString),
-        reqBody.remark,
-        reqBody.isImportant ? 1 : 0,
-        reqSession.user.userName,
+        dateTimeFns.dateStringToInteger(requestBody.remarkDateString),
+        dateTimeFns.timeStringToInteger(requestBody.remarkTimeString),
+        requestBody.remark,
+        requestBody.isImportant ? 1 : 0,
+        requestSession.user.userName,
         Date.now(),
-        reqBody.organizationID,
-        reqBody.remarkIndex
+        requestBody.organizationID,
+        requestBody.remarkIndex
     ]);
 };

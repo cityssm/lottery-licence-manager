@@ -3,7 +3,7 @@ import { runSQL_hasChanges } from "./_runSQL.js";
 import type * as expressSession from "express-session";
 
 
-export const pokeEvent = (licenceID: number, eventDate: number, reqSession: expressSession.Session) => {
+export const pokeEvent = (licenceID: number, eventDate: number, requestSession: expressSession.Session): boolean => {
 
   return runSQL_hasChanges("update LotteryEvents" +
     " set recordUpdate_userName = ?," +
@@ -11,7 +11,7 @@ export const pokeEvent = (licenceID: number, eventDate: number, reqSession: expr
     " where licenceID = ?" +
     " and eventDate = ?" +
     " and recordDelete_timeMillis is null", [
-      reqSession.user.userName,
+      requestSession.user.userName,
       Date.now(),
       licenceID,
       eventDate

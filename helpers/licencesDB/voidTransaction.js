@@ -1,11 +1,11 @@
 import sqlite from "better-sqlite3";
-import { licencesDB as dbPath } from "../../data/databasePaths.js";
+import { licencesDB as databasePath } from "../../data/databasePaths.js";
 import { runSQLWithDB } from "../_runSQLByName.js";
 import { getLicenceWithDB } from "./getLicence.js";
 import { addLicenceAmendmentWithDB } from "./addLicenceAmendment.js";
-export const voidTransaction = (licenceID, transactionIndex, reqSession) => {
-    const db = sqlite(dbPath);
-    const licenceObj = getLicenceWithDB(db, licenceID, reqSession, {
+export const voidTransaction = (licenceID, transactionIndex, requestSession) => {
+    const database = sqlite(databasePath);
+    const licenceObject = getLicenceWithDB(database, licenceID, requestSession, {
         includeTicketTypes: false,
         includeFields: false,
         includeEvents: false,
@@ -13,20 +13,20 @@ export const voidTransaction = (licenceID, transactionIndex, reqSession) => {
         includeTransactions: false
     });
     const nowMillis = Date.now();
-    const hasChanges = runSQLWithDB(db, "update LotteryLicenceTransactions" +
+    const hasChanges = runSQLWithDB(database, "update LotteryLicenceTransactions" +
         " set recordDelete_userName = ?," +
         " recordDelete_timeMillis = ?" +
         " where licenceID = ?" +
         " and transactionIndex = ?" +
         " and recordDelete_timeMillis is null", [
-        reqSession.user.userName,
+        requestSession.user.userName,
         nowMillis,
         licenceID,
         transactionIndex
     ]).changes > 0;
-    if (hasChanges && licenceObj.trackUpdatesAsAmendments) {
-        addLicenceAmendmentWithDB(db, licenceID, "Transaction Voided", "", 1, reqSession);
+    if (hasChanges && licenceObject.trackUpdatesAsAmendments) {
+        addLicenceAmendmentWithDB(database, licenceID, "Transaction Voided", "", 1, requestSession);
     }
-    db.close();
+    database.close();
     return hasChanges;
 };

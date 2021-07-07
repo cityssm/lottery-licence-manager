@@ -4,7 +4,7 @@ import type * as llm from "../../types/recordTypes";
 
 
 export const updateOrganizationRepresentative =
-  (organizationID: number, reqBody: llm.OrganizationRepresentative) => {
+  (organizationID: number, requestBody: llm.OrganizationRepresentative): llm.OrganizationRepresentative => {
 
     runSQL("update OrganizationRepresentatives" +
       " set representativeName = ?," +
@@ -19,28 +19,28 @@ export const updateOrganizationRepresentative =
       " representativeEmailAddress = ?" +
       " where organizationID = ?" +
       " and representativeIndex = ?", [
-        reqBody.representativeName, reqBody.representativeTitle,
-        reqBody.representativeAddress1, reqBody.representativeAddress2,
-        reqBody.representativeCity, reqBody.representativeProvince, reqBody.representativePostalCode,
-        reqBody.representativePhoneNumber, reqBody.representativePhoneNumber2, reqBody.representativeEmailAddress,
-        organizationID, reqBody.representativeIndex
+        requestBody.representativeName, requestBody.representativeTitle,
+        requestBody.representativeAddress1, requestBody.representativeAddress2,
+        requestBody.representativeCity, requestBody.representativeProvince, requestBody.representativePostalCode,
+        requestBody.representativePhoneNumber, requestBody.representativePhoneNumber2, requestBody.representativeEmailAddress,
+        organizationID, requestBody.representativeIndex
       ]);
 
-    const representativeObj: llm.OrganizationRepresentative = {
+    const representativeObject: llm.OrganizationRepresentative = {
       organizationID,
-      representativeIndex: reqBody.representativeIndex,
-      representativeName: reqBody.representativeName,
-      representativeTitle: reqBody.representativeTitle,
-      representativeAddress1: reqBody.representativeAddress1,
-      representativeAddress2: reqBody.representativeAddress2,
-      representativeCity: reqBody.representativeCity,
-      representativeProvince: reqBody.representativeProvince,
-      representativePostalCode: reqBody.representativePostalCode,
-      representativePhoneNumber: reqBody.representativePhoneNumber,
-      representativePhoneNumber2: reqBody.representativePhoneNumber2,
-      representativeEmailAddress: reqBody.representativeEmailAddress,
-      isDefault: Number(reqBody.isDefault) > 0
+      representativeIndex: requestBody.representativeIndex,
+      representativeName: requestBody.representativeName,
+      representativeTitle: requestBody.representativeTitle,
+      representativeAddress1: requestBody.representativeAddress1,
+      representativeAddress2: requestBody.representativeAddress2,
+      representativeCity: requestBody.representativeCity,
+      representativeProvince: requestBody.representativeProvince,
+      representativePostalCode: requestBody.representativePostalCode,
+      representativePhoneNumber: requestBody.representativePhoneNumber,
+      representativePhoneNumber2: requestBody.representativePhoneNumber2,
+      representativeEmailAddress: requestBody.representativeEmailAddress,
+      isDefault: Number(requestBody.isDefault) > 0
     };
 
-    return representativeObj;
+    return representativeObject;
   };

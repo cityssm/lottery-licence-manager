@@ -4,7 +4,7 @@ import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
 
 import * as licencesDB from "../licencesDB.js";
 
-import { licencesDB as dbPath } from "../../data/databasePaths.js";
+import { licencesDB as databasePath } from "../../data/databasePaths.js";
 
 import type * as expressSession from "express-session";
 
@@ -20,16 +20,16 @@ interface UpdateEventForm {
   costs_amountDonated: string;
   fieldKeys: string;
   ticketTypes: string;
-};
+}
 
 
-export const updateEvent = (reqBody: UpdateEventForm, reqSession: expressSession.Session): boolean => {
+export const updateEvent = (requestBody: UpdateEventForm, requestSession: expressSession.Session): boolean => {
 
-  const db = sqlite(dbPath);
+  const database = sqlite(databasePath);
 
   const nowMillis = Date.now();
 
-  const info = db.prepare("update LotteryEvents" +
+  const info = database.prepare("update LotteryEvents" +
     " set reportDate = ?," +
     " bank_name = ?," +
     " bank_address = ?," +
@@ -42,75 +42,75 @@ export const updateEvent = (reqBody: UpdateEventForm, reqSession: expressSession
     " and eventDate = ?" +
     " and recordDelete_timeMillis is null")
     .run(
-      (reqBody.reportDateString === "" ? null : dateTimeFns.dateStringToInteger(reqBody.reportDateString)),
-      reqBody.bank_name,
-      reqBody.bank_address,
-      reqBody.bank_accountNumber,
-      (reqBody.bank_accountBalance === "" ? null : reqBody.bank_accountBalance),
-      (reqBody.costs_amountDonated === "" ? null : reqBody.costs_amountDonated),
-      reqSession.user.userName,
+      (requestBody.reportDateString === "" ? undefined : dateTimeFns.dateStringToInteger(requestBody.reportDateString)),
+      requestBody.bank_name,
+      requestBody.bank_address,
+      requestBody.bank_accountNumber,
+      (requestBody.bank_accountBalance === "" ? undefined : requestBody.bank_accountBalance),
+      (requestBody.costs_amountDonated === "" ? undefined : requestBody.costs_amountDonated),
+      requestSession.user.userName,
       nowMillis,
-      reqBody.licenceID,
-      reqBody.eventDate
+      requestBody.licenceID,
+      requestBody.eventDate
     );
 
   const changeCount = info.changes;
 
   if (!changeCount) {
 
-    db.close();
+    database.close();
     return false;
   }
 
   // Costs
 
-  db.prepare("delete from LotteryEventCosts" +
+  database.prepare("delete from LotteryEventCosts" +
     " where licenceID = ?" +
     " and eventDate = ?")
-    .run(reqBody.licenceID, reqBody.eventDate);
+    .run(requestBody.licenceID, requestBody.eventDate);
 
-  const ticketTypes = reqBody.ticketTypes.split(",");
+  const ticketTypes = requestBody.ticketTypes.split(",");
 
   for (const ticketType of ticketTypes) {
 
-    const costs_receipts = reqBody["costs_receipts-" + ticketType];
-    const costs_admin = reqBody["costs_admin-" + ticketType];
-    const costs_prizesAwarded = reqBody["costs_prizesAwarded-" + ticketType];
+    const costs_receipts = requestBody["costs_receipts-" + ticketType];
+    const costs_admin = requestBody["costs_admin-" + ticketType];
+    const costs_prizesAwarded = requestBody["costs_prizesAwarded-" + ticketType];
 
-    db.prepare("insert into LotteryEventCosts" +
+    database.prepare("insert into LotteryEventCosts" +
       " (licenceID, eventDate, ticketType, costs_receipts, costs_admin, costs_prizesAwarded)" +
       " values (?, ?, ?, ?, ?, ?)")
-      .run(reqBody.licenceID,
-        reqBody.eventDate,
-        (ticketType === "" ? null : ticketType),
-        (costs_receipts === "" ? null : costs_receipts),
-        (costs_admin === "" ? null : costs_admin),
-        (costs_prizesAwarded === "" ? null : costs_prizesAwarded));
+      .run(requestBody.licenceID,
+        requestBody.eventDate,
+        (ticketType === "" ? undefined : ticketType),
+        (costs_receipts === "" ? undefined : costs_receipts),
+        (costs_admin === "" ? undefined : costs_admin),
+        (costs_prizesAwarded === "" ? undefined : costs_prizesAwarded));
   }
 
   // Fields
 
-  db.prepare("delete from LotteryEventFields" +
+  database.prepare("delete from LotteryEventFields" +
     " where licenceID = ?" +
     " and eventDate = ?")
-    .run(reqBody.licenceID, reqBody.eventDate);
+    .run(requestBody.licenceID, requestBody.eventDate);
 
-  const fieldKeys = reqBody.fieldKeys.split(",");
+  const fieldKeys = requestBody.fieldKeys.split(",");
 
   for (const fieldKey of fieldKeys) {
 
-    const fieldValue = reqBody[fieldKey];
+    const fieldValue = requestBody[fieldKey];
 
     if (fieldValue !== "") {
 
-      db.prepare("insert into LotteryEventFields" +
+      database.prepare("insert into LotteryEventFields" +
         " (licenceID, eventDate, fieldKey, fieldValue)" +
         " values (?, ?, ?, ?)")
-        .run(reqBody.licenceID, reqBody.eventDate, fieldKey, fieldValue);
+        .run(requestBody.licenceID, requestBody.eventDate, fieldKey, fieldValue);
     }
   }
 
-  db.close();
+  database.close();
 
   // Purge cached stats
   licencesDB.resetEventTableStats();

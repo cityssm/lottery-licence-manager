@@ -1,6 +1,6 @@
 import { runSQL_hasChanges } from "./_runSQL.js";
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
-export const updateOrganization = (reqBody, reqSession) => {
+export const updateOrganization = (requestBody, requestSession) => {
     return runSQL_hasChanges("update Organizations" +
         " set organizationName = ?," +
         " organizationAddress1 = ?," +
@@ -17,19 +17,19 @@ export const updateOrganization = (reqBody, reqSession) => {
         " recordUpdate_timeMillis = ?" +
         " where organizationID = ?" +
         " and recordDelete_timeMillis is null", [
-        reqBody.organizationName,
-        reqBody.organizationAddress1,
-        reqBody.organizationAddress2,
-        reqBody.organizationCity,
-        reqBody.organizationProvince,
-        reqBody.organizationPostalCode,
-        reqBody.trustAccountNumber,
-        dateTimeFns.dateStringToInteger(reqBody.fiscalStartDateString),
-        dateTimeFns.dateStringToInteger(reqBody.fiscalEndDateString),
-        reqBody.isEligibleForLicences,
-        reqBody.organizationNote,
-        reqSession.user.userName,
+        requestBody.organizationName,
+        requestBody.organizationAddress1,
+        requestBody.organizationAddress2,
+        requestBody.organizationCity,
+        requestBody.organizationProvince,
+        requestBody.organizationPostalCode,
+        requestBody.trustAccountNumber,
+        dateTimeFns.dateStringToInteger(requestBody.fiscalStartDateString),
+        dateTimeFns.dateStringToInteger(requestBody.fiscalEndDateString),
+        requestBody.isEligibleForLicences,
+        requestBody.organizationNote,
+        requestSession.user.userName,
         Date.now(),
-        reqBody.organizationID
+        requestBody.organizationID
     ]);
 };
