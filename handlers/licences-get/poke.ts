@@ -8,17 +8,17 @@ import { pokeLicence } from "../../helpers/licencesDB/pokeLicence.js";
 const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
 
 
-export const handler: RequestHandler = (req, res, next) => {
+export const handler: RequestHandler = (request, response, next) => {
 
-  const licenceID = Number(req.params.licenceID);
+  const licenceID = Number(request.params.licenceID);
 
-  if (isNaN(licenceID)) {
+  if (Number.isNaN(licenceID)) {
     return next();
   }
 
-  pokeLicence(licenceID, req.session);
+  pokeLicence(licenceID, request.session);
 
-  return res.redirect(urlPrefix + "/licences/" + licenceID.toString());
+  return response.redirect(urlPrefix + "/licences/" + licenceID.toString());
 };
 
 

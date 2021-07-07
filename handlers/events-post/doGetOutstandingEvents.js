@@ -1,6 +1,6 @@
 import { getOutstandingEvents } from "../../helpers/licencesDB/getOutstandingEvents.js";
-export const handler = (req, res) => {
-    const events = getOutstandingEvents(req.body, req.session);
-    res.json(events);
+export const handler = (request, response) => {
+    const events = getOutstandingEvents(request.body, request.session);
+    response.json(events);
 };
 export default handler;

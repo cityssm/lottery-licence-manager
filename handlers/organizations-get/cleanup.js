@@ -1,5 +1,5 @@
-export const handler = (_req, res) => {
-    res.render("organization-cleanup", {
+export const handler = (_request, response) => {
+    response.render("organization-cleanup", {
         headTitle: "Organization Cleanup"
     });
 };

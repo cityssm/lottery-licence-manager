@@ -1,14 +1,14 @@
 import { unissueLicence } from "../../helpers/licencesDB/unissueLicence.js";
-export const handler = (req, res) => {
-    const success = unissueLicence(req.body.licenceID, req.session);
+export const handler = (request, response) => {
+    const success = unissueLicence(request.body.licenceID, request.session);
     if (success) {
-        res.json({
+        response.json({
             success: true,
             message: "Licence Unissued Successfully"
         });
     }
     else {
-        res.json({
+        response.json({
             success: false,
             message: "Licence Not Unissued"
         });

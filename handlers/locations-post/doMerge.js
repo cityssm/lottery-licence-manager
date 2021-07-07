@@ -1,9 +1,9 @@
 import { mergeLocations } from "../../helpers/licencesDB/mergeLocations.js";
-export const handler = (req, res) => {
-    const targetLocationID = req.body.targetLocationID;
-    const sourceLocationID = req.body.sourceLocationID;
-    const success = mergeLocations(targetLocationID, sourceLocationID, req.session);
-    res.json({
+export const handler = (request, response) => {
+    const targetLocationID = request.body.targetLocationID;
+    const sourceLocationID = request.body.sourceLocationID;
+    const success = mergeLocations(targetLocationID, sourceLocationID, request.session);
+    response.json({
         success
     });
 };

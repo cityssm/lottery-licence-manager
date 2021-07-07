@@ -1,6 +1,6 @@
 import * as configFns from "../../helpers/configFns.js";
-export const handler = (_req, res) => {
-    res.render("organization-edit", {
+export const handler = (_request, response) => {
+    response.render("organization-edit", {
         headTitle: "Organization Create",
         isViewOnly: false,
         isCreate: true,

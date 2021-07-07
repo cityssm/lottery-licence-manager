@@ -1,12 +1,12 @@
 import * as configFns from "../../helpers/configFns.js";
-export const handler = (req, res) => {
-    const licenceTypeKey = req.body.licenceTypeKey;
+export const handler = (request, response) => {
+    const licenceTypeKey = request.body.licenceTypeKey;
     const licenceType = configFns.getLicenceType(licenceTypeKey);
     if (licenceType) {
-        res.json(licenceType.ticketTypes || []);
+        response.json(licenceType.ticketTypes || []);
     }
     else {
-        res.json([]);
+        response.json([]);
     }
 };
 export default handler;

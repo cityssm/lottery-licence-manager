@@ -5,7 +5,7 @@ import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
 import * as licencesDB from "../../helpers/licencesDB.js";
 
 
-export const handler: RequestHandler = (_req, res) => {
+export const handler: RequestHandler = (_request, response) => {
 
   // Get licence table stats
 
@@ -26,7 +26,7 @@ export const handler: RequestHandler = (_req, res) => {
 
   // Render
 
-  res.render("licence-activeSummary", {
+  response.render("licence-activeSummary", {
     headTitle: "Active Licence Summary",
     startYearMin: (licenceTableStats.startYearMin || new Date().getFullYear()),
     startDateStartString,

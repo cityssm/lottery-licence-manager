@@ -3,29 +3,29 @@ import type { RequestHandler } from "express";
 import { deleteLicence } from "../../helpers/licencesDB/deleteLicence.js";
 
 
-export const handler: RequestHandler = (req, res) => {
+export const handler: RequestHandler = (request, response) => {
 
-  if (req.body.licenceID === "") {
+  if (request.body.licenceID === "") {
 
-    res.json({
+    response.json({
       success: false,
       message: "Licence ID Unavailable"
     });
 
   } else {
 
-    const changeCount = deleteLicence(req.body.licenceID, req.session);
+    const changeCount = deleteLicence(request.body.licenceID, request.session);
 
     if (changeCount) {
 
-      res.json({
+      response.json({
         success: true,
         message: "Licence Deleted"
       });
 
     } else {
 
-      res.json({
+      response.json({
         success: false,
         message: "Licence Not Deleted"
       });

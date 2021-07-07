@@ -1,7 +1,7 @@
 import * as licencesDB from "../../helpers/licencesDB.js";
-export const handler = (_req, res) => {
+export const handler = (_request, response) => {
     const eventTableStats = licencesDB.getEventTableStats();
-    res.render("event-search", {
+    response.render("event-search", {
         headTitle: "Lottery Events",
         eventTableStats
     });

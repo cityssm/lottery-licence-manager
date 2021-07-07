@@ -3,24 +3,19 @@ import type { RequestHandler } from "express";
 import { deleteLocation } from "../../helpers/licencesDB/deleteLocation.js";
 
 
-export const handler: RequestHandler = (req, res) => {
+export const handler: RequestHandler = (request, response) => {
 
-  const changeCount = deleteLocation(req.body.locationID, req.session);
+  const changeCount = deleteLocation(request.body.locationID, request.session);
 
-  if (changeCount) {
-
-    return res.json({
+  return changeCount
+    ? response.json({
       success: true,
       message: "Location deleted successfully."
-    });
-
-  } else {
-
-    return res.json({
+    })
+    : response.json({
       success: false,
       message: "Location could not be deleted."
     });
-  }
 };
 
 

@@ -3,22 +3,20 @@ import type { RequestHandler } from "express";
 import { deleteOrganizationBankRecord } from "../../helpers/licencesDB/deleteOrganizationBankRecord.js";
 
 
-export const handler: RequestHandler = (req, res) => {
+export const handler: RequestHandler = (request, response) => {
 
   const success =
-    deleteOrganizationBankRecord(req.body.organizationID, req.body.recordIndex, req.session);
+    deleteOrganizationBankRecord(request.body.organizationID, request.body.recordIndex, request.session);
 
-  if (success) {
-    res.json({
+  return success
+    ? response.json({
       success: true,
       message: "Organization updated successfully."
-    });
-  } else {
-    res.json({
+    })
+    : response.json({
       success: false,
       message: "Record Not Saved"
     });
-  }
 };
 
 

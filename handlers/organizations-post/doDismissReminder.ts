@@ -4,19 +4,19 @@ import { dismissOrganizationReminder } from "../../helpers/licencesDB/dismissOrg
 import { getOrganizationReminder } from "../../helpers/licencesDB/getOrganizationReminder.js";
 
 
-export const handler: RequestHandler = (req, res) => {
+export const handler: RequestHandler = (request, response) => {
 
-  const organizationID = req.body.organizationID;
-  const reminderIndex = req.body.reminderIndex;
+  const organizationID = request.body.organizationID;
+  const reminderIndex = request.body.reminderIndex;
 
-  const success = dismissOrganizationReminder(organizationID, reminderIndex, req.session);
+  const success = dismissOrganizationReminder(organizationID, reminderIndex, request.session);
 
   if (success) {
 
     const reminder =
-      getOrganizationReminder(req.body.organizationID, req.body.reminderIndex, req.session);
+      getOrganizationReminder(organizationID, reminderIndex, request.session);
 
-    res.json({
+    response.json({
       success: true,
       message: "Reminder dismissed.",
       reminder
@@ -24,7 +24,7 @@ export const handler: RequestHandler = (req, res) => {
 
   } else {
 
-    res.json({
+    response.json({
       success: false,
       message: "Reminder could not be dismissed."
     });

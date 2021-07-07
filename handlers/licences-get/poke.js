@@ -1,12 +1,12 @@
 import * as configFns from "../../helpers/configFns.js";
 import { pokeLicence } from "../../helpers/licencesDB/pokeLicence.js";
 const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
-export const handler = (req, res, next) => {
-    const licenceID = Number(req.params.licenceID);
-    if (isNaN(licenceID)) {
+export const handler = (request, response, next) => {
+    const licenceID = Number(request.params.licenceID);
+    if (Number.isNaN(licenceID)) {
         return next();
     }
-    pokeLicence(licenceID, req.session);
-    return res.redirect(urlPrefix + "/licences/" + licenceID.toString());
+    pokeLicence(licenceID, request.session);
+    return response.redirect(urlPrefix + "/licences/" + licenceID.toString());
 };
 export default handler;

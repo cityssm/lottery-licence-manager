@@ -2,24 +2,24 @@ import type { RequestHandler } from "express";
 
 import * as configFns from "../../helpers/configFns.js";
 
-import pokeEvent from "../../helpers/licencesDB/pokeEvent.js";
+import { pokeEvent } from "../../helpers/licencesDB/pokeEvent.js";
 
 
 const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
 
 
-export const handler: RequestHandler = (req, res, next) => {
+export const handler: RequestHandler = (request, response, next) => {
 
-  const licenceID = Number(req.params.licenceID);
-  const eventDate = Number(req.params.eventDate);
+  const licenceID = Number(request.params.licenceID);
+  const eventDate = Number(request.params.eventDate);
 
-  if (isNaN(licenceID) || isNaN(eventDate)) {
+  if (Number.isNaN(licenceID) || Number.isNaN(eventDate)) {
     return next();
   }
 
-  pokeEvent(licenceID, eventDate, req.session);
+  pokeEvent(licenceID, eventDate, request.session);
 
-  res.redirect(urlPrefix + "/events/" + licenceID.toString() + "/" + eventDate.toString());
+  response.redirect(urlPrefix + "/events/" + licenceID.toString() + "/" + eventDate.toString());
 };
 
 

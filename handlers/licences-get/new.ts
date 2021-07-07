@@ -9,20 +9,20 @@ import { getNextExternalLicenceNumberFromRange } from "../../helpers/licencesDB/
 import type { Organization } from "../../types/recordTypes";
 
 
-export const handler: RequestHandler = (req, res) => {
+export const handler: RequestHandler = (request, response) => {
 
   // Get organization (if set)
 
-  const organizationID = Number(req.params.organizationID);
+  const organizationID = Number(request.params.organizationID);
 
-  let organization: Organization = null;
+  let organization: Organization;
 
-  if (!isNaN(organizationID)) {
+  if (!Number.isNaN(organizationID)) {
 
-    organization = getOrganization(organizationID, req.session);
+    organization = getOrganization(organizationID, request.session);
 
     if (organization && !organization.isEligibleForLicences) {
-      organization = null;
+      organization = undefined;
     }
   }
 
@@ -40,7 +40,7 @@ export const handler: RequestHandler = (req, res) => {
     externalLicenceNumber = getNextExternalLicenceNumberFromRange().toString();
   }
 
-  res.render("licence-edit", {
+  response.render("licence-edit", {
     headTitle: "Licence Create",
     isCreate: true,
     licence: {

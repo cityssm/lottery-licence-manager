@@ -3,10 +3,10 @@ import type { RequestHandler } from "express";
 import { getOutstandingEvents } from "../../helpers/licencesDB/getOutstandingEvents.js";
 
 
-export const handler: RequestHandler = (req, res) => {
+export const handler: RequestHandler = (request, response) => {
 
-  const events = getOutstandingEvents(req.body, req.session);
-  res.json(events);
+  const events = getOutstandingEvents(request.body, request.session);
+  response.json(events);
 };
 
 

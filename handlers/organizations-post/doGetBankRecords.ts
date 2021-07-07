@@ -3,13 +3,13 @@ import type { RequestHandler } from "express";
 import { getOrganizationBankRecords } from "../../helpers/licencesDB/getOrganizationBankRecords.js";
 
 
-export const handler: RequestHandler = (req, res) => {
+export const handler: RequestHandler = (request, response) => {
 
-  const organizationID = req.body.organizationID;
-  const bankingYear = req.body.bankingYear;
-  const accountNumber = req.body.accountNumber;
+  const organizationID = request.body.organizationID;
+  const bankingYear = request.body.bankingYear;
+  const accountNumber = request.body.accountNumber;
 
-  res.json(getOrganizationBankRecords(organizationID, accountNumber, bankingYear));
+  response.json(getOrganizationBankRecords(organizationID, accountNumber, bankingYear));
 };
 
 

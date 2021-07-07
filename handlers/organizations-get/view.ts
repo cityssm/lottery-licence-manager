@@ -14,31 +14,31 @@ import { getOrganizationReminders } from "../../helpers/licencesDB/getOrganizati
 const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
 
 
-export const handler: RequestHandler = (req, res, next) => {
+export const handler: RequestHandler = (request, response, next) => {
 
-  const organizationID = Number(req.params.organizationID);
+  const organizationID = Number(request.params.organizationID);
 
-  if (isNaN(organizationID)) {
+  if (Number.isNaN(organizationID)) {
     return next();
   }
 
-  const organization = getOrganization(organizationID, req.session);
+  const organization = getOrganization(organizationID, request.session);
 
   if (!organization) {
-    return res.redirect(urlPrefix + "/organizations/?error=organizationNotFound");
+    return response.redirect(urlPrefix + "/organizations/?error=organizationNotFound");
   }
 
   const licences = getLicences({ organizationID },
-    req.session, {
+    request.session, {
       includeOrganization: false,
       limit: -1
     }).licences || [];
 
-  const remarks = getOrganizationRemarks(organizationID, req.session) || [];
+  const remarks = getOrganizationRemarks(organizationID, request.session) || [];
 
-  const reminders = getOrganizationReminders(organizationID, req.session) || [];
+  const reminders = getOrganizationReminders(organizationID, request.session) || [];
 
-  res.render("organization-view", {
+  response.render("organization-view", {
     headTitle: organization.organizationName,
     isViewOnly: true,
     organization,

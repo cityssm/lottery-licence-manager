@@ -4,44 +4,44 @@ import * as configFns from "../../helpers/configFns.js";
 import * as licencesDB from "../../helpers/licencesDB.js";
 import { rawToCSV } from "@cityssm/expressjs-server-js/stringFns.js";
 
-import reportDefinitions from "../../helpers/reportDefinitions/reportDefinitions.js";
+import { reportDefinitions } from "../../helpers/reportDefinitions/reportDefinitions.js";
 
 
 const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
 
 
-export const handler: RequestHandler = (req, res) => {
+export const handler: RequestHandler = (request, response) => {
 
-  const reportName = req.params.reportName;
+  const reportName = request.params.reportName;
 
   if (!reportDefinitions[reportName]) {
-    res.redirect(urlPrefix + "/reports/?error=reportNotFound");
+    response.redirect(urlPrefix + "/reports/?error=reportNotFound");
     return;
   }
 
-  const def = reportDefinitions[reportName];
+  const definition = reportDefinitions[reportName];
 
-  const sql = def.sql;
+  const sql = definition.sql;
 
-  const params = def.params
-    ? def.params(req)
+  const parameters = definition.params
+    ? definition.params(request)
     : [];
 
-  const functions = def.functions
-    ? def.functions()
-    : new Map<string, (...params: any) => any>();
+  const functions = definition.functions
+    ? definition.functions()
+    : new Map<string, (...parameters_: any) => unknown>();
 
 
-  const rowsColumnsObj = licencesDB.getRawRowsColumns(sql, params, functions);
+  const rowsColumnsObject = licencesDB.getRawRowsColumns(sql, parameters, functions);
 
-  const csv = rawToCSV(rowsColumnsObj);
+  const csv = rawToCSV(rowsColumnsObject);
 
-  res.setHeader("Content-Disposition",
+  response.setHeader("Content-Disposition",
     "attachment; filename=" + reportName + "-" + Date.now().toString() + ".csv");
 
-  res.setHeader("Content-Type", "text/csv");
+  response.setHeader("Content-Type", "text/csv");
 
-  res.send(csv);
+  response.send(csv);
 };
 
 

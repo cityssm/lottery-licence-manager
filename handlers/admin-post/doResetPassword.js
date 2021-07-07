@@ -1,7 +1,7 @@
 import { generateNewPassword } from "../../helpers/usersDB/generateNewPassword.js";
-export const handler = async (req, res) => {
-    const newPassword = await generateNewPassword(req.body.userName);
-    res.json({
+export const handler = async (request, response) => {
+    const newPassword = await generateNewPassword(request.body.userName);
+    response.json({
         success: true,
         newPassword
     });

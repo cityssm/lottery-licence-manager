@@ -3,11 +3,11 @@ import type { RequestHandler } from "express";
 import { addOrganizationRemark } from "../../helpers/licencesDB/addOrganizationRemark.js";
 
 
-export const handler: RequestHandler = (req, res) => {
+export const handler: RequestHandler = (request, response) => {
 
-  const remarkIndex = addOrganizationRemark(req.body, req.session);
+  const remarkIndex = addOrganizationRemark(request.body, request.session);
 
-  return res.json({
+  return response.json({
     success: true,
     message: "Remark added successfully.",
     remarkIndex

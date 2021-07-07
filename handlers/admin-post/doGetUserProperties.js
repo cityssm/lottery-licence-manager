@@ -1,6 +1,6 @@
 import { getUserProperties } from "../../helpers/usersDB/getUserProperties.js";
-export const handler = (req, res) => {
-    const userProperties = getUserProperties(req.body.userName);
-    res.json(userProperties);
+export const handler = (request, response) => {
+    const userProperties = getUserProperties(request.body.userName);
+    response.json(userProperties);
 };
 export default handler;

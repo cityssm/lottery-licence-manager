@@ -1,9 +1,9 @@
 import { getLicences } from "../../helpers/licencesDB/getLicences.js";
-export const handler = (req, res) => {
-    res.json(getLicences(req.body, req.session, {
+export const handler = (request, response) => {
+    response.json(getLicences(request.body, request.session, {
         includeOrganization: true,
-        limit: req.body.limit,
-        offset: req.body.offset
+        limit: request.body.limit,
+        offset: request.body.offset
     }));
 };
 export default handler;

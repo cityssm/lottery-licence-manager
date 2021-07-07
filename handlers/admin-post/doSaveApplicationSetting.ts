@@ -3,14 +3,14 @@ import type { RequestHandler } from "express";
 import { updateApplicationSetting } from "../../helpers/licencesDB/updateApplicationSetting.js";
 
 
-export const handler: RequestHandler = (req, res) => {
+export const handler: RequestHandler = (request, response) => {
 
-  const settingKey = req.body.settingKey;
-  const settingValue = req.body.settingValue;
+  const settingKey = request.body.settingKey;
+  const settingValue = request.body.settingValue;
 
-  const success = updateApplicationSetting(settingKey, settingValue, req.session);
+  const success = updateApplicationSetting(settingKey, settingValue, request.session);
 
-  res.json({
+  response.json({
     success
   });
 };

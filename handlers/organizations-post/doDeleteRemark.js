@@ -1,19 +1,16 @@
 import { deleteOrganizationRemark } from "../../helpers/licencesDB/deleteOrganizationRemark.js";
-export const handler = (req, res) => {
-    const organizationID = req.body.organizationID;
-    const remarkIndex = req.body.remarkIndex;
-    const success = deleteOrganizationRemark(organizationID, remarkIndex, req.session);
-    if (success) {
-        res.json({
+export const handler = (request, response) => {
+    const organizationID = request.body.organizationID;
+    const remarkIndex = request.body.remarkIndex;
+    const success = deleteOrganizationRemark(organizationID, remarkIndex, request.session);
+    return success
+        ? response.json({
             success: true,
             message: "Remark deleted successfully."
-        });
-    }
-    else {
-        res.json({
+        })
+        : response.json({
             success: false,
             message: "Remark could not be deleted."
         });
-    }
 };
 export default handler;

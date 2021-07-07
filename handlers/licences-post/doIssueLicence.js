@@ -1,14 +1,14 @@
 import { issueLicence } from "../../helpers/licencesDB/issueLicence.js";
-export const handler = (req, res) => {
-    const success = issueLicence(req.body.licenceID, req.session);
+export const handler = (request, response) => {
+    const success = issueLicence(request.body.licenceID, request.session);
     if (success) {
-        res.json({
+        response.json({
             success: true,
             message: "Licence Issued Successfully"
         });
     }
     else {
-        res.json({
+        response.json({
             success: false,
             message: "Licence Not Issued"
         });

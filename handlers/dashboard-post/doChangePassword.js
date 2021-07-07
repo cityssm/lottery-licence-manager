@@ -1,9 +1,9 @@
 import { tryResetPassword } from "../../helpers/usersDB/tryResetPassword.js";
-export const handler = async (req, res) => {
-    const userName = req.session.user.userName;
-    const oldPassword = req.body.oldPassword;
-    const newPassword = req.body.newPassword;
+export const handler = async (request, response) => {
+    const userName = request.session.user.userName;
+    const oldPassword = request.body.oldPassword;
+    const newPassword = request.body.newPassword;
     const result = await tryResetPassword(userName, oldPassword, newPassword);
-    res.json(result);
+    response.json(result);
 };
 export default handler;

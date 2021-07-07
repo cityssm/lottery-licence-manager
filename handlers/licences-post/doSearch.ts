@@ -3,12 +3,12 @@ import type { RequestHandler } from "express";
 import { getLicences } from "../../helpers/licencesDB/getLicences.js";
 
 
-export const handler: RequestHandler = (req, res) => {
+export const handler: RequestHandler = (request, response) => {
 
-  res.json(getLicences(req.body, req.session, {
+  response.json(getLicences(request.body, request.session, {
     includeOrganization: true,
-    limit: req.body.limit,
-    offset: req.body.offset
+    limit: request.body.limit,
+    offset: request.body.offset
   }));
 };
 

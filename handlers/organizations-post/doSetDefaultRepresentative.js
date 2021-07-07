@@ -1,12 +1,12 @@
 import { setDefaultOrganizationRepresentative } from "../../helpers/licencesDB/setDefaultOrganizationRepresentative.js";
-export const handler = (req, res, next) => {
-    const organizationID = Number(req.params.organizationID);
-    const isDefaultRepresentativeIndex = Number(req.body.isDefaultRepresentativeIndex);
-    if (isNaN(organizationID) || isNaN(isDefaultRepresentativeIndex)) {
+export const handler = (request, response, next) => {
+    const organizationID = Number(request.params.organizationID);
+    const isDefaultRepresentativeIndex = Number(request.body.isDefaultRepresentativeIndex);
+    if (Number.isNaN(organizationID) || Number.isNaN(isDefaultRepresentativeIndex)) {
         return next();
     }
     const success = setDefaultOrganizationRepresentative(organizationID, isDefaultRepresentativeIndex);
-    res.json({
+    response.json({
         success
     });
 };

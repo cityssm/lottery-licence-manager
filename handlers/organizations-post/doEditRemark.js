@@ -1,17 +1,14 @@
 import { updateOrganizationRemark } from "../../helpers/licencesDB/updateOrganizationRemark.js";
-export const handler = (req, res) => {
-    const success = updateOrganizationRemark(req.body, req.session);
-    if (success) {
-        res.json({
+export const handler = (request, response) => {
+    const success = updateOrganizationRemark(request.body, request.session);
+    return success
+        ? response.json({
             success: true,
             message: "Remark updated successfully."
-        });
-    }
-    else {
-        res.json({
+        })
+        : response.json({
             success: false,
             message: "Remark could not be updated."
         });
-    }
 };
 export default handler;

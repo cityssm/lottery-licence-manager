@@ -3,9 +3,9 @@ import type { RequestHandler } from "express";
 import * as configFns from "../../helpers/configFns.js";
 
 
-export const handler: RequestHandler = (_req, res) => {
+export const handler: RequestHandler = (_request, response) => {
 
-  res.render("organization-edit", {
+  response.render("organization-edit", {
     headTitle: "Organization Create",
     isViewOnly: false,
     isCreate: true,

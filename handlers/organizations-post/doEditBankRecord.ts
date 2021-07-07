@@ -3,25 +3,19 @@ import type { RequestHandler } from "express";
 import { updateOrganizationBankRecord } from "../../helpers/licencesDB/updateOrganizationBankRecord.js";
 
 
-export const handler: RequestHandler = (req, res) => {
+export const handler: RequestHandler = (request, response) => {
 
-  const success = updateOrganizationBankRecord(req.body, req.session);
+  const success = updateOrganizationBankRecord(request.body, request.session);
 
-  if (success) {
-
-    return res.json({
+  return success
+    ? response.json({
       success: true,
       message: "Record updated successfully."
-    });
-
-  } else {
-
-    return res.json({
+    })
+    : response.json({
       success: false,
       message: "Please try again."
     });
-
-  }
 };
 
 

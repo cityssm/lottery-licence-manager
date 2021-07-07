@@ -1,6 +1,6 @@
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
 import * as licencesDB from "../../helpers/licencesDB.js";
-export const handler = (_req, res) => {
+export const handler = (_request, response) => {
     const eventTableStats = licencesDB.getEventTableStats();
     const eventDate = new Date();
     eventDate.setMonth(eventDate.getMonth() - 1);
@@ -9,7 +9,7 @@ export const handler = (_req, res) => {
     eventDate.setMonth(eventDate.getMonth() + 1);
     eventDate.setDate(0);
     const eventDateEndString = dateTimeFns.dateToString(eventDate);
-    res.render("event-financials", {
+    response.render("event-financials", {
         headTitle: "Financial Summary",
         pageContainerIsFullWidth: true,
         eventYearMin: (eventTableStats.eventYearMin || new Date().getFullYear() + 1),

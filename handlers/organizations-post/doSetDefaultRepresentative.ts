@@ -3,19 +3,19 @@ import type { RequestHandler } from "express";
 import { setDefaultOrganizationRepresentative } from "../../helpers/licencesDB/setDefaultOrganizationRepresentative.js";
 
 
-export const handler: RequestHandler = (req, res, next) => {
+export const handler: RequestHandler = (request, response, next) => {
 
-  const organizationID = Number(req.params.organizationID);
-  const isDefaultRepresentativeIndex = Number(req.body.isDefaultRepresentativeIndex);
+  const organizationID = Number(request.params.organizationID);
+  const isDefaultRepresentativeIndex = Number(request.body.isDefaultRepresentativeIndex);
 
-  if (isNaN(organizationID) || isNaN(isDefaultRepresentativeIndex)) {
+  if (Number.isNaN(organizationID) || Number.isNaN(isDefaultRepresentativeIndex)) {
     return next();
   }
 
   const success =
     setDefaultOrganizationRepresentative(organizationID, isDefaultRepresentativeIndex);
 
-  res.json({
+  response.json({
     success
   });
 };

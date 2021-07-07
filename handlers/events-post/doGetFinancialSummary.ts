@@ -3,10 +3,10 @@ import type { RequestHandler } from "express";
 import { getEventFinancialSummary } from "../../helpers/licencesDB/getEventFinancialSummary.js";
 
 
-export const handler: RequestHandler = (req, res) => {
+export const handler: RequestHandler = (request, response) => {
 
-  const summary = getEventFinancialSummary(req.body);
-  res.json(summary);
+  const summary = getEventFinancialSummary(request.body);
+  response.json(summary);
 };
 
 

@@ -3,10 +3,10 @@ import type { RequestHandler } from "express";
 import { getOrganizationBankRecordStats } from "../../helpers/licencesDB/getOrganizationBankRecordStats.js";
 
 
-export const handler: RequestHandler = (req, res) => {
+export const handler: RequestHandler = (request, response) => {
 
-  const organizationID = req.body.organizationID;
-  res.json(getOrganizationBankRecordStats(organizationID));
+  const organizationID = request.body.organizationID;
+  response.json(getOrganizationBankRecordStats(organizationID));
 
 };
 

@@ -9,26 +9,26 @@ import { getOrganization } from "../../helpers/licencesDB/getOrganization.js";
 const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
 
 
-export const handler: RequestHandler = (req, res, next) => {
+export const handler: RequestHandler = (request, response, next) => {
 
-  const licenceID = Number(req.params.licenceID);
+  const licenceID = Number(request.params.licenceID);
 
-  if (isNaN(licenceID)) {
+  if (Number.isNaN(licenceID)) {
     return next();
   }
 
-  const licence = getLicence(licenceID, req.session);
+  const licence = getLicence(licenceID, request.session);
 
   if (!licence) {
 
-    return res.redirect(urlPrefix + "/licences/?error=licenceNotFound");
+    return response.redirect(urlPrefix + "/licences/?error=licenceNotFound");
 
   } else if (!licence.canUpdate) {
 
-    return res.redirect(urlPrefix + "/licences/" + licenceID.toString() + "/?error=accessDenied");
+    return response.redirect(urlPrefix + "/licences/" + licenceID.toString() + "/?error=accessDenied");
   }
 
-  const organization = getOrganization(licence.organizationID, req.session);
+  const organization = getOrganization(licence.organizationID, request.session);
 
   const feeCalculation = configFns.getProperty("licences.feeCalculationFn")(licence);
 
@@ -37,7 +37,7 @@ export const handler: RequestHandler = (req, res, next) => {
       ? "Licence " + licence.externalLicenceNumber
       : "Licence #" + licenceID.toString();
 
-  return res.render("licence-edit", {
+  return response.render("licence-edit", {
     headTitle: headTitle + " Update",
     isCreate: false,
     licence,

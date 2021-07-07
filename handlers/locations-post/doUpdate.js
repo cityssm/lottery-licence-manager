@@ -1,17 +1,14 @@
 import { updateLocation } from "../../helpers/licencesDB/updateLocation.js";
-export const handler = (req, res) => {
-    const changeCount = updateLocation(req.body, req.session);
-    if (changeCount) {
-        return res.json({
+export const handler = (request, response) => {
+    const changeCount = updateLocation(request.body, request.session);
+    return changeCount
+        ? response.json({
             success: true,
             message: "Location updated successfully."
-        });
-    }
-    else {
-        return res.json({
+        })
+        : response.json({
             success: false,
             message: "Record Not Saved"
         });
-    }
 };
 export default handler;

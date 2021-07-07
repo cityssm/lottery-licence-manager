@@ -3,14 +3,14 @@ import type { RequestHandler } from "express";
 import { mergeLocations } from "../../helpers/licencesDB/mergeLocations.js";
 
 
-export const handler: RequestHandler = (req, res) => {
+export const handler: RequestHandler = (request, response) => {
 
-  const targetLocationID = req.body.targetLocationID;
-  const sourceLocationID = req.body.sourceLocationID;
+  const targetLocationID = request.body.targetLocationID;
+  const sourceLocationID = request.body.sourceLocationID;
 
-  const success = mergeLocations(targetLocationID, sourceLocationID, req.session);
+  const success = mergeLocations(targetLocationID, sourceLocationID, request.session);
 
-  res.json({
+  response.json({
     success
   });
 };

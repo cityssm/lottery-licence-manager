@@ -3,24 +3,19 @@ import type { RequestHandler } from "express";
 import { deleteOrganization } from "../../helpers/licencesDB/deleteOrganization.js";
 
 
-export const handler: RequestHandler = (req, res) => {
+export const handler: RequestHandler = (request, response) => {
 
-  const success = deleteOrganization(req.body.organizationID, req.session);
+  const success = deleteOrganization(request.body.organizationID, request.session);
 
-  if (success) {
-
-    return res.json({
+  return success
+    ? response.json({
       success: true,
       message: "Organization deleted successfully."
-    });
-
-  } else {
-
-    return res.json({
+    })
+    : response.json({
       success: false,
       message: "Organization could not be deleted."
     });
-  }
 };
 
 

@@ -1,34 +1,34 @@
 import type { RequestHandler } from "express";
 
-import createLicence from "../../helpers/licencesDB/createLicence.js";
-import updateLicence from "../../helpers/licencesDB/updateLicence.js";
+import { createLicence } from "../../helpers/licencesDB/createLicence.js";
+import { updateLicence } from "../../helpers/licencesDB/updateLicence.js";
 
 
-export const handler: RequestHandler = (req, res) => {
+export const handler: RequestHandler = (request, response) => {
 
-  if (req.body.licenceID === "") {
+  if (request.body.licenceID === "") {
 
-    const newLicenceID = createLicence(req.body, req.session);
+    const newLicenceID = createLicence(request.body, request.session);
 
-    res.json({
+    response.json({
       success: true,
       licenceID: newLicenceID
     });
 
   } else {
 
-    const changeCount = updateLicence(req.body, req.session);
+    const changeCount = updateLicence(request.body, request.session);
 
     if (changeCount) {
 
-      res.json({
+      response.json({
         success: true,
         message: "Licence updated successfully."
       });
 
     } else {
 
-      res.json({
+      response.json({
         success: false,
         message: "Record Not Saved"
       });

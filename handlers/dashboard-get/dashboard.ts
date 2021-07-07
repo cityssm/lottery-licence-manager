@@ -3,11 +3,11 @@ import type { RequestHandler } from "express";
 import * as licencesDB_getDashboardStats from "../../helpers/licencesDB/getDashboardStats.js";
 
 
-export const handler: RequestHandler = (_req, res) => {
+export const handler: RequestHandler = (_request, response) => {
 
   const stats = licencesDB_getDashboardStats.getDashboardStats();
 
-  res.render("dashboard", {
+  response.render("dashboard", {
     headTitle: "Dashboard",
     stats
   });

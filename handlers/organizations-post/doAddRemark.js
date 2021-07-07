@@ -1,7 +1,7 @@
 import { addOrganizationRemark } from "../../helpers/licencesDB/addOrganizationRemark.js";
-export const handler = (req, res) => {
-    const remarkIndex = addOrganizationRemark(req.body, req.session);
-    return res.json({
+export const handler = (request, response) => {
+    const remarkIndex = addOrganizationRemark(request.body, request.session);
+    return response.json({
         success: true,
         message: "Remark added successfully.",
         remarkIndex

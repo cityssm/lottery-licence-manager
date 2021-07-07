@@ -3,14 +3,14 @@ import type { RequestHandler } from "express";
 import { createLocation } from "../../helpers/licencesDB/createLocation.js";
 
 
-export const handler: RequestHandler = (req, res) => {
+export const handler: RequestHandler = (request, response) => {
 
-  const locationID = createLocation(req.body, req.session);
+  const locationID = createLocation(request.body, request.session);
 
-  return res.json({
+  return response.json({
     success: true,
     locationID,
-    locationDisplayName: (req.body.locationName === "" ? req.body.locationAddress1 : req.body.locationName)
+    locationDisplayName: (request.body.locationName === "" ? request.body.locationAddress1 : request.body.locationName)
   });
 };
 

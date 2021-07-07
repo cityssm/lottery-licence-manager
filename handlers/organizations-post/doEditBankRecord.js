@@ -1,17 +1,14 @@
 import { updateOrganizationBankRecord } from "../../helpers/licencesDB/updateOrganizationBankRecord.js";
-export const handler = (req, res) => {
-    const success = updateOrganizationBankRecord(req.body, req.session);
-    if (success) {
-        return res.json({
+export const handler = (request, response) => {
+    const success = updateOrganizationBankRecord(request.body, request.session);
+    return success
+        ? response.json({
             success: true,
             message: "Record updated successfully."
-        });
-    }
-    else {
-        return res.json({
+        })
+        : response.json({
             success: false,
             message: "Please try again."
         });
-    }
 };
 export default handler;

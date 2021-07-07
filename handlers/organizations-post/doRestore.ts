@@ -3,24 +3,19 @@ import type { RequestHandler } from "express";
 import { restoreOrganization } from "../../helpers/licencesDB/restoreOrganization.js";
 
 
-export const handler: RequestHandler = (req, res) => {
+export const handler: RequestHandler = (request, response) => {
 
-  const success = restoreOrganization(req.body.organizationID, req.session);
+  const success = restoreOrganization(request.body.organizationID, request.session);
 
-  if (success) {
-
-    return res.json({
+  return success
+    ? response.json({
       success: true,
       message: "Organization restored successfully."
-    });
-
-  } else {
-
-    return res.json({
+    })
+    : response.json({
       success: false,
       message: "Organization could not be restored."
     });
-  }
 };
 
 

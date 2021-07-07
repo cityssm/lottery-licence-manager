@@ -1,16 +1,13 @@
 import { addOrganizationReminder } from "../../helpers/licencesDB/addOrganizationReminder.js";
-export const handler = (req, res) => {
-    const reminder = addOrganizationReminder(req.body, req.session);
-    if (reminder) {
-        return res.json({
+export const handler = (request, response) => {
+    const reminder = addOrganizationReminder(request.body, request.session);
+    return reminder
+        ? response.json({
             success: true,
             reminder
-        });
-    }
-    else {
-        return res.json({
+        })
+        : response.json({
             success: false
         });
-    }
 };
 export default handler;

@@ -4,35 +4,30 @@ import { createOrganization } from "../../helpers/licencesDB/createOrganization.
 import { updateOrganization } from "../../helpers/licencesDB/updateOrganization.js";
 
 
-export const handler: RequestHandler = (req, res) => {
+export const handler: RequestHandler = (request, response) => {
 
-  if (req.body.organizationID === "") {
+  if (request.body.organizationID === "") {
 
-    const newOrganizationID = createOrganization(req.body, req.session);
+    const newOrganizationID = createOrganization(request.body, request.session);
 
-    res.json({
+    return response.json({
       success: true,
       organizationID: newOrganizationID
     });
 
   } else {
 
-    const success = updateOrganization(req.body, req.session);
+    const success = updateOrganization(request.body, request.session);
 
-    if (success) {
-
-      return res.json({
+    return success
+      ? response.json({
         success: true,
         message: "Organization updated successfully."
-      });
-
-    } else {
-
-      return res.json({
+      })
+      : response.json({
         success: false,
         message: "Record Not Saved"
       });
-    }
   }
 };
 

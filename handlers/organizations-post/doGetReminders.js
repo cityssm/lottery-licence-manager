@@ -1,6 +1,6 @@
 import { getOrganizationReminders } from "../../helpers/licencesDB/getOrganizationReminders.js";
-export const handler = (req, res) => {
-    const organizationID = req.body.organizationID;
-    res.json(getOrganizationReminders(organizationID, req.session));
+export const handler = (request, response) => {
+    const organizationID = request.body.organizationID;
+    response.json(getOrganizationReminders(organizationID, request.session));
 };
 export default handler;

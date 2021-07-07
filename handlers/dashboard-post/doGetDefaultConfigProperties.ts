@@ -3,9 +3,9 @@ import type { RequestHandler } from "express";
 import * as configFns from "../../helpers/configFns.js";
 
 
-export const handler: RequestHandler = (_req, res) => {
+export const handler: RequestHandler = (_request, response) => {
 
-  res.json({
+  response.json({
     city: configFns.getProperty("defaults.city"),
     province: configFns.getProperty("defaults.province"),
     externalLicenceNumber_fieldLabel: configFns.getProperty("licences.externalLicenceNumber.fieldLabel"),

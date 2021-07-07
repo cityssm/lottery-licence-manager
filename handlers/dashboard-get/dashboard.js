@@ -1,7 +1,7 @@
 import * as licencesDB_getDashboardStats from "../../helpers/licencesDB/getDashboardStats.js";
-export const handler = (_req, res) => {
+export const handler = (_request, response) => {
     const stats = licencesDB_getDashboardStats.getDashboardStats();
-    res.render("dashboard", {
+    response.render("dashboard", {
         headTitle: "Dashboard",
         stats
     });

@@ -1,11 +1,9 @@
-import dateDiff from "@cityssm/date-diff";
 import { getUndismissedOrganizationReminders } from "../../helpers/licencesDB/getUndismissedOrganizationReminders.js";
-export const handler = (req, res) => {
-    const reminders = getUndismissedOrganizationReminders(req.session);
-    res.render("organization-reminders", {
+export const handler = (request, response) => {
+    const reminders = getUndismissedOrganizationReminders(request.session);
+    response.render("organization-reminders", {
         headTitle: "Organization Reminders",
-        reminders,
-        dateDiff
+        reminders
     });
 };
 export default handler;

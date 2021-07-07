@@ -2,20 +2,20 @@ import * as configFns from "../../helpers/configFns.js";
 import { getOrganization } from "../../helpers/licencesDB/getOrganization.js";
 import { getLicence } from "../../helpers/licencesDB/getLicence.js";
 const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
-export const handler = (req, res, next) => {
-    const licenceID = Number(req.params.licenceID);
-    if (isNaN(licenceID)) {
+export const handler = (request, response, next) => {
+    const licenceID = Number(request.params.licenceID);
+    if (Number.isNaN(licenceID)) {
         return next();
     }
-    const licence = getLicence(licenceID, req.session);
+    const licence = getLicence(licenceID, request.session);
     if (!licence) {
-        return res.redirect(urlPrefix + "/licences/?error=licenceNotFound");
+        return response.redirect(urlPrefix + "/licences/?error=licenceNotFound");
     }
-    const organization = getOrganization(licence.organizationID, req.session);
+    const organization = getOrganization(licence.organizationID, request.session);
     const headTitle = configFns.getProperty("licences.externalLicenceNumber.isPreferredID")
         ? "Licence " + licence.externalLicenceNumber
         : "Licence #" + licenceID.toString();
-    return res.render("licence-view", {
+    return response.render("licence-view", {
         headTitle,
         licence,
         organization

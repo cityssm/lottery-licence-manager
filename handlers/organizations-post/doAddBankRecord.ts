@@ -3,25 +3,19 @@ import type { RequestHandler } from "express";
 import { addOrganizationBankRecord } from "../../helpers/licencesDB/addOrganizationBankRecord.js";
 
 
-export const handler: RequestHandler = (req, res) => {
+export const handler: RequestHandler = (request, response) => {
 
-  const success = addOrganizationBankRecord(req.body, req.session);
+  const success = addOrganizationBankRecord(request.body, request.session);
 
-  if (success) {
-
-    return res.json({
+  return success
+    ? response.json({
       success: true,
       message: "Record added successfully."
-    });
-
-  } else {
-
-    return res.json({
+    })
+    : response.json({
       success: false,
       message: "Please make sure that the record you are trying to create does not already exist."
     });
-
-  }
 };
 
 

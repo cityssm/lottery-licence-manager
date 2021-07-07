@@ -4,22 +4,24 @@ import { updateOrganizationReminder } from "../../helpers/licencesDB/updateOrgan
 import { getOrganizationReminder } from "../../helpers/licencesDB/getOrganizationReminder.js";
 
 
-export const handler: RequestHandler = (req, res) => {
+export const handler: RequestHandler = (request, response) => {
 
-  const success = updateOrganizationReminder(req.body, req.session);
+  const success = updateOrganizationReminder(request.body, request.session);
 
   if (success) {
 
     const reminder =
-      getOrganizationReminder(req.body.organizationID, req.body.reminderIndex, req.session);
+      getOrganizationReminder(request.body.organizationID, request.body.reminderIndex, request.session);
 
-    return res.json({
+    return response.json({
       success: true,
       reminder
     });
 
   } else {
-    res.json({ success: false });
+    return response.json({
+      success: false
+    });
   }
 };
 

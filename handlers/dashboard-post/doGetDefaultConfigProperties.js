@@ -1,6 +1,6 @@
 import * as configFns from "../../helpers/configFns.js";
-export const handler = (_req, res) => {
-    res.json({
+export const handler = (_request, response) => {
+    response.json({
         city: configFns.getProperty("defaults.city"),
         province: configFns.getProperty("defaults.province"),
         externalLicenceNumber_fieldLabel: configFns.getProperty("licences.externalLicenceNumber.fieldLabel"),

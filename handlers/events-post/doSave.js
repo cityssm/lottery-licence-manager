@@ -1,14 +1,14 @@
 import { updateEvent } from "../../helpers/licencesDB/updateEvent.js";
-export const handler = (req, res) => {
-    const changeCount = updateEvent(req.body, req.session);
+export const handler = (request, response) => {
+    const changeCount = updateEvent(request.body, request.session);
     if (changeCount) {
-        res.json({
+        response.json({
             success: true,
             message: "Event updated successfully."
         });
     }
     else {
-        res.json({
+        response.json({
             success: false,
             message: "Record Not Saved"
         });

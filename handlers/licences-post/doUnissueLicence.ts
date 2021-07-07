@@ -3,20 +3,20 @@ import type { RequestHandler } from "express";
 import { unissueLicence } from "../../helpers/licencesDB/unissueLicence.js";
 
 
-export const handler: RequestHandler = (req, res) => {
+export const handler: RequestHandler = (request, response) => {
 
-  const success = unissueLicence(req.body.licenceID, req.session);
+  const success = unissueLicence(request.body.licenceID, request.session);
 
   if (success) {
 
-    res.json({
+    response.json({
       success: true,
       message: "Licence Unissued Successfully"
     });
 
   } else {
 
-    res.json({
+    response.json({
       success: false,
       message: "Licence Not Unissued"
     });

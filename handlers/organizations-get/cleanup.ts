@@ -1,9 +1,9 @@
 import type { RequestHandler } from "express";
 
 
-export const handler: RequestHandler = (_req, res) => {
+export const handler: RequestHandler = (_request, response) => {
 
-  res.render("organization-cleanup", {
+  response.render("organization-cleanup", {
     headTitle: "Organization Cleanup"
   });
 };

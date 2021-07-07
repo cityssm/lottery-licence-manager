@@ -3,11 +3,11 @@ import type { RequestHandler } from "express";
 import { getInactiveLocations } from "../../helpers/licencesDB/getInactiveLocations.js";
 
 
-export const handler: RequestHandler = (req, res) => {
+export const handler: RequestHandler = (request, response) => {
 
-  const inactiveYears = parseInt(req.body.inactiveYears, 10);
+  const inactiveYears = Number.parseInt(request.body.inactiveYears, 10);
 
-  res.json(getInactiveLocations(inactiveYears));
+  response.json(getInactiveLocations(inactiveYears));
 };
 
 

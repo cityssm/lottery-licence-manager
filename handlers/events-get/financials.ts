@@ -5,7 +5,7 @@ import * as licencesDB from "../../helpers/licencesDB.js";
 import type { RequestHandler } from "express";
 
 
-export const handler: RequestHandler = (_req, res) => {
+export const handler: RequestHandler = (_request, response) => {
 
   // Get event table stats
 
@@ -25,7 +25,7 @@ export const handler: RequestHandler = (_req, res) => {
 
   const eventDateEndString = dateTimeFns.dateToString(eventDate);
 
-  res.render("event-financials", {
+  response.render("event-financials", {
     headTitle: "Financial Summary",
     pageContainerIsFullWidth: true,
     eventYearMin: (eventTableStats.eventYearMin || new Date().getFullYear() + 1),

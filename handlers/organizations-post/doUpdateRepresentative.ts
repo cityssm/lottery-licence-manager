@@ -3,29 +3,24 @@ import type { RequestHandler } from "express";
 import { updateOrganizationRepresentative } from "../../helpers/licencesDB/updateOrganizationRepresentative.js";
 
 
-export const handler: RequestHandler = (req, res, next) => {
+export const handler: RequestHandler = (request, response, next) => {
 
-  const organizationID = Number(req.params.organizationID);
+  const organizationID = Number(request.params.organizationID);
 
-  if (isNaN(organizationID)) {
+  if (Number.isNaN(organizationID)) {
     return next();
   }
 
-  const representativeObj = updateOrganizationRepresentative(organizationID, req.body);
+  const representativeObject = updateOrganizationRepresentative(organizationID, request.body);
 
-  if (representativeObj) {
-
-    res.json({
+  return representativeObject
+    ? response.json({
       success: true,
-      organizationRepresentative: representativeObj
-    });
-
-  } else {
-
-    res.json({
+      organizationRepresentative: representativeObject
+    })
+    : response.json({
       success: false
     });
-  }
 };
 
 

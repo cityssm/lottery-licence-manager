@@ -1,5 +1,5 @@
-export const handler = (_req, res) => {
-    res.render("event-outstanding", {
+export const handler = (_request, response) => {
+    response.render("event-outstanding", {
         headTitle: "Outstanding Events"
     });
 };

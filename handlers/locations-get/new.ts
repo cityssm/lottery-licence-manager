@@ -4,9 +4,9 @@ import * as configFns from "../../helpers/configFns.js";
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
 
 
-export const handler: RequestHandler = (_req, res) => {
+export const handler: RequestHandler = (_request, response) => {
 
-  res.render("location-edit", {
+  response.render("location-edit", {
     headTitle: "Create a New Location",
     location: {
       locationCity: configFns.getProperty("defaults.city"),

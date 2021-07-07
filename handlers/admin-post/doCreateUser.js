@@ -1,14 +1,14 @@
 import { createUser } from "../../helpers/usersDB/createUser.js";
-export const handler = async (req, res) => {
-    const newPassword = await createUser(req.body);
+export const handler = async (request, response) => {
+    const newPassword = await createUser(request.body);
     if (!newPassword) {
-        res.json({
+        response.json({
             success: false,
             message: "New Account Not Created"
         });
     }
     else {
-        res.json({
+        response.json({
             success: true,
             newPassword
         });

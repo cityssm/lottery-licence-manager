@@ -16,14 +16,14 @@ const bankRecordIsBlank = (bankRecord: llm.OrganizationBankRecord) => {
 };
 
 
-export const handler: RequestHandler = (req, res) => {
+export const handler: RequestHandler = (request, response) => {
 
-  const organizationID = parseInt(req.body.organizationID, 10);
-  const accountNumber = req.body.accountNumber;
-  const bankingYear = parseInt(req.body.bankingYear, 10);
-  const bankingMonth = parseInt(req.body.bankingMonth, 10);
+  const organizationID = Number.parseInt(request.body.organizationID, 10);
+  const accountNumber = request.body.accountNumber;
+  const bankingYear = Number.parseInt(request.body.bankingYear, 10);
+  const bankingMonth = Number.parseInt(request.body.bankingMonth, 10);
 
-  const maxBankRecordTypeIndex = parseInt(req.body.bankRecordTypeIndex, 10);
+  const maxBankRecordTypeIndex = Number.parseInt(request.body.bankRecordTypeIndex, 10);
 
   let success = true;
 
@@ -31,7 +31,9 @@ export const handler: RequestHandler = (req, res) => {
 
     const typeIndexString = typeIndex.toString();
 
-    const recordIndex = (req.body["recordIndex-" + typeIndexString] === "" ? null : parseInt(req.body["recordIndex-" + typeIndexString], 10));
+    const recordIndex = (request.body["recordIndex-" + typeIndexString] === ""
+      ? undefined
+      : Number.parseInt(request.body["recordIndex-" + typeIndexString], 10));
 
     const bankRecord: llm.OrganizationBankRecord = {
       recordType: "bankRecord",
@@ -40,16 +42,16 @@ export const handler: RequestHandler = (req, res) => {
       bankingYear,
       bankingMonth,
       recordIndex,
-      bankRecordType: req.body["bankRecordType-" + typeIndexString],
-      recordDateString: req.body["recordDateString-" + typeIndexString],
-      recordNote: req.body["recordNote-" + typeIndexString],
-      recordIsNA: (req.body["recordIsNA-" + typeIndexString] === "1")
+      bankRecordType: request.body["bankRecordType-" + typeIndexString],
+      recordDateString: request.body["recordDateString-" + typeIndexString],
+      recordNote: request.body["recordNote-" + typeIndexString],
+      recordIsNA: (request.body["recordIsNA-" + typeIndexString] === "1")
     };
 
-    if (req.body["recordIndex-" + typeIndexString] === "") {
+    if (request.body["recordIndex-" + typeIndexString] === "") {
 
       if (!bankRecordIsBlank(bankRecord)) {
-        const addSuccess = addOrganizationBankRecord(bankRecord, req.session);
+        const addSuccess = addOrganizationBankRecord(bankRecord, request.session);
         if (!addSuccess) {
           success = false;
         }
@@ -58,12 +60,12 @@ export const handler: RequestHandler = (req, res) => {
     } else {
 
       if (bankRecordIsBlank(bankRecord)) {
-        const deleteSuccess = deleteOrganizationBankRecord(organizationID, recordIndex, req.session);
+        const deleteSuccess = deleteOrganizationBankRecord(organizationID, recordIndex, request.session);
         if (!deleteSuccess) {
           success = false;
         }
       } else {
-        const updateSuccess = updateOrganizationBankRecord(bankRecord, req.session);
+        const updateSuccess = updateOrganizationBankRecord(bankRecord, request.session);
         if (!updateSuccess) {
           success = false;
         }
@@ -71,17 +73,14 @@ export const handler: RequestHandler = (req, res) => {
     }
   }
 
-  if (success) {
-    return res.json({
+  return success
+    ? response.json({
       success: true
-    });
-
-  } else {
-    return res.json({
+    })
+    : response.json({
       success: false,
       message: "Please try again."
     });
-  }
 };
 
 

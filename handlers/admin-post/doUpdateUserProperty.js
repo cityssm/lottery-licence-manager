@@ -1,8 +1,8 @@
 import { updateUserProperty } from "../../helpers/usersDB/updateUserProperty.js";
-export const handler = (req, res) => {
-    const changeCount = updateUserProperty(req.body);
-    res.json({
-        success: (changeCount === 1)
+export const handler = (request, response) => {
+    const success = updateUserProperty(request.body);
+    response.json({
+        success: success
     });
 };
 export default handler;

@@ -1,6 +1,6 @@
 import { getInactiveOrganizations } from "../../helpers/licencesDB/getInactiveOrganizations.js";
-export const handler = (req, res) => {
-    const inactiveYears = parseInt(req.body.inactiveYears, 10);
-    res.json(getInactiveOrganizations(inactiveYears));
+export const handler = (request, response) => {
+    const inactiveYears = Number.parseInt(request.body.inactiveYears, 10);
+    response.json(getInactiveOrganizations(inactiveYears));
 };
 export default handler;

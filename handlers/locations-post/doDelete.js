@@ -1,17 +1,14 @@
 import { deleteLocation } from "../../helpers/licencesDB/deleteLocation.js";
-export const handler = (req, res) => {
-    const changeCount = deleteLocation(req.body.locationID, req.session);
-    if (changeCount) {
-        return res.json({
+export const handler = (request, response) => {
+    const changeCount = deleteLocation(request.body.locationID, request.session);
+    return changeCount
+        ? response.json({
             success: true,
             message: "Location deleted successfully."
-        });
-    }
-    else {
-        return res.json({
+        })
+        : response.json({
             success: false,
             message: "Location could not be deleted."
         });
-    }
 };
 export default handler;

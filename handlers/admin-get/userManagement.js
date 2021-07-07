@@ -1,7 +1,7 @@
 import { getAllUsers } from "../../helpers/usersDB/getAllUsers.js";
-export const handler = (_req, res) => {
+export const handler = (_request, response) => {
     const users = getAllUsers();
-    res.render("admin-userManagement", {
+    response.render("admin-userManagement", {
         headTitle: "User Management",
         users
     });

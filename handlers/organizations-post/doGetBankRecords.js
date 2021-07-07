@@ -1,8 +1,8 @@
 import { getOrganizationBankRecords } from "../../helpers/licencesDB/getOrganizationBankRecords.js";
-export const handler = (req, res) => {
-    const organizationID = req.body.organizationID;
-    const bankingYear = req.body.bankingYear;
-    const accountNumber = req.body.accountNumber;
-    res.json(getOrganizationBankRecords(organizationID, accountNumber, bankingYear));
+export const handler = (request, response) => {
+    const organizationID = request.body.organizationID;
+    const bankingYear = request.body.bankingYear;
+    const accountNumber = request.body.accountNumber;
+    response.json(getOrganizationBankRecords(organizationID, accountNumber, bankingYear));
 };
 export default handler;

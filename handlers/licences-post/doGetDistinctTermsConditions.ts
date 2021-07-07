@@ -3,11 +3,11 @@ import type { RequestHandler } from "express";
 import { getDistinctTermsConditions } from "../../helpers/licencesDB/getDistinctTermsConditions.js";
 
 
-export const handler: RequestHandler = (req, res) => {
+export const handler: RequestHandler = (request, response) => {
 
-  const organizationID = req.body.organizationID;
+  const organizationID = request.body.organizationID;
 
-  res.json(getDistinctTermsConditions(organizationID));
+  response.json(getDistinctTermsConditions(organizationID));
 
 };
 

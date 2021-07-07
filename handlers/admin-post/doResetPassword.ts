@@ -3,11 +3,11 @@ import type { RequestHandler } from "express";
 import { generateNewPassword } from "../../helpers/usersDB/generateNewPassword.js";
 
 
-export const handler: RequestHandler = async(req, res) => {
+export const handler: RequestHandler = async(request, response) => {
 
-  const newPassword = await generateNewPassword(req.body.userName);
+  const newPassword = await generateNewPassword(request.body.userName);
 
-  res.json({
+  response.json({
     success: true,
     newPassword
   });

@@ -3,12 +3,12 @@ import type { RequestHandler } from "express";
 import { deleteOrganizationReminder } from "../../helpers/licencesDB/deleteOrganizationReminder.js";
 
 
-export const handler: RequestHandler = (req, res) => {
+export const handler: RequestHandler = (request, response) => {
 
   const success =
-    deleteOrganizationReminder(req.body.organizationID, req.body.reminderIndex, req.session);
+    deleteOrganizationReminder(request.body.organizationID, request.body.reminderIndex, request.session);
 
-  return res.json({ success });
+  return response.json({ success });
 };
 
 

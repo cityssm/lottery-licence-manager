@@ -1,6 +1,6 @@
 import { getOrganizationRemarks } from "../../helpers/licencesDB/getOrganizationRemarks.js";
-export const handler = (req, res) => {
-    const organizationID = req.body.organizationID;
-    res.json(getOrganizationRemarks(organizationID, req.session));
+export const handler = (request, response) => {
+    const organizationID = request.body.organizationID;
+    response.json(getOrganizationRemarks(organizationID, request.session));
 };
 export default handler;

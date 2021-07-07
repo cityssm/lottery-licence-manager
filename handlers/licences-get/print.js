@@ -1,4 +1,4 @@
-import * as path from "path";
+import path from "path";
 import * as ejs from "ejs";
 import * as configFns from "../../helpers/configFns.js";
 import { getOrganization } from "../../helpers/licencesDB/getOrganization.js";
@@ -7,40 +7,40 @@ import convertHTMLToPDF from "pdf-puppeteer";
 const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
 const printTemplate = configFns.getProperty("licences.printTemplate");
 const __dirname = ".";
-export const handler = async (req, res, next) => {
-    const licenceID = Number(req.params.licenceID);
-    if (isNaN(licenceID)) {
+export const handler = async (request, response, next) => {
+    const licenceID = Number(request.params.licenceID);
+    if (Number.isNaN(licenceID)) {
         return next();
     }
-    const licence = getLicence(licenceID, req.session);
+    const licence = getLicence(licenceID, request.session);
     if (!licence) {
-        return res.redirect(urlPrefix + "/licences/?error=licenceNotFound");
+        return response.redirect(urlPrefix + "/licences/?error=licenceNotFound");
     }
     else if (!licence.issueDate) {
-        return res.redirect(urlPrefix + "/licences/?error=licenceNotIssued");
+        return response.redirect(urlPrefix + "/licences/?error=licenceNotIssued");
     }
-    const organization = getOrganization(licence.organizationID, req.session);
+    const organization = getOrganization(licence.organizationID, request.session);
     const reportPath = path.join(__dirname, "reports", printTemplate);
+    const pdfCallbackFunction = (pdf) => {
+        response.setHeader("Content-Disposition", "attachment;" +
+            " filename=licence-" + licenceID.toString() + "-" + licence.recordUpdate_timeMillis.toString() + ".pdf");
+        response.setHeader("Content-Type", "application/pdf");
+        response.send(pdf);
+    };
     await ejs.renderFile(reportPath, {
         configFns,
         licence,
         organization
-    }, {}, async (ejsErr, ejsData) => {
-        if (ejsErr) {
-            return next(ejsErr);
+    }, {}, async (ejsError, ejsData) => {
+        if (ejsError) {
+            return next(ejsError);
         }
-        const pdfCallbackFn = (pdf) => {
-            res.setHeader("Content-Disposition", "attachment;" +
-                " filename=licence-" + licenceID.toString() + "-" + licence.recordUpdate_timeMillis.toString() + ".pdf");
-            res.setHeader("Content-Type", "application/pdf");
-            res.send(pdf);
-        };
-        await convertHTMLToPDF(ejsData, pdfCallbackFn, {
+        await convertHTMLToPDF(ejsData, pdfCallbackFunction, {
             format: "letter",
             printBackground: true,
             preferCSSPageSize: true
         });
-        return null;
+        return;
     });
 };
 export default handler;

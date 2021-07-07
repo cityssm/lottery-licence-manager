@@ -11,28 +11,28 @@ import { getLocation } from "../../helpers/licencesDB/getLocation.js";
 const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
 
 
-export const handler: RequestHandler = (req, res, next) => {
+export const handler: RequestHandler = (request, response, next) => {
 
-  const locationID = Number(req.params.locationID);
+  const locationID = Number(request.params.locationID);
 
-  if (isNaN(locationID)) {
+  if (Number.isNaN(locationID)) {
     return next();
   }
 
-  const location = getLocation(locationID, req.session);
+  const location = getLocation(locationID, request.session);
 
   if (!location) {
-    return res.redirect(urlPrefix + "/locations/?error=locationNotFound");
+    return response.redirect(urlPrefix + "/locations/?error=locationNotFound");
   }
 
   const licences = getLicences({
     locationID
-  }, req.session, {
+  }, request.session, {
       includeOrganization: true,
       limit: -1
     }).licences;
 
-  return res.render("location-view", {
+  return response.render("location-view", {
     headTitle: location.locationDisplayName,
     location,
     licences,

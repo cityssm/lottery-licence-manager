@@ -1,21 +1,21 @@
 import { deleteLicence } from "../../helpers/licencesDB/deleteLicence.js";
-export const handler = (req, res) => {
-    if (req.body.licenceID === "") {
-        res.json({
+export const handler = (request, response) => {
+    if (request.body.licenceID === "") {
+        response.json({
             success: false,
             message: "Licence ID Unavailable"
         });
     }
     else {
-        const changeCount = deleteLicence(req.body.licenceID, req.session);
+        const changeCount = deleteLicence(request.body.licenceID, request.session);
         if (changeCount) {
-            res.json({
+            response.json({
                 success: true,
                 message: "Licence Deleted"
             });
         }
         else {
-            res.json({
+            response.json({
                 success: false,
                 message: "Licence Not Deleted"
             });

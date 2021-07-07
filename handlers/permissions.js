@@ -1,47 +1,47 @@
 import * as configFns from "../helpers/configFns.js";
 import * as userFns from "../helpers/userFns.js";
 const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
-export const forbiddenJSON = (res) => {
-    return res
+export const forbiddenJSON = (response) => {
+    return response
         .status(403)
         .json({
         success: false,
         message: "Forbidden"
     });
 };
-export const adminGetHandler = (req, res, next) => {
-    if (userFns.userIsAdmin(req)) {
+export const adminGetHandler = (request, response, next) => {
+    if (userFns.userIsAdmin(request)) {
         return next();
     }
-    return res.redirect(urlPrefix + "/dashboard");
+    return response.redirect(urlPrefix + "/dashboard");
 };
-export const adminPostHandler = (req, res, next) => {
-    if (userFns.userIsAdmin(req)) {
+export const adminPostHandler = (request, response, next) => {
+    if (userFns.userIsAdmin(request)) {
         return next();
     }
-    return res.json(forbiddenJSON);
+    return response.json(forbiddenJSON);
 };
-export const updateGetHandler = (req, res, next) => {
-    if (userFns.userCanUpdate(req)) {
+export const updateGetHandler = (request, response, next) => {
+    if (userFns.userCanUpdate(request)) {
         return next();
     }
-    return res.redirect(urlPrefix + "/dashboard");
+    return response.redirect(urlPrefix + "/dashboard");
 };
-export const updatePostHandler = (req, res, next) => {
-    if (userFns.userCanUpdate(req)) {
+export const updatePostHandler = (request, response, next) => {
+    if (userFns.userCanUpdate(request)) {
         return next();
     }
-    return res.json(forbiddenJSON);
+    return response.json(forbiddenJSON);
 };
-export const createGetHandler = (req, res, next) => {
-    if (userFns.userCanCreate(req)) {
+export const createGetHandler = (request, response, next) => {
+    if (userFns.userCanCreate(request)) {
         return next();
     }
-    return res.redirect(urlPrefix + "/dashboard");
+    return response.redirect(urlPrefix + "/dashboard");
 };
-export const createPostHandler = (req, res, next) => {
-    if (userFns.userCanCreate(req)) {
+export const createPostHandler = (request, response, next) => {
+    if (userFns.userCanCreate(request)) {
         return next();
     }
-    return res.json(forbiddenJSON);
+    return response.json(forbiddenJSON);
 };

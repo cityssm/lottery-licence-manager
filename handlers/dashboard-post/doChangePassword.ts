@@ -3,15 +3,15 @@ import type { RequestHandler } from "express";
 import { tryResetPassword } from "../../helpers/usersDB/tryResetPassword.js";
 
 
-export const handler: RequestHandler = async(req, res) => {
+export const handler: RequestHandler = async(request, response) => {
 
-  const userName = req.session.user.userName;
-  const oldPassword = req.body.oldPassword;
-  const newPassword = req.body.newPassword;
+  const userName = request.session.user.userName;
+  const oldPassword = request.body.oldPassword;
+  const newPassword = request.body.newPassword;
 
   const result = await tryResetPassword(userName, oldPassword, newPassword);
 
-  res.json(result);
+  response.json(result);
 };
 
 

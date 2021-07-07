@@ -3,24 +3,19 @@ import type { RequestHandler } from "express";
 import { updateLocation } from "../../helpers/licencesDB/updateLocation.js";
 
 
-export const handler: RequestHandler = (req, res) => {
+export const handler: RequestHandler = (request, response) => {
 
-  const changeCount = updateLocation(req.body, req.session);
+  const changeCount = updateLocation(request.body, request.session);
 
-  if (changeCount) {
-
-    return res.json({
+  return changeCount
+    ? response.json({
       success: true,
       message: "Location updated successfully."
-    });
-
-  } else {
-
-    return res.json({
+    })
+    : response.json({
       success: false,
       message: "Record Not Saved"
     });
-  }
 };
 
 

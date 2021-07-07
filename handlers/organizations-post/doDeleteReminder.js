@@ -1,6 +1,6 @@
 import { deleteOrganizationReminder } from "../../helpers/licencesDB/deleteOrganizationReminder.js";
-export const handler = (req, res) => {
-    const success = deleteOrganizationReminder(req.body.organizationID, req.body.reminderIndex, req.session);
-    return res.json({ success });
+export const handler = (request, response) => {
+    const success = deleteOrganizationReminder(request.body.organizationID, request.body.reminderIndex, request.session);
+    return response.json({ success });
 };
 export default handler;

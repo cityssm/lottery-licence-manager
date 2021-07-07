@@ -1,29 +1,29 @@
 import type { RequestHandler } from "express";
 
-import deleteEvent from "../../helpers/licencesDB/deleteEvent.js";
+import { deleteEvent } from "../../helpers/licencesDB/deleteEvent.js";
 
 
-export const handler: RequestHandler = (req, res) => {
+export const handler: RequestHandler = (request, response) => {
 
-  if (req.body.licenceID === "" || req.body.eventDate === "") {
+  if (request.body.licenceID === "" || request.body.eventDate === "") {
 
-    return res.json({
+    return response.json({
       success: false,
       message: "Licence ID or Event Date Unavailable"
     });
   }
 
-  const madeChanges = deleteEvent(req.body.licenceID, req.body.eventDate, req.session);
+  const madeChanges = deleteEvent(request.body.licenceID, request.body.eventDate, request.session);
 
   if (madeChanges) {
 
-    return res.json({
+    return response.json({
       success: true,
       message: "Event Deleted"
     });
   }
 
-  res.json({
+  response.json({
     success: false,
     message: "Event Not Deleted"
   });

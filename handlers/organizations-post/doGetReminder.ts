@@ -3,12 +3,12 @@ import type { RequestHandler } from "express";
 import { getOrganizationReminder } from "../../helpers/licencesDB/getOrganizationReminder.js";
 
 
-export const handler: RequestHandler = (req, res) => {
+export const handler: RequestHandler = (request, response) => {
 
-  const organizationID = req.body.organizationID;
-  const reminderIndex = req.body.reminderIndex;
+  const organizationID = request.body.organizationID;
+  const reminderIndex = request.body.reminderIndex;
 
-  res.json(getOrganizationReminder(organizationID, reminderIndex, req.session));
+  response.json(getOrganizationReminder(organizationID, reminderIndex, request.session));
 };
 
 

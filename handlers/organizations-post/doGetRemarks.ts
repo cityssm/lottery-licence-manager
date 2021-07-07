@@ -3,11 +3,11 @@ import type { RequestHandler } from "express";
 import { getOrganizationRemarks } from "../../helpers/licencesDB/getOrganizationRemarks.js";
 
 
-export const handler: RequestHandler = (req, res) => {
+export const handler: RequestHandler = (request, response) => {
 
-  const organizationID = req.body.organizationID;
+  const organizationID = request.body.organizationID;
 
-  res.json(getOrganizationRemarks(organizationID, req.session));
+  response.json(getOrganizationRemarks(organizationID, request.session));
 };
 
 

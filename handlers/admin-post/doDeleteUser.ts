@@ -5,19 +5,19 @@ import { forbiddenJSON } from "../../handlers/permissions.js";
 import { inactivateUser } from "../../helpers/usersDB/inactivateUser.js";
 
 
-export const handler: RequestHandler = (req, res) => {
+export const handler: RequestHandler = (request, response) => {
 
-  const userNameToDelete = req.body.userName;
+  const userNameToDelete = request.body.userName;
 
-  if (userNameToDelete === req.session.user.userName) {
+  if (userNameToDelete === request.session.user.userName) {
 
     // You can't delete yourself!
-    return forbiddenJSON(res);
+    return forbiddenJSON(response);
   }
 
   const success = inactivateUser(userNameToDelete);
 
-  res.json({
+  response.json({
     success
   });
 };

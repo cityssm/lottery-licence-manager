@@ -3,20 +3,18 @@ import type { RequestHandler } from "express";
 import { addOrganizationReminder } from "../../helpers/licencesDB/addOrganizationReminder.js";
 
 
-export const handler: RequestHandler = (req, res) => {
+export const handler: RequestHandler = (request, response) => {
 
-  const reminder = addOrganizationReminder(req.body, req.session);
+  const reminder = addOrganizationReminder(request.body, request.session);
 
-  if (reminder) {
-    return res.json({
+  return reminder
+    ? response.json({
       success: true,
       reminder
-    });
-  } else {
-    return res.json({
+    })
+    : response.json({
       success: false
     });
-  }
 };
 
 

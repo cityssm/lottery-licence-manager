@@ -1,17 +1,14 @@
 import { addOrganizationBankRecord } from "../../helpers/licencesDB/addOrganizationBankRecord.js";
-export const handler = (req, res) => {
-    const success = addOrganizationBankRecord(req.body, req.session);
-    if (success) {
-        return res.json({
+export const handler = (request, response) => {
+    const success = addOrganizationBankRecord(request.body, request.session);
+    return success
+        ? response.json({
             success: true,
             message: "Record added successfully."
-        });
-    }
-    else {
-        return res.json({
+        })
+        : response.json({
             success: false,
             message: "Please make sure that the record you are trying to create does not already exist."
         });
-    }
 };
 export default handler;

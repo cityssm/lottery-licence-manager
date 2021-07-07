@@ -3,27 +3,22 @@ import type { RequestHandler } from "express";
 import { deleteOrganizationRemark } from "../../helpers/licencesDB/deleteOrganizationRemark.js";
 
 
-export const handler: RequestHandler = (req, res) => {
+export const handler: RequestHandler = (request, response) => {
 
-  const organizationID = req.body.organizationID;
-  const remarkIndex = req.body.remarkIndex;
+  const organizationID = request.body.organizationID;
+  const remarkIndex = request.body.remarkIndex;
 
-  const success = deleteOrganizationRemark(organizationID, remarkIndex, req.session);
+  const success = deleteOrganizationRemark(organizationID, remarkIndex, request.session);
 
-  if (success) {
-
-    res.json({
+  return success
+    ? response.json({
       success: true,
       message: "Remark deleted successfully."
-    });
-
-  } else {
-
-    res.json({
+    })
+    : response.json({
       success: false,
       message: "Remark could not be deleted."
     });
-  }
 };
 
 

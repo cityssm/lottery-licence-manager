@@ -9,28 +9,28 @@ import { getLicence } from "../../helpers/licencesDB/getLicence.js";
 const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
 
 
-export const handler: RequestHandler = (req, res, next) => {
+export const handler: RequestHandler = (request, response, next) => {
 
-  const licenceID = Number(req.params.licenceID);
+  const licenceID = Number(request.params.licenceID);
 
-  if (isNaN(licenceID)) {
+  if (Number.isNaN(licenceID)) {
     return next();
   }
 
-  const licence = getLicence(licenceID, req.session);
+  const licence = getLicence(licenceID, request.session);
 
   if (!licence) {
-    return res.redirect(urlPrefix + "/licences/?error=licenceNotFound");
+    return response.redirect(urlPrefix + "/licences/?error=licenceNotFound");
   }
 
-  const organization = getOrganization(licence.organizationID, req.session);
+  const organization = getOrganization(licence.organizationID, request.session);
 
   const headTitle =
     configFns.getProperty("licences.externalLicenceNumber.isPreferredID")
       ? "Licence " + licence.externalLicenceNumber
       : "Licence #" + licenceID.toString();
 
-  return res.render("licence-view", {
+  return response.render("licence-view", {
     headTitle,
     licence,
     organization
