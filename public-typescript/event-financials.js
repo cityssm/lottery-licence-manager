@@ -1,69 +1,69 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 (() => {
-    const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
-    const formEle = document.getElementById("form--financialSummary");
-    const tableEle = document.getElementById("table--financialSummary");
-    const tbodyEle = tableEle.getElementsByTagName("tbody")[0];
-    const tfootEle = tableEle.getElementsByTagName("tfoot")[0];
-    const formatDollarsAsHTMLFn = (dollarAmt) => {
+    const urlPrefix = document.querySelector("main").getAttribute("data-url-prefix");
+    const formElement = document.querySelector("#form--financialSummary");
+    const tableElement = document.querySelector("#table--financialSummary");
+    const tbodyElement = tableElement.querySelector("tbody");
+    const tfootElement = tableElement.querySelector("tfoot");
+    const formatDollarsAsHTMLFunction = (dollarAmt) => {
         if (dollarAmt < 0) {
             return "<span class=\"has-text-danger\">($" + (dollarAmt * -1).toFixed(2) + ")</span>";
         }
         return "$" + dollarAmt.toFixed(2);
     };
-    const getFinancialSummaryFn = () => {
-        tableEle.classList.remove("has-status-view");
-        tableEle.classList.add("has-status-loading");
-        cityssm.postJSON(urlPrefix + "/events/doGetFinancialSummary", formEle, (summary) => {
-            const trEles = tbodyEle.children;
-            for (const trEle of trEles) {
-                trEle.classList.add("is-hidden");
+    const getFinancialSummaryFunction = () => {
+        tableElement.classList.remove("has-status-view");
+        tableElement.classList.add("has-status-loading");
+        cityssm.postJSON(urlPrefix + "/events/doGetFinancialSummary", formElement, (summary) => {
+            const trElements = tbodyElement.children;
+            for (const trElement of trElements) {
+                trElement.classList.add("is-hidden");
             }
             let licenceCount = 0;
             let eventCount = 0;
             let reportDateCount = 0;
-            let costs_receiptsSum = 0.0;
-            let costs_adminSum = 0.0;
-            let costs_prizesAwardedSum = 0.0;
-            let costs_netProceedsSum = 0.0;
-            let costs_amountDonatedSum = 0.0;
-            let licenceFeeSum = 0.0;
-            for (const licenceTypeSummaryObj of summary) {
-                const trEle = tbodyEle.querySelector("tr[data-licence-type-key='" + licenceTypeSummaryObj.licenceTypeKey + "']");
-                trEle.querySelector("[data-field='licenceCount']").innerText =
-                    licenceTypeSummaryObj.licenceCount.toString();
-                licenceCount += licenceTypeSummaryObj.licenceCount;
-                trEle.querySelector("[data-field='eventCount']").innerHTML =
-                    (licenceTypeSummaryObj.reportDateCount === licenceTypeSummaryObj.eventCount
+            let costs_receiptsSum = 0;
+            let costs_adminSum = 0;
+            let costs_prizesAwardedSum = 0;
+            let costs_netProceedsSum = 0;
+            let costs_amountDonatedSum = 0;
+            let licenceFeeSum = 0;
+            for (const licenceTypeSummaryObject of summary) {
+                const trElement = tbodyElement.querySelector("tr[data-licence-type-key='" + licenceTypeSummaryObject.licenceTypeKey + "']");
+                trElement.querySelector("[data-field='licenceCount']").textContent =
+                    licenceTypeSummaryObject.licenceCount.toString();
+                licenceCount += licenceTypeSummaryObject.licenceCount;
+                trElement.querySelector("[data-field='eventCount']").innerHTML =
+                    (licenceTypeSummaryObject.reportDateCount === licenceTypeSummaryObject.eventCount
                         ? ""
                         : "<span class=\"has-text-danger\" data-tooltip=\"Events Unreported\">") +
-                        licenceTypeSummaryObj.reportDateCount.toString() + "/" + licenceTypeSummaryObj.eventCount.toString() +
-                        (licenceTypeSummaryObj.reportDateCount === licenceTypeSummaryObj.eventCount ? "" : "</span>");
-                reportDateCount += licenceTypeSummaryObj.reportDateCount;
-                eventCount += licenceTypeSummaryObj.eventCount;
-                trEle.querySelector("[data-field='costs_receiptsSum']").innerText =
-                    "$" + licenceTypeSummaryObj.costs_receiptsSum.toFixed(2);
-                costs_receiptsSum += licenceTypeSummaryObj.costs_receiptsSum;
-                trEle.querySelector("[data-field='costs_adminSum']").innerText =
-                    "$" + licenceTypeSummaryObj.costs_adminSum.toFixed(2);
-                costs_adminSum += licenceTypeSummaryObj.costs_adminSum;
-                trEle.querySelector("[data-field='costs_prizesAwardedSum']").innerText =
-                    "$" + licenceTypeSummaryObj.costs_prizesAwardedSum.toFixed(2);
-                costs_prizesAwardedSum += licenceTypeSummaryObj.costs_prizesAwardedSum;
-                trEle.querySelector("[data-field='costs_netProceedsSum']").innerHTML =
-                    formatDollarsAsHTMLFn(licenceTypeSummaryObj.costs_netProceedsSum);
-                costs_netProceedsSum += licenceTypeSummaryObj.costs_netProceedsSum;
-                trEle.querySelector("[data-field='costs_amountDonatedSum']").innerText =
-                    "$" + licenceTypeSummaryObj.costs_amountDonatedSum.toFixed(2);
-                costs_amountDonatedSum += licenceTypeSummaryObj.costs_amountDonatedSum;
-                trEle.querySelector("[data-field='licenceFeeSum']").innerText =
-                    "$" + licenceTypeSummaryObj.licenceFeeSum.toFixed(2);
-                licenceFeeSum += licenceTypeSummaryObj.licenceFeeSum;
-                trEle.classList.remove("is-hidden");
+                        licenceTypeSummaryObject.reportDateCount.toString() + "/" + licenceTypeSummaryObject.eventCount.toString() +
+                        (licenceTypeSummaryObject.reportDateCount === licenceTypeSummaryObject.eventCount ? "" : "</span>");
+                reportDateCount += licenceTypeSummaryObject.reportDateCount;
+                eventCount += licenceTypeSummaryObject.eventCount;
+                trElement.querySelector("[data-field='costs_receiptsSum']").textContent =
+                    "$" + licenceTypeSummaryObject.costs_receiptsSum.toFixed(2);
+                costs_receiptsSum += licenceTypeSummaryObject.costs_receiptsSum;
+                trElement.querySelector("[data-field='costs_adminSum']").textContent =
+                    "$" + licenceTypeSummaryObject.costs_adminSum.toFixed(2);
+                costs_adminSum += licenceTypeSummaryObject.costs_adminSum;
+                trElement.querySelector("[data-field='costs_prizesAwardedSum']").textContent =
+                    "$" + licenceTypeSummaryObject.costs_prizesAwardedSum.toFixed(2);
+                costs_prizesAwardedSum += licenceTypeSummaryObject.costs_prizesAwardedSum;
+                trElement.querySelector("[data-field='costs_netProceedsSum']").innerHTML =
+                    formatDollarsAsHTMLFunction(licenceTypeSummaryObject.costs_netProceedsSum);
+                costs_netProceedsSum += licenceTypeSummaryObject.costs_netProceedsSum;
+                trElement.querySelector("[data-field='costs_amountDonatedSum']").textContent =
+                    "$" + licenceTypeSummaryObject.costs_amountDonatedSum.toFixed(2);
+                costs_amountDonatedSum += licenceTypeSummaryObject.costs_amountDonatedSum;
+                trElement.querySelector("[data-field='licenceFeeSum']").textContent =
+                    "$" + licenceTypeSummaryObject.licenceFeeSum.toFixed(2);
+                licenceFeeSum += licenceTypeSummaryObject.licenceFeeSum;
+                trElement.classList.remove("is-hidden");
             }
-            tfootEle.querySelector("[data-field='licenceCount']").innerText = licenceCount.toString();
-            tfootEle.querySelector("[data-field='eventCount']").innerHTML =
+            tfootElement.querySelector("[data-field='licenceCount']").textContent = licenceCount.toString();
+            tfootElement.querySelector("[data-field='eventCount']").innerHTML =
                 (reportDateCount === eventCount
                     ? ""
                     : "<span class=\"has-text-danger\" data-tooltip=\"Events Unreported\">") +
@@ -71,22 +71,22 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     (reportDateCount === eventCount
                         ? ""
                         : "</span>");
-            tfootEle.querySelector("[data-field='costs_receiptsSum']").innerText =
+            tfootElement.querySelector("[data-field='costs_receiptsSum']").textContent =
                 "$" + costs_receiptsSum.toFixed(2);
-            tfootEle.querySelector("[data-field='costs_adminSum']").innerText =
+            tfootElement.querySelector("[data-field='costs_adminSum']").textContent =
                 "$" + costs_adminSum.toFixed(2);
-            tfootEle.querySelector("[data-field='costs_prizesAwardedSum']").innerText =
+            tfootElement.querySelector("[data-field='costs_prizesAwardedSum']").textContent =
                 "$" + costs_prizesAwardedSum.toFixed(2);
-            tfootEle.querySelector("[data-field='costs_netProceedsSum']").innerHTML =
-                formatDollarsAsHTMLFn(costs_netProceedsSum);
-            tfootEle.querySelector("[data-field='costs_amountDonatedSum']").innerText =
+            tfootElement.querySelector("[data-field='costs_netProceedsSum']").innerHTML =
+                formatDollarsAsHTMLFunction(costs_netProceedsSum);
+            tfootElement.querySelector("[data-field='costs_amountDonatedSum']").textContent =
                 "$" + costs_amountDonatedSum.toFixed(2);
-            tfootEle.querySelector("[data-field='licenceFeeSum']").innerText =
+            tfootElement.querySelector("[data-field='licenceFeeSum']").textContent =
                 "$" + licenceFeeSum.toFixed(2);
-            tableEle.classList.remove("has-status-loading");
-            tableEle.classList.add("has-status-view");
+            tableElement.classList.remove("has-status-loading");
+            tableElement.classList.add("has-status-view");
         });
     };
-    llm.initializeDateRangeSelector(document.querySelector(".is-date-range-selector[data-field-key='eventDate']"), getFinancialSummaryFn);
-    getFinancialSummaryFn();
+    llm.initializeDateRangeSelector(document.querySelector(".is-date-range-selector[data-field-key='eventDate']"), getFinancialSummaryFunction);
+    getFinancialSummaryFunction();
 })();

@@ -1,25 +1,25 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 (() => {
-    const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
-    const formEle = document.getElementById("form--licence");
-    const formMessageEle = document.getElementById("container--form-message");
-    const licenceID = document.getElementById("licence--licenceID").value;
+    const urlPrefix = document.querySelector("main").getAttribute("data-url-prefix");
+    const formElement = document.querySelector("#form--licence");
+    const formMessageElement = document.querySelector("#container--form-message");
+    const licenceID = document.querySelector("#licence--licenceID").value;
     const isCreate = licenceID === "";
-    const isIssued = formEle.getAttribute("data-licence-is-issued") === "true";
-    const refreshInputTypes = ["number", "date", "time"];
+    const isIssued = formElement.getAttribute("data-licence-is-issued") === "true";
+    const refreshInputTypes = new Set(["number", "date", "time"]);
     let doRefreshAfterSave = false;
     let hasUnsavedChanges = false;
-    const eventsContainerEle = document.getElementById("container--events");
-    formEle.addEventListener("submit", (formEvent) => {
+    const eventsContainerElement = document.querySelector("#container--events");
+    formElement.addEventListener("submit", (formEvent) => {
         formEvent.preventDefault();
-        const eventDateInputEles = eventsContainerEle.getElementsByTagName("input");
-        if (eventDateInputEles.length === 0) {
+        const eventDateInputElements = eventsContainerElement.querySelectorAll("input");
+        if (eventDateInputElements.length === 0) {
             cityssm.alertModal("Event Date Error", "Please ensure there is at least one event date.", "OK", "warning");
             return;
         }
-        formMessageEle.innerHTML = "Saving... <i class=\"fas fa-circle-notch fa-spin\" aria-hidden=\"true\"></i>";
-        cityssm.postJSON(urlPrefix + "/licences/doSave", formEle, (responseJSON) => {
+        formMessageElement.innerHTML = "Saving... <i class=\"fas fa-circle-notch fa-spin\" aria-hidden=\"true\"></i>";
+        cityssm.postJSON(urlPrefix + "/licences/doSave", formElement, (responseJSON) => {
             if (responseJSON.success) {
                 cityssm.disableNavBlocker();
                 hasUnsavedChanges = false;
@@ -31,19 +31,19 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 window.location.reload();
             }
             else {
-                formMessageEle.innerHTML = "";
+                formMessageElement.innerHTML = "";
                 cityssm.alertModal(responseJSON.message, "", "OK", responseJSON.success ? "success" : "danger");
-                const removeInputEles = document.getElementsByClassName("is-removed-after-save");
-                for (const removeInputEle of removeInputEles) {
-                    removeInputEle.remove();
+                const removeInputElements = document.querySelectorAll(".is-removed-after-save");
+                for (const removeInputElement of removeInputElements) {
+                    removeInputElement.remove();
                 }
             }
         });
     });
     if (!isCreate) {
-        document.getElementById("is-delete-licence-button").addEventListener("click", (clickEvent) => {
+        document.querySelector("#is-delete-licence-button").addEventListener("click", (clickEvent) => {
             clickEvent.preventDefault();
-            const deleteFn = () => {
+            const deleteFunction = () => {
                 cityssm.postJSON(urlPrefix + "/licences/doDelete", {
                     licenceID
                 }, (responseJSON) => {
@@ -53,77 +53,77 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     }
                 });
             };
-            cityssm.confirmModal("Delete Licence?", "Are you sure you want to delete this licence and all events associated with it?", "Yes, Delete", "danger", deleteFn);
+            cityssm.confirmModal("Delete Licence?", "Are you sure you want to delete this licence and all events associated with it?", "Yes, Delete", "danger", deleteFunction);
         });
     }
-    const setDoRefreshAfterSaveFn = () => {
+    const setDoRefreshAfterSaveFunction = () => {
         doRefreshAfterSave = true;
     };
-    const setUnsavedChangesFn = (changeEvent) => {
+    const setUnsavedChangesFunction = (changeEvent) => {
         cityssm.enableNavBlocker();
         hasUnsavedChanges = true;
-        formMessageEle.innerHTML = "<span class=\"tag is-light is-info is-medium\">" +
+        formMessageElement.innerHTML = "<span class=\"tag is-light is-info is-medium\">" +
             "<span class=\"icon\"><i class=\"fas fa-exclamation-triangle\" aria-hidden=\"true\"></i></span>" +
             " <span>Unsaved Changes</span>" +
             "</div>";
         if (!isCreate) {
-            document.getElementById("is-add-transaction-button").setAttribute("disabled", "disabled");
-            document.getElementById("is-disabled-transaction-message").classList.remove("is-hidden");
+            document.querySelector("#is-add-transaction-button").setAttribute("disabled", "disabled");
+            document.querySelector("#is-disabled-transaction-message").classList.remove("is-hidden");
         }
         if (changeEvent) {
             const currentTargetType = (changeEvent.currentTarget instanceof HTMLInputElement ? changeEvent.currentTarget.type : "");
-            if (refreshInputTypes.includes(currentTargetType)) {
-                setDoRefreshAfterSaveFn();
+            if (refreshInputTypes.has(currentTargetType)) {
+                setDoRefreshAfterSaveFunction();
             }
         }
     };
-    const inputEles = formEle.querySelectorAll("input, select, textarea");
-    for (const inputEle of inputEles) {
-        if (inputEle.name !== "") {
-            inputEle.addEventListener("change", setUnsavedChangesFn);
+    const inputElements = formElement.querySelectorAll("input, select, textarea");
+    for (const inputElement of inputElements) {
+        if (inputElement.name !== "") {
+            inputElement.addEventListener("change", setUnsavedChangesFunction);
         }
     }
-    const externalLicenceNumberUnlockBtnEle = document.getElementById("is-external-licence-number-unlock-button");
-    if (externalLicenceNumberUnlockBtnEle) {
-        externalLicenceNumberUnlockBtnEle.addEventListener("click", () => {
-            const externalLicenceNumberEle = document.getElementById("licence--externalLicenceNumber");
-            externalLicenceNumberEle.classList.remove("is-readonly");
-            externalLicenceNumberEle.removeAttribute("readonly");
-            externalLicenceNumberEle.focus();
+    const externalLicenceNumberUnlockButtonElement = document.querySelector("#is-external-licence-number-unlock-button");
+    if (externalLicenceNumberUnlockButtonElement) {
+        externalLicenceNumberUnlockButtonElement.addEventListener("click", () => {
+            const externalLicenceNumberElement = document.querySelector("#licence--externalLicenceNumber");
+            externalLicenceNumberElement.classList.remove("is-readonly");
+            externalLicenceNumberElement.removeAttribute("readonly");
+            externalLicenceNumberElement.focus();
         });
     }
     {
         let organizationList = [];
-        let organizationLookupCloseModalFn;
-        let organizationLookupSearchStrEle;
-        let organizationLookupResultsEle;
-        const organizationLookupFn_setOrganization = (clickEvent) => {
+        let organizationLookupCloseModalFunction;
+        let organizationLookupSearchStringElement;
+        let organizationLookupResultsElement;
+        const organizationLookupFunction_setOrganization = (clickEvent) => {
             clickEvent.preventDefault();
-            const organizationEle = clickEvent.currentTarget;
-            document.getElementById("licence--organizationID").value =
-                organizationEle.getAttribute("data-organization-id");
-            document.getElementById("licence--organizationName").value =
-                organizationEle.getAttribute("data-organization-name");
-            organizationLookupCloseModalFn();
-            setUnsavedChangesFn();
+            const organizationElement = clickEvent.currentTarget;
+            document.querySelector("#licence--organizationID").value =
+                organizationElement.getAttribute("data-organization-id");
+            document.querySelector("#licence--organizationName").value =
+                organizationElement.getAttribute("data-organization-name");
+            organizationLookupCloseModalFunction();
+            setUnsavedChangesFunction();
         };
-        const organizationLookupFn_refreshResults = () => {
-            const listEle = document.createElement("div");
-            listEle.className = "panel";
-            const searchStringSplit = organizationLookupSearchStrEle.value
+        const organizationLookupFunction_refreshResults = () => {
+            const listElement = document.createElement("div");
+            listElement.className = "panel";
+            const searchStringSplit = organizationLookupSearchStringElement.value
                 .trim()
                 .toLowerCase()
                 .split(" ");
             let displayLimit = 10;
-            for (const organizationObj of organizationList) {
+            for (const organizationObject of organizationList) {
                 if (displayLimit < 0) {
                     break;
                 }
                 let doDisplayRecord = true;
-                if (!organizationObj.isEligibleForLicences) {
+                if (!organizationObject.isEligibleForLicences) {
                     continue;
                 }
-                const organizationName = organizationObj.organizationName.toLowerCase();
+                const organizationName = organizationObject.organizationName.toLowerCase();
                 for (const searchStringPiece of searchStringSplit) {
                     if (!organizationName.includes(searchStringPiece)) {
                         doDisplayRecord = false;
@@ -132,99 +132,99 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 }
                 if (doDisplayRecord) {
                     displayLimit -= 1;
-                    const listItemEle = document.createElement("a");
-                    listItemEle.className = "panel-block is-block";
-                    listItemEle.setAttribute("data-organization-id", organizationObj.organizationID.toString());
-                    listItemEle.setAttribute("data-organization-name", organizationObj.organizationName);
-                    listItemEle.setAttribute("href", "#");
-                    listItemEle.innerHTML = cityssm.escapeHTML(organizationObj.organizationName) + "<br />" +
+                    const listItemElement = document.createElement("a");
+                    listItemElement.className = "panel-block is-block";
+                    listItemElement.dataset.organizationId = organizationObject.organizationID.toString();
+                    listItemElement.dataset.organizationName = organizationObject.organizationName;
+                    listItemElement.setAttribute("href", "#");
+                    listItemElement.innerHTML = cityssm.escapeHTML(organizationObject.organizationName) + "<br />" +
                         "<span class=\"is-size-7\">" +
                         "<span class=\"icon\"><i class=\"fas fa-user\" aria-hidden=\"true\"></i></span> " +
-                        (organizationObj.representativeName
-                            ? cityssm.escapeHTML(organizationObj.representativeName)
+                        (organizationObject.representativeName
+                            ? cityssm.escapeHTML(organizationObject.representativeName)
                             : "<span class=\"has-text-grey\">(No Representative)</span>") +
                         "</span>";
-                    listItemEle.addEventListener("click", organizationLookupFn_setOrganization);
-                    listEle.appendChild(listItemEle);
+                    listItemElement.addEventListener("click", organizationLookupFunction_setOrganization);
+                    listElement.append(listItemElement);
                 }
             }
-            cityssm.clearElement(organizationLookupResultsEle);
-            organizationLookupResultsEle.insertAdjacentElement("beforeend", listEle);
+            cityssm.clearElement(organizationLookupResultsElement);
+            organizationLookupResultsElement.append(listElement);
         };
-        const organizationLookupFn_openModal = () => {
+        const organizationLookupFunction_openModal = () => {
             cityssm.openHtmlModal("licence-organizationLookup", {
                 onshow() {
-                    organizationLookupSearchStrEle =
-                        document.getElementById("organizationLookup--searchStr");
-                    organizationLookupSearchStrEle.addEventListener("keyup", organizationLookupFn_refreshResults);
-                    organizationLookupResultsEle = document.getElementById("container--organizationLookup");
+                    organizationLookupSearchStringElement =
+                        document.querySelector("#organizationLookup--searchStr");
+                    organizationLookupSearchStringElement.addEventListener("keyup", organizationLookupFunction_refreshResults);
+                    organizationLookupResultsElement = document.querySelector("#container--organizationLookup");
                     if (organizationList.length === 0) {
-                        cityssm.postJSON(urlPrefix + "/organizations/doGetAll", null, (organizationListRes) => {
-                            organizationList = organizationListRes;
-                            organizationLookupSearchStrEle.removeAttribute("disabled");
-                            organizationLookupFn_refreshResults();
-                            organizationLookupSearchStrEle.focus();
+                        cityssm.postJSON(urlPrefix + "/organizations/doGetAll", undefined, (organizationListResponse) => {
+                            organizationList = organizationListResponse;
+                            organizationLookupSearchStringElement.removeAttribute("disabled");
+                            organizationLookupFunction_refreshResults();
+                            organizationLookupSearchStringElement.focus();
                         });
                     }
                     else {
-                        organizationLookupSearchStrEle.removeAttribute("disabled");
-                        organizationLookupFn_refreshResults();
-                        organizationLookupSearchStrEle.focus();
+                        organizationLookupSearchStringElement.removeAttribute("disabled");
+                        organizationLookupFunction_refreshResults();
+                        organizationLookupSearchStringElement.focus();
                     }
                 },
-                onshown(_modalEle, closeModalFn) {
-                    organizationLookupCloseModalFn = closeModalFn;
-                    organizationLookupSearchStrEle.focus();
+                onshown(_modalElement, closeModalFunction) {
+                    organizationLookupCloseModalFunction = closeModalFunction;
+                    organizationLookupSearchStringElement.focus();
                 },
                 onremoved() {
-                    document.getElementById("is-organization-lookup-button").focus();
+                    document.querySelector("#is-organization-lookup-button").focus();
                 }
             });
         };
-        document.getElementById("is-organization-lookup-button").addEventListener("click", organizationLookupFn_openModal);
-        document.getElementById("licence--organizationName").addEventListener("dblclick", organizationLookupFn_openModal);
+        document.querySelector("#is-organization-lookup-button").addEventListener("click", organizationLookupFunction_openModal);
+        document.querySelector("#licence--organizationName").addEventListener("dblclick", organizationLookupFunction_openModal);
     }
     let locationList = [];
-    const loadLocationListFn = (callbackFn) => {
+    const loadLocationListFunction = (callbackFunction) => {
         if (locationList.length === 0) {
-            cityssm.postJSON(urlPrefix + "/locations/doGetLocations", null, (locationResults) => {
+            cityssm.postJSON(urlPrefix + "/locations/doGetLocations", undefined, (locationResults) => {
                 locationList = locationResults.locations;
-                callbackFn();
+                callbackFunction();
             });
         }
         else {
-            callbackFn();
+            callbackFunction();
         }
     };
     {
-        let locationLookup_closeModalFn;
-        let locationLookup_searchStrEle;
-        let locationLookup_resultsEle;
-        const locationLookupFn_setLocation = (locationID, locationDisplayName) => {
-            document.getElementById("licence--locationID").value = locationID.toString();
-            document.getElementById("licence--locationDisplayName").value = locationDisplayName;
+        let locationLookup_closeModalFunction;
+        let locationLookup_searchStringElement;
+        let locationLookup_resultsElement;
+        const locationLookupFunction_setLocation = (locationID, locationDisplayName) => {
+            document.querySelector("#licence--locationID").value = locationID.toString();
+            document.querySelector("#licence--locationDisplayName").value = locationDisplayName;
         };
-        const locationLookupFn_setLocationFromExisting = (clickEvent) => {
+        const locationLookupFunction_setLocationFromExisting = (clickEvent) => {
             clickEvent.preventDefault();
-            const locationEle = clickEvent.currentTarget;
-            locationLookupFn_setLocation(parseInt(locationEle.getAttribute("data-location-id"), 10), locationEle.getAttribute("data-location-display-name"));
-            locationLookup_closeModalFn();
-            setUnsavedChangesFn();
+            const locationElement = clickEvent.currentTarget;
+            locationLookupFunction_setLocation(Number.parseInt(locationElement.getAttribute("data-location-id"), 10), locationElement.getAttribute("data-location-display-name"));
+            locationLookup_closeModalFunction();
+            setUnsavedChangesFunction();
         };
-        const locationLookupFn_refreshResults = () => {
-            const listEle = document.createElement("div");
-            listEle.className = "panel";
-            const searchStringSplit = locationLookup_searchStrEle.value
+        const locationLookupFunction_refreshResults = () => {
+            const listElement = document.createElement("div");
+            listElement.className = "panel";
+            const searchStringSplit = locationLookup_searchStringElement.value
                 .trim()
                 .toLowerCase()
                 .split(" ");
             let displayLimit = 10;
-            for (const locationObj of locationList) {
+            for (const locationObject of locationList) {
                 if (displayLimit <= 0) {
                     break;
                 }
                 let doDisplayRecord = true;
-                const locationName = locationObj.locationName.toLowerCase();
+                const locationName = locationObject.locationName.toLowerCase();
                 for (const searchStringPiece of searchStringSplit) {
                     if (!locationName.includes(searchStringPiece)) {
                         doDisplayRecord = false;
@@ -233,134 +233,134 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 }
                 if (doDisplayRecord) {
                     displayLimit -= 1;
-                    const listItemEle = document.createElement("a");
-                    listItemEle.className = "panel-block is-block";
-                    listItemEle.setAttribute("data-location-id", locationObj.locationID.toString());
-                    listItemEle.setAttribute("data-location-display-name", locationObj.locationDisplayName);
-                    listItemEle.setAttribute("href", "#");
-                    listItemEle.innerHTML = "<div class=\"columns\">" +
+                    const listItemElement = document.createElement("a");
+                    listItemElement.className = "panel-block is-block";
+                    listItemElement.dataset.locationId = locationObject.locationID.toString();
+                    listItemElement.dataset.locationDisplayName = locationObject.locationDisplayName;
+                    listItemElement.setAttribute("href", "#");
+                    listItemElement.innerHTML = "<div class=\"columns\">" +
                         "<div class=\"column is-narrow\">" +
                         "<i class=\"fas fa-map-marker-alt\" aria-hidden=\"true\"></i>" +
                         "</div>" +
-                        "<div class=\"column\">" + cityssm.escapeHTML(locationObj.locationDisplayName) + "</div>" +
-                        (locationObj.locationName === ""
+                        "<div class=\"column\">" + cityssm.escapeHTML(locationObject.locationDisplayName) + "</div>" +
+                        (locationObject.locationName === ""
                             ? ""
-                            : "<div class=\"column\">" + cityssm.escapeHTML(locationObj.locationAddress1) + "</div>") +
+                            : "<div class=\"column\">" + cityssm.escapeHTML(locationObject.locationAddress1) + "</div>") +
                         "</div>";
-                    listItemEle.addEventListener("click", locationLookupFn_setLocationFromExisting);
-                    listEle.insertAdjacentElement("beforeend", listItemEle);
+                    listItemElement.addEventListener("click", locationLookupFunction_setLocationFromExisting);
+                    listElement.append(listItemElement);
                 }
             }
-            cityssm.clearElement(locationLookup_resultsEle);
-            locationLookup_resultsEle.insertAdjacentElement("beforeend", listEle);
+            cityssm.clearElement(locationLookup_resultsElement);
+            locationLookup_resultsElement.append(listElement);
         };
-        const locationLookupFn_openModal = () => {
+        const locationLookupFunction_openModal = () => {
             cityssm.openHtmlModal("licence-locationLookup", {
-                onshow(modalEle) {
-                    locationLookup_searchStrEle = document.getElementById("locationLookup--searchStr");
-                    locationLookup_searchStrEle.addEventListener("keyup", locationLookupFn_refreshResults);
-                    locationLookup_resultsEle = document.getElementById("container--locationLookup");
-                    loadLocationListFn(() => {
-                        locationLookup_searchStrEle.removeAttribute("disabled");
-                        locationLookupFn_refreshResults();
-                        locationLookup_searchStrEle.focus();
+                onshow(modalElement) {
+                    locationLookup_searchStringElement = document.querySelector("#locationLookup--searchStr");
+                    locationLookup_searchStringElement.addEventListener("keyup", locationLookupFunction_refreshResults);
+                    locationLookup_resultsElement = document.querySelector("#container--locationLookup");
+                    loadLocationListFunction(() => {
+                        locationLookup_searchStringElement.removeAttribute("disabled");
+                        locationLookupFunction_refreshResults();
+                        locationLookup_searchStringElement.focus();
                     });
                     llm.getDefaultConfigProperty("city", (defaultCity) => {
                         if (defaultCity) {
-                            document.getElementById("newLocation--locationCity").value = defaultCity;
+                            document.querySelector("#newLocation--locationCity").value = defaultCity;
                         }
                     });
                     llm.getDefaultConfigProperty("province", (defaultProvince) => {
                         if (defaultProvince) {
-                            document.getElementById("newLocation--locationProvince").value = defaultProvince;
+                            document.querySelector("#newLocation--locationProvince").value = defaultProvince;
                         }
                     });
-                    document.getElementById("form--newLocation").addEventListener("submit", (formEvent) => {
+                    document.querySelector("#form--newLocation").addEventListener("submit", (formEvent) => {
                         formEvent.preventDefault();
                         cityssm.postJSON(urlPrefix + "/locations/doCreate", formEvent.currentTarget, (responseJSON) => {
                             if (responseJSON.success) {
                                 locationList = [];
-                                locationLookupFn_setLocation(responseJSON.locationID, responseJSON.locationDisplayName);
-                                locationLookup_closeModalFn();
+                                locationLookupFunction_setLocation(responseJSON.locationID, responseJSON.locationDisplayName);
+                                locationLookup_closeModalFunction();
                             }
                         });
                     });
-                    llm.initializeTabs(modalEle.querySelector(".tabs ul"));
+                    llm.initializeTabs(modalElement.querySelector(".tabs ul"));
                 },
-                onshown(_modalEle, closeModalFn) {
-                    locationLookup_closeModalFn = closeModalFn;
-                    locationLookup_searchStrEle.focus();
+                onshown(_modalElement, closeModalFunction) {
+                    locationLookup_closeModalFunction = closeModalFunction;
+                    locationLookup_searchStringElement.focus();
                 },
                 onremoved() {
-                    document.getElementById("is-location-lookup-button").focus();
+                    document.querySelector("#is-location-lookup-button").focus();
                 }
             });
         };
-        document.getElementById("is-location-lookup-button").addEventListener("click", locationLookupFn_openModal);
-        document.getElementById("licence--locationDisplayName").addEventListener("dblclick", locationLookupFn_openModal);
+        document.querySelector("#is-location-lookup-button").addEventListener("click", locationLookupFunction_openModal);
+        document.querySelector("#licence--locationDisplayName").addEventListener("dblclick", locationLookupFunction_openModal);
     }
-    document.getElementById("is-endDateString-year-button").addEventListener("click", () => {
-        const startDateStringSplit = document.getElementById("licence--startDateString").value.split("-");
-        const dateObj = new Date(parseInt(startDateStringSplit[0], 10) + 1, parseInt(startDateStringSplit[1], 10) - 1, parseInt(startDateStringSplit[2]));
-        const endDateString = dateObj.getFullYear().toString() + "-" +
-            ("00" + (dateObj.getMonth() + 1).toString()).slice(-2) + "-" +
-            ("00" + dateObj.getDate().toString()).slice(-2);
-        document.getElementById("licence--endDateString").value = endDateString;
-        setUnsavedChangesFn();
-        setDoRefreshAfterSaveFn();
+    document.querySelector("#is-endDateString-year-button").addEventListener("click", () => {
+        const startDateStringSplit = document.querySelector("#licence--startDateString").value.split("-");
+        const dateObject = new Date(Number.parseInt(startDateStringSplit[0], 10) + 1, Number.parseInt(startDateStringSplit[1], 10) - 1, Number.parseInt(startDateStringSplit[2]));
+        const endDateString = dateObject.getFullYear().toString() + "-" +
+            ("00" + (dateObject.getMonth() + 1).toString()).slice(-2) + "-" +
+            ("00" + dateObject.getDate().toString()).slice(-2);
+        document.querySelector("#licence--endDateString").value = endDateString;
+        setUnsavedChangesFunction();
+        setDoRefreshAfterSaveFunction();
     });
     {
         let termsConditionsList = [];
-        const termsConditionsLookupModalEle = document.getElementById("is-termsConditions-lookup-modal");
-        const termsConditionsLookupResultsEle = document.getElementById("container--termsConditionsPrevious");
-        const termsConditionsLookupFn_setTermsConditions = (clickEvent) => {
+        const termsConditionsLookupModalElement = document.querySelector("#is-termsConditions-lookup-modal");
+        const termsConditionsLookupResultsElement = document.querySelector("#container--termsConditionsPrevious");
+        const termsConditionsLookupFunction_setTermsConditions = (clickEvent) => {
             clickEvent.preventDefault();
-            const termsConditionsIndex = parseInt(clickEvent.currentTarget.getAttribute("data-terms-conditions-index"), 10);
-            const termsConditionsEle = document.getElementById("licence--termsConditions");
-            termsConditionsEle.value = termsConditionsList[termsConditionsIndex].termsConditions;
-            cityssm.hideModal(termsConditionsLookupModalEle);
-            termsConditionsEle.focus();
-            setUnsavedChangesFn();
+            const termsConditionsIndex = Number.parseInt(clickEvent.currentTarget.getAttribute("data-terms-conditions-index"), 10);
+            const termsConditionsElement = document.querySelector("#licence--termsConditions");
+            termsConditionsElement.value = termsConditionsList[termsConditionsIndex].termsConditions;
+            cityssm.hideModal(termsConditionsLookupModalElement);
+            termsConditionsElement.focus();
+            setUnsavedChangesFunction();
         };
-        document.getElementById("is-termsConditions-lookup-button").addEventListener("click", () => {
+        document.querySelector("#is-termsConditions-lookup-button").addEventListener("click", () => {
             termsConditionsList = [];
-            cityssm.clearElement(termsConditionsLookupResultsEle);
-            const organizationID = document.getElementById("licence--organizationID").value;
+            cityssm.clearElement(termsConditionsLookupResultsElement);
+            const organizationID = document.querySelector("#licence--organizationID").value;
             if (organizationID === "") {
                 cityssm.alertModal("No Organization Selected", "An organization must be selected before the previously used terms and conditions can be retrieved.", "OK", "warning");
                 return;
             }
-            termsConditionsLookupResultsEle.innerHTML = "<p class=\"has-text-centered has-text-grey-lighter\">" +
+            termsConditionsLookupResultsElement.innerHTML = "<p class=\"has-text-centered has-text-grey-lighter\">" +
                 "<i class=\"fas fa-3x fa-circle-notch fa-spin\" aria-hidden=\"true\"></i><br />" +
                 "Loading previously used terms and conditions..." +
                 "</p>";
             cityssm.postJSON(urlPrefix + "/licences/doGetDistinctTermsConditions", {
                 organizationID
-            }, (termsConditionsListRes) => {
-                termsConditionsList = termsConditionsListRes;
+            }, (termsConditionsListResponse) => {
+                termsConditionsList = termsConditionsListResponse;
                 if (termsConditionsList.length === 0) {
-                    termsConditionsLookupResultsEle.innerHTML = "<p class=\"has-text-centered\">" +
+                    termsConditionsLookupResultsElement.innerHTML = "<p class=\"has-text-centered\">" +
                         "No previously used terms and conditions found for this organization." +
                         "</p>";
                 }
                 else {
-                    const listEle = document.createElement("div");
-                    listEle.className = "panel mb-3";
-                    termsConditionsList.forEach((termsConditionsObj, termsConditionsIndex) => {
-                        const listItemEle = document.createElement("a");
-                        listItemEle.className = "panel-block is-block";
-                        listItemEle.setAttribute("data-terms-conditions-index", termsConditionsIndex.toString());
-                        listItemEle.innerHTML = "<p class=\"has-newline-chars\">" +
-                            cityssm.escapeHTML(termsConditionsObj.termsConditions) +
+                    const listElement = document.createElement("div");
+                    listElement.className = "panel mb-3";
+                    for (const [termsConditionsIndex, termsConditionsObject] of termsConditionsList.entries()) {
+                        const listItemElement = document.createElement("a");
+                        listItemElement.className = "panel-block is-block";
+                        listItemElement.dataset.termsConditionsIndex = termsConditionsIndex.toString();
+                        listItemElement.innerHTML = "<p class=\"has-newline-chars\">" +
+                            cityssm.escapeHTML(termsConditionsObject.termsConditions) +
                             "</p>" +
                             "<p class=\"has-text-right\">" +
-                            (termsConditionsObj.termsConditionsCount > 1
+                            (termsConditionsObject.termsConditionsCount > 1
                                 ? "<span class=\"tag is-light has-tooltip-left\" data-tooltip=\"Included on Multiple Licences\">" +
                                     "<span class=\"icon\"><i class=\"fas fa-star\" aria-hidden=\"true\"></i></span>" +
-                                    " <span>Used " + termsConditionsObj.termsConditionsCount.toString() + " times</span>" +
+                                    " <span>Used " + termsConditionsObject.termsConditionsCount.toString() + " times</span>" +
                                     "</span>"
                                 : "") +
-                            (termsConditionsObj.isIssued >= 1
+                            (termsConditionsObject.isIssued >= 1
                                 ? "<span class=\"tag is-info has-tooltip-left\" data-tooltip=\"Included on an Issued Licence\">" +
                                     "<span class=\"icon\"><i class=\"fas fa-stamp\" aria-hidden=\"true\"></i></span>" +
                                     " <span>Issued</span>" +
@@ -368,92 +368,92 @@ Object.defineProperty(exports, "__esModule", { value: true });
                                 : "") +
                             " <span class=\"tag is-info has-tooltip-left\" data-tooltip=\"Most Recent Licence Start Date\">" +
                             "<span class=\"icon\"><i class=\"fas fa-calendar\" aria-hidden=\"true\"></i></span>" +
-                            " <span>" + termsConditionsObj.startDateMaxString + "</span>" +
+                            " <span>" + termsConditionsObject.startDateMaxString + "</span>" +
                             "</span>" +
                             "</p>";
-                        listItemEle.addEventListener("click", termsConditionsLookupFn_setTermsConditions);
-                        listEle.insertAdjacentElement("beforeend", listItemEle);
-                    });
-                    cityssm.clearElement(termsConditionsLookupResultsEle);
-                    termsConditionsLookupResultsEle.insertAdjacentElement("beforeend", listEle);
+                        listItemElement.addEventListener("click", termsConditionsLookupFunction_setTermsConditions);
+                        listElement.append(listItemElement);
+                    }
+                    cityssm.clearElement(termsConditionsLookupResultsElement);
+                    termsConditionsLookupResultsElement.append(listElement);
                 }
             });
-            cityssm.showModal(termsConditionsLookupModalEle);
+            cityssm.showModal(termsConditionsLookupModalElement);
         });
-        const cancelButtonEles = termsConditionsLookupModalEle.getElementsByClassName("is-close-modal-button");
-        for (const cancelButtonEle of cancelButtonEles) {
-            cancelButtonEle.addEventListener("click", cityssm.hideModal);
+        const cancelButtonElements = termsConditionsLookupModalElement.querySelectorAll(".is-close-modal-button");
+        for (const cancelButtonElement of cancelButtonElements) {
+            cancelButtonElement.addEventListener("click", cityssm.hideModal);
         }
     }
-    const licenceType_selectEle = document.getElementById("licence--licenceTypeKey");
+    const licenceType_selectElement = document.querySelector("#licence--licenceTypeKey");
     if (isCreate) {
-        const licenceType_fieldContainerEles = document.getElementsByClassName("container-licenceTypeFields");
-        const changeFn_licenceType = () => {
-            const optionEle = licenceType_selectEle.selectedOptions[0];
-            const totalPrizeValueMax = optionEle.getAttribute("data-total-prize-value-max");
-            document.getElementById("licence--totalPrizeValue").setAttribute("max", totalPrizeValueMax);
-            const hasTicketTypes = optionEle.getAttribute("data-has-ticket-types") === "true";
-            const totalPrizeValueEle = document.getElementById("licence--totalPrizeValue");
+        const licenceType_fieldContainerElements = document.querySelectorAll(".container-licenceTypeFields");
+        const changeFunction_licenceType = () => {
+            const optionElement = licenceType_selectElement.selectedOptions[0];
+            const totalPrizeValueMax = optionElement.dataset.totalPrizeValueMax;
+            document.querySelector("#licence--totalPrizeValue").setAttribute("max", totalPrizeValueMax);
+            const hasTicketTypes = optionElement.dataset.hasTicketTypes === "true";
+            const totalPrizeValueElement = document.querySelector("#licence--totalPrizeValue");
             if (hasTicketTypes) {
-                document.getElementById("is-ticket-types-panel").classList.remove("is-hidden");
-                totalPrizeValueEle.setAttribute("readonly", "readonly");
-                totalPrizeValueEle.classList.add("is-readonly");
+                document.querySelector("#is-ticket-types-panel").classList.remove("is-hidden");
+                totalPrizeValueElement.setAttribute("readonly", "readonly");
+                totalPrizeValueElement.classList.add("is-readonly");
             }
             else {
-                const ticketTypesPanelEle = document.getElementById("is-ticket-types-panel");
-                ticketTypesPanelEle.classList.add("is-hidden");
-                cityssm.clearElement(ticketTypesPanelEle.getElementsByTagName("tbody")[0]);
-                cityssm.clearElement(ticketTypesPanelEle.getElementsByTagName("tfoot")[0]);
-                totalPrizeValueEle.removeAttribute("readonly");
-                totalPrizeValueEle.classList.remove("is-readonly");
+                const ticketTypesPanelElement = document.querySelector("#is-ticket-types-panel");
+                ticketTypesPanelElement.classList.add("is-hidden");
+                cityssm.clearElement(ticketTypesPanelElement.querySelector("tbody"));
+                cityssm.clearElement(ticketTypesPanelElement.querySelector("tfoot"));
+                totalPrizeValueElement.removeAttribute("readonly");
+                totalPrizeValueElement.classList.remove("is-readonly");
             }
-            const licenceTypeKey = licenceType_selectEle.value;
+            const licenceTypeKey = licenceType_selectElement.value;
             const idToShow = "container-licenceTypeFields--" + licenceTypeKey;
-            for (const fieldContainerEle of licenceType_fieldContainerEles) {
-                if (fieldContainerEle.id === idToShow) {
-                    fieldContainerEle.removeAttribute("disabled");
-                    fieldContainerEle.classList.remove("is-hidden");
+            for (const fieldContainerElement of licenceType_fieldContainerElements) {
+                if (fieldContainerElement.id === idToShow) {
+                    fieldContainerElement.removeAttribute("disabled");
+                    fieldContainerElement.classList.remove("is-hidden");
                 }
                 else {
-                    fieldContainerEle.classList.add("is-hidden");
-                    fieldContainerEle.setAttribute("disabled", "disabled");
+                    fieldContainerElement.classList.add("is-hidden");
+                    fieldContainerElement.setAttribute("disabled", "disabled");
                 }
             }
         };
-        licenceType_selectEle.addEventListener("change", changeFn_licenceType);
+        licenceType_selectElement.addEventListener("change", changeFunction_licenceType);
     }
     {
-        const startDateEle = document.getElementById("licence--startDateString");
-        const endDateEle = document.getElementById("licence--endDateString");
-        const dateFn_setMin = () => {
-            const startDateString = startDateEle.value;
-            endDateEle.setAttribute("min", startDateString);
-            if (endDateEle.value < startDateString) {
-                endDateEle.value = startDateString;
+        const startDateElement = document.querySelector("#licence--startDateString");
+        const endDateElement = document.querySelector("#licence--endDateString");
+        const dateFunction_setMin = () => {
+            const startDateString = startDateElement.value;
+            endDateElement.setAttribute("min", startDateString);
+            if (endDateElement.value < startDateString) {
+                endDateElement.value = startDateString;
             }
-            const eventDateEles = eventsContainerEle.getElementsByTagName("input");
-            for (const eventDateEle of eventDateEles) {
-                eventDateEle.setAttribute("min", startDateString);
-            }
-        };
-        const dateFn_setMax = () => {
-            const endDateString = endDateEle.value;
-            const eventDateEles = eventsContainerEle.getElementsByTagName("input");
-            for (const eventDateEle of eventDateEles) {
-                eventDateEle.setAttribute("max", endDateString);
+            const eventDateElements = eventsContainerElement.querySelectorAll("input");
+            for (const eventDateElement of eventDateElements) {
+                eventDateElement.setAttribute("min", startDateString);
             }
         };
-        document.getElementById("licence--applicationDateString").addEventListener("change", (changeEvent) => {
-            startDateEle.setAttribute("min", changeEvent.currentTarget.value);
+        const dateFunction_setMax = () => {
+            const endDateString = endDateElement.value;
+            const eventDateElements = eventsContainerElement.querySelectorAll("input");
+            for (const eventDateElement of eventDateElements) {
+                eventDateElement.setAttribute("max", endDateString);
+            }
+        };
+        document.querySelector("#licence--applicationDateString").addEventListener("change", (changeEvent) => {
+            startDateElement.setAttribute("min", changeEvent.currentTarget.value);
         });
-        startDateEle.addEventListener("change", dateFn_setMin);
-        endDateEle.addEventListener("change", dateFn_setMax);
-        const eventFn_remove = (clickEvent) => {
+        startDateElement.addEventListener("change", dateFunction_setMin);
+        endDateElement.addEventListener("change", dateFunction_setMax);
+        const eventFunction_remove = (clickEvent) => {
             clickEvent.currentTarget.closest(".panel-block").remove();
             doRefreshAfterSave = true;
-            setUnsavedChangesFn();
+            setUnsavedChangesFunction();
         };
-        const eventFn_add = (eventDate) => {
+        const eventFunction_add = (eventDate) => {
             let eventDateString = "";
             if (eventDate) {
                 if (eventDate instanceof Date) {
@@ -467,20 +467,20 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 else if (eventDate instanceof Event) {
                     try {
                         eventDate.preventDefault();
-                        const sourceEleID = eventDate.currentTarget.getAttribute("data-source");
-                        eventDateString = document.getElementById(sourceEleID).value;
+                        const sourceElementID = eventDate.currentTarget.dataset.source;
+                        eventDateString = document.querySelector("#" + sourceElementID).value;
                     }
-                    catch (_e) {
+                    catch (_a) {
                     }
                 }
             }
-            eventsContainerEle.insertAdjacentHTML("beforeend", "<div class=\"panel-block is-block\">" +
+            eventsContainerElement.insertAdjacentHTML("beforeend", "<div class=\"panel-block is-block\">" +
                 "<div class=\"field has-addons\">" +
                 ("<div class=\"control is-expanded has-icons-left\">" +
                     "<input class=\"input is-small input--eventDateString\" name=\"eventDateString\" type=\"date\"" +
                     " value=\"" + cityssm.escapeHTML(eventDateString) + "\"" +
-                    " min=\"" + cityssm.escapeHTML(startDateEle.value) + "\"" +
-                    " max=\"" + cityssm.escapeHTML(endDateEle.value) + "\"" +
+                    " min=\"" + cityssm.escapeHTML(startDateElement.value) + "\"" +
+                    " max=\"" + cityssm.escapeHTML(endDateElement.value) + "\"" +
                     " required />" +
                     "<span class=\"icon is-left\">" +
                     "<i class=\"fas fa-calendar\" aria-hidden=\"true\"></i>" +
@@ -494,51 +494,51 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     "</div>") +
                 "</div>" +
                 "</div>");
-            const buttonEles = eventsContainerEle.getElementsByTagName("a");
-            buttonEles[buttonEles.length - 1].addEventListener("click", eventFn_remove);
+            const buttonElements = eventsContainerElement.querySelectorAll("a");
+            buttonElements[buttonElements.length - 1].addEventListener("click", eventFunction_remove);
             doRefreshAfterSave = true;
-            setUnsavedChangesFn();
+            setUnsavedChangesFunction();
         };
-        const eventCalculator_modalEle = document.getElementById("is-event-calculator-modal");
-        document.getElementsByClassName("is-calculate-events-button")[0].addEventListener("click", () => {
-            const eventCount = parseInt(document.getElementById("eventCalc--eventCount").value, 10);
-            const dayInterval = parseInt(document.getElementById("eventCalc--dayInterval").value, 10);
-            let dateSplit = endDateEle.value.split("-");
-            const endDate = new Date(parseInt(dateSplit[0], 10), parseInt(dateSplit[1], 10) - 1, parseInt(dateSplit[2], 10));
-            dateSplit = startDateEle.value.split("-");
-            const eventDate = new Date(parseInt(dateSplit[0], 10), parseInt(dateSplit[1], 10) - 1, parseInt(dateSplit[2], 10));
-            for (let eventNum = 0; eventNum < eventCount && eventDate.getTime() <= endDate.getTime(); eventNum += 1) {
-                eventFn_add(eventDate);
+        const eventCalculator_modalElement = document.querySelector("#is-event-calculator-modal");
+        document.querySelectorAll(".is-calculate-events-button")[0].addEventListener("click", () => {
+            const eventCount = Number.parseInt(document.querySelector("#eventCalc--eventCount").value, 10);
+            const dayInterval = Number.parseInt(document.querySelector("#eventCalc--dayInterval").value, 10);
+            let dateSplit = endDateElement.value.split("-");
+            const endDate = new Date(Number.parseInt(dateSplit[0], 10), Number.parseInt(dateSplit[1], 10) - 1, Number.parseInt(dateSplit[2], 10));
+            dateSplit = startDateElement.value.split("-");
+            const eventDate = new Date(Number.parseInt(dateSplit[0], 10), Number.parseInt(dateSplit[1], 10) - 1, Number.parseInt(dateSplit[2], 10));
+            for (let eventNumber = 0; eventNumber < eventCount && eventDate.getTime() <= endDate.getTime(); eventNumber += 1) {
+                eventFunction_add(eventDate);
                 eventDate.setDate(eventDate.getDate() + dayInterval);
             }
-            cityssm.hideModal(eventCalculator_modalEle);
+            cityssm.hideModal(eventCalculator_modalElement);
         });
-        document.getElementById("is-event-calculator-button").addEventListener("click", () => {
-            cityssm.showModal(eventCalculator_modalEle);
+        document.querySelector("#is-event-calculator-button").addEventListener("click", () => {
+            cityssm.showModal(eventCalculator_modalElement);
         });
-        const cancelButtonEles = eventCalculator_modalEle.getElementsByClassName("is-close-modal-button");
-        for (const cancelButtonEle of cancelButtonEles) {
-            cancelButtonEle.addEventListener("click", cityssm.hideModal);
+        const cancelButtonElements = eventCalculator_modalElement.querySelectorAll(".is-close-modal-button");
+        for (const cancelButtonElement of cancelButtonElements) {
+            cancelButtonElement.addEventListener("click", cityssm.hideModal);
         }
-        const addEventBtnEles = document.getElementsByClassName("is-add-event-button");
-        for (const addEventBtnEle of addEventBtnEles) {
-            addEventBtnEle.addEventListener("click", eventFn_add);
+        const addEventButtonElements = document.querySelectorAll(".is-add-event-button");
+        for (const addEventButtonElement of addEventButtonElements) {
+            addEventButtonElement.addEventListener("click", eventFunction_add);
         }
     }
-    const ticketTypesPanelEle = document.getElementById("is-ticket-types-panel");
-    if (ticketTypesPanelEle) {
+    const ticketTypesPanelElement = document.querySelector("#is-ticket-types-panel");
+    if (ticketTypesPanelElement) {
         const cache_licenceTypeKeyToTicketTypes = new Map();
-        const cacheFn_loadTicketTypes = (callbackFn) => {
-            const licenceTypeKey = licenceType_selectEle.value;
+        const cacheFunction_loadTicketTypes = (callbackFunction) => {
+            const licenceTypeKey = licenceType_selectElement.value;
             if (cache_licenceTypeKeyToTicketTypes.has(licenceTypeKey)) {
-                callbackFn(cache_licenceTypeKeyToTicketTypes.get(licenceTypeKey));
+                callbackFunction(cache_licenceTypeKeyToTicketTypes.get(licenceTypeKey));
             }
             else {
                 cityssm.postJSON(urlPrefix + "/licences/doGetTicketTypes", {
                     licenceTypeKey
                 }, (ticketTypes) => {
                     cache_licenceTypeKeyToTicketTypes.set(licenceTypeKey, ticketTypes);
-                    callbackFn(ticketTypes);
+                    callbackFunction(ticketTypes);
                 });
             }
         };
@@ -546,9 +546,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
         let cache_distributorLocations_idToName;
         const cache_manufacturerLocations = [];
         let cache_manufacturerLocations_idToName;
-        const cacheFn_loadDistributorLocations = (callbackFn) => {
+        const cacheFunction_loadDistributorLocations = (callbackFunction) => {
             if (cache_distributorLocations.length === 0) {
-                loadLocationListFn(() => {
+                loadLocationListFunction(() => {
                     cache_distributorLocations_idToName = new Map();
                     for (const location of locationList) {
                         if (location.locationIsDistributor) {
@@ -556,16 +556,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
                             cache_distributorLocations_idToName.set(location.locationID, location.locationDisplayName);
                         }
                     }
-                    callbackFn(cache_distributorLocations);
+                    callbackFunction(cache_distributorLocations);
                 });
             }
             else {
-                callbackFn(cache_distributorLocations);
+                callbackFunction(cache_distributorLocations);
             }
         };
-        const cacheFn_loadManufacturerLocations = (callbackFn) => {
+        const cacheFunction_loadManufacturerLocations = (callbackFunction) => {
             if (cache_manufacturerLocations.length === 0) {
-                loadLocationListFn(() => {
+                loadLocationListFunction(() => {
                     cache_manufacturerLocations_idToName = new Map();
                     for (const location of locationList) {
                         if (location.locationIsManufacturer) {
@@ -573,36 +573,36 @@ Object.defineProperty(exports, "__esModule", { value: true });
                             cache_manufacturerLocations_idToName.set(location.locationID, location.locationDisplayName);
                         }
                     }
-                    callbackFn(cache_manufacturerLocations);
+                    callbackFunction(cache_manufacturerLocations);
                 });
             }
             else {
-                callbackFn(cache_manufacturerLocations);
+                callbackFunction(cache_manufacturerLocations);
             }
         };
-        const summaryTableEle = document.getElementById("ticketTypesTabPanel--summary");
-        const summaryTableTbodyEle = summaryTableEle.getElementsByTagName("tbody")[0];
-        const summaryTableTFootEle = summaryTableEle.getElementsByTagName("tfoot")[0];
-        const logTableEle = document.getElementById("ticketTypesTabPanel--log");
-        const logTableTbodyEle = logTableEle.getElementsByTagName("tbody")[0];
-        const logTableTFootEle = logTableEle.getElementsByTagName("tfoot")[0];
+        const summaryTableElement = document.querySelector("#ticketTypesTabPanel--summary");
+        const summaryTableTbodyElement = summaryTableElement.querySelector("tbody");
+        const summaryTableTFootElement = summaryTableElement.querySelector("tfoot");
+        const logTableElement = document.querySelector("#ticketTypesTabPanel--log");
+        const logTableTbodyElement = logTableElement.querySelector("tbody");
+        const logTableTFootElement = logTableElement.querySelector("tfoot");
         let lastUsedDistributorID = "";
         let lastUsedManufacturerID = "";
-        if (logTableTbodyEle.getElementsByTagName("tr").length > 0) {
-            const trEles = logTableTbodyEle.getElementsByTagName("tr");
-            const lastTrEle = trEles[trEles.length - 1];
-            lastUsedDistributorID = lastTrEle.getAttribute("data-distributor-id");
-            lastUsedManufacturerID = lastTrEle.getAttribute("data-manufacturer-id");
+        if (logTableTbodyElement.querySelectorAll("tr").length > 0) {
+            const trElements = logTableTbodyElement.querySelectorAll("tr");
+            const lastTrElement = trElements[trElements.length - 1];
+            lastUsedDistributorID = lastTrElement.dataset.distributorId;
+            lastUsedManufacturerID = lastTrElement.dataset.manufacturerId;
         }
-        const summaryTableFn_renderTable = () => {
+        const summaryTableFunction_renderTable = () => {
             const ticketTypeTotals = new Map();
-            const logTrEles = logTableTbodyEle.getElementsByTagName("tr");
-            for (const logTrEle of logTrEles) {
-                const ticketType = logTrEle.getAttribute("data-ticket-type");
-                let totalUnits = parseInt(logTrEle.getAttribute("data-unit-count"), 10);
-                let totalValue = parseFloat(logTrEle.getAttribute("data-total-value"));
-                let totalPrizes = parseFloat(logTrEle.getAttribute("data-total-prizes"));
-                let totalLicenceFee = parseFloat(logTrEle.getAttribute("data-licence-fee"));
+            const logTrElements = logTableTbodyElement.querySelectorAll("tr");
+            for (const logTrElement of logTrElements) {
+                const ticketType = logTrElement.getAttribute("data-ticket-type");
+                let totalUnits = Number.parseInt(logTrElement.getAttribute("data-unit-count"), 10);
+                let totalValue = Number.parseFloat(logTrElement.getAttribute("data-total-value"));
+                let totalPrizes = Number.parseFloat(logTrElement.getAttribute("data-total-prizes"));
+                let totalLicenceFee = Number.parseFloat(logTrElement.getAttribute("data-licence-fee"));
                 if (ticketTypeTotals.has(ticketType)) {
                     totalUnits += ticketTypeTotals.get(ticketType).totalUnits;
                     totalValue += ticketTypeTotals.get(ticketType).totalValue;
@@ -621,7 +621,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 ticketTypes.push(ticketType);
             }
             ticketTypes.sort();
-            cityssm.clearElement(summaryTableTbodyEle);
+            cityssm.clearElement(summaryTableTbodyElement);
             const grandTotals = {
                 totalUnits: 0,
                 totalValue: 0,
@@ -634,20 +634,20 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 grandTotals.totalValue += rowTotals.totalValue;
                 grandTotals.totalPrizes += rowTotals.totalPrizes;
                 grandTotals.totalLicenceFee += rowTotals.totalLicenceFee;
-                const summaryTrEle = document.createElement("tr");
-                summaryTrEle.innerHTML = ("<td>" + ticketType + "</td>") +
+                const summaryTrElement = document.createElement("tr");
+                summaryTrElement.innerHTML = ("<td>" + ticketType + "</td>") +
                     ("<td class=\"has-text-right\">" + rowTotals.totalUnits.toString() + "</td>") +
                     ("<td class=\"has-text-right\">" + llm.formatDollarsAsHTML(rowTotals.totalValue) + "</td>") +
                     ("<td class=\"has-text-right\">" + llm.formatDollarsAsHTML(rowTotals.totalPrizes) + "</td>") +
                     ("<td class=\"has-text-right\">" + llm.formatDollarsAsHTML(rowTotals.totalLicenceFee) + "</td>");
-                summaryTableTbodyEle.appendChild(summaryTrEle);
+                summaryTableTbodyElement.append(summaryTrElement);
             }
-            summaryTableTFootEle.innerHTML = "<td></td>" +
+            summaryTableTFootElement.innerHTML = "<td></td>" +
                 "<th class=\"has-text-right\">" + grandTotals.totalUnits.toString() + "</th>" +
                 "<th class=\"has-text-right\">" + llm.formatDollarsAsHTML(grandTotals.totalValue) + "</th>" +
                 "<th class=\"has-text-right\">" + llm.formatDollarsAsHTML(grandTotals.totalPrizes) + "</th>" +
                 "<th class=\"has-text-right\">" + llm.formatDollarsAsHTML(grandTotals.totalLicenceFee) + "</th>";
-            logTableTFootEle.innerHTML = "<td></td>" +
+            logTableTFootElement.innerHTML = "<td></td>" +
                 "<td></td>" +
                 "<th class=\"has-text-right\">" + grandTotals.totalUnits.toString() + "</th>" +
                 "<th class=\"has-text-right\">" + llm.formatDollarsAsHTML(grandTotals.totalValue) + "</th>" +
@@ -655,292 +655,288 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 "<th class=\"has-text-right\">" + llm.formatDollarsAsHTML(grandTotals.totalLicenceFee) + "</th>" +
                 "<td></td>" +
                 "<td class=\"is-hidden-print\"></td>";
-            document.getElementById("licence--totalPrizeValue").value = grandTotals.totalPrizes.toFixed(2);
+            document.querySelector("#licence--totalPrizeValue").value = grandTotals.totalPrizes.toFixed(2);
         };
-        const logTableFn_addTr = (obj) => {
-            const ticketType = obj.ticketType;
-            const unitCount = obj.unitCount;
-            const valuePerDeal = obj.valuePerDeal;
+        const logTableFunction_addTr = (object) => {
+            const ticketType = object.ticketType;
+            const unitCount = object.unitCount;
+            const valuePerDeal = object.valuePerDeal;
             const totalValuePerDeal = (valuePerDeal * unitCount).toFixed(2);
-            const prizesPerDeal = obj.prizesPerDeal;
+            const prizesPerDeal = object.prizesPerDeal;
             const totalPrizesPerDeal = (prizesPerDeal * unitCount).toFixed(2);
-            const licenceFee = obj.licenceFee;
-            const trEle = document.createElement("tr");
-            trEle.className = "has-background-success-light";
-            trEle.setAttribute("data-ticket-type-index", "");
-            trEle.setAttribute("data-ticket-type", ticketType);
-            trEle.setAttribute("data-unit-count", unitCount.toString());
-            trEle.setAttribute("data-total-value", totalValuePerDeal.toString());
-            trEle.setAttribute("data-total-prizes", totalPrizesPerDeal.toString());
-            trEle.setAttribute("data-licence-fee", obj.licenceFee.toString());
-            trEle.insertAdjacentHTML("beforeend", "<td>" +
+            const licenceFee = object.licenceFee;
+            const trElement = document.createElement("tr");
+            trElement.className = "has-background-success-light";
+            trElement.dataset.ticketTypeIndex = "";
+            trElement.dataset.ticketType = ticketType;
+            trElement.dataset.unitCount = unitCount.toString();
+            trElement.dataset.totalValue = totalValuePerDeal.toString();
+            trElement.dataset.totalPrizes = totalPrizesPerDeal.toString();
+            trElement.dataset.licenceFee = object.licenceFee.toString();
+            trElement.insertAdjacentHTML("beforeend", "<td>" +
                 "<input name=\"ticketType_ticketTypeIndex\" type=\"hidden\" value=\"\" />" +
                 "<input name=\"ticketType_amendmentDate\" type=\"hidden\" value=\"\" />" +
                 "<span>(New Record)</span>" +
                 "</td>");
-            trEle.insertAdjacentHTML("beforeend", "<td>" +
+            trElement.insertAdjacentHTML("beforeend", "<td>" +
                 "<input name=\"ticketType_ticketType\" type=\"hidden\" value=\"" + cityssm.escapeHTML(ticketType) + "\" />" +
                 "<span>" + cityssm.escapeHTML(ticketType) + "</span>" +
                 "</td>");
-            trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right\">" +
+            trElement.insertAdjacentHTML("beforeend", "<td class=\"has-text-right\">" +
                 "<input name=\"ticketType_unitCount\" type=\"hidden\" value=\"" + unitCount.toString() + "\" />" +
                 "<span>" + unitCount.toString() + "</span>" +
                 "</td>");
-            trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right is-nowrap\">" +
+            trElement.insertAdjacentHTML("beforeend", "<td class=\"has-text-right is-nowrap\">" +
                 "<input class=\"is-total-value-per-deal\" type=\"hidden\" value=\"" + totalValuePerDeal.toString() + "\" />" +
                 "<span data-tooltip=\"$" + valuePerDeal.toFixed(2) + " value per deal\">$ " + totalValuePerDeal + "</span>" +
                 "</td>");
-            trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right is-nowrap\">" +
+            trElement.insertAdjacentHTML("beforeend", "<td class=\"has-text-right is-nowrap\">" +
                 "<input class=\"is-total-prizes-per-deal\" type=\"hidden\" value=\"" + totalPrizesPerDeal.toString() + "\" />" +
                 "<span data-tooltip=\"$" + prizesPerDeal.toFixed(2) + " prizes per deal\">" +
                 "$" + totalPrizesPerDeal +
                 "</span>" +
                 "</td>");
-            trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right is-nowrap\">" +
+            trElement.insertAdjacentHTML("beforeend", "<td class=\"has-text-right is-nowrap\">" +
                 "<input class=\"is-licence-fee\" name=\"ticketType_licenceFee\"" +
                 " type=\"hidden\" value=\"" + licenceFee.toString() + "\" />" +
                 "<span>$" + licenceFee.toFixed(2) + "</span>" +
                 "</td>");
-            const manufacturerLocationDisplayName = cache_manufacturerLocations_idToName.get(obj.manufacturerLocationID);
-            const distributorLocationDisplayName = cache_distributorLocations_idToName.get(obj.distributorLocationID);
-            lastUsedDistributorID = obj.distributorLocationID.toString();
-            lastUsedManufacturerID = obj.manufacturerLocationID.toString();
-            trEle.insertAdjacentHTML("beforeend", "<td class=\"is-size-7\">" +
-                "<input name=\"ticketType_manufacturerLocationID\" type=\"hidden\" value=\"" + obj.manufacturerLocationID.toString() + "\" />" +
-                "<input name=\"ticketType_distributorLocationID\" type=\"hidden\" value=\"" + obj.distributorLocationID.toString() + "\" />" +
+            const manufacturerLocationDisplayName = cache_manufacturerLocations_idToName.get(object.manufacturerLocationID);
+            const distributorLocationDisplayName = cache_distributorLocations_idToName.get(object.distributorLocationID);
+            lastUsedDistributorID = object.distributorLocationID.toString();
+            lastUsedManufacturerID = object.manufacturerLocationID.toString();
+            trElement.insertAdjacentHTML("beforeend", "<td class=\"is-size-7\">" +
+                "<input name=\"ticketType_manufacturerLocationID\" type=\"hidden\" value=\"" + object.manufacturerLocationID.toString() + "\" />" +
+                "<input name=\"ticketType_distributorLocationID\" type=\"hidden\" value=\"" + object.distributorLocationID.toString() + "\" />" +
                 "<span>" + cityssm.escapeHTML(manufacturerLocationDisplayName) + "<span><br />" +
                 "<span>" + cityssm.escapeHTML(distributorLocationDisplayName) + "<span>" +
                 "</td>");
-            trEle.insertAdjacentHTML("beforeend", "<td class=\"is-hidden-print\">" +
+            trElement.insertAdjacentHTML("beforeend", "<td class=\"is-hidden-print\">" +
                 "<button class=\"button is-small is-danger has-tooltip-left is-delete-ticket-type-button\"" +
                 " data-tooltip=\"Delete Ticket Type\" type=\"button\">" +
                 "<i class=\"fas fa-trash\" aria-hidden=\"true\"></i>" +
                 "<span class=\"sr-only\">Delete</span>" +
                 "</button>" +
                 "</td>");
-            trEle.getElementsByClassName("is-delete-ticket-type-button")[0]
-                .addEventListener("click", deleteTicketTypeFn_openConfirm);
-            logTableTbodyEle.insertAdjacentElement("afterbegin", trEle);
-            summaryTableFn_renderTable();
-            setUnsavedChangesFn();
-            setDoRefreshAfterSaveFn();
+            trElement.querySelector(".is-delete-ticket-type-button")
+                .addEventListener("click", deleteTicketTypeFunction_openConfirm);
+            logTableTbodyElement.prepend(trElement);
+            summaryTableFunction_renderTable();
+            setUnsavedChangesFunction();
+            setDoRefreshAfterSaveFunction();
         };
-        const deleteTicketTypeFn_openConfirm = (buttonEvent) => {
-            const trEle = buttonEvent.currentTarget.closest("tr");
-            const ticketType = trEle.getAttribute("data-ticket-type");
-            const ticketTypeIndex = trEle.getAttribute("data-ticket-type-index");
-            const doDeleteTicketTypeFn = () => {
-                trEle.remove();
+        const deleteTicketTypeFunction_openConfirm = (buttonEvent) => {
+            const trElement = buttonEvent.currentTarget.closest("tr");
+            const ticketType = trElement.dataset.ticketType;
+            const ticketTypeIndex = trElement.dataset.ticketTypeIndex;
+            const doDeleteTicketTypeFunction = () => {
+                trElement.remove();
                 if (!isCreate) {
-                    formEle.insertAdjacentHTML("beforeend", "<input class=\"is-removed-after-save\" name=\"ticketTypeIndex_toDelete\"" +
+                    formElement.insertAdjacentHTML("beforeend", "<input class=\"is-removed-after-save\" name=\"ticketTypeIndex_toDelete\"" +
                         " type=\"hidden\" value=\"" + cityssm.escapeHTML(ticketTypeIndex) + "\" />");
                 }
-                summaryTableFn_renderTable();
-                setUnsavedChangesFn();
-                setDoRefreshAfterSaveFn();
+                summaryTableFunction_renderTable();
+                setUnsavedChangesFunction();
+                setDoRefreshAfterSaveFunction();
             };
-            cityssm.confirmModal("Delete Ticket Type?", "Are you sure you want to remove the " + ticketType + " ticket type for this licence?", "Yes, Delete", "danger", doDeleteTicketTypeFn);
+            cityssm.confirmModal("Delete Ticket Type?", "Are you sure you want to remove the " + ticketType + " ticket type for this licence?", "Yes, Delete", "danger", doDeleteTicketTypeFunction);
         };
         const addTicketType_openModal = () => {
-            let addTicketType_closeModalFn;
-            let addTicketType_ticketTypeEle;
-            let addTicketType_unitCountEle;
-            const addTicketTypeFn_addTicketType = (formEvent) => {
+            let addTicketType_closeModalFunction;
+            let addTicketType_ticketTypeElement;
+            let addTicketType_unitCountElement;
+            const addTicketTypeFunction_addTicketType = (formEvent) => {
                 formEvent.preventDefault();
-                logTableFn_addTr({
-                    ticketType: document.getElementById("ticketTypeAdd--ticketType").value,
-                    unitCount: parseInt(document.getElementById("ticketTypeAdd--unitCount").value, 10),
-                    valuePerDeal: parseFloat(document.getElementById("ticketTypeAdd--valuePerDeal").value),
-                    prizesPerDeal: parseFloat(document.getElementById("ticketTypeAdd--prizesPerDeal").value),
-                    licenceFee: parseFloat(document.getElementById("ticketTypeAdd--licenceFee").value),
-                    distributorLocationID: parseInt(document.getElementById("ticketTypeAdd--distributorLocationID").value, 10),
-                    manufacturerLocationID: parseInt(document.getElementById("ticketTypeAdd--manufacturerLocationID").value, 10)
+                logTableFunction_addTr({
+                    ticketType: document.querySelector("#ticketTypeAdd--ticketType").value,
+                    unitCount: Number.parseInt(document.querySelector("#ticketTypeAdd--unitCount").value, 10),
+                    valuePerDeal: Number.parseFloat(document.querySelector("#ticketTypeAdd--valuePerDeal").value),
+                    prizesPerDeal: Number.parseFloat(document.querySelector("#ticketTypeAdd--prizesPerDeal").value),
+                    licenceFee: Number.parseFloat(document.querySelector("#ticketTypeAdd--licenceFee").value),
+                    distributorLocationID: Number.parseInt(document.querySelector("#ticketTypeAdd--distributorLocationID").value, 10),
+                    manufacturerLocationID: Number.parseInt(document.querySelector("#ticketTypeAdd--manufacturerLocationID").value, 10)
                 });
-                addTicketType_closeModalFn();
+                addTicketType_closeModalFunction();
             };
-            const addTicketTypeFn_refreshUnitCountChange = () => {
-                const unitCount = parseInt(addTicketType_unitCountEle.value, 10);
-                document.getElementById("ticketTypeAdd--prizesTotal").value =
-                    (parseFloat(document.getElementById("ticketTypeAdd--prizesPerDeal").value) * unitCount)
+            const addTicketTypeFunction_refreshUnitCountChange = () => {
+                const unitCount = Number.parseInt(addTicketType_unitCountElement.value, 10);
+                document.querySelector("#ticketTypeAdd--prizesTotal").value =
+                    (Number.parseFloat(document.querySelector("#ticketTypeAdd--prizesPerDeal").value) * unitCount)
                         .toFixed(2);
-                document.getElementById("ticketTypeAdd--licenceFee").value =
-                    (parseFloat(document.getElementById("ticketTypeAdd--feePerUnit").value) * unitCount)
+                document.querySelector("#ticketTypeAdd--licenceFee").value =
+                    (Number.parseFloat(document.querySelector("#ticketTypeAdd--feePerUnit").value) * unitCount)
                         .toFixed(2);
             };
-            const addTicketTypeFn_refreshTicketTypeChange = () => {
-                const ticketTypeOptionEle = addTicketType_ticketTypeEle.selectedOptions[0];
-                document.getElementById("ticketTypeAdd--ticketPrice").value =
-                    ticketTypeOptionEle.getAttribute("data-ticket-price");
-                document.getElementById("ticketTypeAdd--ticketCount").value =
-                    ticketTypeOptionEle.getAttribute("data-ticket-count");
-                document.getElementById("ticketTypeAdd--valuePerDeal").value =
-                    (parseFloat(ticketTypeOptionEle.getAttribute("data-ticket-price")) *
-                        parseInt(ticketTypeOptionEle.getAttribute("data-ticket-count"), 10))
+            const addTicketTypeFunction_refreshTicketTypeChange = () => {
+                const ticketTypeOptionElement = addTicketType_ticketTypeElement.selectedOptions[0];
+                document.querySelector("#ticketTypeAdd--ticketPrice").value =
+                    ticketTypeOptionElement.getAttribute("data-ticket-price");
+                document.querySelector("#ticketTypeAdd--ticketCount").value =
+                    ticketTypeOptionElement.getAttribute("data-ticket-count");
+                document.querySelector("#ticketTypeAdd--valuePerDeal").value =
+                    (Number.parseFloat(ticketTypeOptionElement.getAttribute("data-ticket-price")) *
+                        Number.parseInt(ticketTypeOptionElement.getAttribute("data-ticket-count"), 10))
                         .toFixed(2);
-                document.getElementById("ticketTypeAdd--prizesPerDeal").value =
-                    ticketTypeOptionEle.getAttribute("data-prizes-per-deal");
-                document.getElementById("ticketTypeAdd--feePerUnit").value =
-                    ticketTypeOptionEle.getAttribute("data-fee-per-unit");
-                addTicketTypeFn_refreshUnitCountChange();
+                document.querySelector("#ticketTypeAdd--prizesPerDeal").value =
+                    ticketTypeOptionElement.getAttribute("data-prizes-per-deal");
+                document.querySelector("#ticketTypeAdd--feePerUnit").value =
+                    ticketTypeOptionElement.getAttribute("data-fee-per-unit");
+                addTicketTypeFunction_refreshUnitCountChange();
             };
-            const addTicketTypeFn_populateTicketTypeSelect = () => {
-                cacheFn_loadTicketTypes((ticketTypes) => {
+            const addTicketTypeFunction_populateTicketTypeSelect = () => {
+                cacheFunction_loadTicketTypes((ticketTypes) => {
                     if (!ticketTypes || ticketTypes.length === 0) {
-                        addTicketType_closeModalFn();
+                        addTicketType_closeModalFunction();
                         cityssm.alertModal("No ticket types available", "", "OK", "danger");
                         return;
                     }
-                    addTicketType_ticketTypeEle.innerHTML = "";
-                    for (const ticketTypeObj of ticketTypes) {
-                        const optionEle = document.createElement("option");
-                        optionEle.setAttribute("data-ticket-price", ticketTypeObj.ticketPrice.toFixed(2));
-                        optionEle.setAttribute("data-ticket-count", ticketTypeObj.ticketCount.toString());
-                        optionEle.setAttribute("data-prizes-per-deal", ticketTypeObj.prizesPerDeal.toFixed(2));
-                        optionEle.setAttribute("data-fee-per-unit", (ticketTypeObj.feePerUnit || 0).toFixed(2));
-                        optionEle.value = ticketTypeObj.ticketType;
-                        optionEle.innerText =
-                            ticketTypeObj.ticketType +
-                                " (" + ticketTypeObj.ticketCount.toString() + " tickets," +
-                                " $" + ticketTypeObj.ticketPrice.toFixed(2) + " each)";
-                        addTicketType_ticketTypeEle.insertAdjacentElement("beforeend", optionEle);
+                    addTicketType_ticketTypeElement.innerHTML = "";
+                    for (const ticketTypeObject of ticketTypes) {
+                        const optionElement = document.createElement("option");
+                        optionElement.dataset.ticketPrice = ticketTypeObject.ticketPrice.toFixed(2);
+                        optionElement.dataset.ticketCount = ticketTypeObject.ticketCount.toString();
+                        optionElement.dataset.prizesPerDeal = ticketTypeObject.prizesPerDeal.toFixed(2);
+                        optionElement.dataset.feePerUnit = (ticketTypeObject.feePerUnit || 0).toFixed(2);
+                        optionElement.value = ticketTypeObject.ticketType;
+                        optionElement.textContent =
+                            ticketTypeObject.ticketType +
+                                " (" + ticketTypeObject.ticketCount.toString() + " tickets," +
+                                " $" + ticketTypeObject.ticketPrice.toFixed(2) + " each)";
+                        addTicketType_ticketTypeElement.append(optionElement);
                     }
-                    addTicketTypeFn_refreshTicketTypeChange();
+                    addTicketTypeFunction_refreshTicketTypeChange();
                 });
             };
-            const addTicketTypeFn_reduceLocations = (optionsHTML, location) => {
+            const addTicketTypeFunction_reduceLocations = (optionsHTML, location) => {
                 return optionsHTML + "<option value=\"" + location.locationID.toString() + "\">" +
                     cityssm.escapeHTML(location.locationDisplayName) +
                     "</option>";
             };
-            const addTicketTypeFn_populateDistributorSelect = () => {
-                cacheFn_loadDistributorLocations((locations) => {
-                    const selectEle = document.getElementById("ticketTypeAdd--distributorLocationID");
-                    selectEle.innerHTML =
-                        locations.reduce(addTicketTypeFn_reduceLocations, "<option value=\"\">(No Distributor)</option>");
-                    if (lastUsedDistributorID !== "") {
-                        if (selectEle.querySelector("[value='" + lastUsedDistributorID + "']")) {
-                            selectEle.value = lastUsedDistributorID;
-                        }
+            const addTicketTypeFunction_populateDistributorSelect = () => {
+                cacheFunction_loadDistributorLocations((locations) => {
+                    const selectElement = document.querySelector("#ticketTypeAdd--distributorLocationID");
+                    selectElement.innerHTML =
+                        locations.reduce(addTicketTypeFunction_reduceLocations, "<option value=\"\">(No Distributor)</option>");
+                    if (lastUsedDistributorID !== "" && selectElement.querySelector("[value='" + lastUsedDistributorID + "']")) {
+                        selectElement.value = lastUsedDistributorID;
                     }
                 });
             };
-            const addTicketTypeFn_populateManufacturerSelect = () => {
-                cacheFn_loadManufacturerLocations((locations) => {
-                    const selectEle = document.getElementById("ticketTypeAdd--manufacturerLocationID");
-                    selectEle.innerHTML =
-                        locations.reduce(addTicketTypeFn_reduceLocations, "<option value=\"\">(No Manufacturer)</option>");
-                    if (lastUsedManufacturerID !== "") {
-                        if (selectEle.querySelector("[value='" + lastUsedManufacturerID + "']")) {
-                            selectEle.value = lastUsedManufacturerID;
-                        }
+            const addTicketTypeFunction_populateManufacturerSelect = () => {
+                cacheFunction_loadManufacturerLocations((locations) => {
+                    const selectElement = document.querySelector("#ticketTypeAdd--manufacturerLocationID");
+                    selectElement.innerHTML =
+                        locations.reduce(addTicketTypeFunction_reduceLocations, "<option value=\"\">(No Manufacturer)</option>");
+                    if (lastUsedManufacturerID !== "" && selectElement.querySelector("[value='" + lastUsedManufacturerID + "']")) {
+                        selectElement.value = lastUsedManufacturerID;
                     }
                 });
             };
             cityssm.openHtmlModal("licence-ticketTypeAdd", {
-                onshow(modalEle) {
-                    addTicketType_ticketTypeEle = document.getElementById("ticketTypeAdd--ticketType");
-                    addTicketType_unitCountEle = document.getElementById("ticketTypeAdd--unitCount");
-                    addTicketTypeFn_populateDistributorSelect();
-                    addTicketTypeFn_populateManufacturerSelect();
-                    addTicketTypeFn_populateTicketTypeSelect();
-                    addTicketType_ticketTypeEle.addEventListener("change", addTicketTypeFn_refreshTicketTypeChange);
-                    addTicketType_unitCountEle.addEventListener("change", addTicketTypeFn_refreshUnitCountChange);
-                    modalEle.getElementsByTagName("form")[0].addEventListener("submit", addTicketTypeFn_addTicketType);
+                onshow(modalElement) {
+                    addTicketType_ticketTypeElement = document.querySelector("#ticketTypeAdd--ticketType");
+                    addTicketType_unitCountElement = document.querySelector("#ticketTypeAdd--unitCount");
+                    addTicketTypeFunction_populateDistributorSelect();
+                    addTicketTypeFunction_populateManufacturerSelect();
+                    addTicketTypeFunction_populateTicketTypeSelect();
+                    addTicketType_ticketTypeElement.addEventListener("change", addTicketTypeFunction_refreshTicketTypeChange);
+                    addTicketType_unitCountElement.addEventListener("change", addTicketTypeFunction_refreshUnitCountChange);
+                    modalElement.querySelector("form").addEventListener("submit", addTicketTypeFunction_addTicketType);
                 },
-                onshown(_modalEle, closeModalFn) {
-                    addTicketType_closeModalFn = closeModalFn;
+                onshown(_modalElement, closeModalFunction) {
+                    addTicketType_closeModalFunction = closeModalFunction;
                 }
             });
         };
-        summaryTableFn_renderTable();
-        document.getElementById("is-add-ticket-type-button").addEventListener("click", addTicketType_openModal);
-        const deleteButtonEles = ticketTypesPanelEle.getElementsByClassName("is-delete-ticket-type-button");
-        for (const deleteButtonEle of deleteButtonEles) {
-            deleteButtonEle.addEventListener("click", deleteTicketTypeFn_openConfirm);
+        summaryTableFunction_renderTable();
+        document.querySelector("#is-add-ticket-type-button").addEventListener("click", addTicketType_openModal);
+        const deleteButtonElements = ticketTypesPanelElement.querySelectorAll(".is-delete-ticket-type-button");
+        for (const deleteButtonElement of deleteButtonElements) {
+            deleteButtonElement.addEventListener("click", deleteTicketTypeFunction_openConfirm);
         }
     }
     if (!isCreate) {
-        const updateFeeButtonEle = document.getElementById("is-update-expected-licence-fee-button");
-        if (updateFeeButtonEle) {
-            updateFeeButtonEle.addEventListener("click", () => {
-                const licenceFeeEle = document.getElementById("licence--licenceFee");
-                licenceFeeEle.value = updateFeeButtonEle.getAttribute("data-licence-fee-expected");
-                licenceFeeEle.classList.remove("is-danger");
-                licenceFeeEle.closest(".field").getElementsByClassName("help")[0].remove();
-                updateFeeButtonEle.remove();
-                setUnsavedChangesFn();
-                setDoRefreshAfterSaveFn();
+        const updateFeeButtonElement = document.querySelector("#is-update-expected-licence-fee-button");
+        if (updateFeeButtonElement) {
+            updateFeeButtonElement.addEventListener("click", () => {
+                const licenceFeeElement = document.querySelector("#licence--licenceFee");
+                licenceFeeElement.value = updateFeeButtonElement.getAttribute("data-licence-fee-expected");
+                licenceFeeElement.classList.remove("is-danger");
+                licenceFeeElement.closest(".field").querySelector(".help").remove();
+                updateFeeButtonElement.remove();
+                setUnsavedChangesFunction();
+                setDoRefreshAfterSaveFunction();
             });
         }
-        document.getElementById("is-add-transaction-button").addEventListener("click", () => {
-            let addTransactionFormEle;
-            const addTransactionFn = (formEvent) => {
+        document.querySelector("#is-add-transaction-button").addEventListener("click", () => {
+            let addTransactionFormElement;
+            const addTransactionFunction = (formEvent) => {
                 if (formEvent) {
                     formEvent.preventDefault();
                 }
-                cityssm.postJSON(urlPrefix + "/licences/doAddTransaction", addTransactionFormEle, (responseJSON) => {
+                cityssm.postJSON(urlPrefix + "/licences/doAddTransaction", addTransactionFormElement, (responseJSON) => {
                     if (responseJSON.success) {
                         window.location.reload();
                     }
                 });
             };
             cityssm.openHtmlModal("licence-transactionAdd", {
-                onshow(modalEle) {
+                onshow(modalElement) {
                     llm.getDefaultConfigProperty("externalReceiptNumber_fieldLabel", (fieldLabel) => {
-                        modalEle.querySelector("label[for='transactionAdd--externalReceiptNumber']").innerText =
+                        modalElement.querySelector("label[for='transactionAdd--externalReceiptNumber']").textContent =
                             fieldLabel;
                     });
-                    document.getElementById("transactionAdd--licenceID").value = licenceID;
-                    const licenceFee = parseFloat(document.getElementById("licence--licenceFee").value);
-                    const transactionTotalEle = document.getElementById("licence--transactionTotal");
-                    const transactionTotal = parseFloat(transactionTotalEle ? transactionTotalEle.innerText : "0");
-                    document.getElementById("transactionAdd--licenceFee").innerText = licenceFee.toFixed(2);
-                    document.getElementById("transactionAdd--transactionTotal").innerText = transactionTotal.toFixed(2);
+                    document.querySelector("#transactionAdd--licenceID").value = licenceID;
+                    const licenceFee = Number.parseFloat(document.querySelector("#licence--licenceFee").value);
+                    const transactionTotalElement = document.querySelector("#licence--transactionTotal");
+                    const transactionTotal = Number.parseFloat(transactionTotalElement ? transactionTotalElement.textContent : "0");
+                    document.querySelector("#transactionAdd--licenceFee").textContent = licenceFee.toFixed(2);
+                    document.querySelector("#transactionAdd--transactionTotal").textContent = transactionTotal.toFixed(2);
                     const discrepancy = (licenceFee - transactionTotal).toFixed(2);
-                    document.getElementById("transactionAdd--discrepancy").innerText = discrepancy;
-                    document.getElementById("transactionAdd--transactionAmount").value = discrepancy;
-                    addTransactionFormEle = modalEle.getElementsByTagName("form")[0];
-                    addTransactionFormEle.addEventListener("submit", addTransactionFn);
+                    document.querySelector("#transactionAdd--discrepancy").textContent = discrepancy;
+                    document.querySelector("#transactionAdd--transactionAmount").value = discrepancy;
+                    addTransactionFormElement = modalElement.querySelector("form");
+                    addTransactionFormElement.addEventListener("submit", addTransactionFunction);
                     if (!isIssued) {
-                        const addAndIssueButtonEle = document.getElementById("is-add-transaction-issue-licence-button");
-                        addAndIssueButtonEle.classList.remove("is-hidden");
-                        addAndIssueButtonEle.addEventListener("click", () => {
-                            document.getElementById("transactionAdd--issueLicence").value = "true";
-                            addTransactionFn();
+                        const addAndIssueButtonElement = document.querySelector("#is-add-transaction-issue-licence-button");
+                        addAndIssueButtonElement.classList.remove("is-hidden");
+                        addAndIssueButtonElement.addEventListener("click", () => {
+                            document.querySelector("#transactionAdd--issueLicence").value = "true";
+                            addTransactionFunction();
                         });
                     }
                 }
             });
         });
-        const voidTransactionButtonEle = document.getElementById("is-void-transaction-button");
-        if (voidTransactionButtonEle) {
-            voidTransactionButtonEle.addEventListener("click", () => {
+        const voidTransactionButtonElement = document.querySelector("#is-void-transaction-button");
+        if (voidTransactionButtonElement) {
+            voidTransactionButtonElement.addEventListener("click", () => {
                 if (hasUnsavedChanges) {
                     cityssm.alertModal("Unsaved Changes", "Please save all unsaved changes before issuing this licence.", "OK", "warning");
                     return;
                 }
-                const voidFn = () => {
+                const voidFunction = () => {
                     cityssm.postJSON(urlPrefix + "/licences/doVoidTransaction", {
                         licenceID,
-                        transactionIndex: voidTransactionButtonEle.getAttribute("data-transaction-index")
+                        transactionIndex: voidTransactionButtonElement.dataset.transactionIndex
                     }, (responseJSON) => {
                         if (responseJSON.success) {
                             window.location.reload();
                         }
                     });
                 };
-                const reverseTransactionAmount = (parseFloat(voidTransactionButtonEle.getAttribute("data-transaction-amount")) * -1).toFixed(2);
+                const reverseTransactionAmount = (Number.parseFloat(voidTransactionButtonElement.dataset.transactionAmount) * -1).toFixed(2);
                 cityssm.confirmModal("Void Transaction?", "<strong>Are you sure you want to void this transaction?</strong><br />" +
                     "If the history of this transaction should be maintained," +
-                    " it may be preferred to create a new transaction for $ " + reverseTransactionAmount + ".", "Void Transaction", "warning", voidFn);
+                    " it may be preferred to create a new transaction for $ " + reverseTransactionAmount + ".", "Void Transaction", "warning", voidFunction);
             });
         }
     }
     if (!isCreate) {
-        const unissueLicenceButtonEle = document.getElementById("is-unissue-licence-button");
-        if (unissueLicenceButtonEle) {
-            unissueLicenceButtonEle.addEventListener("click", () => {
-                const unissueFn = () => {
+        const unissueLicenceButtonElement = document.querySelector("#is-unissue-licence-button");
+        if (unissueLicenceButtonElement) {
+            unissueLicenceButtonElement.addEventListener("click", () => {
+                const unissueFunction = () => {
                     cityssm.postJSON(urlPrefix + "/licences/doUnissueLicence", {
                         licenceID
                     }, (responseJSON) => {
@@ -949,29 +945,29 @@ Object.defineProperty(exports, "__esModule", { value: true });
                         }
                     });
                 };
-                cityssm.confirmModal("Unissue Licence?", "Are you sure you want to unissue this lottery licence?", "Yes, Unissue", "danger", unissueFn);
+                cityssm.confirmModal("Unissue Licence?", "Are you sure you want to unissue this lottery licence?", "Yes, Unissue", "danger", unissueFunction);
             });
         }
         else {
-            const issueLicenceFn = () => {
-                const issueFn = () => {
-                    cityssm.postJSON(urlPrefix + "/licences/doIssueLicence", {
-                        licenceID
-                    }, (responseJSON) => {
-                        if (responseJSON.success) {
-                            window.location.reload();
-                        }
-                    });
-                };
+            const doIssueFunction = () => {
+                cityssm.postJSON(urlPrefix + "/licences/doIssueLicence", {
+                    licenceID
+                }, (responseJSON) => {
+                    if (responseJSON.success) {
+                        window.location.reload();
+                    }
+                });
+            };
+            const issueLicenceFunction = () => {
                 if (hasUnsavedChanges) {
                     cityssm.alertModal("Unsaved Changes", "Please save all unsaved changes before issuing this licence.", "OK", "warning");
                 }
                 else {
-                    cityssm.confirmModal("Issue Licence?", "Are you sure you want to issue this lottery licence?", "Yes, Issue", "success", issueFn);
+                    cityssm.confirmModal("Issue Licence?", "Are you sure you want to issue this lottery licence?", "Yes, Issue", "success", doIssueFunction);
                 }
             };
-            document.getElementById("is-issue-licence-button").addEventListener("click", issueLicenceFn);
-            document.getElementById("is-not-issued-tag").addEventListener("dblclick", issueLicenceFn);
+            document.querySelector("#is-issue-licence-button").addEventListener("click", issueLicenceFunction);
+            document.querySelector("#is-not-issued-tag").addEventListener("dblclick", issueLicenceFunction);
         }
     }
 })();

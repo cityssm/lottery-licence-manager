@@ -1,77 +1,77 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 (() => {
-    const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
-    const filterExternalLicenceNumberEle = document.getElementById("filter--externalLicenceNumber");
-    const filterLicenceTypeKeyEle = document.getElementById("filter--licenceTypeKey");
-    const filterOrganizationNameEle = document.getElementById("filter--organizationName");
-    const filterLocationNameEle = document.getElementById("filter--locationName");
-    const filterYearEle = document.getElementById("filter--year");
-    const resultsEle = document.getElementById("container--events");
-    const getEventsFn = () => {
-        resultsEle.innerHTML = "<p class=\"has-text-centered has-text-grey-lighter\">" +
+    const urlPrefix = document.querySelector("main").getAttribute("data-url-prefix");
+    const filterExternalLicenceNumberElement = document.querySelector("#filter--externalLicenceNumber");
+    const filterLicenceTypeKeyElement = document.querySelector("#filter--licenceTypeKey");
+    const filterOrganizationNameElement = document.querySelector("#filter--organizationName");
+    const filterLocationNameElement = document.querySelector("#filter--locationName");
+    const filterYearElement = document.querySelector("#filter--year");
+    const resultsElement = document.querySelector("#container--events");
+    const getEventsFunction = () => {
+        resultsElement.innerHTML = "<p class=\"has-text-centered has-text-grey-lighter\">" +
             "<i class=\"fas fa-3x fa-circle-notch fa-spin\" aria-hidden=\"true\"></i><br />" +
             "<em>Loading events..." +
             "</p>";
         cityssm.postJSON(urlPrefix + "/events/doSearch", {
-            externalLicenceNumber: filterExternalLicenceNumberEle.value,
-            licenceTypeKey: filterLicenceTypeKeyEle.value,
-            organizationName: filterOrganizationNameEle.value,
-            locationName: filterLocationNameEle.value,
-            eventYear: filterYearEle.value
+            externalLicenceNumber: filterExternalLicenceNumberElement.value,
+            licenceTypeKey: filterLicenceTypeKeyElement.value,
+            organizationName: filterOrganizationNameElement.value,
+            locationName: filterLocationNameElement.value,
+            eventYear: filterYearElement.value
         }, (eventList) => {
             if (eventList.length === 0) {
-                resultsEle.innerHTML = "<div class=\"message is-info\">" +
+                resultsElement.innerHTML = "<div class=\"message is-info\">" +
                     "<div class=\"message-body\">" +
                     "Your search returned no results." +
                     "</div>" +
                     "</div>";
                 return;
             }
-            const tbodyEle = document.createElement("tbody");
-            for (const eventObj of eventList) {
-                const licenceType = exports.config_licenceTypes[eventObj.licenceTypeKey] || eventObj.licenceTypeKey;
-                const eventURL = urlPrefix + "/events/" + eventObj.licenceID.toString() + "/" + eventObj.eventDate.toString();
-                const trEle = document.createElement("tr");
-                trEle.innerHTML =
+            const tbodyElement = document.createElement("tbody");
+            for (const eventObject of eventList) {
+                const licenceType = exports.config_licenceTypes[eventObject.licenceTypeKey] || eventObject.licenceTypeKey;
+                const eventURL = urlPrefix + "/events/" + eventObject.licenceID.toString() + "/" + eventObject.eventDate.toString();
+                const trElement = document.createElement("tr");
+                trElement.innerHTML =
                     ("<td>" +
                         "<a href=\"" + cityssm.escapeHTML(eventURL) + "\">" +
-                        eventObj.eventDateString +
+                        eventObject.eventDateString +
                         "</a>" +
                         "</td>") +
                         ("<td>" +
-                            cityssm.escapeHTML(eventObj.externalLicenceNumber) + "<br />" +
-                            "<small>Licence #" + eventObj.licenceID.toString() + "</small>" +
+                            cityssm.escapeHTML(eventObject.externalLicenceNumber) + "<br />" +
+                            "<small>Licence #" + eventObject.licenceID.toString() + "</small>" +
                             "</td>") +
                         ("<td>" +
-                            cityssm.escapeHTML(eventObj.organizationName) +
+                            cityssm.escapeHTML(eventObject.organizationName) +
                             "</td>") +
                         ("<td>" +
                             licenceType + "<br />" +
-                            "<small>" + cityssm.escapeHTML(eventObj.licenceDetails) + "</small>" +
+                            "<small>" + cityssm.escapeHTML(eventObject.licenceDetails) + "</small>" +
                             "</td>") +
                         ("<td>" +
-                            (eventObj.locationDisplayName
-                                ? cityssm.escapeHTML(eventObj.locationDisplayName)
+                            (eventObject.locationDisplayName
+                                ? cityssm.escapeHTML(eventObject.locationDisplayName)
                                 : "<span class=\"has-text-grey\">(No Location)</span>") + "<br />" +
-                            "<small>" + eventObj.startTimeString +
-                            (eventObj.startTimeString === eventObj.endTimeString ? "" : " to " + eventObj.endTimeString) +
+                            "<small>" + eventObject.startTimeString +
+                            (eventObject.startTimeString === eventObject.endTimeString ? "" : " to " + eventObject.endTimeString) +
                             "</small>" +
                             "</td>") +
                         ("<td class=\"is-hidden-print has-text-right\">" +
-                            (eventObj.canUpdate
+                            (eventObject.canUpdate
                                 ? "<a class=\"button is-small\" href=\"" + cityssm.escapeHTML(eventURL) + "/edit\">" +
                                     "<span class=\"icon\"><i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i></span>" +
                                     "<span>Edit</span>" +
                                     "</a>"
                                 : "") +
                             "</td>");
-                tbodyEle.appendChild(trEle);
+                tbodyElement.append(trElement);
             }
-            cityssm.clearElement(resultsEle);
-            const tableEle = document.createElement("table");
-            tableEle.className = "table is-fullwidth is-striped is-hoverable";
-            tableEle.innerHTML = "<thead>" +
+            cityssm.clearElement(resultsElement);
+            const tableElement = document.createElement("table");
+            tableElement.className = "table is-fullwidth is-striped is-hoverable";
+            tableElement.innerHTML = "<thead>" +
                 "<tr>" +
                 "<th>Event Date</th>" +
                 "<th>Licence</th>" +
@@ -81,14 +81,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 "<th></th>" +
                 "</tr>" +
                 "</thead>";
-            tableEle.appendChild(tbodyEle);
-            resultsEle.appendChild(tableEle);
+            tableElement.append(tbodyElement);
+            resultsElement.append(tableElement);
         });
     };
-    filterExternalLicenceNumberEle.addEventListener("change", getEventsFn);
-    filterLicenceTypeKeyEle.addEventListener("change", getEventsFn);
-    filterOrganizationNameEle.addEventListener("change", getEventsFn);
-    filterLocationNameEle.addEventListener("change", getEventsFn);
-    filterYearEle.addEventListener("change", getEventsFn);
-    getEventsFn();
+    filterExternalLicenceNumberElement.addEventListener("change", getEventsFunction);
+    filterLicenceTypeKeyElement.addEventListener("change", getEventsFunction);
+    filterOrganizationNameElement.addEventListener("change", getEventsFunction);
+    filterLocationNameElement.addEventListener("change", getEventsFunction);
+    filterYearElement.addEventListener("change", getEventsFunction);
+    getEventsFunction();
 })();

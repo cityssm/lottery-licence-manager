@@ -1,17 +1,19 @@
+/* eslint-disable unicorn/filename-case */
+
 (() => {
 
   // Switch dates nav
 
-  const eventDateSelectEle = document.getElementById("eventNav--eventDate") as HTMLSelectElement;
+  const eventDateSelectElement = document.querySelector("#eventNav--eventDate") as HTMLSelectElement;
 
-  if (eventDateSelectEle) {
+  if (eventDateSelectElement) {
 
-    eventDateSelectEle.addEventListener("change", () => {
+    eventDateSelectElement.addEventListener("change", () => {
 
-      const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
-      const licenceID = eventDateSelectEle.getAttribute("data-licence-id");
-      const newEventDate = eventDateSelectEle.value;
-      const isEdit = eventDateSelectEle.getAttribute("data-is-edit") === "true";
+      const urlPrefix = document.querySelector("main").getAttribute("data-url-prefix");
+      const licenceID = eventDateSelectElement.getAttribute("data-licence-id");
+      const newEventDate = eventDateSelectElement.value;
+      const isEdit = eventDateSelectElement.getAttribute("data-is-edit") === "true";
 
       window.location.href = urlPrefix + "/events/" + licenceID + "/" + newEventDate + (isEdit ? "/edit" : "");
     });

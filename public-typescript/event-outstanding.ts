@@ -1,3 +1,5 @@
+/* eslint-disable unicorn/filename-case, unicorn/prefer-module */
+
 import type { cityssmGlobal } from "@cityssm/bulma-webapp-js/src/types";
 import type { DateDiff } from "@cityssm/date-diff/types";
 import type * as llmTypes from "../types/recordTypes";
@@ -9,77 +11,77 @@ declare const cityssm: cityssmGlobal;
 
   const dateDiff: DateDiff = exports.dateDiff;
 
-  const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
+  const urlPrefix = document.querySelector("main").getAttribute("data-url-prefix");
 
-  const formEle = document.getElementById("form--outstandingEvents") as HTMLFormElement;
-  const tbodyEle = document.getElementById("tbody--outstandingEvents");
+  const formElement = document.querySelector("#form--outstandingEvents") as HTMLFormElement;
+  const tbodyElement = document.querySelector("#tbody--outstandingEvents") as HTMLElement;
 
-  const getOutstandingEventsFn = () => {
+  const getOutstandingEventsFunction = () => {
 
-    cityssm.clearElement(tbodyEle);
+    cityssm.clearElement(tbodyElement);
 
     cityssm.postJSON(urlPrefix + "/events/doGetOutstandingEvents",
-      formEle,
+      formElement,
       (outstandingEvents: llmTypes.LotteryEvent[]) => {
 
         const nowDate = new Date();
 
         let currentOrganizationID = -1;
 
-        for (const outstandingEventObj of outstandingEvents) {
+        for (const outstandingEventObject of outstandingEvents) {
 
-          if (currentOrganizationID !== outstandingEventObj.organizationID) {
+          if (currentOrganizationID !== outstandingEventObject.organizationID) {
 
-            currentOrganizationID = outstandingEventObj.organizationID;
+            currentOrganizationID = outstandingEventObject.organizationID;
 
-            tbodyEle.insertAdjacentHTML("beforeend", "<tr>" +
+            tbodyElement.insertAdjacentHTML("beforeend", "<tr>" +
               "<th class=\"has-background-grey-lighter\" colspan=\"9\">" +
-              "<h2 class=\"title is-4\">" + cityssm.escapeHTML(outstandingEventObj.organizationName) + "</h2>" +
+              "<h2 class=\"title is-4\">" + cityssm.escapeHTML(outstandingEventObject.organizationName) + "</h2>" +
               "</th>" +
               "</tr>");
 
           }
 
-          const trEle = document.createElement("tr");
+          const trElement = document.createElement("tr");
 
-          const licenceURL = urlPrefix + "/licences/" + outstandingEventObj.licenceID.toString();
+          const licenceURL = urlPrefix + "/licences/" + outstandingEventObject.licenceID.toString();
 
-          trEle.insertAdjacentHTML("beforeend", "<td>" +
+          trElement.insertAdjacentHTML("beforeend", "<td>" +
             "<a href=\"" + cityssm.escapeHTML(licenceURL) + "\"" +
             " data-tooltip=\"View Licence\" target=\"_blank\">" +
-            cityssm.escapeHTML(outstandingEventObj.externalLicenceNumber) + "<br / > " +
-            "<small>Licence #" + outstandingEventObj.licenceID.toString() + "</small>" +
+            cityssm.escapeHTML(outstandingEventObject.externalLicenceNumber) + "<br / > " +
+            "<small>Licence #" + outstandingEventObject.licenceID.toString() + "</small>" +
             "</a>" +
             "</td>");
 
-          trEle.insertAdjacentHTML("beforeend", "<td>" + cityssm.escapeHTML(outstandingEventObj.licenceType) + "</td>");
+          trElement.insertAdjacentHTML("beforeend", "<td>" + cityssm.escapeHTML(outstandingEventObject.licenceType) + "</td>");
 
           const eventURL = urlPrefix + "/events/" +
-            outstandingEventObj.licenceID.toString() + "/" +
-            outstandingEventObj.eventDate.toString();
+            outstandingEventObject.licenceID.toString() + "/" +
+            outstandingEventObject.eventDate.toString();
 
-          const eventDate = cityssm.dateStringToDate(outstandingEventObj.eventDateString);
+          const eventDate = cityssm.dateStringToDate(outstandingEventObject.eventDateString);
 
-          trEle.insertAdjacentHTML("beforeend", "<td>" +
+          trElement.insertAdjacentHTML("beforeend", "<td>" +
             "<a href=\"" + cityssm.escapeHTML(eventURL) + "\" data-tooltip=\"View Event\" target=\"_blank\">" +
-            cityssm.escapeHTML(outstandingEventObj.eventDateString) +
+            cityssm.escapeHTML(outstandingEventObject.eventDateString) +
             "</a>" +
             (eventDate < nowDate
               ? "<br /><span class=\"is-size-7\">" + dateDiff(eventDate, nowDate).formatted + " ago</span>"
               : "") +
             "</td>");
 
-          trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-centered\">" +
-            (outstandingEventObj.reportDate === null || outstandingEventObj.reportDate === 0
+          trElement.insertAdjacentHTML("beforeend", "<td class=\"has-text-centered\">" +
+            (outstandingEventObject.reportDate === null || outstandingEventObject.reportDate === 0
               ? "<span class=\"icon\" data-tooltip=\"Report Date Not Recorded\">" +
               "<i class=\"fas fa-times has-text-danger\" aria-hidden=\"true\"></i>" +
               "</span>" +
               "<span class=\"sr-only\">Report Date Not Recorded</span>"
-              : outstandingEventObj.reportDateString) +
+              : outstandingEventObject.reportDateString) +
             "</td>");
 
-          trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-centered\">" +
-            (outstandingEventObj.bank_name_isOutstanding
+          trElement.insertAdjacentHTML("beforeend", "<td class=\"has-text-centered\">" +
+            (outstandingEventObject.bank_name_isOutstanding
               ? "<span class=\"icon\" data-tooltip=\"Banking Information Outstanding\">" +
               "<i class=\"fas fa-times has-text-danger\" aria-hidden=\"true\"></i>" +
               "</span>" +
@@ -90,9 +92,9 @@ declare const cityssm: cityssmGlobal;
               "<span class=\"sr-only\">Banking Information Recorded</span>") +
             "</td>");
 
-          trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-centered\">" +
+          trElement.insertAdjacentHTML("beforeend", "<td class=\"has-text-centered\">" +
 
-            (outstandingEventObj.costs_receiptsSum === null || outstandingEventObj.costs_receiptsSum === 0
+            (outstandingEventObject.costs_receiptsSum === null || outstandingEventObject.costs_receiptsSum === 0
 
               ? "<span class=\"icon\" data-tooltip=\"Receipts Amount Outstanding\">" +
               "<i class=\"fas fa-times has-text-danger\" aria-hidden=\"true\"></i>" +
@@ -106,14 +108,13 @@ declare const cityssm: cityssmGlobal;
 
             "</td>");
 
-
-          tbodyEle.insertAdjacentElement("beforeend", trEle);
+          tbodyElement.append(trElement);
         }
       });
   };
 
-  document.getElementById("filter--licenceTypeKey").addEventListener("change", getOutstandingEventsFn);
-  document.getElementById("filter--eventDateType").addEventListener("change", getOutstandingEventsFn);
+  document.querySelector("#filter--licenceTypeKey").addEventListener("change", getOutstandingEventsFunction);
+  document.querySelector("#filter--licenceTypeKey").addEventListener("change", getOutstandingEventsFunction);
 
-  getOutstandingEventsFn();
+  getOutstandingEventsFunction();
 })();

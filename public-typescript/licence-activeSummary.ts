@@ -1,3 +1,5 @@
+/* eslint-disable unicorn/filename-case, unicorn/prefer-module */
+
 import type { cityssmGlobal } from "@cityssm/bulma-webapp-js/src/types";
 import type { llmGlobal } from "./types";
 import * as llmTypes from "../types/recordTypes";
@@ -8,27 +10,27 @@ declare const llm: llmGlobal;
 
 (() => {
 
-  const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
+  const urlPrefix = document.querySelector("main").getAttribute("data-url-prefix");
 
   let externalLicenceNumberFieldLabel = "";
 
-  const formEle = document.getElementById("form--activeSummary");
-  const containerEle = document.getElementById("container--activeSummary");
+  const formElement = document.querySelector("#form--activeSummary") as HTMLFormElement;
+  const containerElement = document.querySelector("#container--activeSummary") as HTMLElement;
 
-  const getActiveLicenceSummaryFn = () => {
+  const getActiveLicenceSummaryFunction = () => {
 
-    containerEle.innerHTML = "<p class=\"has-text-centered has-text-grey-lighter\">" +
+    containerElement.innerHTML = "<p class=\"has-text-centered has-text-grey-lighter\">" +
       "<i class=\"fas fa-3x fa-circle-notch fa-spin\" aria-hidden=\"true\"></i><br />" +
       "<em>Loading licences...</em>" +
       "</p>";
 
     cityssm.postJSON(urlPrefix + "/licences/doGetActiveLicenceSummary",
-      formEle,
+      formElement,
       (activeLicenceList: llmTypes.LotteryLicence[]) => {
 
         if (activeLicenceList.length === 0) {
 
-          containerEle.innerHTML = "<div class=\"message is-info\">" +
+          containerElement.innerHTML = "<div class=\"message is-info\">" +
             "<p class=\"message-body\">" +
             "There are no active licences on the selected time range." +
             "</p>" +
@@ -37,9 +39,9 @@ declare const llm: llmGlobal;
           return;
         }
 
-        const tableEle = document.createElement("table");
-        tableEle.className = "table is-striped is-hoverable is-fullwidth";
-        tableEle.innerHTML = "<thead>" +
+        const tableElement = document.createElement("table");
+        tableElement.className = "table is-striped is-hoverable is-fullwidth";
+        tableElement.innerHTML = "<thead>" +
           "<tr>" +
           "<th>" + externalLicenceNumberFieldLabel + "</th>" +
           "<th>Licence Type</th>" +
@@ -51,55 +53,55 @@ declare const llm: llmGlobal;
           "</tr>" +
           "</thead>";
 
-        const tbodyEle = document.createElement("tbody");
+        const tbodyElement = document.createElement("tbody");
 
-        for (const licenceObj of activeLicenceList) {
+        for (const licenceObject of activeLicenceList) {
 
-          const trEle = document.createElement("tr");
+          const trElement = document.createElement("tr");
 
-          trEle.innerHTML = ("<td>" +
-            "<a href=\"/licences/" + licenceObj.licenceID.toString() + "\" data-tooltip=\"View Licence\">" +
-            cityssm.escapeHTML(licenceObj.externalLicenceNumber) + "<br />" +
-            "<small>Licence #" + licenceObj.licenceID.toString() + "</small>" +
+          trElement.innerHTML = ("<td>" +
+            "<a href=\"/licences/" + licenceObject.licenceID.toString() + "\" data-tooltip=\"View Licence\">" +
+            cityssm.escapeHTML(licenceObject.externalLicenceNumber) + "<br />" +
+            "<small>Licence #" + licenceObject.licenceID.toString() + "</small>" +
             "</a>" +
             "</td>") +
             ("<td>" +
-              (exports.config_licenceTypes[licenceObj.licenceTypeKey] as string || licenceObj.licenceTypeKey) +
+              (exports.config_licenceTypes[licenceObject.licenceTypeKey] as string || licenceObject.licenceTypeKey) +
               "</td>") +
             ("<td>" +
-              "<a href=\"/organizations/" + licenceObj.organizationID.toString() + "\"" +
+              "<a href=\"/organizations/" + licenceObject.organizationID.toString() + "\"" +
               " data-tooltip=\"View Organization\">" +
-              cityssm.escapeHTML(licenceObj.organizationName) +
+              cityssm.escapeHTML(licenceObject.organizationName) +
               "</a>" +
               "</td>") +
             ("<td>" +
-              (licenceObj.locationID
-                ? "<a href=\"/locations/" + licenceObj.locationID.toString() + "\" data-tooltip=\"View Location\">" +
-                cityssm.escapeHTML(licenceObj.locationDisplayName) +
+              (licenceObject.locationID
+                ? "<a href=\"/locations/" + licenceObject.locationID.toString() + "\" data-tooltip=\"View Location\">" +
+                cityssm.escapeHTML(licenceObject.locationDisplayName) +
                 "</a>" +
-                (licenceObj.locationDisplayName === licenceObj.locationName
-                  ? "<br /><small>" + cityssm.escapeHTML(licenceObj.locationAddress1) + "</small>"
+                (licenceObject.locationDisplayName === licenceObject.locationName
+                  ? "<br /><small>" + cityssm.escapeHTML(licenceObject.locationAddress1) + "</small>"
                   : "")
                 : "<span class=\"has-text-grey\">(No Location)</span>") +
               "</td>") +
-            ("<td class=\"is-nowrap\">" + licenceObj.issueDateString + "</td>") +
+            ("<td class=\"is-nowrap\">" + licenceObject.issueDateString + "</td>") +
             ("<td class=\"is-nowrap\">" +
               "<span class=\"icon\"><i class=\"fas fa-play\" aria-hidden=\"true\"></i></span> " +
-              licenceObj.startDateString +
+              licenceObject.startDateString +
               "</td>") +
             ("<td class=\"is-nowrap\">" +
               "<span class=\"icon\"><i class=\"fas fa-stop\" aria-hidden=\"true\"></i></span> " +
-              licenceObj.endDateString +
+              licenceObject.endDateString +
               "</td>");
 
-          tbodyEle.insertAdjacentElement("beforeend", trEle);
+          tbodyElement.append(trElement);
         }
 
-        tableEle.insertAdjacentElement("beforeend", tbodyEle);
+        tableElement.append(tbodyElement);
 
-        cityssm.clearElement(containerEle);
+        cityssm.clearElement(containerElement);
 
-        containerEle.insertAdjacentElement("beforeend", tableEle);
+        containerElement.append(tableElement);
       }
     );
   };
@@ -107,11 +109,11 @@ declare const llm: llmGlobal;
 
   llm.initializeDateRangeSelector(
     document.querySelector(".is-date-range-selector[data-field-key='startEndDate']"),
-    getActiveLicenceSummaryFn
+    getActiveLicenceSummaryFunction
   );
 
   llm.getDefaultConfigProperty("externalLicenceNumber_fieldLabel", (fieldLabel: string) => {
     externalLicenceNumberFieldLabel = fieldLabel;
-    getActiveLicenceSummaryFn();
+    getActiveLicenceSummaryFunction();
   });
 })();

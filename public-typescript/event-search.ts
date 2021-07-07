@@ -1,3 +1,5 @@
+/* eslint-disable unicorn/filename-case, unicorn/prefer-module */
+
 import type { cityssmGlobal } from "@cityssm/bulma-webapp-js/src/types";
 import type * as llmTypes from "../types/recordTypes";
 
@@ -6,37 +8,37 @@ declare const cityssm: cityssmGlobal;
 
 (() => {
 
-  const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
+  const urlPrefix = document.querySelector("main").getAttribute("data-url-prefix");
 
-  const filterExternalLicenceNumberEle =
-    document.getElementById("filter--externalLicenceNumber") as HTMLInputElement;
+  const filterExternalLicenceNumberElement =
+    document.querySelector("#filter--externalLicenceNumber") as HTMLInputElement;
 
-  const filterLicenceTypeKeyEle = document.getElementById("filter--licenceTypeKey") as HTMLSelectElement;
-  const filterOrganizationNameEle = document.getElementById("filter--organizationName") as HTMLInputElement;
-  const filterLocationNameEle = document.getElementById("filter--locationName") as HTMLInputElement;
-  const filterYearEle = document.getElementById("filter--year") as HTMLSelectElement;
+  const filterLicenceTypeKeyElement = document.querySelector("#filter--licenceTypeKey") as HTMLSelectElement;
+  const filterOrganizationNameElement = document.querySelector("#filter--organizationName") as HTMLInputElement;
+  const filterLocationNameElement = document.querySelector("#filter--locationName") as HTMLInputElement;
+  const filterYearElement = document.querySelector("#filter--year") as HTMLSelectElement;
 
-  const resultsEle = document.getElementById("container--events");
+  const resultsElement = document.querySelector("#container--events") as HTMLElement;
 
-  const getEventsFn = () => {
+  const getEventsFunction = () => {
 
-    resultsEle.innerHTML = "<p class=\"has-text-centered has-text-grey-lighter\">" +
+    resultsElement.innerHTML = "<p class=\"has-text-centered has-text-grey-lighter\">" +
       "<i class=\"fas fa-3x fa-circle-notch fa-spin\" aria-hidden=\"true\"></i><br />" +
       "<em>Loading events..." +
       "</p>";
 
     cityssm.postJSON(urlPrefix + "/events/doSearch", {
-      externalLicenceNumber: filterExternalLicenceNumberEle.value,
-      licenceTypeKey: filterLicenceTypeKeyEle.value,
-      organizationName: filterOrganizationNameEle.value,
-      locationName: filterLocationNameEle.value,
-      eventYear: filterYearEle.value
+      externalLicenceNumber: filterExternalLicenceNumberElement.value,
+      licenceTypeKey: filterLicenceTypeKeyElement.value,
+      organizationName: filterOrganizationNameElement.value,
+      locationName: filterLocationNameElement.value,
+      eventYear: filterYearElement.value
     },
       (eventList: llmTypes.LotteryEvent[]) => {
 
         if (eventList.length === 0) {
 
-          resultsEle.innerHTML = "<div class=\"message is-info\">" +
+          resultsElement.innerHTML = "<div class=\"message is-info\">" +
             "<div class=\"message-body\">" +
             "Your search returned no results." +
             "</div>" +
@@ -45,43 +47,43 @@ declare const cityssm: cityssmGlobal;
           return;
         }
 
-        const tbodyEle = document.createElement("tbody");
+        const tbodyElement = document.createElement("tbody");
 
-        for (const eventObj of eventList) {
+        for (const eventObject of eventList) {
 
-          const licenceType: string = exports.config_licenceTypes[eventObj.licenceTypeKey] || eventObj.licenceTypeKey;
+          const licenceType: string = exports.config_licenceTypes[eventObject.licenceTypeKey] || eventObject.licenceTypeKey;
 
-          const eventURL = urlPrefix + "/events/" + eventObj.licenceID.toString() + "/" + eventObj.eventDate.toString();
+          const eventURL = urlPrefix + "/events/" + eventObject.licenceID.toString() + "/" + eventObject.eventDate.toString();
 
-          const trEle = document.createElement("tr");
+          const trElement = document.createElement("tr");
 
-          trEle.innerHTML =
+          trElement.innerHTML =
             ("<td>" +
               "<a href=\"" + cityssm.escapeHTML(eventURL) + "\">" +
-              eventObj.eventDateString +
+              eventObject.eventDateString +
               "</a>" +
               "</td>") +
             ("<td>" +
-              cityssm.escapeHTML(eventObj.externalLicenceNumber) + "<br />" +
-              "<small>Licence #" + eventObj.licenceID.toString() + "</small>" +
+              cityssm.escapeHTML(eventObject.externalLicenceNumber) + "<br />" +
+              "<small>Licence #" + eventObject.licenceID.toString() + "</small>" +
               "</td>") +
             ("<td>" +
-              cityssm.escapeHTML(eventObj.organizationName) +
+              cityssm.escapeHTML(eventObject.organizationName) +
               "</td>") +
             ("<td>" +
               licenceType + "<br />" +
-              "<small>" + cityssm.escapeHTML(eventObj.licenceDetails) + "</small>" +
+              "<small>" + cityssm.escapeHTML(eventObject.licenceDetails) + "</small>" +
               "</td>") +
             ("<td>" +
-              (eventObj.locationDisplayName
-                ? cityssm.escapeHTML(eventObj.locationDisplayName)
+              (eventObject.locationDisplayName
+                ? cityssm.escapeHTML(eventObject.locationDisplayName)
                 : "<span class=\"has-text-grey\">(No Location)</span>") + "<br />" +
-              "<small>" + eventObj.startTimeString +
-              (eventObj.startTimeString === eventObj.endTimeString ? "" : " to " + eventObj.endTimeString) +
+              "<small>" + eventObject.startTimeString +
+              (eventObject.startTimeString === eventObject.endTimeString ? "" : " to " + eventObject.endTimeString) +
               "</small>" +
               "</td>") +
             ("<td class=\"is-hidden-print has-text-right\">" +
-              (eventObj.canUpdate
+              (eventObject.canUpdate
                 ? "<a class=\"button is-small\" href=\"" + cityssm.escapeHTML(eventURL) + "/edit\">" +
                 "<span class=\"icon\"><i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i></span>" +
                 "<span>Edit</span>" +
@@ -89,15 +91,15 @@ declare const cityssm: cityssmGlobal;
                 : "") +
               "</td>");
 
-          tbodyEle.appendChild(trEle);
+          tbodyElement.append(trElement);
         }
 
-        cityssm.clearElement(resultsEle);
+        cityssm.clearElement(resultsElement);
 
-        const tableEle = document.createElement("table");
-        tableEle.className = "table is-fullwidth is-striped is-hoverable";
+        const tableElement = document.createElement("table");
+        tableElement.className = "table is-fullwidth is-striped is-hoverable";
 
-        tableEle.innerHTML = "<thead>" +
+        tableElement.innerHTML = "<thead>" +
           "<tr>" +
           "<th>Event Date</th>" +
           "<th>Licence</th>" +
@@ -108,18 +110,18 @@ declare const cityssm: cityssmGlobal;
           "</tr>" +
           "</thead>";
 
-        tableEle.appendChild(tbodyEle);
+        tableElement.append(tbodyElement);
 
-        resultsEle.appendChild(tableEle);
+        resultsElement.append(tableElement);
       }
     );
   };
 
-  filterExternalLicenceNumberEle.addEventListener("change", getEventsFn);
-  filterLicenceTypeKeyEle.addEventListener("change", getEventsFn);
-  filterOrganizationNameEle.addEventListener("change", getEventsFn);
-  filterLocationNameEle.addEventListener("change", getEventsFn);
-  filterYearEle.addEventListener("change", getEventsFn);
+  filterExternalLicenceNumberElement.addEventListener("change", getEventsFunction);
+  filterLicenceTypeKeyElement.addEventListener("change", getEventsFunction);
+  filterOrganizationNameElement.addEventListener("change", getEventsFunction);
+  filterLocationNameElement.addEventListener("change", getEventsFunction);
+  filterYearElement.addEventListener("change", getEventsFunction);
 
-  getEventsFn();
+  getEventsFunction();
 })();
