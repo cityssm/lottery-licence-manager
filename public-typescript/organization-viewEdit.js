@@ -1,25 +1,25 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 (() => {
-    const mainEle = document.getElementsByTagName("main")[0];
-    const urlPrefix = mainEle.getAttribute("data-url-prefix");
-    const canCreate = mainEle.getAttribute("data-can-create") === "true";
-    const remarksContainerEle = document.getElementById("container--remarks");
+    const mainElement = document.querySelector("main");
+    const urlPrefix = mainElement.dataset.urlPrefix;
+    const canCreate = mainElement.dataset.canUpdate === "true";
+    const remarksContainerElement = document.querySelector("#container--remarks");
     if (canCreate) {
-        const organizationID = parseInt(remarksContainerEle.getAttribute("data-organization-id"), 10);
-        const editRemarkFn = (buttonEvent) => {
-            const remarkIndex = parseInt(buttonEvent.currentTarget.getAttribute("data-remark-index"), 10);
-            llm.organizationRemarks.openEditRemarkModal(organizationID, remarkIndex, refreshRemarksFn);
+        const organizationID = Number.parseInt(remarksContainerElement.dataset.organizationId, 10);
+        const editRemarkFunction = (buttonEvent) => {
+            const remarkIndex = Number.parseInt(buttonEvent.currentTarget.dataset.remarkIndex, 10);
+            llm.organizationRemarks.openEditRemarkModal(organizationID, remarkIndex, refreshRemarksFunction);
         };
-        const deleteRemarkFn = (buttonEvent) => {
-            const remarkIndex = parseInt(buttonEvent.currentTarget.getAttribute("data-remark-index"), 10);
-            llm.organizationRemarks.deleteRemark(organizationID, remarkIndex, true, refreshRemarksFn);
+        const deleteRemarkFunction = (buttonEvent) => {
+            const remarkIndex = Number.parseInt(buttonEvent.currentTarget.dataset.remarkIndex, 10);
+            llm.organizationRemarks.deleteRemark(organizationID, remarkIndex, true, refreshRemarksFunction);
         };
-        const refreshRemarksFn = () => {
+        const refreshRemarksFunction = () => {
             llm.organizationRemarks.getRemarksByOrganizationID(organizationID, (remarkList) => {
-                cityssm.clearElement(remarksContainerEle);
+                cityssm.clearElement(remarksContainerElement);
                 if (remarkList.length === 0) {
-                    remarksContainerEle.innerHTML = "<div class=\"panel-block\">" +
+                    remarksContainerElement.innerHTML = "<div class=\"panel-block\">" +
                         "<div class=\"message is-info\">" +
                         "<p class=\"message-body\">There are no remarks associated with this organization.</p>" +
                         "</div>" +
@@ -27,7 +27,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 }
                 else {
                     for (const remark of remarkList) {
-                        remarksContainerEle.insertAdjacentHTML("beforeend", "<div class=\"panel-block is-block\">" +
+                        remarksContainerElement.insertAdjacentHTML("beforeend", "<div class=\"panel-block is-block\">" +
                             "<div class=\"columns is-mobile\">" +
                             "<div class=\"column is-narrow\">" +
                             (remark.isImportant
@@ -64,188 +64,188 @@ Object.defineProperty(exports, "__esModule", { value: true });
                             "</div>" +
                             "</div>");
                     }
-                    const editBtnEles = remarksContainerEle.getElementsByClassName("is-edit-remark-button");
-                    for (const editBtnEle of editBtnEles) {
-                        editBtnEle.addEventListener("click", editRemarkFn);
+                    const editButtonElements = remarksContainerElement.querySelectorAll(".is-edit-remark-button");
+                    for (const editButtonElement of editButtonElements) {
+                        editButtonElement.addEventListener("click", editRemarkFunction);
                     }
-                    const deleteBtnEles = remarksContainerEle.getElementsByClassName("is-delete-remark-button");
-                    for (const deleteBtnEle of deleteBtnEles) {
-                        deleteBtnEle.addEventListener("click", deleteRemarkFn);
+                    const deleteButtonElements = remarksContainerElement.querySelectorAll(".is-delete-remark-button");
+                    for (const deleteButtonElement of deleteButtonElements) {
+                        deleteButtonElement.addEventListener("click", deleteRemarkFunction);
                     }
                 }
             });
         };
-        document.getElementsByClassName("is-add-remark-button")[0].addEventListener("click", (clickEvent) => {
+        document.querySelector(".is-add-remark-button").addEventListener("click", (clickEvent) => {
             clickEvent.preventDefault();
-            llm.organizationRemarks.openAddRemarkModal(organizationID, refreshRemarksFn);
+            llm.organizationRemarks.openAddRemarkModal(organizationID, refreshRemarksFunction);
         });
-        const editBtnEles = remarksContainerEle.getElementsByClassName("is-edit-remark-button");
-        for (const editBtnEle of editBtnEles) {
-            editBtnEle.addEventListener("click", editRemarkFn);
+        const editButtonElements = remarksContainerElement.querySelectorAll(".is-edit-remark-button");
+        for (const editButtonElement of editButtonElements) {
+            editButtonElement.addEventListener("click", editRemarkFunction);
         }
-        const deleteBtnEles = remarksContainerEle.getElementsByClassName("is-delete-remark-button");
-        for (const deleteBtnEle of deleteBtnEles) {
-            deleteBtnEle.addEventListener("click", deleteRemarkFn);
+        const deleteButtonElements = remarksContainerElement.querySelectorAll(".is-delete-remark-button");
+        for (const deleteButtonElement of deleteButtonElements) {
+            deleteButtonElement.addEventListener("click", deleteRemarkFunction);
         }
     }
-    const remarkSearchStrEle = document.getElementById("remark--searchStr");
-    if (remarkSearchStrEle) {
-        remarkSearchStrEle.value = "";
-        const remarkDisplayCountEle = document.getElementById("remark--displayCount");
-        const remarkBlockEles = remarksContainerEle.getElementsByClassName("is-remark-block");
-        remarkSearchStrEle.addEventListener("keyup", () => {
-            const searchStrSplit = remarkSearchStrEle.value
+    const remarkSearchStringElement = document.querySelector("#remark--searchStr");
+    if (remarkSearchStringElement) {
+        remarkSearchStringElement.value = "";
+        const remarkDisplayCountElement = document.querySelector("#remark--displayCount");
+        const remarkBlockElements = remarksContainerElement.querySelectorAll(".is-remark-block");
+        remarkSearchStringElement.addEventListener("keyup", () => {
+            const searchStringSplit = remarkSearchStringElement.value
                 .trim()
                 .toLowerCase()
                 .split(" ");
-            let displayCount = remarkBlockEles.length;
-            for (const remarkBlockEle of remarkBlockEles) {
-                const remark = remarkBlockEle.getElementsByClassName("is-remark")[0].innerText
+            let displayCount = remarkBlockElements.length;
+            for (const remarkBlockElement of remarkBlockElements) {
+                const remark = remarkBlockElement.querySelector(".is-remark").textContent
                     .trim()
                     .toLowerCase();
                 let showRemark = true;
-                for (const searchStrPiece of searchStrSplit) {
-                    if (!remark.includes(searchStrPiece)) {
+                for (const searchStringPiece of searchStringSplit) {
+                    if (!remark.includes(searchStringPiece)) {
                         showRemark = false;
                         displayCount -= 1;
                         break;
                     }
                 }
                 if (showRemark) {
-                    remarkBlockEle.classList.remove("is-hidden");
+                    remarkBlockElement.classList.remove("is-hidden");
                 }
                 else {
-                    remarkBlockEle.classList.add("is-hidden");
+                    remarkBlockElement.classList.add("is-hidden");
                 }
             }
-            remarkDisplayCountEle.innerText = displayCount.toString();
+            remarkDisplayCountElement.textContent = displayCount.toString();
         });
     }
     let bankRecordsFiltersLoaded = false;
     const bankRecordsCache = new Map();
-    const bankRecordsBankingYearFilterEle = document.getElementById("bankRecordFilter--bankingYear");
-    const bankRecordsAccountNumberFilterEle = document.getElementById("bankRecordFilter--accountNumber");
-    const bankRecordsTableEle = document.getElementById("table--bankRecords");
-    const organizationID = bankRecordsTableEle.getAttribute("data-organization-id");
-    const clearBankRecordsTableFn = () => {
+    const bankRecordsBankingYearFilterElement = document.querySelector("#bankRecordFilter--bankingYear");
+    const bankRecordsAccountNumberFilterElement = document.querySelector("#bankRecordFilter--accountNumber");
+    const bankRecordsTableElement = document.querySelector("#table--bankRecords");
+    const organizationID = bankRecordsTableElement.dataset.organizationId;
+    const clearBankRecordsTableFunction = () => {
         bankRecordsCache.clear();
-        bankRecordsTableEle.classList.remove("has-status-loaded");
-        bankRecordsTableEle.classList.add("has-status-loading");
-        const infoEles = bankRecordsTableEle.getElementsByClassName("is-bank-record-info");
-        for (const infoEle of infoEles) {
-            infoEle.innerHTML = "<i class=\"fas fa-minus has-text-grey-lighter\" aria-hidden=\"true\"></i>" +
+        bankRecordsTableElement.classList.remove("has-status-loaded");
+        bankRecordsTableElement.classList.add("has-status-loading");
+        const infoElements = bankRecordsTableElement.querySelectorAll(".is-bank-record-info");
+        for (const infoElement of infoElements) {
+            infoElement.innerHTML = "<i class=\"fas fa-minus has-text-grey-lighter\" aria-hidden=\"true\"></i>" +
                 "<br />" +
                 "<strong class=\"is-size-7 has-text-grey-light\">No Record Recorded</strong>";
-            const tdEle = infoEle.closest("td");
-            tdEle.setAttribute("data-record-index", "");
-            tdEle.classList.remove("has-background-success-light");
-            tdEle.classList.remove("has-background-info-light");
+            const tdElement = infoElement.closest("td");
+            tdElement.dataset.recordIndex = "";
+            tdElement.classList.remove("has-background-success-light");
+            tdElement.classList.remove("has-background-info-light");
         }
     };
-    const getBankRecordsFn = () => {
-        clearBankRecordsTableFn();
-        const processRecordsFn = (bankRecords) => {
+    const getBankRecordsFunction = () => {
+        clearBankRecordsTableFunction();
+        const processRecordsFunction = (bankRecords) => {
             for (const bankRecord of bankRecords) {
                 bankRecordsCache.set(bankRecord.recordIndex, bankRecord);
-                const tdEle = bankRecordsTableEle
+                const tdElement = bankRecordsTableElement
                     .querySelector("[data-banking-month='" + bankRecord.bankingMonth.toString() + "']")
                     .querySelector("[data-bank-record-type='" + bankRecord.bankRecordType + "']");
-                if (!tdEle) {
+                if (!tdElement) {
                     continue;
                 }
-                tdEle.setAttribute("data-record-index", bankRecord.recordIndex.toString());
-                const infoEle = tdEle.getElementsByClassName("is-bank-record-info")[0];
+                tdElement.dataset.recordIndex = bankRecord.recordIndex.toString();
+                const infoElement = tdElement.querySelectorAll(".is-bank-record-info")[0];
                 if (bankRecord.recordIsNA) {
-                    tdEle.classList.add("has-background-info-light");
-                    infoEle.innerHTML =
+                    tdElement.classList.add("has-background-info-light");
+                    infoElement.innerHTML =
                         "<i class=\"fas fa-times\" aria-hidden=\"true\"></i>" +
                             "<br />" +
                             "<span class=\"has-text-weight-bold is-size-7\">Not Applicable</span>";
                 }
                 else {
-                    tdEle.classList.add("has-background-success-light");
-                    infoEle.innerHTML =
+                    tdElement.classList.add("has-background-success-light");
+                    infoElement.innerHTML =
                         "<i class=\"fas fa-check\" aria-hidden=\"true\"></i>" +
                             "<br />" +
                             "<span class=\"has-text-weight-bold is-size-7\">Recorded " + bankRecord.recordDateString + "</span>";
                 }
                 if (bankRecord.recordNote !== "") {
-                    infoEle.insertAdjacentHTML("beforeend", "<div class=\"is-size-7 has-text-left\">" +
+                    infoElement.insertAdjacentHTML("beforeend", "<div class=\"is-size-7 has-text-left\">" +
                         "<span class=\"icon\"><i class=\"fas fa-sticky-note\" aria-hidden=\"true\"></i></span> " +
                         cityssm.escapeHTML(bankRecord.recordNote) +
                         "</div>");
                 }
             }
-            bankRecordsTableEle.classList.remove("has-status-loading");
-            bankRecordsTableEle.classList.add("has-status-loaded");
+            bankRecordsTableElement.classList.remove("has-status-loading");
+            bankRecordsTableElement.classList.add("has-status-loaded");
         };
-        if (bankRecordsAccountNumberFilterEle.value === "") {
-            processRecordsFn([]);
+        if (bankRecordsAccountNumberFilterElement.value === "") {
+            processRecordsFunction([]);
         }
         else {
             cityssm.postJSON(urlPrefix + "/organizations/doGetBankRecords", {
                 organizationID,
-                bankingYear: bankRecordsBankingYearFilterEle.value,
-                accountNumber: bankRecordsAccountNumberFilterEle.value
-            }, processRecordsFn);
+                bankingYear: bankRecordsBankingYearFilterElement.value,
+                accountNumber: bankRecordsAccountNumberFilterElement.value
+            }, processRecordsFunction);
         }
     };
-    const loadBankRecordFiltersFn = () => {
+    const loadBankRecordFiltersFunction = () => {
         cityssm.postJSON(urlPrefix + "/organizations/doGetBankRecordStats", {
             organizationID
         }, (bankRecordStats) => {
             const currentYear = new Date().getFullYear();
             let bankingYearMin = currentYear - 1;
             if (bankRecordStats.length === 0) {
-                bankRecordsAccountNumberFilterEle.innerHTML = "<option value=\"\">(No Accounts Recorded)</option>";
+                bankRecordsAccountNumberFilterElement.innerHTML = "<option value=\"\">(No Accounts Recorded)</option>";
             }
             else {
-                bankRecordsAccountNumberFilterEle.innerHTML = "";
+                bankRecordsAccountNumberFilterElement.innerHTML = "";
                 for (const bankRecordsStat of bankRecordStats) {
                     bankingYearMin = Math.min(bankRecordsStat.bankingYearMin, bankingYearMin);
                     const accountNumber = cityssm.escapeHTML(bankRecordsStat.accountNumber);
-                    bankRecordsAccountNumberFilterEle.insertAdjacentHTML("beforeend", "<option value=\"" + accountNumber + "\">" +
+                    bankRecordsAccountNumberFilterElement.insertAdjacentHTML("beforeend", "<option value=\"" + accountNumber + "\">" +
                         accountNumber +
                         " (From " + bankRecordsStat.bankingYearMin.toString() + " to " + bankRecordsStat.bankingYearMax.toString() + ")" +
                         "</option>");
                 }
             }
-            bankRecordsBankingYearFilterEle.innerHTML = "";
+            bankRecordsBankingYearFilterElement.innerHTML = "";
             for (let year = currentYear; year >= bankingYearMin; year -= 1) {
-                bankRecordsBankingYearFilterEle.insertAdjacentHTML("beforeend", "<option value=\"" + year.toString() + "\">" +
+                bankRecordsBankingYearFilterElement.insertAdjacentHTML("beforeend", "<option value=\"" + year.toString() + "\">" +
                     year.toString() +
                     "</option>");
             }
-            getBankRecordsFn();
+            getBankRecordsFunction();
         });
     };
-    const setExportURLFn = () => {
-        document.getElementById("bankRecords--export").href = urlPrefix + "/reports/bankRecordsFlat-byOrganizationAndBankingYear" +
+    const setExportURLFunction = () => {
+        document.querySelector("#bankRecords--export").href = urlPrefix + "/reports/bankRecordsFlat-byOrganizationAndBankingYear" +
             "?organizationID=" + organizationID +
-            "&bankingYear=" + bankRecordsBankingYearFilterEle.value;
+            "&bankingYear=" + bankRecordsBankingYearFilterElement.value;
     };
-    setExportURLFn();
-    bankRecordsAccountNumberFilterEle.addEventListener("change", getBankRecordsFn);
-    bankRecordsBankingYearFilterEle.addEventListener("change", getBankRecordsFn);
-    bankRecordsBankingYearFilterEle.addEventListener("change", setExportURLFn);
+    setExportURLFunction();
+    bankRecordsAccountNumberFilterElement.addEventListener("change", getBankRecordsFunction);
+    bankRecordsBankingYearFilterElement.addEventListener("change", getBankRecordsFunction);
+    bankRecordsBankingYearFilterElement.addEventListener("change", setExportURLFunction);
     if (canCreate) {
-        const openBankRecordEditModalFn = (buttonEvent) => {
+        const openBankRecordEditModalFunction = (buttonEvent) => {
             const isNavBlockedByPage = cityssm.isNavBlockerEnabled();
-            let bankRecordEditCloseModalFn;
+            let bankRecordEditCloseModalFunction;
             let isUpdate = false;
             let lockKeyFields = false;
             let accountNumberIsBlank = true;
-            const submitBankRecordEditFn = (formEvent) => {
+            const submitBankRecordEditFunction = (formEvent) => {
                 formEvent.preventDefault();
                 cityssm.postJSON(urlPrefix + "/organizations/" + (isUpdate ? "doEditBankRecord" : "doAddBankRecord"), formEvent.currentTarget, (resultJSON) => {
                     if (resultJSON.success) {
-                        bankRecordEditCloseModalFn();
+                        bankRecordEditCloseModalFunction();
                         if (isUpdate || (lockKeyFields && !accountNumberIsBlank)) {
-                            getBankRecordsFn();
+                            getBankRecordsFunction();
                         }
                         else {
                             bankRecordsFiltersLoaded = false;
-                            loadBankRecordFiltersFn();
+                            loadBankRecordFiltersFunction();
                         }
                     }
                     else {
@@ -253,106 +253,106 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     }
                 });
             };
-            const deleteBankRecordFn = (deleteButtonEvent) => {
+            const deleteBankRecordFunction = (deleteButtonEvent) => {
                 deleteButtonEvent.preventDefault();
-                const recordIndex = deleteButtonEvent.currentTarget.getAttribute("data-record-index");
-                const deleteFn = () => {
+                const recordIndex = deleteButtonEvent.currentTarget.dataset.recordIndex;
+                const deleteFunction = () => {
                     cityssm.postJSON(urlPrefix + "/organizations/doDeleteBankRecord", {
                         organizationID,
                         recordIndex
                     }, () => {
-                        bankRecordEditCloseModalFn();
-                        getBankRecordsFn();
+                        bankRecordEditCloseModalFunction();
+                        getBankRecordsFunction();
                     });
                 };
-                cityssm.confirmModal("Delete Bank Record?", "Are you sure you want to delete this bank record?", "Yes, Delete", "warning", deleteFn);
+                cityssm.confirmModal("Delete Bank Record?", "Are you sure you want to delete this bank record?", "Yes, Delete", "warning", deleteFunction);
             };
-            const buttonEle = buttonEvent.currentTarget;
+            const buttonElement = buttonEvent.currentTarget;
             let recordIndex = "";
-            const accountNumber = bankRecordsAccountNumberFilterEle.value;
+            const accountNumber = bankRecordsAccountNumberFilterElement.value;
             accountNumberIsBlank = (accountNumber === "");
             let bankRecordType = "";
             let recordIsNA = false;
             let recordNote = "";
-            const dateObj = new Date();
-            const currentYear = dateObj.getFullYear();
-            const currentDateString = cityssm.dateToString(dateObj);
+            const dateObject = new Date();
+            const currentYear = dateObject.getFullYear();
+            const currentDateString = cityssm.dateToString(dateObject);
             let recordDateString = currentDateString;
-            dateObj.setMonth(dateObj.getMonth() - 1);
-            let bankingYear = dateObj.getFullYear();
-            let bankingMonth = dateObj.getMonth() + 1;
-            if (buttonEle.id !== "is-add-bank-record-button") {
+            dateObject.setMonth(dateObject.getMonth() - 1);
+            let bankingYear = dateObject.getFullYear();
+            let bankingMonth = dateObject.getMonth() + 1;
+            if (buttonElement.id !== "is-add-bank-record-button") {
                 lockKeyFields = true;
-                const tdEle = buttonEle.closest("td");
-                recordIndex = tdEle.getAttribute("data-record-index");
-                bankingYear = parseInt(bankRecordsBankingYearFilterEle.value, 10);
+                const tdElement = buttonElement.closest("td");
+                recordIndex = tdElement.getAttribute("data-record-index");
+                bankingYear = Number.parseInt(bankRecordsBankingYearFilterElement.value, 10);
                 if (recordIndex === "") {
-                    bankingMonth = parseInt(tdEle.closest("tr").getAttribute("data-banking-month"), 10);
-                    bankRecordType = tdEle.getAttribute("data-bank-record-type");
+                    bankingMonth = Number.parseInt(tdElement.closest("tr").dataset.bankingMonth, 10);
+                    bankRecordType = tdElement.dataset.bankRecordType;
                 }
                 else {
-                    const recordObj = bankRecordsCache.get(parseInt(recordIndex, 10));
+                    const recordObject = bankRecordsCache.get(Number.parseInt(recordIndex, 10));
                     isUpdate = true;
-                    bankingMonth = recordObj.bankingMonth;
-                    bankRecordType = recordObj.bankRecordType;
-                    recordIsNA = recordObj.recordIsNA;
-                    recordDateString = recordObj.recordDateString;
-                    recordNote = recordObj.recordNote;
+                    bankingMonth = recordObject.bankingMonth;
+                    bankRecordType = recordObject.bankRecordType;
+                    recordIsNA = recordObject.recordIsNA;
+                    recordDateString = recordObject.recordDateString;
+                    recordNote = recordObject.recordNote;
                 }
             }
             cityssm.openHtmlModal("organization-bankRecordEdit", {
                 onshow() {
                     cityssm.enableNavBlocker();
-                    document.getElementById("bankRecordEdit--organizationID").value = organizationID;
-                    document.getElementById("bankRecordEdit--recordIndex").value = recordIndex;
-                    const accountNumberEle = document.getElementById("bankRecordEdit--accountNumber");
-                    accountNumberEle.value = accountNumber;
-                    const bankingYearEle = document.getElementById("bankRecordEdit--bankingYear");
-                    bankingYearEle.value = bankingYear.toString();
-                    bankingYearEle.setAttribute("max", currentYear.toString());
-                    const bankingMonthEle = document.getElementById("bankRecordEdit--bankingMonth");
-                    bankingMonthEle.value = bankingMonth.toString();
-                    const bankRecordTypeEle = document.getElementById("bankRecordEdit--bankRecordType");
+                    document.querySelector("#bankRecordEdit--organizationID").value = organizationID;
+                    document.querySelector("#bankRecordEdit--recordIndex").value = recordIndex;
+                    const accountNumberElement = document.querySelector("#bankRecordEdit--accountNumber");
+                    accountNumberElement.value = accountNumber;
+                    const bankingYearElement = document.querySelector("#bankRecordEdit--bankingYear");
+                    bankingYearElement.value = bankingYear.toString();
+                    bankingYearElement.setAttribute("max", currentYear.toString());
+                    const bankingMonthElement = document.querySelector("#bankRecordEdit--bankingMonth");
+                    bankingMonthElement.value = bankingMonth.toString();
+                    const bankRecordTypeElement = document.querySelector("#bankRecordEdit--bankRecordType");
                     for (const config_bankRecordType of exports.config_bankRecordTypes) {
-                        bankRecordTypeEle.insertAdjacentHTML("beforeend", "<option value=\"" + config_bankRecordType.bankRecordType + "\">" +
+                        bankRecordTypeElement.insertAdjacentHTML("beforeend", "<option value=\"" + config_bankRecordType.bankRecordType + "\">" +
                             config_bankRecordType.bankRecordTypeName +
                             "</option>");
                     }
                     if (bankRecordType === "") {
-                        bankRecordTypeEle.insertAdjacentHTML("afterbegin", "<option value=\"\">(Select One)</option>");
+                        bankRecordTypeElement.insertAdjacentHTML("afterbegin", "<option value=\"\">(Select One)</option>");
                     }
-                    bankRecordTypeEle.value = bankRecordType;
-                    const recordDateStringEle = document.getElementById("bankRecordEdit--recordDateString");
-                    recordDateStringEle.value = recordDateString;
-                    recordDateStringEle.setAttribute("max", currentDateString);
+                    bankRecordTypeElement.value = bankRecordType;
+                    const recordDateStringElement = document.querySelector("#bankRecordEdit--recordDateString");
+                    recordDateStringElement.value = recordDateString;
+                    recordDateStringElement.setAttribute("max", currentDateString);
                     if (recordIsNA) {
-                        document.getElementById("bankRecordEdit--recordIsNA").setAttribute("checked", "checked");
+                        document.querySelector("#bankRecordEdit--recordIsNA").setAttribute("checked", "checked");
                     }
-                    document.getElementById("bankRecordEdit--recordNote").value = recordNote;
+                    document.querySelector("#bankRecordEdit--recordNote").value = recordNote;
                     if (lockKeyFields) {
                         if (!accountNumberIsBlank) {
-                            accountNumberEle.setAttribute("readonly", "readonly");
-                            accountNumberEle.classList.add("is-readonly");
+                            accountNumberElement.setAttribute("readonly", "readonly");
+                            accountNumberElement.classList.add("is-readonly");
                         }
-                        bankingYearEle.setAttribute("readonly", "readonly");
-                        bankingYearEle.classList.add("is-readonly");
-                        bankingMonthEle.setAttribute("readonly", "readonly");
-                        bankingMonthEle.classList.add("is-readonly");
-                        bankRecordTypeEle.setAttribute("readonly", "readonly");
-                        bankRecordTypeEle.classList.add("is-readonly");
+                        bankingYearElement.setAttribute("readonly", "readonly");
+                        bankingYearElement.classList.add("is-readonly");
+                        bankingMonthElement.setAttribute("readonly", "readonly");
+                        bankingMonthElement.classList.add("is-readonly");
+                        bankRecordTypeElement.setAttribute("readonly", "readonly");
+                        bankRecordTypeElement.classList.add("is-readonly");
                     }
                     if (isUpdate) {
-                        const deleteButtonEle = document.getElementById("bankRecordEdit--deleteRecordButton");
-                        deleteButtonEle.setAttribute("data-record-index", recordIndex);
-                        deleteButtonEle.addEventListener("click", deleteBankRecordFn);
+                        const deleteButtonElement = document.querySelector("#bankRecordEdit--deleteRecordButton");
+                        deleteButtonElement.dataset.recordIndex = recordIndex;
+                        deleteButtonElement.addEventListener("click", deleteBankRecordFunction);
                     }
                     else {
-                        document.getElementById("bankRecordEdit--moreOptionsDropdown").remove();
+                        document.querySelector("#bankRecordEdit--moreOptionsDropdown").remove();
                     }
                 },
-                onshown(modalEle, closeModalFn) {
-                    bankRecordEditCloseModalFn = closeModalFn;
-                    modalEle.getElementsByTagName("form")[0].addEventListener("submit", submitBankRecordEditFn);
+                onshown(modalElement, closeModalFunction) {
+                    bankRecordEditCloseModalFunction = closeModalFunction;
+                    modalElement.querySelector("form").addEventListener("submit", submitBankRecordEditFunction);
                 },
                 onremoved() {
                     if (!isNavBlockedByPage) {
@@ -361,104 +361,104 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 }
             });
         };
-        const addRecordButtonEle = document.getElementById("is-add-bank-record-button");
-        if (addRecordButtonEle) {
-            addRecordButtonEle.addEventListener("click", openBankRecordEditModalFn);
+        const addRecordButtonElement = document.querySelector("#is-add-bank-record-button");
+        if (addRecordButtonElement) {
+            addRecordButtonElement.addEventListener("click", openBankRecordEditModalFunction);
         }
-        const buttonEles = bankRecordsTableEle.getElementsByClassName("is-bank-record-button");
-        for (const buttonEle of buttonEles) {
-            buttonEle.addEventListener("click", openBankRecordEditModalFn);
+        const buttonElements = bankRecordsTableElement.querySelectorAll(".is-bank-record-button");
+        for (const buttonElement of buttonElements) {
+            buttonElement.addEventListener("click", openBankRecordEditModalFunction);
         }
-        const openBankRecordMonthEditModalFn = (buttonEvent) => {
-            const accountNumber = bankRecordsAccountNumberFilterEle.value;
+        const openBankRecordMonthEditModalFunction = (buttonEvent) => {
+            const accountNumber = bankRecordsAccountNumberFilterElement.value;
             if (accountNumber === "") {
                 cityssm.alertModal("No Account Number Set", "Please add at least one bank record with the account number you are looking to record.", "OK", "warning");
                 return;
             }
             let recordDateRowIndex = -1;
-            const syncFn_enableDateField = (rowIndexString) => {
-                const recordDateEle = document.getElementById("bankRecordMonthEdit--recordDateString-" + rowIndexString);
-                recordDateEle.classList.remove("is-readonly");
-                recordDateEle.readOnly = false;
+            const syncFunction_enableDateField = (rowIndexString) => {
+                const recordDateElement = document.querySelector("#bankRecordMonthEdit--recordDateString-" + rowIndexString);
+                recordDateElement.classList.remove("is-readonly");
+                recordDateElement.readOnly = false;
             };
-            const syncFn_disableDateField = (rowIndexString) => {
-                const recordDateEle = document.getElementById("bankRecordMonthEdit--recordDateString-" + rowIndexString);
-                recordDateEle.classList.add("is-readonly");
-                recordDateEle.readOnly = true;
-                recordDateEle.value = document.getElementById("bankRecordMonthEdit--recordDateString-0").value;
+            const syncFunction_disableDateField = (rowIndexString) => {
+                const recordDateElement = document.querySelector("#bankRecordMonthEdit--recordDateString-" + rowIndexString);
+                recordDateElement.classList.add("is-readonly");
+                recordDateElement.readOnly = true;
+                recordDateElement.value = document.querySelector("#bankRecordMonthEdit--recordDateString-0").value;
             };
-            const syncFn_toggleDateField = (changeEvent) => {
-                const syncRecordDateCheckboxEle = changeEvent.currentTarget;
-                const rowIndexString = syncRecordDateCheckboxEle.value;
-                if (syncRecordDateCheckboxEle.checked) {
-                    syncFn_disableDateField(rowIndexString);
+            const syncFunction_toggleDateField = (changeEvent) => {
+                const syncRecordDateCheckboxElement = changeEvent.currentTarget;
+                const rowIndexString = syncRecordDateCheckboxElement.value;
+                if (syncRecordDateCheckboxElement.checked) {
+                    syncFunction_disableDateField(rowIndexString);
                 }
                 else {
-                    syncFn_enableDateField(rowIndexString);
+                    syncFunction_enableDateField(rowIndexString);
                 }
             };
-            const syncFn_copyToSyncedDates = () => {
-                const recordDateString = document.getElementById("bankRecordMonthEdit--recordDateString-0").value;
-                for (let i = 1; i <= recordDateRowIndex; i += 1) {
-                    if (document.getElementById("bankRecordMonthEdit--syncRecordDate-" + i.toString()).checked) {
-                        document.getElementById("bankRecordMonthEdit--recordDateString-" + i.toString()).value = recordDateString;
+            const syncFunction_copyToSyncedDates = () => {
+                const recordDateString = document.querySelector("#bankRecordMonthEdit--recordDateString-0").value;
+                for (let index = 1; index <= recordDateRowIndex; index += 1) {
+                    if (document.querySelector("#bankRecordMonthEdit--syncRecordDate-" + index.toString()).checked) {
+                        document.querySelector("#bankRecordMonthEdit--recordDateString-" + index.toString()).value = recordDateString;
                     }
                 }
             };
-            const dateFn_setToToday = (clickEvent) => {
+            const dateFunction_setToToday = (clickEvent) => {
                 const rowIndexString = clickEvent.currentTarget.value;
                 if (rowIndexString === "0" ||
-                    !document.getElementById("bankRecordMonthEdit--syncRecordDate-" + rowIndexString).checked) {
-                    document.getElementById("bankRecordMonthEdit--recordDateString-" + rowIndexString).value = cityssm.dateToString(new Date());
+                    !document.querySelector("#bankRecordMonthEdit--syncRecordDate-" + rowIndexString).checked) {
+                    document.querySelector("#bankRecordMonthEdit--recordDateString-" + rowIndexString).value = cityssm.dateToString(new Date());
                     if (rowIndexString === "0") {
-                        syncFn_copyToSyncedDates();
+                        syncFunction_copyToSyncedDates();
                     }
                 }
                 else {
                     cityssm.alertModal("Date Not Changed", "This date is synced with the date on the first band record type.", "OK", "warning");
                 }
             };
-            let closeBankRecordMonthEditModalFn;
-            const submitFn = (formEvent) => {
+            let closeBankRecordMonthEditModalFunction;
+            const submitFunction = (formEvent) => {
                 formEvent.preventDefault();
                 cityssm.postJSON(urlPrefix + "/organizations/doUpdateBankRecordsByMonth", formEvent.currentTarget, (responseJSON) => {
                     if (responseJSON.success) {
-                        closeBankRecordMonthEditModalFn();
-                        getBankRecordsFn();
+                        closeBankRecordMonthEditModalFunction();
+                        getBankRecordsFunction();
                     }
                 });
             };
             const isNavBlockedByPage = cityssm.isNavBlockerEnabled();
-            const bankingYear = parseInt(bankRecordsBankingYearFilterEle.value, 10);
-            const trEle = buttonEvent.currentTarget.closest("tr");
-            const bankingMonth = parseInt(trEle.getAttribute("data-banking-month"), 10);
-            const tdEles = trEle.getElementsByTagName("td");
+            const bankingYear = Number.parseInt(bankRecordsBankingYearFilterElement.value, 10);
+            const trElement = buttonEvent.currentTarget.closest("tr");
+            const bankingMonth = Number.parseInt(trElement.getAttribute("data-banking-month"), 10);
+            const tdElements = trElement.querySelectorAll("td");
             const bankRecordTypeToRecord = new Map();
-            for (const tdEle of tdEles) {
-                const recordIndexString = tdEle.getAttribute("data-record-index");
+            for (const tdElement of tdElements) {
+                const recordIndexString = tdElement.dataset.recordIndex;
                 if (recordIndexString !== "") {
-                    const bankRecord = bankRecordsCache.get(parseInt(recordIndexString, 10));
+                    const bankRecord = bankRecordsCache.get(Number.parseInt(recordIndexString, 10));
                     bankRecordTypeToRecord.set(bankRecord.bankRecordType, bankRecord);
                 }
             }
             cityssm.openHtmlModal("organization-bankRecordMonthEdit", {
-                onshow: () => {
+                onshow() {
                     cityssm.enableNavBlocker();
-                    document.getElementById("bankRecordMonthEdit--organizationID").value = organizationID;
-                    document.getElementById("bankRecordMonthEdit--accountNumber").value = accountNumber;
-                    document.getElementById("bankRecordMonthEdit--bankingYear").value = bankingYear.toString();
-                    document.getElementById("bankRecordMonthEdit--bankingMonth").value = bankingMonth.toString();
-                    document.getElementById("bankRecordMonthEdit--accountNumber-span").innerText = accountNumber;
-                    document.getElementById("bankRecordMonthEdit--bankingYear-span").innerText = bankingYear.toString();
-                    document.getElementById("bankRecordMonthEdit--bankingMonth-span").innerText = bankingMonth.toString();
-                    const recordTypeContainerEle = document.getElementById("container--bankRecordMonthEdit-recordTypes");
+                    document.querySelector("#bankRecordMonthEdit--organizationID").value = organizationID;
+                    document.querySelector("#bankRecordMonthEdit--accountNumber").value = accountNumber;
+                    document.querySelector("#bankRecordMonthEdit--bankingYear").value = bankingYear.toString();
+                    document.querySelector("#bankRecordMonthEdit--bankingMonth").value = bankingMonth.toString();
+                    document.querySelector("#bankRecordMonthEdit--accountNumber-span").textContent = accountNumber;
+                    document.querySelector("#bankRecordMonthEdit--bankingYear-span").textContent = bankingYear.toString();
+                    document.querySelector("#bankRecordMonthEdit--bankingMonth-span").textContent = bankingMonth.toString();
+                    const recordTypeContainerElement = document.querySelector("#container--bankRecordMonthEdit-recordTypes");
                     for (const config_bankRecordType of exports.config_bankRecordTypes) {
                         recordDateRowIndex += 1;
                         const rowIndexString = recordDateRowIndex.toString();
-                        recordTypeContainerEle.insertAdjacentHTML("beforeend", "<hr />");
-                        recordTypeContainerEle.insertAdjacentHTML("beforeend", "<input id=\"bankRecordMonthEdit--recordIndex-" + rowIndexString + "\" name=\"recordIndex-" + rowIndexString + "\" type=\"hidden\" value=\"\" />");
-                        recordTypeContainerEle.insertAdjacentHTML("beforeend", "<input name=\"bankRecordType-" + rowIndexString + "\" type=\"hidden\" value=\"" + cityssm.escapeHTML(config_bankRecordType.bankRecordType) + "\" />");
-                        recordTypeContainerEle.insertAdjacentHTML("beforeend", "<div class=\"columns is-mobile\">" +
+                        recordTypeContainerElement.insertAdjacentHTML("beforeend", "<hr />");
+                        recordTypeContainerElement.insertAdjacentHTML("beforeend", "<input id=\"bankRecordMonthEdit--recordIndex-" + rowIndexString + "\" name=\"recordIndex-" + rowIndexString + "\" type=\"hidden\" value=\"\" />");
+                        recordTypeContainerElement.insertAdjacentHTML("beforeend", "<input name=\"bankRecordType-" + rowIndexString + "\" type=\"hidden\" value=\"" + cityssm.escapeHTML(config_bankRecordType.bankRecordType) + "\" />");
+                        recordTypeContainerElement.insertAdjacentHTML("beforeend", "<div class=\"columns is-mobile\">" +
                             ("<div class=\"column\">" +
                                 "<strong>" + cityssm.escapeHTML(config_bankRecordType.bankRecordTypeName) + "</strong>" +
                                 "</div>") +
@@ -479,7 +479,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                                     "</div>") +
                                 "</div>") +
                             "</div>");
-                        recordTypeContainerEle.insertAdjacentHTML("beforeend", "<div class=\"columns\">" +
+                        recordTypeContainerElement.insertAdjacentHTML("beforeend", "<div class=\"columns\">" +
                             ("<div class=\"column\">" +
                                 "<div class=\"field has-addons\">" +
                                 ("<div class=\"control is-expanded has-icons-left\">" +
@@ -515,50 +515,50 @@ Object.defineProperty(exports, "__esModule", { value: true });
                             "</div>");
                         const bankRecord = bankRecordTypeToRecord.get(config_bankRecordType.bankRecordType);
                         if (bankRecord) {
-                            document.getElementById("bankRecordMonthEdit--recordIndex-" + rowIndexString).value = bankRecord.recordIndex.toString();
+                            document.querySelector("#bankRecordMonthEdit--recordIndex-" + rowIndexString).value = bankRecord.recordIndex.toString();
                             if (bankRecord.recordIsNA) {
-                                document.getElementById("bankRecordMonthEdit--recordIsNA-" + rowIndexString).checked = true;
+                                document.querySelector("#bankRecordMonthEdit--recordIsNA-" + rowIndexString).checked = true;
                             }
-                            document.getElementById("bankRecordMonthEdit--recordDateString-" + rowIndexString).value = bankRecord.recordDateString;
-                            document.getElementById("bankRecordMonthEdit--recordNote-" + rowIndexString).value = bankRecord.recordNote;
+                            document.querySelector("#bankRecordMonthEdit--recordDateString-" + rowIndexString).value = bankRecord.recordDateString;
+                            document.querySelector("#bankRecordMonthEdit--recordNote-" + rowIndexString).value = bankRecord.recordNote;
                         }
                         if (recordDateRowIndex !== 0) {
-                            const syncRecordDateCheckboxEle = document.getElementById("bankRecordMonthEdit--syncRecordDate-" + rowIndexString);
-                            syncRecordDateCheckboxEle.addEventListener("change", syncFn_toggleDateField);
-                            const mainRecordDateString = document.getElementById("bankRecordMonthEdit--recordDateString-0").value;
+                            const syncRecordDateCheckboxElement = document.querySelector("#bankRecordMonthEdit--syncRecordDate-" + rowIndexString);
+                            syncRecordDateCheckboxElement.addEventListener("change", syncFunction_toggleDateField);
+                            const mainRecordDateString = document.querySelector("#bankRecordMonthEdit--recordDateString-0").value;
                             if ((bankRecord && bankRecord.recordDateString !== mainRecordDateString) || (!bankRecord && mainRecordDateString !== "")) {
-                                syncRecordDateCheckboxEle.checked = false;
-                                syncFn_enableDateField(rowIndexString);
+                                syncRecordDateCheckboxElement.checked = false;
+                                syncFunction_enableDateField(rowIndexString);
                             }
                         }
-                        document.getElementById("bankRecordMonthEdit--setToToday-" + rowIndexString).addEventListener("click", dateFn_setToToday);
+                        document.querySelector("#bankRecordMonthEdit--setToToday-" + rowIndexString).addEventListener("click", dateFunction_setToToday);
                     }
-                    document.getElementById("bankRecordMonthEdit--bankRecordTypeIndex").value = recordDateRowIndex.toString();
+                    document.querySelector("#bankRecordMonthEdit--bankRecordTypeIndex").value = recordDateRowIndex.toString();
                     if (recordDateRowIndex >= 0) {
-                        document.getElementById("bankRecordMonthEdit--recordDateString-0").addEventListener("change", syncFn_copyToSyncedDates);
+                        document.querySelector("#bankRecordMonthEdit--recordDateString-0").addEventListener("change", syncFunction_copyToSyncedDates);
                     }
                 },
-                onshown: (_modalEle, closeModalFn) => {
-                    document.getElementById("form--bankRecordMonthEdit").addEventListener("submit", submitFn);
-                    closeBankRecordMonthEditModalFn = closeModalFn;
+                onshown(_modalElement, closeModalFunction) {
+                    document.querySelector("#form--bankRecordMonthEdit").addEventListener("submit", submitFunction);
+                    closeBankRecordMonthEditModalFunction = closeModalFunction;
                 },
-                onremoved: () => {
+                onremoved() {
                     if (!isNavBlockedByPage) {
                         cityssm.disableNavBlocker();
                     }
                 }
             });
         };
-        const monthButtonEles = bankRecordsTableEle.getElementsByClassName("is-bank-record-month-button");
-        for (const buttonEle of monthButtonEles) {
-            buttonEle.addEventListener("click", openBankRecordMonthEditModalFn);
+        const monthButtonElements = bankRecordsTableElement.querySelectorAll(".is-bank-record-month-button");
+        for (const buttonElement of monthButtonElements) {
+            buttonElement.addEventListener("click", openBankRecordMonthEditModalFunction);
         }
     }
-    llm.initializeTabs(document.getElementById("tabs--organization"), {
-        onshown: (tabContentEle) => {
-            if (tabContentEle.id === "organizationTabContent--bankRecords" && !bankRecordsFiltersLoaded) {
+    llm.initializeTabs(document.querySelector("#tabs--organization"), {
+        onshown(tabContentElement) {
+            if (tabContentElement.id === "organizationTabContent--bankRecords" && !bankRecordsFiltersLoaded) {
                 bankRecordsFiltersLoaded = true;
-                loadBankRecordFiltersFn();
+                loadBankRecordFiltersFunction();
             }
         }
     });

@@ -225,51 +225,51 @@ declare const llm: llmGlobal;
     const editRepresentativeModalElement =
       document.querySelector(".is-edit-representative-modal") as HTMLElement;
 
-    const editRepresentativeFormEle = editRepresentativeModalElement.getElementsByTagName("form")[0];
+    const editRepresentativeFormElement = editRepresentativeModalElement.querySelector("form");
 
-    let editRepresentativeTrEle: HTMLTableRowElement;
+    let editRepresentativeTrElement: HTMLTableRowElement;
 
-    const openEditRepresentativeModalFn = (clickEvent: Event) => {
+    const openEditRepresentativeModalFunction = (clickEvent: Event) => {
 
-      editRepresentativeTrEle = (clickEvent.currentTarget as HTMLButtonElement).closest("tr");
+      editRepresentativeTrElement = (clickEvent.currentTarget as HTMLButtonElement).closest("tr");
 
-      const representativeIndex = editRepresentativeTrEle.getAttribute("data-representative-index");
+      const representativeIndex = editRepresentativeTrElement.dataset.representativeIndex;
 
-      (document.getElementById("editOrganizationRepresentative--representativeIndex") as HTMLInputElement)
+      (document.querySelector("#editOrganizationRepresentative--representativeIndex") as HTMLInputElement)
         .value = representativeIndex;
 
-      (document.getElementById("editOrganizationRepresentative--representativeName") as HTMLInputElement
-      ).value = editRepresentativeTrEle.getAttribute("data-representative-name");
+      (document.querySelector("#editOrganizationRepresentative--representativeName") as HTMLInputElement
+      ).value = editRepresentativeTrElement.getAttribute("data-representative-name");
 
-      (document.getElementById("editOrganizationRepresentative--representativeTitle") as HTMLInputElement)
-        .value = editRepresentativeTrEle.getAttribute("data-representative-title");
+      (document.querySelector("#editOrganizationRepresentative--representativeTitle") as HTMLInputElement)
+        .value = editRepresentativeTrElement.getAttribute("data-representative-title");
 
-      (document.getElementById("editOrganizationRepresentative--representativeAddress1") as HTMLInputElement)
-        .value = editRepresentativeTrEle.getAttribute("data-representative-address-1");
+      (document.querySelector("#editOrganizationRepresentative--representativeAddress1") as HTMLInputElement)
+        .value = editRepresentativeTrElement.getAttribute("data-representative-address-1");
 
-      (document.getElementById("editOrganizationRepresentative--representativeAddress2") as HTMLInputElement)
-        .value = editRepresentativeTrEle.getAttribute("data-representative-address-2");
+      (document.querySelector("#editOrganizationRepresentative--representativeAddress2") as HTMLInputElement)
+        .value = editRepresentativeTrElement.getAttribute("data-representative-address-2");
 
-      (document.getElementById("editOrganizationRepresentative--representativeCity") as HTMLInputElement)
-        .value = editRepresentativeTrEle.getAttribute("data-representative-city");
+      (document.querySelector("#editOrganizationRepresentative--representativeCity") as HTMLInputElement)
+        .value = editRepresentativeTrElement.getAttribute("data-representative-city");
 
-      (document.getElementById("editOrganizationRepresentative--representativeProvince") as HTMLInputElement)
-        .value = editRepresentativeTrEle.getAttribute("data-representative-province");
+      (document.querySelector("#editOrganizationRepresentative--representativeProvince") as HTMLInputElement)
+        .value = editRepresentativeTrElement.getAttribute("data-representative-province");
 
-      (document.getElementById("editOrganizationRepresentative--representativePostalCode") as HTMLInputElement)
-        .value = editRepresentativeTrEle.getAttribute("data-representative-postal-code");
+      (document.querySelector("#editOrganizationRepresentative--representativePostalCode") as HTMLInputElement)
+        .value = editRepresentativeTrElement.getAttribute("data-representative-postal-code");
 
-      (document.getElementById("editOrganizationRepresentative--representativePhoneNumber") as HTMLInputElement)
-        .value = editRepresentativeTrEle.getAttribute("data-representative-phone-number");
+      (document.querySelector("#editOrganizationRepresentative--representativePhoneNumber") as HTMLInputElement)
+        .value = editRepresentativeTrElement.getAttribute("data-representative-phone-number");
 
-      (document.getElementById("editOrganizationRepresentative--representativePhoneNumber2") as HTMLInputElement)
-        .value = editRepresentativeTrEle.getAttribute("data-representative-phone-number-2");
+      (document.querySelector("#editOrganizationRepresentative--representativePhoneNumber2") as HTMLInputElement)
+        .value = editRepresentativeTrElement.getAttribute("data-representative-phone-number-2");
 
-      (document.getElementById("editOrganizationRepresentative--representativeEmailAddress") as HTMLInputElement)
-        .value = editRepresentativeTrEle.getAttribute("data-representative-email-address");
+      (document.querySelector("#editOrganizationRepresentative--representativeEmailAddress") as HTMLInputElement)
+        .value = editRepresentativeTrElement.getAttribute("data-representative-email-address");
 
-      (document.getElementById("editOrganizationRepresentative--isDefault") as HTMLInputElement).value =
-        (document.getElementById("representative-isDefault--" + representativeIndex) as HTMLInputElement).checked
+      (document.querySelector("#editOrganizationRepresentative--isDefault") as HTMLInputElement).value =
+        (document.querySelector("#representative-isDefault--" + representativeIndex) as HTMLInputElement).checked
           ? "1"
           : "0";
 
@@ -277,58 +277,58 @@ declare const llm: llmGlobal;
 
     };
 
-    const insertRepresentativeRowFn = (representativeObj: llmTypes.OrganizationRepresentative) => {
+    const insertRepresentativeRowFunction = (representativeObject: llmTypes.OrganizationRepresentative) => {
 
-      const trEle = document.createElement("tr");
+      const trElement = document.createElement("tr");
 
-      trEle.setAttribute("data-representative-index", representativeObj.representativeIndex.toString());
-      trEle.setAttribute("data-representative-name", representativeObj.representativeName);
-      trEle.setAttribute("data-representative-title", representativeObj.representativeTitle);
-      trEle.setAttribute("data-representative-address-1", representativeObj.representativeAddress1);
-      trEle.setAttribute("data-representative-address-2", representativeObj.representativeAddress2);
-      trEle.setAttribute("data-representative-city", representativeObj.representativeCity);
-      trEle.setAttribute("data-representative-province", representativeObj.representativeProvince);
-      trEle.setAttribute("data-representative-postal-code", representativeObj.representativePostalCode);
-      trEle.setAttribute("data-representative-phone-number", representativeObj.representativePhoneNumber);
-      trEle.setAttribute("data-representative-phone-number-2", representativeObj.representativePhoneNumber2);
-      trEle.setAttribute("data-representative-email-address", representativeObj.representativeEmailAddress);
+      trElement.dataset.representativeIndex = representativeObject.representativeIndex.toString();
+      trElement.dataset.representativeName = representativeObject.representativeName;
+      trElement.dataset.representativeTitle = representativeObject.representativeTitle;
+      trElement.dataset['representativeAddress-1'] = representativeObject.representativeAddress1;
+      trElement.dataset['representativeAddress-2'] = representativeObject.representativeAddress2;
+      trElement.dataset.representativeCity = representativeObject.representativeCity;
+      trElement.dataset.representativeProvince = representativeObject.representativeProvince;
+      trElement.dataset.representativePostalCode = representativeObject.representativePostalCode;
+      trElement.dataset.representativePhoneNumber = representativeObject.representativePhoneNumber;
+      trElement.dataset['representativePhoneNumber-2'] = representativeObject.representativePhoneNumber2;
+      trElement.dataset.representativeEmailAddress = representativeObject.representativeEmailAddress;
 
-      trEle.insertAdjacentHTML("beforeend", "<td>" +
+      trElement.insertAdjacentHTML("beforeend", "<td>" +
         "<div class=\"field\">" +
         "<input class=\"is-checkradio is-info\"" +
-        " id=\"representative-isDefault--" + representativeObj.representativeIndex.toString() + "\"" +
+        " id=\"representative-isDefault--" + representativeObject.representativeIndex.toString() + "\"" +
         " name=\"representative-isDefault\" type=\"radio\"" +
-        (representativeObj.isDefault ? " checked" : "") + " />&nbsp;" +
-        "<label for=\"representative-isDefault--" + representativeObj.representativeIndex.toString() + "\"></label>" +
+        (representativeObject.isDefault ? " checked" : "") + " />&nbsp;" +
+        "<label for=\"representative-isDefault--" + representativeObject.representativeIndex.toString() + "\"></label>" +
         "</div>" +
         "</td>");
 
-      trEle.getElementsByTagName("input")[0].addEventListener("change", updateDefaultRepresentativeFunction);
+      trElement.querySelector("input").addEventListener("change", updateDefaultRepresentativeFunction);
 
-      let tdEle = document.createElement("td");
-      tdEle.innerHTML = cityssm.escapeHTML(representativeObj.representativeName) + "<br />" +
-        "<small>" + cityssm.escapeHTML(representativeObj.representativeTitle) + "</small>";
-      trEle.insertAdjacentElement("beforeend", tdEle);
+      let tdElement = document.createElement("td");
+      tdElement.innerHTML = cityssm.escapeHTML(representativeObject.representativeName) + "<br />" +
+        "<small>" + cityssm.escapeHTML(representativeObject.representativeTitle) + "</small>";
+      trElement.append(tdElement);
 
-      tdEle = document.createElement("td");
-      tdEle.innerHTML = cityssm.escapeHTML(representativeObj.representativeAddress1) + "<br />" +
+      tdElement = document.createElement("td");
+      tdElement.innerHTML = cityssm.escapeHTML(representativeObject.representativeAddress1) + "<br />" +
         "<small>" +
-        (representativeObj.representativeAddress2 === "" ? "" : cityssm.escapeHTML(representativeObj.representativeAddress2) + "<br />") +
-        cityssm.escapeHTML(representativeObj.representativeCity) + ", " + cityssm.escapeHTML(representativeObj.representativeProvince) + "<br />" +
-        cityssm.escapeHTML(representativeObj.representativePostalCode) +
+        (representativeObject.representativeAddress2 === "" ? "" : cityssm.escapeHTML(representativeObject.representativeAddress2) + "<br />") +
+        cityssm.escapeHTML(representativeObject.representativeCity) + ", " + cityssm.escapeHTML(representativeObject.representativeProvince) + "<br />" +
+        cityssm.escapeHTML(representativeObject.representativePostalCode) +
         "</small>";
-      trEle.insertAdjacentElement("beforeend", tdEle);
+      trElement.append(tdElement);
 
-      tdEle = document.createElement("td");
-      tdEle.innerHTML = cityssm.escapeHTML(representativeObj.representativePhoneNumber) + "<br />" +
-        cityssm.escapeHTML(representativeObj.representativePhoneNumber2);
-      trEle.insertAdjacentElement("beforeend", tdEle);
+      tdElement = document.createElement("td");
+      tdElement.innerHTML = cityssm.escapeHTML(representativeObject.representativePhoneNumber) + "<br />" +
+        cityssm.escapeHTML(representativeObject.representativePhoneNumber2);
+      trElement.append(tdElement);
 
-      tdEle = document.createElement("td");
-      tdEle.innerHTML = cityssm.escapeHTML(representativeObj.representativeEmailAddress);
-      trEle.insertAdjacentElement("beforeend", tdEle);
+      tdElement = document.createElement("td");
+      tdElement.innerHTML = cityssm.escapeHTML(representativeObject.representativeEmailAddress);
+      trElement.append(tdElement);
 
-      trEle.insertAdjacentHTML("beforeend", "<td>" +
+      trElement.insertAdjacentHTML("beforeend", "<td>" +
         "<div class=\"buttons is-right has-addons\">" +
         ("<button class=\"button is-small is-edit-representative-button\"" +
           " data-tooltip=\"Edit Representative\" type=\"button\">" +
@@ -342,32 +342,32 @@ declare const llm: llmGlobal;
 
         "</td>");
 
-      trEle.getElementsByClassName("is-edit-representative-button")[0]
-        .addEventListener("click", openEditRepresentativeModalFn);
+      trElement.querySelector(".is-edit-representative-button")
+        .addEventListener("click", openEditRepresentativeModalFunction);
 
-      trEle.getElementsByClassName("is-delete-representative-button")[0]
+      trElement.querySelector(".is-delete-representative-button")
         .addEventListener("click", deleteRepresentativeFunction);
 
-      representativeTbodyElement.insertAdjacentElement("beforeend", trEle);
+      representativeTbodyElement.append(trElement);
 
     };
 
     // Edit
 
-    const editBtnEles = representativeTbodyElement.getElementsByClassName("is-edit-representative-button");
+    const editButtonElements = representativeTbodyElement.querySelectorAll(".is-edit-representative-button");
 
-    for (const editBtnEle of editBtnEles) {
-      editBtnEle.addEventListener("click", openEditRepresentativeModalFn);
+    for (const editButtonElement of editButtonElements) {
+      editButtonElement.addEventListener("click", openEditRepresentativeModalFunction);
     }
 
     // Close edit
-    let cancelButtonEles = editRepresentativeModalElement.getElementsByClassName("is-cancel-button");
+    let cancelButtonElements = editRepresentativeModalElement.querySelectorAll(".is-cancel-button");
 
-    for (const cancelButtonEle of cancelButtonEles) {
-      cancelButtonEle.addEventListener("click", cityssm.hideModal);
+    for (const cancelButtonElement of cancelButtonElements) {
+      cancelButtonElement.addEventListener("click", cityssm.hideModal);
     }
 
-    editRepresentativeFormEle.addEventListener("submit", (formEvent) => {
+    editRepresentativeFormElement.addEventListener("submit", (formEvent) => {
 
       formEvent.preventDefault();
 
@@ -377,12 +377,12 @@ declare const llm: llmGlobal;
 
           if (responseJSON.success) {
 
-            editRepresentativeTrEle.remove();
-            editRepresentativeTrEle = null;
+            editRepresentativeTrElement.remove();
+            editRepresentativeTrElement = undefined;
 
             // Create row
 
-            insertRepresentativeRowFn(responseJSON.organizationRepresentative);
+            insertRepresentativeRowFunction(responseJSON.organizationRepresentative);
             cityssm.hideModal(editRepresentativeModalElement);
           }
         }
@@ -391,26 +391,25 @@ declare const llm: llmGlobal;
 
     // Add
 
-    const addRepresentativeModalEle = document.getElementsByClassName("is-add-representative-modal")[0] as HTMLElement;
-    const addRepresentativeFormEle = addRepresentativeModalEle.getElementsByTagName("form")[0];
+    const addRepresentativeModalElement = document.querySelector(".is-add-representative-modal") as HTMLElement;
+    const addRepresentativeFormElement = addRepresentativeModalElement.querySelector("form");
 
     // Open add
-    document.getElementsByClassName("is-add-representative-button")[0].addEventListener("click", () => {
+    document.querySelector(".is-add-representative-button").addEventListener("click", () => {
 
-      addRepresentativeFormEle.reset();
-      cityssm.showModal(addRepresentativeModalEle);
-      document.getElementById("addOrganizationRepresentative--representativeName").focus();
-
+      addRepresentativeFormElement.reset();
+      cityssm.showModal(addRepresentativeModalElement);
+      (document.querySelector("#addOrganizationRepresentative--representativeName") as HTMLInputElement).focus();
     });
 
     // Close add
-    cancelButtonEles = addRepresentativeModalEle.getElementsByClassName("is-cancel-button");
+    cancelButtonElements = addRepresentativeModalElement.querySelectorAll(".is-cancel-button");
 
-    for (const cancelButtonEle of cancelButtonEles) {
-      cancelButtonEle.addEventListener("click", cityssm.hideModal);
+    for (const cancelButtonElement of cancelButtonElements) {
+      cancelButtonElement.addEventListener("click", cityssm.hideModal);
     }
 
-    addRepresentativeFormEle.addEventListener("submit", (formEvent) => {
+    addRepresentativeFormElement.addEventListener("submit", (formEvent) => {
 
       formEvent.preventDefault();
 
@@ -422,42 +421,42 @@ declare const llm: llmGlobal;
 
             // Remove empty warning
 
-            const emptyWarningEle = representativeTbodyElement.getElementsByClassName("is-empty-warning");
-            if (emptyWarningEle.length > 0) {
+            const emptyWarningElement = representativeTbodyElement.querySelectorAll(".is-empty-warning");
+            if (emptyWarningElement.length > 0) {
 
-              emptyWarningEle[0].remove();
+              emptyWarningElement[0].remove();
 
             }
 
             // Create row
 
-            insertRepresentativeRowFn(responseJSON.organizationRepresentative);
-            cityssm.hideModal(addRepresentativeModalEle);
+            insertRepresentativeRowFunction(responseJSON.organizationRepresentative);
+            cityssm.hideModal(addRepresentativeModalElement);
           }
         }
       );
 
     });
 
-    addRepresentativeModalEle.getElementsByClassName("is-copy-organization-address-button")[0]
+    addRepresentativeModalElement.querySelector(".is-copy-organization-address-button")
       .addEventListener("click", (clickEvent) => {
 
         clickEvent.preventDefault();
 
-        (document.getElementById("addOrganizationRepresentative--representativeAddress1") as HTMLInputElement).value =
-          (document.getElementById("organization--organizationAddress1") as HTMLInputElement).value;
+        (document.querySelector("#addOrganizationRepresentative--representativeAddress1") as HTMLInputElement).value =
+          (document.querySelector("#organization--organizationAddress1") as HTMLInputElement).value;
 
-        (document.getElementById("addOrganizationRepresentative--representativeAddress2") as HTMLInputElement).value =
-          (document.getElementById("organization--organizationAddress2") as HTMLInputElement).value;
+        (document.querySelector("#addOrganizationRepresentative--representativeAddress2") as HTMLInputElement).value =
+          (document.querySelector("#organization--organizationAddress2") as HTMLInputElement).value;
 
-        (document.getElementById("addOrganizationRepresentative--representativeCity") as HTMLInputElement).value =
-          (document.getElementById("organization--organizationCity") as HTMLInputElement).value;
+        (document.querySelector("#addOrganizationRepresentative--representativeCity") as HTMLInputElement).value =
+          (document.querySelector("#organization--organizationCity") as HTMLInputElement).value;
 
-        (document.getElementById("addOrganizationRepresentative--representativeProvince") as HTMLInputElement).value =
-          (document.getElementById("organization--organizationProvince") as HTMLInputElement).value;
+        (document.querySelector("#addOrganizationRepresentative--representativeProvince") as HTMLInputElement).value =
+          (document.querySelector("#organization--organizationProvince") as HTMLInputElement).value;
 
-        (document.getElementById("addOrganizationRepresentative--representativePostalCode") as HTMLInputElement).value =
-          (document.getElementById("organization--organizationPostalCode") as HTMLInputElement).value;
+        (document.querySelector("#addOrganizationRepresentative--representativePostalCode") as HTMLInputElement).value =
+          (document.querySelector("#organization--organizationPostalCode") as HTMLInputElement).value;
 
       });
 
@@ -467,27 +466,27 @@ declare const llm: llmGlobal;
      */
 
 
-    const deleteReminderClickFn = (buttonEvent: Event) => {
+    const deleteReminderClickFunction = (buttonEvent: Event) => {
       buttonEvent.preventDefault();
 
-      const buttonEle = buttonEvent.currentTarget as HTMLButtonElement;
+      const buttonElement = buttonEvent.currentTarget as HTMLButtonElement;
 
-      const reminderIndex = parseInt(buttonEle.getAttribute("data-reminder-index"), 10);
+      const reminderIndex = Number.parseInt(buttonElement.dataset.reminderIndex, 10);
 
       llm.organizationReminders.deleteReminder(organizationID, reminderIndex, true, (responseJSON) => {
 
         if (responseJSON.success) {
-          buttonEle.closest("tr").remove();
+          buttonElement.closest("tr").remove();
         }
       });
     };
 
-    const dismissReminderClickFn = (buttonEvent: Event) => {
+    const dismissReminderClickFunction = (buttonEvent: Event) => {
       buttonEvent.preventDefault();
 
-      const buttonEle = buttonEvent.currentTarget as HTMLButtonElement;
+      const buttonElement = buttonEvent.currentTarget as HTMLButtonElement;
 
-      const reminderIndex = parseInt(buttonEle.getAttribute("data-reminder-index"), 10);
+      const reminderIndex = Number.parseInt(buttonElement.dataset.reminderIndex, 10);
 
       llm.organizationReminders.dismissReminder(organizationID, reminderIndex, true, (responseJSON) => {
 
@@ -495,34 +494,34 @@ declare const llm: llmGlobal;
 
           llm.organizationReminders.loadReminderTypeCache(() => {
 
-            const oldTrEle = buttonEle.closest("tr");
+            const oldTrElement = buttonElement.closest("tr");
 
-            const newTrEle = renderReminderAsTableRow(responseJSON.reminder);
+            const newTrElement = renderReminderAsTableRow(responseJSON.reminder);
 
-            oldTrEle.insertAdjacentElement("afterend", newTrEle);
+            oldTrElement.after(newTrElement);
 
-            oldTrEle.remove();
+            oldTrElement.remove();
           });
         }
       });
     };
 
-    const editReminderClickFn = (buttonEvent: Event) => {
+    const editReminderClickFunction = (buttonEvent: Event) => {
       buttonEvent.preventDefault();
 
-      const buttonEle = buttonEvent.currentTarget as HTMLButtonElement;
+      const buttonElement = buttonEvent.currentTarget as HTMLButtonElement;
 
-      const reminderIndex = parseInt(buttonEle.getAttribute("data-reminder-index"), 10);
+      const reminderIndex = Number.parseInt(buttonElement.dataset.reminderIndex, 10);
 
-      llm.organizationReminders.openEditReminderModal(organizationID, reminderIndex, (reminderObj) => {
+      llm.organizationReminders.openEditReminderModal(organizationID, reminderIndex, (reminderObject) => {
 
-        const oldTrEle = buttonEle.closest("tr");
+        const oldTrElement = buttonElement.closest("tr");
 
-        const newTrEle = renderReminderAsTableRow(reminderObj);
+        const newTrElement = renderReminderAsTableRow(reminderObject);
 
-        oldTrEle.insertAdjacentElement("afterend", newTrEle);
+        oldTrElement.after(newTrElement);
 
-        oldTrEle.remove();
+        oldTrElement.remove();
       });
     };
 
@@ -530,7 +529,7 @@ declare const llm: llmGlobal;
 
       const reminderType = llm.organizationReminders.getReminderType(reminder.reminderTypeKey);
 
-      const trEle = document.createElement("tr");
+      const trElement = document.createElement("tr");
 
       let reminderDateInnerHTML = "";
 
@@ -548,7 +547,7 @@ declare const llm: llmGlobal;
         reminderDateInnerHTML = reminder.dueDateString;
       }
 
-      trEle.innerHTML = ("<td>" +
+      trElement.innerHTML = ("<td>" +
         (reminderType
           ? reminderType.reminderType + "<br />" +
           "<span class=\"is-size-7\">" + reminderType.reminderCategory + "</span>"
@@ -587,54 +586,54 @@ declare const llm: llmGlobal;
           "</td>");
 
       if (reminder.dismissedDateString === "") {
-        trEle.getElementsByClassName("is-dismiss-reminder-button")[0].addEventListener("click",
-          dismissReminderClickFn);
+        trElement.querySelector(".is-dismiss-reminder-button").addEventListener("click",
+          dismissReminderClickFunction);
       }
 
-      trEle.getElementsByClassName("is-edit-reminder-button")[0].addEventListener("click",
-        editReminderClickFn);
+      trElement.querySelector(".is-edit-reminder-button").addEventListener("click",
+        editReminderClickFunction);
 
-      trEle.getElementsByClassName("is-delete-reminder-button")[0].addEventListener("click",
-        deleteReminderClickFn);
+      trElement.querySelector(".is-delete-reminder-button").addEventListener("click",
+        deleteReminderClickFunction);
 
-      return trEle;
+      return trElement;
     };
 
 
-    document.getElementById("is-add-reminder-button").addEventListener("click", (clickEvent) => {
+    document.querySelector("#is-add-reminder-button").addEventListener("click", (clickEvent) => {
 
       clickEvent.preventDefault();
-      llm.organizationReminders.openAddReminderModal(organizationID, (reminderObj) => {
+      llm.organizationReminders.openAddReminderModal(organizationID, (reminderObject) => {
 
-        const trEle = renderReminderAsTableRow(reminderObj);
+        const trElement = renderReminderAsTableRow(reminderObject);
 
-        document.getElementById("container--reminders").insertAdjacentElement("afterbegin", trEle);
+        document.querySelector("#container--reminders").prepend(trElement);
       });
     });
 
-    const dismissReminderButtonEles = document.getElementsByClassName("is-dismiss-reminder-button");
+    const dismissReminderButtonElements = document.querySelectorAll(".is-dismiss-reminder-button");
 
-    for (const buttonEle of dismissReminderButtonEles) {
-      buttonEle.addEventListener("click", dismissReminderClickFn);
+    for (const buttonElement of dismissReminderButtonElements) {
+      buttonElement.addEventListener("click", dismissReminderClickFunction);
     }
 
-    const editReminderButtonEles = document.getElementsByClassName("is-edit-reminder-button");
+    const editReminderButtonElements = document.querySelectorAll(".is-edit-reminder-button");
 
-    for (const buttonEle of editReminderButtonEles) {
-      buttonEle.addEventListener("click", editReminderClickFn);
+    for (const buttonElement of editReminderButtonElements) {
+      buttonElement.addEventListener("click", editReminderClickFunction);
     }
 
-    const deleteReminderButtonEles = document.getElementsByClassName("is-delete-reminder-button");
+    const deleteReminderButtonElements = document.querySelectorAll(".is-delete-reminder-button");
 
-    for (const buttonEle of deleteReminderButtonEles) {
-      buttonEle.addEventListener("click", deleteReminderClickFn);
+    for (const buttonElement of deleteReminderButtonElements) {
+      buttonElement.addEventListener("click", deleteReminderClickFunction);
     }
   }
 
 
   // Nav blocker
 
-  const setUnsavedChangesFn = () => {
+  const setUnsavedChangesFunction = () => {
 
     cityssm.enableNavBlocker();
 
@@ -645,10 +644,10 @@ declare const llm: llmGlobal;
 
   };
 
-  const inputEles = formElement.querySelectorAll("input, select, textarea");
+  const inputElements = formElement.querySelectorAll("input, select, textarea");
 
-  for (const inputEle of inputEles) {
-    inputEle.addEventListener("change", setUnsavedChangesFn);
+  for (const inputElement of inputElements) {
+    inputElement.addEventListener("change", setUnsavedChangesFunction);
   }
 
 })();

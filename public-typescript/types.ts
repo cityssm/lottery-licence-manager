@@ -8,30 +8,30 @@ export interface llmGlobal {
 
   formatDollarsAsHTML?: (dollarAmt: number) => string;
 
-  getDefaultConfigProperty?: (propertyName: string, propertyValueCallbackFn: (propertyValue: any) => void) => void;
+  getDefaultConfigProperty?: (propertyName: string, propertyValueCallbackFunction: (propertyValue: unknown) => void) => void;
 
-  initializeDateRangeSelector?: (containerEle: HTMLElement, changeFn: () => void) => void;
+  initializeDateRangeSelector?: (containerElement: HTMLElement, changeFunction: () => void) => void;
 
-  initializeTabs?: (tabsListEle: HTMLElement, callbackFns?: {
-    onshown?: (tabContentEle: HTMLElement) => void;
+  initializeTabs?: (tabsListElement: HTMLElement, callbackFunctions?: {
+    onshown?: (tabContentElement: HTMLElement) => void;
   }) => void;
 
   organizationRemarks?: {
 
     getRemarksByOrganizationID: (organizationID: number,
-      callbackFn: (remarkList: recordTypes.OrganizationRemark[]) => void) => void;
+      callbackFunction: (remarkList: recordTypes.OrganizationRemark[]) => void) => void;
 
     getRemarkByID: (organizationID: number, remarkIndex: number,
-      callbackFn: (remark: recordTypes.OrganizationRemark) => void) => void;
+      callbackFunction: (remark: recordTypes.OrganizationRemark) => void) => void;
 
     openAddRemarkModal: (organizationID: number,
-      updateCallbackFn: () => void) => void;
+      updateCallbackFunction: () => void) => void;
 
     openEditRemarkModal: (organizationID: number, remarkIndex: number,
-      updateCallbackFn: () => void) => void;
+      updateCallbackFunction: () => void) => void;
 
     deleteRemark: (organizationID: number, remarkIndex: number, doConfirm: boolean,
-      deleteCallbackFn: (response: {
+      deleteCallbackFunction: (response: {
         success: boolean;
         message: string;
       }) => void) => void;
@@ -39,29 +39,29 @@ export interface llmGlobal {
 
   organizationReminders?: {
 
-    loadReminderTypeCache: (callbackFn: () => void) => void;
+    loadReminderTypeCache: (callbackFunction: () => void) => void;
 
     getRemindersByOrganizationID: (organizationID: number,
-      callbackFn: (reminderList: recordTypes.OrganizationReminder[]) => void) => void;
+      callbackFunction: (reminderList: recordTypes.OrganizationReminder[]) => void) => void;
 
     getReminderByID: (organizationID: number, reminderIndex: number,
-      callbackFn: (reminder: recordTypes.OrganizationReminder) => void) => void;
+      callbackFunction: (reminder: recordTypes.OrganizationReminder) => void) => void;
 
     openAddReminderModal: (organizationID: number,
-      updateCallbackFn: (reminderObj: recordTypes.OrganizationReminder) => void) => void;
+      updateCallbackFunction: (reminderObject: recordTypes.OrganizationReminder) => void) => void;
 
     openEditReminderModal: (organizationID: number, reminderIndex: number,
-      updateCallbackFn: (reminderObj?: recordTypes.OrganizationReminder) => void) => void;
+      updateCallbackFunction: (reminderObject?: recordTypes.OrganizationReminder) => void) => void;
 
     dismissReminder: (organizationID: number, reminderIndex: number, doConfirm: boolean,
-      deleteCallbackFn: (response: {
+      deleteCallbackFunction: (response: {
         success: boolean;
         message: string;
         reminder?: recordTypes.OrganizationReminder;
       }) => void) => void;
 
     deleteReminder: (organizationID: number, reminderIndex: number, doConfirm: boolean,
-      deleteCallbackFn: (response: {
+      deleteCallbackFunction: (response: {
         success: boolean;
         message: string;
       }) => void) => void;

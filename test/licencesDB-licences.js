@@ -1,6 +1,6 @@
 import * as assert from "assert";
 import sqlite from "better-sqlite3";
-import { licencesDB as dbPath } from "../data/databasePaths.js";
+import { licencesDB as databasePath } from "../data/databasePaths.js";
 import { fakeViewOnlySession } from "./_globals.js";
 import { getLicence } from "../helpers/licencesDB/getLicence.js";
 import { getLicences } from "../helpers/licencesDB/getLicences.js";
@@ -13,7 +13,7 @@ import { getMaxLicenceAmendmentIndexWithDB } from "../helpers/licencesDB/getMaxL
 import { getMaxTransactionIndexWithDB } from "../helpers/licencesDB/getMaxTransactionIndex.js";
 describe("licencesDB/licences", () => {
     it("should execute getLicence()", () => {
-        assert.equal(getLicence(-1, fakeViewOnlySession), null);
+        assert.equal(getLicence(-1, fakeViewOnlySession), undefined);
     });
     it("should execute getDistinctTermsConditions()", () => {
         assert.equal(typeof getDistinctTermsConditions(-1), "object");
@@ -48,24 +48,24 @@ describe("licencesDB/licences", () => {
         });
     });
     describe("licencesDB/licences (with DB)", () => {
-        let db;
+        let database;
         before(() => {
-            db = sqlite(dbPath);
+            database = sqlite(databasePath);
         });
         after(() => {
-            db.close();
+            database.close();
         });
         it("should execute getLicenceAmendmentsWithDB()", () => {
-            assert.equal(typeof getLicenceAmendmentsWithDB(db, 1), "object");
+            assert.equal(typeof getLicenceAmendmentsWithDB(database, 1), "object");
         });
         it("should execute getLicenceTicketTypesWithDB()", () => {
-            assert.equal(typeof getLicenceTicketTypesWithDB(db, 1), "object");
+            assert.equal(typeof getLicenceTicketTypesWithDB(database, 1), "object");
         });
         it("should execute getMaxLicenceAmendmentIndexWithDB()", () => {
-            assert.equal(getMaxLicenceAmendmentIndexWithDB(db, -1), -1);
+            assert.equal(getMaxLicenceAmendmentIndexWithDB(database, -1), -1);
         });
         it("should execute getMaxTransactionIndexWithDB()", () => {
-            assert.equal(getMaxTransactionIndexWithDB(db, -1), -1);
+            assert.equal(getMaxTransactionIndexWithDB(database, -1), -1);
         });
     });
 });

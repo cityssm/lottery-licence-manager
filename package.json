@@ -48,7 +48,7 @@
   "devDependencies": {
     "@cityssm/bulma-webapp-css": "^0.7.0",
     "@types/bcrypt": "^5.0.0",
-    "@types/better-sqlite3": "^5.4.2",
+    "@types/better-sqlite3": "^5.4.3",
     "@types/compression": "^1.7.1",
     "@types/cookie-parser": "^1.4.2",
     "@types/csurf": "^1.11.2",
@@ -63,7 +63,7 @@
     "@types/http-errors": "^1.8.1",
     "@types/marked": "^2.0.4",
     "@types/mocha": "^8.2.3",
-    "@types/puppeteer": "^5.4.3",
+    "@types/puppeteer": "^5.4.4",
     "@typescript-eslint/eslint-plugin": "^4.28.2",
     "@typescript-eslint/parser": "^4.28.2",
     "eslint": "^7.30.0",

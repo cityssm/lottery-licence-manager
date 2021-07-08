@@ -3,33 +3,33 @@ import type * as configTypes from "../types/configTypes";
 export interface llmGlobal {
     arrayToObject?: (array: [], objectKey: string | number) => {};
     formatDollarsAsHTML?: (dollarAmt: number) => string;
-    getDefaultConfigProperty?: (propertyName: string, propertyValueCallbackFn: (propertyValue: any) => void) => void;
-    initializeDateRangeSelector?: (containerEle: HTMLElement, changeFn: () => void) => void;
-    initializeTabs?: (tabsListEle: HTMLElement, callbackFns?: {
-        onshown?: (tabContentEle: HTMLElement) => void;
+    getDefaultConfigProperty?: (propertyName: string, propertyValueCallbackFunction: (propertyValue: unknown) => void) => void;
+    initializeDateRangeSelector?: (containerElement: HTMLElement, changeFunction: () => void) => void;
+    initializeTabs?: (tabsListElement: HTMLElement, callbackFunctions?: {
+        onshown?: (tabContentElement: HTMLElement) => void;
     }) => void;
     organizationRemarks?: {
-        getRemarksByOrganizationID: (organizationID: number, callbackFn: (remarkList: recordTypes.OrganizationRemark[]) => void) => void;
-        getRemarkByID: (organizationID: number, remarkIndex: number, callbackFn: (remark: recordTypes.OrganizationRemark) => void) => void;
-        openAddRemarkModal: (organizationID: number, updateCallbackFn: () => void) => void;
-        openEditRemarkModal: (organizationID: number, remarkIndex: number, updateCallbackFn: () => void) => void;
-        deleteRemark: (organizationID: number, remarkIndex: number, doConfirm: boolean, deleteCallbackFn: (response: {
+        getRemarksByOrganizationID: (organizationID: number, callbackFunction: (remarkList: recordTypes.OrganizationRemark[]) => void) => void;
+        getRemarkByID: (organizationID: number, remarkIndex: number, callbackFunction: (remark: recordTypes.OrganizationRemark) => void) => void;
+        openAddRemarkModal: (organizationID: number, updateCallbackFunction: () => void) => void;
+        openEditRemarkModal: (organizationID: number, remarkIndex: number, updateCallbackFunction: () => void) => void;
+        deleteRemark: (organizationID: number, remarkIndex: number, doConfirm: boolean, deleteCallbackFunction: (response: {
             success: boolean;
             message: string;
         }) => void) => void;
     };
     organizationReminders?: {
-        loadReminderTypeCache: (callbackFn: () => void) => void;
-        getRemindersByOrganizationID: (organizationID: number, callbackFn: (reminderList: recordTypes.OrganizationReminder[]) => void) => void;
-        getReminderByID: (organizationID: number, reminderIndex: number, callbackFn: (reminder: recordTypes.OrganizationReminder) => void) => void;
-        openAddReminderModal: (organizationID: number, updateCallbackFn: (reminderObj: recordTypes.OrganizationReminder) => void) => void;
-        openEditReminderModal: (organizationID: number, reminderIndex: number, updateCallbackFn: (reminderObj?: recordTypes.OrganizationReminder) => void) => void;
-        dismissReminder: (organizationID: number, reminderIndex: number, doConfirm: boolean, deleteCallbackFn: (response: {
+        loadReminderTypeCache: (callbackFunction: () => void) => void;
+        getRemindersByOrganizationID: (organizationID: number, callbackFunction: (reminderList: recordTypes.OrganizationReminder[]) => void) => void;
+        getReminderByID: (organizationID: number, reminderIndex: number, callbackFunction: (reminder: recordTypes.OrganizationReminder) => void) => void;
+        openAddReminderModal: (organizationID: number, updateCallbackFunction: (reminderObject: recordTypes.OrganizationReminder) => void) => void;
+        openEditReminderModal: (organizationID: number, reminderIndex: number, updateCallbackFunction: (reminderObject?: recordTypes.OrganizationReminder) => void) => void;
+        dismissReminder: (organizationID: number, reminderIndex: number, doConfirm: boolean, deleteCallbackFunction: (response: {
             success: boolean;
             message: string;
             reminder?: recordTypes.OrganizationReminder;
         }) => void) => void;
-        deleteReminder: (organizationID: number, reminderIndex: number, doConfirm: boolean, deleteCallbackFn: (response: {
+        deleteReminder: (organizationID: number, reminderIndex: number, doConfirm: boolean, deleteCallbackFunction: (response: {
             success: boolean;
             message: string;
         }) => void) => void;

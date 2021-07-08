@@ -7,7 +7,7 @@ import { getOutstandingEvents } from "../helpers/licencesDB/getOutstandingEvents
 import { getPastEventBankingInformation } from "../helpers/licencesDB/getPastEventBankingInformation.js";
 describe("licencesDB/events", () => {
     it("should execute getEvent()", () => {
-        assert.equal(getEvent(-1, -1, fakeViewOnlySession), null);
+        assert.equal(getEvent(-1, -1, fakeViewOnlySession), undefined);
     });
     it("should execute getEvents()", () => {
         assert.equal(typeof getEvents({}, fakeViewOnlySession), "object");

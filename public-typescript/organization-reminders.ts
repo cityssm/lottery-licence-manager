@@ -1,18 +1,20 @@
+/* eslint-disable unicorn/filename-case */
+
 (() => {
 
-  const toggleTableFn = (clickEvent: Event) => {
+  const toggleTableFunction = (clickEvent: Event) => {
 
     clickEvent.preventDefault();
     const tableName = (clickEvent.currentTarget as HTMLAnchorElement).getAttribute("data-table");
 
-    document.getElementById("remindersTable--" + tableName)
+    document.querySelector("#remindersTable--" + tableName)
       .classList.toggle("is-hidden");
   };
 
-  const toggleLinkEles =
-    document.getElementsByClassName("remindersTableToggle") as HTMLCollectionOf<HTMLAnchorElement>;
+  const toggleLinkElements =
+    document.querySelectorAll(".remindersTableToggle") as NodeListOf<HTMLAnchorElement>;
 
-  for (const toggleLinkEle of toggleLinkEles) {
-    toggleLinkEle.addEventListener("click", toggleTableFn);
+  for (const toggleLinkElement of toggleLinkElements) {
+    toggleLinkElement.addEventListener("click", toggleTableFunction);
   }
 })();

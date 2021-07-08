@@ -1,3 +1,5 @@
+/* eslint-disable unicorn/filename-case */
+
 import type { cityssmGlobal } from "@cityssm/bulma-webapp-js/src/types";
 import type * as llmTypes from "../types/recordTypes";
 
@@ -6,28 +8,28 @@ declare const cityssm: cityssmGlobal;
 
 (() => {
 
-  const urlPrefix = document.getElementsByTagName("main")[0].getAttribute("data-url-prefix");
+  const urlPrefix = document.querySelector("main").dataset.urlPrefix;
 
-  const formEle = document.getElementById("form--filters");
-  const searchResultsEle = document.getElementById("container--searchResults");
+  const formElement = document.querySelector("#form--filters") as HTMLFormElement;
+  const searchResultsElement = document.querySelector("#container--searchResults") as HTMLElement;
 
-  const canCreate = document.getElementsByTagName("main")[0].getAttribute("data-can-create") === "true";
+  const canCreate = document.querySelector("main").dataset.canCreate === "true";
 
 
-  const doOrganizationSearchFn = () => {
+  const doOrganizationSearchFunction = () => {
 
-    searchResultsEle.innerHTML = "<p class=\"has-text-centered has-text-grey-lighter\">" +
+    searchResultsElement.innerHTML = "<p class=\"has-text-centered has-text-grey-lighter\">" +
       "<i class=\"fas fa-3x fa-circle-notch fa-spin\" aria-hidden=\"true\"></i><br />" +
       "<em>Loading organizations...</em>" +
       "</p>";
 
     cityssm.postJSON(urlPrefix + "/organizations/doSearch",
-      formEle,
+      formElement,
       (organizationsList: llmTypes.Organization[]) => {
 
         if (organizationsList.length === 0) {
 
-          searchResultsEle.innerHTML = "<div class=\"message is-info\">" +
+          searchResultsElement.innerHTML = "<div class=\"message is-info\">" +
             "<div class=\"message-body\">" +
             "<strong>Your search returned no results.</strong><br />" +
             "Please try expanding your search criteria." +
@@ -37,7 +39,7 @@ declare const cityssm: cityssmGlobal;
           return;
         }
 
-        searchResultsEle.innerHTML = "<table class=\"table is-fullwidth is-striped is-hoverable\">" +
+        searchResultsElement.innerHTML = "<table class=\"table is-fullwidth is-striped is-hoverable\">" +
           "<thead><tr>" +
           "<th colspan=\"2\">Organization Name</th>" +
           "<th>Default Representative</th>" +
@@ -48,39 +50,39 @@ declare const cityssm: cityssmGlobal;
           "<tbody></tbody>" +
           "</table>";
 
-        const tbodyEle = searchResultsEle.getElementsByTagName("tbody")[0];
+        const tbodyElement = searchResultsElement.querySelector("tbody");
 
-        for (const organizationObj of organizationsList) {
+        for (const organizationObject of organizationsList) {
 
-          const trEle = document.createElement("tr");
-          trEle.innerHTML = "<td></td>";
+          const trElement = document.createElement("tr");
+          trElement.innerHTML = "<td></td>";
 
-          const organizationNameLinkEle = document.createElement("a");
+          const organizationNameLinkElement = document.createElement("a");
 
-          if (!organizationObj.isEligibleForLicences) {
+          if (!organizationObject.isEligibleForLicences) {
 
-            organizationNameLinkEle.className = "has-text-danger";
-            organizationNameLinkEle.setAttribute("data-tooltip", "Not Eligible for New Licences");
+            organizationNameLinkElement.className = "has-text-danger";
+            organizationNameLinkElement.dataset.tooltip = "Not Eligible for New Licences";
 
           } else {
 
-            organizationNameLinkEle.setAttribute("data-tooltip", "View Organization");
+            organizationNameLinkElement.dataset.tooltip = "View Organization";
           }
 
-          organizationNameLinkEle.innerText = organizationObj.organizationName;
-          organizationNameLinkEle.href = "organizations/" + organizationObj.organizationID.toString();
-          trEle.getElementsByTagName("td")[0].insertAdjacentElement("beforeend", organizationNameLinkEle);
+          organizationNameLinkElement.textContent = organizationObject.organizationName;
+          organizationNameLinkElement.href = "organizations/" + organizationObject.organizationID.toString();
+          trElement.querySelector("td").append(organizationNameLinkElement);
 
-          trEle.insertAdjacentHTML(
+          trElement.insertAdjacentHTML(
             "beforeend",
             "<td class=\"has-text-right\">" +
-            (organizationObj.organizationNote === ""
+            (organizationObject.organizationNote === ""
               ? ""
               : "<span class=\"tag has-cursor-default is-info is-light\"" +
               " data-tooltip=\"" +
-              cityssm.escapeHTML(organizationObj.organizationNote.length > 30
-                ? organizationObj.organizationNote.substring(0, 27) + "..."
-                : organizationObj.organizationNote) +
+              cityssm.escapeHTML(organizationObject.organizationNote.length > 30
+                ? organizationObject.organizationNote.slice(0, 27) + "..."
+                : organizationObject.organizationNote) +
               "\">" +
               "<i class=\"fas fa-sticky-note mr-2\" aria-hidden=\"true\"></i> Note" +
               "</span>"
@@ -88,19 +90,19 @@ declare const cityssm: cityssmGlobal;
             "</td>"
           );
 
-          trEle.insertAdjacentHTML(
+          trElement.insertAdjacentHTML(
             "beforeend",
             "<td>" +
-            (organizationObj.representativeName || "<span class=\"has-text-grey\">(No Representatives)</span>") +
+            (organizationObject.representativeName || "<span class=\"has-text-grey\">(No Representatives)</span>") +
             "</td>"
           );
 
           if (canCreate) {
 
-            trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right is-hidden-print\">" +
-              (organizationObj.canUpdate
+            trElement.insertAdjacentHTML("beforeend", "<td class=\"has-text-right is-hidden-print\">" +
+              (organizationObject.canUpdate
                 ? "<a class=\"button is-small\" data-tooltip=\"Edit Organization\"" +
-                " href=\"organizations/" + organizationObj.organizationID.toString() + "/edit\">" +
+                " href=\"organizations/" + organizationObject.organizationID.toString() + "/edit\">" +
                 "<span class=\"icon\"><i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i></span>" +
                 "<span>Edit</span>" +
                 "</a>"
@@ -111,31 +113,31 @@ declare const cityssm: cityssmGlobal;
 
           let licenceHTML = "";
 
-          if (organizationObj.licences_activeCount > 0) {
+          if (organizationObject.licences_activeCount > 0) {
 
             licenceHTML = "<span class=\"tag has-cursor-default is-info\" data-tooltip=\"Number of Active Licences\">" +
               "<i class=\"fas fa-certificate mr-2\" aria-hidden=\"true\"></i> " +
-              organizationObj.licences_activeCount.toString() +
+              organizationObject.licences_activeCount.toString() +
               "</span>";
 
-          } else if (organizationObj.licences_endDateMax) {
+          } else if (organizationObject.licences_endDateMax) {
 
             licenceHTML = "<span class=\"tag has-cursor-default is-info is-light\"" +
               " data-tooltip=\"Last Licence End Date\">" +
-              "<i class=\"fas fa-stop mr-2\" aria-hidden=\"true\"></i> " + organizationObj.licences_endDateMaxString +
+              "<i class=\"fas fa-stop mr-2\" aria-hidden=\"true\"></i> " + organizationObject.licences_endDateMaxString +
               "</span>";
 
           }
 
 
-          trEle.insertAdjacentHTML("beforeend", "<td>" + licenceHTML + "</td>");
+          trElement.insertAdjacentHTML("beforeend", "<td>" + licenceHTML + "</td>");
 
           if (canCreate) {
 
-            trEle.insertAdjacentHTML("beforeend", "<td class=\"has-text-right is-hidden-print\">" +
-              (organizationObj.isEligibleForLicences
+            trElement.insertAdjacentHTML("beforeend", "<td class=\"has-text-right is-hidden-print\">" +
+              (organizationObject.isEligibleForLicences
                 ? "<a class=\"button is-small\" data-tooltip=\"Create a New Licence\"" +
-                " href=\"licences/new/" + organizationObj.organizationID.toString() + "\">" +
+                " href=\"licences/new/" + organizationObject.organizationID.toString() + "\">" +
                 "<span class=\"icon\"><i class=\"fas fa-certificate\" aria-hidden=\"true\"></i></span>" +
                 "<span>New</span>" +
                 "</a>"
@@ -144,23 +146,23 @@ declare const cityssm: cityssmGlobal;
 
           }
 
-          tbodyEle.insertAdjacentElement("beforeend", trEle);
+          tbodyElement.append(trElement);
         }
       }
     );
   };
 
 
-  formEle.addEventListener("submit", (formEvent) => {
+  formElement.addEventListener("submit", (formEvent) => {
     formEvent.preventDefault();
   });
 
-  const inputEles = formEle.querySelectorAll("input, select");
+  const inputElements = formElement.querySelectorAll("input, select");
 
-  for (const inputEle of inputEles) {
-    inputEle.addEventListener("change", doOrganizationSearchFn);
+  for (const inputElement of inputElements) {
+    inputElement.addEventListener("change", doOrganizationSearchFunction);
   }
 
-  doOrganizationSearchFn();
+  doOrganizationSearchFunction();
 
 })();

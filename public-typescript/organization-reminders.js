@@ -1,12 +1,12 @@
 (() => {
-    const toggleTableFn = (clickEvent) => {
+    const toggleTableFunction = (clickEvent) => {
         clickEvent.preventDefault();
         const tableName = clickEvent.currentTarget.getAttribute("data-table");
-        document.getElementById("remindersTable--" + tableName)
+        document.querySelector("#remindersTable--" + tableName)
             .classList.toggle("is-hidden");
     };
-    const toggleLinkEles = document.getElementsByClassName("remindersTableToggle");
-    for (const toggleLinkEle of toggleLinkEles) {
-        toggleLinkEle.addEventListener("click", toggleTableFn);
+    const toggleLinkElements = document.querySelectorAll(".remindersTableToggle");
+    for (const toggleLinkElement of toggleLinkElements) {
+        toggleLinkElement.addEventListener("click", toggleTableFunction);
     }
 })();

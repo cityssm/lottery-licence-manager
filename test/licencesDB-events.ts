@@ -12,7 +12,7 @@ import { getPastEventBankingInformation } from "../helpers/licencesDB/getPastEve
 describe("licencesDB/events", () => {
 
   it("should execute getEvent()", () => {
-    assert.equal(getEvent(-1, -1, fakeViewOnlySession), null);
+    assert.equal(getEvent(-1, -1, fakeViewOnlySession), undefined);
   });
 
   it("should execute getEvents()", () => {
