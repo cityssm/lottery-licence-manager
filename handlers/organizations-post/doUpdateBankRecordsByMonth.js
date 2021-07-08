@@ -1,10 +1,7 @@
 import { addOrganizationBankRecord } from "../../helpers/licencesDB/addOrganizationBankRecord.js";
 import { updateOrganizationBankRecord } from "../../helpers/licencesDB/updateOrganizationBankRecord.js";
 import { deleteOrganizationBankRecord } from "../../helpers/licencesDB/deleteOrganizationBankRecord.js";
-const bankRecordIsBlank = (bankRecord) => {
-    if (bankRecord.recordDateString === "" && bankRecord.recordNote === "" && !bankRecord.recordIsNA) {
-        return true;
-    }
+const bankRecordIsBlank = (_bankRecord) => {
     return false;
 };
 export const handler = (request, response) => {

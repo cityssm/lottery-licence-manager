@@ -7,11 +7,13 @@ import { deleteOrganizationBankRecord } from "../../helpers/licencesDB/deleteOrg
 import type * as llm from "../../types/recordTypes";
 
 
-const bankRecordIsBlank = (bankRecord: llm.OrganizationBankRecord) => {
-
+const bankRecordIsBlank = (_bankRecord: llm.OrganizationBankRecord) => {
+  /*
   if (bankRecord.recordDateString === "" && bankRecord.recordNote === "" && !bankRecord.recordIsNA) {
     return true;
   }
+  */
+
   return false;
 };
 

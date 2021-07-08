@@ -138,8 +138,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 "<strong class=\"is-size-7 has-text-grey-light\">No Record Recorded</strong>";
             const tdElement = infoElement.closest("td");
             tdElement.dataset.recordIndex = "";
-            tdElement.classList.remove("has-background-success-light");
             tdElement.classList.remove("has-background-info-light");
+            tdElement.classList.remove("has-background-success-light");
+            tdElement.classList.remove("has-background-warning-light");
         }
     };
     const getBankRecordsFunction = () => {
@@ -154,13 +155,20 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     continue;
                 }
                 tdElement.dataset.recordIndex = bankRecord.recordIndex.toString();
-                const infoElement = tdElement.querySelectorAll(".is-bank-record-info")[0];
+                const infoElement = tdElement.querySelector(".is-bank-record-info");
                 if (bankRecord.recordIsNA) {
                     tdElement.classList.add("has-background-info-light");
                     infoElement.innerHTML =
                         "<i class=\"fas fa-times\" aria-hidden=\"true\"></i>" +
                             "<br />" +
                             "<span class=\"has-text-weight-bold is-size-7\">Not Applicable</span>";
+                }
+                else if (!bankRecord.recordDate) {
+                    tdElement.classList.add("has-background-warning-light");
+                    infoElement.innerHTML =
+                        "<i class=\"fas fa-exclamation-triangle\" aria-hidden=\"true\"></i>" +
+                            "<br />" +
+                            "<span class=\"has-text-weight-bold is-size-7\">Not Recorded</span>";
                 }
                 else {
                     tdElement.classList.add("has-background-success-light");

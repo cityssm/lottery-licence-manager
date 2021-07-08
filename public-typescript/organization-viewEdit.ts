@@ -225,8 +225,9 @@ declare const llm: llmGlobal;
       const tdElement = infoElement.closest("td");
 
       tdElement.dataset.recordIndex = "";
-      tdElement.classList.remove("has-background-success-light");
       tdElement.classList.remove("has-background-info-light");
+      tdElement.classList.remove("has-background-success-light");
+      tdElement.classList.remove("has-background-warning-light");
     }
   };
 
@@ -250,7 +251,7 @@ declare const llm: llmGlobal;
 
         tdElement.dataset.recordIndex = bankRecord.recordIndex.toString();
 
-        const infoElement = tdElement.querySelectorAll(".is-bank-record-info")[0];
+        const infoElement = tdElement.querySelector(".is-bank-record-info");
 
         if (bankRecord.recordIsNA) {
 
@@ -260,6 +261,15 @@ declare const llm: llmGlobal;
             "<i class=\"fas fa-times\" aria-hidden=\"true\"></i>" +
             "<br />" +
             "<span class=\"has-text-weight-bold is-size-7\">Not Applicable</span>";
+
+        } else if (!bankRecord.recordDate) {
+
+          tdElement.classList.add("has-background-warning-light");
+
+          infoElement.innerHTML =
+            "<i class=\"fas fa-exclamation-triangle\" aria-hidden=\"true\"></i>" +
+            "<br />" +
+            "<span class=\"has-text-weight-bold is-size-7\">Not Recorded</span>";
 
         } else {
 

@@ -17,7 +17,9 @@ export const updateOrganizationBankRecord = (requestBody: llm.OrganizationBankRe
     " where organizationID = ?" +
     " and recordIndex = ?" +
     " and recordDelete_timeMillis is null", [
-      dateTimeFns.dateStringToInteger(requestBody.recordDateString),
+      (requestBody.recordDateString === ""
+        ? undefined
+        : dateTimeFns.dateStringToInteger(requestBody.recordDateString)),
       requestBody.recordIsNA ? 1 : 0,
       requestBody.recordNote,
       requestSession.user.userName,
