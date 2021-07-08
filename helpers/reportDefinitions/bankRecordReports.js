@@ -8,7 +8,7 @@ const sql_bankRecordsFlatByBankingYear = (() => {
             return soFar +
                 ", max(case" +
                 " when r2.bankRecordType = '" + bankRecordTypeKey + "' and r2.recordIsNA = 1 then 'Not Applicable'" +
-                " when r2.bankRecordType = '" + bankRecordTypeKey + "' and r2.recordDate is not null then 'Received'" +
+                " when r2.bankRecordType = '" + bankRecordTypeKey + "' and r2.recordDate is not null and r2.recordDate != 0 then 'Received'" +
                 " else '' end) as " + bankRecordTypeKey + "_status" +
                 ", max(case when r2.bankRecordType = '" + bankRecordTypeKey + "' then r2.recordNote end) as " + bankRecordTypeKey + "_recordNote";
         }, "") +
@@ -32,7 +32,7 @@ const sql_bankRecordsFlatByOrganizationAndBankingYear = (() => {
             return soFar +
                 ", max(case" +
                 " when r2.bankRecordType = '" + bankRecordTypeKey + "' and r2.recordIsNA = 1 then 'Not Applicable'" +
-                " when r2.bankRecordType = '" + bankRecordTypeKey + "' and r2.recordDate is not null then 'Received'" +
+                " when r2.bankRecordType = '" + bankRecordTypeKey + "' and r2.recordDate is not null and r2.recordDate != 0 then 'Received'" +
                 " else '' end) as " + bankRecordTypeKey + "_status" +
                 ", max(case when bankRecordType = '" + bankRecordTypeKey + "' then recordDate end) as " + bankRecordTypeKey + "_recordDate" +
                 ", max(case when r2.bankRecordType = '" + bankRecordTypeKey + "' then r2.recordNote end) as " + bankRecordTypeKey + "_recordNote";
