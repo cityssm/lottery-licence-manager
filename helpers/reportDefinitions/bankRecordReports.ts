@@ -1,11 +1,11 @@
-import * as configFns from "../configFns.js";
+import * as configFunctions from "../functions.config.js";
 
 import type { ConfigReportDefinition } from "../../types/configTypes";
 
 
 const sql_bankRecordsFlatByBankingYear = (() => {
 
-  const bankRecordTypes = configFns.getProperty("bankRecordTypes");
+  const bankRecordTypes = configFunctions.getProperty("bankRecordTypes");
 
   const sql = "select o.organizationName," +
     " r1.accountNumber, m.bankingYear, m.bankingMonth" +
@@ -41,7 +41,7 @@ const sql_bankRecordsFlatByBankingYear = (() => {
 
 const sql_bankRecordsFlatByOrganizationAndBankingYear = (() => {
 
-  const bankRecordTypes = configFns.getProperty("bankRecordTypes");
+  const bankRecordTypes = configFunctions.getProperty("bankRecordTypes");
 
   const sql = "select o.organizationName," +
     " r1.accountNumber, m.bankingYear, m.bankingMonth" +

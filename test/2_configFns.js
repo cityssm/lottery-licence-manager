@@ -1,18 +1,18 @@
 import * as assert from "assert";
-import * as configFns from "../helpers/configFns.js";
-describe("configFns", () => {
+import * as configFunctions from "../helpers/functions.config.js";
+describe("configFunctions", () => {
     describe("#getProperty", () => {
         it("Includes string value for property \"licences.externalLicenceNumber.fieldLabel\"", () => {
-            assert.equal(typeof configFns.getProperty("licences.externalLicenceNumber.fieldLabel"), "string");
+            assert.equal(typeof configFunctions.getProperty("licences.externalLicenceNumber.fieldLabel"), "string");
         });
     });
     it("getReminderType()", () => {
-        assert.equal(configFns.getReminderType(""), null);
+        assert.equal(configFunctions.getReminderType(""), null);
     });
     it("getLicenceType()", () => {
-        assert.equal(configFns.getLicenceType(""), null);
+        assert.equal(configFunctions.getLicenceType(""), null);
     });
     it("getLicenceTypeKeyToNameObject()", () => {
-        assert.ok(configFns.getLicenceTypeKeyToNameObject());
+        assert.ok(configFunctions.getLicenceTypeKeyToNameObject());
     });
 });

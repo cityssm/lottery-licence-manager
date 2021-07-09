@@ -1,11 +1,11 @@
 import type { RequestHandler } from "express";
 
-import * as configFns from "../../helpers/configFns.js";
+import * as configFunctions from "../../helpers/functions.config.js";
 
 import { pokeLicence } from "../../helpers/licencesDB/pokeLicence.js";
 
 
-const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
+const urlPrefix = configFunctions.getProperty("reverseProxy.urlPrefix");
 
 
 export const handler: RequestHandler = (request, response, next) => {

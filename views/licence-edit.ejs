@@ -15,7 +15,7 @@
         <% } else { %>
           <li>
             <a href="<%= urlPrefix %>/licences/<%= licence.licenceID %>">
-              <% if (configFns.getProperty("licences.externalLicenceNumber.isPreferredID")) { %>
+              <% if (configFunctions.getProperty("licences.externalLicenceNumber.isPreferredID")) { %>
                 Licence <%= licence.externalLicenceNumber %>
               <% } else { %>
                 Licence #<%= licence.licenceID %>
@@ -72,12 +72,12 @@
         </div>
         <%
           let licenceNumberIsReadOnly = true;
-          if (isCreate && configFns.getProperty("licences.externalLicenceNumber.newCalculation") === "") {
+          if (isCreate && configFunctions.getProperty("licences.externalLicenceNumber.newCalculation") === "") {
             licenceNumberIsReadOnly = false;
           }
         %>
         <div class="column">
-          <label class="label" for="licence--externalLicenceNumber"><%= configFns.getProperty("licences.externalLicenceNumber.fieldLabel") %></label>
+          <label class="label" for="licence--externalLicenceNumber"><%= configFunctions.getProperty("licences.externalLicenceNumber.fieldLabel") %></label>
           <div class="field has-addons">
             <div class="control is-expanded">
               <input class="input <%= (licenceNumberIsReadOnly ? " is-readonly" : "") %>" id="licence--externalLicenceNumber" name="externalLicenceNumber" type="text" value="<%= licence.externalLicenceNumber %>" maxlength="20" autocomplete="false" <%= (licenceNumberIsReadOnly ? " readonly" : "") %> />
@@ -248,7 +248,7 @@
       </div>
 
       <%
-        const licenceType = (isCreate ? {} : configFns.getLicenceType(licence.licenceTypeKey));
+        const licenceType = (isCreate ? {} : configFunctions.getLicenceType(licence.licenceTypeKey));
 
         let ticketTypesIsHidden = true;
 
@@ -267,7 +267,7 @@
                   <select <%= (isCreate ? "" : "class=\"is-readonly\"") %> id="licence--licenceTypeKey" name="licenceTypeKey" required <%= (isCreate ? "" : " readonly") %>>
                     <option value="">(Select a Licence Type)</option>
                     <%
-                      const licenceTypes = configFns.getProperty("licenceTypes");
+                      const licenceTypes = configFunctions.getProperty("licenceTypes");
 
                       for (let licenceTypeIndex = 0; licenceTypeIndex < licenceTypes.length; licenceTypeIndex += 1) {
                         const licenceTypeOption = licenceTypes[licenceTypeIndex];
@@ -394,7 +394,7 @@
         </div>
         <div class="column is-half">
           <%
-            const licenceTypes = configFns.getProperty("licenceTypes");
+            const licenceTypes = configFunctions.getProperty("licenceTypes");
             for (let licenceTypeIndex = 0; licenceTypeIndex < licenceTypes.length; licenceTypeIndex += 1) {
               const licenceTypeOption = licenceTypes[licenceTypeIndex];
 
@@ -715,7 +715,7 @@
                     <th><span class="sr-only">Transaction Type</span></th>
                     <th class="has-text-right">Amount</th>
                     <th><span class="sr-only">Options</span></th>
-                    <th><%= configFns.getProperty("licences.externalReceiptNumber.fieldLabel") %></th>
+                    <th><%= configFunctions.getProperty("licences.externalReceiptNumber.fieldLabel") %></th>
                     <th>Note</th>
                   </tr>
                 </thead>

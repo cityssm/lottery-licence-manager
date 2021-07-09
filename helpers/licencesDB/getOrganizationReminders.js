@@ -1,10 +1,10 @@
 import sqlite from "better-sqlite3";
 import { licencesDB as databasePath } from "../../data/databasePaths.js";
-import * as configFns from "../configFns.js";
+import * as configFunctions from "../functions.config.js";
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
 import { canUpdateObject } from "../licencesDB.js";
 const reminderTypeOrdering = {};
-const reminderCategories = configFns.getProperty("reminderCategories");
+const reminderCategories = configFunctions.getProperty("reminderCategories");
 (() => {
     let typeIndex = 0;
     for (const reminderCategory of reminderCategories) {
@@ -53,7 +53,7 @@ export const getOrganizationRemindersWithDB = (database, organizationID, request
         reminder.dismissedDateString = dateTimeFns.dateIntegerToString(reminder.dismissedDate || 0);
         reminder.canUpdate = canUpdateObject(reminder, requestSession);
     }
-    switch (configFns.getProperty("reminders.preferredSortOrder")) {
+    switch (configFunctions.getProperty("reminders.preferredSortOrder")) {
         case "date":
             reminders.sort(sortFunction_byDate);
             break;

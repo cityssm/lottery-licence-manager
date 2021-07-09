@@ -5,7 +5,7 @@ import { getOrganizationRemindersWithDB } from "./getOrganizationReminders.js";
 import { deleteOrganizationReminderWithDB } from "./deleteOrganizationReminder.js";
 import { addOrganizationReminderWithDB } from "./addOrganizationReminder.js";
 
-import * as configFns from "../configFns.js";
+import * as configFunctions from "../functions.config.js";
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
 
 import type * as expressSession from "express-session";
@@ -91,7 +91,7 @@ export const rollForwardOrganization = (organizationID: number,
 
     for (const reminder of organizationReminders) {
 
-      const reminderType = configFns.getReminderType(reminder.reminderTypeKey);
+      const reminderType = configFunctions.getReminderType(reminder.reminderTypeKey);
 
       if (reminderType.isBasedOnFiscalYear) {
         deleteOrganizationReminderWithDB(database, organizationID, reminder.reminderIndex, requestSession);
@@ -100,7 +100,7 @@ export const rollForwardOrganization = (organizationID: number,
 
     // Create new reminders
 
-    const reminderCategories = configFns.getProperty("reminderCategories");
+    const reminderCategories = configFunctions.getProperty("reminderCategories");
 
     for (const reminderCategory of reminderCategories) {
 

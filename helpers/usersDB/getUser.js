@@ -1,8 +1,8 @@
 import sqlite from "better-sqlite3";
 import { usersDB as databasePath } from "../../data/databasePaths.js";
-import * as userFns from "../../helpers/userFns.js";
+import * as userFunctions from "../../helpers/functions.user.js";
 import * as bcrypt from "bcrypt";
-import * as configFns from "../../helpers/configFns.js";
+import * as configFunctions from "../../helpers/functions.config.js";
 export const getUser = async (userNameSubmitted, passwordPlain) => {
     const database = sqlite(databasePath);
     const row = database.prepare("select userName, passwordHash, isActive" +
@@ -12,12 +12,12 @@ export const getUser = async (userNameSubmitted, passwordPlain) => {
     if (!row) {
         database.close();
         if (userNameSubmitted === "admin") {
-            const adminPasswordPlain = configFns.getProperty("admin.defaultPassword");
+            const adminPasswordPlain = configFunctions.getProperty("admin.defaultPassword");
             if (adminPasswordPlain === "") {
                 return undefined;
             }
             if (adminPasswordPlain === passwordPlain) {
-                const userProperties = Object.assign({}, configFns.getProperty("user.defaultProperties"));
+                const userProperties = Object.assign({}, configFunctions.getProperty("user.defaultProperties"));
                 userProperties.isAdmin = true;
                 userProperties.isDefaultAdmin = true;
                 return {
@@ -33,12 +33,12 @@ export const getUser = async (userNameSubmitted, passwordPlain) => {
         return undefined;
     }
     const databaseUserName = row.userName;
-    const passwordIsValid = await bcrypt.compare(userFns.getHashString(databaseUserName, passwordPlain), row.passwordHash);
+    const passwordIsValid = await bcrypt.compare(userFunctions.getHashString(databaseUserName, passwordPlain), row.passwordHash);
     if (!passwordIsValid) {
         database.close();
         return undefined;
     }
-    const userProperties = Object.assign({}, configFns.getProperty("user.defaultProperties"));
+    const userProperties = Object.assign({}, configFunctions.getProperty("user.defaultProperties"));
     userProperties.isDefaultAdmin = false;
     const userPropertyRows = database.prepare("select propertyName, propertyValue" +
         " from UserProperties" +

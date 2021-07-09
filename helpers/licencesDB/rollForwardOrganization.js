@@ -3,7 +3,7 @@ import { licencesDB as databasePath } from "../../data/databasePaths.js";
 import { getOrganizationRemindersWithDB } from "./getOrganizationReminders.js";
 import { deleteOrganizationReminderWithDB } from "./deleteOrganizationReminder.js";
 import { addOrganizationReminderWithDB } from "./addOrganizationReminder.js";
-import * as configFns from "../configFns.js";
+import * as configFunctions from "../functions.config.js";
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
 export const rollForwardOrganization = (organizationID, updateFiscalYear, updateReminders, requestSession) => {
     const rightNowMillis = Date.now();
@@ -50,12 +50,12 @@ export const rollForwardOrganization = (organizationID, updateFiscalYear, update
     if (updateReminders) {
         const organizationReminders = getOrganizationRemindersWithDB(database, organizationID, requestSession);
         for (const reminder of organizationReminders) {
-            const reminderType = configFns.getReminderType(reminder.reminderTypeKey);
+            const reminderType = configFunctions.getReminderType(reminder.reminderTypeKey);
             if (reminderType.isBasedOnFiscalYear) {
                 deleteOrganizationReminderWithDB(database, organizationID, reminder.reminderIndex, requestSession);
             }
         }
-        const reminderCategories = configFns.getProperty("reminderCategories");
+        const reminderCategories = configFunctions.getProperty("reminderCategories");
         for (const reminderCategory of reminderCategories) {
             if (!reminderCategory.isActive) {
                 continue;

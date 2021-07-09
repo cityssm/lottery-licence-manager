@@ -1,6 +1,6 @@
 import sqlite from "better-sqlite3";
 
-import * as configFns from "./configFns.js";
+import * as configFunctions from "./functions.config.js";
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
 import type * as llm from "../types/recordTypes";
 
@@ -38,7 +38,7 @@ export const canUpdateObject = (object: llm.Record, requestSession: expressSessi
 
   } else if (userProperties.canCreate &&
     (object.recordCreate_userName === requestSession.user.userName || object.recordUpdate_userName === requestSession.user.userName) &&
-    object.recordUpdate_timeMillis + configFns.getProperty("user.createUpdateWindowMillis") > Date.now()) {
+    object.recordUpdate_timeMillis + configFunctions.getProperty("user.createUpdateWindowMillis") > Date.now()) {
 
     // Users with only create permission can update their own records within the time window
     canUpdate = true;
@@ -46,7 +46,7 @@ export const canUpdateObject = (object: llm.Record, requestSession: expressSessi
 
   // If recently updated, send back permission
 
-  if (object.recordUpdate_timeMillis + configFns.getProperty("user.createUpdateWindowMillis") > Date.now()) {
+  if (object.recordUpdate_timeMillis + configFunctions.getProperty("user.createUpdateWindowMillis") > Date.now()) {
 
     return canUpdate;
 
@@ -238,7 +238,7 @@ export const getLicenceTypeSummary = (requestBody: {
     record.locationDisplayName =
       record.locationName === "" ? record.locationAddress1 : record.locationName;
 
-    record.licenceType = (configFns.getLicenceType(record.licenceTypeKey) || {}).licenceType || "";
+    record.licenceType = (configFunctions.getLicenceType(record.licenceTypeKey) || {}).licenceType || "";
   }
 
   return rows;

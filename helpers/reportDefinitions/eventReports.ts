@@ -1,5 +1,5 @@
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
-import * as reportFns from "../reportFns.js";
+import * as reportFns from "../functions.report.js";
 
 import type { ConfigReportDefinition } from "../../types/configTypes";
 

@@ -16,7 +16,7 @@ import routerLocations from "./routes/locations.js";
 import routerEvents from "./routes/events.js";
 import routerReports from "./routes/reports.js";
 import routerAdmin from "./routes/admin.js";
-import * as configFns from "./helpers/configFns.js";
+import * as configFunctions from "./helpers/functions.config.js";
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
 import * as stringFns from "@cityssm/expressjs-server-js/stringFns.js";
 import * as htmlFns from "@cityssm/expressjs-server-js/htmlFns.js";
@@ -28,12 +28,12 @@ databaseInitializer.initUsersDB();
 databaseInitializer.initLicencesDB();
 const __dirname = ".";
 export const app = express();
-if (!configFns.getProperty("reverseProxy.disableEtag")) {
+if (!configFunctions.getProperty("reverseProxy.disableEtag")) {
     app.set("etag", false);
 }
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
-if (!configFns.getProperty("reverseProxy.disableCompression")) {
+if (!configFunctions.getProperty("reverseProxy.disableCompression")) {
     app.use(compression());
 }
 app.use((request, _response, next) => {
@@ -51,7 +51,7 @@ const limiter = rateLimit({
     max: 1000
 });
 app.use(limiter);
-const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
+const urlPrefix = configFunctions.getProperty("reverseProxy.urlPrefix");
 if (urlPrefix !== "") {
     debugApp("urlPrefix = " + urlPrefix);
 }
@@ -61,19 +61,19 @@ app.use(urlPrefix + "/lib/fa", express.static(path.join("node_modules", "@fortaw
 app.use(urlPrefix + "/lib/cityssm-bulma-webapp-js", express.static(path.join("node_modules", "@cityssm", "bulma-webapp-js")));
 app.use(urlPrefix + "/lib/date-diff", express.static(path.join("node_modules", "@cityssm", "date-diff", "es2015")));
 const SQLiteStore = sqlite(session);
-const sessionCookieName = configFns.getProperty("session.cookieName");
+const sessionCookieName = configFunctions.getProperty("session.cookieName");
 app.use(session({
     store: new SQLiteStore({
         dir: "data",
         db: "sessions.db"
     }),
     name: sessionCookieName,
-    secret: configFns.getProperty("session.secret"),
+    secret: configFunctions.getProperty("session.secret"),
     resave: true,
     saveUninitialized: false,
     rolling: true,
     cookie: {
-        maxAge: configFns.getProperty("session.maxAgeMillis"),
+        maxAge: configFunctions.getProperty("session.maxAgeMillis"),
         sameSite: "strict"
     }
 }));
@@ -93,12 +93,12 @@ app.use((request, response, next) => {
     response.locals.buildNumber = process.env.npm_package_version;
     response.locals.user = request.session.user;
     response.locals.csrfToken = request.csrfToken();
-    response.locals.configFns = configFns;
+    response.locals.configFunctions = configFunctions;
     response.locals.dateTimeFns = dateTimeFns;
     response.locals.dateDiff = dateDiff;
     response.locals.stringFns = stringFns;
     response.locals.htmlFns = htmlFns;
-    response.locals.urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
+    response.locals.urlPrefix = configFunctions.getProperty("reverseProxy.urlPrefix");
     next();
 });
 app.get(urlPrefix + "/", sessionChecker, (_request, response) => {

@@ -5,7 +5,7 @@ import puppeteer from "puppeteer";
 import * as http from "http";
 import { app } from "../app.js";
 
-import * as configFns from "../helpers/configFns.js";
+import * as configFunctions from "../helpers/functions.config.js";
 
 import { getLicences } from "../helpers/licencesDB/getLicences.js";
 
@@ -87,7 +87,7 @@ describe("lottery-licence-manager", () => {
     });
   });
 
-  const appURL = "http://localhost:" + portNumber.toString() + configFns.getProperty("reverseProxy.urlPrefix");
+  const appURL = "http://localhost:" + portNumber.toString() + configFunctions.getProperty("reverseProxy.urlPrefix");
 
   describe("simple page tests", () => {
 

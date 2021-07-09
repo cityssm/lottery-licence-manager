@@ -7,7 +7,7 @@
   <meta name="csrf-token" content="<%= csrfToken %>">
 
   <title>
-    <%= headTitle %>: <%= configFns.getProperty("application.applicationName") %>
+    <%= headTitle %>: <%= configFunctions.getProperty("application.applicationName") %>
   </title>
 
   <link rel="icon" href="<%= urlPrefix %>/images/favicon.png" />
@@ -21,8 +21,8 @@
     <div class="container">
       <div class="navbar-brand">
         <a class="navbar-item" href="<%= urlPrefix %>/dashboard">
-          <img class="mr-3" src="<%= urlPrefix + configFns.getProperty("application.logoURL") %>" alt="" height="28" />
-          <strong><%= configFns.getProperty("application.applicationName") %></strong>
+          <img class="mr-3" src="<%= urlPrefix + configFunctions.getProperty("application.logoURL") %>" alt="" height="28" />
+          <strong><%= configFunctions.getProperty("application.applicationName") %></strong>
         </a>
 
         <a class="navbar-burger burger is-hidden-print" role="button" aria-label="menu" aria-expanded="false">
@@ -100,7 +100,7 @@
   </nav>
 
   <main class="container pt-2 px-3 mr-auto has-min-page-height"
-    data-session-keep-alive-millis="<%= configFns.keepAliveMillis %>"
+    data-session-keep-alive-millis="<%= configFunctions.keepAliveMillis %>"
     data-url-prefix="<%= urlPrefix %>"
     data-can-create="<%= user.userProperties.canCreate ? "true" : "false" %>"
     data-can-update="<%= user.userProperties.canUpdate ? "true" : "false" %>"

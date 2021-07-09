@@ -56,8 +56,8 @@ export const ticketTypes_AG: ConfigTicketType[] = [
   {
     ticketType: "AG12",
     ticketPrice: 1,
-    ticketCount: 16800,
-    prizesPerDeal: 11400
+    ticketCount: 16_800,
+    prizesPerDeal: 11_400
   },
   // AG13 - AG19
 
@@ -190,8 +190,8 @@ export const ticketTypes_AG: ConfigTicketType[] = [
   {
     ticketType: "AG90",
     ticketPrice: 1,
-    ticketCount: 48000,
-    prizesPerDeal: 33000
+    ticketCount: 48_000,
+    prizesPerDeal: 33_000
   }
 ];
 

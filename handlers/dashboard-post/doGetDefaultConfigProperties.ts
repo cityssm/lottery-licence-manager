@@ -1,17 +1,17 @@
 import type { RequestHandler } from "express";
 
-import * as configFns from "../../helpers/configFns.js";
+import * as configFunctions from "../../helpers/functions.config.js";
 
 
 export const handler: RequestHandler = (_request, response) => {
 
   response.json({
-    city: configFns.getProperty("defaults.city"),
-    province: configFns.getProperty("defaults.province"),
-    externalLicenceNumber_fieldLabel: configFns.getProperty("licences.externalLicenceNumber.fieldLabel"),
-    externalReceiptNumber_fieldLabel: configFns.getProperty("licences.externalReceiptNumber.fieldLabel"),
-    reminderCategories: configFns.getProperty("reminderCategories"),
-    dismissingStatuses: configFns.getProperty("reminders.dismissingStatuses")
+    city: configFunctions.getProperty("defaults.city"),
+    province: configFunctions.getProperty("defaults.province"),
+    externalLicenceNumber_fieldLabel: configFunctions.getProperty("licences.externalLicenceNumber.fieldLabel"),
+    externalReceiptNumber_fieldLabel: configFunctions.getProperty("licences.externalReceiptNumber.fieldLabel"),
+    reminderCategories: configFunctions.getProperty("reminderCategories"),
+    dismissingStatuses: configFunctions.getProperty("reminders.dismissingStatuses")
   });
 };
 

@@ -1,12 +1,12 @@
 import type { RequestHandler } from "express";
 
-import * as configFns from "../../helpers/configFns.js";
+import * as configFunctions from "../../helpers/functions.config.js";
 
 import { getLicence } from "../../helpers/licencesDB/getLicence.js";
 import { getOrganization } from "../../helpers/licencesDB/getOrganization.js";
 
 
-const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
+const urlPrefix = configFunctions.getProperty("reverseProxy.urlPrefix");
 
 
 export const handler: RequestHandler = (request, response, next) => {
@@ -30,10 +30,10 @@ export const handler: RequestHandler = (request, response, next) => {
 
   const organization = getOrganization(licence.organizationID, request.session);
 
-  const feeCalculation = configFns.getProperty("licences.feeCalculationFn")(licence);
+  const feeCalculation = configFunctions.getProperty("licences.feeCalculationFn")(licence);
 
   const headTitle =
-    configFns.getProperty("licences.externalLicenceNumber.isPreferredID")
+    configFunctions.getProperty("licences.externalLicenceNumber.isPreferredID")
       ? "Licence " + licence.externalLicenceNumber
       : "Licence #" + licenceID.toString();
 

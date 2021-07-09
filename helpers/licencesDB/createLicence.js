@@ -1,7 +1,7 @@
 import sqlite from "better-sqlite3";
 import { licencesDB as databasePath } from "../../data/databasePaths.js";
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
-import * as configFns from "../configFns.js";
+import * as configFunctions from "../functions.config.js";
 import { getLicenceWithDB } from "./getLicence.js";
 import { createEventWithDB } from "./createEvent.js";
 import { addLicenceTicketTypeWithDB } from "./addLicenceTicketType.js";
@@ -84,7 +84,7 @@ export const createLicence = (requestBody, requestSession) => {
         includeAmendments: true,
         includeTransactions: true
     });
-    const feeCalculation = configFns.getProperty("licences.feeCalculationFn")(licenceObject);
+    const feeCalculation = configFunctions.getProperty("licences.feeCalculationFn")(licenceObject);
     database.prepare("update LotteryLicences" +
         " set licenceFee = ?" +
         " where licenceID = ?")

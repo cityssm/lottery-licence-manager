@@ -47,7 +47,7 @@
     <tbody id="container--reminders" data-organization-id="<%= organization.organizationID %>">
       <% for (const reminder of reminders) { %>
         <%
-          const reminderType = configFns.getReminderType(reminder.reminderTypeKey);
+          const reminderType = configFunctions.getReminderType(reminder.reminderTypeKey);
         %>
         <tr>
           <td>

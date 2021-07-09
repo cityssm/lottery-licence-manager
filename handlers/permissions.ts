@@ -1,11 +1,11 @@
 import type { RequestHandler, Response } from "express";
 
-import * as configFns from "../helpers/configFns.js";
+import * as configFunctions from "../helpers/functions.config.js";
 
-import * as userFns from "../helpers/userFns.js";
+import * as userFunctions from "../helpers/functions.user.js";
 
 
-const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
+const urlPrefix = configFunctions.getProperty("reverseProxy.urlPrefix");
 
 
 export const forbiddenJSON = (response: Response): Response => {
@@ -21,7 +21,7 @@ export const forbiddenJSON = (response: Response): Response => {
 
 export const adminGetHandler: RequestHandler = (request, response, next) => {
 
-  if (userFns.userIsAdmin(request)) {
+  if (userFunctions.userIsAdmin(request)) {
     return next();
   }
 
@@ -31,7 +31,7 @@ export const adminGetHandler: RequestHandler = (request, response, next) => {
 
 export const adminPostHandler: RequestHandler = (request, response, next) => {
 
-  if (userFns.userIsAdmin(request)) {
+  if (userFunctions.userIsAdmin(request)) {
     return next();
   }
 
@@ -41,7 +41,7 @@ export const adminPostHandler: RequestHandler = (request, response, next) => {
 
 export const updateGetHandler: RequestHandler = (request, response, next) => {
 
-  if (userFns.userCanUpdate(request)) {
+  if (userFunctions.userCanUpdate(request)) {
     return next();
   }
 
@@ -51,7 +51,7 @@ export const updateGetHandler: RequestHandler = (request, response, next) => {
 
 export const updatePostHandler: RequestHandler = (request, response, next) => {
 
-  if (userFns.userCanUpdate(request)) {
+  if (userFunctions.userCanUpdate(request)) {
     return next();
   }
 
@@ -61,7 +61,7 @@ export const updatePostHandler: RequestHandler = (request, response, next) => {
 
 export const createGetHandler: RequestHandler = (request, response, next) => {
 
-  if (userFns.userCanCreate(request)) {
+  if (userFunctions.userCanCreate(request)) {
     return next();
   }
 
@@ -71,7 +71,7 @@ export const createGetHandler: RequestHandler = (request, response, next) => {
 
 export const createPostHandler: RequestHandler = (request, response, next) => {
 
-  if (userFns.userCanCreate(request)) {
+  if (userFunctions.userCanCreate(request)) {
     return next();
   }
 

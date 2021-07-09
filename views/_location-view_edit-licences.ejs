@@ -21,7 +21,7 @@
 
   <%
     let licenceTheadHTML = "<tr>" +
-      "<th class=\"has-width-150\">" + configFns.getProperty("licences.externalLicenceNumber.fieldLabel") + "</th>" +
+      "<th class=\"has-width-150\">" + configFunctions.getProperty("licences.externalLicenceNumber.fieldLabel") + "</th>" +
       "<th class=\"has-width-50 is-nowrap\">Licence Type</th>" +
       "<th>Event Details</th>" +
       "<th>Organization</th>" +
@@ -35,7 +35,7 @@
     let rows_past = "";
     let count_past = 0;
 
-    const licenceTypes = configFns.getProperty("licenceTypes");
+    const licenceTypes = configFunctions.getProperty("licenceTypes");
 
     for (let licenceIndex = 0; licenceIndex < licences.length; licenceIndex += 1) {
 

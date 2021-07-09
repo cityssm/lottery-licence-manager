@@ -15,7 +15,7 @@
             </a></li>
             <li>
               <a href="<%= urlPrefix %>/licences/<%= event.licenceID %>">
-                <% if (configFns.getProperty("licences.externalLicenceNumber.isPreferredID")) { %>
+                <% if (configFunctions.getProperty("licences.externalLicenceNumber.isPreferredID")) { %>
                   Licence <%= licence.externalLicenceNumber %>
                 <% } else { %>
                   Licence #<%= event.licenceID %>
@@ -59,7 +59,7 @@
     <div class="columns">
       <div class="column is-5">
         <h1 class="title is-1">
-          <% if (configFns.getProperty("licences.externalLicenceNumber.isPreferredID")) { %>
+          <% if (configFunctions.getProperty("licences.externalLicenceNumber.isPreferredID")) { %>
             Licence <%= licence.externalLicenceNumber %>
           <% } else { %>
             Licence #<%= event.licenceID %>
@@ -287,7 +287,7 @@
         </div>
         <div class="column">
           <%
-            const licenceType = configFns.getLicenceType(licence.licenceTypeKey);
+            const licenceType = configFunctions.getLicenceType(licence.licenceTypeKey);
           %>
           <div class="panel">
             <h2 class="panel-heading">

@@ -1,7 +1,7 @@
 import sqlite from "better-sqlite3";
 import { licencesDB as databasePath } from "../../data/databasePaths.js";
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
-import * as configFns from "../configFns.js";
+import * as configFunctions from "../functions.config.js";
 import { getLicenceWithDB } from "./getLicence.js";
 import { addLicenceAmendmentWithDB } from "./addLicenceAmendment.js";
 import { createEventWithDB } from "./createEvent.js";
@@ -67,7 +67,7 @@ export const updateLicence = (requestBody, requestSession) => {
         return false;
     }
     if (pastLicenceObject.trackUpdatesAsAmendments) {
-        if (configFns.getProperty("amendments.trackDateTimeUpdate") &&
+        if (configFunctions.getProperty("amendments.trackDateTimeUpdate") &&
             (pastLicenceObject.startDate !== startDate_now ||
                 pastLicenceObject.endDate !== endDate_now ||
                 pastLicenceObject.startTime !== startTime_now ||
@@ -87,15 +87,15 @@ export const updateLicence = (requestBody, requestSession) => {
             addLicenceAmendmentWithDB(database, requestBody.licenceID, "Date Update", amendment, 0, requestSession);
         }
         if (pastLicenceObject.organizationID !== Number.parseInt(requestBody.organizationID, 10) &&
-            configFns.getProperty("amendments.trackOrganizationUpdate")) {
+            configFunctions.getProperty("amendments.trackOrganizationUpdate")) {
             addLicenceAmendmentWithDB(database, requestBody.licenceID, "Organization Change", "", 0, requestSession);
         }
         if (pastLicenceObject.locationID !== Number.parseInt(requestBody.locationID, 10) &&
-            configFns.getProperty("amendments.trackLocationUpdate")) {
+            configFunctions.getProperty("amendments.trackLocationUpdate")) {
             addLicenceAmendmentWithDB(database, requestBody.licenceID, "Location Change", "", 0, requestSession);
         }
         if (pastLicenceObject.licenceFee !== Number.parseFloat(requestBody.licenceFee) &&
-            configFns.getProperty("amendments.trackLicenceFeeUpdate")) {
+            configFunctions.getProperty("amendments.trackLicenceFeeUpdate")) {
             addLicenceAmendmentWithDB(database, requestBody.licenceID, "Licence Fee Change", "$" + pastLicenceObject.licenceFee.toFixed(2) + " -> $" + Number.parseFloat(requestBody.licenceFee).toFixed(2), 0, requestSession);
         }
     }
@@ -157,7 +157,7 @@ export const updateLicence = (requestBody, requestSession) => {
                 ticketTypeIndex: ticketTypeIndex_toDelete
             }, requestSession);
             if (pastLicenceObject.trackUpdatesAsAmendments &&
-                configFns.getProperty("amendments.trackTicketTypeDelete")) {
+                configFunctions.getProperty("amendments.trackTicketTypeDelete")) {
                 addLicenceAmendmentWithDB(database, requestBody.licenceID, "Ticket Type Removed", "Removed " + ticketTypeIndex_toDelete + ".", 0, requestSession);
             }
         }
@@ -175,7 +175,7 @@ export const updateLicence = (requestBody, requestSession) => {
             manufacturerLocationID: requestBody.ticketType_manufacturerLocationID
         }, requestSession);
         if (pastLicenceObject.trackUpdatesAsAmendments &&
-            configFns.getProperty("amendments.trackTicketTypeNew")) {
+            configFunctions.getProperty("amendments.trackTicketTypeNew")) {
             addLicenceAmendmentWithDB(database, requestBody.licenceID, "Added Ticket Type", requestBody.ticketType_ticketType, 0, requestSession);
         }
     }
@@ -193,7 +193,7 @@ export const updateLicence = (requestBody, requestSession) => {
                 manufacturerLocationID: requestBody.ticketType_manufacturerLocationID[ticketTypeIndex]
             }, requestSession);
             if (pastLicenceObject.trackUpdatesAsAmendments &&
-                configFns.getProperty("amendments.trackTicketTypeNew")) {
+                configFunctions.getProperty("amendments.trackTicketTypeNew")) {
                 addLicenceAmendmentWithDB(database, requestBody.licenceID, "Added Ticket Type", ticketType, 0, requestSession);
             }
         }

@@ -1,6 +1,6 @@
-import * as configFns from "../../helpers/configFns.js";
+import * as configFunctions from "../../helpers/functions.config.js";
 import { pokeLicence } from "../../helpers/licencesDB/pokeLicence.js";
-const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
+const urlPrefix = configFunctions.getProperty("reverseProxy.urlPrefix");
 export const handler = (request, response, next) => {
     const licenceID = Number(request.params.licenceID);
     if (Number.isNaN(licenceID)) {

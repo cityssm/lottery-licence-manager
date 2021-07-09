@@ -1,7 +1,7 @@
 import sqlite from "better-sqlite3";
 import { usersDB as databasePath } from "../../data/databasePaths.js";
 import { updatePasswordWithDB } from "./updatePassword.js";
-import * as userFns from "../../helpers/userFns.js";
+import * as userFunctions from "../../helpers/functions.user.js";
 import * as bcrypt from "bcrypt";
 export const tryResetPassword = async (userName, oldPasswordPlain, newPasswordPlain) => {
     const database = sqlite(databasePath);
@@ -16,7 +16,7 @@ export const tryResetPassword = async (userName, oldPasswordPlain, newPasswordPl
             message: "User record not found."
         };
     }
-    const oldPasswordMatches = await bcrypt.compare(userFns.getHashString(userName, oldPasswordPlain), row.passwordHash);
+    const oldPasswordMatches = await bcrypt.compare(userFunctions.getHashString(userName, oldPasswordPlain), row.passwordHash);
     if (!oldPasswordMatches) {
         database.close();
         return {

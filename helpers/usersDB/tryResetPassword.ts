@@ -3,7 +3,7 @@ import { usersDB as databasePath } from "../../data/databasePaths.js";
 
 import { updatePasswordWithDB } from "./updatePassword.js";
 
-import * as userFns from "../../helpers/userFns.js";
+import * as userFunctions from "../../helpers/functions.user.js";
 
 import * as bcrypt from "bcrypt";
 
@@ -33,7 +33,7 @@ export const tryResetPassword = async(userName: string, oldPasswordPlain: string
     };
   }
 
-  const oldPasswordMatches = await bcrypt.compare(userFns.getHashString(userName, oldPasswordPlain), row.passwordHash);
+  const oldPasswordMatches = await bcrypt.compare(userFunctions.getHashString(userName, oldPasswordPlain), row.passwordHash);
 
   if (!oldPasswordMatches) {
 

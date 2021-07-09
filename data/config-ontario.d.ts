@@ -1,3 +1,2 @@
-import * as configTypes from "../types/configTypes";
-export declare const config: configTypes.Config;
+import { config } from "./configOntario.js";
 export default config;

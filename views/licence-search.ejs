@@ -33,7 +33,7 @@
         <div class="columns">
           <div class="column">
             <div class="field">
-              <label class="label" for="filter--externalLicenceNumber"><%= configFns.getProperty("licences.externalLicenceNumber.fieldLabel") %></label>
+              <label class="label" for="filter--externalLicenceNumber"><%= configFunctions.getProperty("licences.externalLicenceNumber.fieldLabel") %></label>
               <div class="control has-icons-left">
                 <input class="input" id="filter--externalLicenceNumber" name="externalLicenceNumber" type="text" autofocus />
                 <span class="icon is-small is-left">
@@ -50,7 +50,7 @@
                   <select id="filter--licenceTypeKey" name="licenceTypeKey">
                     <option value="">(All Types)</option>
                     <%
-                      const licenceTypes = configFns.getProperty("licenceTypes");
+                      const licenceTypes = configFunctions.getProperty("licenceTypes");
                       for (let typeIndex = 0; typeIndex < licenceTypes.length; typeIndex += 1) {
                         const licenceTypeJSON = licenceTypes[typeIndex];
                         if (!licenceTypeJSON.isActive) {
@@ -114,7 +114,7 @@
       </form>
     </div>
 
-    <div class="is-block-print" id="container--searchResults" data-external-licence-number-label="<%= configFns.getProperty("licences.externalLicenceNumber.fieldLabel") %>"></div>
+    <div class="is-block-print" id="container--searchResults" data-external-licence-number-label="<%= configFunctions.getProperty("licences.externalLicenceNumber.fieldLabel") %>"></div>
   </div>
 </div>
 

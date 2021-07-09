@@ -1,11 +1,11 @@
 import sqlite from "better-sqlite3";
 import { usersDB as databasePath } from "../../data/databasePaths.js";
 
-import * as userFns from "../../helpers/userFns.js";
+import * as userFunctions from "../../helpers/functions.user.js";
 
 import * as bcrypt from "bcrypt";
 
-import * as configFns from "../../helpers/configFns.js";
+import * as configFunctions from "../../helpers/functions.config.js";
 
 import type { User, UserProperties } from "../../types/recordTypes";
 
@@ -27,7 +27,7 @@ export const getUser = async(userNameSubmitted: string, passwordPlain: string): 
 
     if (userNameSubmitted === "admin") {
 
-      const adminPasswordPlain = configFns.getProperty("admin.defaultPassword");
+      const adminPasswordPlain = configFunctions.getProperty("admin.defaultPassword");
 
       if (adminPasswordPlain === "") {
         return undefined;
@@ -35,7 +35,7 @@ export const getUser = async(userNameSubmitted: string, passwordPlain: string): 
 
       if (adminPasswordPlain === passwordPlain) {
 
-        const userProperties: UserProperties = Object.assign({}, configFns.getProperty("user.defaultProperties"));
+        const userProperties: UserProperties = Object.assign({}, configFunctions.getProperty("user.defaultProperties"));
         userProperties.isAdmin = true;
         userProperties.isDefaultAdmin = true;
 
@@ -60,7 +60,7 @@ export const getUser = async(userNameSubmitted: string, passwordPlain: string): 
   const databaseUserName = row.userName as string;
 
   const passwordIsValid =
-    await bcrypt.compare(userFns.getHashString(databaseUserName, passwordPlain), row.passwordHash);
+    await bcrypt.compare(userFunctions.getHashString(databaseUserName, passwordPlain), row.passwordHash);
 
   if (!passwordIsValid) {
 
@@ -71,7 +71,7 @@ export const getUser = async(userNameSubmitted: string, passwordPlain: string): 
   // Get user properties
 
   const userProperties: UserProperties =
-    Object.assign({}, configFns.getProperty("user.defaultProperties"));
+    Object.assign({}, configFunctions.getProperty("user.defaultProperties"));
 
   userProperties.isDefaultAdmin = false;
 

@@ -1,5 +1,5 @@
 import sqlite from "better-sqlite3";
-import * as configFns from "./configFns.js";
+import * as configFunctions from "./functions.config.js";
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
 import { licencesDB as databasePath } from "../data/databasePaths.js";
 export const canUpdateObject = (object, requestSession) => {
@@ -16,10 +16,10 @@ export const canUpdateObject = (object, requestSession) => {
     }
     else if (userProperties.canCreate &&
         (object.recordCreate_userName === requestSession.user.userName || object.recordUpdate_userName === requestSession.user.userName) &&
-        object.recordUpdate_timeMillis + configFns.getProperty("user.createUpdateWindowMillis") > Date.now()) {
+        object.recordUpdate_timeMillis + configFunctions.getProperty("user.createUpdateWindowMillis") > Date.now()) {
         canUpdate = true;
     }
-    if (object.recordUpdate_timeMillis + configFns.getProperty("user.createUpdateWindowMillis") > Date.now()) {
+    if (object.recordUpdate_timeMillis + configFunctions.getProperty("user.createUpdateWindowMillis") > Date.now()) {
         return canUpdate;
     }
     if (canUpdate) {
@@ -136,7 +136,7 @@ export const getLicenceTypeSummary = (requestBody) => {
         record.issueDateString = dateTimeFns.dateIntegerToString(record.issueDate);
         record.locationDisplayName =
             record.locationName === "" ? record.locationAddress1 : record.locationName;
-        record.licenceType = (configFns.getLicenceType(record.licenceTypeKey) || {}).licenceType || "";
+        record.licenceType = (configFunctions.getLicenceType(record.licenceTypeKey) || {}).licenceType || "";
     }
     return rows;
 };

@@ -1,6 +1,6 @@
-import * as configFns from "../configFns.js";
+import * as configFunctions from "../functions.config.js";
 const sql_bankRecordsFlatByBankingYear = (() => {
-    const bankRecordTypes = configFns.getProperty("bankRecordTypes");
+    const bankRecordTypes = configFunctions.getProperty("bankRecordTypes");
     const sql = "select o.organizationName," +
         " r1.accountNumber, m.bankingYear, m.bankingMonth" +
         bankRecordTypes.reduce((soFar, bankRecordType) => {
@@ -24,7 +24,7 @@ const sql_bankRecordsFlatByBankingYear = (() => {
     return sql;
 })();
 const sql_bankRecordsFlatByOrganizationAndBankingYear = (() => {
-    const bankRecordTypes = configFns.getProperty("bankRecordTypes");
+    const bankRecordTypes = configFunctions.getProperty("bankRecordTypes");
     const sql = "select o.organizationName," +
         " r1.accountNumber, m.bankingYear, m.bankingMonth" +
         bankRecordTypes.reduce((soFar, bankRecordType) => {

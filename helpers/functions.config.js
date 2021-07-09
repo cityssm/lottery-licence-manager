@@ -88,7 +88,7 @@ let licenceTypeKeyNameObject = {};
 export const getLicenceType = (licenceTypeKey) => {
     if (!licenceTypeCache.has(licenceTypeKey)) {
         const licenceType = getProperty("licenceTypes")
-            .find((ele) => ele.licenceTypeKey === licenceTypeKey);
+            .find((element) => element.licenceTypeKey === licenceTypeKey);
         licenceTypeCache.set(licenceTypeKey, licenceType);
     }
     return licenceTypeCache.get(licenceTypeKey);
@@ -96,9 +96,9 @@ export const getLicenceType = (licenceTypeKey) => {
 export const getLicenceTypeKeyToNameObject = () => {
     if (Object.keys(licenceTypeKeyNameObject).length === 0) {
         const list = {};
-        for (const ele of getProperty("licenceTypes")) {
-            if (ele.isActive) {
-                list[ele.licenceTypeKey] = ele.licenceType;
+        for (const element of getProperty("licenceTypes")) {
+            if (element.isActive) {
+                list[element.licenceTypeKey] = element.licenceType;
             }
         }
         licenceTypeKeyNameObject = list;

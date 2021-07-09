@@ -49,7 +49,7 @@
 
 <script>
   exports.config_days = <%- JSON.stringify(dateTimeFns.days) %>;
-  exports.config_licenceTypes = <%- JSON.stringify(configFns.getLicenceTypeKeyToNameObject()) %>;
+  exports.config_licenceTypes = <%- JSON.stringify(configFunctions.getLicenceTypeKeyToNameObject()) %>;
 </script>
 <script src="<%= urlPrefix %>/javascripts/event-byWeek.min.js"></script>
 

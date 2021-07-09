@@ -1,11 +1,11 @@
 import sqlite from "better-sqlite3";
 import { usersDB as databasePath } from "../../data/databasePaths.js";
-import * as configFns from "../../helpers/configFns.js";
+import * as configFunctions from "../../helpers/functions.config.js";
 export const getUserProperties = (userName) => {
     const database = sqlite(databasePath, {
         readonly: true
     });
-    const userProperties = Object.assign({}, configFns.getProperty("user.defaultProperties"));
+    const userProperties = Object.assign({}, configFunctions.getProperty("user.defaultProperties"));
     const userPropertyRows = database.prepare("select propertyName, propertyValue" +
         " from UserProperties" +
         " where userName = ?")

@@ -1,11 +1,11 @@
 import path from "path";
 import * as ejs from "ejs";
-import * as configFns from "../../helpers/configFns.js";
+import * as configFunctions from "../../helpers/functions.config.js";
 import { getOrganization } from "../../helpers/licencesDB/getOrganization.js";
 import { getLicence } from "../../helpers/licencesDB/getLicence.js";
 import convertHTMLToPDF from "pdf-puppeteer";
-const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
-const printTemplate = configFns.getProperty("licences.printTemplate");
+const urlPrefix = configFunctions.getProperty("reverseProxy.urlPrefix");
+const printTemplate = configFunctions.getProperty("licences.printTemplate");
 const __dirname = ".";
 export const handler = async (request, response, next) => {
     const licenceID = Number(request.params.licenceID);
@@ -28,7 +28,7 @@ export const handler = async (request, response, next) => {
         response.send(pdf);
     };
     await ejs.renderFile(reportPath, {
-        configFns,
+        configFunctions,
         licence,
         organization
     }, {}, async (ejsError, ejsData) => {

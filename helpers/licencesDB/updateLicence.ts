@@ -2,7 +2,7 @@ import sqlite from "better-sqlite3";
 import { licencesDB as databasePath } from "../../data/databasePaths.js";
 
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
-import * as configFns from "../configFns.js";
+import * as configFunctions from "../functions.config.js";
 
 import { getLicenceWithDB } from "./getLicence.js";
 import { addLicenceAmendmentWithDB } from "./addLicenceAmendment.js";
@@ -157,7 +157,7 @@ export const updateLicence = (requestBody: LotteryLicenceForm, requestSession: e
 
   if (pastLicenceObject.trackUpdatesAsAmendments) {
 
-    if (configFns.getProperty("amendments.trackDateTimeUpdate") &&
+    if (configFunctions.getProperty("amendments.trackDateTimeUpdate") &&
       (pastLicenceObject.startDate !== startDate_now ||
         pastLicenceObject.endDate !== endDate_now ||
         pastLicenceObject.startTime !== startTime_now ||
@@ -188,7 +188,7 @@ export const updateLicence = (requestBody: LotteryLicenceForm, requestSession: e
     }
 
     if (pastLicenceObject.organizationID !== Number.parseInt(requestBody.organizationID, 10) &&
-      configFns.getProperty("amendments.trackOrganizationUpdate")) {
+      configFunctions.getProperty("amendments.trackOrganizationUpdate")) {
 
       addLicenceAmendmentWithDB(
         database,
@@ -201,7 +201,7 @@ export const updateLicence = (requestBody: LotteryLicenceForm, requestSession: e
     }
 
     if (pastLicenceObject.locationID !== Number.parseInt(requestBody.locationID, 10) &&
-      configFns.getProperty("amendments.trackLocationUpdate")) {
+      configFunctions.getProperty("amendments.trackLocationUpdate")) {
 
       addLicenceAmendmentWithDB(
         database,
@@ -215,7 +215,7 @@ export const updateLicence = (requestBody: LotteryLicenceForm, requestSession: e
     }
 
     if (pastLicenceObject.licenceFee !== Number.parseFloat(requestBody.licenceFee) &&
-      configFns.getProperty("amendments.trackLicenceFeeUpdate")) {
+      configFunctions.getProperty("amendments.trackLicenceFeeUpdate")) {
 
       addLicenceAmendmentWithDB(
         database,
@@ -320,7 +320,7 @@ export const updateLicence = (requestBody: LotteryLicenceForm, requestSession: e
       }, requestSession);
 
       if (pastLicenceObject.trackUpdatesAsAmendments &&
-        configFns.getProperty("amendments.trackTicketTypeDelete")) {
+        configFunctions.getProperty("amendments.trackTicketTypeDelete")) {
 
         addLicenceAmendmentWithDB(
           database,
@@ -352,7 +352,7 @@ export const updateLicence = (requestBody: LotteryLicenceForm, requestSession: e
     }, requestSession);
 
     if (pastLicenceObject.trackUpdatesAsAmendments &&
-      configFns.getProperty("amendments.trackTicketTypeNew")) {
+      configFunctions.getProperty("amendments.trackTicketTypeNew")) {
 
       addLicenceAmendmentWithDB(
         database,
@@ -382,7 +382,7 @@ export const updateLicence = (requestBody: LotteryLicenceForm, requestSession: e
       }, requestSession);
 
       if (pastLicenceObject.trackUpdatesAsAmendments &&
-        configFns.getProperty("amendments.trackTicketTypeNew")) {
+        configFunctions.getProperty("amendments.trackTicketTypeNew")) {
 
         addLicenceAmendmentWithDB(
           database,

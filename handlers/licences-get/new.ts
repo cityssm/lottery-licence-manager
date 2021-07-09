@@ -1,6 +1,6 @@
 import type { RequestHandler } from "express";
 
-import * as configFns from "../../helpers/configFns.js";
+import * as configFunctions from "../../helpers/functions.config.js";
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
 
 import { getOrganization } from "../../helpers/licencesDB/getOrganization.js";
@@ -34,7 +34,7 @@ export const handler: RequestHandler = (request, response) => {
 
   let externalLicenceNumber = "";
 
-  const licenceNumberCalculationType = configFns.getProperty("licences.externalLicenceNumber.newCalculation");
+  const licenceNumberCalculationType = configFunctions.getProperty("licences.externalLicenceNumber.newCalculation");
 
   if (licenceNumberCalculationType === "range") {
     externalLicenceNumber = getNextExternalLicenceNumberFromRange().toString();
@@ -46,7 +46,7 @@ export const handler: RequestHandler = (request, response) => {
     licence: {
       externalLicenceNumber,
       applicationDateString: currentDateAsString,
-      municipality: configFns.getProperty("defaults.city"),
+      municipality: configFunctions.getProperty("defaults.city"),
       startDateString: currentDateAsString,
       endDateString: currentDateAsString,
       startTimeString: "00:00",

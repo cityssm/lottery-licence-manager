@@ -1,5 +1,5 @@
 import sqlite from "better-sqlite3";
-import * as configFns from "../configFns.js";
+import * as configFunctions from "../functions.config.js";
 import { canUpdateObject } from "../licencesDB.js";
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
 import { licencesDB as databasePath } from "../../data/databasePaths.js";
@@ -52,7 +52,7 @@ export const getOutstandingEvents = (requestBody, requestSession) => {
         lotteryEvent.recordType = "event";
         lotteryEvent.eventDateString = dateTimeFns.dateIntegerToString(lotteryEvent.eventDate);
         lotteryEvent.reportDateString = dateTimeFns.dateIntegerToString(lotteryEvent.reportDate);
-        lotteryEvent.licenceType = (configFns.getLicenceType(lotteryEvent.licenceTypeKey) || {}).licenceType || "";
+        lotteryEvent.licenceType = (configFunctions.getLicenceType(lotteryEvent.licenceTypeKey) || {}).licenceType || "";
         lotteryEvent.bank_name_isOutstanding = (lotteryEvent.bank_name === null || lotteryEvent.bank_name === "");
         lotteryEvent.canUpdate = canUpdateObject(lotteryEvent, requestSession);
     }

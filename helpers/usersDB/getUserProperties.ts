@@ -1,7 +1,7 @@
 import sqlite from "better-sqlite3";
 import { usersDB as databasePath } from "../../data/databasePaths.js";
 
-import * as configFns from "../../helpers/configFns.js";
+import * as configFunctions from "../../helpers/functions.config.js";
 
 import type { UserProperties } from "../../types/recordTypes";
 
@@ -13,7 +13,7 @@ export const getUserProperties = (userName: string): UserProperties => {
   });
 
   const userProperties: UserProperties =
-    Object.assign({}, configFns.getProperty("user.defaultProperties"));
+    Object.assign({}, configFunctions.getProperty("user.defaultProperties"));
 
   const userPropertyRows = database.prepare("select propertyName, propertyValue" +
     " from UserProperties" +

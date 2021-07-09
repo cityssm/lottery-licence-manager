@@ -1,8 +1,8 @@
-import * as configFns from "../../helpers/configFns.js";
+import * as configFunctions from "../../helpers/functions.config.js";
 import { getEvent } from "../../helpers/licencesDB/getEvent.js";
 import { getLicence } from "../../helpers/licencesDB/getLicence.js";
 import { getOrganization } from "../../helpers/licencesDB/getOrganization.js";
-const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
+const urlPrefix = configFunctions.getProperty("reverseProxy.urlPrefix");
 export const handler = (request, response, next) => {
     const licenceID = Number(request.params.licenceID);
     const eventDate = Number(request.params.eventDate);

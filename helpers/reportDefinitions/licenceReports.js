@@ -1,4 +1,4 @@
-import * as reportFns from "../reportFns.js";
+import * as reportFns from "../functions.report.js";
 const baseFunctions = () => {
     const functions = new Map();
     functions.set("userFn_licenceTypeKeyToLicenceType", reportFns.userFn_licenceTypeKeyToLicenceType);

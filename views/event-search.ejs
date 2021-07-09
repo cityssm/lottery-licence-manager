@@ -21,7 +21,7 @@
       <div class="columns">
         <div class="column">
           <div class="field">
-            <label class="label" for="filter--externalLicenceNumber"><%= configFns.getProperty("licences.externalLicenceNumber.fieldLabel") %></label>
+            <label class="label" for="filter--externalLicenceNumber"><%= configFunctions.getProperty("licences.externalLicenceNumber.fieldLabel") %></label>
             <div class="control has-icons-left">
               <input class="input" id="filter--externalLicenceNumber" type="text" autofocus />
               <span class="icon is-small is-left">
@@ -38,7 +38,7 @@
                 <select id="filter--licenceTypeKey">
                   <option value="">(All Types)</option>
                   <%
-                    const licenceTypes = configFns.getProperty("licenceTypes");
+                    const licenceTypes = configFunctions.getProperty("licenceTypes");
                     for (let licenceTypeIndex = 0; licenceTypeIndex < licenceTypes.length; licenceTypeIndex += 1) {
                   %>
                   <option value="<%= licenceTypes[licenceTypeIndex].licenceTypeKey %>">
@@ -110,7 +110,7 @@
 <%- include('_footerA'); -%>
 
 <script>
-  exports.config_licenceTypes = <%- JSON.stringify(configFns.getLicenceTypeKeyToNameObject()) %>;
+  exports.config_licenceTypes = <%- JSON.stringify(configFunctions.getLicenceTypeKeyToNameObject()) %>;
 </script>
 <script src="<%= urlPrefix %>/javascripts/event-search.min.js"></script>
 

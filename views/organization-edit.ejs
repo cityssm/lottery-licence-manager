@@ -61,7 +61,7 @@
                 <div class="control">
                   <input class="input" id="organization--organizationCity" name="organizationCity" type="text" value="<%= organization.organizationCity %>" maxlength="20" autocomplete="off" list="organization--organizationCity-datalist" />
                   <datalist id="organization--organizationCity-datalist">
-                    <option value="<%= configFns.getProperty("defaults.city") %>" />
+                    <option value="<%= configFunctions.getProperty("defaults.city") %>" />
                   </datalist>
                 </div>
               </div>
@@ -72,7 +72,7 @@
                 <div class="control">
                   <input class="input" id="organization--organizationProvince" name="organizationProvince" type="text" value="<%= organization.organizationProvince %>" maxlength="2" autocomplete="off" list="organization--organizationProvince-datalist" />
                   <datalist id="organization--organizationProvince-datalist">
-                    <option value="<%= configFns.getProperty("defaults.province") %>" />
+                    <option value="<%= configFunctions.getProperty("defaults.province") %>" />
                   </datalist>
                 </div>
               </div>
@@ -372,7 +372,7 @@
                       <div class="field">
                         <label class="label" for="addOrganizationRepresentative--representativeCity">City</label>
                         <div class="control">
-                          <input class="input" id="addOrganizationRepresentative--representativeCity" name="representativeCity" type="text" value="<%= configFns.getProperty("defaults.city") %>" maxlength="20" required />
+                          <input class="input" id="addOrganizationRepresentative--representativeCity" name="representativeCity" type="text" value="<%= configFunctions.getProperty("defaults.city") %>" maxlength="20" required />
                         </div>
                       </div>
                     </div>
@@ -380,7 +380,7 @@
                       <div class="field">
                         <label class="label" for="addOrganizationRepresentative--representativeProvince">Province</label>
                         <div class="control">
-                          <input class="input" id="addOrganizationRepresentative--representativeProvince" name="representativeProvince" type="text" value="<%= configFns.getProperty("defaults.province") %>" maxlength="2" required />
+                          <input class="input" id="addOrganizationRepresentative--representativeProvince" name="representativeProvince" type="text" value="<%= configFunctions.getProperty("defaults.province") %>" maxlength="2" required />
                         </div>
                       </div>
                     </div>
@@ -527,7 +527,7 @@
 
 <% if (!isCreate) { %>
   <script>
-    exports.config_bankRecordTypes = <%- JSON.stringify(configFns.getProperty("bankRecordTypes")) %>;
+    exports.config_bankRecordTypes = <%- JSON.stringify(configFunctions.getProperty("bankRecordTypes")) %>;
   </script>
   <script src="<%= urlPrefix %>/javascripts/main-organizationRemarks.min.js"></script>
   <script src="<%= urlPrefix %>/javascripts/main-organizationReminders.min.js"></script>

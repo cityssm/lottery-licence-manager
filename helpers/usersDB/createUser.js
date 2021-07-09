@@ -1,11 +1,11 @@
 import sqlite from "better-sqlite3";
 import { usersDB as databasePath } from "../../data/databasePaths.js";
-import * as userFns from "../../helpers/userFns.js";
+import * as userFunctions from "../../helpers/functions.user.js";
 import * as bcrypt from "bcrypt";
 import * as stringFns from "@cityssm/expressjs-server-js/stringFns.js";
 export const createUser = async (requestBody) => {
     const newPasswordPlain = stringFns.generatePassword();
-    const hash = await bcrypt.hash(userFns.getHashString(requestBody.userName, newPasswordPlain), 10);
+    const hash = await bcrypt.hash(userFunctions.getHashString(requestBody.userName, newPasswordPlain), 10);
     const database = sqlite(databasePath);
     const row = database.prepare("select isActive" +
         " from Users" +

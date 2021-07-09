@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-import * as configFns from "../helpers/configFns.js";
+import * as configFunctions from "../helpers/functions.config.js";
 
 import handler_mdFile from "../handlers/docs-get/mdFile.js";
 
@@ -8,7 +8,7 @@ import handler_mdFile from "../handlers/docs-get/mdFile.js";
 export const router = Router();
 
 
-const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
+const urlPrefix = configFunctions.getProperty("reverseProxy.urlPrefix");
 
 
 router.all("/", (_req, res) => {

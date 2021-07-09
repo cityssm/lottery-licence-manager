@@ -1,6 +1,6 @@
 import type { RequestHandler } from "express";
 
-import * as configFns from "../../helpers/configFns.js";
+import * as configFunctions from "../../helpers/functions.config.js";
 
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
 
@@ -8,7 +8,7 @@ import { getLicences } from "../../helpers/licencesDB/getLicences.js";
 import { getLocation } from "../../helpers/licencesDB/getLocation.js";
 
 
-const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
+const urlPrefix = configFunctions.getProperty("reverseProxy.urlPrefix");
 
 
 export const handler: RequestHandler = (request, response, next) => {

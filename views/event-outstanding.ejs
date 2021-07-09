@@ -28,7 +28,7 @@
       <table class="table is-fullwidth is-striped is-hoverable">
         <thead>
           <tr>
-            <th><%= configFns.getProperty("licences.externalLicenceNumber.fieldLabel") %></th>
+            <th><%= configFunctions.getProperty("licences.externalLicenceNumber.fieldLabel") %></th>
             <th>
               <div class="field">
                 <label class="label" for="filter--licenceTypeKey">Licence Type</label>
@@ -37,7 +37,7 @@
                     <select id="filter--licenceTypeKey" name="licenceTypeKey">
                       <option value="">(All)</option>
                       <%
-                        const licenceTypes = configFns.getProperty("licenceTypes");
+                        const licenceTypes = configFunctions.getProperty("licenceTypes");
                         for (let index = 0; index < licenceTypes.length; index += 1) {
                           if (!licenceTypes[index].isActive) {
                             continue;

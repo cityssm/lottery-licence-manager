@@ -1,4 +1,4 @@
-import * as reportFns from "../../helpers/reportFns.js";
+import * as reportFns from "../../helpers/functions.report.js";
 const reminderFunctions = () => {
     const functions = new Map();
     functions.set("userFn_reminderTypeKeyToReminderType", reportFns.userFn_reminderTypeKeyToReminderType);

@@ -1,4 +1,4 @@
-import * as path from "path";
+import path from "path";
 const __dirname = ".";
 export const serviceConfig = {
     name: "Lottery Licence Manager",

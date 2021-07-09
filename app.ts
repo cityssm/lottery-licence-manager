@@ -21,7 +21,7 @@ import routerEvents from "./routes/events.js";
 import routerReports from "./routes/reports.js";
 import routerAdmin from "./routes/admin.js";
 
-import * as configFns from "./helpers/configFns.js";
+import * as configFunctions from "./helpers/functions.config.js";
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
 import * as stringFns from "@cityssm/expressjs-server-js/stringFns.js";
 import * as htmlFns from "@cityssm/expressjs-server-js/htmlFns.js";
@@ -51,7 +51,7 @@ const __dirname = ".";
 
 export const app = express();
 
-if (!configFns.getProperty("reverseProxy.disableEtag")) {
+if (!configFunctions.getProperty("reverseProxy.disableEtag")) {
   app.set("etag", false);
 }
 
@@ -59,7 +59,7 @@ if (!configFns.getProperty("reverseProxy.disableEtag")) {
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 
-if (!configFns.getProperty("reverseProxy.disableCompression")) {
+if (!configFunctions.getProperty("reverseProxy.disableCompression")) {
   app.use(compression());
 }
 
@@ -95,7 +95,7 @@ app.use(limiter);
  */
 
 
-const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
+const urlPrefix = configFunctions.getProperty("reverseProxy.urlPrefix");
 
 if (urlPrefix !== "") {
   debugApp("urlPrefix = " + urlPrefix);
@@ -123,7 +123,7 @@ app.use(urlPrefix + "/lib/date-diff",
 
 const SQLiteStore = sqlite(session);
 
-const sessionCookieName: string = configFns.getProperty("session.cookieName");
+const sessionCookieName: string = configFunctions.getProperty("session.cookieName");
 
 
 // Initialize session
@@ -133,12 +133,12 @@ app.use(session({
     db: "sessions.db"
   }),
   name: sessionCookieName,
-  secret: configFns.getProperty("session.secret"),
+  secret: configFunctions.getProperty("session.secret"),
   resave: true,
   saveUninitialized: false,
   rolling: true,
   cookie: {
-    maxAge: configFns.getProperty("session.maxAgeMillis"),
+    maxAge: configFunctions.getProperty("session.maxAgeMillis"),
     sameSite: "strict"
   }
 }));
@@ -177,13 +177,13 @@ app.use((request, response, next) => {
   response.locals.user = request.session.user;
   response.locals.csrfToken = request.csrfToken();
 
-  response.locals.configFns = configFns;
+  response.locals.configFunctions = configFunctions;
   response.locals.dateTimeFns = dateTimeFns;
   response.locals.dateDiff = dateDiff;
   response.locals.stringFns = stringFns;
   response.locals.htmlFns = htmlFns;
 
-  response.locals.urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
+  response.locals.urlPrefix = configFunctions.getProperty("reverseProxy.urlPrefix");
 
   next();
 });

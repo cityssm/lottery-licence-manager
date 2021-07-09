@@ -1,7 +1,7 @@
 import sqlite from "better-sqlite3";
 import { usersDB as databasePath } from "../../data/databasePaths.js";
 
-import * as userFns from "../../helpers/userFns.js";
+import * as userFunctions from "../../helpers/functions.user.js";
 
 import * as bcrypt from "bcrypt";
 
@@ -15,7 +15,7 @@ export const createUser = async(requestBody: {
 }): Promise<string> => {
 
   const newPasswordPlain = stringFns.generatePassword();
-  const hash = await bcrypt.hash(userFns.getHashString(requestBody.userName, newPasswordPlain), 10);
+  const hash = await bcrypt.hash(userFunctions.getHashString(requestBody.userName, newPasswordPlain), 10);
 
   const database = sqlite(databasePath);
 

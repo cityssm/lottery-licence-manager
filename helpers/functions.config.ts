@@ -203,7 +203,7 @@ export const getLicenceType = (licenceTypeKey: string): configTypes.ConfigLicenc
   if (!licenceTypeCache.has(licenceTypeKey)) {
 
     const licenceType = getProperty("licenceTypes")
-      .find((ele) => ele.licenceTypeKey === licenceTypeKey);
+      .find((element) => element.licenceTypeKey === licenceTypeKey);
 
     licenceTypeCache.set(licenceTypeKey, licenceType);
   }
@@ -217,10 +217,10 @@ export const getLicenceTypeKeyToNameObject = (): { [licenceTpyeKey: string]: str
 
     const list = {};
 
-    for (const ele of getProperty("licenceTypes")) {
+    for (const element of getProperty("licenceTypes")) {
 
-        if (ele.isActive) {
-          list[ele.licenceTypeKey] = ele.licenceType;
+        if (element.isActive) {
+          list[element.licenceTypeKey] = element.licenceType;
         }
       }
 

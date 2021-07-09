@@ -1,8 +1,8 @@
-import * as configFns from "../../helpers/configFns.js";
+import * as configFunctions from "../../helpers/functions.config.js";
 import * as licencesDB from "../../helpers/licencesDB.js";
 import { rawToCSV } from "@cityssm/expressjs-server-js/stringFns.js";
 import { reportDefinitions } from "../../helpers/reportDefinitions/reportDefinitions.js";
-const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
+const urlPrefix = configFunctions.getProperty("reverseProxy.urlPrefix");
 export const handler = (request, response) => {
     const reportName = request.params.reportName;
     if (!reportDefinitions[reportName]) {

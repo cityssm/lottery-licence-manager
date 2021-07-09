@@ -12,7 +12,7 @@
         </a></li>
         <li class="is-active">
           <a href="#" aria-current="page">
-            <% if (configFns.getProperty("licences.externalLicenceNumber.isPreferredID")) { %>
+            <% if (configFunctions.getProperty("licences.externalLicenceNumber.isPreferredID")) { %>
               Licence <%= licence.externalLicenceNumber %>
             <% } else { %>
               Licence #<%= licence.licenceID %>
@@ -25,7 +25,7 @@
     <div class="level">
       <div class="level-left">
         <h1 class="title is-1">
-          <% if (configFns.getProperty("licences.externalLicenceNumber.isPreferredID")) { %>
+          <% if (configFunctions.getProperty("licences.externalLicenceNumber.isPreferredID")) { %>
             Licence <%= licence.externalLicenceNumber %>
           <% } else { %>
             Licence #<%= licence.licenceID %>
@@ -77,7 +77,7 @@
       </div>
       <div class="column">
         <p>
-          <strong><%= configFns.getProperty("licences.externalLicenceNumber.fieldLabel") %></strong><br />
+          <strong><%= configFunctions.getProperty("licences.externalLicenceNumber.fieldLabel") %></strong><br />
           <%= licence.externalLicenceNumber %>
         </p>
       </div>
@@ -166,7 +166,7 @@
         <p>
           <strong>Licence Type</strong><br />
           <%
-            const licenceType = configFns.getLicenceType(licence.licenceTypeKey);
+            const licenceType = configFunctions.getLicenceType(licence.licenceTypeKey);
           %>
           <%= (licenceType ? licenceType.licenceType : licence.licenceTypeKey) %>
         </p>
@@ -524,7 +524,7 @@
             <tr>
               <th>Date</th>
               <th class="has-text-right">Amount</th>
-              <th><%= configFns.getProperty("licences.externalReceiptNumber.fieldLabel") %></th>
+              <th><%= configFunctions.getProperty("licences.externalReceiptNumber.fieldLabel") %></th>
               <th>Note</th>
             </tr>
           </thead>

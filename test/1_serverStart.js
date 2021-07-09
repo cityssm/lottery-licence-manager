@@ -2,7 +2,7 @@ import * as assert from "assert";
 import puppeteer from "puppeteer";
 import * as http from "http";
 import { app } from "../app.js";
-import * as configFns from "../helpers/configFns.js";
+import * as configFunctions from "../helpers/functions.config.js";
 import { getLicences } from "../helpers/licencesDB/getLicences.js";
 import { getAllUsers } from "../helpers/usersDB/getAllUsers.js";
 import { createUser } from "../helpers/usersDB/createUser.js";
@@ -60,7 +60,7 @@ describe("lottery-licence-manager", () => {
             assert.ok(getAllUsers());
         });
     });
-    const appURL = "http://localhost:" + portNumber.toString() + configFns.getProperty("reverseProxy.urlPrefix");
+    const appURL = "http://localhost:" + portNumber.toString() + configFunctions.getProperty("reverseProxy.urlPrefix");
     describe("simple page tests", () => {
         const docsURL = appURL + "/docs";
         it("should load docs page - " + docsURL, (done) => {

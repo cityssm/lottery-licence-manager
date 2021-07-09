@@ -1,4 +1,2 @@
-*.d.ts
 *.db-journal
-app.js
 public/stylesheets/*.min.css

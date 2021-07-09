@@ -1,6 +1,6 @@
 import type { RequestHandler } from "express";
 
-import * as configFns from "../../helpers/configFns.js";
+import * as configFunctions from "../../helpers/functions.config.js";
 
 import createError from "http-errors";
 import * as fs from "fs";
@@ -12,8 +12,8 @@ import sanitizeFilename from "sanitize-filename";
 
 const __dirname = ".";
 
-const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
-const applicationName = configFns.getProperty("application.applicationName");
+const urlPrefix = configFunctions.getProperty("reverseProxy.urlPrefix");
+const applicationName = configFunctions.getProperty("application.applicationName");
 
 
 export const handler: RequestHandler = (request, response, next) => {

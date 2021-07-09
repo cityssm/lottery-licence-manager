@@ -1,7 +1,7 @@
-import * as configFns from "../../helpers/configFns.js";
+import * as configFunctions from "../../helpers/functions.config.js";
 import { getOrganization } from "../../helpers/licencesDB/getOrganization.js";
 import { getLicence } from "../../helpers/licencesDB/getLicence.js";
-const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
+const urlPrefix = configFunctions.getProperty("reverseProxy.urlPrefix");
 export const handler = (request, response, next) => {
     const licenceID = Number(request.params.licenceID);
     if (Number.isNaN(licenceID)) {
@@ -12,7 +12,7 @@ export const handler = (request, response, next) => {
         return response.redirect(urlPrefix + "/licences/?error=licenceNotFound");
     }
     const organization = getOrganization(licence.organizationID, request.session);
-    const headTitle = configFns.getProperty("licences.externalLicenceNumber.isPreferredID")
+    const headTitle = configFunctions.getProperty("licences.externalLicenceNumber.isPreferredID")
         ? "Licence " + licence.externalLicenceNumber
         : "Licence #" + licenceID.toString();
     return response.render("licence-view", {

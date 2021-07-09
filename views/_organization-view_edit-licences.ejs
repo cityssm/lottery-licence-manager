@@ -36,7 +36,7 @@
     let count_active = 0;
     let count_past = 0;
 
-    const licenceTypes = configFns.getProperty("licenceTypes");
+    const licenceTypes = configFunctions.getProperty("licenceTypes");
 
     for (let licenceIndex = 0; licenceIndex < licences.length; licenceIndex += 1) {
 
@@ -107,7 +107,7 @@
     <table class="table is-fullwidth is-striped is-hoverable">
       <thead>
         <tr>
-          <th class="has-width-150"><%= configFns.getProperty("licences.externalLicenceNumber.fieldLabel") %></th>
+          <th class="has-width-150"><%= configFunctions.getProperty("licences.externalLicenceNumber.fieldLabel") %></th>
           <th class="has-width-50 is-nowrap">Licence Type</th>
           <th>Event Details</th>
           <th>Location</th>

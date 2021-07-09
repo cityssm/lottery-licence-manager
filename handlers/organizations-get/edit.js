@@ -1,10 +1,10 @@
-import * as configFns from "../../helpers/configFns.js";
+import * as configFunctions from "../../helpers/functions.config.js";
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
 import { getLicences } from "../../helpers/licencesDB/getLicences.js";
 import { getOrganization } from "../../helpers/licencesDB/getOrganization.js";
 import { getOrganizationRemarks } from "../../helpers/licencesDB/getOrganizationRemarks.js";
 import { getOrganizationReminders } from "../../helpers/licencesDB/getOrganizationReminders.js";
-const urlPrefix = configFns.getProperty("reverseProxy.urlPrefix");
+const urlPrefix = configFunctions.getProperty("reverseProxy.urlPrefix");
 export const handler = (request, response, next) => {
     const organizationID = Number(request.params.organizationID);
     if (Number.isNaN(organizationID)) {

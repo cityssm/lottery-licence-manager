@@ -1,4 +1,4 @@
-import * as reportFns from "../../helpers/reportFns.js";
+import * as reportFns from "../../helpers/functions.report.js";
 
 import type { ConfigReportDefinition } from "../../types/configTypes";
 

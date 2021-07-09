@@ -1,6 +1,6 @@
 import type { RequestHandler } from "express";
 
-import * as configFns from "../../helpers/configFns.js";
+import * as configFunctions from "../../helpers/functions.config.js";
 
 
 export const handler: RequestHandler = (_request, response) => {
@@ -10,8 +10,8 @@ export const handler: RequestHandler = (_request, response) => {
     isViewOnly: false,
     isCreate: true,
     organization: {
-      organizationCity: configFns.getProperty("defaults.city"),
-      organizationProvince: configFns.getProperty("defaults.province")
+      organizationCity: configFunctions.getProperty("defaults.city"),
+      organizationProvince: configFunctions.getProperty("defaults.province")
     }
   });
 };

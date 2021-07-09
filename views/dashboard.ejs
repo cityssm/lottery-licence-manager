@@ -3,7 +3,7 @@
 <div class="level">
   <div class="level-left has-flex-shrink-1">
     <h1 class="title is-1">
-      <%= configFns.getProperty("application.applicationName") %>
+      <%= configFunctions.getProperty("application.applicationName") %>
     </h1>
   </div>
   <% if (!user.userProperties.isDefaultAdmin) { %>
@@ -54,7 +54,7 @@
       <div class="panel has-text-left">
         <% for (const reminder of stats.reminders) { %>
           <%
-            const reminderType = configFns.getReminderType(reminder.reminderTypeKey);
+            const reminderType = configFunctions.getReminderType(reminder.reminderTypeKey);
           %>
           <div class="panel-block is-block">
             <div>
@@ -103,7 +103,7 @@
       <div class="panel has-text-left">
         <% for (const eventRecord of stats.events) { %>
           <%
-            const licenceType = configFns.getLicenceType(eventRecord.licenceTypeKey);
+            const licenceType = configFunctions.getLicenceType(eventRecord.licenceTypeKey);
           %>
           <div class="panel-block is-block">
             <div>
@@ -332,7 +332,7 @@
                   <h2 class="title is-4 is-marginless">
                     <a href="<%= urlPrefix %>/admin/applicationSettings">Application Settings</a>
                   </h2>
-                  <p>Settings that affect the <%= configFns.getProperty("application.applicationName") %> application.</p>
+                  <p>Settings that affect the <%= configFunctions.getProperty("application.applicationName") %> application.</p>
                 </div>
               </div>
             </div>
