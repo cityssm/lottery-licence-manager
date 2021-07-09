@@ -10,30 +10,30 @@ describe("functions.user", () => {
   describe("request.session.user = null", () => {
 
     it("userCanCreate()  => false", () => {
-      assert.equal(userFunctions.userCanCreate(fakeRequest), false);
+      assert.strictEqual(userFunctions.userCanCreate(fakeRequest), false);
     });
 
     it("userCanUpdate()  => false", () => {
-      assert.equal(userFunctions.userCanUpdate(fakeRequest), false);
+      assert.strictEqual(userFunctions.userCanUpdate(fakeRequest), false);
     });
 
     it("userIsAdmin()    => false", () => {
-      assert.equal(userFunctions.userIsAdmin(fakeRequest), false);
+      assert.strictEqual(userFunctions.userIsAdmin(fakeRequest), false);
     });
   });
 
   describe("request.session.user = viewOnly", () => {
 
     it("userCanCreate()  => false", () => {
-      assert.equal(userFunctions.userCanCreate(fakeViewOnlyRequest), false);
+      assert.strictEqual(userFunctions.userCanCreate(fakeViewOnlyRequest), false);
     });
 
     it("userCanUpdate()  => false", () => {
-      assert.equal(userFunctions.userCanUpdate(fakeViewOnlyRequest), false);
+      assert.strictEqual(userFunctions.userCanUpdate(fakeViewOnlyRequest), false);
     });
 
     it("userIsAdmin()    => false", () => {
-      assert.equal(userFunctions.userIsAdmin(fakeViewOnlyRequest), false);
+      assert.strictEqual(userFunctions.userIsAdmin(fakeViewOnlyRequest), false);
     });
   });
 

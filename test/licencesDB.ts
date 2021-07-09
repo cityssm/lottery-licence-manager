@@ -9,14 +9,14 @@ import { getDashboardStats } from "../helpers/licencesDB/getDashboardStats.js";
 describe("licencesDB", () => {
 
   it("should execute getApplicationSetting()", () => {
-    assert.equal(getApplicationSetting("~~FAKE SETTING~~"), "");
+    assert.strictEqual(getApplicationSetting("~~FAKE SETTING~~"), "");
   });
 
   it("should execute getApplicationSettings()", () => {
-    assert.equal(typeof getApplicationSettings(), "object");
+    assert.strictEqual(typeof getApplicationSettings(), "object");
   });
 
   it("should execute getDashboardStats()", () => {
-    assert.equal(typeof getDashboardStats(), "object");
+    assert.strictEqual(typeof getDashboardStats(), "object");
   });
 });

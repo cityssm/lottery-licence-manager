@@ -20,62 +20,62 @@ import { getMaxTransactionIndexWithDB } from "../helpers/licencesDB/getMaxTransa
 describe("licencesDB/licences", () => {
 
   it("should execute getLicence()", () => {
-    assert.equal(getLicence(-1, fakeViewOnlySession), undefined);
+    assert.strictEqual(getLicence(-1, fakeViewOnlySession), undefined);
   });
 
   it("should execute getDistinctTermsConditions()", () => {
-    assert.equal(typeof getDistinctTermsConditions(-1), "object");
+    assert.strictEqual(typeof getDistinctTermsConditions(-1), "object");
   });
 
   it("should execute getLicenceActivityByDateRange()", () => {
     // eslint-disable-next-line unicorn/numeric-separators-style
-    assert.equal(getLicenceActivityByDateRange(20200101, 20201231).startDateString, "2020-01-01");
+    assert.strictEqual(getLicenceActivityByDateRange(20200101, 20201231).startDateString, "2020-01-01");
   });
 
   it("should execute getNextExternalLicenceNumberFromRange()", () => {
-    assert.equal(typeof getNextExternalLicenceNumberFromRange(), "number");
+    assert.strictEqual(typeof getNextExternalLicenceNumberFromRange(), "number");
   });
 
   describe("licencesDB/getLicences", () => {
 
     it("should execute getLicences()", () => {
-      assert.equal(
+      assert.strictEqual(
         typeof getLicences({}, fakeViewOnlySession, { includeOrganization: true, limit: 10, offset: 0 }),
         "object");
     });
 
     it("should execute getLicences({licenceTypeKey})", () => {
-      assert.equal(
+      assert.strictEqual(
         typeof getLicences({ licenceTypeKey: "NV" }, fakeViewOnlySession, { includeOrganization: true, limit: 10, offset: 0 }),
         "object");
     });
 
     it("should execute getLicences({licenceStatus})", () => {
-      assert.equal(
+      assert.strictEqual(
         typeof getLicences({ licenceStatus: "active" }, fakeViewOnlySession, { includeOrganization: true, limit: 10, offset: 0 }),
         "object");
     });
 
     it("should execute getLicences({locationID})", () => {
-      assert.equal(
+      assert.strictEqual(
         typeof getLicences({ locationID: 1 }, fakeViewOnlySession, { includeOrganization: true, limit: 10, offset: 0 }),
         "object");
     });
 
     it("should execute getLicences({locationName})", () => {
-      assert.equal(
+      assert.strictEqual(
         typeof getLicences({ locationName: "Test" }, fakeViewOnlySession, { includeOrganization: true, limit: 10, offset: 0 }),
         "object");
     });
 
     it("should execute getLicences({organizationID})", () => {
-      assert.equal(
+      assert.strictEqual(
         typeof getLicences({ organizationID: 1 }, fakeViewOnlySession, { includeOrganization: true, limit: 10, offset: 0 }),
         "object");
     });
 
     it("should execute getLicences({organizationName})", () => {
-      assert.equal(
+      assert.strictEqual(
         typeof getLicences({ organizationName: "Test" }, fakeViewOnlySession, { includeOrganization: true, limit: 10, offset: 0 }),
         "object");
     });
@@ -94,19 +94,19 @@ describe("licencesDB/licences", () => {
     });
 
     it("should execute getLicenceAmendmentsWithDB()", () => {
-      assert.equal(typeof getLicenceAmendmentsWithDB(database, 1), "object");
+      assert.strictEqual(typeof getLicenceAmendmentsWithDB(database, 1), "object");
     });
 
     it("should execute getLicenceTicketTypesWithDB()", () => {
-      assert.equal(typeof getLicenceTicketTypesWithDB(database, 1), "object");
+      assert.strictEqual(typeof getLicenceTicketTypesWithDB(database, 1), "object");
     });
 
     it("should execute getMaxLicenceAmendmentIndexWithDB()", () => {
-      assert.equal(getMaxLicenceAmendmentIndexWithDB(database, -1), -1);
+      assert.strictEqual(getMaxLicenceAmendmentIndexWithDB(database, -1), -1);
     });
 
     it("should execute getMaxTransactionIndexWithDB()", () => {
-      assert.equal(getMaxTransactionIndexWithDB(database, -1), -1);
+      assert.strictEqual(getMaxTransactionIndexWithDB(database, -1), -1);
     });
   });
 });

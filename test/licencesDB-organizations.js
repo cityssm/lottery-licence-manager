@@ -1,6 +1,6 @@
 import * as assert from "assert";
 import sqlite from "better-sqlite3";
-import { licencesDB as dbPath } from "../data/databasePaths.js";
+import { licencesDB as databasePath } from "../data/databasePaths.js";
 import { fakeViewOnlySession } from "./_globals.js";
 import { getOrganization } from "../helpers/licencesDB/getOrganization.js";
 import { getOrganizations } from "../helpers/licencesDB/getOrganizations.js";
@@ -17,22 +17,22 @@ import { getMaxOrganizationRemarkIndexWithDB } from "../helpers/licencesDB/getMa
 import { getMaxOrganizationBankRecordIndexWithDB } from "../helpers/licencesDB/getMaxOrganizationBankRecordIndex.js";
 describe("licencesDB/organizations", () => {
     it("should execute getOrganization()", () => {
-        assert.equal(getOrganization(-1, fakeViewOnlySession), null);
+        assert.strictEqual(getOrganization(-1, fakeViewOnlySession), undefined);
     });
     it("should execute getOrganizations()", () => {
-        assert.equal(typeof getOrganizations({}, fakeViewOnlySession, { limit: 10 }), "object");
+        assert.strictEqual(typeof getOrganizations({}, fakeViewOnlySession, { limit: 10 }), "object");
     });
     it("should execute getInactiveOrganizations()", () => {
-        assert.equal(typeof getInactiveOrganizations(5), "object");
+        assert.strictEqual(typeof getInactiveOrganizations(5), "object");
     });
     it("should execute getOrganizationRemark()", () => {
-        assert.equal(typeof getOrganizationRemark(-1, -1, fakeViewOnlySession), "undefined");
+        assert.strictEqual(typeof getOrganizationRemark(-1, -1, fakeViewOnlySession), "undefined");
     });
     it("should execute getOrganizationRemarks()", () => {
-        assert.equal(typeof getOrganizationRemarks(1, fakeViewOnlySession), "object");
+        assert.strictEqual(typeof getOrganizationRemarks(1, fakeViewOnlySession), "object");
     });
     it("should execute getOrganizationReminder()", () => {
-        assert.equal(typeof getOrganizationReminder(1, 0, fakeViewOnlySession), "undefined");
+        assert.strictEqual(typeof getOrganizationReminder(1, 0, fakeViewOnlySession), "undefined");
     });
     it("should execute getOrganizationReminders()", () => {
         assert.equal(typeof getOrganizationReminders(1, fakeViewOnlySession), "object");
@@ -47,21 +47,21 @@ describe("licencesDB/organizations", () => {
         assert.equal(typeof getOrganizationBankRecordStats(1), "object");
     });
     describe("licencesDB/organizations (with DB)", () => {
-        let db;
+        let database;
         before(() => {
-            db = sqlite(dbPath);
+            database = sqlite(databasePath);
         });
         after(() => {
-            db.close();
+            database.close();
         });
         it("should execute getMaxOrganizationReminderIndexWithDB()", () => {
-            assert.equal(getMaxOrganizationReminderIndexWithDB(db, -1), -1);
+            assert.equal(getMaxOrganizationReminderIndexWithDB(database, -1), -1);
         });
         it("should execute getMaxOrganizationRemarkIndexWithDB()", () => {
-            assert.equal(getMaxOrganizationRemarkIndexWithDB(db, -1), -1);
+            assert.equal(getMaxOrganizationRemarkIndexWithDB(database, -1), -1);
         });
         it("should execute getMaxOrganizationBankRecordIndexWithDB()", () => {
-            assert.equal(getMaxOrganizationBankRecordIndexWithDB(db, -1), -1);
+            assert.equal(getMaxOrganizationBankRecordIndexWithDB(database, -1), -1);
         });
     });
 });

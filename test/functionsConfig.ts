@@ -3,20 +3,20 @@ import * as assert from "assert";
 import * as configFunctions from "../helpers/functions.config.js";
 
 
-describe("configFunctions", () => {
+describe("functionConfig", () => {
 
   describe("#getProperty", () => {
     it("Includes string value for property \"licences.externalLicenceNumber.fieldLabel\"", () => {
-      assert.equal(typeof configFunctions.getProperty("licences.externalLicenceNumber.fieldLabel"), "string");
+      assert.strictEqual(typeof configFunctions.getProperty("licences.externalLicenceNumber.fieldLabel"), "string");
     });
   });
 
   it("getReminderType()", () => {
-    assert.equal(configFunctions.getReminderType(""), null);
+    assert.strictEqual(configFunctions.getReminderType(""), undefined);
   });
 
   it("getLicenceType()", () => {
-    assert.equal(configFunctions.getLicenceType(""), null);
+    assert.strictEqual(configFunctions.getLicenceType(""), undefined);
   });
 
   it("getLicenceTypeKeyToNameObject()", () => {

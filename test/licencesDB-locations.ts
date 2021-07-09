@@ -10,14 +10,14 @@ import { getInactiveLocations } from "../helpers/licencesDB/getInactiveLocations
 describe("licencesDB/locations", () => {
 
   it("should execute getLocation()", () => {
-    assert.equal(getLocation(-1, fakeViewOnlySession), null);
+    assert.strictEqual(getLocation(-1, fakeViewOnlySession), undefined);
   });
 
   it("should execute getLocations()", () => {
-    assert.equal(typeof getLocations(fakeViewOnlySession, { limit: 10, offset: 0, locationIsDistributor: 0, locationIsManufacturer: 0 }), "object");
+    assert.strictEqual(typeof getLocations(fakeViewOnlySession, { limit: 10, offset: 0, locationIsDistributor: 0, locationIsManufacturer: 0 }), "object");
   });
 
   it("should execute getInactiveLocations()", () => {
-    assert.equal(typeof getInactiveLocations(5), "object");
+    assert.strictEqual(typeof getInactiveLocations(5), "object");
   });
 });
