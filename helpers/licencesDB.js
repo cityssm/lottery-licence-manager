@@ -23,11 +23,11 @@ export const canUpdateObject = (object, requestSession) => {
         return canUpdate;
     }
     if (canUpdate) {
+        const lockDate = new Date();
+        lockDate.setMonth(lockDate.getMonth() - 1);
+        const lockDateInteger = dateTimeFns.dateToInteger(lockDate);
         switch (object.recordType) {
             case "licence":
-                const lockDate = new Date();
-                lockDate.setMonth(lockDate.getMonth() - 1);
-                const lockDateInteger = dateTimeFns.dateToInteger(lockDate);
                 if (object.endDate < lockDateInteger) {
                     canUpdate = false;
                 }

@@ -1,26 +1,31 @@
 import type * as llm from "../../types/recordTypes";
-export declare const getDashboardStats: () => {
+interface LicenceStats {
+    licenceCount: number;
+    distinctOrganizationCount: number;
+    distinctLocationCount: number;
+}
+interface EventStats {
+    todayCount: number;
+    pastCount: number;
+    upcomingCount: number;
+}
+interface ReminderStats {
+    todayCount: number;
+    pastCount: number;
+    upcomingCount: number;
+}
+interface GetDashboardStatsReturn {
     currentDate: number;
     currentDateString: string;
     windowStartDate: number;
     windowStartDateString: string;
     windowEndDate: number;
     windowEndDateString: string;
-    licenceStats: {
-        licenceCount: number;
-        distinctOrganizationCount: number;
-        distinctLocationCount: number;
-    };
-    eventStats: {
-        todayCount: number;
-        pastCount: number;
-        upcomingCount: number;
-    };
+    licenceStats: LicenceStats;
+    eventStats: EventStats;
     events: llm.LotteryEvent[];
-    reminderStats: {
-        todayCount: number;
-        pastCount: number;
-        upcomingCount: number;
-    };
+    reminderStats: ReminderStats;
     reminders: llm.OrganizationReminder[];
-};
+}
+export declare const getDashboardStats: () => GetDashboardStatsReturn;
+export {};

@@ -91,13 +91,13 @@ describe("lottery-licence-manager", () => {
 
   describe("simple page tests", () => {
 
-    const docsURL = appURL + "/docs";
+    const documentationURL = appURL + "/docs";
 
-    it("should load docs page - " + docsURL, (done) => {
+    it("should load docs page - " + documentationURL, (done) => {
       (async() => {
         const browser = await puppeteer.launch();
         const page = await browser.newPage();
-        await page.goto(docsURL);
+        await page.goto(documentationURL);
 
         await browser.close();
       })()

@@ -6,7 +6,43 @@ import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
 import type * as llm from "../../types/recordTypes";
 
 
-export const getDashboardStats = () => {
+interface LicenceStats {
+  licenceCount: number;
+  distinctOrganizationCount: number;
+  distinctLocationCount: number;
+}
+
+interface EventStats {
+  todayCount: number;
+  pastCount: number;
+  upcomingCount: number;
+}
+
+interface ReminderStats {
+  todayCount: number;
+  pastCount: number;
+  upcomingCount: number;
+}
+
+interface GetDashboardStatsReturn {
+  currentDate: number;
+  currentDateString: string;
+
+  windowStartDate: number;
+  windowStartDateString: string;
+
+  windowEndDate: number;
+  windowEndDateString: string;
+
+  licenceStats: LicenceStats;
+  eventStats: EventStats;
+  events: llm.LotteryEvent[];
+  reminderStats: ReminderStats;
+  reminders: llm.OrganizationReminder[];
+}
+
+
+export const getDashboardStats = (): GetDashboardStatsReturn => {
 
   const windowDate = new Date();
   const currentDateInteger = dateTimeFns.dateToInteger(windowDate);
@@ -22,11 +58,7 @@ export const getDashboardStats = () => {
     readonly: true
   });
 
-  const licenceStats: {
-    licenceCount: number;
-    distinctOrganizationCount: number;
-    distinctLocationCount: number;
-  } = database.prepare("select ifnull(count(licenceID), 0) as licenceCount," +
+  const licenceStats: LicenceStats = database.prepare("select ifnull(count(licenceID), 0) as licenceCount," +
     " ifnull(count(distinct organizationID), 0) as distinctOrganizationCount," +
     " ifnull(count(distinct locationID), 0) as distinctLocationCount" +
     " from LotteryLicences" +
@@ -35,12 +67,7 @@ export const getDashboardStats = () => {
     " and endDate >= ?")
     .get(currentDateInteger);
 
-
-  const eventStats: {
-    todayCount: number;
-    pastCount: number;
-    upcomingCount: number;
-  } = database.prepare("select ifnull(sum(case when eventDate = ? then 1 else 0 end), 0) as todayCount," +
+  const eventStats: EventStats = database.prepare("select ifnull(sum(case when eventDate = ? then 1 else 0 end), 0) as todayCount," +
     " ifnull(sum(case when eventDate < ? then 1 else 0 end), 0) as pastCount," +
     " ifnull(sum(case when eventDate > ? then 1 else 0 end), 0) as upcomingCount" +
     " from LotteryEvents" +
@@ -79,11 +106,7 @@ export const getDashboardStats = () => {
     }
   }
 
-  const reminderStats: {
-    todayCount: number;
-    pastCount: number;
-    upcomingCount: number;
-  } = database.prepare("select ifnull(sum(case when dueDate = ? then 1 else 0 end), 0) as todayCount," +
+  const reminderStats: ReminderStats = database.prepare("select ifnull(sum(case when dueDate = ? then 1 else 0 end), 0) as todayCount," +
     " ifnull(sum(case when dueDate < ? then 1 else 0 end), 0) as pastCount," +
     " ifnull(sum(case when dueDate > ? then 1 else 0 end), 0) as upcomingCount" +
     " from OrganizationReminders" +
@@ -118,7 +141,7 @@ export const getDashboardStats = () => {
   database.close();
 
 
-  const result = {
+  const result: GetDashboardStatsReturn = {
     currentDate: currentDateInteger,
     currentDateString: dateTimeFns.dateIntegerToString(currentDateInteger),
 

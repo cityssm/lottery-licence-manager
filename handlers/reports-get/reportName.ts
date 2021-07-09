@@ -29,7 +29,7 @@ export const handler: RequestHandler = (request, response) => {
 
   const functions = definition.functions
     ? definition.functions()
-    : new Map<string, (...parameters_: any) => unknown>();
+    : new Map<string, (...parameters_: unknown) => unknown>();
 
 
   const rowsColumnsObject = licencesDB.getRawRowsColumns(sql, parameters, functions);

@@ -56,14 +56,14 @@ export const canUpdateObject = (object: llm.Record, requestSession: expressSessi
 
   if (canUpdate) {
 
+    const lockDate = new Date();
+    lockDate.setMonth(lockDate.getMonth() - 1);
+
+    const lockDateInteger = dateTimeFns.dateToInteger(lockDate);
+
     switch (object.recordType) {
 
       case "licence":
-
-        const lockDate = new Date();
-        lockDate.setMonth(lockDate.getMonth() - 1);
-
-        const lockDateInteger = dateTimeFns.dateToInteger(lockDate);
 
         if ((object as llm.LotteryLicence).endDate < lockDateInteger) {
           canUpdate = false;
@@ -78,17 +78,14 @@ export const canUpdateObject = (object: llm.Record, requestSession: expressSessi
         }
 
         break;
-
     }
-
   }
 
   return canUpdate;
-
 };
 
 
-export const getRawRowsColumns = (sql: string, parameters: Array<string | number>, userFunctions: Map<string, (...parameters: any) => any>): RawRowsColumnsReturn => {
+export const getRawRowsColumns = (sql: string, parameters: Array<string | number>, userFunctions: Map<string, (...parameters: unknown[]) => unknown>): RawRowsColumnsReturn => {
 
   const database = sqlite(databasePath, {
     readonly: true
@@ -175,11 +172,30 @@ export const getLicenceTableStats = (): llm.LotteryLicenceStats => {
 };
 
 
+interface GetLicenceTypeSummmaryReturn {
+  licenceID: number;
+  externalLicenceNumber: string;
+  applicationDate: number;
+  applicationDateString?: string;
+  issueDate: number;
+  issueDateString?: string;
+  organizationName: string;
+  locationName: string;
+  locationAddress1: string;
+  locationDisplayName?: string;
+  licenceTypeKey: string;
+  licenceType?: string;
+  totalPrizeValue: number;
+  licenceFee: number;
+  transactionAmountSum: number;
+}
+
+
 export const getLicenceTypeSummary = (requestBody: {
   applicationDateStartString?: string;
   applicationDateEndString?: string;
   licenceTypeKey?: string;
-}): any[] => {
+}): GetLicenceTypeSummmaryReturn[] => {
 
   const database = sqlite(databasePath, {
     readonly: true
@@ -226,7 +242,7 @@ export const getLicenceTypeSummary = (requestBody: {
     " l.licenceTypeKey, l.totalPrizeValue, l.licenceFee" +
     " order by o.organizationName, o.organizationID, l.applicationDate, l.externalLicenceNumber";
 
-  const rows = database.prepare(sql).all(sqlParameters);
+  const rows = database.prepare(sql).all(sqlParameters) as GetLicenceTypeSummmaryReturn[];
 
   database.close();
 
