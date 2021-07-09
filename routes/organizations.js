@@ -35,8 +35,8 @@ import handler_doRollForward from "../handlers/organizations-post/doRollForward.
 import handler_doGetInactive from "../handlers/organizations-post/doGetInactive.js";
 import handler_recovery from "../handlers/organizations-get/recovery.js";
 export const router = Router();
-router.get("/", (_req, res) => {
-    res.render("organization-search", {
+router.get("/", (_request, response) => {
+    response.render("organization-search", {
         headTitle: "Organizations"
     });
 });

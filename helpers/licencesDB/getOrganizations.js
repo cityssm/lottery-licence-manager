@@ -54,14 +54,14 @@ export const getOrganizations = (requestBody, requestSession, includeOptions) =>
     }
     const rows = database.prepare(sql).all(sqlParameters);
     database.close();
-    for (const ele of rows) {
-        ele.recordType = "organization";
-        ele.licences_endDateMaxString = dateTimeFns.dateIntegerToString(ele.licences_endDateMax || 0);
-        ele.canUpdate = canUpdateObject(ele, requestSession);
-        delete ele.recordCreate_userName;
-        delete ele.recordCreate_timeMillis;
-        delete ele.recordUpdate_userName;
-        delete ele.recordUpdate_timeMillis;
+    for (const element of rows) {
+        element.recordType = "organization";
+        element.licences_endDateMaxString = dateTimeFns.dateIntegerToString(element.licences_endDateMax || 0);
+        element.canUpdate = canUpdateObject(element, requestSession);
+        delete element.recordCreate_userName;
+        delete element.recordCreate_timeMillis;
+        delete element.recordUpdate_userName;
+        delete element.recordUpdate_timeMillis;
     }
     return rows;
 };

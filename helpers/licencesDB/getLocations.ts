@@ -132,18 +132,18 @@ export const getLocations = (requestSession: expressSession.Session, queryOption
 
   database.close();
 
-  for (const ele of rows) {
+  for (const element of rows) {
 
-    ele.recordType = "location";
+    element.recordType = "location";
 
-    ele.locationDisplayName =
-      ele.locationName === "" ? ele.locationAddress1 : ele.locationName;
+    element.locationDisplayName =
+      element.locationName === "" ? element.locationAddress1 : element.locationName;
 
-    ele.licences_endDateMaxString = dateTimeFns.dateIntegerToString(ele.licences_endDateMax);
-    ele.distributor_endDateMaxString = dateTimeFns.dateIntegerToString(ele.distributor_endDateMax);
-    ele.manufacturer_endDateMaxString = dateTimeFns.dateIntegerToString(ele.manufacturer_endDateMax);
+    element.licences_endDateMaxString = dateTimeFns.dateIntegerToString(element.licences_endDateMax);
+    element.distributor_endDateMaxString = dateTimeFns.dateIntegerToString(element.distributor_endDateMax);
+    element.manufacturer_endDateMaxString = dateTimeFns.dateIntegerToString(element.manufacturer_endDateMax);
 
-    ele.canUpdate = canUpdateObject(ele, requestSession);
+    element.canUpdate = canUpdateObject(element, requestSession);
   }
 
 

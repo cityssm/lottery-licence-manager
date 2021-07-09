@@ -94,18 +94,18 @@ export const getOrganizations = (requestBody: {
 
   database.close();
 
-  for (const ele of rows) {
+  for (const element of rows) {
 
-    ele.recordType = "organization";
+    element.recordType = "organization";
 
-    ele.licences_endDateMaxString = dateTimeFns.dateIntegerToString(ele.licences_endDateMax || 0);
+    element.licences_endDateMaxString = dateTimeFns.dateIntegerToString(element.licences_endDateMax || 0);
 
-    ele.canUpdate = canUpdateObject(ele, requestSession);
+    element.canUpdate = canUpdateObject(element, requestSession);
 
-    delete ele.recordCreate_userName;
-    delete ele.recordCreate_timeMillis;
-    delete ele.recordUpdate_userName;
-    delete ele.recordUpdate_timeMillis;
+    delete element.recordCreate_userName;
+    delete element.recordCreate_timeMillis;
+    delete element.recordUpdate_userName;
+    delete element.recordUpdate_timeMillis;
   }
 
   return rows;

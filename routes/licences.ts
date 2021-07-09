@@ -34,9 +34,9 @@ export const router = Router();
  */
 
 
-router.get("/", (_req, res) => {
+router.get("/", (_request, response) => {
 
-  res.render("licence-search", {
+  response.render("licence-search", {
     headTitle: "Lottery Licences"
   });
 
@@ -53,10 +53,8 @@ router.post("/doSearch", handler_doSearch);
 
 router.get("/licenceTypes", handler_licenceTypes);
 
-router.post("/doGetLicenceTypeSummary", (req, res) => {
-
-  res.json(licencesDB.getLicenceTypeSummary(req.body));
-
+router.post("/doGetLicenceTypeSummary", (request, response) => {
+  response.json(licencesDB.getLicenceTypeSummary(request.body));
 });
 
 
@@ -67,10 +65,8 @@ router.post("/doGetLicenceTypeSummary", (req, res) => {
 
 router.get("/activeSummary", handler_activeSummary);
 
-router.post("/doGetActiveLicenceSummary", (req, res) => {
-
-  res.json(licencesDB.getActiveLicenceSummary(req.body, req.session));
-
+router.post("/doGetActiveLicenceSummary", (request, response) => {
+  response.json(licencesDB.getActiveLicenceSummary(request.body, request.session));
 });
 
 

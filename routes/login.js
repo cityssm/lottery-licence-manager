@@ -1,11 +1,11 @@
 import { Router } from "express";
 import * as configFunctions from "../helpers/functions.config.js";
-import getUser from "../helpers/usersDB/getUser.js";
+import { getUser } from "../helpers/usersDB/getUser.js";
 export const router = Router();
 const getSafeRedirectURL = (possibleRedirectURL = "") => {
     const urlPrefix = configFunctions.getProperty("reverseProxy.urlPrefix");
     const urlToCheck = (possibleRedirectURL.startsWith(urlPrefix)
-        ? possibleRedirectURL.substring(urlPrefix.length)
+        ? possibleRedirectURL.slice(urlPrefix.length)
         : possibleRedirectURL).toLowerCase();
     switch (urlToCheck) {
         case "/organizations":
@@ -33,31 +33,31 @@ const getSafeRedirectURL = (possibleRedirectURL = "") => {
     return urlPrefix + "/dashboard";
 };
 router.route("/")
-    .get((req, res) => {
+    .get((request, response) => {
     const sessionCookieName = configFunctions.getProperty("session.cookieName");
-    if (req.session.user && req.cookies[sessionCookieName]) {
-        const redirectURL = getSafeRedirectURL((req.query.redirect || ""));
-        res.redirect(redirectURL);
+    if (request.session.user && request.cookies[sessionCookieName]) {
+        const redirectURL = getSafeRedirectURL((request.query.redirect || ""));
+        response.redirect(redirectURL);
     }
     else {
-        res.render("login", {
+        response.render("login", {
             userName: "",
             message: "",
-            redirect: req.query.redirect
+            redirect: request.query.redirect
         });
     }
 })
-    .post(async (req, res) => {
-    const userName = req.body.userName;
-    const passwordPlain = req.body.password;
-    const redirectURL = getSafeRedirectURL(req.body.redirect);
-    const userObj = await getUser(userName, passwordPlain);
-    if (userObj) {
-        req.session.user = userObj;
-        res.redirect(redirectURL);
+    .post(async (request, response) => {
+    const userName = request.body.userName;
+    const passwordPlain = request.body.password;
+    const redirectURL = getSafeRedirectURL(request.body.redirect);
+    const userObject = await getUser(userName, passwordPlain);
+    if (userObject) {
+        request.session.user = userObject;
+        response.redirect(redirectURL);
     }
     else {
-        res.render("login", {
+        response.render("login", {
             userName,
             message: "Login Failed",
             redirect: redirectURL

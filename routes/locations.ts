@@ -20,9 +20,9 @@ import handler_cleanup from "../handlers/locations-get/cleanup.js";
 export const router = Router();
 
 
-router.get("/", (_req, res) => {
+router.get("/", (_request, response) => {
 
-  res.render("location-search", {
+  response.render("location-search", {
     headTitle: "Locations"
   });
 });

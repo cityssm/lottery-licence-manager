@@ -77,14 +77,14 @@ export const getLocations = (requestSession, queryOptions) => {
     }
     const rows = database.prepare(sql).all(sqlParameters);
     database.close();
-    for (const ele of rows) {
-        ele.recordType = "location";
-        ele.locationDisplayName =
-            ele.locationName === "" ? ele.locationAddress1 : ele.locationName;
-        ele.licences_endDateMaxString = dateTimeFns.dateIntegerToString(ele.licences_endDateMax);
-        ele.distributor_endDateMaxString = dateTimeFns.dateIntegerToString(ele.distributor_endDateMax);
-        ele.manufacturer_endDateMaxString = dateTimeFns.dateIntegerToString(ele.manufacturer_endDateMax);
-        ele.canUpdate = canUpdateObject(ele, requestSession);
+    for (const element of rows) {
+        element.recordType = "location";
+        element.locationDisplayName =
+            element.locationName === "" ? element.locationAddress1 : element.locationName;
+        element.licences_endDateMaxString = dateTimeFns.dateIntegerToString(element.licences_endDateMax);
+        element.distributor_endDateMaxString = dateTimeFns.dateIntegerToString(element.distributor_endDateMax);
+        element.manufacturer_endDateMaxString = dateTimeFns.dateIntegerToString(element.manufacturer_endDateMax);
+        element.canUpdate = canUpdateObject(element, requestSession);
     }
     return {
         count: (queryOptions.limit === -1 ? rows.length : count),

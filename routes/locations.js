@@ -12,8 +12,8 @@ import handler_view from "../handlers/locations-get/view.js";
 import handler_edit from "../handlers/locations-get/edit.js";
 import handler_cleanup from "../handlers/locations-get/cleanup.js";
 export const router = Router();
-router.get("/", (_req, res) => {
-    res.render("location-search", {
+router.get("/", (_request, response) => {
+    response.render("location-search", {
         headTitle: "Locations"
     });
 });

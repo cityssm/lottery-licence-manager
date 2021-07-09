@@ -17,15 +17,15 @@ import * as licencesDB from "../helpers/licencesDB.js";
 export const router = Router();
 router.get("/", handler_search);
 router.post("/doSearch", handler_doSearch);
-router.get("/byWeek", (_req, res) => {
-    res.render("event-byWeek", {
+router.get("/byWeek", (_request, response) => {
+    response.render("event-byWeek", {
         headTitle: "Events By Week"
     });
 });
 router.post("/doGetEventsByWeek", handler_doGetEventsByWeek);
-router.get("/recent", (req, res) => {
-    const records = licencesDB.getRecentlyUpdateEvents(req.session);
-    res.render("event-recent", {
+router.get("/recent", (request, response) => {
+    const records = licencesDB.getRecentlyUpdateEvents(request.session);
+    response.render("event-recent", {
         headTitle: "Recently Updated Events",
         records
     });

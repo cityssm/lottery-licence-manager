@@ -55,9 +55,9 @@ export const router = Router();
  */
 
 
-router.get("/", (_req, res) => {
+router.get("/", (_request, response) => {
 
-  res.render("organization-search", {
+  response.render("organization-search", {
     headTitle: "Organizations"
   });
 

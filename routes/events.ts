@@ -38,12 +38,11 @@ router.post("/doSearch", handler_doSearch);
  * Events by Week
  */
 
-router.get("/byWeek", (_req, res) => {
+router.get("/byWeek", (_request, response) => {
 
-  res.render("event-byWeek", {
+  response.render("event-byWeek", {
     headTitle: "Events By Week"
   });
-
 });
 
 router.post("/doGetEventsByWeek", handler_doGetEventsByWeek);
@@ -52,15 +51,14 @@ router.post("/doGetEventsByWeek", handler_doGetEventsByWeek);
  * Recently Updated Events
  */
 
-router.get("/recent", (req, res) => {
+router.get("/recent", (request, response) => {
 
-  const records = licencesDB.getRecentlyUpdateEvents(req.session);
+  const records = licencesDB.getRecentlyUpdateEvents(request.session);
 
-  res.render("event-recent", {
+  response.render("event-recent", {
     headTitle: "Recently Updated Events",
     records
   });
-
 });
 
 /*

@@ -2,17 +2,17 @@ import { Router } from "express";
 
 import * as configFunctions from "../helpers/functions.config.js";
 
-import getUser from "../helpers/usersDB/getUser.js";
+import { getUser } from "../helpers/usersDB/getUser.js";
 
 export const router = Router();
 
 
-const getSafeRedirectURL = (possibleRedirectURL: string = "") => {
+const getSafeRedirectURL = (possibleRedirectURL = "") => {
 
   const urlPrefix = configFunctions.getProperty("reverseProxy.urlPrefix");
 
   const urlToCheck = (possibleRedirectURL.startsWith(urlPrefix)
-    ? possibleRedirectURL.substring(urlPrefix.length)
+    ? possibleRedirectURL.slice(urlPrefix.length)
     : possibleRedirectURL).toLowerCase();
 
   switch (urlToCheck) {
@@ -45,43 +45,43 @@ const getSafeRedirectURL = (possibleRedirectURL: string = "") => {
 
 
 router.route("/")
-  .get((req, res) => {
+  .get((request, response) => {
 
     const sessionCookieName = configFunctions.getProperty("session.cookieName");
 
-    if (req.session.user && req.cookies[sessionCookieName]) {
+    if (request.session.user && request.cookies[sessionCookieName]) {
 
-      const redirectURL = getSafeRedirectURL((req.query.redirect || "") as string);
+      const redirectURL = getSafeRedirectURL((request.query.redirect || "") as string);
 
-      res.redirect(redirectURL);
+      response.redirect(redirectURL);
 
     } else {
 
-      res.render("login", {
+      response.render("login", {
         userName: "",
         message: "",
-        redirect: req.query.redirect
+        redirect: request.query.redirect
       });
     }
   })
-  .post(async (req, res) => {
+  .post(async (request, response) => {
 
-    const userName = req.body.userName;
-    const passwordPlain = req.body.password;
+    const userName = request.body.userName;
+    const passwordPlain = request.body.password;
 
-    const redirectURL = getSafeRedirectURL(req.body.redirect);
+    const redirectURL = getSafeRedirectURL(request.body.redirect);
 
-    const userObj = await getUser(userName, passwordPlain);
+    const userObject = await getUser(userName, passwordPlain);
 
-    if (userObj) {
+    if (userObject) {
 
-      req.session.user = userObj;
+      request.session.user = userObject;
 
-      res.redirect(redirectURL);
+      response.redirect(redirectURL);
 
     } else {
 
-      res.render("login", {
+      response.render("login", {
         userName,
         message: "Login Failed",
         redirect: redirectURL
