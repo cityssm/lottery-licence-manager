@@ -46,7 +46,7 @@ describe("lottery-licence-manager", () => {
         try {
             httpServer.close();
         }
-        catch (_e) {
+        catch (_a) {
         }
     });
     it("Ensure server starts on port " + portNumber.toString(), () => {
@@ -70,8 +70,8 @@ describe("lottery-licence-manager", () => {
                 await page.goto(docsURL);
                 await browser.close();
             })()
-                .catch((e) => {
-                console.log(e);
+                .catch((error) => {
+                console.log(error);
             })
                 .finally(() => {
                 done();
@@ -158,13 +158,13 @@ describe("lottery-licence-manager", () => {
                     await page.type("#login--userName", userName);
                     await page.focus("#login--password");
                     await page.type("#login--password", password);
-                    const loginFormEle = await page.$("#form--login");
-                    await loginFormEle.evaluate((formEle) => {
-                        formEle.submit();
+                    const loginFormElement = await page.$("#form--login");
+                    await loginFormElement.evaluate((formElement) => {
+                        formElement.submit();
                     });
                     await page.waitForNavigation();
-                    const res = await page.goto(appURL + pageURLs.goto);
-                    if (res.ok) {
+                    const response = await page.goto(appURL + pageURLs.goto);
+                    if (response.ok) {
                         success = true;
                     }
                     if (pageURLs.waitFor) {

@@ -176,8 +176,8 @@ export const getLicences = (requestBodyOrParametersObject: {
   database.close();
 
 
-  for (const ele of rows) {
-    ele.canUpdate = canUpdateObject(ele, requestSession);
+  for (const element of rows) {
+    element.canUpdate = canUpdateObject(element, requestSession);
   }
 
   return {

@@ -1,7 +1,7 @@
-import * as reportFns from "../functions.report.js";
+import * as reportFunctions from "../functions.report.js";
 const baseFunctions = () => {
     const functions = new Map();
-    functions.set("userFn_ticketTypeField", reportFns.userFn_ticketTypeField);
+    functions.set("userFn_ticketTypeField", reportFunctions.userFn_ticketTypeField);
     return functions;
 };
 export const reports = {

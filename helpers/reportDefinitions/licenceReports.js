@@ -1,7 +1,7 @@
-import * as reportFns from "../functions.report.js";
+import * as reportFunctions from "../functions.report.js";
 const baseFunctions = () => {
     const functions = new Map();
-    functions.set("userFn_licenceTypeKeyToLicenceType", reportFns.userFn_licenceTypeKeyToLicenceType);
+    functions.set("userFn_licenceTypeKeyToLicenceType", reportFunctions.userFn_licenceTypeKeyToLicenceType);
     return functions;
 };
 const baseSQL = "select" +

@@ -1,7 +1,7 @@
 import * as assert from "assert";
 import { fakeRequest, fakeViewOnlyRequest, fakeAdminRequest } from "./_globals.js";
 import * as userFunctions from "../helpers/functions.user.js";
-describe("userFunctions", () => {
+describe("functions.user", () => {
     describe("request.session.user = null", () => {
         it("userCanCreate()  => false", () => {
             assert.equal(userFunctions.userCanCreate(fakeRequest), false);

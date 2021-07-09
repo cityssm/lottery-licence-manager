@@ -5,7 +5,7 @@ import { fakeRequest, fakeViewOnlyRequest, fakeAdminRequest } from "./_globals.j
 import * as userFunctions from "../helpers/functions.user.js";
 
 
-describe("userFunctions", () => {
+describe("functions.user", () => {
 
   describe("request.session.user = null", () => {
 

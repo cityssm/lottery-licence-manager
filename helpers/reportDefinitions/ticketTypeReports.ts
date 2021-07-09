@@ -1,11 +1,11 @@
-import * as reportFns from "../functions.report.js";
+import * as reportFunctions from "../functions.report.js";
 
 import type { ConfigReportDefinition } from "../../types/configTypes";
 
 
 const baseFunctions = (): Map<string, () => unknown> => {
   const functions = new Map();
-  functions.set("userFn_ticketTypeField", reportFns.userFn_ticketTypeField);
+  functions.set("userFn_ticketTypeField", reportFunctions.userFn_ticketTypeField);
   return functions;
 };
 

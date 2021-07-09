@@ -104,8 +104,8 @@ export const getLicences = (requestBodyOrParametersObject, requestSession, inclu
     const rows = database.prepare(sql)
         .all(sqlParameters);
     database.close();
-    for (const ele of rows) {
-        ele.canUpdate = canUpdateObject(ele, requestSession);
+    for (const element of rows) {
+        element.canUpdate = canUpdateObject(element, requestSession);
     }
     return {
         count: (includeOptions.limit === -1 ? rows.length : count),

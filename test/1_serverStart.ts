@@ -20,7 +20,7 @@ import { fakeViewOnlySession, userName } from "./_globals.js";
 describe("lottery-licence-manager", () => {
 
   const httpServer = http.createServer(app);
-  const portNumber = 54333;
+  const portNumber = 54_333;
 
   let serverStarted = false;
 
@@ -68,7 +68,7 @@ describe("lottery-licence-manager", () => {
 
     try {
       httpServer.close();
-    } catch (_e) {
+    } catch {
       // ignore
     }
   });
@@ -101,8 +101,8 @@ describe("lottery-licence-manager", () => {
 
         await browser.close();
       })()
-        .catch((e) => {
-          console.log(e);
+        .catch((error) => {
+          console.log(error);
         })
         .finally(() => {
           done();
@@ -208,18 +208,18 @@ describe("lottery-licence-manager", () => {
           await page.focus("#login--password");
           await page.type("#login--password", password);
 
-          const loginFormEle = await page.$("#form--login");
-          await loginFormEle.evaluate((formEle: HTMLFormElement) => {
-            formEle.submit();
+          const loginFormElement = await page.$("#form--login");
+          await loginFormElement.evaluate((formElement: HTMLFormElement) => {
+            formElement.submit();
           });
 
           await page.waitForNavigation();
 
           // Navigate to the page
 
-          const res = await page.goto(appURL + pageURLs.goto);
+          const response = await page.goto(appURL + pageURLs.goto);
 
-          if (res.ok) {
+          if (response.ok) {
             success = true;
           }
 

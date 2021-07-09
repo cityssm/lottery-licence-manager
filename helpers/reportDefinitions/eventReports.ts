@@ -1,12 +1,12 @@
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
-import * as reportFns from "../functions.report.js";
+import * as reportFunctions from "../functions.report.js";
 
 import type { ConfigReportDefinition } from "../../types/configTypes";
 
 
 const baseFunctions = (): Map<string, () => unknown> => {
   const functions = new Map();
-  functions.set("userFn_licenceTypeKeyToLicenceType", reportFns.userFn_licenceTypeKeyToLicenceType);
+  functions.set("userFn_licenceTypeKeyToLicenceType", reportFunctions.userFn_licenceTypeKeyToLicenceType);
   return functions;
 };
 
@@ -62,7 +62,7 @@ export const reports: { [reportName: string]: ConfigReportDefinition } = {
   "events-byLicence": {
     functions: () => {
       const functions = new Map();
-      functions.set("userFn_licenceTypeKeyToLicenceType", reportFns.userFn_licenceTypeKeyToLicenceType);
+      functions.set("userFn_licenceTypeKeyToLicenceType", reportFunctions.userFn_licenceTypeKeyToLicenceType);
       return functions;
     },
     sql: "select e.licenceID, l.externalLicenceNumber, e.eventDate," +

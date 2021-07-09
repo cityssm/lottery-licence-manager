@@ -1,11 +1,11 @@
-import * as reportFns from "../../helpers/functions.report.js";
+import * as reportFunctions from "../../helpers/functions.report.js";
 
 import type { ConfigReportDefinition } from "../../types/configTypes";
 
 
 const reminderFunctions = (): Map<string, () => unknown> => {
   const functions = new Map();
-  functions.set("userFn_reminderTypeKeyToReminderType", reportFns.userFn_reminderTypeKeyToReminderType);
+  functions.set("userFn_reminderTypeKeyToReminderType", reportFunctions.userFn_reminderTypeKeyToReminderType);
   return functions;
 };
 
