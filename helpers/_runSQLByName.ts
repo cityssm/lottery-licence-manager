@@ -6,7 +6,7 @@ import debug from "debug";
 const debugSQL = debug("lottery-licence-manager:runSQLWithDB");
 
 
-export const runSQLWithDB = (database: sqlite.Database, sql: string, parameters: any[] = []): sqlite.RunResult => {
+export const runSQLWithDB = (database: sqlite.Database, sql: string, parameters: unknown[] = []): sqlite.RunResult => {
 
   try {
     return database.prepare(sql).run(parameters);
@@ -16,7 +16,7 @@ export const runSQLWithDB = (database: sqlite.Database, sql: string, parameters:
 };
 
 
-export const runSQLByName = (databaseName: "licencesDB" | "usersDB", sql: string, parameters: any[] = []): sqlite.RunResult => {
+export const runSQLByName = (databaseName: "licencesDB" | "usersDB", sql: string, parameters: unknown[] = []): sqlite.RunResult => {
 
   let database: sqlite.Database;
 
