@@ -28,5 +28,8 @@
     "insertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis": false,
     "placeOpenBraceOnNewLineForFunctions": false,
     "placeOpenBraceOnNewLineForControlBlocks": false
-  }
+  },
+  "exclude": [
+    "public-typescript"
+  ]
 }
