@@ -368,7 +368,7 @@ export const updateLicence = (requestBody: LotteryLicenceForm, requestSession: e
 
     const newTicketTypeIndex = getMaxLicenceTicketTypeIndexWithDB(database, requestBody.licenceID) + 1;
 
-    for (const [ticketTypeIndex, ticketType] of requestBody.ticketType_ticketType) {
+    for (const [ticketTypeIndex, ticketType] of requestBody.ticketType_ticketType.entries()) {
 
       addLicenceTicketTypeWithDB(database, {
         licenceID: requestBody.licenceID,

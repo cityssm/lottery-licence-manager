@@ -114,9 +114,9 @@ export const createLicence = (requestBody: LotteryLicenceForm, requestSession: e
 
   } else if (typeof (requestBody.ticketType_ticketType) === "object") {
 
-    for (const [ticketTypeIndex, ticketType] of requestBody.ticketType_ticketType) {
+    for (const [ticketTypeIndex, ticketType] of requestBody.ticketType_ticketType.entries()) {
 
-      addLicenceTicketTypeWithDB(database, {
+      const ticketTypeDefinition = {
         licenceID,
         ticketTypeIndex,
         amendmentDate: nowDateInt,
@@ -125,7 +125,9 @@ export const createLicence = (requestBody: LotteryLicenceForm, requestSession: e
         licenceFee: requestBody.ticketType_licenceFee[ticketTypeIndex],
         distributorLocationID: requestBody.ticketType_distributorLocationID[ticketTypeIndex],
         manufacturerLocationID: requestBody.ticketType_manufacturerLocationID[ticketTypeIndex]
-      }, requestSession);
+      };
+
+      addLicenceTicketTypeWithDB(database, ticketTypeDefinition, requestSession);
     }
   }
 

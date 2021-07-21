@@ -181,7 +181,7 @@ export const updateLicence = (requestBody, requestSession) => {
     }
     else if (typeof (requestBody.ticketType_ticketType) === "object") {
         const newTicketTypeIndex = getMaxLicenceTicketTypeIndexWithDB(database, requestBody.licenceID) + 1;
-        for (const [ticketTypeIndex, ticketType] of requestBody.ticketType_ticketType) {
+        for (const [ticketTypeIndex, ticketType] of requestBody.ticketType_ticketType.entries()) {
             addLicenceTicketTypeWithDB(database, {
                 licenceID: requestBody.licenceID,
                 ticketTypeIndex: newTicketTypeIndex + ticketTypeIndex,
