@@ -146,6 +146,13 @@
       </table>
     <% } %>
 
+    <% if (reminders.length === 0) { %>
+      <div class="message is-info">
+        <p class="message-body">
+          There are no reminders to show.
+        </p>
+      </div>
+    <% } %>
   </div>
 </div>
 
