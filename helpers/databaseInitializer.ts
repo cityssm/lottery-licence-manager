@@ -40,6 +40,13 @@ export const initUsersDB = (): boolean => {
 
 };
 
+const recordColumns = " recordCreate_userName varchar(30) not null," +
+  " recordCreate_timeMillis integer not null," +
+  " recordUpdate_userName varchar(30) not null," +
+  " recordUpdate_timeMillis integer not null," +
+  " recordDelete_userName varchar(30)," +
+  " recordDelete_timeMillis integer";
+
 export const initLicencesDB = (): boolean => {
 
   const licencesDB = sqlite("data/licences.db");
@@ -69,12 +76,7 @@ export const initLicencesDB = (): boolean => {
       " locationIsDistributor bit not null default 0," +
       " locationIsManufacturer bit not null default 0," +
 
-      " recordCreate_userName varchar(30) not null," +
-      " recordCreate_timeMillis integer not null," +
-      " recordUpdate_userName varchar(30) not null," +
-      " recordUpdate_timeMillis integer not null," +
-      " recordDelete_userName varchar(30)," +
-      " recordDelete_timeMillis integer" +
+      recordColumns +
       ")").run();
 
     /*
@@ -97,12 +99,8 @@ export const initLicencesDB = (): boolean => {
       " isEligibleForLicences bit not null default 1," +
       " organizationNote text not null default ''," +
 
-      " recordCreate_userName varchar(30) not null," +
-      " recordCreate_timeMillis integer not null," +
-      " recordUpdate_userName varchar(30) not null," +
-      " recordUpdate_timeMillis integer not null," +
-      " recordDelete_userName varchar(30)," +
-      " recordDelete_timeMillis integer" +
+      recordColumns +
+
       ")").run();
 
     licencesDB.prepare("create table if not exists OrganizationRepresentatives (" +
@@ -133,12 +131,7 @@ export const initLicencesDB = (): boolean => {
       " remark text," +
       " isImportant bit not null default 0," +
 
-      " recordCreate_userName varchar(30) not null," +
-      " recordCreate_timeMillis integer not null," +
-      " recordUpdate_userName varchar(30) not null," +
-      " recordUpdate_timeMillis integer not null," +
-      " recordDelete_userName varchar(30)," +
-      " recordDelete_timeMillis integer," +
+      recordColumns + "," +
 
       " primary key (organizationID, remarkIndex)," +
       " foreign key (organizationID) references Organizations (organizationID)" +
@@ -155,12 +148,7 @@ export const initLicencesDB = (): boolean => {
       " reminderStatus varchar(20)," +
       " reminderNote text," +
 
-      " recordCreate_userName varchar(30) not null," +
-      " recordCreate_timeMillis integer not null," +
-      " recordUpdate_userName varchar(30) not null," +
-      " recordUpdate_timeMillis integer not null," +
-      " recordDelete_userName varchar(30)," +
-      " recordDelete_timeMillis integer," +
+      recordColumns + "," +
 
       " primary key (organizationID, reminderIndex)," +
       " foreign key (organizationID) references Organizations (organizationID)" +
@@ -168,18 +156,10 @@ export const initLicencesDB = (): boolean => {
       ") without rowid").run();
 
     licencesDB.prepare("create table BankingMonths (bankingMonth integer primary key not null)").run();
-    licencesDB.prepare("insert into BankingMonths (bankingMonth) values (1)").run();
-    licencesDB.prepare("insert into BankingMonths (bankingMonth) values (2)").run();
-    licencesDB.prepare("insert into BankingMonths (bankingMonth) values (3)").run();
-    licencesDB.prepare("insert into BankingMonths (bankingMonth) values (4)").run();
-    licencesDB.prepare("insert into BankingMonths (bankingMonth) values (5)").run();
-    licencesDB.prepare("insert into BankingMonths (bankingMonth) values (6)").run();
-    licencesDB.prepare("insert into BankingMonths (bankingMonth) values (7)").run();
-    licencesDB.prepare("insert into BankingMonths (bankingMonth) values (8)").run();
-    licencesDB.prepare("insert into BankingMonths (bankingMonth) values (9)").run();
-    licencesDB.prepare("insert into BankingMonths (bankingMonth) values (10)").run();
-    licencesDB.prepare("insert into BankingMonths (bankingMonth) values (11)").run();
-    licencesDB.prepare("insert into BankingMonths (bankingMonth) values (12)").run();
+
+    for (let month = 1; month <= 12; month += 1) {
+      licencesDB.prepare("insert into BankingMonths (bankingMonth) values (" + month + ")").run();
+    }
 
     licencesDB.prepare("create table if not exists OrganizationBankRecords (" +
 
@@ -195,12 +175,7 @@ export const initLicencesDB = (): boolean => {
       " recordDate integer," +
       " recordNote text," +
 
-      " recordCreate_userName varchar(30) not null," +
-      " recordCreate_timeMillis integer not null," +
-      " recordUpdate_userName varchar(30) not null," +
-      " recordUpdate_timeMillis integer not null," +
-      " recordDelete_userName varchar(30)," +
-      " recordDelete_timeMillis integer," +
+      recordColumns + "," +
 
       " primary key (organizationID, recordIndex)," +
       " unique (organizationID, accountNumber, bankingYear, bankingMonth, bankRecordType)," +
@@ -237,12 +212,7 @@ export const initLicencesDB = (): boolean => {
 
       " trackUpdatesAsAmendments bit not null default 0," +
 
-      " recordCreate_userName varchar(30) not null," +
-      " recordCreate_timeMillis integer not null," +
-      " recordUpdate_userName varchar(30) not null," +
-      " recordUpdate_timeMillis integer not null," +
-      " recordDelete_userName varchar(30)," +
-      " recordDelete_timeMillis integer," +
+      recordColumns + "," +
 
       " foreign key (organizationID) references Organizations (organizationID)," +
       " foreign key (locationID) references Locations (locationID)" +
@@ -267,12 +237,7 @@ export const initLicencesDB = (): boolean => {
 
       " transactionNote text," +
 
-      " recordCreate_userName varchar(30) not null," +
-      " recordCreate_timeMillis integer not null," +
-      " recordUpdate_userName varchar(30) not null," +
-      " recordUpdate_timeMillis integer not null," +
-      " recordDelete_userName varchar(30)," +
-      " recordDelete_timeMillis integer," +
+      recordColumns + "," +
 
       " primary key (licenceID, transactionIndex)," +
 
@@ -290,12 +255,7 @@ export const initLicencesDB = (): boolean => {
       " amendmentType text not null, amendment text," +
       " isHidden bit not null default 0," +
 
-      " recordCreate_userName varchar(30) not null," +
-      " recordCreate_timeMillis integer not null," +
-      " recordUpdate_userName varchar(30) not null," +
-      " recordUpdate_timeMillis integer not null," +
-      " recordDelete_userName varchar(30)," +
-      " recordDelete_timeMillis integer," +
+      recordColumns + "," +
 
       " primary key (licenceID, amendmentIndex)," +
 
@@ -317,12 +277,7 @@ export const initLicencesDB = (): boolean => {
 
       " costs_amountDonated decimal(10, 2)," +
 
-      " recordCreate_userName varchar(30) not null," +
-      " recordCreate_timeMillis integer not null," +
-      " recordUpdate_userName varchar(30) not null," +
-      " recordUpdate_timeMillis integer not null," +
-      " recordDelete_userName varchar(30)," +
-      " recordDelete_timeMillis integer," +
+      recordColumns + "," +
 
       " primary key (licenceID, eventDate)," +
       " foreign key (licenceID) references LotteryLicences (licenceID)" +
@@ -343,12 +298,7 @@ export const initLicencesDB = (): boolean => {
       " unitCount integer not null," +
       " licenceFee decimal(10, 2)," +
 
-      " recordCreate_userName varchar(30) not null," +
-      " recordCreate_timeMillis integer not null," +
-      " recordUpdate_userName varchar(30) not null," +
-      " recordUpdate_timeMillis integer not null," +
-      " recordDelete_userName varchar(30)," +
-      " recordDelete_timeMillis integer," +
+      recordColumns + "," +
 
       " primary key (licenceID, ticketTypeIndex)," +
 
@@ -441,7 +391,6 @@ export const initLicencesDB = (): boolean => {
         "init",
         Date.now()
       );
-
   }
 
   return false;
