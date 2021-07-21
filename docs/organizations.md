@@ -29,7 +29,7 @@ can be found by searching for:
 
 _Johnny's Society for Pet Saving_ would not be found however by searching for
 `johnnys pets` since neither term exists fully in the organization name.
-For that reach, it is recommended to use more generic searches when possible,
+For that reason, it is recommended to use more generic searches when possible,
 and increase specificity if needed.
 
 Search results are refreshed when you change the value of a search filter.
