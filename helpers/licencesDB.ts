@@ -85,7 +85,7 @@ export const canUpdateObject = (object: llm.Record, requestSession: expressSessi
 };
 
 
-export const getRawRowsColumns = (sql: string, parameters: Array<string | number>, userFunctions: Map<string, (...parameters: unknown[]) => unknown>): RawRowsColumnsReturn => {
+export const getRawRowsColumns = (sql: string, parameters: unknown[], userFunctions: Map<string, (...parameters: unknown[]) => unknown>): RawRowsColumnsReturn => {
 
   const database = sqlite(databasePath, {
     readonly: true
