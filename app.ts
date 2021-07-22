@@ -101,9 +101,6 @@ if (urlPrefix !== "") {
 
 app.use(urlPrefix, express.static(path.join("public")));
 
-app.use(urlPrefix + "/docs/images",
-  express.static(path.join("docs", "images")));
-
 app.use(urlPrefix + "/lib/fa",
   express.static(path.join("node_modules", "@fortawesome", "fontawesome-free")));
 

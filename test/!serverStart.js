@@ -61,23 +61,6 @@ describe("lottery-licence-manager", () => {
         });
     });
     const appURL = "http://localhost:" + portNumber.toString() + configFunctions.getProperty("reverseProxy.urlPrefix");
-    describe("simple page tests", () => {
-        const documentationURL = appURL + "/docs";
-        it("should load docs page - " + documentationURL, (done) => {
-            (async () => {
-                const browser = await puppeteer.launch();
-                const page = await browser.newPage();
-                await page.goto(documentationURL);
-                await browser.close();
-            })()
-                .catch((error) => {
-                console.log(error);
-            })
-                .finally(() => {
-                done();
-            });
-        });
-    });
     describe("transaction page tests", () => {
         const pageTests = {
             reports: {
