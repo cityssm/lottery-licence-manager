@@ -1365,21 +1365,19 @@ declare const llm: llmGlobal;
         });
       };
 
-      const addTicketTypeFunction_reduceLocations = (optionsHTML: string, location: recordTypes.Location) => {
-
-        return optionsHTML + "<option value=\"" + location.locationID.toString() + "\">" +
-          cityssm.escapeHTML(location.locationDisplayName) +
-          "</option>";
-      };
-
       const addTicketTypeFunction_populateDistributorSelect = () => {
 
         cacheFunction_loadDistributorLocations((locations) => {
 
           const selectElement = document.querySelector("#ticketTypeAdd--distributorLocationID") as HTMLSelectElement;
 
-          selectElement.innerHTML =
-            locations.reduce(addTicketTypeFunction_reduceLocations, "<option value=\"\">(No Distributor)</option>");
+          selectElement.innerHTML = "<option value=\"\">(No Distributor)</option>";
+
+          for (const location of locations) {
+            selectElement.insertAdjacentHTML("beforeend", "<option value=\"" + location.locationID.toString() + "\">" +
+              cityssm.escapeHTML(location.locationDisplayName) +
+              "</option>");
+          }
 
           if (lastUsedDistributorID !== "" && selectElement.querySelector("[value='" + lastUsedDistributorID + "']")) {
             selectElement.value = lastUsedDistributorID;
@@ -1393,8 +1391,13 @@ declare const llm: llmGlobal;
 
           const selectElement = document.querySelector("#ticketTypeAdd--manufacturerLocationID") as HTMLSelectElement;
 
-          selectElement.innerHTML =
-            locations.reduce(addTicketTypeFunction_reduceLocations, "<option value=\"\">(No Manufacturer)</option>");
+          selectElement.innerHTML = "<option value=\"\">(No Manufacturer)</option>";
+
+          for (const location of locations) {
+            selectElement.insertAdjacentHTML("beforeend", "<option value=\"" + location.locationID.toString() + "\">" +
+              cityssm.escapeHTML(location.locationDisplayName) +
+              "</option>");
+          }
 
           if (lastUsedManufacturerID !== "" && selectElement.querySelector("[value='" + lastUsedManufacturerID + "']")) {
             selectElement.value = lastUsedManufacturerID;

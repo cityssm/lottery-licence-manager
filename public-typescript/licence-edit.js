@@ -807,16 +807,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     addTicketTypeFunction_refreshTicketTypeChange();
                 });
             };
-            const addTicketTypeFunction_reduceLocations = (optionsHTML, location) => {
-                return optionsHTML + "<option value=\"" + location.locationID.toString() + "\">" +
-                    cityssm.escapeHTML(location.locationDisplayName) +
-                    "</option>";
-            };
             const addTicketTypeFunction_populateDistributorSelect = () => {
                 cacheFunction_loadDistributorLocations((locations) => {
                     const selectElement = document.querySelector("#ticketTypeAdd--distributorLocationID");
-                    selectElement.innerHTML =
-                        locations.reduce(addTicketTypeFunction_reduceLocations, "<option value=\"\">(No Distributor)</option>");
+                    selectElement.innerHTML = "<option value=\"\">(No Distributor)</option>";
+                    for (const location of locations) {
+                        selectElement.insertAdjacentHTML("beforeend", "<option value=\"" + location.locationID.toString() + "\">" +
+                            cityssm.escapeHTML(location.locationDisplayName) +
+                            "</option>");
+                    }
                     if (lastUsedDistributorID !== "" && selectElement.querySelector("[value='" + lastUsedDistributorID + "']")) {
                         selectElement.value = lastUsedDistributorID;
                     }
@@ -825,8 +824,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
             const addTicketTypeFunction_populateManufacturerSelect = () => {
                 cacheFunction_loadManufacturerLocations((locations) => {
                     const selectElement = document.querySelector("#ticketTypeAdd--manufacturerLocationID");
-                    selectElement.innerHTML =
-                        locations.reduce(addTicketTypeFunction_reduceLocations, "<option value=\"\">(No Manufacturer)</option>");
+                    selectElement.innerHTML = "<option value=\"\">(No Manufacturer)</option>";
+                    for (const location of locations) {
+                        selectElement.insertAdjacentHTML("beforeend", "<option value=\"" + location.locationID.toString() + "\">" +
+                            cityssm.escapeHTML(location.locationDisplayName) +
+                            "</option>");
+                    }
                     if (lastUsedManufacturerID !== "" && selectElement.querySelector("[value='" + lastUsedManufacturerID + "']")) {
                         selectElement.value = lastUsedManufacturerID;
                     }
