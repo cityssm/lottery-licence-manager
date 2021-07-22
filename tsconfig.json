@@ -9,7 +9,8 @@
     "removeComments": true,
     "allowUnreachableCode": false,
     "allowSyntheticDefaultImports": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "esModuleInterop": true
   },
   "compileOnSave": true,
   "buildOnSave": true,
@@ -30,6 +31,6 @@
     "placeOpenBraceOnNewLineForControlBlocks": false
   },
   "exclude": [
-    "public-typescript"
+    "public-typescript/*"
   ]
 }
