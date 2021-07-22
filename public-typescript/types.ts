@@ -4,7 +4,7 @@ import type * as configTypes from "../types/configTypes";
 
 export interface llmGlobal {
 
-  arrayToObject?: (array: [], objectKey: string | number) => {};
+  arrayToObject?: (array: [], objectKey: string | number) => Record<string | number, unknown>;
 
   formatDollarsAsHTML?: (dollarAmt: number) => string;
 
