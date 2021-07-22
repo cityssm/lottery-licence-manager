@@ -10,8 +10,6 @@ import rateLimit from "express-rate-limit";
 import session from "express-session";
 import sqlite from "connect-sqlite3";
 
-// eslint-disable-next-line unicorn/prevent-abbreviations
-import routerDocs from "./routes/docs.js";
 import routerLogin from "./routes/login.js";
 import routerDashboard from "./routes/dashboard.js";
 import routerOrganizations from "./routes/organizations.js";
@@ -192,8 +190,6 @@ app.use((request, response, next) => {
 app.get(urlPrefix + "/", sessionChecker, (_request, response) => {
   response.redirect(urlPrefix + "/dashboard");
 });
-
-app.use(urlPrefix + "/docs", routerDocs);
 
 app.use(urlPrefix + "/dashboard", sessionChecker, routerDashboard);
 app.use(urlPrefix + "/organizations", sessionChecker, routerOrganizations);

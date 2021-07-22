@@ -2,10 +2,6 @@
 
 **Thank you for taking the time to read the documentation.**
 
-**[Live Documentation Site on GitHub](https://cityssm.github.io/lottery-licence-manager/)**
-
-## User Documentation
-
 ![Lottery licence Manager Dashboard](images/dashboard.png)
 
 **[Tips and Tricks](tipsTricks.md)**
