@@ -10,11 +10,12 @@ environment:
 stack: "node 14"
 
 install:
+  - sh: npm install -g npm@7
   # Output useful info for debugging.
   - node --version
   - npm --version
   # install modules
-  - sh: npm install
+  - sh: npm ci
   - sh: npm install -g mocha c8
 
 before_test:
