@@ -35,4 +35,10 @@ export interface llmGlobal {
         }) => void) => void;
         getReminderType: (reminderTypeKey: string) => configTypes.ConfigReminderType;
     };
+    licenceEdit?: llmLicenceEditGlobal;
+}
+export interface llmLicenceEditGlobal {
+    setUnsavedChangesFunction?: (changeEvent?: Event) => void;
+    setDoRefreshAfterSaveFunction?: () => void;
+    loadLocationListFunction?: (callbackFunction: (locationList: recordTypes.Location[]) => void) => void;
 }
