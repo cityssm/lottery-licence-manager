@@ -9,6 +9,7 @@ import type * as recordTypes from "../../types/recordTypes";
 declare const cityssm: cityssmGlobal;
 declare const llm: llmGlobal;
 
+
 llm.licenceEdit = {};
 
 
@@ -526,7 +527,7 @@ llm.licenceEdit = {};
 
     const dateObject = new Date(Number.parseInt(startDateStringSplit[0], 10) + 1,
       Number.parseInt(startDateStringSplit[1], 10) - 1,
-      Number.parseInt(startDateStringSplit[2]));
+      Number.parseInt(startDateStringSplit[2], 10));
 
     const endDateString =
       dateObject.getFullYear().toString() + "-" +

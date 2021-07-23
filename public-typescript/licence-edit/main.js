@@ -302,7 +302,7 @@ llm.licenceEdit = {};
     }
     document.querySelector("#is-endDateString-year-button").addEventListener("click", () => {
         const startDateStringSplit = document.querySelector("#licence--startDateString").value.split("-");
-        const dateObject = new Date(Number.parseInt(startDateStringSplit[0], 10) + 1, Number.parseInt(startDateStringSplit[1], 10) - 1, Number.parseInt(startDateStringSplit[2]));
+        const dateObject = new Date(Number.parseInt(startDateStringSplit[0], 10) + 1, Number.parseInt(startDateStringSplit[1], 10) - 1, Number.parseInt(startDateStringSplit[2], 10));
         const endDateString = dateObject.getFullYear().toString() + "-" +
             ("00" + (dateObject.getMonth() + 1).toString()).slice(-2) + "-" +
             ("00" + dateObject.getDate().toString()).slice(-2);
