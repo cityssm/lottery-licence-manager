@@ -2,7 +2,7 @@
 
 [<img src="https://bulma.io/images/made-with-bulma.png" alt="Made with Bulma" width="128" height="24" />](https://bulma.io) [![Codacy Badge](https://img.shields.io/codacy/grade/d2d290ed8f214420aad853c41c90c708)](https://www.codacy.com/gh/cityssm/lottery-licence-manager) [![Maintainability](https://img.shields.io/codeclimate/maintainability/cityssm/lottery-licence-manager)](https://codeclimate.com/github/cityssm/lottery-licence-manager/maintainability) [![Code Climate coverage](https://img.shields.io/codeclimate/coverage/cityssm/lottery-licence-manager)](https://codeclimate.com/github/cityssm/lottery-licence-manager/maintainability) [![AppVeyor](https://img.shields.io/appveyor/build/dangowans/lottery-licence-manager)](https://ci.appveyor.com/project/dangowans/lottery-licence-manager) [![Snyk Vulnerabilities for GitHub Repo](https://img.shields.io/snyk/vulnerabilities/github/cityssm/lottery-licence-manager)](https://app.snyk.io/org/cityssm/project/85fc64cf-248f-48d3-b438-a3e449295670)
 
-![Lottery Licence Search](docs/images/licence-search.png)
+![Lottery Licence Search](docs/assets/images/licence-search.png)
 
 The Lottery Licence Manager is a web application written by the
 [City of Sault Ste. Marie](https://saultstemarie.ca/)
