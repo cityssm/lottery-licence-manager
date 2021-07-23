@@ -11,7 +11,7 @@ and enforced within the City of Sault Ste. Marie.
 
 ## Finding a Lottery Licence with the Lottery Licence Search
 
-![Lottery Licence Search](images/licence-search.png)
+![Lottery Licence Search](assets/images/licence-search.png)
 
 There are many ways to find a lottery licence record.
 The Lottery Licence Search page offers another way, from a list of licence records.
@@ -39,7 +39,7 @@ Search results are displayed below the filters in a table and include the follow
 
 ## Create a New Lottery Licence
 
-![Create a New Lottery Licence](images/licence-create.png)
+![Create a New Lottery Licence](assets/images/licence-create.png)
 
 New lottery licences can be created from the lottery licence side menu,
 from the main dashboard, or from an organization view.
@@ -69,7 +69,7 @@ To save the new lottery licence, click the green "Create New Licence and Continu
 _Note that, although the update screens are described below,
 the read only screens behave similarly._
 
-![Licence Fee and Transactions](images/licence-edit-transactions.png)
+![Licence Fee and Transactions](assets/images/licence-edit-transactions.png)
 
 Once a lottery licence record has been created, transactions can be added.
 While the Lottery Licence Manager application is not meant to be
@@ -81,7 +81,7 @@ Before a lottery licence can be printed, it must be issued.
 To issue a licence, click the green "Issue Licence" button,
 found at the top of the page.
 
-![Licence with Amendents](images/licence-edit-amendments.png)
+![Licence with Amendents](assets/images/licence-edit-amendments.png)
 
 Once a licence has been issued, further changes to the licence can be
 automatically tracked as amendments.

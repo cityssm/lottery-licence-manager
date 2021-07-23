@@ -17,7 +17,7 @@ config.admin = {
 As with all changes to the `config.js` file, you will have to restart Node
 before the change takes effect.
 
-![Login Prompt](images/admin-login.png)
+![Login Prompt](assets/images/admin-login.png)
 
 Once set, you will be able to log into the application with `admin` as
 the user name and the password set in your `config.js` file.

@@ -2,7 +2,7 @@
 
 # Administrator Tools - Application Settings
 
-![Application Settings](images/admin-applicationSettings.png)
+![Application Settings](assets/images/admin-applicationSettings.png)
 
 The Application Settings page lets administrators update settings
 that are regularly managed by a front end administrator.

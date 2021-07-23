@@ -2,7 +2,7 @@
 
 **Thank you for taking the time to read the documentation.**
 
-![Lottery licence Manager Dashboard](images/dashboard.png)
+![Lottery licence Manager Dashboard](assets/images/dashboard.png)
 
 **[Tips and Tricks](tipsTricks.md)**
 

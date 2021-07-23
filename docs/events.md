@@ -25,7 +25,7 @@ Lottery events are created on the lottery licence itself.
 
 _Note that events are created from the licence edit view._
 
-![Event Edit](images/event-edit.png)
+![Event Edit](assets/images/event-edit.png)
 
 Event records include banking information, a cost breakdown,
 and custom fields that vary by the type of licence.

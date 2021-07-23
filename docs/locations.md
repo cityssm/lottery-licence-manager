@@ -11,7 +11,7 @@ Locations have two main purposes.
 
 ## Find a Location Record with the Location Search
 
-![Location Search](images/location-search.png)
+![Location Search](assets/images/location-search.png)
 
 The Location Search page offers a way to find location records.
 You can find in in the navigation bar at the top of every page,
@@ -33,12 +33,12 @@ Locations with no activity can be deleted by update users right from the search 
 
 Location records can be created in two ways.
 
-![Create a Location from the Licence Editor](images/location-create-fromLicence.png)
+![Create a Location from the Licence Editor](assets/images/location-create-fromLicence.png)
 
 When creating or updating a lottery licence, it is possible to create a location record
 by selecting the "Create a Location" tab at the top of the "Select a Location" popup window.
 
-![Create a New Location](images/location-create.png)
+![Create a New Location](assets/images/location-create.png)
 
 It is also possible to create a location record by selecting the "Create a New Location" link.
 
@@ -50,7 +50,7 @@ the location name field should be left blank.
 
 ## Cleanup Unused Locations
 
-![Location Cleanup](images/location-cleanup.png)
+![Location Cleanup](assets/images/location-cleanup.png)
 
 The Location Cleanup page helps draw attention to location records
 that may be able to be removed from the system.
