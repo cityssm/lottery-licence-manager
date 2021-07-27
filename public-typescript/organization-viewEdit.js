@@ -237,6 +237,29 @@ Object.defineProperty(exports, "__esModule", { value: true });
     bankRecordsBankingYearFilterElement.addEventListener("change", getBankRecordsFunction);
     bankRecordsBankingYearFilterElement.addEventListener("change", setExportURLFunction);
     if (canCreate) {
+        const deleteBankRecordFunction = (recordIndex, callbackFunction) => {
+            const deleteFunction = () => {
+                cityssm.postJSON(urlPrefix + "/organizations/doDeleteBankRecord", {
+                    organizationID,
+                    recordIndex
+                }, () => {
+                    if (callbackFunction) {
+                        callbackFunction();
+                    }
+                    getBankRecordsFunction();
+                });
+            };
+            if (recordIndex === "") {
+                cityssm.alertModal("No Record to Delete", "", "OK", "info");
+                return;
+            }
+            cityssm.confirmModal("Delete Bank Record?", "Are you sure you want to delete this bank record?", "Yes, Delete", "warning", deleteFunction);
+        };
+        const deleteBankRecordFromTableFunction = (clickEvent) => {
+            clickEvent.preventDefault();
+            const recordIndex = clickEvent.currentTarget.closest("td").dataset.recordIndex;
+            deleteBankRecordFunction(recordIndex);
+        };
         const openBankRecordEditModalFunction = (buttonEvent) => {
             const isNavBlockedByPage = cityssm.isNavBlockerEnabled();
             let bankRecordEditCloseModalFunction;
@@ -260,20 +283,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
                         cityssm.alertModal("Record Not Saved", resultJSON.message, "OK", "danger");
                     }
                 });
-            };
-            const deleteBankRecordFunction = (deleteButtonEvent) => {
-                deleteButtonEvent.preventDefault();
-                const recordIndex = deleteButtonEvent.currentTarget.dataset.recordIndex;
-                const deleteFunction = () => {
-                    cityssm.postJSON(urlPrefix + "/organizations/doDeleteBankRecord", {
-                        organizationID,
-                        recordIndex
-                    }, () => {
-                        bankRecordEditCloseModalFunction();
-                        getBankRecordsFunction();
-                    });
-                };
-                cityssm.confirmModal("Delete Bank Record?", "Are you sure you want to delete this bank record?", "Yes, Delete", "warning", deleteFunction);
             };
             const buttonElement = buttonEvent.currentTarget;
             let recordIndex = "";
@@ -308,6 +317,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     recordNote = recordObject.recordNote;
                 }
             }
+            const deleteBankRecordFromModalFunction = (clickEvent) => {
+                clickEvent.preventDefault();
+                deleteBankRecordFunction(recordIndex, bankRecordEditCloseModalFunction);
+            };
             cityssm.openHtmlModal("organization-bankRecordEdit", {
                 onshow() {
                     cityssm.enableNavBlocker();
@@ -352,7 +365,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     if (isUpdate) {
                         const deleteButtonElement = document.querySelector("#bankRecordEdit--deleteRecordButton");
                         deleteButtonElement.dataset.recordIndex = recordIndex;
-                        deleteButtonElement.addEventListener("click", deleteBankRecordFunction);
+                        deleteButtonElement.addEventListener("click", deleteBankRecordFromModalFunction);
                     }
                     else {
                         document.querySelector("#bankRecordEdit--moreOptionsDropdown").remove();
@@ -376,6 +389,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
         const buttonElements = bankRecordsTableElement.querySelectorAll(".is-bank-record-button");
         for (const buttonElement of buttonElements) {
             buttonElement.addEventListener("click", openBankRecordEditModalFunction);
+        }
+        const deleteButtonElements = bankRecordsTableElement.querySelectorAll(".is-bank-record-delete-button");
+        for (const buttonElement of deleteButtonElements) {
+            buttonElement.addEventListener("click", deleteBankRecordFromTableFunction);
         }
         const openBankRecordMonthEditModalFunction = (buttonEvent) => {
             const accountNumber = bankRecordsAccountNumberFilterElement.value;

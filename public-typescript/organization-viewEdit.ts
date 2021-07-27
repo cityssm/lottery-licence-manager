@@ -382,6 +382,48 @@ declare const llm: llmGlobal;
 
   if (canCreate) {
 
+    const deleteBankRecordFunction = (recordIndex: string, callbackFunction?: () => void) => {
+
+      const deleteFunction = () => {
+
+        cityssm.postJSON(urlPrefix + "/organizations/doDeleteBankRecord", {
+          organizationID,
+          recordIndex
+        }, () => {
+
+          if (callbackFunction) {
+            callbackFunction();
+          }
+
+          getBankRecordsFunction();
+        });
+      };
+
+      if (recordIndex === "") {
+
+        cityssm.alertModal("No Record to Delete",
+          "",
+          "OK",
+          "info");
+
+        return;
+      }
+
+      cityssm.confirmModal(
+        "Delete Bank Record?",
+        "Are you sure you want to delete this bank record?",
+        "Yes, Delete",
+        "warning",
+        deleteFunction
+      );
+    };
+
+    const deleteBankRecordFromTableFunction = (clickEvent: Event) => {
+      clickEvent.preventDefault();
+      const recordIndex = (clickEvent.currentTarget as HTMLButtonElement).closest("td").dataset.recordIndex;
+      deleteBankRecordFunction(recordIndex);
+    };
+
     const openBankRecordEditModalFunction = (buttonEvent: Event) => {
 
       const isNavBlockedByPage = cityssm.isNavBlockerEnabled();
@@ -418,35 +460,6 @@ declare const llm: llmGlobal;
             }
           }
         );
-      };
-
-      const deleteBankRecordFunction = (deleteButtonEvent: Event) => {
-
-        deleteButtonEvent.preventDefault();
-
-        const recordIndex = (deleteButtonEvent.currentTarget as HTMLButtonElement).dataset.recordIndex;
-
-        const deleteFunction = () => {
-
-          cityssm.postJSON(urlPrefix + "/organizations/doDeleteBankRecord", {
-            organizationID,
-            recordIndex
-          }, () => {
-
-            bankRecordEditCloseModalFunction();
-            getBankRecordsFunction();
-          });
-
-        };
-
-        cityssm.confirmModal(
-          "Delete Bank Record?",
-          "Are you sure you want to delete this bank record?",
-          "Yes, Delete",
-          "warning",
-          deleteFunction
-        );
-
       };
 
       // Get the button
@@ -504,6 +517,11 @@ declare const llm: llmGlobal;
           recordNote = recordObject.recordNote;
         }
       }
+
+      const deleteBankRecordFromModalFunction = (clickEvent: Event) => {
+        clickEvent.preventDefault();
+        deleteBankRecordFunction(recordIndex, bankRecordEditCloseModalFunction);
+      };
 
       cityssm.openHtmlModal("organization-bankRecordEdit", {
 
@@ -581,7 +599,7 @@ declare const llm: llmGlobal;
 
             const deleteButtonElement = document.querySelector("#bankRecordEdit--deleteRecordButton") as HTMLButtonElement;
             deleteButtonElement.dataset.recordIndex = recordIndex;
-            deleteButtonElement.addEventListener("click", deleteBankRecordFunction);
+            deleteButtonElement.addEventListener("click", deleteBankRecordFromModalFunction);
 
           } else {
             document.querySelector("#bankRecordEdit--moreOptionsDropdown").remove();
@@ -618,6 +636,12 @@ declare const llm: llmGlobal;
 
     for (const buttonElement of buttonElements) {
       buttonElement.addEventListener("click", openBankRecordEditModalFunction);
+    }
+
+    const deleteButtonElements = bankRecordsTableElement.querySelectorAll(".is-bank-record-delete-button");
+
+    for (const buttonElement of deleteButtonElements) {
+      buttonElement.addEventListener("click", deleteBankRecordFromTableFunction);
     }
 
     /*
@@ -919,7 +943,7 @@ declare const llm: llmGlobal;
    */
 
   llm.initializeTabs(document.querySelector("#tabs--organization"), {
-    onshown (tabContentElement) {
+    onshown(tabContentElement) {
 
       if (tabContentElement.id === "organizationTabContent--bankRecords" && !bankRecordsFiltersLoaded) {
         bankRecordsFiltersLoaded = true;
