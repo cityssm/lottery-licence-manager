@@ -16,7 +16,7 @@ describe("licencesDB/events", () => {
   });
 
   it("should execute getEvents()", () => {
-    assert.strictEqual(typeof getEvents({}, fakeViewOnlySession), "object");
+    assert.strictEqual(typeof getEvents({}, fakeViewOnlySession, { limit: 10, offset: 0 }), "object");
   });
 
   it("should execute getEventFinancialSummary()", () => {

@@ -82,8 +82,6 @@ export const getEvents = (requestBody: {
 
   if (options.limit !== -1) {
 
-    console.log("before limit");
-
     count = database.prepare("select ifnull(count(*), 0)" +
       " from LotteryEvents e" +
       " left join LotteryLicences l on e.licenceID = l.licenceID" +
@@ -92,8 +90,6 @@ export const getEvents = (requestBody: {
       sqlWhereClause)
       .pluck()
       .get(sqlParameters);
-
-      console.log("after limit");
   }
 
   let sql = "select" +
@@ -123,8 +119,6 @@ export const getEvents = (requestBody: {
     sql += " limit " + options.limit.toString() +
       " offset " + (options.offset || 0).toString();
   }
-
-  console.log(sql);
 
   database.function("userFn_dateIntegerToString", dateTimeFns.dateIntegerToString);
   database.function("userFn_timeIntegerToString", dateTimeFns.timeIntegerToString);
