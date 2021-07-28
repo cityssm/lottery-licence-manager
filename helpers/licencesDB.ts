@@ -206,7 +206,8 @@ export const getLicenceTypeSummary = (requestBody: {
   let sql = "select l.licenceID, l.externalLicenceNumber," +
     " l.applicationDate, l.issueDate," +
     " o.organizationName, lo.locationName, lo.locationAddress1," +
-    " l.licenceTypeKey, l.totalPrizeValue, l.licenceFee," +
+    " l.licenceTypeKey, l.totalPrizeValue," +
+    " ifnull(l.licenceFee, 0) as licenceFee," +
     " sum(t.transactionAmount) as transactionAmountSum" +
     " from LotteryLicences l" +
     " left join Organizations o on l.organizationID = o.organizationID" +
