@@ -52,44 +52,49 @@
       </div>
     <%
       } else {
+        const rightNow = new Date();
         for (const remark of remarks) {
     %>
-          <div class="panel-block is-block is-remark-block">
-            <div class="columns is-mobile">
-              <div class="column is-narrow">
-                <% if (remark.isImportant) { %>
-                  <i class="fas fa-fw fa-star" aria-hidden="true"></i>
-                <% } else { %>
-                  <i class="far fa-fw fa-comment" aria-hidden="true"></i>
-                <% } %>
-              </div>
-              <div class="column">
-                <p class="has-newline-chars is-remark"><%= remark.remark %></p>
-                <p class="is-size-7">
-                  <% if (remark.recordCreate_timeMillis !== remark.recordUpdate_timeMillis) { %>
-                    <i class="fas fa-pencil-alt" aria-hidden="true"></i>
-                  <% } %>
-                  <%= remark.recordUpdate_userName %> - <%= remark.remarkDateString %> <%= remark.remarkTimeString %>
-                </p>
-              </div>
-              <% if (remark.canUpdate) { %>
-                <div class="column is-narrow is-hidden-print is-hidden-status-view">
-                  <div class="buttons is-right has-addons">
-                    <button class="button is-small is-edit-remark-button" data-remark-index="<%= remark.remarkIndex %>" data-tooltip="Edit Remark" type="button">
-                      <span class="icon is-small">
-                        <i class="fas fa-pencil-alt" aria-hidden="true"></i>
-                      </span>
-                      <span>Edit</span>
-                    </button>
-                    <button class="button is-small has-text-danger is-delete-remark-button" data-remark-index="<%= remark.remarkIndex %>" data-tooltip="Delete Remark" type="button">
-                      <i class="fas fa-trash" aria-hidden="true"></i>
-                      <span class="sr-only">Delete</span>
-                    </button>
-                  </div>
-                </div>
+        <div class="panel-block is-block is-remark-block">
+          <div class="columns is-mobile">
+            <div class="column is-narrow">
+              <% if (remark.isImportant) { %>
+                <i class="fas fa-fw fa-star" aria-hidden="true"></i>
+              <% } else { %>
+                <i class="far fa-fw fa-comment" aria-hidden="true"></i>
               <% } %>
             </div>
+            <div class="column">
+              <p class="has-newline-chars is-remark"><%= remark.remark %></p>
+              <p class="is-size-7">
+                <% if (remark.recordCreate_timeMillis !== remark.recordUpdate_timeMillis) { %>
+                  <i class="fas fa-pencil-alt" aria-hidden="true"></i>
+                <% } %>
+                <%= remark.recordUpdate_userName %>
+                -
+                <span class="has-tooltip-right" data-tooltip="<%= dateDiff(dateTimeFns.dateStringToDate(remark.remarkDateString, remark.remarkTimeString), rightNow).formatted %> ago">
+                  <%= remark.remarkDateString %> <%= remark.remarkTimeString %>
+                </span>
+              </p>
+            </div>
+            <% if (remark.canUpdate) { %>
+              <div class="column is-narrow is-hidden-print is-hidden-status-view">
+                <div class="buttons is-right has-addons">
+                  <button class="button is-small is-edit-remark-button" data-remark-index="<%= remark.remarkIndex %>" data-tooltip="Edit Remark" type="button">
+                    <span class="icon is-small">
+                      <i class="fas fa-pencil-alt" aria-hidden="true"></i>
+                    </span>
+                    <span>Edit</span>
+                  </button>
+                  <button class="button is-small has-text-danger is-delete-remark-button" data-remark-index="<%= remark.remarkIndex %>" data-tooltip="Delete Remark" type="button">
+                    <i class="fas fa-trash" aria-hidden="true"></i>
+                    <span class="sr-only">Delete</span>
+                  </button>
+                </div>
+              </div>
+            <% } %>
           </div>
+        </div>
     <%
         }
       }
