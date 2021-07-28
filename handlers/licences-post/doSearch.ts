@@ -7,8 +7,8 @@ export const handler: RequestHandler = (request, response) => {
 
   response.json(getLicences(request.body, request.session, {
     includeOrganization: true,
-    limit: request.body.limit,
-    offset: request.body.offset
+    limit: Number.parseInt(request.body.limit, 10),
+    offset: Number.parseInt(request.body.offset, 10)
   }));
 };
 

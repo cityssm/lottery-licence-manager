@@ -8,44 +8,50 @@ import type * as llm from "../../types/recordTypes";
 import type * as expressSession from "express-session";
 
 
+interface GetEventsReturn {
+  count: number;
+  events: llm.LotteryEvent[];
+}
+
+
 export const getEvents = (requestBody: {
   externalLicenceNumber?: string;
   licenceTypeKey?: string;
   organizationName?: string;
   locationName?: string;
   eventYear?: string;
-}, requestSession: expressSession.Session): llm.LotteryEvent[] => {
+},
+  requestSession: expressSession.Session,
+  options: {
+    limit: number;
+    offset: number;
+  }): GetEventsReturn => {
 
   const database = sqlite(databasePath, {
     readonly: true
   });
 
-  const sqlParameters = [requestBody.eventYear, requestBody.eventYear];
+  // build where clause
 
-  let sql = "select e.eventDate, e.bank_name," +
-    " sum(coalesce(c.costs_receipts, 0)) as costs_receiptsSum," +
-    " l.licenceID, l.externalLicenceNumber, l.licenceTypeKey, l.licenceDetails," +
-    " lo.locationName, lo.locationAddress1," +
-    " l.startTime, l.endTime," +
-    " o.organizationName," +
-    " e.recordCreate_userName, e.recordCreate_timeMillis, e.recordUpdate_userName, e.recordUpdate_timeMillis" +
-    " from LotteryEvents e" +
-    " left join LotteryLicences l on e.licenceID = l.licenceID" +
-    " left join Locations lo on l.locationID = lo.locationID" +
-    " left join Organizations o on l.organizationID = o.organizationID" +
-    " left join LotteryEventCosts c on e.licenceID = c.licenceID and e.eventDate = c.eventDate" +
-    " where e.recordDelete_timeMillis is null" +
-    " and l.recordDelete_timeMillis is null" +
-    " and e.eventDate > (? * 10000)" +
-    " and e.eventDate < (? * 10000) + 9999";
+  const sqlParameters = [];
+
+  let sqlWhereClause = " where e.recordDelete_timeMillis is null" +
+    " and l.recordDelete_timeMillis is null";
+
+  if (requestBody.eventYear && requestBody.eventYear !== "") {
+    sqlWhereClause += " and e.eventDate > (? * 10000)" +
+      " and e.eventDate < (? * 10000) + 9999";
+
+    sqlParameters.push(requestBody.eventYear, requestBody.eventYear);
+  }
 
   if (requestBody.externalLicenceNumber && requestBody.externalLicenceNumber !== "") {
-    sql += " and instr(lower(l.externalLicenceNumber), ?) > 0";
+    sqlWhereClause += " and instr(lower(l.externalLicenceNumber), ?) > 0";
     sqlParameters.push(requestBody.externalLicenceNumber);
   }
 
   if (requestBody.licenceTypeKey && requestBody.licenceTypeKey !== "") {
-    sql += " and l.licenceTypeKey = ?";
+    sqlWhereClause += " and l.licenceTypeKey = ?";
     sqlParameters.push(requestBody.licenceTypeKey);
   }
 
@@ -54,7 +60,7 @@ export const getEvents = (requestBody: {
     const organizationNamePieces = requestBody.organizationName.toLowerCase().split(" ");
 
     for (const organizationNamePiece of organizationNamePieces) {
-      sql += " and instr(lower(o.organizationName), ?)";
+      sqlWhereClause += " and instr(lower(o.organizationName), ?)";
       sqlParameters.push(organizationNamePiece);
     }
   }
@@ -64,17 +70,64 @@ export const getEvents = (requestBody: {
     const locationNamePieces = requestBody.locationName.toLowerCase().split(" ");
 
     for (const locationNamePiece of locationNamePieces) {
-      sql += " and (instr(lower(lo.locationName), ?) or instr(lower(lo.locationAddress1), ?))";
+      sqlWhereClause += " and (instr(lower(lo.locationName), ?) or instr(lower(lo.locationAddress1), ?))";
 
       sqlParameters.push(locationNamePiece, locationNamePiece);
     }
   }
 
-  sql += " group by e.eventDate, e.bank_name," +
+  // if a limit is used, get the count
+
+  let count = 0;
+
+  if (options.limit !== -1) {
+
+    console.log("before limit");
+
+    count = database.prepare("select ifnull(count(*), 0)" +
+      " from LotteryEvents e" +
+      " left join LotteryLicences l on e.licenceID = l.licenceID" +
+      " left join Locations lo on l.locationID = lo.locationID" +
+      " left join Organizations o on l.organizationID = o.organizationID" +
+      sqlWhereClause)
+      .pluck()
+      .get(sqlParameters);
+
+      console.log("after limit");
+  }
+
+  let sql = "select" +
+    " 'event' as recordType," +
+    " e.eventDate, userFn_dateIntegerToString(e.eventDate) as eventDateString," +
+    " e.reportDate, e.bank_name," +
+    " sum(coalesce(c.costs_receipts, 0)) as costs_receiptsSum," +
+    " l.licenceID, l.externalLicenceNumber, l.licenceTypeKey, l.licenceDetails," +
+    " iif(lo.locationName = '', lo.locationAddress1, lo.locationName) as locationDisplayName," +
+    " l.startTime, userFn_timeIntegerToString(l.startTime) as startTimeString," +
+    " l.endTime, userFn_timeIntegerToString(l.endTime) as endTimeString," +
+    " o.organizationName," +
+    " e.recordCreate_userName, e.recordCreate_timeMillis, e.recordUpdate_userName, e.recordUpdate_timeMillis" +
+    " from LotteryEvents e" +
+    " left join LotteryLicences l on e.licenceID = l.licenceID" +
+    " left join Locations lo on l.locationID = lo.locationID" +
+    " left join Organizations o on l.organizationID = o.organizationID" +
+    " left join LotteryEventCosts c on e.licenceID = c.licenceID and e.eventDate = c.eventDate" +
+    sqlWhereClause +
+    " group by e.eventDate, e.reportDate, e.bank_name," +
     " l.licenceID, l.externalLicenceNumber, l.licenceTypeKey, l.licenceDetails," +
     " lo.locationName, lo.locationAddress1, l.startTime, l.endTime, o.organizationName," +
     " e.recordCreate_userName, e.recordCreate_timeMillis, e.recordUpdate_userName, e.recordUpdate_timeMillis" +
     " order by e.eventDate, l.startTime";
+
+  if (options.limit !== -1) {
+    sql += " limit " + options.limit.toString() +
+      " offset " + (options.offset || 0).toString();
+  }
+
+  console.log(sql);
+
+  database.function("userFn_dateIntegerToString", dateTimeFns.dateIntegerToString);
+  database.function("userFn_timeIntegerToString", dateTimeFns.timeIntegerToString);
 
   const events: llm.LotteryEvent[] =
     database.prepare(sql)
@@ -83,23 +136,13 @@ export const getEvents = (requestBody: {
   database.close();
 
   for (const lotteryEvent of events) {
-
-    lotteryEvent.recordType = "event";
-
-    lotteryEvent.eventDateString = dateTimeFns.dateIntegerToString(lotteryEvent.eventDate);
-
-    lotteryEvent.startTimeString = dateTimeFns.timeIntegerToString(lotteryEvent.startTime || 0);
-    lotteryEvent.endTimeString = dateTimeFns.timeIntegerToString(lotteryEvent.endTime || 0);
-
-    lotteryEvent.locationDisplayName =
-      (lotteryEvent.locationName === "" ? lotteryEvent.locationAddress1 : lotteryEvent.locationName);
-
     lotteryEvent.canUpdate = canUpdateObject(lotteryEvent, requestSession);
 
-    delete lotteryEvent.locationName;
-    delete lotteryEvent.locationAddress1;
     delete lotteryEvent.bank_name;
   }
 
-  return events;
+  return {
+    count: (options.limit === -1 ? events.length : count),
+    events
+  };
 };

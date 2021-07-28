@@ -10,31 +10,28 @@ declare const cityssm: cityssmGlobal;
 
   const urlPrefix = document.querySelector("main").getAttribute("data-url-prefix");
 
-  const filterExternalLicenceNumberElement =
-    document.querySelector("#filter--externalLicenceNumber") as HTMLInputElement;
+  const formElement = document.querySelector("#form--filters") as HTMLFormElement;
 
-  const filterLicenceTypeKeyElement = document.querySelector("#filter--licenceTypeKey") as HTMLSelectElement;
-  const filterOrganizationNameElement = document.querySelector("#filter--organizationName") as HTMLInputElement;
-  const filterLocationNameElement = document.querySelector("#filter--locationName") as HTMLInputElement;
-  const filterYearElement = document.querySelector("#filter--year") as HTMLSelectElement;
+  const limitElement = document.querySelector("#filter--limit") as HTMLInputElement;
+  const offsetElement = document.querySelector("#filter--offset") as HTMLInputElement;
 
   const resultsElement = document.querySelector("#container--events") as HTMLElement;
 
-  const getEventsFunction = () => {
+  const doEventSearchFunction = () => {
+
+    const currentLimit = Number.parseInt(limitElement.value, 10);
+    const currentOffset = Number.parseInt(offsetElement.value, 10);
 
     resultsElement.innerHTML = "<p class=\"has-text-centered has-text-grey-lighter\">" +
       "<i class=\"fas fa-3x fa-circle-notch fa-spin\" aria-hidden=\"true\"></i><br />" +
       "<em>Loading events..." +
       "</p>";
 
-    cityssm.postJSON(urlPrefix + "/events/doSearch", {
-      externalLicenceNumber: filterExternalLicenceNumberElement.value,
-      licenceTypeKey: filterLicenceTypeKeyElement.value,
-      organizationName: filterOrganizationNameElement.value,
-      locationName: filterLocationNameElement.value,
-      eventYear: filterYearElement.value
-    },
-      (eventList: llmTypes.LotteryEvent[]) => {
+    cityssm.postJSON(urlPrefix + "/events/doSearch",
+      formElement,
+      (eventResults: { count: number; events: llmTypes.LotteryEvent[] }) => {
+
+        const eventList = eventResults.events;
 
         if (eventList.length === 0) {
 
@@ -113,15 +110,80 @@ declare const cityssm: cityssmGlobal;
         tableElement.append(tbodyElement);
 
         resultsElement.append(tableElement);
+
+        resultsElement.insertAdjacentHTML("beforeend", "<div class=\"level is-block-print\">" +
+          "<div class=\"level-left has-text-weight-bold\">" +
+          "Displaying events " +
+          (currentOffset + 1).toString() +
+          " to " +
+          Math.min(currentLimit + currentOffset, eventResults.count).toString() +
+          " of " +
+          eventResults.count.toString() +
+          "</div>" +
+          "</div>");
+
+        if (currentLimit < eventResults.count) {
+
+          const paginationElement = document.createElement("nav");
+          paginationElement.className = "level-right is-hidden-print";
+          paginationElement.setAttribute("role", "pagination");
+          paginationElement.setAttribute("aria-label", "pagination");
+
+          if (currentOffset > 0) {
+
+            const previousElement = document.createElement("a");
+            previousElement.className = "button";
+            previousElement.textContent = "Previous";
+            previousElement.addEventListener("click", (clickEvent) => {
+
+              clickEvent.preventDefault();
+              offsetElement.value = Math.max(0, currentOffset - currentLimit).toString();
+              doEventSearchFunction();
+
+            });
+
+            paginationElement.append(previousElement);
+          }
+
+          if (currentLimit + currentOffset < eventResults.count) {
+
+            const nextElement = document.createElement("a");
+            nextElement.className = "button ml-3";
+
+            nextElement.innerHTML =
+              "<span>Next Events</span>" +
+              "<span class=\"icon\"><i class=\"fas fa-chevron-right\" aria-hidden=\"true\"></i></span>";
+
+            nextElement.addEventListener("click", (clickEvent) => {
+
+              clickEvent.preventDefault();
+              offsetElement.value = (currentOffset + currentLimit).toString();
+              doEventSearchFunction();
+            });
+
+            paginationElement.append(nextElement);
+          }
+
+          resultsElement.querySelector(".level").append(paginationElement);
+        }
       }
     );
   };
 
-  filterExternalLicenceNumberElement.addEventListener("change", getEventsFunction);
-  filterLicenceTypeKeyElement.addEventListener("change", getEventsFunction);
-  filterOrganizationNameElement.addEventListener("change", getEventsFunction);
-  filterLocationNameElement.addEventListener("change", getEventsFunction);
-  filterYearElement.addEventListener("change", getEventsFunction);
+  const resetOffsetAndDoEventSearchFunction = () => {
+    offsetElement.value = "0";
+    doEventSearchFunction();
+  };
 
-  getEventsFunction();
+  formElement.addEventListener("submit", (formEvent) => {
+    formEvent.preventDefault();
+  });
+
+  const inputElements = formElement.querySelectorAll(".input, .select select");
+
+  for (const inputElement of inputElements) {
+    inputElement.addEventListener("change", resetOffsetAndDoEventSearchFunction);
+  }
+
+  resetOffsetAndDoEventSearchFunction();
 })();
