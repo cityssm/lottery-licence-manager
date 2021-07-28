@@ -73,7 +73,7 @@ declare const cityssm: cityssmGlobal;
         }
 
         const tableElement = document.createElement("table");
-        tableElement.className = "table is-fixed is-fullwidth is-bordered";
+        tableElement.className = "table is-fixed is-fullwidth is-bordered has-sticky-header";
 
         // Construct header
 

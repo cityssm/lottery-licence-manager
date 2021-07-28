@@ -20,7 +20,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     "</div>";
                 return;
             }
-            searchResultsElement.innerHTML = "<table class=\"table is-fullwidth is-striped is-hoverable\">" +
+            searchResultsElement.innerHTML = "<table class=\"table is-fullwidth is-striped is-hoverable has-sticky-header\">" +
                 "<thead><tr>" +
                 "<th colspan=\"2\">Organization Name</th>" +
                 "<th>Default Representative</th>" +

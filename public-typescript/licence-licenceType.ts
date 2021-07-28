@@ -50,7 +50,7 @@ declare const llm: llmGlobal;
         }
 
         const tableElement = document.createElement("table");
-        tableElement.className = "table is-fullwidth is-striped is-hoverable";
+        tableElement.className = "table is-fullwidth is-striped is-hoverable has-sticky-header";
 
         tableElement.innerHTML = "<thead><tr>" +
           "<th>Application Date</th>" +
@@ -70,7 +70,7 @@ declare const llm: llmGlobal;
         // let transactionAmountSum = 0;
 
         for (const licenceObject of licenceList) {
-
+          
           const trElement = document.createElement("tr");
 
           trElement.insertAdjacentHTML(

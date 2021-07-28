@@ -40,7 +40,7 @@ declare const llm: llmGlobal;
         }
 
         const tableElement = document.createElement("table");
-        tableElement.className = "table is-striped is-hoverable is-fullwidth";
+        tableElement.className = "table is-striped is-hoverable is-fullwidth has-sticky-header";
         tableElement.innerHTML = "<thead>" +
           "<tr>" +
           "<th>" + externalLicenceNumberFieldLabel + "</th>" +

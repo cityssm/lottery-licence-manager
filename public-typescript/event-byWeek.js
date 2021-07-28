@@ -29,7 +29,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 return;
             }
             const tableElement = document.createElement("table");
-            tableElement.className = "table is-fixed is-fullwidth is-bordered";
+            tableElement.className = "table is-fixed is-fullwidth is-bordered has-sticky-header";
             let headerTheadHTML = "<thead><tr>";
             const headerDate = cityssm.dateStringToDate(responseJSON.startDateString);
             for (let weekDayIndex = 0; weekDayIndex <= 6; weekDayIndex += 1) {

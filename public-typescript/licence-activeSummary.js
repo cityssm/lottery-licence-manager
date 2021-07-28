@@ -20,7 +20,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 return;
             }
             const tableElement = document.createElement("table");
-            tableElement.className = "table is-striped is-hoverable is-fullwidth";
+            tableElement.className = "table is-striped is-hoverable is-fullwidth has-sticky-header";
             tableElement.innerHTML = "<thead>" +
                 "<tr>" +
                 "<th>" + externalLicenceNumberFieldLabel + "</th>" +

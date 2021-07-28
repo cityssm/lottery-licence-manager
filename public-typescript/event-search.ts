@@ -94,7 +94,7 @@ declare const cityssm: cityssmGlobal;
         cityssm.clearElement(resultsElement);
 
         const tableElement = document.createElement("table");
-        tableElement.className = "table is-fullwidth is-striped is-hoverable";
+        tableElement.className = "table is-fullwidth is-striped is-hoverable has-sticky-header";
 
         tableElement.innerHTML = "<thead>" +
           "<tr>" +

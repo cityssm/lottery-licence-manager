@@ -50,7 +50,7 @@ declare const cityssm: cityssmGlobal;
           return;
         }
 
-        searchResultsElement.innerHTML = "<table class=\"table is-fullwidth is-striped is-hoverable\">" +
+        searchResultsElement.innerHTML = "<table class=\"table is-fullwidth is-striped is-hoverable has-sticky-header\">" +
           "<thead><tr>" +
           "<th>" + cityssm.escapeHTML(externalLicenceNumberLabel) + "</th>" +
           "<th>Licence</th>" +

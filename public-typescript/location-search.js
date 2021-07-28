@@ -106,7 +106,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 return;
             }
             nowDate = new Date();
-            searchResultsElement.innerHTML = "<table class=\"table is-fullwidth is-striped is-hoverable\">" +
+            searchResultsElement.innerHTML = "<table class=\"table is-fullwidth is-striped is-hoverable has-sticky-header\">" +
                 "<thead><tr>" +
                 "<th>Location</th>" +
                 "<th>Address</th>" +

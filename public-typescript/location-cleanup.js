@@ -40,7 +40,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 return;
             }
             const tableElement = document.createElement("table");
-            tableElement.className = "table is-fullwidth is-striped is-hoverable";
+            tableElement.className = "table is-fullwidth is-striped is-hoverable has-sticky-header";
             tableElement.innerHTML = "<thead>" +
                 "<tr>" +
                 "<th>Location</th>" +
