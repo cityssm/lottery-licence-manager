@@ -24,8 +24,8 @@ declare const cityssm: cityssmGlobal;
       const locationID = buttonElement.dataset.locationId;
 
       cityssm.postJSON(urlPrefix + "/locations/doDelete", {
-          locationID
-        },
+        locationID
+      },
         (responseJSON: {
           success: boolean;
           message: string;
@@ -71,7 +71,6 @@ declare const cityssm: cityssmGlobal;
             "</div>";
 
           return;
-
         }
 
         const tableElement = document.createElement("table");
@@ -99,7 +98,9 @@ declare const cityssm: cityssmGlobal;
             " href=\"" + cityssm.escapeHTML(urlPrefix) + "/locations/" + locationObject.locationID.toString() + "\">" +
             safeLocationDisplayName +
             "</a>" +
-            (locationObject.locationDisplayName === locationObject.locationAddress1 ? "" : "<br />" +
+            (locationObject.locationDisplayName === locationObject.locationAddress1
+              ? ""
+              : "<br />" +
               "<small>" + cityssm.escapeHTML(locationObject.locationAddress1) + "</small>") +
             "</td>");
 

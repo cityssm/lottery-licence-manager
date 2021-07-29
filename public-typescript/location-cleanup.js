@@ -58,8 +58,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
                     " href=\"" + cityssm.escapeHTML(urlPrefix) + "/locations/" + locationObject.locationID.toString() + "\">" +
                     safeLocationDisplayName +
                     "</a>" +
-                    (locationObject.locationDisplayName === locationObject.locationAddress1 ? "" : "<br />" +
-                        "<small>" + cityssm.escapeHTML(locationObject.locationAddress1) + "</small>") +
+                    (locationObject.locationDisplayName === locationObject.locationAddress1
+                        ? ""
+                        : "<br />" +
+                            "<small>" + cityssm.escapeHTML(locationObject.locationAddress1) + "</small>") +
                     "</td>");
                 let dateMax = locationObject.licences_endDateMax;
                 let dateMaxString = locationObject.licences_endDateMaxString;
