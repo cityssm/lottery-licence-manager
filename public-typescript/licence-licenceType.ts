@@ -70,7 +70,7 @@ declare const llm: llmGlobal;
         // let transactionAmountSum = 0;
 
         for (const licenceObject of licenceList) {
-          
+
           const trElement = document.createElement("tr");
 
           trElement.insertAdjacentHTML(
@@ -123,9 +123,7 @@ declare const llm: llmGlobal;
           // Update summaries
 
           if (licenceObject.issueDate && licenceObject.issueDate > 0) {
-
             issueDateCount += 1;
-
           }
 
           totalPrizeValueSum += licenceObject.totalPrizeValue;
@@ -144,9 +142,9 @@ declare const llm: llmGlobal;
           "<th>" +
           issueDateCount.toString() + " issued" +
           "</th>" +
-          "<td></td>" +
-          "<td></td>" +
-          "<td></td>" +
+          "<th></th>" +
+          "<th></th>" +
+          "<th></th>" +
           "<th class=\"is-nowrap has-text-right\">$ " + totalPrizeValueSum.toFixed(2) + "</th>" +
           "<th class=\"is-nowrap has-text-right\">$ " + licenceFeeSum.toFixed(2) + "</th>" +
           "</tr>";

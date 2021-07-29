@@ -68,9 +68,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 "<th>" +
                 issueDateCount.toString() + " issued" +
                 "</th>" +
-                "<td></td>" +
-                "<td></td>" +
-                "<td></td>" +
+                "<th></th>" +
+                "<th></th>" +
+                "<th></th>" +
                 "<th class=\"is-nowrap has-text-right\">$ " + totalPrizeValueSum.toFixed(2) + "</th>" +
                 "<th class=\"is-nowrap has-text-right\">$ " + licenceFeeSum.toFixed(2) + "</th>" +
                 "</tr>";
