@@ -28,7 +28,7 @@
     "@cityssm/bulma-webapp-js": "^1.1.3",
     "@cityssm/date-diff": "^2.2.3",
     "@cityssm/expressjs-server-js": "^2.2.0",
-    "@fortawesome/fontawesome-free": "^5.15.3",
+    "@fortawesome/fontawesome-free": "^5.15.4",
     "bcrypt": "^5.0.1",
     "better-sqlite3": "^7.4.3",
     "compression": "^1.7.4",
