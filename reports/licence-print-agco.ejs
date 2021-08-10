@@ -267,7 +267,7 @@
           <% } %>
           <tr>
             <td class="has-padding-right-10 is-two-thirds">
-              <div class="field" style="min-height:100px">
+              <div class="field" style="min-height:90px">
                 <% if (licenceType && licenceType.printSettings && licenceType.printSettings.agco_useLicenceDatesAsEventDates) { %>
                   <%= licence.startDateString.replace(/-/g, "/") %> to <%= licence.endDateString.replace(/-/g, "/") %>
                 <% } else { %>
@@ -279,10 +279,10 @@
             </td>
             <% if (!hideTimes) { %>
               <td class="has-vertical-align-top is-one-sixth has-padding-right-10">
-                <div class="field" style="min-height:100px"><%= licence.startTimeString %></div>
+                <div class="field" style="min-height:90px"><%= licence.startTimeString %></div>
               </td>
               <td class="has-vertical-align-top is-one-sixth">
-                <div class="field" style="min-height:100px"><%= licence.endTimeString %></div>
+                <div class="field" style="min-height:90px"><%= licence.endTimeString %></div>
               </td>
             <% } %>
           </tr>
@@ -454,7 +454,7 @@
         </tr>
       </tbody>
     </table>
-
+    
     <table class="is-fullwidth">
       <tbody>
         <tr>
