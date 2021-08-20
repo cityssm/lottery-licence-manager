@@ -43,3 +43,11 @@ Tweak some additional settings.
 
 **[Administrator Tools - User Management](admin-userManagement.md)**<br />
 How to add, update, and remove user accounts.
+
+## Helpful Links
+
+[AGCO - Charitable Lottery Licensing Overview](https://www.agco.ca/lottery-and-gaming/charitable-lottery-licensing-overview)
+
+[AGCO - Schedule of Approved Break Open Ticket Types and Associated Maximum Expenses](https://www.agco.ca/sites/default/files/schedule_of_approved_bot_types_and_associated_expense_maximumsen.pdf)
+
+[AGCO - Lottery Licensing Policy Manual](https://www.agco.ca/sites/default/files/llpm_2019e.pdf)
