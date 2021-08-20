@@ -2,7 +2,17 @@
 
 **Thank you for taking the time to read the documentation.**
 
-![Lottery licence Manager Dashboard](assets/images/dashboard.png)
+![Lottery Licence Manager Dashboard](assets/images/dashboard.png)
+
+The Lottery Licence Manager is a web application written by the
+[City of Sault Ste. Marie](https://saultstemarie.ca/)
+to meet the lottery licensing requirements of Ontario municipalities
+as defined by the
+[Alcohol and Gaming Commission of Ontario (AGCO)](https://www.agco.ca/).
+
+## User Documentation
+
+![Lottery Licence Search](assets/images/licence-search.png)
 
 **[Tips and Tricks](tipsTricks.md)**<br />
 Transform yourself from an average user into a power user.
@@ -43,6 +53,14 @@ Tweak some additional settings.
 
 **[Administrator Tools - User Management](admin-userManagement.md)**<br />
 How to add, update, and remove user accounts.
+
+## More Help
+
+Need additional help?  Have a feature you would like to see implemented?
+
+**[Reach out through the Issues area on GitHub](https://github.com/cityssm/lottery-licence-manager/issues).**
+
+_Remember that GitHub Issues are public and can be seen by everyone._
 
 ## Helpful Links
 
