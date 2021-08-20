@@ -2,8 +2,8 @@
 
 # Tips and Tricks
 
-In no particular order, here are some tips to change transform you
-from an average user to a power user.
+In no particular order, here are some tips to transform you
+from an average user into a power user.
 
 ## Web Application Basics
 

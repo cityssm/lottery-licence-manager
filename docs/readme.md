@@ -4,7 +4,8 @@
 
 ![Lottery licence Manager Dashboard](assets/images/dashboard.png)
 
-**[Tips and Tricks](tipsTricks.md)**
+**[Tips and Tricks](tipsTricks.md)**<br />
+Transform yourself from an average user into a power user.
 
 **[Organizations](organizations.md)**<br />
 What are organizations?

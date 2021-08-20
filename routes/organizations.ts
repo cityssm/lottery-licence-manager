@@ -5,6 +5,7 @@ import * as permissionHandlers from "../handlers/permissions.js";
 import handler_cleanup from "../handlers/organizations-get/cleanup.js";
 import handler_new from "../handlers/organizations-get/new.js";
 import handler_view from "../handlers/organizations-get/view.js";
+import handler_print from "../handlers/organizations-get/print.js";
 import handler_edit from "../handlers/organizations-get/edit.js";
 
 import handler_doSearch from "../handlers/organizations-post/doSearch.js";
@@ -231,6 +232,9 @@ router.post("/doRollForward",
 
 router.get("/:organizationID",
   handler_view);
+
+router.get("/:organizationID/print",
+  handler_print);
 
 
 /*

@@ -1,0 +1,199 @@
+<%- include('_header-print'); -%>
+
+<h1 class="title is-1">
+  <%= organization.organizationName %>
+</h1>
+
+<div class="columns">
+  <div class="column">
+    <p>
+      <%= organization.organizationAddress1 %><br />
+      <%= organization.organizationAddress2 %>
+      <%- (organization.organizationAddress2 === "" ? "" : "<br />") %>
+      <%= (organization.organizationCity === "" ? "" : organization.organizationCity + ", ") %>
+      <%= organization.organizationProvince %><br />
+      <%= organization.organizationPostalCode %>
+    </p>
+  </div>
+  <div class="column">
+
+    <div class="columns">
+      <div class="column">
+        <p>
+          <strong>Trust Account Number</strong><br />
+          <% if (organization.trustAccountNumber === null || organization.trustAccountNumber === "") { %>
+            <span class="has-text-grey">(Not Recorded)</span>
+          <% } else { %>
+            <%= organization.trustAccountNumber %>
+          <% } %>
+        </p>
+      </div>
+      <div class="column">
+        <p>
+          <strong>Fiscal Year</strong><br />
+          <% if (organization.fiscalStartDate === 0) { %>
+            <span class="has-text-grey">(Not Recorded)</span>
+          <% } else { %>
+            <%= organization.fiscalStartDateString %> to <%= organization.fiscalEndDateString %>
+          <% } %>
+          </p>
+      </div>
+    </div>
+
+    <% if (!organization.isEligibleForLicences) { %>
+      <div class="message is-danger">
+        <p class="message-body">
+          <i class="fas fa-times mr-3" aria-hidden="true"></i>
+          <strong>Not Eligible for New Licences</strong>
+        </p>
+      </div>
+    <% } %>
+    <% if (organization.organizationNote && organization.organizationNote !== "") { %>
+      <p class="mt-3">
+        <strong>Notes</strong><br />
+        <span class="has-newline-chars"><%= organization.organizationNote %></span>
+      </p>
+    <% } %>
+  </div>
+</div>
+
+<section class="content">
+  <h2 class="title is-3">Representatives</h2>
+
+  <% if (organization.organizationRepresentatives.length === 0) { %>
+    <div class="message is-warning">
+      <div class="message-body">
+        There are no representatives associated with this organization.
+      </div>
+    </div>
+  <% } else { %>
+
+    <table class="table is-fullwidth is-striped">
+      <thead>
+        <tr>
+          <th class="has-width-50">Default</th>
+          <th>Name</th>
+          <th>Address</th>
+          <th>Phone Number</th>
+          <th>Email Address</th>
+        </tr>
+      </thead>
+      <tbody>
+        <%
+          for (let index = 0; index < organization.organizationRepresentatives.length; index += 1) {
+            const representativeObj = organization.organizationRepresentatives[index];
+        %>
+          <tr data-representative-index="<%= representativeObj.representativeIndex %>">
+            <td>
+              <% if (representativeObj.isDefault === 1) { %>
+                <span class="has-cursor-default" data-tooltip="Default Representative"><i class="far fa-lg fa-fw fa-dot-circle has-text-info" aria-hidden="true"></i></span>
+                <span class="sr-only">Default Representative</span>
+              <% } else { %>
+                <i class="far fa-lg fa-fw fa-circle has-text-grey-lighter" aria-hidden="true"></i>
+              <% } %>
+            </td>
+            <td>
+              <%= representativeObj.representativeName %><br />
+              <small><%= representativeObj.representativeTitle %></small>
+            </td>
+            <td>
+              <%= representativeObj.representativeAddress1 %><br />
+              <small>
+                <%= representativeObj.representativeAddress2 %>
+                <%- (representativeObj.representativeAddress2 === "" ? "" : "<br />") %>
+                <%= representativeObj.representativeCity %>, <%= representativeObj.representativeProvince %><br />
+                <%= representativeObj.representativePostalCode %>
+              </small>
+            </td>
+            <td>
+              <%= representativeObj.representativePhoneNumber %><br />
+              <%= representativeObj.representativePhoneNumber2 %>
+            </td>
+            <td>
+              <%= representativeObj.representativeEmailAddress %>
+            </td>
+          </tr>
+        <% } %>
+      </tbody>
+    </table>
+  <% } %>
+</section>
+
+<section class="content" style="page-break-inside:avoid">
+  <h2 class="title is-3">Active Licences</h2>
+
+  <%
+    let licenceTbodyHTML = "";
+
+    let rows_active = "";
+    let count_active = 0;
+
+    const licenceTypes = configFunctions.getProperty("licenceTypes");
+
+    for (let licenceIndex = 0; licenceIndex < licences.length; licenceIndex += 1) {
+
+      const licence = licences[licenceIndex];
+
+      if (licence.endDate < currentDateInteger) {
+        continue;
+      }
+
+      count_active += 1;
+
+      let licenceType = {};
+      for (let typeIndex = 0; typeIndex < licenceTypes.length; typeIndex += 1) {
+        if (licenceTypes[typeIndex].licenceTypeKey === licence.licenceTypeKey) {
+          licenceType = licenceTypes[typeIndex];
+          break;
+        }
+      }
+
+      let rowHTML = "<tr>" +
+        "<td>" +
+          htmlFns.escapeHTML(licence.externalLicenceNumber) + "<br />" +
+          "<small>Licence #" + licence.licenceID + "</small>" +
+          "</td>" +
+        "<td>" + (licenceType.licenceType || licence.licenceTypeKey) + "</td>" +
+        "<td class=\"has-newline-chars\">" + htmlFns.escapeHTML(licence.licenceDetails) + "</td>" +
+        "<td>" +
+          (licence.locationID
+          ? htmlFns.escapeHTML(licence.locationDisplayName) +
+            (licence.locationDisplayName === licence.locationAddress1 ? "" : "<br /><small>" + htmlFns.escapeHTML(licence.locationAddress1) + "</small>")
+          : "<span class=\"has-text-grey\">(No Location)</span>") +
+          "</td>" +
+        "<td class=\"is-nowrap\">" + licence.startDateString + "</td>" +
+        "<td class=\"is-nowrap\">" + licence.endDateString + "</td>" +
+        "</tr>";
+
+      licenceTbodyHTML += rowHTML;
+    }
+  %>
+
+  <% if (count_active === 0) { %>
+    <div class="message is-info">
+      <div class="message-body">
+        <%= organization.organizationName %> has no active licence records.
+      </div>
+    </div>
+  <% } else { %>
+    <table class="table is-fullwidth is-striped">
+      <thead>
+        <tr>
+          <th class="has-width-150"><%= configFunctions.getProperty("licences.externalLicenceNumber.fieldLabel") %></th>
+          <th class="has-width-50 is-nowrap">Licence Type</th>
+          <th>Event Details</th>
+          <th>Location</th>
+          <th class="has-width-50">From</th>
+          <th class="has-width-50">To</th>
+        </tr>
+      </thead>
+      <tbody><%- licenceTbodyHTML %></tbody>
+    </table>
+  <% } %>
+</section>
+
+<script>
+  window.onload = window.print;
+</script>
+
+<%- include('_footer-print'); -%>

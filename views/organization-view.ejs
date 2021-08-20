@@ -38,9 +38,25 @@
       </div>
     <% } %>
 
-    <h1 class="title is-1">
-      <%= organization.organizationName %>
-    </h1>
+    <div class="columns is-desktop">
+      <div class="column">
+        <h1 class="title is-1">
+          <%= organization.organizationName %>
+        </h1>
+      </div>
+      <div class="column is-narrow is-hidden-print">
+        <div class="field is-grouped justify-flex-end">
+          <div class="control">
+            <a class="button is-link" href="<%= urlPrefix %>/organizations/<%= organization.organizationID %>/print" target="_blank">
+              <span class="icon is-small">
+                <i class="fas fa-print" aria-hidden="true"></i>
+              </span>
+              <span>Print Details</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <% if (organization.canUpdate) { %>
       <div class="fixed-container is-fixed-bottom-right mx-4 my-4 has-text-right is-hidden-print">
@@ -115,8 +131,8 @@
       <ul role="tablist">
         <li class="is-active" role="presentation">
           <a id="organizationTab--representatives" role="tab" href="#organizationTabContent--representatives">
-            <span class="icon"><i class="fas fa-users" aria-hidden="true"></i></span>
-            <span>Representatives</span>
+            <span class="icon is-small"><i class="fas fa-users" aria-hidden="true"></i></span>
+            <span class="is-hidden-desktop-only is-hidden-tablet-only">Representatives</span>
             <% if (organization.organizationRepresentatives.length > 0) { %>
               <span class="tag is-info is-rounded ml-3">
                 <%= organization.organizationRepresentatives.length %>
@@ -126,8 +142,8 @@
         </li>
         <li role="presentation">
           <a id="organizationTab--licences" role="tab" href="#organizationTabContent--licences">
-            <span class="icon"><i class="fas fa-certificate" aria-hidden="true"></i></span>
-            <span>Licences</span>
+            <span class="icon is-small"><i class="fas fa-certificate" aria-hidden="true"></i></span>
+            <span class="is-hidden-desktop-only is-hidden-tablet-only">Licences</span>
             <% if (licences.length > 0) { %>
               <span class="tag is-info is-rounded ml-3">
                 <%= licences.length %>
@@ -137,8 +153,8 @@
         </li>
         <li role="presentation">
           <a id="organizationTab--remarks" role="tab" href="#organizationTabContent--remarks">
-            <span class="icon"><i class="fas fa-comment" aria-hidden="true"></i></span>
-            <span>Remarks</span>
+            <span class="icon is-small"><i class="fas fa-comment" aria-hidden="true"></i></span>
+            <span class="is-hidden-desktop-only is-hidden-tablet-only">Remarks</span>
             <% if (remarks.length > 0) { %>
               <span class="tag is-info is-rounded ml-3">
                 <%= remarks.length %>
@@ -148,8 +164,8 @@
         </li>
         <li role="presentation">
           <a id="organizationTab--reminders" role="tab" href="#organizationTabContent--reminders">
-            <span class="icon"><i class="fas fa-bell" aria-hidden="true"></i></span>
-            <span>Reminders</span>
+            <span class="icon is-small"><i class="fas fa-bell" aria-hidden="true"></i></span>
+            <span class="is-hidden-desktop-only is-hidden-tablet-only">Reminders</span>
             <% if (reminders.length > 0) { %>
               <span class="tag is-info is-rounded ml-3">
                 <%= reminders.length %>
@@ -159,8 +175,8 @@
         </li>
         <li role="presentation">
           <a id="organizationTab--bankRecords" role="tab" href="#organizationTabContent--bankRecords">
-            <span class="icon"><i class="fas fa-file-invoice-dollar" aria-hidden="true"></i></span>
-            <span>Bank Records</span>
+            <span class="icon is-small"><i class="fas fa-file-invoice-dollar" aria-hidden="true"></i></span>
+            <span class="is-hidden-desktop-only is-hidden-tablet-only">Bank Records</span>
           </a>
         </li>
       </ul>
