@@ -4,8 +4,8 @@
 
 The `data/config.js` file is used to customize your application.
 On first install, the file does not exist.  You can create one from scratch,
-or get started by using the `data/config-example.js` file as a template.
-You can also import configuration from another file, like `data/config-ontario.js`,
+or get started by using the `data/configExample.js` file as a template.
+You can also import configuration from another file, like `data/configOntario.js`,
 then override the settings you want.
 
 ```javascript

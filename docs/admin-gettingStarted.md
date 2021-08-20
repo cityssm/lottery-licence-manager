@@ -45,15 +45,19 @@ Open a command line, and navigate to the folder where the application will resid
 
 ## Step 5: Create a `config.js` file
 
-It is recommended to copy the `config-example.js` file to get started.
+It is recommended to copy the `configExample.js` file to get started.
 It includes the base rules for the province of Ontario,
 with the most commonly overridden settings.
 
-    > cp data/config-example.js data/config.js
+    > cp data/configExample.js data/config.js
 
 See the [config.js documentation](admin-configJS.md) for help customizing
 your configuration.
 
 ## Step 6: Start the application
+
+    > npm start
+
+or
 
     > node ./bin/www
