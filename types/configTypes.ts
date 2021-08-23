@@ -1,4 +1,5 @@
 import type { LotteryLicence } from "./recordTypes";
+import type { CountryCode } from "libphonenumber-js";
 import type * as expressTypes from "express";
 
 
@@ -61,6 +62,7 @@ interface ConfigUser {
 interface ConfigDefaults {
   city: string;
   province: string;
+  countryCode: CountryCode;
 }
 
 export interface ConfigReminderCategory {

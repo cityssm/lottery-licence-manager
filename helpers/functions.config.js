@@ -18,7 +18,8 @@ configFallbackValues.set("user.defaultProperties", {
     isAdmin: false
 });
 configFallbackValues.set("defaults.city", "");
-configFallbackValues.set("defaults.province", "");
+configFallbackValues.set("defaults.province", "ON");
+configFallbackValues.set("defaults.countryCode", "CA");
 configFallbackValues.set("reminders.preferredSortOrder", "date");
 configFallbackValues.set("reminders.dismissingStatuses", []);
 configFallbackValues.set("reminderCategories", []);

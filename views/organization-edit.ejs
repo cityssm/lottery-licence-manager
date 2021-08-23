@@ -322,8 +322,10 @@
                       </small>
                     </td>
                     <td>
-                      <%= representativeObj.representativePhoneNumber %><br />
-                      <%= representativeObj.representativePhoneNumber2 %>
+                      <%= stringFns.formatPhoneNumber(representativeObj.representativePhoneNumber) %><br />
+                      <% if (representativeObj.representativePhoneNumber2 !== "") { %>
+                        <%= stringFns.formatPhoneNumber(representativeObj.representativePhoneNumber2) %>
+                      <% } %>
                     </td>
                     <td>
                       <%= representativeObj.representativeEmailAddress %>

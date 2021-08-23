@@ -1,4 +1,13 @@
+import { formatPhoneNumber } from "@cityssm/expressjs-server-js/stringFns.js";
+
 import type { ConfigReportDefinition } from "../../types/configTypes";
+
+
+const baseFunctions = (): Map<string, () => unknown> => {
+  const functions = new Map();
+  functions.set("userFn_formatPhoneNumber", formatPhoneNumber);
+  return functions;
+};
 
 
 export const reports: { [reportName: string]: ConfigReportDefinition } = {
@@ -12,12 +21,15 @@ export const reports: { [reportName: string]: ConfigReportDefinition } = {
       " o.organizationCity, o.organizationProvince, o.organizationPostalCode," +
       " r.representativeName, r.representativeTitle, r.representativeAddress1, r.representativeAddress2," +
       " r.representativeCity, r.representativeProvince, r.representativePostalCode," +
-      " r.representativePhoneNumber, r.representativeEmailAddress," +
+      " userFn_formatPhoneNumber(r.representativePhoneNumber) as representativePhoneNumberFormatted," +
+      " userFn_formatPhoneNumber(r.representativePhoneNumber2) as representativePhoneNumber2Formatted," +
+      " r.representativeEmailAddress," +
       " o.recordUpdate_userName, o.recordUpdate_timeMillis" +
       " from Organizations o" +
       " left join OrganizationRepresentatives r on o.organizationID = r.organizationID and r.isDefault = 1" +
       " where o.recordDelete_timeMillis is null" +
-      " and o.isEligibleForLicences = 1"
+      " and o.isEligibleForLicences = 1",
+    functions: baseFunctions
   },
 
   "organizations-ineligible": {

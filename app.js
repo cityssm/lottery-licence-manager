@@ -87,6 +87,7 @@ const sessionChecker = (request, response, next) => {
     }
     return response.redirect(`${urlPrefix}/login?redirect=${request.originalUrl}`);
 };
+stringFns.setPhoneNumberCountryCode(configFunctions.getProperty("defaults.countryCode"));
 app.use((request, response, next) => {
     response.locals.buildNumber = process.env.npm_package_version;
     response.locals.user = request.session.user;

@@ -1,5 +1,6 @@
 import type * as configTypes from "../types/configTypes";
 import type * as recordTypes from "../types/recordTypes";
+import type { CountryCode } from "libphonenumber-js";
 export declare function getProperty(propertyName: "admin.defaultPassword"): string;
 export declare function getProperty(propertyName: "amendments.displayCount"): number;
 export declare function getProperty(propertyName: "amendments.trackLicenceFeeUpdate"): boolean;
@@ -16,6 +17,7 @@ export declare function getProperty(propertyName: "application.https"): configTy
 export declare function getProperty(propertyName: "bankRecordTypes"): configTypes.ConfigBankRecordType[];
 export declare function getProperty(propertyName: "defaults.city"): string;
 export declare function getProperty(propertyName: "defaults.province"): string;
+export declare function getProperty(propertyName: "defaults.countryCode"): CountryCode;
 export declare function getProperty(propertyName: "reminders.preferredSortOrder"): "date" | "config";
 export declare function getProperty(propertyName: "reminders.dismissingStatuses"): string[];
 export declare function getProperty(propertyName: "licences.externalLicenceNumber.fieldLabel"): string;

@@ -165,6 +165,9 @@ const sessionChecker = (request: express.Request, response: express.Response, ne
 
 
 // Make the user and config objects available to the templates
+
+stringFns.setPhoneNumberCountryCode(configFunctions.getProperty("defaults.countryCode"));
+
 app.use((request, response, next) => {
 
   response.locals.buildNumber = process.env.npm_package_version;

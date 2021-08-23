@@ -2,7 +2,8 @@ import { ticketTypes as nevadaTicketTypes } from "./agco.approvedBreakOpenTicket
 export const config = {};
 config.defaults = {
     city: "",
-    province: "ON"
+    province: "ON",
+    countryCode: "CA"
 };
 config.reminderCategories = [
     {

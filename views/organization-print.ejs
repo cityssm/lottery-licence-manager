@@ -5,7 +5,7 @@
 </h1>
 
 <div class="columns">
-  <div class="column">
+  <div class="column is-6">
     <p>
       <%= organization.organizationAddress1 %><br />
       <%= organization.organizationAddress2 %>
@@ -71,11 +71,10 @@
     <table class="table is-fullwidth is-striped">
       <thead>
         <tr>
-          <th class="has-width-50">Default</th>
+          <th class="has-width-10">&nbsp;</th>
           <th>Name</th>
           <th>Address</th>
-          <th>Phone Number</th>
-          <th>Email Address</th>
+          <th>Contact</th>
         </tr>
       </thead>
       <tbody>
@@ -86,10 +85,7 @@
           <tr data-representative-index="<%= representativeObj.representativeIndex %>">
             <td>
               <% if (representativeObj.isDefault === 1) { %>
-                <span class="has-cursor-default" data-tooltip="Default Representative"><i class="far fa-lg fa-fw fa-dot-circle has-text-info" aria-hidden="true"></i></span>
-                <span class="sr-only">Default Representative</span>
-              <% } else { %>
-                <i class="far fa-lg fa-fw fa-circle has-text-grey-lighter" aria-hidden="true"></i>
+                <i class="fas fa-lg fa-star" aria-hidden="true"></i>
               <% } %>
             </td>
             <td>
@@ -106,11 +102,18 @@
               </small>
             </td>
             <td>
-              <%= representativeObj.representativePhoneNumber %><br />
-              <%= representativeObj.representativePhoneNumber2 %>
-            </td>
-            <td>
-              <%= representativeObj.representativeEmailAddress %>
+              <% if (representativeObj.representativePhoneNumber !== "") { %>
+                <span class="icon"><i class="fas fa-fw fa-phone" aria-hidden="true"></i></span>
+                <%= stringFns.formatPhoneNumber(representativeObj.representativePhoneNumber) %><br />
+              <% } %>
+              <% if (representativeObj.representativePhoneNumber2 !== "") { %>
+                <span class="icon"><i class="fas fa-fw fa-phone" aria-hidden="true"></i></span>
+                <%= stringFns.formatPhoneNumber(representativeObj.representativePhoneNumber2) %><br />
+              <% } %>
+              <% if (representativeObj.representativeEmailAddress !== "") { %>
+                <span class="icon"><i class="fas fa-fw fa-envelope" aria-hidden="true"></i></span>
+                <%= representativeObj.representativeEmailAddress %>
+              <% } %>
             </td>
           </tr>
         <% } %>

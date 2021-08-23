@@ -1,3 +1,9 @@
+import { formatPhoneNumber } from "@cityssm/expressjs-server-js/stringFns.js";
+const baseFunctions = () => {
+    const functions = new Map();
+    functions.set("userFn_formatPhoneNumber", formatPhoneNumber);
+    return functions;
+};
 export const reports = {
     "representatives-all": {
         sql: "select * from OrganizationRepresentatives"
@@ -6,23 +12,31 @@ export const reports = {
         sql: "select o.organizationName," +
             " representativeName, representativeTitle," +
             " representativeAddress1, representativeAddress2, representativeCity, representativeProvince," +
-            " representativePostalCode, representativePhoneNumber, representativePhoneNumber2, representativeEmailAddress" +
+            " representativePostalCode," +
+            " userFn_formatPhoneNumber(r.representativePhoneNumber) as representativePhoneNumberFormatted," +
+            " userFn_formatPhoneNumber(r.representativePhoneNumber2) as representativePhoneNumber2Formatted," +
+            " representativeEmailAddress" +
             " from OrganizationRepresentatives r" +
             " left join Organizations o on r.organizationID = o.organizationID" +
             " where o.recordDelete_timeMillis is null" +
-            " order by organizationName, representativeName"
+            " order by organizationName, representativeName",
+        functions: baseFunctions
     },
     "representatives-byOrganization": {
         sql: "select o.organizationName," +
             " representativeName, representativeTitle," +
             " representativeAddress1, representativeAddress2, representativeCity, representativeProvince," +
-            " representativePostalCode, representativePhoneNumber, representativePhoneNumber2, representativeEmailAddress," +
+            " representativePostalCode," +
+            " userFn_formatPhoneNumber(r.representativePhoneNumber) as representativePhoneNumberFormatted," +
+            " userFn_formatPhoneNumber(r.representativePhoneNumber2) as representativePhoneNumber2Formatted," +
+            " representativeEmailAddress," +
             " isDefault" +
             " from OrganizationRepresentatives r" +
             " left join Organizations o on r.organizationID = o.organizationID" +
             " where r.organizationID = ?" +
             " order by representativeName",
-        params: (request) => [request.query.organizationID]
+        params: (request) => [request.query.organizationID],
+        functions: baseFunctions
     }
 };
 export default reports;

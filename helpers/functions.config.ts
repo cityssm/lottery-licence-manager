@@ -3,6 +3,7 @@ import { config } from "../data/config.js";
 
 import type * as configTypes from "../types/configTypes";
 import type * as recordTypes from "../types/recordTypes";
+import type { CountryCode } from "libphonenumber-js";
 
 
 /*
@@ -34,7 +35,8 @@ configFallbackValues.set("user.defaultProperties", {
 });
 
 configFallbackValues.set("defaults.city", "");
-configFallbackValues.set("defaults.province", "");
+configFallbackValues.set("defaults.province", "ON");
+configFallbackValues.set("defaults.countryCode", "CA");
 
 configFallbackValues.set("reminders.preferredSortOrder", "date");
 configFallbackValues.set("reminders.dismissingStatuses", []);
@@ -110,6 +112,7 @@ export function getProperty(propertyName: "bankRecordTypes"): configTypes.Config
 
 export function getProperty(propertyName: "defaults.city"): string;
 export function getProperty(propertyName: "defaults.province"): string;
+export function getProperty(propertyName: "defaults.countryCode"): CountryCode;
 
 export function getProperty(propertyName: "reminders.preferredSortOrder"): "date" | "config";
 export function getProperty(propertyName: "reminders.dismissingStatuses"): string[];
@@ -219,10 +222,10 @@ export const getLicenceTypeKeyToNameObject = (): { [licenceTpyeKey: string]: str
 
     for (const element of getProperty("licenceTypes")) {
 
-        if (element.isActive) {
-          list[element.licenceTypeKey] = element.licenceType;
-        }
+      if (element.isActive) {
+        list[element.licenceTypeKey] = element.licenceType;
       }
+    }
 
     licenceTypeKeyNameObject = list;
   }

@@ -9,7 +9,8 @@ export const config: configTypes.Config = {};
 
 config.defaults = {
   city: "",
-  province: "ON"
+  province: "ON",
+  countryCode: "CA"
 };
 
 
