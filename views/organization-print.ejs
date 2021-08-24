@@ -5,18 +5,18 @@
 </h1>
 
 <div class="columns">
-  <div class="column is-6">
+  <div class="column is-5">
     <p>
       <%= organization.organizationAddress1 %><br />
-      <%= organization.organizationAddress2 %>
-      <%- (organization.organizationAddress2 === "" ? "" : "<br />") %>
+      <% if (organization.organizationAddress2 !== "") { %>
+        <%= organization.organizationAddress2 %><br />
+      <% } %>
       <%= (organization.organizationCity === "" ? "" : organization.organizationCity + ", ") %>
       <%= organization.organizationProvince %><br />
       <%= organization.organizationPostalCode %>
     </p>
   </div>
   <div class="column">
-
     <div class="columns">
       <div class="column">
         <p>
@@ -102,15 +102,15 @@
               </small>
             </td>
             <td>
-              <% if (representativeObj.representativePhoneNumber !== "") { %>
+              <% if (representativeObj.representativePhoneNumber && representativeObj.representativePhoneNumber !== "") { %>
                 <span class="icon"><i class="fas fa-fw fa-phone" aria-hidden="true"></i></span>
                 <%= stringFns.formatPhoneNumber(representativeObj.representativePhoneNumber) %><br />
               <% } %>
-              <% if (representativeObj.representativePhoneNumber2 !== "") { %>
+              <% if (representativeObj.representativePhoneNumber2 && representativeObj.representativePhoneNumber2 !== "") { %>
                 <span class="icon"><i class="fas fa-fw fa-phone" aria-hidden="true"></i></span>
                 <%= stringFns.formatPhoneNumber(representativeObj.representativePhoneNumber2) %><br />
               <% } %>
-              <% if (representativeObj.representativeEmailAddress !== "") { %>
+              <% if (representativeObj.representativeEmailAddress && representativeObj.representativeEmailAddress !== "") { %>
                 <span class="icon"><i class="fas fa-fw fa-envelope" aria-hidden="true"></i></span>
                 <%= representativeObj.representativeEmailAddress %>
               <% } %>
@@ -194,9 +194,5 @@
     </table>
   <% } %>
 </section>
-
-<script>
-  window.onload = window.print;
-</script>
 
 <%- include('_footer-print'); -%>
