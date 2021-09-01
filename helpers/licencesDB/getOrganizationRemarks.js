@@ -13,7 +13,7 @@ export const getOrganizationRemarks = (organizationID, requestSession) => {
         " from OrganizationRemarks" +
         " where recordDelete_timeMillis is null" +
         " and organizationID = ?" +
-        " order by remarkDate desc, remarkTime desc")
+        " order by remarkDate desc, remarkTime desc, remarkIndex desc")
         .all(organizationID);
     database.close();
     for (const remark of remarks) {

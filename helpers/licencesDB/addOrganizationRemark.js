@@ -14,7 +14,7 @@ export const addOrganizationRemark = (requestBody, requestSession) => {
         " recordCreate_userName, recordCreate_timeMillis," +
         " recordUpdate_userName, recordUpdate_timeMillis)" +
         " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
-        .run(requestBody.organizationID, newRemarkIndex, remarkDate, remarkTime, requestBody.remark, 0, requestSession.user.userName, rightNow.getTime(), requestSession.user.userName, rightNow.getTime());
+        .run(requestBody.organizationID, newRemarkIndex, remarkDate, remarkTime, requestBody.remark, requestBody.isImportant ? 1 : 0, requestSession.user.userName, rightNow.getTime(), requestSession.user.userName, rightNow.getTime());
     database.close();
     return newRemarkIndex;
 };

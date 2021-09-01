@@ -30,7 +30,8 @@ export const addOrganizationRemark = (requestBody: llm.OrganizationRemark, reque
     .run(
       requestBody.organizationID, newRemarkIndex,
       remarkDate, remarkTime,
-      requestBody.remark, 0,
+      requestBody.remark,
+      requestBody.isImportant ? 1 : 0,
       requestSession.user.userName,
       rightNow.getTime(),
       requestSession.user.userName,
