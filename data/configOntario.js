@@ -390,7 +390,7 @@ config.licenceTypes = [
                 const discount3CostField = licenceObject.licenceFields.find((field) => field.fieldKey === "RA-discount3_cost");
                 return (drawCountField.fieldValue + " draw" + (drawCountField.fieldValue === "1" ? "" : "s") + "; ") +
                     (ticketCountField ? ticketCountField.fieldValue + " tickets; " : "") +
-                    (ticketCostField ? "$" + ticketCostField.fieldValue + " per ticket; " : "") +
+                    (ticketCostField && ticketCostField.fieldValue !== "0" ? "$" + ticketCostField.fieldValue + " per ticket; " : "") +
                     (discountTicketsField && discountCostField
                         ? discountTicketsField.fieldValue + " for $" + discountCostField.fieldValue + "; "
                         : "") +

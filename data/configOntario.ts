@@ -420,7 +420,7 @@ config.licenceTypes = [
 
         return (drawCountField.fieldValue + " draw" + (drawCountField.fieldValue === "1" ? "" : "s") + "; ") +
           (ticketCountField ? ticketCountField.fieldValue + " tickets; " : "") +
-          (ticketCostField ? "$" + ticketCostField.fieldValue + " per ticket; " : "") +
+          (ticketCostField && ticketCostField.fieldValue !== "0" ? "$" + ticketCostField.fieldValue + " per ticket; " : "") +
           (discountTicketsField && discountCostField
             ? discountTicketsField.fieldValue + " for $" + discountCostField.fieldValue + "; "
             : "") +
