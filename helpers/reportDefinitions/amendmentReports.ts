@@ -23,11 +23,11 @@ export const reports: { [reportName: string]: ConfigReportDefinition } = {
 
   "amendments-byLicence": {
 
-    sql: "select licenceID, l.externalLicenceNumber," +
+    sql: "select l.licenceID, l.externalLicenceNumber," +
       " o.organizationName," +
-      " amendmentDate, amendmentTime," +
-      " amendmentType, amendment," +
-      " isHidden," +
+      " a.amendmentDate, a.amendmentTime," +
+      " a.amendmentType, a.amendment," +
+      " a.isHidden" +
       " from LotteryLicenceAmendments a" +
       " left join LotteryLicences l on a.licenceID = l.licenceID" +
       " left join Organizations o on l.organizationID = o.organizationID" +
