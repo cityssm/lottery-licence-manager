@@ -10,7 +10,7 @@ declare const llm: llmGlobal;
 
 if (document.querySelector("#is-ticket-types-panel")) {
 
-  const urlPrefix = document.querySelector("main").getAttribute("data-url-prefix");
+  const urlPrefix = document.querySelector("main").dataset.urlPrefix;
 
   const formElement = document.querySelector("#form--licence") as HTMLFormElement;
   const licenceID = (document.querySelector("#licence--licenceID") as HTMLInputElement).value;
@@ -349,43 +349,64 @@ if (document.querySelector("#is-ticket-types-panel")) {
     llm.licenceEdit.setDoRefreshAfterSaveFunction();
   };
 
+  const deleteTicketTypeFunction_doDeleteTicketType = (trElement: HTMLTableRowElement) => {
+
+    const ticketTypeIndex = trElement.dataset.ticketTypeIndex;
+
+    trElement.remove();
+
+    if (!isCreate) {
+
+      formElement.insertAdjacentHTML(
+        "beforeend",
+        "<input class=\"is-removed-after-save\" name=\"ticketTypeIndex_toDelete\"" +
+        " type=\"hidden\" value=\"" + cityssm.escapeHTML(ticketTypeIndex) + "\" />"
+      );
+    }
+
+    summaryTableFunction_renderTable();
+
+    llm.licenceEdit.setUnsavedChangesFunction();
+    llm.licenceEdit.setDoRefreshAfterSaveFunction();
+  };
+
   const deleteTicketTypeFunction_openConfirm = (buttonEvent: Event) => {
 
     const trElement = (buttonEvent.currentTarget as HTMLButtonElement).closest("tr");
 
     const ticketType = trElement.dataset.ticketType;
 
-    const ticketTypeIndex = trElement.dataset.ticketTypeIndex;
-
-    const doDeleteTicketTypeFunction = () => {
-
-      trElement.remove();
-
-      if (!isCreate) {
-
-        formElement.insertAdjacentHTML(
-          "beforeend",
-          "<input class=\"is-removed-after-save\" name=\"ticketTypeIndex_toDelete\"" +
-          " type=\"hidden\" value=\"" + cityssm.escapeHTML(ticketTypeIndex) + "\" />"
-        );
-      }
-
-      summaryTableFunction_renderTable();
-
-      llm.licenceEdit.setUnsavedChangesFunction();
-      llm.licenceEdit.setDoRefreshAfterSaveFunction();
-    };
-
     cityssm.confirmModal(
       "Delete Ticket Type?",
       "Are you sure you want to remove the " + ticketType + " ticket type for this licence?",
       "Yes, Delete",
       "danger",
-      doDeleteTicketTypeFunction
+      () => {
+        deleteTicketTypeFunction_doDeleteTicketType(trElement);
+      }
     );
   };
 
-  const addTicketType_openModal = () => {
+  const addTicketType_openModal = (clickEvent: Event) => {
+
+    const ticketTypeFieldPresets = {
+      manufacturerLocationId: lastUsedManufacturerID,
+      distributorLocationId: lastUsedDistributorID,
+      ticketType: "",
+      unitCount: "1"
+    };
+
+    let deleteTicketType_trElement: HTMLTableRowElement;
+
+    if ((clickEvent.currentTarget as HTMLButtonElement).id !== "is-add-ticket-type-button") {
+
+      deleteTicketType_trElement = (clickEvent.currentTarget as HTMLButtonElement).closest("tr");
+
+      ticketTypeFieldPresets.manufacturerLocationId = deleteTicketType_trElement.dataset.manufacturerId;
+      ticketTypeFieldPresets.distributorLocationId = deleteTicketType_trElement.dataset.distributorId;
+      ticketTypeFieldPresets.ticketType = deleteTicketType_trElement.dataset.ticketType;
+      ticketTypeFieldPresets.unitCount = deleteTicketType_trElement.dataset.unitCount;
+    }
 
     let addTicketType_closeModalFunction: () => void;
     let addTicketType_ticketTypeElement: HTMLSelectElement;
@@ -404,6 +425,10 @@ if (document.querySelector("#is-ticket-types-panel")) {
         distributorLocationID: Number.parseInt((document.querySelector("#ticketTypeAdd--distributorLocationID") as HTMLSelectElement).value, 10),
         manufacturerLocationID: Number.parseInt((document.querySelector("#ticketTypeAdd--manufacturerLocationID") as HTMLSelectElement).value, 10)
       });
+
+      if (deleteTicketType_trElement) {
+        deleteTicketTypeFunction_doDeleteTicketType(deleteTicketType_trElement);
+      }
 
       addTicketType_closeModalFunction();
     };
@@ -477,6 +502,10 @@ if (document.querySelector("#is-ticket-types-panel")) {
           addTicketType_ticketTypeElement.append(optionElement);
         }
 
+        if (ticketTypeFieldPresets.ticketType !== "") {
+          addTicketType_ticketTypeElement.value = ticketTypeFieldPresets.ticketType;
+        }
+
         addTicketTypeFunction_refreshTicketTypeChange();
       });
     };
@@ -496,8 +525,8 @@ if (document.querySelector("#is-ticket-types-panel")) {
             "</option>");
         }
 
-        if (lastUsedDistributorID !== "" && selectElement.querySelector("[value='" + lastUsedDistributorID + "']")) {
-          selectElement.value = lastUsedDistributorID;
+        if (ticketTypeFieldPresets.distributorLocationId !== "" && selectElement.querySelector("[value='" + lastUsedDistributorID + "']")) {
+          selectElement.value = ticketTypeFieldPresets.distributorLocationId;
         }
       });
     };
@@ -517,8 +546,8 @@ if (document.querySelector("#is-ticket-types-panel")) {
             "</option>");
         }
 
-        if (lastUsedManufacturerID !== "" && selectElement.querySelector("[value='" + lastUsedManufacturerID + "']")) {
-          selectElement.value = lastUsedManufacturerID;
+        if (ticketTypeFieldPresets.manufacturerLocationId !== "" && selectElement.querySelector("[value='" + lastUsedManufacturerID + "']")) {
+          selectElement.value = ticketTypeFieldPresets.manufacturerLocationId;
         }
       });
     };
@@ -527,12 +556,29 @@ if (document.querySelector("#is-ticket-types-panel")) {
 
       onshow(modalElement) {
 
-        addTicketType_ticketTypeElement = document.querySelector("#ticketTypeAdd--ticketType") as HTMLSelectElement;
-        addTicketType_unitCountElement = document.querySelector("#ticketTypeAdd--unitCount") as HTMLInputElement;
+        addTicketType_ticketTypeElement = modalElement.querySelector("#ticketTypeAdd--ticketType") as HTMLSelectElement;
+        addTicketType_unitCountElement = modalElement.querySelector("#ticketTypeAdd--unitCount") as HTMLInputElement;
 
         addTicketTypeFunction_populateDistributorSelect();
         addTicketTypeFunction_populateManufacturerSelect();
         addTicketTypeFunction_populateTicketTypeSelect();
+
+        if (ticketTypeFieldPresets.unitCount !== "") {
+          addTicketType_unitCountElement.value = ticketTypeFieldPresets.unitCount;
+          addTicketTypeFunction_refreshUnitCountChange();
+        }
+
+        if (deleteTicketType_trElement) {
+          modalElement.querySelector(".modal-card-title").textContent = "Edit a Ticket Type";
+
+          modalElement.querySelector(".modal-card-body").insertAdjacentHTML("afterbegin", "<div class=\"message is-warning\">" +
+            "<p class=\"message-body\">Note that editing ticket type records can negatively impact your historical reporting.</p>" +
+            "</div>");
+
+          modalElement.querySelector(".modal-card-foot .button[type='submit']").innerHTML =
+            "<span class=\"icon\"><i class=\"fas fa-save\" aria-hidden=\"true\"></i></span>" +
+            "<span>Edit Ticket Type</span>";
+        }
 
         addTicketType_ticketTypeElement.addEventListener("change", addTicketTypeFunction_refreshTicketTypeChange);
         addTicketType_unitCountElement.addEventListener("change", addTicketTypeFunction_refreshUnitCountChange);
@@ -546,9 +592,21 @@ if (document.querySelector("#is-ticket-types-panel")) {
     });
   };
 
+  // initialize
+
   summaryTableFunction_renderTable();
 
   document.querySelector("#is-add-ticket-type-button").addEventListener("click", addTicketType_openModal);
+
+  // edit buttons
+
+  const editButtonElements = ticketTypesPanelElement.querySelectorAll(".is-edit-ticket-type-button");
+
+  for (const editButtonElement of editButtonElements) {
+    editButtonElement.addEventListener("click", addTicketType_openModal);
+  }
+
+  // delete buttons
 
   const deleteButtonElements = ticketTypesPanelElement.querySelectorAll(".is-delete-ticket-type-button");
 
