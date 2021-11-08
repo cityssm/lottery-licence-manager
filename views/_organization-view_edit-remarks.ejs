@@ -28,6 +28,14 @@
             </div>
           <% } %>
           <div class="control">
+            <a class="button is-link is-small" href="<%= urlPrefix %>/organizations/<%= organization.organizationID %>/print-remarks" target="_blank">
+              <span class="icon is-small">
+                <i class="fas fa-print" aria-hidden="true"></i>
+              </span>
+              <span>Print Remarks</span>
+            </a>
+          </div>
+          <div class="control">
             <a class="button is-small" href="<%= urlPrefix %>/reports/remarks-byOrganization?organizationID=<%= organization.organizationID %>" download>
               <span class="icon is-small">
                 <i class="fas fa-file-download" aria-hidden="true"></i>

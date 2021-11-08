@@ -1,0 +1,90 @@
+<%- include('_header-print'); -%>
+
+<h1 class="title is-1">
+  <%= organization.organizationName %>
+</h1>
+
+<% if (remarks.length > 0) { %>
+  <%
+    const fromDateString = remarks[remarks.length - 1].remarkDateString;
+    const toDateString = remarks[0].remarkDateString;
+  %>
+  <div class="box">
+    <div class="columns">
+      <div class="column">
+        <label class="label" for="filter--fromDateString">Remarks From</label>
+        <div class="field has-addons">
+          <div class="control is-expanded">
+            <input class="input" id="filter--fromDateString" data-reset-value="<%= fromDateString %>" type="date" value="<%= fromDateString %>" min="<%= fromDateString %>" max="<%= toDateString %>" required />
+          </div>
+          <div class="control">
+            <button class="button is-reset-value-button">
+              <i class="fas fa-redo" aria-hidden="true"></i>
+              <span class="sr-only">Reset</span>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="column">
+        <label class="label" for="filter--toDateString">Remarks To</label>
+        <div class="field has-addons">
+          <div class="control is-expanded">
+            <input class="input" id="filter--toDateString" data-reset-value="<%= toDateString %>" type="date" value="<%= toDateString %>" min="<%= fromDateString %>" max="<%= toDateString %>" required />
+          </div>
+          <div class="control">
+            <button class="button is-reset-value-button">
+              <i class="fas fa-redo" aria-hidden="true"></i>
+              <span class="sr-only">Reset</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<% } %>
+
+<section class="panel">
+  <%
+    if (remarks.length === 0) {
+  %>
+    <div class="panel-block is-block">
+      <div class="message is-info">
+        <p class="message-body">
+          There are no remarks associated with <%= organization.organizationName %>.
+        </p>
+      </div>
+    </div>
+  <%
+    } else {
+      const rightNow = new Date();
+      for (const remark of remarks) {
+  %>
+      <div class="panel-block is-block is-remark-block" data-remark-date-string="<%= remark.remarkDateString %>">
+        <div class="columns is-mobile">
+          <div class="column is-narrow">
+            <% if (remark.isImportant) { %>
+              <i class="fas fa-fw fa-star" aria-hidden="true"></i>
+            <% } else { %>
+              <i class="far fa-fw fa-comment" aria-hidden="true"></i>
+            <% } %>
+          </div>
+          <div class="column">
+            <p class="has-newline-chars is-remark"><%= remark.remark %></p>
+            <p class="is-size-7">
+              <% if (remark.recordCreate_timeMillis !== remark.recordUpdate_timeMillis) { %>
+                <i class="fas fa-pencil-alt" aria-hidden="true"></i>
+              <% } %>
+              <%= remark.recordUpdate_userName %>
+              -
+              <%= remark.remarkDateString %> <%= remark.remarkTimeString %>
+            </p>
+          </div>
+        </div>
+      </div>
+  <%
+      }
+    }
+  %>
+</section>
+<script src="<%= urlPrefix %>/javascripts/organization-print-remarks.min.js"></script>
+<%- include('_footer-print'); -%>

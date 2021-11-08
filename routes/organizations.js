@@ -4,6 +4,7 @@ import handler_cleanup from "../handlers/organizations-get/cleanup.js";
 import handler_new from "../handlers/organizations-get/new.js";
 import handler_view from "../handlers/organizations-get/view.js";
 import handler_print from "../handlers/organizations-get/print.js";
+import handler_printRemarks from "../handlers/organizations-get/printRemarks.js";
 import handler_edit from "../handlers/organizations-get/edit.js";
 import handler_doSearch from "../handlers/organizations-post/doSearch.js";
 import handler_doGetAll from "../handlers/organizations-all/doGetAll.js";
@@ -71,6 +72,7 @@ router.post("/doRestore", permissionHandlers.updatePostHandler, handler_doRestor
 router.post("/doRollForward", permissionHandlers.createPostHandler, handler_doRollForward);
 router.get("/:organizationID", handler_view);
 router.get("/:organizationID/print", handler_print);
+router.get("/:organizationID/print-remarks", handler_printRemarks);
 router.get("/:organizationID/edit", permissionHandlers.createGetHandler, handler_edit);
 router.post("/:organizationID/doAddOrganizationRepresentative", permissionHandlers.createPostHandler, handler_doAddRepresentative);
 router.post("/:organizationID/doEditOrganizationRepresentative", permissionHandlers.createPostHandler, handler_doUpdateRepresentative);
