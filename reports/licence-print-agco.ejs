@@ -341,11 +341,10 @@
             <%- licenceType.printSettings.agco_additionalLicenceDetailsHTMLFn(licence) %>
           </div>
         <% } %>
-        <% if (licence.licenceTicketTypes.length > 0) { %>
+        <% if (licenceTicketTypeSummary.length > 0) { %>
           <table class="data-table">
             <thead>
               <tr>
-                <th>Date</th>
                 <th>Type</th>
                 <th class="has-text-right">Value</th>
                 <th class="has-text-right">Prizes</th>
@@ -356,15 +355,14 @@
               </tr>
             </thead>
             <tbody>
-              <% for (let index = 0; index < licence.licenceTicketTypes.length; index += 1) { %>
+              <% for (let index = 0; index < licenceTicketTypeSummary.length; index += 1) { %>
                 <%
-                const record = licence.licenceTicketTypes[index];
+                const record = licenceTicketTypeSummary[index];
                 const ticketTypeConfig = licenceType.ticketTypes.find(function(possibleConfig) {
                   return possibleConfig.ticketType === record.ticketType;
                 });
                 %>
                 <tr>
-                  <td class="is-9pt"><%= record.amendmentDateString %></td>
                   <td class="is-9pt"><%= record.ticketType %></td>
                   <td class="is-9pt has-text-right">
                     <%= (ticketTypeConfig ? "$" + (ticketTypeConfig.ticketPrice * ticketTypeConfig.ticketCount).toFixed(2) : "") %>
@@ -372,8 +370,8 @@
                   <td class="is-9pt has-text-right">
                     <%= (ticketTypeConfig ? "$" + ticketTypeConfig.prizesPerDeal.toFixed(2) : "") %>
                   </td>
-                  <td class="is-9pt has-text-right"><%= record.unitCount %></td>
-                  <td class="is-9pt has-text-right">$<%= record.licenceFee.toFixed(2) %></td>
+                  <td class="is-9pt has-text-right"><%= record.unitCountSum %></td>
+                  <td class="is-9pt has-text-right">$<%= record.licenceFeeSum.toFixed(2) %></td>
                   <td class="is-9pt"><%= record.distributorLocationDisplayName %></td>
                   <td class="is-9pt"><%= record.manufacturerLocationDisplayName %></td>
                 </tr>

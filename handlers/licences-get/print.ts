@@ -7,6 +7,7 @@ import * as configFunctions from "../../helpers/functions.config.js";
 
 import { getOrganization } from "../../helpers/licencesDB/getOrganization.js";
 import { getLicence } from "../../helpers/licencesDB/getLicence.js";
+import { getLicenceTicketTypeSummary } from "../../helpers/licencesDB/getLicenceTicketTypeSummary.js";
 
 import convertHTMLToPDF from "pdf-puppeteer";
 
@@ -33,6 +34,12 @@ export const handler: RequestHandler = async(request, response, next) => {
     return response.redirect(urlPrefix + "/licences/?error=licenceNotIssued");
   }
 
+  let licenceTicketTypeSummary = [];
+
+  if (licence.licenceTicketTypes && licence.licenceTicketTypes.length > 0) {
+    licenceTicketTypeSummary = getLicenceTicketTypeSummary(licenceID);
+  }
+
   const organization = getOrganization(licence.organizationID, request.session);
 
   const reportPath = path.join(__dirname, "reports", printTemplate);
@@ -53,6 +60,7 @@ export const handler: RequestHandler = async(request, response, next) => {
     reportPath, {
       configFunctions,
       licence,
+      licenceTicketTypeSummary,
       organization
     }, {},
     async(ejsError, ejsData) => {

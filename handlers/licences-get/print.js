@@ -3,6 +3,7 @@ import * as ejs from "ejs";
 import * as configFunctions from "../../helpers/functions.config.js";
 import { getOrganization } from "../../helpers/licencesDB/getOrganization.js";
 import { getLicence } from "../../helpers/licencesDB/getLicence.js";
+import { getLicenceTicketTypeSummary } from "../../helpers/licencesDB/getLicenceTicketTypeSummary.js";
 import convertHTMLToPDF from "pdf-puppeteer";
 const urlPrefix = configFunctions.getProperty("reverseProxy.urlPrefix");
 const printTemplate = configFunctions.getProperty("licences.printTemplate");
@@ -19,6 +20,10 @@ export const handler = async (request, response, next) => {
     else if (!licence.issueDate) {
         return response.redirect(urlPrefix + "/licences/?error=licenceNotIssued");
     }
+    let licenceTicketTypeSummary = [];
+    if (licence.licenceTicketTypes && licence.licenceTicketTypes.length > 0) {
+        licenceTicketTypeSummary = getLicenceTicketTypeSummary(licenceID);
+    }
     const organization = getOrganization(licence.organizationID, request.session);
     const reportPath = path.join(__dirname, "reports", printTemplate);
     const pdfCallbackFunction = (pdf) => {
@@ -30,6 +35,7 @@ export const handler = async (request, response, next) => {
     await ejs.renderFile(reportPath, {
         configFunctions,
         licence,
+        licenceTicketTypeSummary,
         organization
     }, {}, async (ejsError, ejsData) => {
         if (ejsError) {
