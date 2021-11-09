@@ -77,7 +77,7 @@
     "gulp-changed": "^4.0.3",
     "gulp-concat": "^2.6.1",
     "gulp-minify": "^3.1.0",
-    "nodemon": "^2.0.14",
+    "nodemon": "^2.0.15",
     "puppeteer": "^11.0.0"
   },
   "resolutions": {
