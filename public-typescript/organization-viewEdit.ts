@@ -2,12 +2,14 @@
 
 import type { cityssmGlobal } from "@cityssm/bulma-webapp-js/src/types";
 import type { llmGlobal } from "./types";
+import type { BulmaJS } from "@cityssm/bulma-js/types";
 
 import type * as recordTypes from "../types/recordTypes";
 import type * as configTypes from "../types/configTypes";
 
 declare const cityssm: cityssmGlobal;
 declare const llm: llmGlobal;
+declare const bulmaJS: BulmaJS;
 
 
 (() => {
@@ -609,6 +611,8 @@ declare const llm: llmGlobal;
 
           bankRecordEditCloseModalFunction = closeModalFunction;
           modalElement.querySelector("form").addEventListener("submit", submitBankRecordEditFunction);
+
+          bulmaJS.init(modalElement);
         },
         onremoved() {
           if (!isNavBlockedByPage) {

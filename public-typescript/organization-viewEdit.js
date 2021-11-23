@@ -374,6 +374,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
                 onshown(modalElement, closeModalFunction) {
                     bankRecordEditCloseModalFunction = closeModalFunction;
                     modalElement.querySelector("form").addEventListener("submit", submitBankRecordEditFunction);
+                    bulmaJS.init(modalElement);
                 },
                 onremoved() {
                     if (!isNavBlockedByPage) {

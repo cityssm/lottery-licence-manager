@@ -108,6 +108,9 @@ app.use(urlPrefix + "/lib/fa",
 app.use(urlPrefix + "/lib/cityssm-bulma-webapp-js",
   express.static(path.join("node_modules", "@cityssm", "bulma-webapp-js")));
 
+app.use(urlPrefix + "/lib/cityssm-bulma-js",
+  express.static(path.join("node_modules", "@cityssm", "bulma-js", "dist")));
+
 app.use(urlPrefix + "/lib/date-diff",
   express.static(path.join("node_modules", "@cityssm", "date-diff", "es2015")));
 
