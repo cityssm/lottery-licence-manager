@@ -25,9 +25,7 @@ export const getNextExternalLicenceNumberFromRange = (): number => {
   database.close();
 
   if (!row) {
-
     return rangeStart;
-
   }
 
   const maxExternalLicenceNumber = row.maxExternalLicenceNumberInteger as number;

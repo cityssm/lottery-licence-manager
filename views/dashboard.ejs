@@ -27,6 +27,13 @@
 
 <div class="columns is-multiline">
   <div class="column is-full-tablet is-one-third-widescreen has-text-centered">
+
+    <% if (dashboardWarningMessage !== "") { %>
+      <div class="message is-warning">
+        <p class="message-body"><%= dashboardWarningMessage %></p>
+      </div>
+    <% } %>
+
     <h4 class="title is-6">Reminders</h4>
 
     <div class="columns is-mobile">
