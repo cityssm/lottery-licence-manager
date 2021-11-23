@@ -6,7 +6,7 @@ Managing municipal lottery licences is oftentimes a one or two person job.
 While this application can run on a high end server, that is by no means a requirement.
 Most user workstations are sufficient.
 
-## Step 1: Install Node.js and npm
+## Step 1: Install Node.js 14 or better and npm
 
 [Node.js](https://nodejs.org) is a JavaScript runtime environment.
 The Lottery Licence Manager is built to run on Node.js.
@@ -21,7 +21,9 @@ Node.js and npm are also available in most package managers.
     > sudo apt install nodejs
     > sudo apt install npm
 
-## Step 2: Install Git
+## Step 2: Install git
+
+*Alternatively, [releases are available on GitHub](https://github.com/cityssm/lottery-licence-manager/releases).  Git is not required when using releases.*
 
 [Git](https://git-scm.com/) is the version control system that manages the
 code for the Lottery Licence System.
@@ -32,7 +34,7 @@ or from most package managers.
 
     > sudo apt install git
 
-## Step 3: Clone the `lottery-licence-manager` repository
+## Step 3: Clone the `lottery-licence-manager` repository using git
 
 Open a command line, and navigate to the folder where the application will reside.
 
