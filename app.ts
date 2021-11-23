@@ -24,6 +24,7 @@ import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
 import * as stringFns from "@cityssm/expressjs-server-js/stringFns.js";
 import * as htmlFns from "@cityssm/expressjs-server-js/htmlFns.js";
 import { dateDiff } from "@cityssm/date-diff";
+import { version } from "./version.js";
 
 import * as databaseInitializer from "./helpers/databaseInitializer.js";
 
@@ -170,7 +171,7 @@ stringFns.setPhoneNumberCountryCode(configFunctions.getProperty("defaults.countr
 
 app.use((request, response, next) => {
 
-  response.locals.buildNumber = process.env.npm_package_version;
+  response.locals.buildNumber = version;
 
   response.locals.user = request.session.user;
   response.locals.csrfToken = request.csrfToken();
