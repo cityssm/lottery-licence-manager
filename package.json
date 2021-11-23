@@ -1,6 +1,6 @@
 {
   "name": "lottery-licence-manager",
-  "version": "1.0.0-dev",
+  "version": "1.0.0",
   "type": "module",
   "exports": "./app.js",
   "engines": {
