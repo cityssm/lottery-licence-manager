@@ -114,7 +114,7 @@ declare const cityssm: cityssmGlobal;
   };
 
   document.querySelector("#filter--licenceTypeKey").addEventListener("change", getOutstandingEventsFunction);
-  document.querySelector("#filter--licenceTypeKey").addEventListener("change", getOutstandingEventsFunction);
+  document.querySelector("#filter--eventDateType").addEventListener("change", getOutstandingEventsFunction);
 
   getOutstandingEventsFunction();
 })();

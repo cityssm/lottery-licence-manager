@@ -76,6 +76,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
         });
     };
     document.querySelector("#filter--licenceTypeKey").addEventListener("change", getOutstandingEventsFunction);
-    document.querySelector("#filter--licenceTypeKey").addEventListener("change", getOutstandingEventsFunction);
+    document.querySelector("#filter--eventDateType").addEventListener("change", getOutstandingEventsFunction);
     getOutstandingEventsFunction();
 })();
