@@ -9,3 +9,8 @@ that are regularly managed by a front end administrator.
 
 At this time, there are two settings used to manage external licence numbers
 that are automatically calculated using a number range.
+
+## Related Documentation
+
+-   [config.js file](admin-configJS.md)
+-   [User Management](admin-userManagement.md)

@@ -1,6 +1,6 @@
 # Lottery Licence Manager Documentation
 
-**Thank you for taking the time to read the documentation.**
+**🙏 Thank you for taking the time to read the documentation. 🙏**
 
 ![Lottery Licence Manager Dashboard](assets/images/dashboard.png)
 
@@ -10,12 +10,24 @@ to meet the lottery licensing requirements of Ontario municipalities
 as defined by the
 [Alcohol and Gaming Commission of Ontario (AGCO)](https://www.agco.ca/).
 
+While the application is built with Ontario municipalities in mind,
+it is flexible enough to handle the lottery licensing demands of
+municipalities in other jurisdictions.
+
+## Features
+
+-   "Out of the box" support for Ontario-based bingo, raffle,
+    and break-open (Nevada) lottery licences.
+-   Flexible reporting options that meet the requirements of municipalities,
+    licence authorities, and inspectors.
+-   Open source!  MIT licence!  No cost to use!
+
 ## User Documentation
 
 ![Lottery Licence Search](assets/images/licence-search.png)
 
 **[Tips and Tricks](tipsTricks.md)**<br />
-Transform yourself from an average user into a power user.
+Transform yourself from an average user into a power user. 🦸‍♀️
 
 **[Organizations](organizations.md)**<br />
 What are organizations?

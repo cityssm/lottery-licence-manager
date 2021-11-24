@@ -13,7 +13,7 @@ The Lottery Licence Manager is a web application written by the
 [City of Sault Ste. Marie](https://saultstemarie.ca/)
 to meet the lottery licensing requirements of Ontario municipalities
 as defined by the
-[Alcohol and Gaming Commission of Ontario](https://www.agco.ca/).
+[Alcohol and Gaming Commission of Ontario (AGCO)](https://www.agco.ca/).
 
 **⭐ Launched November 2021 ⭐**
 

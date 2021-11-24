@@ -39,18 +39,10 @@ This option is currently only available to users with admin access.
 To preserve the integrity of older records, event records become locked
 after they have been reported and after they have not been changed for a period of time.
 
-To unlock locked event records, administrators should visit the event record they wish to update,
-then add `/poke` to the end of the URL.
+To unlock locked event records, administrators should visit the event record they wish to update.
 
-For example, if the event URL looks like this:
-
-    http://llm.local:3000/events/123/20200425
-
-Append `/poke` to the end, like this:
-
-    http://llm.local:3000/events/123/20200425/poke
-
-After the page refreshes, the event record should have the option to edit.
+An "unlock" button will be available in the bottom-right corner of the screen.
+Clicking the button will unlock the event, and reenable edit options.
 
 ## Related Documentation
 

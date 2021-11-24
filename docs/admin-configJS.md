@@ -9,16 +9,16 @@ You can also import configuration from another file, like `data/configOntario.js
 then override the settings you want.
 
 ```javascript
-let config = {};
+export const config = {};
 
 // your configuration
 
-module.exports = config;
+export default config;
 ```
 
 * * *
 
-## `config.application = {};`
+## config.application = {};
 
 | Property Name     | Type   | Description                                                 | Default Value              |
 | ----------------- | ------ | ----------------------------------------------------------- | -------------------------- |
@@ -27,7 +27,7 @@ module.exports = config;
 | `httpPort`        | number | The listening port for HTTP.                                | `3000`                     |
 | `https`           | object | The HTTPS configuration.                                    | _(Described below)_        |
 
-### `config.application.https = {};`
+### config.application.https = {};
 
 | Property Name | Type   | Description                                | Default Value |
 | ------------- | ------ | ------------------------------------------ | ------------- |
@@ -38,7 +38,7 @@ module.exports = config;
 
 * * *
 
-## `config.session = {};`
+## config.session = {};
 
 | Property Name  | Type    | Description                                                                        | Default Value                        |
 | -------------- | ------- | ---------------------------------------------------------------------------------- | ------------------------------------ |
@@ -49,11 +49,11 @@ module.exports = config;
 
 * * *
 
-## `config.admin = {};`
+## config.admin = {};
 
 _Note that this property can be used to activate an admin user,
 that can then be used to create a proper admin user in the `users.db`.
-It should not be used on an ongoing basis._
+**It should not be used on an ongoing basis.**_
 
 | Property Name     | Type   | Description                              | Default Value |
 | ----------------- | ------ | ---------------------------------------- | ------------- |
@@ -61,7 +61,7 @@ It should not be used on an ongoing basis._
 
 * * *
 
-## `config.user = {};`
+## config.user = {};
 
 | Property Name              | Type   | Description                                                                                               | Default Value                                            |
 | -------------------------- | ------ | --------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
@@ -70,25 +70,26 @@ It should not be used on an ongoing basis._
 
 * * *
 
-## `config.defaults = {};`
+## config.defaults = {};
 
-| Property Name | Type   | Description                                                               | Default Value |
-| ------------- | ------ | ------------------------------------------------------------------------- | ------------- |
-| `city`        | string | The default city, used when creating new locations and organizations.     | `""`          |
-| `province`    | string | The default province, used when creating new locations and organizations. | `""`          |
+| Property Name | Type   | Description                                                                              | Default Value |
+| ------------- | ------ | ---------------------------------------------------------------------------------------- | ------------- |
+| `city`        | string | The default city, used when creating new locations and organizations.                    | `""`          |
+| `province`    | string | The default province, used when creating new locations and organizations.                | `""`          |
+| `countryCode` | string | The default two-letter country code, used when creating new locations and organizations. | `""`          |
 
 * * *
 
-## `config.licences = {};`
+## config.licences = {};
 
-| Property Name           | Type     | Description                                                                         | Default Value                                                                                                  |
-| ----------------------- | -------- | ----------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| `feeCalculationFn`      | function | A function that returns an object, calculating the licence fee for a given licence. | `function(licenceObject) { return { fee: 10, message: "Using base licence fee.", licenceHasErrors: false }; }` |
-| `printTemplate`         | string   | The name of the ejs file that generates the licence print out.                      | `"licence-print"`                                                                                              |
-| `externalLicenceNumber` | object   | The external licence number configuration.                                          | _(Described below)_                                                                                            |
-| `externalReceiptNumber` | object   | The external receipt number configuration.                                          | _(Described below)_                                                                                            |
+| Property Name           | Type     | Description                                                                         | Default Value                                                                                             |
+| ----------------------- | -------- | ----------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `feeCalculationFn`      | function | A function that returns an object, calculating the licence fee for a given licence. | `(licenceObject) => { return { fee: 10, message: "Using base licence fee.", licenceHasErrors: false }; }` |
+| `printTemplate`         | string   | The name of the ejs file that generates the licence print out.                      | `"licence-print"`                                                                                         |
+| `externalLicenceNumber` | object   | The external licence number configuration.                                          | _(Described below)_                                                                                       |
+| `externalReceiptNumber` | object   | The external receipt number configuration.                                          | _(Described below)_                                                                                       |
 
-### `config.licences.externalLicenceNumber = {};`
+### config.licences.externalLicenceNumber = {};
 
 | Property Name    | Type    | Description                                                                                                         | Default Value               |
 | ---------------- | ------- | ------------------------------------------------------------------------------------------------------------------- | --------------------------- |
@@ -96,7 +97,7 @@ It should not be used on an ongoing basis._
 | `newCalculation` | string  | An option to automatically calculate the new externalLicenceNumber value.  Set to `"range"` to use the calculation. | `""`                        |
 | `isPreferredID`  | boolean | When true, the external licence number will be more prominently shown.                                              | `false`                     |
 
-### `config.licences.externalReceiptNumber = {};`
+### config.licences.externalReceiptNumber = {};
 
 | Property Name | Type   | Description                                            | Default Value      |
 | ------------- | ------ | ------------------------------------------------------ | ------------------ |
@@ -104,7 +105,7 @@ It should not be used on an ongoing basis._
 
 * * *
 
-## `config.licenceTypes = [licenceTypeA, licenceTypeB, ...];`
+## config.licenceTypes = [licenceTypeA, licenceTypeB, ...];
 
 An array of licence type configuration objects.
 
@@ -119,8 +120,9 @@ An array of licence type configuration objects.
 | `ticketTypes`        | array   | An optional array of ticket type objects if ticket types must be tracked.     | _(Described below)_ |
 | `licenceFields`      | array   | An optional array of fields that are filled out alongside the licence.        | _(Described below)_ |
 | `eventFields`        | array   | An optional array of fields that are filled out alongside each licence event. | _(Described below)_ |
+| `printSettings`      | object  | Specific settings to pass to the licence report print.                        | `{}`                |
 
-#### `ticketTypes = [ticketTypeA, ticketTypeB, ...];`
+#### ticketTypes = [ticketTypeA, ticketTypeB, ...];
 
 | Property Name   | Type   | Description                                   | Sample Value |
 | --------------- | ------ | --------------------------------------------- | ------------ |
@@ -130,7 +132,7 @@ An array of licence type configuration objects.
 | `prizesPerDeal` | number | The total amount of prizes.                   | `11440`      |
 | `feePerUnit`    | number | The licence fee per unit.                     | `343.2`      |
 
-#### `licenceFields = [licenceFieldA, licenceFieldB, ...];`
+#### licenceFields = [licenceFieldA, licenceFieldB, ...];
 
 | Property Name     | Type    | Description                                                         | Sample Value                                      |
 | ----------------- | ------- | ------------------------------------------------------------------- | ------------------------------------------------- |
@@ -140,7 +142,7 @@ An array of licence type configuration objects.
 | `isActive`        | boolean | Whether or not the field should be available on new licences.       | `true`                                            |
 | `inputAttributes` | object  | An object containing HTML attributes for the field's input element. | `{ type: "number", min: 1, max: 10000, step: 1 }` |
 
-#### `eventFields = [eventFieldA, eventFieldB, ...];`
+#### eventFields = [eventFieldA, eventFieldB, ...];
 
 | Property Name     | Type    | Description                                                         | Sample Value                                            |
 | ----------------- | ------- | ------------------------------------------------------------------- | ------------------------------------------------------- |
@@ -151,7 +153,7 @@ An array of licence type configuration objects.
 
 * * *
 
-## `config.amendments = {};`
+## config.amendments = {};
 
 | Property Name             | Type    | Description                                                                                                             | Default Value |
 | ------------------------- | ------- | ----------------------------------------------------------------------------------------------------------------------- | ------------- |

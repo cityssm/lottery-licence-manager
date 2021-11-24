@@ -6,3 +6,7 @@
 
 The User Management page lets administrators create new users, delete users, assign permissions,
 and reset user passwords.
+
+## Related Documentation
+
+-   [Application Settings](admin-applicationSettings.md)

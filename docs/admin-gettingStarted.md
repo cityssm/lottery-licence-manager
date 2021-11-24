@@ -58,8 +58,19 @@ your configuration.
 
 ## Step 6: Start the application
 
+**Start Using npm**
+
     > npm start
 
-or
+**Start Using node**
 
     > node ./bin/www
+
+**Start as a Windows Service**
+
+The included `windowsService-install.bat` script simplifies
+the process of keeping the application running in a Windows environment
+by creating a service that can start with the hosting server.
+
+    > npm link node-windows
+    > windowsService-install
