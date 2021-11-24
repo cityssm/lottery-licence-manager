@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 llm.licenceEdit = {};
 (() => {
-    const urlPrefix = document.querySelector("main").getAttribute("data-url-prefix");
+    const urlPrefix = document.querySelector("main").dataset.urlPrefix;
     const formElement = document.querySelector("#form--licence");
     const formMessageElement = document.querySelector("#container--form-message");
     const licenceID = document.querySelector("#licence--licenceID").value;
