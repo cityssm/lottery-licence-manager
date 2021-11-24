@@ -18,8 +18,10 @@ municipalities in other jurisdictions.
 
 -   "Out of the box" support for Ontario-based bingo, raffle,
     and break-open (Nevada) lottery licences.
+
 -   Flexible reporting options that meet the requirements of municipalities,
     licence authorities, and inspectors.
+
 -   Open source!  MIT licence!  No cost to use!
 
 ## User Documentation
