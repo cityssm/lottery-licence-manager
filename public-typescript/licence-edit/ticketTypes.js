@@ -4,7 +4,7 @@ if (document.querySelector("#is-ticket-types-panel")) {
     const urlPrefix = document.querySelector("main").dataset.urlPrefix;
     const formElement = document.querySelector("#form--licence");
     const licenceID = document.querySelector("#licence--licenceID").value;
-    const isCreate = licenceID === "";
+    const isCreate = (licenceID === "");
     const ticketTypesPanelElement = document.querySelector("#is-ticket-types-panel");
     const licenceType_selectElement = document.querySelector("#licence--licenceTypeKey");
     const cache_licenceTypeKeyToTicketTypes = new Map();

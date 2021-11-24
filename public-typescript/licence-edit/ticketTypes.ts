@@ -14,7 +14,7 @@ if (document.querySelector("#is-ticket-types-panel")) {
 
   const formElement = document.querySelector("#form--licence") as HTMLFormElement;
   const licenceID = (document.querySelector("#licence--licenceID") as HTMLInputElement).value;
-  const isCreate = licenceID === "";
+  const isCreate = (licenceID === "");
 
   const ticketTypesPanelElement = document.querySelector("#is-ticket-types-panel");
 
