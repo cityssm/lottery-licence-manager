@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 (() => {
     const dateDiff = exports.dateDiff;
-    const urlPrefix = document.querySelector("main").getAttribute("data-url-prefix");
+    const urlPrefix = document.querySelector("main").dataset.urlPrefix;
     const formElement = document.querySelector("#form--outstandingEvents");
     const tbodyElement = document.querySelector("#tbody--outstandingEvents");
     const getOutstandingEventsFunction = () => {

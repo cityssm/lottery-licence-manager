@@ -4,7 +4,7 @@ declare const cityssm: cityssmGlobal;
 
 (() => {
 
-  const urlPrefix = document.querySelector("main").getAttribute("data-url-prefix");
+  const urlPrefix = document.querySelector("main").dataset.urlPrefix;
 
   const changePasswordModalElement = document.querySelector("#is-change-password-modal") as HTMLElement;
 

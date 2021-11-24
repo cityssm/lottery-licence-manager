@@ -6,7 +6,7 @@ declare const cityssm: cityssmGlobal;
 
 (() => {
 
-  const urlPrefix = document.querySelectorAll("main")[0].getAttribute("data-url-prefix");
+  const urlPrefix = document.querySelector("main").dataset.urlPrefix;
 
   const getMessageElement = (formElement: HTMLFormElement | HTMLInputElement) => {
     return formElement.closest("tr").querySelectorAll(".formMessage")[0] as HTMLElement;

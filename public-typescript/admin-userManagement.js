@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 (() => {
-    const urlPrefix = document.querySelectorAll("main")[0].getAttribute("data-url-prefix");
+    const urlPrefix = document.querySelector("main").dataset.urlPrefix;
     const createUserModalElement = document.querySelector("#is-create-user-modal");
     createUserModalElement.querySelectorAll("form")[0].addEventListener("submit", (formEvent) => {
         formEvent.preventDefault();

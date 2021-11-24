@@ -9,7 +9,7 @@ declare const llm: llmGlobal;
 
 (() => {
 
-  const urlPrefix = document.querySelector("main").getAttribute("data-url-prefix");
+  const urlPrefix = document.querySelector("main").dataset.urlPrefix;
 
   const formElement = document.querySelector("#form--licenceTypes") as HTMLFormElement;
   const containerElement = document.querySelector("#container--licenceTypes") as HTMLElement;

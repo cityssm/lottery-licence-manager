@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 (() => {
-    const urlPrefix = document.querySelector("main").getAttribute("data-url-prefix");
+    const urlPrefix = document.querySelector("main").dataset.urlPrefix;
     const changePasswordModalElement = document.querySelector("#is-change-password-modal");
     if (changePasswordModalElement) {
         changePasswordModalElement.querySelector("form").addEventListener("submit", (formEvent) => {

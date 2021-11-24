@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 (() => {
-    const urlPrefix = document.querySelectorAll("main")[0].getAttribute("data-url-prefix");
+    const urlPrefix = document.querySelector("main").dataset.urlPrefix;
     const getMessageElement = (formElement) => {
         return formElement.closest("tr").querySelectorAll(".formMessage")[0];
     };

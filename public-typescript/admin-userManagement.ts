@@ -10,7 +10,7 @@ declare const llm: llmGlobal;
 
 (() => {
 
-  const urlPrefix = document.querySelectorAll("main")[0].getAttribute("data-url-prefix");
+  const urlPrefix = document.querySelector("main").dataset.urlPrefix;
 
   /*
    * Create user

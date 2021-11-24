@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 (() => {
-    const urlPrefix = document.querySelector("main").getAttribute("data-url-prefix");
+    const urlPrefix = document.querySelector("main").dataset.urlPrefix;
     const formElement = document.querySelector("#form--filters");
     const limitElement = document.querySelector("#filter--limit");
     const offsetElement = document.querySelector("#filter--offset");
@@ -11,7 +11,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
         const currentOffset = Number.parseInt(offsetElement.value, 10);
         resultsElement.innerHTML = "<p class=\"has-text-centered has-text-grey-lighter\">" +
             "<i class=\"fas fa-3x fa-circle-notch fa-spin\" aria-hidden=\"true\"></i><br />" +
-            "<em>Loading events..." +
+            "<em>Loading events...</em>" +
             "</p>";
         cityssm.postJSON(urlPrefix + "/events/doSearch", formElement, (eventResults) => {
             const eventList = eventResults.events;

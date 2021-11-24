@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 (() => {
-    const urlPrefix = document.querySelector("main").getAttribute("data-url-prefix");
+    const urlPrefix = document.querySelector("main").dataset.urlPrefix;
     const safeUrlPrefix = cityssm.escapeHTML(urlPrefix);
     const currentDateString = cityssm.dateToString(new Date());
     const eventDateFilterElement = document.querySelector("#filter--eventDate");

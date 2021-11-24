@@ -8,7 +8,7 @@ declare const cityssm: cityssmGlobal;
 
 (() => {
 
-  const urlPrefix = document.querySelector("main").getAttribute("data-url-prefix");
+  const urlPrefix = document.querySelector("main").dataset.urlPrefix;
 
   const formElement = document.querySelector("#form--filters") as HTMLFormElement;
 
@@ -24,7 +24,7 @@ declare const cityssm: cityssmGlobal;
 
     resultsElement.innerHTML = "<p class=\"has-text-centered has-text-grey-lighter\">" +
       "<i class=\"fas fa-3x fa-circle-notch fa-spin\" aria-hidden=\"true\"></i><br />" +
-      "<em>Loading events..." +
+      "<em>Loading events...</em>" +
       "</p>";
 
     cityssm.postJSON(urlPrefix + "/events/doSearch",

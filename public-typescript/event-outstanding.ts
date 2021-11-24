@@ -11,7 +11,7 @@ declare const cityssm: cityssmGlobal;
 
   const dateDiff: DateDiff = exports.dateDiff;
 
-  const urlPrefix = document.querySelector("main").getAttribute("data-url-prefix");
+  const urlPrefix = document.querySelector("main").dataset.urlPrefix;
 
   const formElement = document.querySelector("#form--outstandingEvents") as HTMLFormElement;
   const tbodyElement = document.querySelector("#tbody--outstandingEvents") as HTMLElement;

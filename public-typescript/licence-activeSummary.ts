@@ -10,7 +10,7 @@ declare const llm: llmGlobal;
 
 (() => {
 
-  const urlPrefix = document.querySelector("main").getAttribute("data-url-prefix");
+  const urlPrefix = document.querySelector("main").dataset.urlPrefix;
 
   let externalLicenceNumberFieldLabel = "";
 
