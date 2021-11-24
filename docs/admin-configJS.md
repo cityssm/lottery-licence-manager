@@ -105,7 +105,7 @@ that can then be used to create a proper admin user in the `users.db`.
 
 * * *
 
-## config.licenceTypes = [licenceTypeA, licenceTypeB, ...];
+## config.licenceTypes = \[licenceTypeA, licenceTypeB, ...\];
 
 An array of licence type configuration objects.
 
@@ -122,7 +122,7 @@ An array of licence type configuration objects.
 | `eventFields`        | array   | An optional array of fields that are filled out alongside each licence event. | _(Described below)_ |
 | `printSettings`      | object  | Specific settings to pass to the licence report print.                        | `{}`                |
 
-#### ticketTypes = [ticketTypeA, ticketTypeB, ...];
+#### ticketTypes = \[ticketTypeA, ticketTypeB, ...\];
 
 | Property Name   | Type   | Description                                   | Sample Value |
 | --------------- | ------ | --------------------------------------------- | ------------ |
@@ -132,7 +132,7 @@ An array of licence type configuration objects.
 | `prizesPerDeal` | number | The total amount of prizes.                   | `11440`      |
 | `feePerUnit`    | number | The licence fee per unit.                     | `343.2`      |
 
-#### licenceFields = [licenceFieldA, licenceFieldB, ...];
+#### licenceFields = \[licenceFieldA, licenceFieldB, ...\];
 
 | Property Name     | Type    | Description                                                         | Sample Value                                      |
 | ----------------- | ------- | ------------------------------------------------------------------- | ------------------------------------------------- |
@@ -142,7 +142,7 @@ An array of licence type configuration objects.
 | `isActive`        | boolean | Whether or not the field should be available on new licences.       | `true`                                            |
 | `inputAttributes` | object  | An object containing HTML attributes for the field's input element. | `{ type: "number", min: 1, max: 10000, step: 1 }` |
 
-#### eventFields = [eventFieldA, eventFieldB, ...];
+#### eventFields = \[eventFieldA, eventFieldB, ...\];
 
 | Property Name     | Type    | Description                                                         | Sample Value                                            |
 | ----------------- | ------- | ------------------------------------------------------------------- | ------------------------------------------------------- |
