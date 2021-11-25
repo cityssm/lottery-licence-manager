@@ -1,11 +1,9 @@
 /* eslint-disable unicorn/filename-case */
 
 import type { cityssmGlobal } from "@cityssm/bulma-webapp-js/src/types";
-import type { llmGlobal } from "./types";
 import type * as llmTypes from "../types/recordTypes";
 
 declare const cityssm: cityssmGlobal;
-declare const llm: llmGlobal;
 
 
 (() => {
@@ -95,8 +93,6 @@ declare const llm: llmGlobal;
   const updateUserModalElement = document.querySelector("#is-update-user-modal") as HTMLElement;
   const updateUserUserNameSpanElements =
     updateUserModalElement.querySelectorAll(".container--userName") as NodeListOf<HTMLSpanElement>;
-
-  llm.initializeTabs(updateUserModalElement.querySelector(".tabs").querySelector("ul"));
 
   const submitFunction_updateUserSetting = (formEvent: Event) => {
 

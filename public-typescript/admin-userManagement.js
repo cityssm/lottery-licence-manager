@@ -41,7 +41,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
     }
     const updateUserModalElement = document.querySelector("#is-update-user-modal");
     const updateUserUserNameSpanElements = updateUserModalElement.querySelectorAll(".container--userName");
-    llm.initializeTabs(updateUserModalElement.querySelector(".tabs").querySelector("ul"));
     const submitFunction_updateUserSetting = (formEvent) => {
         formEvent.preventDefault();
         const formElement = formEvent.currentTarget;
