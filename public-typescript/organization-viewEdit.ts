@@ -946,13 +946,10 @@ declare const bulmaJS: BulmaJS;
    * Tabs
    */
 
-  llm.initializeTabs(document.querySelector("#tabs--organization"), {
-    onshown(tabContentElement) {
-
-      if (tabContentElement.id === "organizationTabContent--bankRecords" && !bankRecordsFiltersLoaded) {
-        bankRecordsFiltersLoaded = true;
-        loadBankRecordFiltersFunction();
-      }
+  document.querySelector("#organizationTab--bankRecords").addEventListener("click", () => {
+    if (!bankRecordsFiltersLoaded) {
+      bankRecordsFiltersLoaded = true;
+      loadBankRecordFiltersFunction();
     }
   });
 })();
