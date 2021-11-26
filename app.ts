@@ -8,7 +8,7 @@ import csurf from "csurf";
 import rateLimit from "express-rate-limit";
 
 import session from "express-session";
-import sqlite from "connect-sqlite3";
+import FileStore from "session-file-store";
 
 import routerLogin from "./routes/login.js";
 import routerDashboard from "./routes/dashboard.js";
@@ -119,17 +119,15 @@ app.use(urlPrefix + "/lib/date-diff",
  * SESSION MANAGEMENT
  */
 
-
-const SQLiteStore = sqlite(session);
-
 const sessionCookieName: string = configFunctions.getProperty("session.cookieName");
 
+const FileStoreSession = FileStore(session);
 
 // Initialize session
 app.use(session({
-  store: new SQLiteStore({
-    dir: "data",
-    db: "sessions.db"
+  store: new FileStoreSession({
+    path: "./data/sessions",
+    logFn: debug("lottery-licence-manager:session")
   }),
   name: sessionCookieName,
   secret: configFunctions.getProperty("session.secret"),

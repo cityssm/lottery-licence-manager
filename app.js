@@ -6,7 +6,7 @@ import cookieParser from "cookie-parser";
 import csurf from "csurf";
 import rateLimit from "express-rate-limit";
 import session from "express-session";
-import sqlite from "connect-sqlite3";
+import FileStore from "session-file-store";
 import routerLogin from "./routes/login.js";
 import routerDashboard from "./routes/dashboard.js";
 import routerOrganizations from "./routes/organizations.js";
@@ -60,12 +60,12 @@ app.use(urlPrefix + "/lib/fa", express.static(path.join("node_modules", "@fortaw
 app.use(urlPrefix + "/lib/cityssm-bulma-webapp-js", express.static(path.join("node_modules", "@cityssm", "bulma-webapp-js")));
 app.use(urlPrefix + "/lib/cityssm-bulma-js", express.static(path.join("node_modules", "@cityssm", "bulma-js", "dist")));
 app.use(urlPrefix + "/lib/date-diff", express.static(path.join("node_modules", "@cityssm", "date-diff", "es2015")));
-const SQLiteStore = sqlite(session);
 const sessionCookieName = configFunctions.getProperty("session.cookieName");
+const FileStoreSession = FileStore(session);
 app.use(session({
-    store: new SQLiteStore({
-        dir: "data",
-        db: "sessions.db"
+    store: new FileStoreSession({
+        path: "./data/sessions",
+        logFn: debug("lottery-licence-manager:session")
     }),
     name: sessionCookieName,
     secret: configFunctions.getProperty("session.secret"),
