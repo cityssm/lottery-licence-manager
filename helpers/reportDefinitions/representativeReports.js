@@ -10,6 +10,7 @@ export const reports = {
     },
     "representatives-formatted": {
         sql: "select o.organizationName," +
+            " o.fiscalStartDate, o.fiscalEndDate," +
             " representativeName, representativeTitle," +
             " representativeAddress1, representativeAddress2, representativeCity, representativeProvince," +
             " representativePostalCode," +

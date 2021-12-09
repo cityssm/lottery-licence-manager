@@ -18,6 +18,7 @@ export const reports: { [reportName: string]: ConfigReportDefinition } = {
 
   "representatives-formatted": {
     sql: "select o.organizationName," +
+      " o.fiscalStartDate, o.fiscalEndDate," +
       " representativeName, representativeTitle," +
       " representativeAddress1, representativeAddress2, representativeCity, representativeProvince," +
       " representativePostalCode," +
