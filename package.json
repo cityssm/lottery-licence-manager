@@ -11,8 +11,8 @@
     "build": "npx genversion --es6 --semi version.js",
     "start": "cross-env NODE_ENV=production node ./bin/www",
     "dev": "cross-env NODE_ENV=dev DEBUG=lottery-licence-manager:* nodemon ./bin/www",
-    "test": "mocha --timeout 10000",
-    "coverage": "c8 --reporter=lcov --reporter=text --reporter=text-summary mocha --timeout 10000"
+    "test": "mocha --timeout 15000",
+    "coverage": "c8 --reporter=lcov --reporter=text --reporter=text-summary mocha --timeout 15000"
   },
   "repository": {
     "type": "git",
