@@ -1,7 +1,7 @@
 .nyc_output/
 coverage/
-node_modules/
 data/sessions/
+node_modules/
 
 app.min.js
 bin/daemon/
