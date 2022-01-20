@@ -28,3 +28,10 @@ their own lottery licensing systems.
 **[Installation Getting Started](/docs/admin-gettingStarted.md)**
 
 **[User Documentation](https://cityssm.github.io/lottery-licence-manager/)**
+
+## Need a Solution for General Licences?
+
+The City of Sault Ste. Marie has a related licensing project
+written to handle simple licences issued by municipalities.
+
+[Check out the General Licence Manager](https://github.com/cityssm/general-licence-manager)
