@@ -127,7 +127,8 @@ const FileStoreSession = FileStore(session);
 app.use(session({
   store: new FileStoreSession({
     path: "./data/sessions",
-    logFn: debug("lottery-licence-manager:session")
+    logFn: debug("lottery-licence-manager:session"),
+    retries: 10
   }),
   name: sessionCookieName,
   secret: configFunctions.getProperty("session.secret"),
