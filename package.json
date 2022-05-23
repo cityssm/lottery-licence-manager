@@ -43,7 +43,7 @@
     "express-rate-limit": "^6.4.0",
     "express-session": "^1.17.2",
     "http-errors": "^2.0.0",
-    "libphonenumber-js": "^1.9.53",
+    "libphonenumber-js": "^1.10.5",
     "pdf-puppeteer": "^1.1.10",
     "session-file-store": "^1.5.0"
   },
