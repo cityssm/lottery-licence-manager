@@ -80,7 +80,7 @@
     "gulp-concat": "^2.6.1",
     "gulp-minify": "^3.1.0",
     "nodemon": "^2.0.16",
-    "puppeteer": "^14.0.0"
+    "puppeteer": "^14.4.1"
   },
   "resolutions": {
     "yargs-parser": "5.0.0-security.0"
