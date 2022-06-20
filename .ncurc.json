@@ -1,0 +1,5 @@
+{
+  "reject": [
+    "@fortawesome/fontawesome-free"
+  ]
+}
