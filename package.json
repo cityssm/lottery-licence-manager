@@ -7,7 +7,6 @@
     "node": ">=14"
   },
   "scripts": {
-    "preinstall": "npx npm-force-resolutions",
     "build": "npx genversion --es6 --semi version.js",
     "start": "cross-env NODE_ENV=production node ./bin/www",
     "dev": "cross-env NODE_ENV=dev DEBUG=lottery-licence-manager:* nodemon ./bin/www",
@@ -81,9 +80,6 @@
     "gulp-minify": "^3.1.0",
     "nodemon": "^2.0.16",
     "puppeteer": "^14.4.1"
-  },
-  "resolutions": {
-    "yargs-parser": "5.0.0-security.0"
   },
   "private": true
 }
