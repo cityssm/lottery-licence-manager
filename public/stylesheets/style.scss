@@ -84,3 +84,14 @@ fieldset:enabled .is-hidden-enabled {
     border: 0;
   }
 }
+
+/*
+ * Accessibility
+ */
+
+$black-ter: hsl(0, 0%, 14%);
+
+.control .button.is-static,
+.menu .menu-label {
+  color: $black-ter;
+}

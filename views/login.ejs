@@ -17,7 +17,7 @@
 <body>
   <div class="columns is-vcentered is-centered has-min-page-height is-marginless">
     <div class="column is-half-widescreen is-two-thirds-desktop is-three-quarters-tablet">
-      <div class="box mx-3 my-3">
+      <main class="box mx-3 my-3">
         <div class="columns is-vcentered">
           <div class="column has-text-centered">
             <img src="<%= urlPrefix + configFunctions.getProperty("application.logoURL") %>" alt="" />
@@ -48,7 +48,13 @@
                   </span>
                 </div>
               </div>
-
+              <% if (useTestDatabases) { %>
+                <div class="message is-small is-warning">
+                  <p class="message-body has-text-centered">
+                    Testing databases in use!
+                  </p>
+                </div>
+              <% } %>
               <div class="level is-mobile">
                 <div class="level-left has-text-danger">
                     <% if (message !== "") { %>
@@ -69,14 +75,14 @@
               </div>
             </form>
             <hr />
-            <div class="has-text-right has-text-grey is-size-7">
+            <div class="has-text-right has-text-grey-dark is-size-7">
               Build <%= buildNumber %><br />
-              <a class="has-text-grey" href="https://cityssm.github.io/lottery-licence-manager/" target="_blank" rel="nofollow noreferrer">Help</a>
-              <a class="has-text-grey ml-4" href="https://github.com/cityssm/lottery-licence-manager" target="_blank" rel="noreferrer">GitHub</a>
+              <a class="has-text-grey-dark" href="https://cityssm.github.io/lottery-licence-manager/" target="_blank" rel="nofollow noreferrer">Help</a>
+              <a class="has-text-grey-dark ml-4" href="https://github.com/cityssm/lottery-licence-manager" target="_blank" rel="noreferrer">GitHub</a>
             </div>
           </div>
         </div>
-      </div>
+      </main>
     </div>
   </div>
 

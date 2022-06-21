@@ -9,9 +9,12 @@
   "scripts": {
     "build": "npx genversion --es6 --semi version.js",
     "start": "cross-env NODE_ENV=production node ./bin/www",
-    "dev": "cross-env NODE_ENV=dev DEBUG=lottery-licence-manager:* nodemon ./bin/www",
-    "test": "mocha --timeout 15000",
-    "coverage": "c8 --reporter=lcov --reporter=text --reporter=text-summary mocha --timeout 15000"
+    "dev:live": "cross-env NODE_ENV=dev DEBUG=lottery-licence-manager:* nodemon ./bin/www",
+    "dev:test": "cross-env NODE_ENV=dev DEBUG=lottery-licence-manager:* TEST_DATABASES=true nodemon ./bin/www",
+    "cy:open": "cypress open --config-file cypress.config.ts",
+    "cy:run": "cypress run --config-file cypress.config.ts",
+    "test": "cross-env NODE_ENV=dev DEBUG=lottery-licence-manager:* TEST_DATABASES=true mocha --timeout 15000",
+    "coverage": "cross-env NODE_ENV=dev DEBUG=lottery-licence-manager:* TEST_DATABASES=true c8 --reporter=lcov --reporter=text --reporter=text-summary mocha --timeout 15000"
   },
   "repository": {
     "type": "git",

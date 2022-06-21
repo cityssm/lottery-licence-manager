@@ -68,7 +68,8 @@ router.route("/")
       response.render("login", {
         userName: "",
         message: "",
-        redirect: request.query.redirect
+        redirect: request.query.redirect,
+        useTestDatabases
       });
     }
   })

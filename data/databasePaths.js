@@ -6,7 +6,7 @@ if (useTestDatabases) {
     debug("Using \"-testing\" databases.");
 }
 export const licencesDB_live = "data/licences.db";
-export const licencesDB_testing = "data/licences.db";
+export const licencesDB_testing = "data/licences-testing.db";
 export const licencesDB = useTestDatabases
     ? licencesDB_testing
     : licencesDB_live;

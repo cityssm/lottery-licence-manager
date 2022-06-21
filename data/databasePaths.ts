@@ -13,7 +13,7 @@ if (useTestDatabases) {
 }
 
 export const licencesDB_live = "data/licences.db";
-export const licencesDB_testing = "data/licences.db";
+export const licencesDB_testing = "data/licences-testing.db";
 
 export const licencesDB = useTestDatabases
   ? licencesDB_testing

@@ -218,6 +218,8 @@ export const initLicencesDB = () => {
         licencesDB.prepare(settingInsertSQL)
             .run("licences.externalLicenceNumber.range.end", "External Licence Number: Range End", ("When External Licence Numbers are generated using a range," +
             " this value will be used as the maximum for the range."), "0", 2, "init", Date.now());
+        licencesDB.close();
+        return true;
     }
     return false;
 };

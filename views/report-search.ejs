@@ -187,7 +187,7 @@
                   <form action="<%= urlPrefix %>/reports/bankRecordsFlat-byBankingYear" method="get">
                     <div class="field has-addons mt-2">
                       <div class="control is-expanded has-icons-left" data-tooltip="Banking Year">
-                        <input class="input" name="bankingYear" type="number" value="<%= new Date().getFullYear() %>" max="<%= new Date().getFullYear() + 1 %>" required />
+                        <input class="input" name="bankingYear" type="number" value="<%= new Date().getFullYear() %>" max="<%= new Date().getFullYear() + 1 %>" aria-label="Banking Year" required />
                         <span class="icon is-left">
                           <i class="fas fa-calendar" aria-hidden="true"></i>
                         </span>

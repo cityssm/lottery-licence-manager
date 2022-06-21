@@ -1,6 +1,6 @@
 import sqlite from "better-sqlite3";
 
-import { licencesDB as databasePath} from "../data/databasePaths.js";
+import { licencesDB as databasePath } from "../data/databasePaths.js";
 
 import debug from "debug";
 const debugSQL = debug("lottery-licence-manager:databaseInitializer");
@@ -358,6 +358,10 @@ export const initLicencesDB = (): boolean => {
         "init",
         Date.now()
       );
+
+    licencesDB.close();
+
+    return true;
   }
 
   return false;
