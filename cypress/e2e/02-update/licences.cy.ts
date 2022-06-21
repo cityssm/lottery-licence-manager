@@ -6,7 +6,7 @@ import { testUpdate } from "../../../test/_globals.js";
 import { logout, login } from "../../support/index.js";
 
 
-describe("Update - Licences", () => {
+describe("Licences - Update", () => {
 
   before(() => {
     logout();
