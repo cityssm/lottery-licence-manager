@@ -8,7 +8,8 @@ export const config = Object.assign({}, configOntario);
  */
 
 config.application = {
-  applicationName: "Lottery Licence Manager"
+  applicationName: "Lottery Licence Manager",
+  useTestDatabases: true
 };
 
 
