@@ -13,10 +13,11 @@ config.application = {
 
 
 config.users = {
-  canLogin: [],
-  canCreate: [],
-  canUpdate: [],
-  isAdmin: []
+  testing: ["*testView", "*testUpdate", "*testAdmin"],
+  canLogin: ["*testView", "*testUpdate", "*testAdmin"],
+  canCreate: ["*testUpdate"],
+  canUpdate: ["*testUpdate"],
+  isAdmin: ["*testAdmin"]
 };
 
 /*
