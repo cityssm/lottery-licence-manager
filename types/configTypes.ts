@@ -11,7 +11,14 @@ export interface Config {
     disableEtag: boolean;
     urlPrefix: string;
   };
-  admin?: ConfigAdmin;
+  activeDirectory?: ConfigActiveDirectory;
+  users?: {
+    testing?: string[];
+    canLogin?: string[];
+    canCreate?: string[];
+    canUpdate?: string[];
+    isAdmin?: string[];
+  };
   user?: ConfigUser;
   defaults?: ConfigDefaults;
   reminders?: {
@@ -29,14 +36,8 @@ interface ConfigApplication {
   applicationName?: string;
   logoURL?: string;
   httpPort?: number;
-  https?: ConfigHTTPS;
-}
-
-export interface ConfigHTTPS {
-  port: number;
-  keyPath: string;
-  certPath: string;
-  passphrase?: string;
+  userDomain?: string;
+  useTestDatabases?: boolean;
 }
 
 interface ConfigSession {
@@ -46,17 +47,15 @@ interface ConfigSession {
   doKeepAlive?: boolean;
 }
 
-interface ConfigAdmin {
-  defaultPassword?: string;
+export interface ConfigActiveDirectory {
+  url: string;
+  baseDN: string;
+  username: string;
+  password: string;
 }
 
 interface ConfigUser {
   createUpdateWindowMillis: number;
-  defaultProperties: {
-    canCreate: boolean;
-    canUpdate: boolean;
-    isAdmin: boolean;
-  };
 }
 
 interface ConfigDefaults {

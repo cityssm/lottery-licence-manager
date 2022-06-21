@@ -3,6 +3,7 @@ const configFallbackValues = new Map();
 configFallbackValues.set("application.applicationName", "Lottery Licence System");
 configFallbackValues.set("application.logoURL", "/images/bingoBalls.png");
 configFallbackValues.set("application.httpPort", 3000);
+configFallbackValues.set("application.useTestDatabases", false);
 configFallbackValues.set("reverseProxy.disableCompression", false);
 configFallbackValues.set("reverseProxy.disableEtag", false);
 configFallbackValues.set("reverseProxy.urlPrefix", "");
@@ -10,6 +11,11 @@ configFallbackValues.set("session.cookieName", "lottery-licence-manager-user-sid
 configFallbackValues.set("session.secret", "cityssm/lottery-licence-manager");
 configFallbackValues.set("session.maxAgeMillis", 60 * 60 * 1000);
 configFallbackValues.set("session.doKeepAlive", false);
+configFallbackValues.set("users.testing", []);
+configFallbackValues.set("users.canLogin", ["administrator"]);
+configFallbackValues.set("users.canCreate", []);
+configFallbackValues.set("users.canUpdate", []);
+configFallbackValues.set("users.isAdmin", ["administrator"]);
 configFallbackValues.set("admin.defaultPassword", "");
 configFallbackValues.set("user.createUpdateWindowMillis", 60 * 60 * 1000);
 configFallbackValues.set("user.defaultProperties", {

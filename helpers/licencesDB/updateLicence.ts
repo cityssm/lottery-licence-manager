@@ -85,7 +85,6 @@ export const updateLicence = (requestBody: LotteryLicenceForm, requestSession: e
 
     database.close();
     return false;
-
   }
 
   const nowDate = new Date();

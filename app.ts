@@ -33,11 +33,10 @@ const debugApp = debug("lottery-licence-manager:app");
 
 
 /*
- * INITALIZE THE DATABASES
+ * INITALIZE THE DATABASE
  */
 
 
-databaseInitializer.initUsersDB();
 databaseInitializer.initLicencesDB();
 
 

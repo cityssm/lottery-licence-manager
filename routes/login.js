@@ -1,6 +1,9 @@
 import { Router } from "express";
+import Debug from "debug";
 import * as configFunctions from "../helpers/functions.config.js";
-import { getUser } from "../helpers/usersDB/getUser.js";
+import * as authenticationFunctions from "../helpers/functions.authentication.js";
+import { useTestDatabases } from "../data/databasePaths.js";
+const debug = Debug("general-licence-manager:login");
 export const router = Router();
 const getSafeRedirectURL = (possibleRedirectURL = "") => {
     const urlPrefix = configFunctions.getProperty("reverseProxy.urlPrefix");
@@ -27,7 +30,6 @@ const getSafeRedirectURL = (possibleRedirectURL = "") => {
         case "/locations/cleanup":
         case "/reports":
         case "/admin/applicationSettings":
-        case "/admin/userManagement":
             return urlPrefix + urlToCheck;
     }
     return urlPrefix + "/dashboard";
@@ -51,8 +53,49 @@ router.route("/")
     const userName = request.body.userName;
     const passwordPlain = request.body.password;
     const redirectURL = getSafeRedirectURL(request.body.redirect);
-    const userObject = await getUser(userName, passwordPlain);
-    if (userObject) {
+    let isAuthenticated = false;
+    if (userName.charAt(0) === "*") {
+        if (useTestDatabases && userName === passwordPlain) {
+            isAuthenticated = configFunctions.getProperty("users.testing").includes(userName);
+            if (isAuthenticated) {
+                debug("Authenticated testing user: " + userName);
+            }
+        }
+    }
+    else {
+        isAuthenticated = await authenticationFunctions.authenticate(userName, passwordPlain);
+    }
+    let userObject;
+    if (isAuthenticated) {
+        const userNameLowerCase = userName.toLowerCase();
+        const canLogin = configFunctions.getProperty("users.canLogin")
+            .some((currentUserName) => {
+            return userNameLowerCase === currentUserName.toLowerCase();
+        });
+        if (canLogin) {
+            const canCreate = configFunctions.getProperty("users.canCreate")
+                .some((currentUserName) => {
+                return userNameLowerCase === currentUserName.toLowerCase();
+            });
+            const canUpdate = configFunctions.getProperty("users.canUpdate")
+                .some((currentUserName) => {
+                return userNameLowerCase === currentUserName.toLowerCase();
+            });
+            const isAdmin = configFunctions.getProperty("users.isAdmin")
+                .some((currentUserName) => {
+                return userNameLowerCase === currentUserName.toLowerCase();
+            });
+            userObject = {
+                userName: userNameLowerCase,
+                userProperties: {
+                    canCreate,
+                    canUpdate,
+                    isAdmin
+                }
+            };
+        }
+    }
+    if (isAuthenticated && userObject) {
         request.session.user = userObject;
         response.redirect(redirectURL);
     }

@@ -24,7 +24,6 @@ import { version } from "./version.js";
 import * as databaseInitializer from "./helpers/databaseInitializer.js";
 import debug from "debug";
 const debugApp = debug("lottery-licence-manager:app");
-databaseInitializer.initUsersDB();
 databaseInitializer.initLicencesDB();
 const __dirname = ".";
 export const app = express();

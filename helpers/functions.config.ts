@@ -15,6 +15,7 @@ const configFallbackValues = new Map<string, unknown>();
 configFallbackValues.set("application.applicationName", "Lottery Licence System");
 configFallbackValues.set("application.logoURL", "/images/bingoBalls.png");
 configFallbackValues.set("application.httpPort", 3000);
+configFallbackValues.set("application.useTestDatabases", false);
 
 configFallbackValues.set("reverseProxy.disableCompression", false);
 configFallbackValues.set("reverseProxy.disableEtag", false);
@@ -24,6 +25,12 @@ configFallbackValues.set("session.cookieName", "lottery-licence-manager-user-sid
 configFallbackValues.set("session.secret", "cityssm/lottery-licence-manager");
 configFallbackValues.set("session.maxAgeMillis", 60 * 60 * 1000);
 configFallbackValues.set("session.doKeepAlive", false);
+
+configFallbackValues.set("users.testing", []);
+configFallbackValues.set("users.canLogin", ["administrator"]);
+configFallbackValues.set("users.canCreate", []);
+configFallbackValues.set("users.canUpdate", []);
+configFallbackValues.set("users.isAdmin", ["administrator"]);
 
 configFallbackValues.set("admin.defaultPassword", "");
 
@@ -91,7 +98,7 @@ configFallbackValues.set("amendments.trackTicketTypeDelete", true);
  * Set up function overloads
  */
 
-export function getProperty(propertyName: "admin.defaultPassword"): string;
+export function getProperty(propertyName: "activeDirectory"): configTypes.ConfigActiveDirectory;
 
 export function getProperty(propertyName: "amendments.displayCount"): number;
 export function getProperty(propertyName: "amendments.trackLicenceFeeUpdate"): boolean;
@@ -105,8 +112,8 @@ export function getProperty(propertyName: "amendments.trackTicketTypeDelete"): b
 export function getProperty(propertyName: "application.applicationName"): string;
 export function getProperty(propertyName: "application.logoURL"): string;
 export function getProperty(propertyName: "application.httpPort"): number;
-
-export function getProperty(propertyName: "application.https"): configTypes.ConfigHTTPS;
+export function getProperty(propertyName: "application.userDomain"): string;
+export function getProperty(propertyName: "application.useTestDatabases"): boolean;
 
 export function getProperty(propertyName: "bankRecordTypes"): configTypes.ConfigBankRecordType[];
 
@@ -141,6 +148,13 @@ export function getProperty(propertyName: "session.maxAgeMillis"): number;
 export function getProperty(propertyName: "session.secret"): string;
 
 export function getProperty(propertyName: "user.createUpdateWindowMillis"): number;
+
+export function getProperty(propertyName: "users.testing"): string[];
+export function getProperty(propertyName: "users.canLogin"): string[];
+export function getProperty(propertyName: "users.canCreate"): string[];
+export function getProperty(propertyName: "users.canUpdate"): string[];
+export function getProperty(propertyName: "users.isAdmin"): string[];
+
 export function getProperty(propertyName: "user.defaultProperties"): recordTypes.UserProperties;
 
 export function getProperty(propertyName: string): unknown {

@@ -2,7 +2,7 @@
 
 import sqlite from "better-sqlite3";
 
-import { runSQLByName } from "../_runSQLByName.js";
+import { licencesDB as databasePath } from "../../data/databasePaths.js";
 
 import debug from "debug";
 const debugSQL = debug("lottery-licence-manager:licencesDB:runSQL");
@@ -10,10 +10,10 @@ const debugSQL = debug("lottery-licence-manager:licencesDB:runSQL");
 
 export const runSQL = (sql: string, parameters = []): sqlite.RunResult => {
 
-  let database: sqlite.Database;
+  const database = sqlite(databasePath);
 
   try {
-    return runSQLByName("licencesDB", sql, parameters);
+    return database.prepare(sql).run(...parameters);
   } catch (error) {
     debugSQL(error);
   } finally {

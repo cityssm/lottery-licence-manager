@@ -1,30 +1,7 @@
 import sqlite from "better-sqlite3";
+import { licencesDB as databasePath } from "../data/databasePaths.js";
 import debug from "debug";
 const debugSQL = debug("lottery-licence-manager:databaseInitializer");
-export const initUsersDB = () => {
-    const usersDB = sqlite("data/users.db");
-    const row = usersDB.prepare("select name from sqlite_master where type = 'table' and name = 'Users'").get();
-    if (!row) {
-        debugSQL("Creating users.db." +
-            " To get started creating users, set the 'admin.defaultPassword' property in your config.js file.");
-        usersDB.prepare("create table if not exists Users (" +
-            "userName varchar(30) primary key not null," +
-            " firstName varchar(50), lastName varchar(50)," +
-            " isActive bit not null default 1," +
-            " passwordHash char(60) not null)" +
-            " without rowid").run();
-        usersDB.prepare("create table if not exists UserProperties (" +
-            "userName varchar(30) not null," +
-            " propertyName varchar(100) not null," +
-            " propertyValue text," +
-            " primary key (userName, propertyName)" +
-            " foreign key (userName) references Users (userName))" +
-            " without rowid").run();
-        usersDB.close();
-        return true;
-    }
-    return false;
-};
 const recordColumns = " recordCreate_userName varchar(30) not null," +
     " recordCreate_timeMillis integer not null," +
     " recordUpdate_userName varchar(30) not null," +
@@ -32,12 +9,12 @@ const recordColumns = " recordCreate_userName varchar(30) not null," +
     " recordDelete_userName varchar(30)," +
     " recordDelete_timeMillis integer";
 export const initLicencesDB = () => {
-    const licencesDB = sqlite("data/licences.db");
+    const licencesDB = sqlite(databasePath);
     const row = licencesDB
         .prepare("select name from sqlite_master where type = 'table' and name = 'Organizations'")
         .get();
     if (!row) {
-        debugSQL("Creating licences.db");
+        debugSQL("Creating " + databasePath);
         licencesDB.prepare("create table if not exists Locations (" +
             "locationID integer primary key autoincrement," +
             " locationName varchar(100)," +

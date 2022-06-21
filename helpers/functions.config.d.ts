@@ -1,7 +1,7 @@
 import type * as configTypes from "../types/configTypes";
 import type * as recordTypes from "../types/recordTypes";
 import type { CountryCode } from "libphonenumber-js";
-export declare function getProperty(propertyName: "admin.defaultPassword"): string;
+export declare function getProperty(propertyName: "activeDirectory"): configTypes.ConfigActiveDirectory;
 export declare function getProperty(propertyName: "amendments.displayCount"): number;
 export declare function getProperty(propertyName: "amendments.trackLicenceFeeUpdate"): boolean;
 export declare function getProperty(propertyName: "amendments.trackDateTimeUpdate"): boolean;
@@ -13,7 +13,8 @@ export declare function getProperty(propertyName: "amendments.trackTicketTypeDel
 export declare function getProperty(propertyName: "application.applicationName"): string;
 export declare function getProperty(propertyName: "application.logoURL"): string;
 export declare function getProperty(propertyName: "application.httpPort"): number;
-export declare function getProperty(propertyName: "application.https"): configTypes.ConfigHTTPS;
+export declare function getProperty(propertyName: "application.userDomain"): string;
+export declare function getProperty(propertyName: "application.useTestDatabases"): boolean;
 export declare function getProperty(propertyName: "bankRecordTypes"): configTypes.ConfigBankRecordType[];
 export declare function getProperty(propertyName: "defaults.city"): string;
 export declare function getProperty(propertyName: "defaults.province"): string;
@@ -40,6 +41,11 @@ export declare function getProperty(propertyName: "session.doKeepAlive"): boolea
 export declare function getProperty(propertyName: "session.maxAgeMillis"): number;
 export declare function getProperty(propertyName: "session.secret"): string;
 export declare function getProperty(propertyName: "user.createUpdateWindowMillis"): number;
+export declare function getProperty(propertyName: "users.testing"): string[];
+export declare function getProperty(propertyName: "users.canLogin"): string[];
+export declare function getProperty(propertyName: "users.canCreate"): string[];
+export declare function getProperty(propertyName: "users.canUpdate"): string[];
+export declare function getProperty(propertyName: "users.isAdmin"): string[];
 export declare function getProperty(propertyName: "user.defaultProperties"): recordTypes.UserProperties;
 export declare const keepAliveMillis: number;
 export declare const getReminderType: (reminderTypeKey: string) => configTypes.ConfigReminderType;

@@ -230,12 +230,9 @@ export interface TermsConditionsStat {
 }
 export interface User {
     userName: string;
-    firstName?: string;
-    lastName?: string;
     userProperties?: UserProperties;
 }
 export interface UserProperties {
-    isDefaultAdmin: boolean;
     canCreate: boolean;
     canUpdate: boolean;
     isAdmin: boolean;

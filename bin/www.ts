@@ -3,8 +3,6 @@
 import { app } from "../app.js";
 
 import http from "http";
-import https from "https";
-import fs from "fs";
 
 import * as configFunctions from "../helpers/functions.config.js";
 
@@ -15,7 +13,6 @@ const debugWWW = debug("lottery-licence-manager:www");
 
 
 let httpServer: http.Server;
-let httpsServer: https.Server;
 
 
 interface ServerError extends Error {
@@ -50,7 +47,7 @@ const onError = (error: ServerError) => {
   }
 };
 
-const onListening = (server: http.Server | https.Server) => {
+const onListening = (server: http.Server) => {
 
   const addr = server.address();
 
@@ -81,31 +78,6 @@ if (httpPort) {
   debugWWW("HTTP listening on " + httpPort.toString());
 }
 
-/**
- * Initialize HTTPS
- */
-
-const httpsConfig = configFunctions.getProperty("application.https");
-
-if (httpsConfig) {
-
-  httpsServer = https.createServer({
-    key: fs.readFileSync(httpsConfig.keyPath),
-    cert: fs.readFileSync(httpsConfig.certPath),
-    passphrase: httpsConfig.passphrase
-  }, app);
-
-  httpsServer.listen(httpsConfig.port);
-
-  httpsServer.on("error", onError);
-
-  httpsServer.on("listening", () => {
-    onListening(httpsServer);
-  });
-
-  debugWWW("HTTPS listening on " + httpsConfig.port.toString());
-}
-
 
 exitHook(() => {
 
@@ -113,11 +85,5 @@ exitHook(() => {
     debugWWW("Closing HTTP");
     httpServer.close();
     httpServer = undefined;
-  }
-
-  if (httpsServer) {
-    debugWWW("Closing HTTPS");
-    httpsServer.close();
-    httpsServer = undefined;
   }
 });
