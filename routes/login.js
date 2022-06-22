@@ -104,7 +104,8 @@ router.route("/")
         response.render("login", {
             userName,
             message: "Login Failed",
-            redirect: redirectURL
+            redirect: redirectURL,
+            useTestDatabases
         });
     }
 });
