@@ -70,23 +70,21 @@
     "@types/http-errors": "^1.8.2",
     "@types/mocha": "^9.1.1",
     "@types/node-windows": "^0.1.2",
-    "@types/puppeteer": "^5.4.6",
     "@types/session-file-store": "^1.2.2",
-    "@typescript-eslint/eslint-plugin": "^5.29.0",
-    "@typescript-eslint/parser": "^5.29.0",
-    "cypress": "^10.2.0",
+    "@typescript-eslint/eslint-plugin": "^5.30.0",
+    "@typescript-eslint/parser": "^5.30.0",
+    "cypress": "^10.3.0",
     "cypress-axe": "^1.0.0",
     "eslint": "^8.18.0",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^6.0.0",
-    "eslint-plugin-unicorn": "^42.0.0",
+    "eslint-plugin-unicorn": "^43.0.0",
     "gulp": "^4.0.2",
     "gulp-changed": "^4.0.3",
     "gulp-concat": "^2.6.1",
     "gulp-minify": "^3.1.0",
-    "nodemon": "^2.0.16",
-    "puppeteer": "^14.4.1"
+    "nodemon": "^2.0.18"
   },
   "private": true
 }
