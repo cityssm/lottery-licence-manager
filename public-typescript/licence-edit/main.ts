@@ -523,18 +523,13 @@ llm.licenceEdit = {};
 
   document.querySelector("#is-endDateString-year-button").addEventListener("click", () => {
 
-    const startDateStringSplit = (document.querySelector("#licence--startDateString") as HTMLInputElement).value.split("-");
+    const endDateStringElement = document.querySelector("#licence--endDateString") as HTMLInputElement;
 
-    const dateObject = new Date(Number.parseInt(startDateStringSplit[0], 10) + 1,
-      Number.parseInt(startDateStringSplit[1], 10) - 1,
-      Number.parseInt(startDateStringSplit[2], 10));
+    const endDate = endDateStringElement.valueAsDate;
 
-    const endDateString =
-      dateObject.getFullYear().toString() + "-" +
-      ("00" + (dateObject.getMonth() + 1).toString()).slice(-2) + "-" +
-      ("00" + dateObject.getDate().toString()).slice(-2);
+    endDate.setFullYear(endDate.getFullYear() + 1);
 
-    (document.querySelector("#licence--endDateString") as HTMLInputElement).value = endDateString;
+    endDateStringElement.valueAsDate = endDate;
 
     llm.licenceEdit.setUnsavedChangesFunction();
     llm.licenceEdit.setDoRefreshAfterSaveFunction();

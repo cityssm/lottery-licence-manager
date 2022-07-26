@@ -301,12 +301,10 @@ llm.licenceEdit = {};
         document.querySelector("#licence--locationDisplayName").addEventListener("dblclick", locationLookupFunction_openModal);
     }
     document.querySelector("#is-endDateString-year-button").addEventListener("click", () => {
-        const startDateStringSplit = document.querySelector("#licence--startDateString").value.split("-");
-        const dateObject = new Date(Number.parseInt(startDateStringSplit[0], 10) + 1, Number.parseInt(startDateStringSplit[1], 10) - 1, Number.parseInt(startDateStringSplit[2], 10));
-        const endDateString = dateObject.getFullYear().toString() + "-" +
-            ("00" + (dateObject.getMonth() + 1).toString()).slice(-2) + "-" +
-            ("00" + dateObject.getDate().toString()).slice(-2);
-        document.querySelector("#licence--endDateString").value = endDateString;
+        const endDateStringElement = document.querySelector("#licence--endDateString");
+        const endDate = endDateStringElement.valueAsDate;
+        endDate.setFullYear(endDate.getFullYear() + 1);
+        endDateStringElement.valueAsDate = endDate;
         llm.licenceEdit.setUnsavedChangesFunction();
         llm.licenceEdit.setDoRefreshAfterSaveFunction();
     });
