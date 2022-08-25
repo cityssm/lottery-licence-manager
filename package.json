@@ -72,7 +72,7 @@
     "@types/node-windows": "^0.1.2",
     "@types/session-file-store": "^1.2.2",
     "@typescript-eslint/eslint-plugin": "^5.31.0",
-    "@typescript-eslint/parser": "^5.31.0",
+    "@typescript-eslint/parser": "^5.35.1",
     "cypress": "^10.3.1",
     "cypress-axe": "^1.0.0",
     "eslint": "^8.20.0",
