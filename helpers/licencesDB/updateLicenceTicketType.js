@@ -1,8 +1,8 @@
-import { runSQLWithDB } from "../_runSQLByName.js";
 import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
 export const updateLicenceTicketTypeWithDB = (database, ticketTypeDefinition, requestSession) => {
     const nowMillis = Date.now();
-    runSQLWithDB(database, "update LotteryLicenceTicketTypes" +
+    database
+        .prepare("update LotteryLicenceTicketTypes" +
         " set distributorLocationID = ?," +
         " manufacturerLocationID = ?," +
         " unitCount = ?," +
@@ -12,19 +12,10 @@ export const updateLicenceTicketTypeWithDB = (database, ticketTypeDefinition, re
         " where licenceID = ?" +
         " and eventDate = ?" +
         " and ticketType = ?" +
-        " and recordDelete_timeMillis is null", [
-        (ticketTypeDefinition.distributorLocationID === ""
-            ? undefined
-            : ticketTypeDefinition.distributorLocationID),
-        (ticketTypeDefinition.manufacturerLocationID === ""
-            ? undefined
-            : ticketTypeDefinition.manufacturerLocationID),
-        ticketTypeDefinition.unitCount,
-        ticketTypeDefinition.licenceFee,
-        requestSession.user.userName,
-        nowMillis,
-        ticketTypeDefinition.licenceID,
-        dateTimeFns.dateStringToInteger(ticketTypeDefinition.eventDateString),
-        ticketTypeDefinition.ticketType
-    ]);
+        " and recordDelete_timeMillis is null")
+        .run(ticketTypeDefinition.distributorLocationID === ""
+        ? undefined
+        : ticketTypeDefinition.distributorLocationID, ticketTypeDefinition.manufacturerLocationID === ""
+        ? undefined
+        : ticketTypeDefinition.manufacturerLocationID, ticketTypeDefinition.unitCount, ticketTypeDefinition.licenceFee, requestSession.user.userName, nowMillis, ticketTypeDefinition.licenceID, dateTimeFns.dateStringToInteger(ticketTypeDefinition.eventDateString), ticketTypeDefinition.ticketType);
 };

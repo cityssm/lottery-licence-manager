@@ -1,4 +1,4 @@
-import type * as sqlite from "better-sqlite3";
+import type sqlite from "better-sqlite3";
 import type * as expressSession from "express-session";
 export declare const updateLicenceTicketTypeWithDB: (database: sqlite.Database, ticketTypeDefinition: {
     licenceID: number | string;
