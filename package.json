@@ -30,7 +30,7 @@
     "@cityssm/bulma-js": "^0.3.3",
     "@cityssm/bulma-webapp-js": "^1.5.0",
     "@cityssm/date-diff": "^2.2.3",
-    "@cityssm/expressjs-server-js": "^2.3.2",
+    "@cityssm/expressjs-server-js": "^2.3.3",
     "@fortawesome/fontawesome-free": "^5.15.4",
     "activedirectory2": "^2.1.0",
     "bcrypt": "^5.0.1",
