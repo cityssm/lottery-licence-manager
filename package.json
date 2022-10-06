@@ -33,7 +33,7 @@
     "@cityssm/expressjs-server-js": "^2.3.2",
     "@fortawesome/fontawesome-free": "^5.15.4",
     "activedirectory2": "^2.1.0",
-    "bcrypt": "^5.0.1",
+    "bcrypt": "^5.1.0",
     "better-sqlite3": "^7.6.2",
     "compression": "^1.7.4",
     "cookie-parser": "^1.4.6",
