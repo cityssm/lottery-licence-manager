@@ -54,7 +54,7 @@
     "@cityssm/bulma-webapp-css": "^0.12.0",
     "@types/activedirectory2": "^1.2.3",
     "@types/bcrypt": "^5.0.0",
-    "@types/better-sqlite3": "^7.6.0",
+    "@types/better-sqlite3": "^7.6.1",
     "@types/compression": "^1.7.2",
     "@types/cookie-parser": "^1.4.3",
     "@types/csurf": "^1.11.2",
