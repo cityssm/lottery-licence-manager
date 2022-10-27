@@ -2,10 +2,10 @@ import "cypress-axe";
 Cypress.Cookies.defaults({
     preserve: ["_csrf", "lottery-licence-manager-user-sid"]
 });
-export var logout = function () {
+export const logout = () => {
     cy.visit("/logout");
 };
-export var login = function (userName) {
+export const login = (userName) => {
     cy.visit("/login");
     cy.get(".message")
         .contains("Testing", { matchCase: false });
@@ -15,4 +15,4 @@ export var login = function (userName) {
     cy.location("pathname").should("not.contain", "/login");
     cy.get(".navbar").should("have.length", 1);
 };
-export var ajaxDelayMillis = 800;
+export const ajaxDelayMillis = 800;
