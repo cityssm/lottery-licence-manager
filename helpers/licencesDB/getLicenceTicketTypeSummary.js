@@ -17,6 +17,7 @@ export const getLicenceTicketTypeSummary = (licenceID) => {
         " left join Locations d on t.distributorLocationID = d.locationID" +
         " left join Locations m on t.manufacturerLocationID = m.locationID" +
         " where t.licenceID = ?" +
+        " and t.recordDelete_timeMillis is null" +
         " group by t.ticketType, d.locationID, m.locationID" +
         " order by t.ticketType, distributorLocationDisplayName, manufacturerLocationDisplayName").all(licenceID);
     database.close();
