@@ -31,6 +31,7 @@
     "placeOpenBraceOnNewLineForControlBlocks": false
   },
   "exclude": [
+    "node_modules/*",
     "public-typescript/*"
   ]
 }
