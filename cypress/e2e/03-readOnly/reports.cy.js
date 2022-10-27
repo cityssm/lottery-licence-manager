@@ -22,9 +22,7 @@ describe("Reports", () => {
     });
     it("Exports all reports with parameters", () => {
         cy.get("form[action*='/reports/']").each(($reportLink) => {
-            cy.wrap($reportLink)
-                .invoke("attr", "target", "_blank")
-                .submit();
+            cy.wrap($reportLink).invoke("attr", "target", "_blank").submit();
             cy.wait(ajaxDelayMillis);
         });
     });

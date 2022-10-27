@@ -15,18 +15,15 @@ describe("Read Only User", () => {
             cy.checkA11y();
         });
         it("Has no links to new licences", () => {
-            cy.get("a[href*='/new']")
-                .should("not.exist");
+            cy.get("a[href*='/new']").should("not.exist");
         });
         it("Has no links to admin areas", () => {
-            cy.get("a[href*='/admin']")
-                .should("not.exist");
+            cy.get("a[href*='/admin']").should("not.exist");
         });
     });
     it("Has no link to create licences on Licence Search", () => {
         cy.visit("/licences");
-        cy.get("a[href*='/new']")
-            .should("not.exist");
+        cy.get("a[href*='/new']").should("not.exist");
     });
     it("Redirects to Dashboard when attempting to create a licence", () => {
         cy.visit("/licences/new");
