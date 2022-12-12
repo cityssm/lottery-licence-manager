@@ -79,7 +79,7 @@
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^6.1.1",
-    "eslint-plugin-unicorn": "^44.0.2",
+    "eslint-plugin-unicorn": "^45.0.2",
     "gulp": "^4.0.2",
     "gulp-changed": "^4.0.3",
     "gulp-concat": "^2.6.1",
