@@ -160,6 +160,18 @@ export const ticketTypes_AG = [
         ticketPrice: 1,
         ticketCount: 48000,
         prizesPerDeal: 33000
+    },
+    {
+        ticketType: "AG91",
+        ticketPrice: 0.5,
+        ticketCount: 3800,
+        prizesPerDeal: 1292
+    },
+    {
+        ticketType: "AG92",
+        ticketPrice: 0.5,
+        ticketCount: 4400,
+        prizesPerDeal: 1540
     }
 ];
 export default ticketTypes_AG;

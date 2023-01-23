@@ -178,6 +178,18 @@ export const ticketTypes_SP = [
         ticketPrice: 1,
         ticketCount: 2700,
         prizesPerDeal: 1890
+    },
+    {
+        ticketType: "SP45",
+        ticketPrice: 0.5,
+        ticketCount: 3430,
+        prizesPerDeal: 1115
+    },
+    {
+        ticketType: "SP46",
+        ticketPrice: 0.5,
+        ticketCount: 2800,
+        prizesPerDeal: 910
     }
 ];
 export default ticketTypes_SP;
