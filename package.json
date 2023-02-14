@@ -86,7 +86,7 @@
     "gulp-minify": "^3.1.0",
     "gulp-sass": "^5.1.0",
     "nodemon": "^2.0.20",
-    "sass": "^1.57.1"
+    "sass": "^1.58.1"
   },
   "private": true
 }
