@@ -3,7 +3,7 @@
 # Admin - config.js
 
 The `data/config.js` file is used to customize your application.
-On first install, the file does not exist.  You can create one from scratch,
+On first install, the file does not exist. You can create one from scratch,
 or get started by using the `data/configExample.js` file as a template.
 You can also import configuration from another file, like `data/configOntario.js`,
 then override the settings you want.
@@ -16,16 +16,16 @@ export const config = {};
 export default config;
 ```
 
-* * *
+---
 
 ## config.application = {};
 
-| Property Name     | Type   | Description                                                 | Default Value              |
-| ----------------- | ------ | ----------------------------------------------------------- | -------------------------- |
-| `applicationName` | string | Make the application your own by changing the name.         | `"Lottery Licence System"` |
-| `logoURL`         | string | The path to a custom logo.  Square-shaped images work best. | `"/images/bingoBalls.png"` |
-| `httpPort`        | number | The listening port for HTTP.                                | `3000`                     |
-| `https`           | object | The HTTPS configuration.                                    | _(Described below)_        |
+| Property Name     | Type   | Description                                                | Default Value              |
+| ----------------- | ------ | ---------------------------------------------------------- | -------------------------- |
+| `applicationName` | string | Make the application your own by changing the name.        | `"Lottery Licence System"` |
+| `logoURL`         | string | The path to a custom logo. Square-shaped images work best. | `"/images/bingoBalls.png"` |
+| `httpPort`        | number | The listening port for HTTP.                               | `3000`                     |
+| `https`           | object | The HTTPS configuration.                                   | _(Described below)_        |
 
 ### config.application.https = {};
 
@@ -36,7 +36,7 @@ export default config;
 | `certPath`    | string | The path to the certificate file.          | `null`        |
 | `passphrase`  | string | The secret passphrase for the certificate. | `null`        |
 
-* * *
+---
 
 ## config.session = {};
 
@@ -47,7 +47,7 @@ export default config;
 | `maxAgeMillis` | number  | The session timeout in milliseconds.                                               | `3600000`                            |
 | `doKeepAlive`  | boolean | When `true`, the browser will ping the web application to keep the session active. | `false`                              |
 
-* * *
+---
 
 ## config.admin = {};
 
@@ -59,16 +59,40 @@ that can then be used to create a proper admin user in the `users.db`.
 | ----------------- | ------ | ---------------------------------------- | ------------- |
 | `defaultPassword` | string | A default password for the _admin_ user. | `null`        |
 
-* * *
+---
+
+## config.activeDirectory = {};
+
+See the configuration for [activedirectory2 on npm](https://www.npmjs.com/package/activedirectory2).
+
+| Property Name | Type   | Sample Value             |
+| ------------- | ------ | ------------------------ |
+| `url`         | string | `"ldap://dc.domain.com"` |
+| `baseDN`      | string | `"dc=domain,dc=com"`     |
+| `userName`    | string | `username@domain.com`    |
+| `password`    | string | `p@ssword`               |
+
+---
+
+## config.users = {};
+
+| Property Name | Type      | Description                                                            |
+| ------------- | --------- | ---------------------------------------------------------------------- |
+| `testing`     | string\[] | Test users able to log in when application.useTestDatabases is true.   |
+| `canLogin`    | string\[] | All users (without their domain), that have access to the application. |
+| `canCreate`   | string\[] | All users (without their domain), that have create access.             |
+| `canUpdate`   | string\[] | All users (without their domain), that have update access.             |
+| `isAdmin`     | string\[] | All users (without their domain), that can access administrator areas. |
+
+---
 
 ## config.user = {};
 
-| Property Name              | Type   | Description                                                                                               | Default Value                                            |
-| -------------------------- | ------ | --------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
-| `createUpdateWindowMillis` | number | The amount of time a _create only_ user can update a record before it is restricted to full update users. | `3600000`                                                |
-| `defaultProperties`        | object | The default properties for a new user.                                                                    | `{ canCreate: false, canUpdate: false, isAdmin: false }` |
+| Property Name              | Type   | Description                                                                                               | Default Value |
+| -------------------------- | ------ | --------------------------------------------------------------------------------------------------------- | ------------- |
+| `createUpdateWindowMillis` | number | The amount of time a _create only_ user can update a record before it is restricted to full update users. | `3600000`     |
 
-* * *
+---
 
 ## config.defaults = {};
 
@@ -78,7 +102,7 @@ that can then be used to create a proper admin user in the `users.db`.
 | `province`    | string | The default province, used when creating new locations and organizations.                | `""`          |
 | `countryCode` | string | The default two-letter country code, used when creating new locations and organizations. | `""`          |
 
-* * *
+---
 
 ## config.licences = {};
 
@@ -91,11 +115,11 @@ that can then be used to create a proper admin user in the `users.db`.
 
 ### config.licences.externalLicenceNumber = {};
 
-| Property Name    | Type    | Description                                                                                                         | Default Value               |
-| ---------------- | ------- | ------------------------------------------------------------------------------------------------------------------- | --------------------------- |
-| `fieldLabel`     | string  | The label to describe the customizable licence number.                                                              | `"External Licence Number"` |
-| `newCalculation` | string  | An option to automatically calculate the new externalLicenceNumber value.  Set to `"range"` to use the calculation. | `""`                        |
-| `isPreferredID`  | boolean | When true, the external licence number will be more prominently shown.                                              | `false`                     |
+| Property Name    | Type    | Description                                                                                                        | Default Value               |
+| ---------------- | ------- | ------------------------------------------------------------------------------------------------------------------ | --------------------------- |
+| `fieldLabel`     | string  | The label to describe the customizable licence number.                                                             | `"External Licence Number"` |
+| `newCalculation` | string  | An option to automatically calculate the new externalLicenceNumber value. Set to `"range"` to use the calculation. | `""`                        |
+| `isPreferredID`  | boolean | When true, the external licence number will be more prominently shown.                                             | `false`                     |
 
 ### config.licences.externalReceiptNumber = {};
 
@@ -103,7 +127,7 @@ that can then be used to create a proper admin user in the `users.db`.
 | ------------- | ------ | ------------------------------------------------------ | ------------------ |
 | `fieldLabel`  | string | The label to describe the customizable receipt number. | `"Receipt Number"` |
 
-* * *
+---
 
 ## config.licenceTypes = \[licenceTypeA, licenceTypeB, ...\];
 
@@ -151,7 +175,7 @@ An array of licence type configuration objects.
 | `isActive`        | boolean | Whether or not the field should be available on new licences.       | `true`                                                  |
 | `inputAttributes` | object  | An object containing HTML attributes for the field's input element. | `{ type: "number", min: 0, max: 10000.00, step: 0.01 }` |
 
-* * *
+---
 
 ## config.amendments = {};
 

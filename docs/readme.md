@@ -65,9 +65,6 @@ How to activate the default admin user to access the application for the first t
 **[Administrator Tools - Application Settings](admin-applicationSettings.md)**<br />
 Tweak some additional settings.
 
-**[Administrator Tools - User Management](admin-userManagement.md)**<br />
-How to add, update, and remove user accounts.
-
 ## More Help
 
 Need additional help?  Have a feature you would like to see implemented?
