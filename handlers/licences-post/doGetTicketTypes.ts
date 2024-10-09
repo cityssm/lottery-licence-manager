@@ -1,23 +1,18 @@
-import type { RequestHandler } from "express";
+import type { Request, Response } from 'express'
 
-import * as configFunctions from "../../helpers/functions.config.js";
+import * as configFunctions from '../../helpers/functions.config.js'
 
+export default function handler(
+  request: Request<unknown, unknown, { licenceTypeKey: string }>,
+  response: Response
+): void {
+  const licenceTypeKey = request.body.licenceTypeKey
 
-export const handler: RequestHandler = (request, response) => {
+  const licenceType = configFunctions.getLicenceType(licenceTypeKey)
 
-  const licenceTypeKey = request.body.licenceTypeKey;
-
-  const licenceType = configFunctions.getLicenceType(licenceTypeKey);
-
-  if (licenceType) {
-
-    response.json(licenceType.ticketTypes || []);
-
+  if (licenceType === undefined) {
+    response.json([])
   } else {
-
-    response.json([]);
+    response.json(licenceType.ticketTypes ?? [])
   }
-};
-
-
-export default handler;
+}

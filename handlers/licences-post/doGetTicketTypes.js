@@ -1,12 +1,11 @@
-import * as configFunctions from "../../helpers/functions.config.js";
-export const handler = (request, response) => {
+import * as configFunctions from '../../helpers/functions.config.js';
+export default function handler(request, response) {
     const licenceTypeKey = request.body.licenceTypeKey;
     const licenceType = configFunctions.getLicenceType(licenceTypeKey);
-    if (licenceType) {
-        response.json(licenceType.ticketTypes || []);
-    }
-    else {
+    if (licenceType === undefined) {
         response.json([]);
     }
-};
-export default handler;
+    else {
+        response.json(licenceType.ticketTypes ?? []);
+    }
+}

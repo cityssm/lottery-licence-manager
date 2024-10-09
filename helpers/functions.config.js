@@ -1,69 +1,71 @@
-import { config } from "../data/config.js";
+import { config } from '../data/config.js';
 const configFallbackValues = new Map();
-configFallbackValues.set("application.applicationName", "Lottery Licence System");
-configFallbackValues.set("application.logoURL", "/images/bingoBalls.png");
-configFallbackValues.set("application.httpPort", 3000);
-configFallbackValues.set("application.useTestDatabases", false);
-configFallbackValues.set("reverseProxy.disableCompression", false);
-configFallbackValues.set("reverseProxy.disableEtag", false);
-configFallbackValues.set("reverseProxy.urlPrefix", "");
-configFallbackValues.set("session.cookieName", "lottery-licence-manager-user-sid");
-configFallbackValues.set("session.secret", "cityssm/lottery-licence-manager");
-configFallbackValues.set("session.maxAgeMillis", 60 * 60 * 1000);
-configFallbackValues.set("session.doKeepAlive", false);
-configFallbackValues.set("users.testing", []);
-configFallbackValues.set("users.canLogin", ["administrator"]);
-configFallbackValues.set("users.canCreate", []);
-configFallbackValues.set("users.canUpdate", []);
-configFallbackValues.set("users.isAdmin", ["administrator"]);
-configFallbackValues.set("admin.defaultPassword", "");
-configFallbackValues.set("user.createUpdateWindowMillis", 60 * 60 * 1000);
-configFallbackValues.set("user.defaultProperties", {
+configFallbackValues.set('application.applicationName', 'Lottery Licence System');
+configFallbackValues.set('application.logoURL', '/images/bingoBalls.png');
+configFallbackValues.set('application.httpPort', 3000);
+configFallbackValues.set('application.useTestDatabases', false);
+configFallbackValues.set('reverseProxy.disableCompression', false);
+configFallbackValues.set('reverseProxy.disableEtag', false);
+configFallbackValues.set('reverseProxy.urlPrefix', '');
+configFallbackValues.set('session.cookieName', 'lottery-licence-manager-user-sid');
+configFallbackValues.set('session.secret', 'cityssm/lottery-licence-manager');
+configFallbackValues.set('session.maxAgeMillis', 60 * 60 * 1000);
+configFallbackValues.set('session.doKeepAlive', false);
+configFallbackValues.set('users.testing', []);
+configFallbackValues.set('users.canLogin', ['administrator']);
+configFallbackValues.set('users.canCreate', []);
+configFallbackValues.set('users.canUpdate', []);
+configFallbackValues.set('users.isAdmin', ['administrator']);
+configFallbackValues.set('admin.defaultPassword', '');
+configFallbackValues.set('user.createUpdateWindowMillis', 60 * 60 * 1000);
+configFallbackValues.set('user.defaultProperties', {
     canCreate: false,
     canUpdate: false,
     isAdmin: false
 });
-configFallbackValues.set("defaults.city", "");
-configFallbackValues.set("defaults.province", "ON");
-configFallbackValues.set("defaults.countryCode", "CA");
-configFallbackValues.set("reminders.preferredSortOrder", "date");
-configFallbackValues.set("reminders.dismissingStatuses", []);
-configFallbackValues.set("reminderCategories", []);
-configFallbackValues.set("bankRecordTypes", [
+configFallbackValues.set('defaults.city', '');
+configFallbackValues.set('defaults.province', 'ON');
+configFallbackValues.set('defaults.countryCode', 'CA');
+configFallbackValues.set('reminders.preferredSortOrder', 'date');
+configFallbackValues.set('reminders.dismissingStatuses', []);
+configFallbackValues.set('reminderCategories', []);
+configFallbackValues.set('bankRecordTypes', [
     {
-        bankRecordType: "statement",
-        bankRecordTypeName: "Bank Statement"
-    }, {
-        bankRecordType: "cheques",
-        bankRecordTypeName: "Cheques"
-    }, {
-        bankRecordType: "receipts",
-        bankRecordTypeName: "Receipts"
+        bankRecordType: 'statement',
+        bankRecordTypeName: 'Bank Statement'
+    },
+    {
+        bankRecordType: 'cheques',
+        bankRecordTypeName: 'Cheques'
+    },
+    {
+        bankRecordType: 'receipts',
+        bankRecordTypeName: 'Receipts'
     }
 ]);
-configFallbackValues.set("licences.externalLicenceNumber.fieldLabel", "External Licence Number");
-configFallbackValues.set("licences.externalLicenceNumber.newCalculation", "");
-configFallbackValues.set("licences.externalLicenceNumber.isPreferredID", false);
-configFallbackValues.set("licences.externalReceiptNumber.fieldLabel", "Receipt Number");
-configFallbackValues.set("licences.feeCalculationFn", () => {
+configFallbackValues.set('licences.externalLicenceNumber.fieldLabel', 'External Licence Number');
+configFallbackValues.set('licences.externalLicenceNumber.newCalculation', '');
+configFallbackValues.set('licences.externalLicenceNumber.isPreferredID', false);
+configFallbackValues.set('licences.externalReceiptNumber.fieldLabel', 'Receipt Number');
+configFallbackValues.set('licences.feeCalculationFn', () => {
     return {
         fee: 10,
-        message: "Using base licence fee.",
+        message: 'Using base licence fee.',
         licenceHasErrors: false
     };
 });
-configFallbackValues.set("licences.printTemplate", "licence-print");
-configFallbackValues.set("licenceTypes", []);
-configFallbackValues.set("amendments.displayCount", 5);
-configFallbackValues.set("amendments.trackLicenceFeeUpdate", true);
-configFallbackValues.set("amendments.trackDateTimeUpdate", true);
-configFallbackValues.set("amendments.trackOrganizationUpdate", true);
-configFallbackValues.set("amendments.trackLocationUpdate", true);
-configFallbackValues.set("amendments.trackTicketTypeNew", true);
-configFallbackValues.set("amendments.trackTicketTypeUpdate", true);
-configFallbackValues.set("amendments.trackTicketTypeDelete", true);
+configFallbackValues.set('licences.printTemplate', 'licence-print');
+configFallbackValues.set('licenceTypes', []);
+configFallbackValues.set('amendments.displayCount', 5);
+configFallbackValues.set('amendments.trackLicenceFeeUpdate', true);
+configFallbackValues.set('amendments.trackDateTimeUpdate', true);
+configFallbackValues.set('amendments.trackOrganizationUpdate', true);
+configFallbackValues.set('amendments.trackLocationUpdate', true);
+configFallbackValues.set('amendments.trackTicketTypeNew', true);
+configFallbackValues.set('amendments.trackTicketTypeUpdate', true);
+configFallbackValues.set('amendments.trackTicketTypeDelete', true);
 export function getProperty(propertyName) {
-    const propertyNameSplit = propertyName.split(".");
+    const propertyNameSplit = propertyName.split('.');
     let currentObject = config;
     for (const propertyNamePiece of propertyNameSplit) {
         if (currentObject[propertyNamePiece]) {
@@ -75,13 +77,13 @@ export function getProperty(propertyName) {
     }
     return currentObject;
 }
-export const keepAliveMillis = getProperty("session.doKeepAlive")
-    ? Math.max(getProperty("session.maxAgeMillis") / 2, getProperty("session.maxAgeMillis") - (10 * 60 * 1000))
+export const keepAliveMillis = getProperty('session.doKeepAlive')
+    ? Math.max(getProperty('session.maxAgeMillis') / 2, getProperty('session.maxAgeMillis') - 10 * 60 * 1000)
     : 0;
 const reminderTypeCache = new Map();
 export const getReminderType = (reminderTypeKey) => {
     if (reminderTypeCache.size === 0) {
-        for (const reminderCategory of getProperty("reminderCategories")) {
+        for (const reminderCategory of getProperty('reminderCategories')) {
             for (const reminderType of reminderCategory.reminderTypes) {
                 reminderType.reminderCategory = reminderCategory.reminderCategory;
                 reminderTypeCache.set(reminderType.reminderTypeKey, reminderType);
@@ -92,18 +94,19 @@ export const getReminderType = (reminderTypeKey) => {
 };
 const licenceTypeCache = new Map();
 let licenceTypeKeyNameObject = {};
-export const getLicenceType = (licenceTypeKey) => {
+export function getLicenceType(licenceTypeKey) {
     if (!licenceTypeCache.has(licenceTypeKey)) {
-        const licenceType = getProperty("licenceTypes")
-            .find((element) => element.licenceTypeKey === licenceTypeKey);
-        licenceTypeCache.set(licenceTypeKey, licenceType);
+        const licenceType = getProperty('licenceTypes').find((element) => element.licenceTypeKey === licenceTypeKey);
+        if (licenceType !== undefined) {
+            licenceTypeCache.set(licenceTypeKey, licenceType);
+        }
     }
     return licenceTypeCache.get(licenceTypeKey);
-};
+}
 export const getLicenceTypeKeyToNameObject = () => {
     if (Object.keys(licenceTypeKeyNameObject).length === 0) {
         const list = {};
-        for (const element of getProperty("licenceTypes")) {
+        for (const element of getProperty('licenceTypes')) {
             if (element.isActive) {
                 list[element.licenceTypeKey] = element.licenceType;
             }

@@ -1,4 +1,4 @@
-import type * as expressSession from "express-session";
+import type * as expressSession from 'express-session';
 interface ParseTicketTypeKeyReturn {
     eventDate: number;
     eventDateString: string;
@@ -31,5 +31,7 @@ export interface LotteryLicenceForm {
     fieldKeys: string;
     licenceFee?: string;
 }
-export declare const updateLicence: (requestBody: LotteryLicenceForm, requestSession: expressSession.Session) => boolean;
-export default updateLicence;
+export default function updateLicence(requestBody: LotteryLicenceForm & {
+    licenceID: string;
+}, requestSession: expressSession.Session): boolean;
+export {};

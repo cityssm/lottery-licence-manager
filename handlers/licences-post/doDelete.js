@@ -1,9 +1,9 @@
-import { deleteLicence } from "../../helpers/licencesDB/deleteLicence.js";
-export const handler = (request, response) => {
-    if (request.body.licenceID === "") {
+import deleteLicence from '../../helpers/licencesDB/deleteLicence.js';
+export default function handler(request, response) {
+    if (request.body.licenceID === '') {
         response.json({
             success: false,
-            message: "Licence ID Unavailable"
+            message: 'Licence ID Unavailable'
         });
     }
     else {
@@ -11,15 +11,14 @@ export const handler = (request, response) => {
         if (changeCount) {
             response.json({
                 success: true,
-                message: "Licence Deleted"
+                message: 'Licence Deleted'
             });
         }
         else {
             response.json({
                 success: false,
-                message: "Licence Not Deleted"
+                message: 'Licence Not Deleted'
             });
         }
     }
-};
-export default handler;
+}

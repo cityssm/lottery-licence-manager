@@ -1,7 +1,7 @@
-import { createLicence } from "../../helpers/licencesDB/createLicence.js";
-import { updateLicence } from "../../helpers/licencesDB/updateLicence.js";
-export const handler = (request, response) => {
-    if (request.body.licenceID === "") {
+import createLicence from '../../helpers/licencesDB/createLicence.js';
+import updateLicence from '../../helpers/licencesDB/updateLicence.js';
+export default function handler(request, response) {
+    if (request.body.licenceID === '') {
         const newLicenceID = createLicence(request.body, request.session);
         response.json({
             success: true,
@@ -13,15 +13,14 @@ export const handler = (request, response) => {
         if (changeCount) {
             response.json({
                 success: true,
-                message: "Licence updated successfully."
+                message: 'Licence updated successfully.'
             });
         }
         else {
             response.json({
                 success: false,
-                message: "Record Not Saved"
+                message: 'Record Not Saved'
             });
         }
     }
-};
-export default handler;
+}

@@ -1,2 +1,2 @@
-import type * as expressSession from "express-session";
-export declare const issueLicence: (licenceID: number, requestSession: expressSession.Session) => boolean;
+import type * as expressSession from 'express-session';
+export default function issueLicence(licenceID: number | string, requestSession: expressSession.Session): boolean;

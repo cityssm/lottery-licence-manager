@@ -1,27 +1,22 @@
-import type { RequestHandler } from "express";
+import type { Request, Response } from 'express'
 
-import { issueLicence } from "../../helpers/licencesDB/issueLicence.js";
+import issueLicence from '../../helpers/licencesDB/issueLicence.js'
 
-
-export const handler: RequestHandler = (request, response) => {
-
-  const success = issueLicence(request.body.licenceID, request.session);
+export default function handler(
+  request: Request<unknown, unknown, { licenceID: string }>,
+  response: Response
+): void {
+  const success = issueLicence(request.body.licenceID, request.session)
 
   if (success) {
-
     response.json({
       success: true,
-      message: "Licence Issued Successfully"
-    });
-
+      message: 'Licence Issued Successfully'
+    })
   } else {
-
     response.json({
       success: false,
-      message: "Licence Not Issued"
-    });
+      message: 'Licence Not Issued'
+    })
   }
-};
-
-
-export default handler;
+}

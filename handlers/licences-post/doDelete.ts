@@ -1,37 +1,29 @@
-import type { RequestHandler } from "express";
+import type { Request, Response } from 'express'
 
-import { deleteLicence } from "../../helpers/licencesDB/deleteLicence.js";
+import deleteLicence from '../../helpers/licencesDB/deleteLicence.js'
 
-
-export const handler: RequestHandler = (request, response) => {
-
-  if (request.body.licenceID === "") {
-
+export default function handler(
+  request: Request<unknown, unknown, { licenceID: string }>,
+  response: Response<{ success: boolean; message: string }>
+): void {
+  if (request.body.licenceID === '') {
     response.json({
       success: false,
-      message: "Licence ID Unavailable"
-    });
-
+      message: 'Licence ID Unavailable'
+    })
   } else {
-
-    const changeCount = deleteLicence(request.body.licenceID, request.session);
+    const changeCount = deleteLicence(request.body.licenceID, request.session)
 
     if (changeCount) {
-
       response.json({
         success: true,
-        message: "Licence Deleted"
-      });
-
+        message: 'Licence Deleted'
+      })
     } else {
-
       response.json({
         success: false,
-        message: "Licence Not Deleted"
-      });
+        message: 'Licence Not Deleted'
+      })
     }
   }
-};
-
-
-export default handler;
+}
