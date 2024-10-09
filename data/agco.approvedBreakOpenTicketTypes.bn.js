@@ -92,8 +92,8 @@ export const ticketTypes_BN = [
     {
         ticketType: "BN26",
         ticketPrice: 1,
-        ticketCount: 16800,
-        prizesPerDeal: 11440
+        ticketCount: 16_800,
+        prizesPerDeal: 11_440
     },
     {
         ticketType: "BN27",
@@ -116,8 +116,8 @@ export const ticketTypes_BN = [
     {
         ticketType: "BN30",
         ticketPrice: 1,
-        ticketCount: 48000,
-        prizesPerDeal: 33000
+        ticketCount: 48_000,
+        prizesPerDeal: 33_000
     },
     {
         ticketType: "BN31",

@@ -12,7 +12,7 @@ export const getPastEventBankingInformation = (licenceID) => {
         return [];
     }
     const organizationID = organizationIDResult.organizationID;
-    const cutoffDateInteger = dateTimeFns.dateToInteger(new Date()) - 50000;
+    const cutoffDateInteger = dateTimeFns.dateToInteger(new Date()) - 50_000;
     const bankInfoList = database.prepare("select bank_name, bank_address, bank_accountNumber," +
         " max(eventDate) as eventDateMax" +
         " from LotteryEvents" +

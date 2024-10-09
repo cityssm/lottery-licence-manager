@@ -130,7 +130,7 @@ config.licenceTypes = [
                 inputAttributes: {
                     type: "number",
                     min: 0,
-                    max: 10000,
+                    max: 10_000,
                     step: 1
                 }
             }, {
@@ -140,7 +140,7 @@ config.licenceTypes = [
                 inputAttributes: {
                     type: "number",
                     min: 0,
-                    max: 100000,
+                    max: 100_000,
                     step: 1
                 }
             }, {
@@ -150,7 +150,7 @@ config.licenceTypes = [
                 inputAttributes: {
                     type: "number",
                     min: 0,
-                    max: 10000,
+                    max: 10_000,
                     step: 0.01
                 }
             }, {
@@ -160,7 +160,7 @@ config.licenceTypes = [
                 inputAttributes: {
                     type: "number",
                     min: 0,
-                    max: 10000,
+                    max: 10_000,
                     step: 0.01
                 }
             }, {
@@ -170,7 +170,7 @@ config.licenceTypes = [
                 inputAttributes: {
                     type: "number",
                     min: 0,
-                    max: 10000,
+                    max: 10_000,
                     step: 0.01
                 }
             }
@@ -179,7 +179,7 @@ config.licenceTypes = [
     {
         licenceTypeKey: "NV",
         licenceType: "Nevada",
-        totalPrizeValueMax: 300000,
+        totalPrizeValueMax: 300_000,
         isActive: true,
         ticketTypes: nevadaTicketTypes,
         licenceFields: [],
@@ -190,7 +190,7 @@ config.licenceTypes = [
                 inputAttributes: {
                     type: "number",
                     min: 0,
-                    max: 10000,
+                    max: 10_000,
                     step: 0.01
                 }
             }, {
@@ -200,7 +200,7 @@ config.licenceTypes = [
                 inputAttributes: {
                     type: "number",
                     min: 0,
-                    max: 10000,
+                    max: 10_000,
                     step: 0.01
                 }
             }, {
@@ -210,7 +210,7 @@ config.licenceTypes = [
                 inputAttributes: {
                     type: "number",
                     min: 0,
-                    max: 10000,
+                    max: 10_000,
                     step: 0.01
                 }
             }, {
@@ -220,7 +220,7 @@ config.licenceTypes = [
                 inputAttributes: {
                     type: "number",
                     min: 0,
-                    max: 10000,
+                    max: 10_000,
                     step: 0.01
                 }
             }, {
@@ -230,7 +230,7 @@ config.licenceTypes = [
                 inputAttributes: {
                     type: "number",
                     min: 0,
-                    max: 10000,
+                    max: 10_000,
                     step: 0.01
                 }
             }, {
@@ -250,7 +250,7 @@ config.licenceTypes = [
                 inputAttributes: {
                     type: "number",
                     min: 0,
-                    max: 10000,
+                    max: 10_000,
                     step: 0.01
                 }
             }],
@@ -263,7 +263,7 @@ config.licenceTypes = [
     {
         licenceTypeKey: "RA",
         licenceType: "Raffle",
-        totalPrizeValueMax: 50000,
+        totalPrizeValueMax: 50_000,
         isActive: true,
         licenceFields: [{
                 fieldKey: "drawCount",
@@ -284,7 +284,7 @@ config.licenceTypes = [
                 inputAttributes: {
                     type: "number",
                     min: 0,
-                    max: 1000000,
+                    max: 1_000_000,
                     step: 1
                 }
             }, {
@@ -372,7 +372,7 @@ config.licenceTypes = [
                 inputAttributes: {
                     type: "number",
                     min: 0,
-                    max: 1000000,
+                    max: 1_000_000,
                     step: 1
                 }
             }],

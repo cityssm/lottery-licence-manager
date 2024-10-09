@@ -32,8 +32,8 @@ export const ticketTypes_SP = [
     {
         ticketType: "SP12",
         ticketPrice: 1,
-        ticketCount: 16800,
-        prizesPerDeal: 11440
+        ticketCount: 16_800,
+        prizesPerDeal: 11_440
     },
     {
         ticketType: "SP21",
@@ -50,8 +50,8 @@ export const ticketTypes_SP = [
     {
         ticketType: "SP23",
         ticketPrice: 1,
-        ticketCount: 33600,
-        prizesPerDeal: 22880
+        ticketCount: 33_600,
+        prizesPerDeal: 22_880
     },
     {
         ticketType: "SP24",
@@ -63,7 +63,7 @@ export const ticketTypes_SP = [
         ticketType: "SP25",
         ticketPrice: 2,
         ticketCount: 8400,
-        prizesPerDeal: 11440
+        prizesPerDeal: 11_440
     },
     {
         ticketType: "SP26",
