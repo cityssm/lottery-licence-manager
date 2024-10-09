@@ -1,8 +1,8 @@
-import sqlite from "better-sqlite3";
-import { licencesDB as databasePath } from "../../data/databasePaths.js";
-import debug from "debug";
-const debugSQL = debug("lottery-licence-manager:licencesDB:runSQL");
-export const runSQL = (sql, parameters = []) => {
+import sqlite from 'better-sqlite3';
+import debug from 'debug';
+import { licencesDB as databasePath } from '../../data/databasePaths.js';
+const debugSQL = debug('lottery-licence-manager:licencesDB:runSQL');
+export function runSQL(sql, parameters = []) {
     const database = sqlite(databasePath);
     try {
         return database.prepare(sql).run(...parameters);
@@ -17,11 +17,11 @@ export const runSQL = (sql, parameters = []) => {
         catch {
         }
     }
-};
-export const runSQL_hasChanges = (sql, parameters = []) => {
+}
+export function runSQL_hasChanges(sql, parameters = []) {
     const result = runSQL(sql, parameters);
     if (result) {
         return result.changes > 0;
     }
     return false;
-};
+}

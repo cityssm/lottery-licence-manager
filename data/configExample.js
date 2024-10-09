@@ -1,7 +1,7 @@
-import { config as configOntario } from "./configOntario.js";
-export const config = Object.assign({}, configOntario);
+import { config as configOntario } from './configOntario.js';
+export const config = { ...configOntario };
 config.application = {
-    applicationName: "Lottery Licence Manager"
+    applicationName: 'Lottery Licence Manager'
 };
 config.users = {
     canLogin: [],
@@ -9,5 +9,5 @@ config.users = {
     canUpdate: [],
     isAdmin: []
 };
-config.defaults.city = "";
+config.defaults.city = '';
 export default config;

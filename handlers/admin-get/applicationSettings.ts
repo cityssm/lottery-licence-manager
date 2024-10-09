@@ -1,17 +1,12 @@
-import type { RequestHandler } from "express";
+import type { Request, Response } from 'express'
 
-import { getApplicationSettings } from "../../helpers/licencesDB/getApplicationSettings.js";
+import { getApplicationSettings } from '../../helpers/licencesDB/getApplicationSettings.js'
 
+export default function handler(_request: Request, response: Response): void {
+  const applicationSettings = getApplicationSettings()
 
-export const handler: RequestHandler = (_request, response) => {
-
-  const applicationSettings = getApplicationSettings();
-
-  response.render("admin-applicationSettings", {
-    headTitle: "Application Settings",
+  response.render('admin-applicationSettings', {
+    headTitle: 'Application Settings',
     applicationSettings
-  });
-};
-
-
-export default handler;
+  })
+}

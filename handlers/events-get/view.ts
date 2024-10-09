@@ -3,7 +3,7 @@ import type { RequestHandler } from "express";
 import * as configFunctions from "../../helpers/functions.config.js";
 
 import { getEvent } from "../../helpers/licencesDB/getEvent.js";
-import { getLicence } from "../../helpers/licencesDB/getLicence.js";
+import getLicence from "../../helpers/licencesDB/getLicence.js";
 import { getOrganization } from "../../helpers/licencesDB/getOrganization.js";
 
 

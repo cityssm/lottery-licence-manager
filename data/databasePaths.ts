@@ -1,6 +1,7 @@
+import Debug from 'debug'
+
 import * as configFunctions from '../helpers/functions.config.js'
 
-import Debug from 'debug'
 const debug = Debug('lottery-licence-manager:databasePaths')
 
 // Determine if test databases should be used

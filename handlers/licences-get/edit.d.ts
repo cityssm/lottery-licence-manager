@@ -1,3 +1,2 @@
-import type { RequestHandler } from "express";
-export declare const handler: RequestHandler;
-export default handler;
+import type { NextFunction, Request, Response } from 'express';
+export default function handler(request: Request, response: Response, next: NextFunction): void;

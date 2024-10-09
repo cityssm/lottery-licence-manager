@@ -1,1 +1,1 @@
-export { default } from 'eslint-config-cityssm'
+export { configWebApp as default } from 'eslint-config-cityssm'

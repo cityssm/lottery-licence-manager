@@ -297,7 +297,7 @@ export interface TermsConditionsStat {
 
 export interface User {
   userName: string;
-  userProperties?: UserProperties;
+  userProperties: UserProperties;
 }
 
 export interface UserProperties {

@@ -1,31 +1,30 @@
-import { config as configOntario } from "./configOntario.js";
+import type * as configTypes from '../types/configTypes.js'
 
-export const config = Object.assign({}, configOntario);
+import { config as configOntario } from './configOntario.js'
 
+export const config: configTypes.Config = { ...configOntario }
 
 /*
  * APPLICATION SETTINGS
  */
 
 config.application = {
-  applicationName: "Lottery Licence Manager",
+  applicationName: 'Lottery Licence Manager',
   useTestDatabases: true
-};
-
+}
 
 config.users = {
-  testing: ["*testView", "*testUpdate", "*testAdmin"],
-  canLogin: ["*testView", "*testUpdate", "*testAdmin"],
-  canCreate: ["*testUpdate"],
-  canUpdate: ["*testUpdate"],
-  isAdmin: ["*testAdmin"]
-};
+  testing: ['*testView', '*testUpdate', '*testAdmin'],
+  canLogin: ['*testView', '*testUpdate', '*testAdmin'],
+  canCreate: ['*testUpdate'],
+  canUpdate: ['*testUpdate'],
+  isAdmin: ['*testAdmin']
+}
 
 /*
  * DEFAULT VALUES
  */
 
-config.defaults.city = "";
+config.defaults.city = ''
 
-
-export default config;
+export default config

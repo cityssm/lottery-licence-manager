@@ -1,28 +1,25 @@
 /* eslint-disable unicorn/filename-case */
 
-import * as assert from "assert";
+import * as assert from 'node:assert'
+import { unlink } from 'node:fs'
 
-import { unlink } from "fs";
+import { licencesDB_testing } from '../data/databasePaths.js'
+import { initLicencesDB } from '../helpers/databaseInitializer.js'
 
-import { licencesDB_testing } from "../data/databasePaths.js";
-import { initLicencesDB } from "../helpers/databaseInitializer.js";
-
-
-describe("Reinitialize " + licencesDB_testing, () => {
-
-  it("Purges " + licencesDB_testing, (done) => {
+describe('Reinitialize ' + licencesDB_testing, () => {
+  it(`Purges ${licencesDB_testing}`, (done) => {
     unlink(licencesDB_testing, (error) => {
       if (error) {
         assert.fail()
       } else {
-        assert.ok(true);
+        assert.ok(true)
       }
-      done();
-    });
-  });
+      done()
+    })
+  })
 
-  it("Creates " + licencesDB_testing, () => {
-    const success = initLicencesDB();
-    assert.ok(success);
-  });
-});
+  it('Creates ' + licencesDB_testing, () => {
+    const success = initLicencesDB()
+    assert.ok(success)
+  })
+})

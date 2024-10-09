@@ -1,5 +1,5 @@
-import * as configFunctions from '../helpers/functions.config.js';
 import Debug from 'debug';
+import * as configFunctions from '../helpers/functions.config.js';
 const debug = Debug('lottery-licence-manager:databasePaths');
 export const useTestDatabases = configFunctions.getProperty('application.useTestDatabases') ||
     process.env.TEST_DATABASES === 'true';

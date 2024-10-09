@@ -1,2 +1,3 @@
-export declare const config: import("../types/configTypes.js").Config;
+import type { Config } from '../types/configTypes.js';
+export declare const config: Config;
 export default config;

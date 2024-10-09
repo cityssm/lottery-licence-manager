@@ -1,24 +1,25 @@
-import * as configFunctions from "../../helpers/functions.config.js";
-import { getOrganization } from "../../helpers/licencesDB/getOrganization.js";
-import { getLicence } from "../../helpers/licencesDB/getLicence.js";
-const urlPrefix = configFunctions.getProperty("reverseProxy.urlPrefix");
-export const handler = (request, response, next) => {
+import * as configFunctions from '../../helpers/functions.config.js';
+import getLicence from '../../helpers/licencesDB/getLicence.js';
+import { getOrganization } from '../../helpers/licencesDB/getOrganization.js';
+const urlPrefix = configFunctions.getProperty('reverseProxy.urlPrefix');
+export default function handler(request, response, next) {
     const licenceID = Number(request.params.licenceID);
     if (Number.isNaN(licenceID)) {
-        return next();
+        next();
+        return;
     }
     const licence = getLicence(licenceID, request.session);
-    if (!licence) {
-        return response.redirect(urlPrefix + "/licences/?error=licenceNotFound");
+    if (licence === undefined) {
+        response.redirect(urlPrefix + '/licences/?error=licenceNotFound');
+        return;
     }
     const organization = getOrganization(licence.organizationID, request.session);
-    const headTitle = configFunctions.getProperty("licences.externalLicenceNumber.isPreferredID")
-        ? "Licence " + licence.externalLicenceNumber
-        : "Licence #" + licenceID.toString();
-    return response.render("licence-view", {
+    const headTitle = configFunctions.getProperty('licences.externalLicenceNumber.isPreferredID')
+        ? `Licence ${licence.externalLicenceNumber}`
+        : `Licence #${licenceID.toString()}`;
+    response.render('licence-view', {
         headTitle,
         licence,
         organization
     });
-};
-export default handler;
+}
