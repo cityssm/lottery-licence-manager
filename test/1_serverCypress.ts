@@ -8,6 +8,33 @@ import { app } from '../app.js'
 
 import { portNumber } from './_globals.js'
 
+// eslint-disable-next-line @typescript-eslint/no-magic-numbers
+const thirtyMinutesInMillis = 30 * 60 * 60 * 1000
+
+function runCypress(browser: 'chrome' | 'firefox', done: () => void): void {
+  let cypressCommand = `cypress run --config-file cypress.config.js --browser ${browser}`
+
+  if ((process.env.CYPRESS_RECORD_KEY ?? '') !== '') {
+    cypressCommand += ` --tag "${browser},${process.version}" --record`
+  }
+
+  // eslint-disable-next-line security/detect-child-process, sonarjs/os-command
+  const childProcess = exec(cypressCommand)
+
+  childProcess.stdout?.on('data', (data) => {
+    console.log(data)
+  })
+
+  childProcess.stderr?.on('data', (data) => {
+    console.error(data)
+  })
+
+  childProcess.on('exit', (code) => {
+    assert.ok(code === 0)
+    done()
+  })
+}
+
 describe('lottery-licence-manager', () => {
   const httpServer = http.createServer(app)
 
@@ -34,28 +61,12 @@ describe('lottery-licence-manager', () => {
   })
 
   describe('Cypress tests', () => {
-    it('should run Cypress tests', (done) => {
-      let cypressCommand =
-        'cypress run --config-file cypress.config.ts --browser chrome'
+    it('Should run Cypress tests in Chrome', (done) => {
+      runCypress('chrome', done)
+    }).timeout(thirtyMinutesInMillis)
 
-      if ((process.env.CYPRESS_RECORD_KEY ?? '') !== '') {
-        cypressCommand += ' --record'
-      }
-
-      const childProcess = exec(cypressCommand)
-
-      childProcess.stdout?.on('data', (data) => {
-        console.log(data)
-      })
-
-      childProcess.stderr?.on('data', (data) => {
-        console.error(data)
-      })
-
-      childProcess.on('exit', (code) => {
-        assert.ok(code === 0)
-        done()
-      })
-    }).timeout(30 * 60 * 60 * 1000)
-  })
+    it('Should run Cypress tests in Firefox', (done) => {
+      runCypress('firefox', done)
+    }).timeout(thirtyMinutesInMillis)
+  }).timeout(thirtyMinutesInMillis)
 })
