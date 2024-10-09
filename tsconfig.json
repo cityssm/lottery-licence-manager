@@ -10,7 +10,8 @@
     "allowUnreachableCode": false,
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "strictNullChecks": true
   },
   "compileOnSave": true,
   "buildOnSave": true,
