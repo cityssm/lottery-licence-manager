@@ -13,7 +13,7 @@ const authenticateViaActiveDirectory = async (userName, password) => {
                 resolve(auth);
             });
         }
-        catch (_a) {
+        catch {
             resolve(false);
         }
     });

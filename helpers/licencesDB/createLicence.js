@@ -15,7 +15,7 @@ export const createLicence = (requestBody, requestSession) => {
     try {
         externalLicenceNumberInteger = Number.parseInt(requestBody.externalLicenceNumber, 10);
     }
-    catch (_a) {
+    catch {
         externalLicenceNumberInteger = -1;
     }
     const info = database.prepare("insert into LotteryLicences (" +

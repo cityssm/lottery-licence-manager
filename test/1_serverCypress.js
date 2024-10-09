@@ -16,7 +16,7 @@ describe("lottery-licence-manager", () => {
         try {
             httpServer.close();
         }
-        catch (_a) {
+        catch {
         }
     });
     it("Ensure server starts on port " + portNumber.toString(), () => {

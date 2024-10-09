@@ -14,7 +14,7 @@ export const runSQL = (sql, parameters = []) => {
         try {
             database.close();
         }
-        catch (_a) {
+        catch {
         }
     }
 };
