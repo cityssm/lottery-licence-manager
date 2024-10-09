@@ -31,7 +31,7 @@
     "@cityssm/bulma-webapp-js": "^1.5.0",
     "@cityssm/date-diff": "^2.2.3",
     "@cityssm/expressjs-server-js": "^2.3.3",
-    "@cityssm/pdf-puppeteer": "^2.0.0-beta.1",
+    "@cityssm/pdf-puppeteer": "^2.2.0",
     "@fortawesome/fontawesome-free": "^5.15.4",
     "activedirectory2": "^2.2.0",
     "bcrypt": "^5.1.1",
