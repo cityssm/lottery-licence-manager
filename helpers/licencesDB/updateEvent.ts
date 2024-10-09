@@ -1,119 +1,132 @@
-import sqlite from "better-sqlite3";
+import * as dateTimeFns from '@cityssm/expressjs-server-js/dateTimeFns.js'
+import sqlite from 'better-sqlite3'
+import type * as expressSession from 'express-session'
 
-import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
+import { licencesDB as databasePath } from '../../data/databasePaths.js'
+import * as licencesDB from '../licencesDB.js'
 
-import * as licencesDB from "../licencesDB.js";
-
-import { licencesDB as databasePath } from "../../data/databasePaths.js";
-
-import type * as expressSession from "express-session";
-
-
-interface UpdateEventForm {
-  licenceID: string;
-  eventDate: string;
-  reportDateString: string;
-  bank_name: string;
-  bank_address: string;
-  bank_accountNumber: string;
-  bank_accountBalance: string;
-  costs_amountDonated: string;
-  fieldKeys: string;
-  ticketTypes: string;
+export interface UpdateEventForm {
+  licenceID: string
+  eventDate: string
+  reportDateString: string
+  bank_name: string
+  bank_address: string
+  bank_accountNumber: string
+  bank_accountBalance: string
+  costs_amountDonated: string
+  fieldKeys: string
+  ticketTypes: string
 }
 
+export default function updateEvent(
+  requestBody: UpdateEventForm,
+  requestSession: expressSession.Session
+): boolean {
+  const database = sqlite(databasePath)
 
-export const updateEvent = (requestBody: UpdateEventForm, requestSession: expressSession.Session): boolean => {
+  const nowMillis = Date.now()
 
-  const database = sqlite(databasePath);
-
-  const nowMillis = Date.now();
-
-  const info = database.prepare("update LotteryEvents" +
-    " set reportDate = ?," +
-    " bank_name = ?," +
-    " bank_address = ?," +
-    " bank_accountNumber = ?," +
-    " bank_accountBalance = ?," +
-    " costs_amountDonated = ?," +
-    " recordUpdate_userName = ?," +
-    " recordUpdate_timeMillis = ?" +
-    " where licenceID = ?" +
-    " and eventDate = ?" +
-    " and recordDelete_timeMillis is null")
+  const info = database
+    .prepare(
+      `update LotteryEvents
+        set reportDate = ?,
+          bank_name = ?,
+          bank_address = ?,
+          bank_accountNumber = ?,
+          bank_accountBalance = ?,
+          costs_amountDonated = ?,
+          recordUpdate_userName = ?,
+          recordUpdate_timeMillis = ?
+        where licenceID = ?
+          and eventDate = ?
+          and recordDelete_timeMillis is null`
+    )
     .run(
-      (requestBody.reportDateString === "" ? undefined : dateTimeFns.dateStringToInteger(requestBody.reportDateString)),
+      requestBody.reportDateString === ''
+        ? undefined
+        : dateTimeFns.dateStringToInteger(requestBody.reportDateString),
       requestBody.bank_name,
       requestBody.bank_address,
       requestBody.bank_accountNumber,
-      (requestBody.bank_accountBalance === "" ? undefined : requestBody.bank_accountBalance),
-      (requestBody.costs_amountDonated === "" ? undefined : requestBody.costs_amountDonated),
+      requestBody.bank_accountBalance === ''
+        ? undefined
+        : requestBody.bank_accountBalance,
+      requestBody.costs_amountDonated === ''
+        ? undefined
+        : requestBody.costs_amountDonated,
       requestSession.user.userName,
       nowMillis,
       requestBody.licenceID,
       requestBody.eventDate
-    );
+    )
 
-  const changeCount = info.changes;
+  const changeCount = info.changes
 
   if (!changeCount) {
-
-    database.close();
-    return false;
+    database.close()
+    return false
   }
 
   // Costs
+  database
+    .prepare(
+      `delete from LotteryEventCosts
+        where licenceID = ?
+        and eventDate = ?`
+    )
+    .run(requestBody.licenceID, requestBody.eventDate)
 
-  database.prepare("delete from LotteryEventCosts" +
-    " where licenceID = ?" +
-    " and eventDate = ?")
-    .run(requestBody.licenceID, requestBody.eventDate);
-
-  const ticketTypes = requestBody.ticketTypes.split(",");
+  const ticketTypes = requestBody.ticketTypes.split(',')
 
   for (const ticketType of ticketTypes) {
+    const costs_receipts = requestBody['costs_receipts-' + ticketType]
+    const costs_admin = requestBody['costs_admin-' + ticketType]
+    const costs_prizesAwarded = requestBody['costs_prizesAwarded-' + ticketType]
 
-    const costs_receipts = requestBody["costs_receipts-" + ticketType];
-    const costs_admin = requestBody["costs_admin-" + ticketType];
-    const costs_prizesAwarded = requestBody["costs_prizesAwarded-" + ticketType];
-
-    database.prepare("insert into LotteryEventCosts" +
-      " (licenceID, eventDate, ticketType, costs_receipts, costs_admin, costs_prizesAwarded)" +
-      " values (?, ?, ?, ?, ?, ?)")
-      .run(requestBody.licenceID,
+    database
+      .prepare(
+        `insert into LotteryEventCosts (
+          licenceID, eventDate, ticketType, costs_receipts, costs_admin, costs_prizesAwarded)
+          values (?, ?, ?, ?, ?, ?)`
+      )
+      .run(
+        requestBody.licenceID,
         requestBody.eventDate,
-        (ticketType === "" ? undefined : ticketType),
-        (costs_receipts === "" ? undefined : costs_receipts),
-        (costs_admin === "" ? undefined : costs_admin),
-        (costs_prizesAwarded === "" ? undefined : costs_prizesAwarded));
+        ticketType === '' ? undefined : ticketType,
+        costs_receipts === '' ? undefined : costs_receipts,
+        costs_admin === '' ? undefined : costs_admin,
+        costs_prizesAwarded === '' ? undefined : costs_prizesAwarded
+      )
   }
 
   // Fields
+  database
+    .prepare(
+      `delete from LotteryEventFields
+        where licenceID = ? and eventDate = ?`
+    )
+    .run(requestBody.licenceID, requestBody.eventDate)
 
-  database.prepare("delete from LotteryEventFields" +
-    " where licenceID = ?" +
-    " and eventDate = ?")
-    .run(requestBody.licenceID, requestBody.eventDate);
-
-  const fieldKeys = requestBody.fieldKeys.split(",");
+  const fieldKeys = requestBody.fieldKeys.split(',')
 
   for (const fieldKey of fieldKeys) {
+    const fieldValue = requestBody[fieldKey]
 
-    const fieldValue = requestBody[fieldKey];
-
-    if (fieldValue !== "") {
-
-      database.prepare("insert into LotteryEventFields" +
-        " (licenceID, eventDate, fieldKey, fieldValue)" +
-        " values (?, ?, ?, ?)")
-        .run(requestBody.licenceID, requestBody.eventDate, fieldKey, fieldValue);
+    if (fieldValue !== '') {
+      database
+        .prepare(
+          `insert into LotteryEventFields (
+            licenceID, eventDate, fieldKey, fieldValue)
+            values (?, ?, ?, ?)`
+        )
+        .run(requestBody.licenceID, requestBody.eventDate, fieldKey, fieldValue)
     }
   }
 
-  database.close();
+  database.close()
 
   // Purge cached stats
-  licencesDB.resetEventTableStats();
+  licencesDB.resetEventTableStats()
 
-  return changeCount > 0;
-};
+  return changeCount > 0
+}

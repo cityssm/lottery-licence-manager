@@ -1,28 +1,24 @@
-import type { RequestHandler } from "express";
+import type { Request, Response } from 'express'
 
-import { updateEvent } from "../../helpers/licencesDB/updateEvent.js";
+import updateEvent, {
+  type UpdateEventForm
+} from '../../helpers/licencesDB/updateEvent.js'
 
-
-export const handler: RequestHandler = (request, response) => {
-
-  const changeCount = updateEvent(request.body, request.session);
+export default function handler(request: Request, response: Response): void {
+  const changeCount = updateEvent(
+    request.body as UpdateEventForm,
+    request.session
+  )
 
   if (changeCount) {
-
     response.json({
       success: true,
-      message: "Event updated successfully."
-    });
-
+      message: 'Event updated successfully.'
+    })
   } else {
-
     response.json({
       success: false,
-      message: "Record Not Saved"
-    });
-
+      message: 'Record Not Saved'
+    })
   }
-};
-
-
-export default handler;
+}

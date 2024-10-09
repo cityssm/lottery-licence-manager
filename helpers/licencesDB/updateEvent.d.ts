@@ -1,5 +1,5 @@
-import type * as expressSession from "express-session";
-interface UpdateEventForm {
+import type * as expressSession from 'express-session';
+export interface UpdateEventForm {
     licenceID: string;
     eventDate: string;
     reportDateString: string;
@@ -11,5 +11,4 @@ interface UpdateEventForm {
     fieldKeys: string;
     ticketTypes: string;
 }
-export declare const updateEvent: (requestBody: UpdateEventForm, requestSession: expressSession.Session) => boolean;
-export {};
+export default function updateEvent(requestBody: UpdateEventForm, requestSession: expressSession.Session): boolean;

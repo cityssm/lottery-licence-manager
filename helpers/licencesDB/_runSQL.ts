@@ -7,7 +7,10 @@ import { licencesDB as databasePath } from '../../data/databasePaths.js'
 
 const debugSQL = debug('lottery-licence-manager:licencesDB:runSQL')
 
-export function runSQL(sql: string, parameters = []): sqlite.RunResult | undefined {
+export function runSQL(
+  sql: string,
+  parameters: unknown[] = []
+): sqlite.RunResult | undefined {
   const database = sqlite(databasePath)
 
   try {
@@ -23,10 +26,13 @@ export function runSQL(sql: string, parameters = []): sqlite.RunResult | undefin
   }
 }
 
-export function runSQL_hasChanges(sql: string, parameters = []): boolean {
+export function runSQL_hasChanges(
+  sql: string,
+  parameters: unknown[] = []
+): boolean {
   const result = runSQL(sql, parameters)
 
-  if (result) {
+  if (result !== undefined) {
     return result.changes > 0
   }
 

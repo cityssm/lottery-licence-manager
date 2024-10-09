@@ -20,7 +20,7 @@ export function runSQL(sql, parameters = []) {
 }
 export function runSQL_hasChanges(sql, parameters = []) {
     const result = runSQL(sql, parameters);
-    if (result) {
+    if (result !== undefined) {
         return result.changes > 0;
     }
     return false;

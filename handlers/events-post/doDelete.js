@@ -1,21 +1,23 @@
-import { deleteEvent } from "../../helpers/licencesDB/deleteEvent.js";
-export const handler = (request, response) => {
-    if (request.body.licenceID === "" || request.body.eventDate === "") {
-        return response.json({
+import deleteEvent from '../../helpers/licencesDB/deleteEvent.js';
+export default function handler(request, response) {
+    if (request.body.licenceID === '' || request.body.eventDate === '') {
+        response.json({
             success: false,
-            message: "Licence ID or Event Date Unavailable"
+            message: 'Licence ID or Event Date Unavailable'
         });
+        return;
     }
     const madeChanges = deleteEvent(request.body.licenceID, request.body.eventDate, request.session);
     if (madeChanges) {
-        return response.json({
+        response.json({
             success: true,
-            message: "Event Deleted"
+            message: 'Event Deleted'
         });
     }
-    response.json({
-        success: false,
-        message: "Event Not Deleted"
-    });
-};
-export default handler;
+    else {
+        response.json({
+            success: false,
+            message: 'Event Not Deleted'
+        });
+    }
+}

@@ -1,14 +1,11 @@
-import type { RequestHandler } from "express";
+import type { Request, Response } from 'express'
 
-import { getPastEventBankingInformation } from "../../helpers/licencesDB/getPastEventBankingInformation.js";
+import { getPastEventBankingInformation } from '../../helpers/licencesDB/getPastEventBankingInformation.js'
 
-
-export const handler: RequestHandler = (request, response) => {
-
-  const bankInfoList = getPastEventBankingInformation(request.body.licenceID);
-  response.json(bankInfoList);
-
-};
-
-
-export default handler;
+export default function handler(
+  request: Request<unknown, unknown, { licenceID: string }>,
+  response: Response
+): void {
+  const bankInfoList = getPastEventBankingInformation(request.body.licenceID)
+  response.json(bankInfoList)
+}
