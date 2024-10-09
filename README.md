@@ -1,11 +1,9 @@
 # Lottery Licence Manager
 
-[<img src="https://bulma.io/images/made-with-bulma.png" alt="Made with Bulma" width="128" height="24" />](https://bulma.io)
-[![Codacy Badge](https://img.shields.io/codacy/grade/d2d290ed8f214420aad853c41c90c708)](https://www.codacy.com/gh/cityssm/lottery-licence-manager)
 [![Maintainability](https://img.shields.io/codeclimate/maintainability/cityssm/lottery-licence-manager)](https://codeclimate.com/github/cityssm/lottery-licence-manager/maintainability)
 [![Code Climate coverage](https://img.shields.io/codeclimate/coverage/cityssm/lottery-licence-manager)](https://codeclimate.com/github/cityssm/lottery-licence-manager/maintainability)
+[![DeepSource](https://app.deepsource.com/gh/cityssm/lottery-licence-manager.svg/?label=active+issues&show_trend=true&token=2SUuK2jeGrI7TVqkZkEcOI3g)](https://app.deepsource.com/gh/cityssm/lottery-licence-manager/)
 [![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/cityssm/lottery-licence-manager/coverage.yml)](https://github.com/cityssm/lottery-licence-manager/actions/workflows/coverage.yml)
-[![Snyk Vulnerabilities for GitHub Repo](https://img.shields.io/snyk/vulnerabilities/github/cityssm/lottery-licence-manager)](https://app.snyk.io/org/cityssm/project/85fc64cf-248f-48d3-b438-a3e449295670)
 
 ![Lottery Licence Search](docs/assets/images/licence-search.png)
 
