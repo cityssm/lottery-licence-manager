@@ -1,187 +1,190 @@
-import sqlite from "better-sqlite3";
-import { licencesDB as databasePath } from "../../data/databasePaths.js";
+import * as dateTimeFns from '@cityssm/expressjs-server-js/dateTimeFns.js'
+import sqlite from 'better-sqlite3'
+import type * as expressSession from 'express-session'
 
-import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
-import { canUpdateObject } from "../licencesDB.js";
+import { licencesDB as databasePath } from '../../data/databasePaths.js'
+import type * as llm from '../../types/recordTypes'
+import { canUpdateObject } from '../licencesDB.js'
 
-import type * as llm from "../../types/recordTypes";
-import type * as expressSession from "express-session";
-
-
-interface GetLicencesReturn {
-  count: number;
-  licences: llm.LotteryLicence[];
+export interface GetLicencesFilters {
+  externalLicenceNumber?: string
+  licenceTypeKey?: string
+  organizationID?: string | number
+  organizationName?: string
+  licenceStatus?: 'past' | 'active'
+  locationID?: number
+  locationName?: string
 }
 
+interface GetLicencesReturn {
+  count: number
+  licences: llm.LotteryLicence[]
+}
 
-export const getLicences = (requestBodyOrParametersObject: {
-  externalLicenceNumber?: string;
-  licenceTypeKey?: string;
-  organizationID?: string | number;
-  organizationName?: string;
-  licenceStatus?: "past" | "active";
-  locationID?: number;
-  locationName?: string;
-},
+export default function getLicences(
+  requestBodyOrParametersObject: GetLicencesFilters,
   requestSession: expressSession.Session,
   includeOptions: {
-    includeOrganization: boolean;
-    limit: number;
-    offset?: number;
-  }): GetLicencesReturn => {
-
-  if (requestBodyOrParametersObject.organizationName && requestBodyOrParametersObject.organizationName !== "") {
-    includeOptions.includeOrganization = true;
+    includeOrganization: boolean
+    limit: number
+    offset?: number
+  }
+): GetLicencesReturn {
+  if ((requestBodyOrParametersObject.organizationName ?? '') !== '') {
+    includeOptions.includeOrganization = true
   }
 
   const database = sqlite(databasePath, {
     readonly: true
-  });
+  })
 
   // build where clause
+  const sqlParameters: unknown[] = []
 
-  const sqlParameters = [];
+  let sqlWhereClause = ' where l.recordDelete_timeMillis is null'
 
-  let sqlWhereClause = " where l.recordDelete_timeMillis is null";
-
-  if (requestBodyOrParametersObject.externalLicenceNumber && requestBodyOrParametersObject.externalLicenceNumber !== "") {
-
-    const externalLicenceNumberPieces = requestBodyOrParametersObject.externalLicenceNumber.toLowerCase().split(" ");
+  if ((requestBodyOrParametersObject.externalLicenceNumber ?? '') !== '') {
+    const externalLicenceNumberPieces = (
+      requestBodyOrParametersObject.externalLicenceNumber ?? ''
+    )
+      .toLowerCase()
+      .split(' ')
 
     for (const externalLicenceNumberPiece of externalLicenceNumberPieces) {
-
-      sqlWhereClause += " and instr(lower(l.externalLicenceNumber), ?)";
-      sqlParameters.push(externalLicenceNumberPiece);
+      sqlWhereClause += ' and instr(lower(l.externalLicenceNumber), ?)'
+      sqlParameters.push(externalLicenceNumberPiece)
     }
   }
 
-  if (requestBodyOrParametersObject.organizationID && requestBodyOrParametersObject.organizationID !== "") {
-
-    sqlWhereClause += " and l.organizationID = ?";
-    sqlParameters.push(requestBodyOrParametersObject.organizationID);
-
+  if ((requestBodyOrParametersObject.organizationID ?? '') !== '') {
+    sqlWhereClause += ' and l.organizationID = ?'
+    sqlParameters.push(requestBodyOrParametersObject.organizationID)
   }
 
-  if (requestBodyOrParametersObject.organizationName && requestBodyOrParametersObject.organizationName !== "") {
-
-    const organizationNamePieces = requestBodyOrParametersObject.organizationName.toLowerCase().split(" ");
+  if ((requestBodyOrParametersObject.organizationName ?? '') !== '') {
+    const organizationNamePieces = (
+      requestBodyOrParametersObject.organizationName ?? ''
+    )
+      .toLowerCase()
+      .split(' ')
 
     for (const organizationNamePiece of organizationNamePieces) {
-      sqlWhereClause += " and instr(lower(o.organizationName), ?)";
-      sqlParameters.push(organizationNamePiece);
+      sqlWhereClause += ' and instr(lower(o.organizationName), ?)'
+      sqlParameters.push(organizationNamePiece)
     }
   }
 
-  if (requestBodyOrParametersObject.licenceTypeKey && requestBodyOrParametersObject.licenceTypeKey !== "") {
-
-    sqlWhereClause += " and l.licenceTypeKey = ?";
-    sqlParameters.push(requestBodyOrParametersObject.licenceTypeKey);
+  if ((requestBodyOrParametersObject.licenceTypeKey ?? '') !== '') {
+    sqlWhereClause += ' and l.licenceTypeKey = ?'
+    sqlParameters.push(requestBodyOrParametersObject.licenceTypeKey)
   }
 
   if (requestBodyOrParametersObject.licenceStatus) {
-
-    if (requestBodyOrParametersObject.licenceStatus === "past") {
-
-      sqlWhereClause += " and l.endDate < ?";
-      sqlParameters.push(dateTimeFns.dateToInteger(new Date()));
-
-    } else if (requestBodyOrParametersObject.licenceStatus === "active") {
-
-      sqlWhereClause += " and l.endDate >= ?";
-      sqlParameters.push(dateTimeFns.dateToInteger(new Date()));
+    if (requestBodyOrParametersObject.licenceStatus === 'past') {
+      sqlWhereClause += ' and l.endDate < ?'
+      sqlParameters.push(dateTimeFns.dateToInteger(new Date()))
+    } else if (requestBodyOrParametersObject.licenceStatus === 'active') {
+      sqlWhereClause += ' and l.endDate >= ?'
+      sqlParameters.push(dateTimeFns.dateToInteger(new Date()))
     }
   }
 
   if (requestBodyOrParametersObject.locationID) {
+    sqlWhereClause += ` and (
+        l.locationID = ?
+        or l.licenceID in (
+          select licenceID from LotteryLicenceTicketTypes
+          where recordDelete_timeMillis is null
+          and (distributorLocationID = ? or manufacturerLocationID = ?)
+        )
+      )`
 
-    sqlWhereClause += " and (l.locationID = ?" +
-      " or l.licenceID in (" +
-      "select licenceID from LotteryLicenceTicketTypes" +
-      " where recordDelete_timeMillis is null and (distributorLocationID = ? or manufacturerLocationID = ?)" +
-      ")" +
-      ")";
-
-    sqlParameters.push(requestBodyOrParametersObject.locationID,
+    sqlParameters.push(
       requestBodyOrParametersObject.locationID,
-      requestBodyOrParametersObject.locationID);
+      requestBodyOrParametersObject.locationID,
+      requestBodyOrParametersObject.locationID
+    )
   }
 
-  if (requestBodyOrParametersObject.locationName && requestBodyOrParametersObject.locationName !== "") {
-
-    const locationNamePieces = requestBodyOrParametersObject.locationName.toLowerCase().split(" ");
+  if ((requestBodyOrParametersObject.locationName ?? '') !== '') {
+    const locationNamePieces = (
+      requestBodyOrParametersObject.locationName ?? ''
+    )
+      .toLowerCase()
+      .split(' ')
 
     for (const locationNamePiece of locationNamePieces) {
-      sqlWhereClause += " and (instr(lower(lo.locationName), ?) or instr(lower(lo.locationAddress1), ?))";
-      sqlParameters.push(locationNamePiece, locationNamePiece);
+      sqlWhereClause +=
+        ' and (instr(lower(lo.locationName), ?) or instr(lower(lo.locationAddress1), ?))'
+      sqlParameters.push(locationNamePiece, locationNamePiece)
     }
   }
 
   // if a limit is used, get the count
-
-  let count = 0;
+  let count = 0
 
   if (includeOptions.limit !== -1) {
-
-    count = database.prepare("select ifnull(count(*), 0)" +
-      " from LotteryLicences l" +
-      " left join Organizations o on l.organizationID = o.organizationID" +
-      " left join Locations lo on l.locationID = lo.locationID" +
-      sqlWhereClause)
+    count = database
+      .prepare(
+        `select ifnull(count(*), 0)
+          from LotteryLicences l
+          left join Organizations o on l.organizationID = o.organizationID
+          left join Locations lo on l.locationID = lo.locationID
+          ${sqlWhereClause}`
+      )
       .pluck()
-      .get(sqlParameters);
+      .get(sqlParameters) as number
   }
 
-  let sql = "select" +
-    " 'licence' as recordType," +
-    " l.licenceID, l.organizationID," +
-    (includeOptions.includeOrganization
-      ? " o.organizationName,"
-      : "") +
-    " l.applicationDate, userFn_dateIntegerToString(l.applicationDate) as applicationDateString," +
-    " l.licenceTypeKey," +
-    " l.startDate, userFn_dateIntegerToString(l.startDate) as startDateString," +
-    " l.startTime, userFn_timeIntegerToString(l.startTime) as startTimeString," +
-    " l.endDate, userFn_dateIntegerToString(l.endDate) as endDateString," +
-    " l.endTime, userFn_timeIntegerToString(l.endTime) as endTimeString," +
-    " l.locationID, lo.locationName, lo.locationAddress1," +
-    " iif(lo.locationName = '', lo.locationAddress1, lo.locationName) as locationDisplayName," +
-    " l.municipality, l.licenceDetails, l.termsConditions," +
-    " l.externalLicenceNumber," +
-    " l.issueDate, userFn_dateIntegerToString(l.issueDate) as issueDateString," +
-    " l.recordCreate_userName, l.recordCreate_timeMillis," +
-    " l.recordUpdate_userName, l.recordUpdate_timeMillis" +
-    " from LotteryLicences l" +
-    " left join Locations lo on l.locationID = lo.locationID" +
-    (includeOptions.includeOrganization
-      ? " left join Organizations o on l.organizationID = o.organizationID"
-      : ""
-    ) +
-    sqlWhereClause +
-    " order by l.endDate desc, l.startDate desc, l.licenceID";
+  let sql = `select 'licence' as recordType,
+      l.licenceID, l.organizationID,
+      ${includeOptions.includeOrganization ? ' o.organizationName,' : ''}
+      l.applicationDate, userFn_dateIntegerToString(l.applicationDate) as applicationDateString,
+      l.licenceTypeKey,
+      l.startDate, userFn_dateIntegerToString(l.startDate) as startDateString,
+      l.startTime, userFn_timeIntegerToString(l.startTime) as startTimeString,
+      l.endDate, userFn_dateIntegerToString(l.endDate) as endDateString,
+      l.endTime, userFn_timeIntegerToString(l.endTime) as endTimeString,
+      l.locationID, lo.locationName,
+      lo.locationAddress1, iif(lo.locationName = '', lo.locationAddress1, lo.locationName) as locationDisplayName,
+      l.municipality, l.licenceDetails, l.termsConditions, l.externalLicenceNumber,
+      l.issueDate, userFn_dateIntegerToString(l.issueDate) as issueDateString,
+      l.recordCreate_userName, l.recordCreate_timeMillis,
+      l.recordUpdate_userName, l.recordUpdate_timeMillis
+    from LotteryLicences l
+    left join Locations lo on l.locationID = lo.locationID
+    ${
+      includeOptions.includeOrganization
+        ? ' left join Organizations o on l.organizationID = o.organizationID'
+        : ''
+    }
+    ${sqlWhereClause}
+    order by l.endDate desc, l.startDate desc, l.licenceID`
 
   if (includeOptions.limit !== -1) {
-    sql += " limit " + includeOptions.limit.toString() +
-      " offset " + (includeOptions.offset || 0).toString();
+    sql += ` limit ${includeOptions.limit.toString()} offset ${(includeOptions.offset ?? 0).toString()}`
   }
 
   // Define functions
+  database.function(
+    'userFn_dateIntegerToString',
+    dateTimeFns.dateIntegerToString
+  )
+  database.function(
+    'userFn_timeIntegerToString',
+    dateTimeFns.timeIntegerToString
+  )
 
-  database.function("userFn_dateIntegerToString", dateTimeFns.dateIntegerToString);
-  database.function("userFn_timeIntegerToString", dateTimeFns.timeIntegerToString);
+  const rows = database.prepare(sql).all(sqlParameters) as llm.LotteryLicence[]
 
-  const rows: llm.LotteryLicence[] =
-    database.prepare(sql)
-      .all(sqlParameters);
-
-  database.close();
-
+  database.close()
 
   for (const element of rows) {
-    element.canUpdate = canUpdateObject(element, requestSession);
+    element.canUpdate = canUpdateObject(element, requestSession)
   }
 
   return {
-    count: (includeOptions.limit === -1 ? rows.length : count),
+    count: includeOptions.limit === -1 ? rows.length : count,
     licences: rows
-  };
-};
+  }
+}

@@ -1,7 +1,7 @@
-import * as configFunctions from '../../helpers/functions.config.js';
+import { getProperty } from '../../helpers/functions.config.js';
 import getLicence from '../../helpers/licencesDB/getLicence.js';
-import { getOrganization } from '../../helpers/licencesDB/getOrganization.js';
-const urlPrefix = configFunctions.getProperty('reverseProxy.urlPrefix');
+import getOrganization from '../../helpers/licencesDB/getOrganization.js';
+const urlPrefix = getProperty('reverseProxy.urlPrefix');
 export default function handler(request, response, next) {
     const licenceID = Number(request.params.licenceID);
     if (Number.isNaN(licenceID)) {
@@ -18,8 +18,8 @@ export default function handler(request, response, next) {
         return;
     }
     const organization = getOrganization(licence.organizationID, request.session);
-    const feeCalculation = configFunctions.getProperty('licences.feeCalculationFn')(licence);
-    const headTitle = configFunctions.getProperty('licences.externalLicenceNumber.isPreferredID')
+    const feeCalculation = getProperty('licences.feeCalculationFn')(licence);
+    const headTitle = getProperty('licences.externalLicenceNumber.isPreferredID')
         ? `Licence ${licence.externalLicenceNumber}`
         : `Licence #${licenceID.toString()}`;
     response.render('licence-edit', {

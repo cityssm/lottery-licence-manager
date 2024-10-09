@@ -1,44 +1,41 @@
-import type { RequestHandler } from "express";
+import * as dateTimeFns from '@cityssm/expressjs-server-js/dateTimeFns.js'
+import type { NextFunction, Request, Response } from 'express'
 
-import * as configFunctions from "../../helpers/functions.config.js";
+import * as configFunctions from '../../helpers/functions.config.js'
+import getLicences from '../../helpers/licencesDB/getLicences.js'
+import getOrganization from '../../helpers/licencesDB/getOrganization.js'
 
-import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
+const urlPrefix = configFunctions.getProperty('reverseProxy.urlPrefix')
 
-import { getLicences } from "../../helpers/licencesDB/getLicences.js";
-import { getOrganization } from "../../helpers/licencesDB/getOrganization.js";
-
-
-const urlPrefix = configFunctions.getProperty("reverseProxy.urlPrefix");
-
-
-export const handler: RequestHandler = (request, response, next) => {
-
-  const organizationID = Number(request.params.organizationID);
+export default function handler(
+  request: Request,
+  response: Response,
+  next: NextFunction
+): void {
+  const organizationID = Number(request.params.organizationID)
 
   if (Number.isNaN(organizationID)) {
-    return next();
+    next()
+    return
   }
 
-  const organization = getOrganization(organizationID, request.session);
+  const organization = getOrganization(organizationID, request.session)
 
   if (!organization) {
-    return response.redirect(urlPrefix + "/organizations/?error=organizationNotFound");
+    response.redirect(`${urlPrefix}/organizations/?error=organizationNotFound`)
+    return
   }
 
-  const licences = getLicences({ organizationID },
-    request.session, {
-      includeOrganization: false,
-      limit: -1
-    }).licences || [];
+  const licences = getLicences({ organizationID }, request.session, {
+    includeOrganization: false,
+    limit: -1
+  }).licences
 
-  response.render("organization-print", {
+  response.render('organization-print', {
     headTitle: organization.organizationName,
     isViewOnly: true,
     organization,
     licences,
     currentDateInteger: dateTimeFns.dateToInteger(new Date())
-  });
-};
-
-
-export default handler;
+  })
+}

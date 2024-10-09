@@ -1,20 +1,21 @@
-import type * as llm from "../../types/recordTypes";
-import type * as expressSession from "express-session";
-interface GetLicencesReturn {
-    count: number;
-    licences: llm.LotteryLicence[];
-}
-export declare const getLicences: (requestBodyOrParametersObject: {
+import type * as expressSession from 'express-session';
+import type * as llm from '../../types/recordTypes';
+export interface GetLicencesFilters {
     externalLicenceNumber?: string;
     licenceTypeKey?: string;
     organizationID?: string | number;
     organizationName?: string;
-    licenceStatus?: "past" | "active";
+    licenceStatus?: 'past' | 'active';
     locationID?: number;
     locationName?: string;
-}, requestSession: expressSession.Session, includeOptions: {
+}
+interface GetLicencesReturn {
+    count: number;
+    licences: llm.LotteryLicence[];
+}
+export default function getLicences(requestBodyOrParametersObject: GetLicencesFilters, requestSession: expressSession.Session, includeOptions: {
     includeOrganization: boolean;
     limit: number;
     offset?: number;
-}) => GetLicencesReturn;
+}): GetLicencesReturn;
 export {};

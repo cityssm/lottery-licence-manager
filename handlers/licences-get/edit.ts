@@ -1,10 +1,10 @@
 import type { NextFunction, Request, Response } from 'express'
 
-import * as configFunctions from '../../helpers/functions.config.js'
+import { getProperty } from '../../helpers/functions.config.js'
 import getLicence from '../../helpers/licencesDB/getLicence.js'
-import { getOrganization } from '../../helpers/licencesDB/getOrganization.js'
+import getOrganization from '../../helpers/licencesDB/getOrganization.js'
 
-const urlPrefix = configFunctions.getProperty('reverseProxy.urlPrefix')
+const urlPrefix = getProperty('reverseProxy.urlPrefix')
 
 export default function handler(
   request: Request,
@@ -32,13 +32,9 @@ export default function handler(
 
   const organization = getOrganization(licence.organizationID, request.session)
 
-  const feeCalculation = configFunctions.getProperty(
-    'licences.feeCalculationFn'
-  )(licence)
+  const feeCalculation = getProperty('licences.feeCalculationFn')(licence)
 
-  const headTitle = configFunctions.getProperty(
-    'licences.externalLicenceNumber.isPreferredID'
-  )
+  const headTitle = getProperty('licences.externalLicenceNumber.isPreferredID')
     ? `Licence ${licence.externalLicenceNumber}`
     : `Licence #${licenceID.toString()}`
 

@@ -4,7 +4,7 @@ import * as ejs from 'ejs';
 import * as configFunctions from '../../helpers/functions.config.js';
 import getLicence from '../../helpers/licencesDB/getLicence.js';
 import { getLicenceTicketTypeSummary } from '../../helpers/licencesDB/getLicenceTicketTypeSummary.js';
-import { getOrganization } from '../../helpers/licencesDB/getOrganization.js';
+import getOrganization from '../../helpers/licencesDB/getOrganization.js';
 const urlPrefix = configFunctions.getProperty('reverseProxy.urlPrefix');
 const printTemplate = configFunctions.getProperty('licences.printTemplate');
 export async function handler(request, response, next) {

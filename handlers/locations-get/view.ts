@@ -1,44 +1,46 @@
-import type { RequestHandler } from "express";
+import * as dateTimeFns from '@cityssm/expressjs-server-js/dateTimeFns.js'
+import type { NextFunction, Request, Response } from 'express'
 
-import * as configFunctions from "../../helpers/functions.config.js";
+import { getProperty } from '../../helpers/functions.config.js'
+import getLicences from '../../helpers/licencesDB/getLicences.js'
+import getLocation from '../../helpers/licencesDB/getLocation.js'
 
-import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
+const urlPrefix = getProperty('reverseProxy.urlPrefix')
 
-import { getLicences } from "../../helpers/licencesDB/getLicences.js";
-import { getLocation } from "../../helpers/licencesDB/getLocation.js";
-
-
-const urlPrefix = configFunctions.getProperty("reverseProxy.urlPrefix");
-
-
-export const handler: RequestHandler = (request, response, next) => {
-
-  const locationID = Number(request.params.locationID);
+export default function handler(
+  request: Request,
+  response: Response,
+  next: NextFunction
+): void {
+  const locationID = Number(request.params.locationID)
 
   if (Number.isNaN(locationID)) {
-    return next();
+    next()
+    return
   }
 
-  const location = getLocation(locationID, request.session);
+  const location = getLocation(locationID, request.session)
 
-  if (!location) {
-    return response.redirect(urlPrefix + "/locations/?error=locationNotFound");
+  if (location === undefined) {
+    response.redirect(`${urlPrefix}/locations/?error=locationNotFound`)
+    return
   }
 
-  const licences = getLicences({
-    locationID
-  }, request.session, {
+  const licences = getLicences(
+    {
+      locationID
+    },
+    request.session,
+    {
       includeOrganization: true,
       limit: -1
-    }).licences;
+    }
+  ).licences
 
-  return response.render("location-view", {
+  response.render('location-view', {
     headTitle: location.locationDisplayName,
     location,
     licences,
     currentDateInteger: dateTimeFns.dateToInteger(new Date())
-  });
-};
-
-
-export default handler;
+  })
+}

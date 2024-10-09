@@ -1,16 +1,18 @@
-import * as configFunctions from "../../helpers/functions.config.js";
-import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
-import { getLicences } from "../../helpers/licencesDB/getLicences.js";
-import { getLocation } from "../../helpers/licencesDB/getLocation.js";
-const urlPrefix = configFunctions.getProperty("reverseProxy.urlPrefix");
-export const handler = (request, response, next) => {
+import * as dateTimeFns from '@cityssm/expressjs-server-js/dateTimeFns.js';
+import { getProperty } from '../../helpers/functions.config.js';
+import getLicences from '../../helpers/licencesDB/getLicences.js';
+import getLocation from '../../helpers/licencesDB/getLocation.js';
+const urlPrefix = getProperty('reverseProxy.urlPrefix');
+export default function handler(request, response, next) {
     const locationID = Number(request.params.locationID);
     if (Number.isNaN(locationID)) {
-        return next();
+        next();
+        return;
     }
     const location = getLocation(locationID, request.session);
-    if (!location) {
-        return response.redirect(urlPrefix + "/locations/?error=locationNotFound");
+    if (location === undefined) {
+        response.redirect(`${urlPrefix}/locations/?error=locationNotFound`);
+        return;
     }
     const licences = getLicences({
         locationID
@@ -18,11 +20,10 @@ export const handler = (request, response, next) => {
         includeOrganization: true,
         limit: -1
     }).licences;
-    return response.render("location-view", {
+    response.render('location-view', {
         headTitle: location.locationDisplayName,
         location,
         licences,
         currentDateInteger: dateTimeFns.dateToInteger(new Date())
     });
-};
-export default handler;
+}

@@ -1,33 +1,34 @@
-import { canUpdateObject } from "../licencesDB.js";
-import sqlite from "better-sqlite3";
+import sqlite from 'better-sqlite3'
+import type * as expressSession from 'express-session'
 
-import { licencesDB as databasePath } from "../../data/databasePaths.js";
+import { licencesDB as databasePath } from '../../data/databasePaths.js'
+import type * as llm from '../../types/recordTypes.js'
+import { canUpdateObject } from '../licencesDB.js'
 
-import type * as llm from "../../types/recordTypes";
-import type * as expressSession from "express-session";
-
-
-export const getLocation = (locationID: number, requestSession: expressSession.Session): llm.Location => {
-
+export default function getLocation(
+  locationID: number,
+  requestSession: expressSession.Session
+): llm.Location | undefined {
   const database = sqlite(databasePath, {
     readonly: true
-  });
+  })
 
-  const locationObject: llm.Location =
-    database.prepare("select * from Locations" +
-      " where locationID = ?")
-      .get(locationID);
+  const locationObject = database
+    .prepare('select * from Locations' + ' where locationID = ?')
+    .get(locationID) as llm.Location | undefined
 
-  if (locationObject) {
-    locationObject.recordType = "location";
+  if (locationObject !== undefined) {
+    locationObject.recordType = 'location'
 
     locationObject.locationDisplayName =
-      locationObject.locationName === "" ? locationObject.locationAddress1 : locationObject.locationName;
+      locationObject.locationName === ''
+        ? locationObject.locationAddress1
+        : locationObject.locationName
 
-    locationObject.canUpdate = canUpdateObject(locationObject, requestSession);
+    locationObject.canUpdate = canUpdateObject(locationObject, requestSession)
   }
 
-  database.close();
+  database.close()
 
-  return locationObject;
-};
+  return locationObject
+}

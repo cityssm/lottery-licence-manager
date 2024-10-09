@@ -1,7 +1,7 @@
 import { getProperty } from '../../helpers/functions.config.js';
 import getEvent from '../../helpers/licencesDB/getEvent.js';
 import getLicence from '../../helpers/licencesDB/getLicence.js';
-import { getOrganization } from '../../helpers/licencesDB/getOrganization.js';
+import getOrganization from '../../helpers/licencesDB/getOrganization.js';
 const urlPrefix = getProperty('reverseProxy.urlPrefix');
 export default function handler(request, response, next) {
     const licenceID = Number(request.params.licenceID);

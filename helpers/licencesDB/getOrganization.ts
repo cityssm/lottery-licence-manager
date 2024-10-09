@@ -1,47 +1,50 @@
-import sqlite from "better-sqlite3";
-import { licencesDB as databasePath } from "../../data/databasePaths.js";
+import * as dateTimeFns from '@cityssm/expressjs-server-js/dateTimeFns.js'
+import sqlite from 'better-sqlite3'
+import type * as expressSession from 'express-session'
 
-import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
-import { canUpdateObject } from "../licencesDB.js";
+import { licencesDB as databasePath } from '../../data/databasePaths.js'
+import type * as llm from '../../types/recordTypes.js'
+import { canUpdateObject } from '../licencesDB.js'
 
-import type * as llm from "../../types/recordTypes";
-import type * as expressSession from "express-session";
-
-
-export const getOrganization = (organizationID: number, requestSession: expressSession.Session): llm.Organization => {
-
+export default function getOrganization(
+  organizationID: number,
+  requestSession: expressSession.Session
+): llm.Organization | undefined {
   const database = sqlite(databasePath, {
     readonly: true
-  });
+  })
 
-  const organizationObject: llm.Organization =
-    database.prepare("select * from Organizations" +
-      " where organizationID = ?")
-      .get(organizationID);
+  const organizationObject = database
+    .prepare('select * from Organizations where organizationID = ?')
+    .get(organizationID) as llm.Organization | undefined
 
   if (organizationObject) {
+    organizationObject.recordType = 'organization'
 
-    organizationObject.recordType = "organization";
+    organizationObject.fiscalStartDateString = dateTimeFns.dateIntegerToString(
+      organizationObject.fiscalStartDate
+    )
+    organizationObject.fiscalEndDateString = dateTimeFns.dateIntegerToString(
+      organizationObject.fiscalEndDate
+    )
 
-    organizationObject.fiscalStartDateString = dateTimeFns.dateIntegerToString(organizationObject.fiscalStartDate);
-    organizationObject.fiscalEndDateString = dateTimeFns.dateIntegerToString(organizationObject.fiscalEndDate);
+    organizationObject.canUpdate = canUpdateObject(
+      organizationObject,
+      requestSession
+    )
 
-    organizationObject.canUpdate = canUpdateObject(organizationObject, requestSession);
+    const representativesList = database
+      .prepare(
+        'select * from OrganizationRepresentatives' +
+          ' where organizationID = ?' +
+          ' order by isDefault desc, representativeName'
+      )
+      .all(organizationID) as llm.OrganizationRepresentative[]
 
-    const representativesList: llm.OrganizationRepresentative[] =
-      database.prepare("select * from OrganizationRepresentatives" +
-        " where organizationID = ?" +
-        " order by isDefault desc, representativeName")
-        .all(organizationID);
-
-    organizationObject.organizationRepresentatives = representativesList;
-
+    organizationObject.organizationRepresentatives = representativesList
   }
 
-  database.close();
+  database.close()
 
-  return organizationObject;
-};
-
-
-export default getOrganization;
+  return organizationObject
+}
