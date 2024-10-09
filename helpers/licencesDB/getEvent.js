@@ -2,7 +2,7 @@ import * as dateTimeFns from '@cityssm/expressjs-server-js/dateTimeFns.js';
 import sqlite from 'better-sqlite3';
 import { licencesDB as databasePath } from '../../data/databasePaths.js';
 import { canUpdateObject } from '../licencesDB.js';
-export function getEvent(licenceID, eventDate, requestSession) {
+export default function getEvent(licenceID, eventDate, requestSession) {
     const database = sqlite(databasePath, {
         readonly: true
     });
@@ -59,4 +59,3 @@ export function getEvent(licenceID, eventDate, requestSession) {
     database.close();
     return eventObject;
 }
-export default getEvent;

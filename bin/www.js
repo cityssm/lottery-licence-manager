@@ -5,7 +5,7 @@ import { app } from '../app.js';
 import * as configFunctions from '../helpers/functions.config.js';
 const debugWWW = debug('lottery-licence-manager:www');
 let httpServer;
-const onError = (error) => {
+function onError(error) {
     if (error.syscall !== 'listen') {
         throw error;
     }
@@ -22,12 +22,12 @@ const onError = (error) => {
             throw error;
         }
     }
-};
-const onListening = (server) => {
+}
+function onListening(server) {
     const addr = server.address();
-    const bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port.toString();
-    debugWWW('Listening on ' + bind);
-};
+    const bind = typeof addr === 'string' ? `pipe ${addr}` : `port ${addr.port.toString()}`;
+    debugWWW(`Listening on ${bind}`);
+}
 const httpPort = configFunctions.getProperty('application.httpPort');
 if (httpPort) {
     httpServer = http.createServer(app);
@@ -36,7 +36,7 @@ if (httpPort) {
     httpServer.on('listening', () => {
         onListening(httpServer);
     });
-    debugWWW('HTTP listening on ' + httpPort.toString());
+    debugWWW(`HTTP listening on ${httpPort.toString()}`);
 }
 exitHook(() => {
     if (httpServer) {

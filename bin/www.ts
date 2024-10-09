@@ -1,3 +1,4 @@
+// eslint-disable-next-line @eslint-community/eslint-comments/disable-enable-pair
 /* eslint-disable no-process-exit, unicorn/no-process-exit */
 
 import http from 'node:http'
@@ -17,7 +18,7 @@ interface ServerError extends Error {
   code: string
 }
 
-const onError = (error: ServerError) => {
+function onError(error: ServerError): void {
   if (error.syscall !== 'listen') {
     throw error
   }
@@ -30,14 +31,12 @@ const onError = (error: ServerError) => {
       process.exit(1)
     }
     // break;
-
     // eslint-disable-next-line no-fallthrough
     case 'EADDRINUSE': {
       debugWWW('Port is already in use.')
       process.exit(1)
     }
     // break;
-
     // eslint-disable-next-line no-fallthrough
     default: {
       throw error
@@ -45,13 +44,13 @@ const onError = (error: ServerError) => {
   }
 }
 
-const onListening = (server: http.Server) => {
+function onListening(server: http.Server): void {
   const addr = server.address()
 
   const bind =
-    typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port.toString()
+    typeof addr === 'string' ? `pipe ${addr}` : `port ${addr.port.toString()}`
 
-  debugWWW('Listening on ' + bind)
+  debugWWW(`Listening on ${bind}`)
 }
 
 /**
@@ -70,7 +69,7 @@ if (httpPort) {
     onListening(httpServer)
   })
 
-  debugWWW('HTTP listening on ' + httpPort.toString())
+  debugWWW(`HTTP listening on ${httpPort.toString()}`)
 }
 
 exitHook(() => {

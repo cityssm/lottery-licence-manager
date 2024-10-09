@@ -1,114 +1,94 @@
-import { Router } from "express";
+import { Router } from 'express'
 
-import * as permissionHandlers from "../handlers/permissions.js";
+import handler_edit from '../handlers/events-get/edit.js'
+import handler_financials from '../handlers/events-get/financials.js'
+import handler_outstanding from '../handlers/events-get/outstanding.js'
+import handler_poke from '../handlers/events-get/poke.js'
+import handler_search from '../handlers/events-get/search.js'
+import handler_view from '../handlers/events-get/view.js'
+import handler_doDelete from '../handlers/events-post/doDelete.js'
+import handler_doGetEventsByWeek from '../handlers/events-post/doGetEventsByWeek.js'
+import handler_doGetFinancialSummary from '../handlers/events-post/doGetFinancialSummary.js'
+import handler_doGetOutstandingEvents from '../handlers/events-post/doGetOutstandingEvents.js'
+import handler_doGetPastBankInformation from '../handlers/events-post/doGetPastBankInformation.js'
+import handler_doSave from '../handlers/events-post/doSave.js'
+import handler_doSearch from '../handlers/events-post/doSearch.js'
+import * as permissionHandlers from '../handlers/permissions.js'
+import * as licencesDB from '../helpers/licencesDB.js'
 
-import handler_search from "../handlers/events-get/search.js";
-import handler_view from "../handlers/events-get/view.js";
-import handler_edit from "../handlers/events-get/edit.js";
-import handler_poke from "../handlers/events-get/poke.js";
-
-import handler_doGetEventsByWeek from "../handlers/events-post/doGetEventsByWeek.js";
-
-import handler_outstanding from "../handlers/events-get/outstanding.js";
-import handler_doGetOutstandingEvents from "../handlers/events-post/doGetOutstandingEvents.js";
-
-import handler_financials from "../handlers/events-get/financials.js";
-import handler_doGetFinancialSummary from "../handlers/events-post/doGetFinancialSummary.js";
-
-import handler_doSearch from "../handlers/events-post/doSearch.js";
-import handler_doGetPastBankInformation from "../handlers/events-post/doGetPastBankInformation.js";
-import handler_doSave from "../handlers/events-post/doSave.js";
-import handler_doDelete from "../handlers/events-post/doDelete.js";
-
-import * as licencesDB from "../helpers/licencesDB.js";
-
-
-export const router = Router();
-
+export const router = Router()
 
 /*
  * Event Calendar
  */
 
-router.get("/", handler_search);
+router.get('/', handler_search)
 
-router.post("/doSearch", handler_doSearch);
+router.post('/doSearch', handler_doSearch)
 
 /*
  * Events by Week
  */
 
-router.get("/byWeek", (_request, response) => {
+router.get('/byWeek', (_request, response) => {
+  response.render('event-byWeek', {
+    headTitle: 'Events By Week'
+  })
+})
 
-  response.render("event-byWeek", {
-    headTitle: "Events By Week"
-  });
-});
-
-router.post("/doGetEventsByWeek", handler_doGetEventsByWeek);
+router.post('/doGetEventsByWeek', handler_doGetEventsByWeek)
 
 /*
  * Recently Updated Events
  */
 
-router.get("/recent", (request, response) => {
+router.get('/recent', (request, response) => {
+  const records = licencesDB.getRecentlyUpdateEvents(request.session)
 
-  const records = licencesDB.getRecentlyUpdateEvents(request.session);
-
-  response.render("event-recent", {
-    headTitle: "Recently Updated Events",
+  response.render('event-recent', {
+    headTitle: 'Recently Updated Events',
     records
-  });
-});
+  })
+})
 
 /*
  * Outstanding Events Report
  */
 
-router.get("/outstanding", handler_outstanding);
+router.get('/outstanding', handler_outstanding)
 
-router.post("/doGetOutstandingEvents", handler_doGetOutstandingEvents);
-
+router.post('/doGetOutstandingEvents', handler_doGetOutstandingEvents)
 
 /*
  * Financial Summary
  */
 
-router.get("/financials", handler_financials);
+router.get('/financials', handler_financials)
 
-router.post("/doGetFinancialSummary", handler_doGetFinancialSummary);
-
+router.post('/doGetFinancialSummary', handler_doGetFinancialSummary)
 
 /*
  * Event View / Edit
  */
 
+router.post('/doGetPastBankInformation', handler_doGetPastBankInformation)
 
-router.post("/doGetPastBankInformation", handler_doGetPastBankInformation);
+router.post('/doSave', permissionHandlers.updatePostHandler, handler_doSave)
 
+router.post('/doDelete', permissionHandlers.updatePostHandler, handler_doDelete)
 
-router.post("/doSave",
-  permissionHandlers.updatePostHandler,
-  handler_doSave);
+router.get('/:licenceID/:eventDate', handler_view)
 
-
-router.post("/doDelete",
-  permissionHandlers.updatePostHandler,
-  handler_doDelete);
-
-
-router.get("/:licenceID/:eventDate",
-  handler_view);
-
-
-router.get("/:licenceID/:eventDate/edit",
+router.get(
+  '/:licenceID/:eventDate/edit',
   permissionHandlers.updateGetHandler,
-  handler_edit);
+  handler_edit
+)
 
-
-router.get("/:licenceID/:eventDate/poke",
+router.get(
+  '/:licenceID/:eventDate/poke',
   permissionHandlers.adminGetHandler,
-  handler_poke);
+  handler_poke
+)
 
-
-export default router;
+export default router

@@ -1,13 +1,17 @@
-import type { RequestHandler } from 'express'
+import type { NextFunction, Request, Response } from 'express'
 
-import * as configFunctions from '../../helpers/functions.config.js'
-import { getEvent } from '../../helpers/licencesDB/getEvent.js'
+import { getProperty } from '../../helpers/functions.config.js'
+import getEvent from '../../helpers/licencesDB/getEvent.js'
 import getLicence from '../../helpers/licencesDB/getLicence.js'
 import { getOrganization } from '../../helpers/licencesDB/getOrganization.js'
 
-const urlPrefix = configFunctions.getProperty('reverseProxy.urlPrefix')
+const urlPrefix = getProperty('reverseProxy.urlPrefix')
 
-export const handler: RequestHandler = (request, response, next) => {
+export default function handler(
+  request: Request,
+  response: Response,
+  next: NextFunction
+): void {
   const licenceID = Number(request.params.licenceID)
   const eventDate = Number(request.params.eventDate)
 
@@ -38,6 +42,12 @@ export const handler: RequestHandler = (request, response, next) => {
   }
 
   const licence = getLicence(licenceID, request.session)
+
+  if (licence === undefined) {
+    response.redirect(`${urlPrefix}/events/?error=licenceNotFound`)
+    return
+  }
+
   const organization = getOrganization(licence.organizationID, request.session)
 
   response.render('event-edit', {
@@ -47,5 +57,3 @@ export const handler: RequestHandler = (request, response, next) => {
     organization
   })
 }
-
-export default handler

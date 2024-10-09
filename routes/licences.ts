@@ -1,142 +1,115 @@
-import { Router } from "express";
+import { Router } from 'express'
 
-import * as permissionHandlers from "../handlers/permissions.js";
+import handler_activeSummary from '../handlers/licences-get/activeSummary.js'
+import handler_edit from '../handlers/licences-get/edit.js'
+import handler_licenceTypes from '../handlers/licences-get/licenceTypes.js'
+import handler_new from '../handlers/licences-get/new.js'
+import handler_poke from '../handlers/licences-get/poke.js'
+import handler_print from '../handlers/licences-get/print.js'
+import handler_view from '../handlers/licences-get/view.js'
+import handler_doAddTransaction from '../handlers/licences-post/doAddTransaction.js'
+import handler_doDelete from '../handlers/licences-post/doDelete.js'
+import handler_doGetDistinctTermsConditions from '../handlers/licences-post/doGetDistinctTermsConditions.js'
+import handler_doGetTicketTypes from '../handlers/licences-post/doGetTicketTypes.js'
+import handler_doIssueLicence from '../handlers/licences-post/doIssueLicence.js'
+import handler_doSave from '../handlers/licences-post/doSave.js'
+import handler_doSearch from '../handlers/licences-post/doSearch.js'
+import handler_doUnissueLicence from '../handlers/licences-post/doUnissueLicence.js'
+import handler_doVoidTransaction from '../handlers/licences-post/doVoidTransaction.js'
+import * as permissionHandlers from '../handlers/permissions.js'
+import * as licencesDB from '../helpers/licencesDB.js'
 
-import handler_doSearch from "../handlers/licences-post/doSearch.js";
-
-import handler_view from "../handlers/licences-get/view.js";
-import handler_new from "../handlers/licences-get/new.js";
-import handler_edit from "../handlers/licences-get/edit.js";
-import handler_print from "../handlers/licences-get/print.js";
-import handler_poke from "../handlers/licences-get/poke.js";
-
-import handler_doGetTicketTypes from "../handlers/licences-post/doGetTicketTypes.js";
-import handler_doSave from "../handlers/licences-post/doSave.js";
-import handler_doIssueLicence from "../handlers/licences-post/doIssueLicence.js";
-import handler_doUnissueLicence from "../handlers/licences-post/doUnissueLicence.js";
-import handler_doDelete from "../handlers/licences-post/doDelete.js";
-
-import handler_doGetDistinctTermsConditions from "../handlers/licences-post/doGetDistinctTermsConditions.js";
-import handler_doAddTransaction from "../handlers/licences-post/doAddTransaction.js";
-import handler_doVoidTransaction from "../handlers/licences-post/doVoidTransaction.js";
-
-import handler_licenceTypes from "../handlers/licences-get/licenceTypes.js";
-import handler_activeSummary from "../handlers/licences-get/activeSummary.js";
-
-import * as licencesDB from "../helpers/licencesDB.js";
-
-
-export const router = Router();
-
+export const router = Router()
 
 /*
  * Licence Search
  */
 
+router.get('/', (_request, response) => {
+  response.render('licence-search', {
+    headTitle: 'Lottery Licences'
+  })
+})
 
-router.get("/", (_request, response) => {
-
-  response.render("licence-search", {
-    headTitle: "Lottery Licences"
-  });
-
-});
-
-
-router.post("/doSearch", handler_doSearch);
-
+router.post('/doSearch', handler_doSearch)
 
 /*
  * Licence Type Summary
  */
 
+router.get('/licenceTypes', handler_licenceTypes)
 
-router.get("/licenceTypes", handler_licenceTypes);
-
-router.post("/doGetLicenceTypeSummary", (request, response) => {
-  response.json(licencesDB.getLicenceTypeSummary(request.body));
-});
-
+router.post('/doGetLicenceTypeSummary', (request, response) => {
+  response.json(licencesDB.getLicenceTypeSummary(request.body))
+})
 
 /*
  * Active Licence Summary
  */
 
+router.get('/activeSummary', handler_activeSummary)
 
-router.get("/activeSummary", handler_activeSummary);
-
-router.post("/doGetActiveLicenceSummary", (request, response) => {
-  response.json(licencesDB.getActiveLicenceSummary(request.body, request.session));
-});
-
+router.post('/doGetActiveLicenceSummary', (request, response) => {
+  response.json(
+    licencesDB.getActiveLicenceSummary(request.body, request.session)
+  )
+})
 
 /*
  * Licence View / Edit
  */
 
-
-router.get([
-  "/new",
-  "/new/:organizationID"
-],
+router.get(
+  ['/new', '/new/:organizationID'],
   permissionHandlers.createGetHandler,
-  handler_new);
+  handler_new
+)
 
+router.post(
+  '/doGetDistinctTermsConditions',
+  handler_doGetDistinctTermsConditions
+)
 
-router.post("/doGetDistinctTermsConditions",
-  handler_doGetDistinctTermsConditions);
+router.post('/doGetTicketTypes', handler_doGetTicketTypes)
 
+router.post('/doSave', permissionHandlers.createPostHandler, handler_doSave)
 
-router.post("/doGetTicketTypes",
-  handler_doGetTicketTypes);
-
-
-router.post("/doSave",
+router.post(
+  '/doAddTransaction',
   permissionHandlers.createPostHandler,
-  handler_doSave);
+  handler_doAddTransaction
+)
 
-
-router.post("/doAddTransaction",
+router.post(
+  '/doVoidTransaction',
   permissionHandlers.createPostHandler,
-  handler_doAddTransaction);
+  handler_doVoidTransaction
+)
 
-
-router.post("/doVoidTransaction",
+router.post(
+  '/doIssueLicence',
   permissionHandlers.createPostHandler,
-  handler_doVoidTransaction);
+  handler_doIssueLicence
+)
 
-
-router.post("/doIssueLicence",
+router.post(
+  '/doUnissueLicence',
   permissionHandlers.createPostHandler,
-  handler_doIssueLicence);
+  handler_doUnissueLicence
+)
 
+router.post('/doDelete', permissionHandlers.createPostHandler, handler_doDelete)
 
-router.post("/doUnissueLicence",
-  permissionHandlers.createPostHandler,
-  handler_doUnissueLicence);
+router.get('/:licenceID', handler_view)
 
-
-router.post("/doDelete",
-  permissionHandlers.createPostHandler,
-  handler_doDelete);
-
-
-router.get("/:licenceID",
-  handler_view);
-
-
-router.get("/:licenceID/edit",
+router.get(
+  '/:licenceID/edit',
   permissionHandlers.createGetHandler,
-  handler_edit);
+  handler_edit
+)
 
+router.get('/:licenceID/print', handler_print)
 
-router.get("/:licenceID/print",
-  handler_print);
+router.get('/:licenceID/poke', permissionHandlers.adminGetHandler, handler_poke)
 
-
-router.get("/:licenceID/poke",
-  permissionHandlers.adminGetHandler,
-  handler_poke);
-
-
-export default router;
+export default router

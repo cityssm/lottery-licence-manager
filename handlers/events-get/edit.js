@@ -1,9 +1,9 @@
-import * as configFunctions from '../../helpers/functions.config.js';
-import { getEvent } from '../../helpers/licencesDB/getEvent.js';
+import { getProperty } from '../../helpers/functions.config.js';
+import getEvent from '../../helpers/licencesDB/getEvent.js';
 import getLicence from '../../helpers/licencesDB/getLicence.js';
 import { getOrganization } from '../../helpers/licencesDB/getOrganization.js';
-const urlPrefix = configFunctions.getProperty('reverseProxy.urlPrefix');
-export const handler = (request, response, next) => {
+const urlPrefix = getProperty('reverseProxy.urlPrefix');
+export default function handler(request, response, next) {
     const licenceID = Number(request.params.licenceID);
     const eventDate = Number(request.params.eventDate);
     if (Number.isNaN(licenceID) || Number.isNaN(eventDate)) {
@@ -24,6 +24,10 @@ export const handler = (request, response, next) => {
         return;
     }
     const licence = getLicence(licenceID, request.session);
+    if (licence === undefined) {
+        response.redirect(`${urlPrefix}/events/?error=licenceNotFound`);
+        return;
+    }
     const organization = getOrganization(licence.organizationID, request.session);
     response.render('event-edit', {
         headTitle: 'Event Update',
@@ -31,5 +35,4 @@ export const handler = (request, response, next) => {
         licence,
         organization
     });
-};
-export default handler;
+}

@@ -6,7 +6,7 @@ import { licencesDB as databasePath } from '../../data/databasePaths.js'
 import type * as llm from '../../types/recordTypes.js'
 import { canUpdateObject } from '../licencesDB.js'
 
-export function getEvent(
+export default function getEvent(
   licenceID: number,
   eventDate: number,
   requestSession: expressSession.Session
@@ -98,5 +98,3 @@ export function getEvent(
 
   return eventObject
 }
-
-export default getEvent
