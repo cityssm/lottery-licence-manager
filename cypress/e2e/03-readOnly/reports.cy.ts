@@ -2,13 +2,13 @@ import { testView } from '../../../test/_globals.js'
 import { ajaxDelayMillis, login, logout } from '../../support/index.js'
 
 describe('Reports', () => {
-  before(() => {
+  beforeEach(() => {
     logout()
     login(testView)
     cy.visit('/reports')
   })
 
-  after(logout)
+  afterEach(logout)
 
   it('Loads page', () => {
     cy.location('pathname').should('equal', '/reports')

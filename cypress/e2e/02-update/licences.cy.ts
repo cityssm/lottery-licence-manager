@@ -2,12 +2,12 @@ import { testUpdate } from '../../../test/_globals.js'
 import { login, logout } from '../../support/index.js'
 
 describe('Licences - Update', () => {
-  before(() => {
+  beforeEach(() => {
     logout()
     login(testUpdate)
   })
 
-  after(logout);
+  afterEach(logout)
 
   it('Has a "Create" link on the dashboard', () => {
     cy.visit('/dashboard')

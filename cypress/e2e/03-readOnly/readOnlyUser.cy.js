@@ -1,13 +1,13 @@
 import { testView } from '../../../test/_globals.js';
 import { login, logout } from '../../support/index.js';
 describe('Read Only User', () => {
-    before(logout);
-    after(logout);
-    it('Logs In Successfully', () => {
+    beforeEach(() => {
+        logout();
         login(testView);
     });
+    afterEach(logout);
     describe('Dashboard', () => {
-        before(() => {
+        beforeEach(() => {
             cy.visit('/dashboard');
         });
         it('Has no detectable accessibility issues', () => {
