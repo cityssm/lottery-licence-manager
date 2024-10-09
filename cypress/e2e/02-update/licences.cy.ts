@@ -1,24 +1,21 @@
-/* eslint-disable unicorn/filename-case, promise/catch-or-return, promise/always-return, promise/no-nesting */
+import { testUpdate } from '../../../test/_globals.js'
+import { login, logout } from '../../support/index.js'
 
-import { testUpdate } from "../../../test/_globals.js";
+describe('Licences - Update', () => {
+  before(() => {
+    logout()
+    login(testUpdate)
+  })
 
-import { logout, login } from "../../support/index.js";
+  after(logout);
 
-describe("Licences - Update", () => {
-    before(() => {
-        logout();
-        login(testUpdate);
-    });
+  it('Has a "Create" link on the dashboard', () => {
+    cy.visit('/dashboard')
+    cy.get("a[href$='/licences/new']").should('exist')
+  })
 
-    // after(logout);
-
-    it('Has a "Create" link on the dashboard', () => {
-        cy.visit("/dashboard");
-        cy.get("a[href$='/licences/new']").should("exist");
-    });
-
-    it('Has a "Create" link on the Licence Search', () => {
-        cy.visit("/licences");
-        cy.get("a[href$='/licences/new']").should("exist");
-    });
-});
+  it('Has a "Create" link on the Licence Search', () => {
+    cy.visit('/licences')
+    cy.get("a[href$='/licences/new']").should('exist')
+  })
+})

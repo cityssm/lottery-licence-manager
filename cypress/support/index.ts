@@ -1,29 +1,23 @@
-/* eslint-disable node/no-unpublished-import */
+import 'cypress-axe'
 
-import "cypress-axe";
+export function logout(): void {
+  cy.visit('/logout')
+}
 
-Cypress.Cookies.defaults({
-    preserve: ["_csrf", "lottery-licence-manager-user-sid"]
-});
+export function login(userName: string): void {
+  cy.visit('/login')
 
-export const logout = (): void => {
-    cy.visit("/logout");
-};
+  cy.get('.message').contains('Testing', { matchCase: false })
 
-export const login = (userName: string): void => {
-    cy.visit("/login");
+  cy.get("form [name='userName']").type(userName)
+  cy.get("form [name='password']").type(userName)
 
-    cy.get(".message").contains("Testing", { matchCase: false });
+  cy.get('form').submit()
 
-    cy.get("form [name='userName']").type(userName);
-    cy.get("form [name='password']").type(userName);
+  cy.location('pathname').should('not.contain', '/login')
 
-    cy.get("form").submit();
+  // Logged in pages have a navbar
+  cy.get('.navbar').should('have.length', 1)
+}
 
-    cy.location("pathname").should("not.contain", "/login");
-
-    // Logged in pages have a navbar
-    cy.get(".navbar").should("have.length", 1);
-};
-
-export const ajaxDelayMillis = 800;
+export const ajaxDelayMillis = 800
