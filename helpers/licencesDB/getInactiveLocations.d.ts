@@ -1,2 +1,2 @@
-import * as llm from "../../types/recordTypes";
-export declare const getInactiveLocations: (inactiveYears: number) => llm.Location[];
+import type { Location } from '../../types/recordTypes.js';
+export default function getInactiveLocations(inactiveYears: number): Location[];

@@ -1,22 +1,30 @@
-import type { RequestHandler } from "express";
+import type { Request, Response } from 'express'
 
-import { deleteLocation } from "../../helpers/licencesDB/deleteLocation.js";
+import deleteLocation from '../../helpers/licencesDB/deleteLocation.js'
 
+export interface DoDeleteLocationResponse {
+  success: boolean
+  message: string
+}
 
-export const handler: RequestHandler = (request, response) => {
+export default function handler(
+  request: Request<unknown, unknown, { locationID: string }>,
+  response: Response<DoDeleteLocationResponse>
+): void {
+  const hasChanges = deleteLocation(
+    request.body.locationID,
+    request.session.user
+  )
 
-  const changeCount = deleteLocation(request.body.locationID, request.session);
-
-  return changeCount
-    ? response.json({
+  if (hasChanges) {
+    response.json({
       success: true,
-      message: "Location deleted successfully."
+      message: 'Location deleted successfully.'
     })
-    : response.json({
+  } else {
+    response.json({
       success: false,
-      message: "Location could not be deleted."
-    });
-};
-
-
-export default handler;
+      message: 'Location could not be deleted.'
+    })
+  }
+}

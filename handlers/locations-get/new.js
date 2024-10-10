@@ -1,14 +1,13 @@
-import * as configFunctions from "../../helpers/functions.config.js";
-import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
-export const handler = (_request, response) => {
-    response.render("location-edit", {
-        headTitle: "Create a New Location",
+import { dateToInteger } from '@cityssm/expressjs-server-js/dateTimeFns.js';
+import { getProperty } from '../../helpers/functions.config.js';
+export default function handler(_request, response) {
+    response.render('location-edit', {
+        headTitle: 'Create a New Location',
         location: {
-            locationCity: configFunctions.getProperty("defaults.city"),
-            locationProvince: configFunctions.getProperty("defaults.province")
+            locationCity: getProperty('defaults.city'),
+            locationProvince: getProperty('defaults.province')
         },
-        currentDateInteger: dateTimeFns.dateToInteger(new Date()),
+        currentDateInteger: dateToInteger(new Date()),
         isCreate: true
     });
-};
-export default handler;
+}

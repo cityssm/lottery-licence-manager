@@ -1,22 +1,26 @@
-import sqlite from "better-sqlite3";
+import sqlite from 'better-sqlite3'
 
-import { licencesDB as databasePath } from "../../data/databasePaths.js";
+import { licencesDB as databasePath } from '../../data/databasePaths.js'
+import type { Location, User } from '../../types/recordTypes'
 
-import type * as llm from "../../types/recordTypes";
-import type * as expressSession from "express-session";
+export default function createLocation(
+  requestBody: Location,
+  requestUser: User
+): number {
+  const database = sqlite(databasePath)
 
+  const nowMillis = Date.now()
 
-export const createLocation = (requestBody: llm.Location, requestSession: expressSession.Session): number => {
-
-  const database = sqlite(databasePath);
-
-  const nowMillis = Date.now();
-
-  const info = database.prepare("insert into Locations" +
-    " (locationName, locationAddress1, locationAddress2, locationCity, locationProvince, locationPostalCode," +
-    " locationIsDistributor, locationIsManufacturer," +
-    " recordCreate_userName, recordCreate_timeMillis, recordUpdate_userName, recordUpdate_timeMillis)" +
-    " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
+  const info = database
+    .prepare(
+      `insert into Locations (
+        locationName,
+        locationAddress1, locationAddress2,
+        locationCity, locationProvince, locationPostalCode,
+        locationIsDistributor, locationIsManufacturer,
+        recordCreate_userName, recordCreate_timeMillis, recordUpdate_userName, recordUpdate_timeMillis)
+        values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+    )
     .run(
       requestBody.locationName,
       requestBody.locationAddress1,
@@ -26,14 +30,13 @@ export const createLocation = (requestBody: llm.Location, requestSession: expres
       requestBody.locationPostalCode,
       requestBody.locationIsDistributor || 0,
       requestBody.locationIsManufacturer || 0,
-      requestSession.user.userName,
+      requestUser.userName,
       nowMillis,
-      requestSession.user.userName,
+      requestUser.userName,
       nowMillis
-    );
+    )
 
-  database.close();
+  database.close()
 
-  return info.lastInsertRowid as number;
-
-};
+  return info.lastInsertRowid as number
+}

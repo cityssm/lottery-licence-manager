@@ -1,25 +1,36 @@
-import type { RequestHandler } from "express";
+import type { Request, Response } from 'express'
 
-import { getLocations } from "../../helpers/licencesDB/getLocations.js";
+import getLocations, {
+  type GetLocationsReturn
+} from '../../helpers/licencesDB/getLocations.js'
 
+export interface DoGetLocationsRequest {
+  limit: string
+  offset: string
+  locationNameAddress: string
+  locationIsManufacturer: '' | '0' | '1'
+  locationIsDistributor: '' | '0' | '1'
+  locationIsActive?: 'on'
+}
 
-export const handler: RequestHandler = (request, response) => {
-
+export default function handler(
+  request: Request<unknown, unknown, DoGetLocationsRequest>,
+  response: Response<GetLocationsReturn>
+): void {
   const locations = getLocations(request.session, {
-    limit: request.body.limit || -1,
-    offset: request.body.offset || 0,
+    limit: Number.parseInt(request.body.limit, 10),
+    offset: Number.parseInt(request.body.offset, 10),
     locationNameAddress: request.body.locationNameAddress,
-    locationIsDistributor: ("locationIsDistributor" in request.body && request.body.locationIsDistributor !== ""
-      ? Number.parseInt(request.body.locationIsDistributor, 10)
-      : -1),
-    locationIsManufacturer: ("locationIsManufacturer" in request.body && request.body.locationIsManufacturer !== ""
-      ? Number.parseInt(request.body.locationIsManufacturer, 10)
-      : -1),
-    locationIsActive: request.body.locationIsActive || ""
-  });
+    locationIsDistributor:
+      request.body.locationIsDistributor === ''
+        ? -1
+        : (Number.parseInt(request.body.locationIsDistributor, 10) as 0 | 1),
+    locationIsManufacturer:
+      request.body.locationIsManufacturer === ''
+        ? -1
+        : (Number.parseInt(request.body.locationIsManufacturer, 10) as 0 | 1),
+    locationIsActive: request.body.locationIsActive
+  })
 
-  response.json(locations);
-};
-
-
-export default handler;
+  response.json(locations)
+}

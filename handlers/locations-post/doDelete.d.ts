@@ -1,3 +1,8 @@
-import type { RequestHandler } from "express";
-export declare const handler: RequestHandler;
-export default handler;
+import type { Request, Response } from 'express';
+export interface DoDeleteLocationResponse {
+    success: boolean;
+    message: string;
+}
+export default function handler(request: Request<unknown, unknown, {
+    locationID: string;
+}>, response: Response<DoDeleteLocationResponse>): void;

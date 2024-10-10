@@ -9,7 +9,6 @@
     "removeComments": true,
     "allowUnreachableCode": false,
     "allowSyntheticDefaultImports": true,
-    "resolveJsonModule": true,
     "esModuleInterop": true,
     "strictNullChecks": true
   },

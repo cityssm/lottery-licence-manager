@@ -1,86 +1,98 @@
-import sqlite from "better-sqlite3";
+import sqlite from 'better-sqlite3'
 
-import { licencesDB as databasePath } from "../../data/databasePaths.js";
+import { licencesDB as databasePath } from '../../data/databasePaths.js'
+import type { User } from '../../types/recordTypes.js'
 
-import type * as expressSession from "express-session";
+export default function mergeLocations(
+  targetLocationID: number | string,
+  sourceLocationID: number | string,
+  requestUser: User
+): boolean {
+  const database = sqlite(databasePath)
 
+  const nowMillis = Date.now()
 
-export const mergeLocations =
-  (targetLocationID: number, sourceLocationID: number, requestSession: expressSession.Session): boolean => {
+  // Get locationAttributes
+  const locationAttributes = database
+    .prepare(
+      `select max(locationIsDistributor) as locationIsDistributorMax,
+        max(locationIsManufacturer) as locationIsManufacturerMax,
+        count(locationID) as locationCount
+        from Locations
+        where recordDelete_timeMillis is null
+        and (locationID = ? or locationID = ?)`
+    )
+    .get(targetLocationID, sourceLocationID) as
+    | {
+        locationIsDistributorMax: number
+        locationIsManufacturerMax: number
+        locationCount: number
+      }
+    | undefined
 
-    const database = sqlite(databasePath);
+  if (locationAttributes === undefined) {
+    database.close()
+    return false
+  }
 
-    const nowMillis = Date.now();
+  if (locationAttributes.locationCount !== 2) {
+    database.close()
+    return false
+  }
 
-    // Get locationAttributes
+  // Update the target location
+  database
+    .prepare(
+      `update Locations
+        set locationIsDistributor = ?,
+        locationIsManufacturer = ?
+        where locationID = ?`
+    )
+    .run(
+      locationAttributes.locationIsDistributorMax,
+      locationAttributes.locationIsManufacturerMax,
+      targetLocationID
+    )
 
-    const locationAttributes = database.prepare("select max(locationIsDistributor) as locationIsDistributorMax," +
-      " max(locationIsManufacturer) as locationIsManufacturerMax," +
-      " count(locationID) as locationCount" +
-      " from Locations" +
-      " where recordDelete_timeMillis is null" +
-      " and (locationID = ? or locationID = ?)")
-      .get(targetLocationID, sourceLocationID);
+  // Update records assigned to the source location
+  database
+    .prepare(
+      `update LotteryLicences
+        set locationID = ?
+        where locationID = ?
+        and recordDelete_timeMillis is null`
+    )
+    .run(targetLocationID, sourceLocationID)
 
-    if (!locationAttributes) {
+  database
+    .prepare(
+      `update LotteryLicenceTicketTypes
+        set distributorLocationID = ?
+        where distributorLocationID = ?
+        and recordDelete_timeMillis is null`
+    )
+    .run(targetLocationID, sourceLocationID)
 
-      database.close();
-      return false;
+  database
+    .prepare(
+      `update LotteryLicenceTicketTypes
+        set manufacturerLocationID = ?
+        where manufacturerLocationID = ?
+        and recordDelete_timeMillis is null`
+    )
+    .run(targetLocationID, sourceLocationID)
 
-    }
+  // Set the source record to inactive
+  database
+    .prepare(
+      `update Locations
+        set recordDelete_userName = ?,
+        recordDelete_timeMillis = ?
+        where locationID = ?`
+    )
+    .run(requestUser.userName, nowMillis, sourceLocationID)
 
-    if (locationAttributes.locationCount !== 2) {
+  database.close()
 
-      database.close();
-      return false;
-
-    }
-
-    // Update the target location
-
-    database.prepare("update Locations" +
-      " set locationIsDistributor = ?," +
-      " locationIsManufacturer = ?" +
-      " where locationID = ?")
-      .run(
-        locationAttributes.locationIsDistributorMax,
-        locationAttributes.locationIsManufacturerMax,
-        targetLocationID
-      );
-
-    // Update records assigned to the source location
-
-    database.prepare("update LotteryLicences" +
-      " set locationID = ?" +
-      " where locationID = ?" +
-      " and recordDelete_timeMillis is null")
-      .run(targetLocationID, sourceLocationID);
-
-    database.prepare("update LotteryLicenceTicketTypes" +
-      " set distributorLocationID = ?" +
-      " where distributorLocationID = ?" +
-      " and recordDelete_timeMillis is null")
-      .run(targetLocationID, sourceLocationID);
-
-    database.prepare("update LotteryLicenceTicketTypes" +
-      " set manufacturerLocationID = ?" +
-      " where manufacturerLocationID = ?" +
-      " and recordDelete_timeMillis is null")
-      .run(targetLocationID, sourceLocationID);
-
-    // Set the source record to inactive
-
-    database.prepare("update Locations" +
-      " set recordDelete_userName = ?," +
-      " recordDelete_timeMillis = ?" +
-      " where locationID = ?")
-      .run(
-        requestSession.user.userName,
-        nowMillis,
-        sourceLocationID
-      );
-
-    database.close();
-
-    return true;
-  };
+  return true
+}

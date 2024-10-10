@@ -1,2 +1,2 @@
-import type * as expressSession from "express-session";
-export declare const restoreLocation: (locationID: number, requestSession: expressSession.Session) => boolean;
+import type { User } from '../../types/recordTypes.js';
+export default function restoreLocation(locationID: number | string, requestUser: User): boolean;

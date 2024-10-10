@@ -1,14 +1,16 @@
-import { restoreLocation } from "../../helpers/licencesDB/restoreLocation.js";
-export const handler = (request, response) => {
-    const changeCount = restoreLocation(request.body.locationID, request.session);
-    return changeCount
-        ? response.json({
+import restoreLocation from '../../helpers/licencesDB/restoreLocation.js';
+export default function handler(request, response) {
+    const hasChanges = restoreLocation(request.body.locationID, request.session.user);
+    if (hasChanges) {
+        response.json({
             success: true,
-            message: "Location restored successfully."
-        })
-        : response.json({
-            success: false,
-            message: "Location could not be restored."
+            message: 'Location restored successfully.'
         });
-};
-export default handler;
+    }
+    else {
+        response.json({
+            success: false,
+            message: 'Location could not be restored.'
+        });
+    }
+}

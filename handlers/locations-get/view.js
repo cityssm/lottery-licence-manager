@@ -1,4 +1,4 @@
-import * as dateTimeFns from '@cityssm/expressjs-server-js/dateTimeFns.js';
+import { dateToInteger } from '@cityssm/expressjs-server-js/dateTimeFns.js';
 import { getProperty } from '../../helpers/functions.config.js';
 import getLicences from '../../helpers/licencesDB/getLicences.js';
 import getLocation from '../../helpers/licencesDB/getLocation.js';
@@ -24,6 +24,6 @@ export default function handler(request, response, next) {
         headTitle: location.locationDisplayName,
         location,
         licences,
-        currentDateInteger: dateTimeFns.dateToInteger(new Date())
+        currentDateInteger: dateToInteger(new Date())
     });
 }

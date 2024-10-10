@@ -1,53 +1,53 @@
-import sqlite from "better-sqlite3";
-import { licencesDB as databasePath } from "../../data/databasePaths.js";
+import sqlite from 'better-sqlite3'
+import type * as expressSession from 'express-session'
 
-import { getLicenceWithDB } from "./getLicence.js";
-import { addLicenceAmendmentWithDB } from "./addLicenceAmendment.js";
+import { licencesDB as databasePath } from '../../data/databasePaths.js'
 
-import type * as expressSession from "express-session";
+import { addLicenceAmendmentWithDB } from './addLicenceAmendment.js'
+import { getLicenceWithDB } from './getLicence.js'
 
+export default function voidTransaction(
+  licenceID: number | string,
+  transactionIndex: number | string,
+  requestSession: expressSession.Session
+): boolean {
+  const database = sqlite(databasePath)
 
-export const voidTransaction =
-  (licenceID: number, transactionIndex: number, requestSession: expressSession.Session): boolean => {
+  const licenceObject = getLicenceWithDB(database, licenceID, requestSession, {
+    includeTicketTypes: false,
+    includeFields: false,
+    includeEvents: false,
+    includeAmendments: false,
+    includeTransactions: false
+  })
 
-    const database = sqlite(databasePath);
+  const nowMillis = Date.now()
 
-    const licenceObject = getLicenceWithDB(database, licenceID, requestSession, {
-      includeTicketTypes: false,
-      includeFields: false,
-      includeEvents: false,
-      includeAmendments: false,
-      includeTransactions: false
-    });
+  const hasChanges =
+    database
+      .prepare(
+        `update LotteryLicenceTransactions
+          set recordDelete_userName = ?,
+            recordDelete_timeMillis = ?
+          where licenceID = ?
+            and transactionIndex = ?
+            and recordDelete_timeMillis is null`
+      )
+      .run(requestSession.user.userName, nowMillis, licenceID, transactionIndex)
+      .changes > 0
 
-    const nowMillis = Date.now();
+  if (hasChanges && licenceObject.trackUpdatesAsAmendments) {
+    addLicenceAmendmentWithDB(
+      database,
+      licenceID,
+      'Transaction Voided',
+      '',
+      1,
+      requestSession
+    )
+  }
 
-    const hasChanges = database.prepare("update LotteryLicenceTransactions" +
-      " set recordDelete_userName = ?," +
-      " recordDelete_timeMillis = ?" +
-      " where licenceID = ?" +
-      " and transactionIndex = ?" +
-      " and recordDelete_timeMillis is null")
-      .run(requestSession.user.userName,
-        nowMillis,
-        licenceID,
-        transactionIndex
-      ).changes > 0;
+  database.close()
 
-    if (hasChanges && licenceObject.trackUpdatesAsAmendments) {
-
-      addLicenceAmendmentWithDB(
-        database,
-        licenceID,
-        "Transaction Voided",
-        "",
-        1,
-        requestSession
-      );
-
-    }
-
-    database.close();
-
-    return hasChanges;
-  };
+  return hasChanges
+}

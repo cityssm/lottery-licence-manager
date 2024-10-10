@@ -1,18 +1,26 @@
-import type { RequestHandler } from "express";
+import type { Request, Response } from 'express'
 
-import { createLocation } from "../../helpers/licencesDB/createLocation.js";
+import createLocation from '../../helpers/licencesDB/createLocation.js'
+import type { Location } from '../../types/recordTypes.js'
 
+export interface DoCreateLocationResponse {
+  success: true
+  locationID: number
+  locationDisplayName: string
+}
 
-export const handler: RequestHandler = (request, response) => {
+export default function handler(
+  request: Request<unknown, unknown, Location>,
+  response: Response<DoCreateLocationResponse>
+): void {
+  const locationID = createLocation(request.body, request.session.user)
 
-  const locationID = createLocation(request.body, request.session);
-
-  return response.json({
+  response.json({
     success: true,
     locationID,
-    locationDisplayName: (request.body.locationName === "" ? request.body.locationAddress1 : request.body.locationName)
-  });
-};
-
-
-export default handler;
+    locationDisplayName:
+      request.body.locationName === ''
+        ? request.body.locationAddress1
+        : request.body.locationName
+  })
+}

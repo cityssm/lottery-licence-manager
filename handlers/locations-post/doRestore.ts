@@ -1,22 +1,30 @@
-import type { RequestHandler } from "express";
+import type { Request, Response } from 'express'
 
-import { restoreLocation } from "../../helpers/licencesDB/restoreLocation.js";
+import restoreLocation from '../../helpers/licencesDB/restoreLocation.js'
 
+export interface DoRestoreLocationResponse {
+  success: boolean
+  message: string
+}
 
-export const handler: RequestHandler = (request, response) => {
+export default function handler(
+  request: Request<unknown, unknown, { locationID: string }>,
+  response: Response<DoRestoreLocationResponse>
+): void {
+  const hasChanges = restoreLocation(
+    request.body.locationID,
+    request.session.user
+  )
 
-  const changeCount = restoreLocation(request.body.locationID, request.session);
-
-  return changeCount
-    ? response.json({
+  if (hasChanges) {
+    response.json({
       success: true,
-      message: "Location restored successfully."
+      message: 'Location restored successfully.'
     })
-    : response.json({
+  } else {
+    response.json({
       success: false,
-      message: "Location could not be restored."
-    });
-};
-
-
-export default handler;
+      message: 'Location could not be restored.'
+    })
+  }
+}

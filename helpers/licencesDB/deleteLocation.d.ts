@@ -1,2 +1,2 @@
-import type * as expressSession from "express-session";
-export declare const deleteLocation: (locationID: number, requestSession: expressSession.Session) => boolean;
+import type { User } from '../../types/recordTypes.js';
+export default function deleteLocation(locationID: number | string, requestUser: User): boolean;
