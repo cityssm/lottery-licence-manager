@@ -1,1 +1,1 @@
-export declare const initLicencesDB: () => boolean;
+export declare function initLicencesDB(): boolean;

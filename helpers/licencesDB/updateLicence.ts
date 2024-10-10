@@ -102,14 +102,14 @@ export default function updateLicence(
   }
 
   // Update licence
-  const startDate_now = dateTimeFns.dateStringToInteger(
+  const startDateNow = dateTimeFns.dateStringToInteger(
     requestBody.startDateString
   )
-  const endDate_now = dateTimeFns.dateStringToInteger(requestBody.endDateString)
-  const startTime_now = dateTimeFns.timeStringToInteger(
+  const endDateNow = dateTimeFns.dateStringToInteger(requestBody.endDateString)
+  const startTimeNow = dateTimeFns.timeStringToInteger(
     requestBody.startTimeString
   )
-  const endTime_now = dateTimeFns.timeStringToInteger(requestBody.endTimeString)
+  const endTimeNow = dateTimeFns.timeStringToInteger(requestBody.endTimeString)
 
   const changeCount = database
     .prepare(
@@ -138,10 +138,10 @@ export default function updateLicence(
       requestBody.organizationID,
       dateTimeFns.dateStringToInteger(requestBody.applicationDateString),
       requestBody.licenceTypeKey,
-      startDate_now,
-      endDate_now,
-      startTime_now,
-      endTime_now,
+      startDateNow,
+      endDateNow,
+      startTimeNow,
+      endTimeNow,
       requestBody.locationID === '' ? undefined : requestBody.locationID,
       requestBody.municipality,
       requestBody.licenceDetails,
@@ -155,7 +155,7 @@ export default function updateLicence(
       requestBody.licenceID
     ).changes
 
-  if (!changeCount) {
+  if (changeCount === 0) {
     database.close()
     return false
   }
@@ -164,27 +164,27 @@ export default function updateLicence(
   if (pastLicenceObject.trackUpdatesAsAmendments) {
     if (
       configFunctions.getProperty('amendments.trackDateTimeUpdate') &&
-      (pastLicenceObject.startDate !== startDate_now ||
-        pastLicenceObject.endDate !== endDate_now ||
-        pastLicenceObject.startTime !== startTime_now ||
-        pastLicenceObject.endTime !== endTime_now)
+      (pastLicenceObject.startDate !== startDateNow ||
+        pastLicenceObject.endDate !== endDateNow ||
+        pastLicenceObject.startTime !== startTimeNow ||
+        pastLicenceObject.endTime !== endTimeNow)
     ) {
       const amendment = (
-        (pastLicenceObject.startDate === startDate_now
+        (pastLicenceObject.startDate === startDateNow
           ? ''
-          : `Start Date: ${pastLicenceObject.startDate.toString()} -> ${startDate_now.toString()}` +
+          : `Start Date: ${pastLicenceObject.startDate.toString()} -> ${startDateNow.toString()}` +
             '\n') +
-        (pastLicenceObject.endDate === endDate_now
+        (pastLicenceObject.endDate === endDateNow
           ? ''
-          : `End Date: ${pastLicenceObject.endDate.toString()} -> ${endDate_now.toString()}` +
+          : `End Date: ${pastLicenceObject.endDate.toString()} -> ${endDateNow.toString()}` +
             '\n') +
-        (pastLicenceObject.startTime === startTime_now
+        (pastLicenceObject.startTime === startTimeNow
           ? ''
-          : `Start Time: ${pastLicenceObject.startTime.toString()} -> ${startTime_now.toString()}` +
+          : `Start Time: ${pastLicenceObject.startTime.toString()} -> ${startTimeNow.toString()}` +
             '\n') +
-        (pastLicenceObject.endTime === endTime_now
+        (pastLicenceObject.endTime === endTimeNow
           ? ''
-          : `End Time: ${pastLicenceObject.endTime.toString()} -> ${endTime_now.toString()}` +
+          : `End Time: ${pastLicenceObject.endTime.toString()} -> ${endTimeNow.toString()}` +
             '\n')
       ).trim()
 
@@ -244,11 +244,7 @@ export default function updateLicence(
         {
           licenceID: requestBody.licenceID,
           amendmentType: 'Licence Fee Change',
-          amendment:
-            '$' +
-            pastLicenceObject.licenceFee.toFixed(2) +
-            ' -> $' +
-            Number.parseFloat(requestBody.licenceFee).toFixed(2),
+          amendment: `\$${pastLicenceObject.licenceFee.toFixed(2)} -> $${Number.parseFloat(requestBody.licenceFee).toFixed(2)}`,
           isHidden: 0
         },
         requestUser
