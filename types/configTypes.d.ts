@@ -1,6 +1,6 @@
-import type { LotteryLicence } from "./recordTypes";
-import type { CountryCode } from "libphonenumber-js";
-import type * as expressTypes from "express";
+import type { Request } from 'express';
+import type { CountryCode } from 'libphonenumber-js';
+import type { LotteryLicence } from './recordTypes.js';
 export interface Config {
     application?: ConfigApplication;
     session?: ConfigSession;
@@ -20,7 +20,7 @@ export interface Config {
     user?: ConfigUser;
     defaults?: ConfigDefaults;
     reminders?: {
-        preferredSortOrder?: "date" | "config";
+        preferredSortOrder?: 'date' | 'config';
         dismissingStatuses?: string[];
     };
     reminderCategories?: ConfigReminderCategory[];
@@ -87,7 +87,7 @@ interface ConfigLicences {
 }
 interface ConfigExternalLicenceNumber {
     fieldLabel?: string;
-    newCalculation?: "" | "range";
+    newCalculation?: '' | 'range';
     isPreferredID?: boolean;
 }
 interface ConfigExternalReceiptNumber {
@@ -117,7 +117,7 @@ interface ConfigEventField {
     inputAttributes: ConfigFieldInputAttributes;
 }
 interface ConfigFieldInputAttributes {
-    type: "number" | "text";
+    type: 'number' | 'text';
     min?: number;
     max?: number;
     step?: number;
@@ -142,7 +142,7 @@ interface ConfigAmendments {
 }
 export interface ConfigReportDefinition {
     sql: string;
-    params?: (request: expressTypes.Request) => unknown[];
+    params?: (request: Request) => unknown[];
     functions?: () => Map<string, (...parameters: unknown[]) => unknown>;
 }
 export {};

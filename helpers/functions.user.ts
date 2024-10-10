@@ -1,42 +1,17 @@
-import type { Request } from "express";
+import type { Request } from 'express'
 
+export function userIsAdmin(request: Partial<Request>): boolean {
+  return request.session?.user.userProperties.isAdmin ?? false
+}
 
-export const userIsAdmin = (request: Request): boolean => {
+export function userCanUpdate(request: Partial<Request>): boolean {
+  return request.session?.user.userProperties.canUpdate ?? false
+}
 
-  const user = request.session?.user;
+export function userCanCreate(request: Partial<Request>): boolean {
+  return request.session?.user.userProperties.canCreate ?? false
+}
 
-  if (!user) {
-    return false;
-  }
-
-  return user.userProperties.isAdmin;
-};
-
-
-export const userCanUpdate = (request: Request): boolean => {
-
-  const user = request.session?.user;
-
-  if (!user) {
-    return false;
-  }
-
-  return user.userProperties.canUpdate;
-};
-
-
-export const userCanCreate = (request: Request): boolean => {
-
-  const user = request.session?.user;
-
-  if (!user) {
-    return false;
-  }
-
-  return user.userProperties.canCreate;
-};
-
-
-export const getHashString = (userName: string, passwordPlain: string): string => {
-  return userName + "::" + passwordPlain;
-};
+export function getHashString(userName: string, passwordPlain: string): string {
+  return `${userName}::${passwordPlain}`
+}

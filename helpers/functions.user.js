@@ -1,24 +1,12 @@
-export const userIsAdmin = (request) => {
-    const user = request.session?.user;
-    if (!user) {
-        return false;
-    }
-    return user.userProperties.isAdmin;
-};
-export const userCanUpdate = (request) => {
-    const user = request.session?.user;
-    if (!user) {
-        return false;
-    }
-    return user.userProperties.canUpdate;
-};
-export const userCanCreate = (request) => {
-    const user = request.session?.user;
-    if (!user) {
-        return false;
-    }
-    return user.userProperties.canCreate;
-};
-export const getHashString = (userName, passwordPlain) => {
-    return userName + "::" + passwordPlain;
-};
+export function userIsAdmin(request) {
+    return request.session?.user.userProperties.isAdmin ?? false;
+}
+export function userCanUpdate(request) {
+    return request.session?.user.userProperties.canUpdate ?? false;
+}
+export function userCanCreate(request) {
+    return request.session?.user.userProperties.canCreate ?? false;
+}
+export function getHashString(userName, passwordPlain) {
+    return `${userName}::${passwordPlain}`;
+}

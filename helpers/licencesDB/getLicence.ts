@@ -2,7 +2,7 @@ import * as dateTimeFns from '@cityssm/expressjs-server-js/dateTimeFns.js'
 import sqlite from 'better-sqlite3'
 
 import { licencesDB as databasePath } from '../../data/databasePaths.js'
-import type { LotteryEvent, LotteryLicence, LotteryLicenceTransaction, User } from '../../types/recordTypes.js'
+import type { FieldData, LotteryEvent, LotteryLicence, LotteryLicenceTransaction, User } from '../../types/recordTypes.js'
 import { canUpdateObject } from '../licencesDB.js'
 
 import { getLicenceAmendmentsWithDB } from './getLicenceAmendments.js'
@@ -87,7 +87,7 @@ export function getLicenceWithDB(
   if ('includeFields' in queryOptions && queryOptions.includeFields) {
     const fieldList = database
       .prepare('select * from LotteryLicenceFields where licenceID = ?')
-      .all(licenceID) as llm.FieldData[]
+      .all(licenceID) as FieldData[]
 
     licenceObject.licenceFields = fieldList
   }
