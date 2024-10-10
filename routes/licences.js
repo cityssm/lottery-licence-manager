@@ -30,7 +30,7 @@ router.post('/doGetLicenceTypeSummary', (request, response) => {
 });
 router.get('/activeSummary', handler_activeSummary);
 router.post('/doGetActiveLicenceSummary', (request, response) => {
-    response.json(licencesDB.getActiveLicenceSummary(request.body, request.session));
+    response.json(licencesDB.getActiveLicenceSummary(request.body, request.session.user));
 });
 router.get(['/new', '/new/:organizationID'], permissionHandlers.createGetHandler, handler_new);
 router.post('/doGetDistinctTermsConditions', handler_doGetDistinctTermsConditions);

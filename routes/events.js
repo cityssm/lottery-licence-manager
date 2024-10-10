@@ -24,7 +24,7 @@ router.get('/byWeek', (_request, response) => {
 });
 router.post('/doGetEventsByWeek', handler_doGetEventsByWeek);
 router.get('/recent', (request, response) => {
-    const records = licencesDB.getRecentlyUpdateEvents(request.session);
+    const records = licencesDB.getRecentlyUpdateEvents(request.session.user);
     response.render('event-recent', {
         headTitle: 'Recently Updated Events',
         records

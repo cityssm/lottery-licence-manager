@@ -40,7 +40,11 @@ router.post('/doSearch', handler_doSearch)
 router.get('/licenceTypes', handler_licenceTypes)
 
 router.post('/doGetLicenceTypeSummary', (request, response) => {
-  response.json(licencesDB.getLicenceTypeSummary(request.body))
+  response.json(
+    licencesDB.getLicenceTypeSummary(
+      request.body as licencesDB.GetLicenceTypeSummaryForm
+    )
+  )
 })
 
 /*
@@ -51,7 +55,10 @@ router.get('/activeSummary', handler_activeSummary)
 
 router.post('/doGetActiveLicenceSummary', (request, response) => {
   response.json(
-    licencesDB.getActiveLicenceSummary(request.body, request.session)
+    licencesDB.getActiveLicenceSummary(
+      request.body as licencesDB.GetActiveLicenceSummaryForm,
+      request.session.user
+    )
   )
 })
 

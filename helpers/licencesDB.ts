@@ -165,6 +165,12 @@ export function getLicenceTableStats(): llm.LotteryLicenceStats {
   return licenceTableStats
 }
 
+export interface GetLicenceTypeSummaryForm {
+  applicationDateStartString?: string
+  applicationDateEndString?: string
+  licenceTypeKey?: string
+}
+
 interface GetLicenceTypeSummmaryReturn {
   licenceID: number
   externalLicenceNumber: string
@@ -183,11 +189,9 @@ interface GetLicenceTypeSummmaryReturn {
   transactionAmountSum: number
 }
 
-export function getLicenceTypeSummary(requestBody: {
-  applicationDateStartString?: string
-  applicationDateEndString?: string
-  licenceTypeKey?: string
-}): GetLicenceTypeSummmaryReturn[] {
+export function getLicenceTypeSummary(
+  requestBody: GetLicenceTypeSummaryForm
+): GetLicenceTypeSummmaryReturn[] {
   const database = sqlite(databasePath, {
     readonly: true
   })
@@ -264,11 +268,13 @@ export function getLicenceTypeSummary(requestBody: {
   return rows
 }
 
+export interface GetActiveLicenceSummaryForm {
+  startEndDateStartString: string
+  startEndDateEndString: string
+}
+
 export function getActiveLicenceSummary(
-  requestBody: {
-    startEndDateStartString: string
-    startEndDateEndString: string
-  },
+  requestBody: GetActiveLicenceSummaryForm,
   requestUser: llm.User
 ): llm.LotteryLicence[] {
   const database = sqlite(databasePath, {

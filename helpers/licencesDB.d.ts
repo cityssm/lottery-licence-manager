@@ -5,6 +5,11 @@ export declare function getRawRowsColumns(sql: string, parameters: unknown[], us
 export declare function resetEventTableStats(): void;
 export declare function resetLicenceTableStats(): void;
 export declare function getLicenceTableStats(): llm.LotteryLicenceStats;
+export interface GetLicenceTypeSummaryForm {
+    applicationDateStartString?: string;
+    applicationDateEndString?: string;
+    licenceTypeKey?: string;
+}
 interface GetLicenceTypeSummmaryReturn {
     licenceID: number;
     externalLicenceNumber: string;
@@ -22,15 +27,12 @@ interface GetLicenceTypeSummmaryReturn {
     licenceFee: number;
     transactionAmountSum: number;
 }
-export declare function getLicenceTypeSummary(requestBody: {
-    applicationDateStartString?: string;
-    applicationDateEndString?: string;
-    licenceTypeKey?: string;
-}): GetLicenceTypeSummmaryReturn[];
-export declare function getActiveLicenceSummary(requestBody: {
+export declare function getLicenceTypeSummary(requestBody: GetLicenceTypeSummaryForm): GetLicenceTypeSummmaryReturn[];
+export interface GetActiveLicenceSummaryForm {
     startEndDateStartString: string;
     startEndDateEndString: string;
-}, requestUser: llm.User): llm.LotteryLicence[];
+}
+export declare function getActiveLicenceSummary(requestBody: GetActiveLicenceSummaryForm, requestUser: llm.User): llm.LotteryLicence[];
 export declare function getEventTableStats(): llm.LotteryEventStats;
 export declare function getRecentlyUpdateEvents(requestUser: llm.User): llm.LotteryEvent[];
 export {};
