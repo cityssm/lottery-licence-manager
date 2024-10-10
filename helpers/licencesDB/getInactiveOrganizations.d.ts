@@ -1,2 +1,2 @@
-import type * as llm from "../../types/recordTypes";
-export declare const getInactiveOrganizations: (inactiveYears: number) => llm.Organization[];
+import type { Organization } from '../../types/recordTypes';
+export default function getInactiveOrganizations(inactiveYears: number): Organization[];

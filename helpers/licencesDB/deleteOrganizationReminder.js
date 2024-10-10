@@ -1,18 +1,16 @@
-import { licencesDB as databasePath } from "../../data/databasePaths.js";
-import sqlite from "better-sqlite3";
-export const deleteOrganizationReminderWithDB = (database, organizationID, reminderIndex, requestSession) => {
-    const result = database.prepare("update OrganizationReminders" +
-        " set recordDelete_userName = ?," +
-        " recordDelete_timeMillis = ?" +
-        " where organizationID = ?" +
-        " and reminderIndex = ?" +
-        " and recordDelete_timeMillis is null")
-        .run(requestSession.user.userName, Date.now(), organizationID, reminderIndex);
+import sqlite from 'better-sqlite3';
+import { licencesDB as databasePath } from '../../data/databasePaths.js';
+export function deleteOrganizationReminderWithDB(database, organizationID, reminderIndex, requestUser) {
+    const result = database
+        .prepare(`update OrganizationReminders
+        set recordDelete_userName = ?, recordDelete_timeMillis = ?
+        where organizationID = ? and reminderIndex = ? and recordDelete_timeMillis is null`)
+        .run(requestUser.userName, Date.now(), organizationID, reminderIndex);
     return result.changes > 0;
-};
-export const deleteOrganizationReminder = (organizationID, reminderIndex, requestSession) => {
+}
+export default function deleteOrganizationReminder(organizationID, reminderIndex, requestUser) {
     const database = sqlite(databasePath);
-    const hasChanges = deleteOrganizationReminderWithDB(database, organizationID, reminderIndex, requestSession);
+    const hasChanges = deleteOrganizationReminderWithDB(database, organizationID, reminderIndex, requestUser);
     database.close();
     return hasChanges;
-};
+}

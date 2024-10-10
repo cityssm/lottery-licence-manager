@@ -1,6 +1,6 @@
 import type { Request, Response } from 'express'
 
-import * as configFunctions from '../../helpers/functions.config.js'
+import { getLicenceType } from '../../helpers/functions.config.js'
 
 export default function handler(
   request: Request<unknown, unknown, { licenceTypeKey: string }>,
@@ -8,7 +8,7 @@ export default function handler(
 ): void {
   const licenceTypeKey = request.body.licenceTypeKey
 
-  const licenceType = configFunctions.getLicenceType(licenceTypeKey)
+  const licenceType = getLicenceType(licenceTypeKey)
 
   if (licenceType === undefined) {
     response.json([])

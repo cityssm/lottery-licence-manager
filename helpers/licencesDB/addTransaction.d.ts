@@ -1,4 +1,4 @@
-import type * as expressSession from 'express-session';
+import type { User } from '../../types/recordTypes.js';
 export interface AddTransactionForm {
     licenceID: string;
     transactionAmount: string;
@@ -6,4 +6,4 @@ export interface AddTransactionForm {
     externalReceiptNumber: string;
     issueLicence: '' | 'true';
 }
-export default function addTransaction(requestBody: AddTransactionForm, requestSession: expressSession.Session): number;
+export default function addTransaction(requestBody: AddTransactionForm, requestUser: User): number;

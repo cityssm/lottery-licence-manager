@@ -1,5 +1,5 @@
 import * as dateTimeFns from '@cityssm/expressjs-server-js/dateTimeFns.js';
-import { getLicenceActivityByDateRange } from '../../helpers/licencesDB/getLicenceActivityByDateRange.js';
+import getLicenceActivityByDateRange from '../../helpers/licencesDB/getLicenceActivityByDateRange.js';
 export default function handler(request, response) {
     const dateWithinWeek = dateTimeFns.dateStringToDate(request.body.eventDate);
     dateWithinWeek.setDate(dateWithinWeek.getDate() - dateWithinWeek.getDay());

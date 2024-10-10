@@ -1,9 +1,8 @@
 import * as dateTimeFns from '@cityssm/expressjs-server-js/dateTimeFns.js'
 import sqlite from 'better-sqlite3'
-import type * as expressSession from 'express-session'
 
 import { licencesDB as databasePath } from '../../data/databasePaths.js'
-import type * as llm from '../../types/recordTypes'
+import type { LotteryEvent, LotteryLicence, LotteryLicenceTransaction, User } from '../../types/recordTypes.js'
 import { canUpdateObject } from '../licencesDB.js'
 
 import { getLicenceAmendmentsWithDB } from './getLicenceAmendments.js'
@@ -12,7 +11,7 @@ import { getLicenceTicketTypesWithDB } from './getLicenceTicketTypes.js'
 export function getLicenceWithDB(
   database: sqlite.Database,
   licenceID: number | string,
-  requestSession: expressSession.Session,
+  requestUser: User,
   queryOptions: {
     includeTicketTypes?: boolean
     includeFields?: boolean
@@ -20,7 +19,7 @@ export function getLicenceWithDB(
     includeAmendments?: boolean
     includeTransactions?: boolean
   } = {}
-): llm.LotteryLicence | undefined {
+): LotteryLicence | undefined {
   const licenceObject = database
     .prepare(
       `select l.*,
@@ -30,7 +29,7 @@ export function getLicenceWithDB(
         where l.recordDelete_timeMillis is null
         and l.licenceID = ?`
     )
-    .get(licenceID) as llm.LotteryLicence | undefined
+    .get(licenceID) as LotteryLicence | undefined
 
   if (licenceObject === undefined) {
     return undefined
@@ -68,7 +67,7 @@ export function getLicenceWithDB(
       ? licenceObject.locationAddress1
       : licenceObject.locationName
 
-  licenceObject.canUpdate = canUpdateObject(licenceObject, requestSession)
+  licenceObject.canUpdate = canUpdateObject(licenceObject, requestUser)
 
   /*
    * Ticket types
@@ -107,7 +106,7 @@ export function getLicenceWithDB(
           and recordDelete_timeMillis is null
           order by eventDate`
       )
-      .all(licenceID) as llm.LotteryEvent[]
+      .all(licenceID) as LotteryEvent[]
 
     for (const eventObject of eventList) {
       eventObject.eventDateString = dateTimeFns.dateIntegerToString(
@@ -144,7 +143,7 @@ export function getLicenceWithDB(
           and recordDelete_timeMillis is null
           order by transactionDate, transactionTime, transactionIndex`
       )
-      .all(licenceID) as  llm.LotteryLicenceTransaction[]
+      .all(licenceID) as  LotteryLicenceTransaction[]
 
     let licenceTransactionTotal = 0
 
@@ -168,13 +167,13 @@ export function getLicenceWithDB(
 
 export default function getLicence(
   licenceID: number,
-  requestSession: expressSession.Session
-): llm.LotteryLicence | undefined {
+  requestUser: User
+): LotteryLicence | undefined {
   const database = sqlite(databasePath, {
     readonly: true
   })
 
-  const licenceObject = getLicenceWithDB(database, licenceID, requestSession, {
+  const licenceObject = getLicenceWithDB(database, licenceID, requestUser, {
     includeTicketTypes: true,
     includeFields: true,
     includeEvents: true,

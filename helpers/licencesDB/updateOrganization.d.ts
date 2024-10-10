@@ -1,3 +1,2 @@
-import type * as llm from "../../types/recordTypes";
-import type * as expressSession from "express-session";
-export declare const updateOrganization: (requestBody: llm.Organization, requestSession: expressSession.Session) => boolean;
+import type { Organization, User } from '../../types/recordTypes.js';
+export default function updateOrganization(requestBody: Organization, requestUser: User): boolean;

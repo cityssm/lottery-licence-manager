@@ -1,52 +1,56 @@
-import sqlite from "better-sqlite3";
+import * as dateTimeFns from '@cityssm/expressjs-server-js/dateTimeFns.js'
+import sqlite from 'better-sqlite3'
 
-import { licencesDB as databasePath } from "../../data/databasePaths.js";
+import { licencesDB as databasePath } from '../../data/databasePaths.js'
+import type { OrganizationReminder, User } from '../../types/recordTypes'
 
-import { getMaxOrganizationReminderIndexWithDB } from "./getMaxOrganizationReminderIndex.js";
+import { getMaxOrganizationReminderIndexWithDB } from './getMaxOrganizationReminderIndex.js'
 
-import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
-
-import type * as llm from "../../types/recordTypes";
-import type * as expressSession from "express-session";
-
-
-interface ReminderData {
-  organizationID: string;
-  reminderTypeKey: string;
-  dueDateString?: string;
-  reminderStatus: string;
-  reminderNote: string;
+export interface ReminderData {
+  organizationID: string
+  reminderTypeKey: string
+  dueDateString?: string
+  reminderStatus: string
+  reminderNote: string
 }
 
+export function addOrganizationReminderWithDB(
+  database: sqlite.Database,
+  reminderData: ReminderData,
+  requestUser: User
+): OrganizationReminder {
+  const newReminderIndex =
+    getMaxOrganizationReminderIndexWithDB(
+      database,
+      reminderData.organizationID
+    ) + 1
 
-export const addOrganizationReminderWithDB = (database: sqlite.Database,
-  reminderData: ReminderData, requestSession: expressSession.Session): llm.OrganizationReminder => {
+  const nowMillis = Date.now()
 
-  const newReminderIndex = getMaxOrganizationReminderIndexWithDB(database, reminderData.organizationID) + 1;
-
-  const nowMillis = Date.now();
-
-  database.prepare("insert into OrganizationReminders" +
-    " (organizationID, reminderIndex, reminderTypeKey, dueDate," +
-    " reminderStatus, reminderNote," +
-    " recordCreate_userName, recordCreate_timeMillis, recordUpdate_userName, recordUpdate_timeMillis)" +
-    " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
-    .run(reminderData.organizationID,
+  database
+    .prepare(
+      `insert into OrganizationReminders (
+        organizationID, reminderIndex, reminderTypeKey, dueDate, reminderStatus, reminderNote,
+        recordCreate_userName, recordCreate_timeMillis, recordUpdate_userName, recordUpdate_timeMillis)
+        values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+    )
+    .run(
+      reminderData.organizationID,
       newReminderIndex,
       reminderData.reminderTypeKey,
-      (!reminderData.dueDateString || reminderData.dueDateString === ""
+      !reminderData.dueDateString || reminderData.dueDateString === ''
         ? undefined
-        : dateTimeFns.dateStringToInteger(reminderData.dueDateString)),
+        : dateTimeFns.dateStringToInteger(reminderData.dueDateString),
       reminderData.reminderStatus,
       reminderData.reminderNote,
-      requestSession.user.userName,
+      requestUser.userName,
       nowMillis,
-      requestSession.user.userName,
+      requestUser.userName,
       nowMillis
-    );
+    )
 
-  const reminder: llm.OrganizationReminder = {
-    recordType: "reminder",
+  const reminder: OrganizationReminder = {
+    recordType: 'reminder',
     canUpdate: true,
     organizationID: Number.parseInt(reminderData.organizationID, 10),
     reminderIndex: newReminderIndex,
@@ -54,26 +58,31 @@ export const addOrganizationReminderWithDB = (database: sqlite.Database,
     dueDate: dateTimeFns.dateStringToInteger(reminderData.dueDateString),
     dueDateString: reminderData.dueDateString,
     dismissedDate: undefined,
-    dismissedDateString: "",
+    dismissedDateString: '',
     reminderStatus: reminderData.reminderStatus,
     reminderNote: reminderData.reminderNote,
-    recordCreate_userName: requestSession.user.userName,
+    recordCreate_userName: requestUser.userName,
     recordCreate_timeMillis: nowMillis,
-    recordUpdate_userName: requestSession.user.userName,
+    recordUpdate_userName: requestUser.userName,
     recordUpdate_timeMillis: nowMillis
-  };
+  }
 
-  return reminder;
-};
+  return reminder
+}
 
+export default function addOrganizationReminder(
+  requestBody: ReminderData,
+  requestUser: User
+): OrganizationReminder {
+  const database = sqlite(databasePath)
 
-export const addOrganizationReminder = (requestBody: ReminderData, requestSession: expressSession.Session): llm.OrganizationReminder => {
+  const reminder = addOrganizationReminderWithDB(
+    database,
+    requestBody,
+    requestUser
+  )
 
-  const database = sqlite(databasePath);
+  database.close()
 
-  const reminder = addOrganizationReminderWithDB(database, requestBody, requestSession);
-
-  database.close();
-
-  return reminder;
-};
+  return reminder
+}

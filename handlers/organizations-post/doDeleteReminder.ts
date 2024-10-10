@@ -1,15 +1,21 @@
-import type { RequestHandler } from "express";
+import type { Request, Response } from 'express'
 
-import { deleteOrganizationReminder } from "../../helpers/licencesDB/deleteOrganizationReminder.js";
+import deleteOrganizationReminder from '../../helpers/licencesDB/deleteOrganizationReminder.js'
 
+interface DoDeleteReminderRequest {
+  organizationID: string
+  reminderIndex: string
+}
 
-export const handler: RequestHandler = (request, response) => {
+export default function handler(
+  request: Request<unknown, unknown, DoDeleteReminderRequest>,
+  response: Response
+): void {
+  const success = deleteOrganizationReminder(
+    request.body.organizationID,
+    request.body.reminderIndex,
+    request.session.user
+  )
 
-  const success =
-    deleteOrganizationReminder(request.body.organizationID, request.body.reminderIndex, request.session);
-
-  return response.json({ success });
-};
-
-
-export default handler;
+  response.json({ success })
+}

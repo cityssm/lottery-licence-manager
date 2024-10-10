@@ -7,7 +7,7 @@ import updateEvent, {
 export default function handler(request: Request, response: Response): void {
   const changeCount = updateEvent(
     request.body as UpdateEventForm,
-    request.session
+    request.session.user
   )
 
   if (changeCount) {

@@ -2,7 +2,7 @@ import * as dateTimeFns from '@cityssm/expressjs-server-js/dateTimeFns.js';
 import sqlite from 'better-sqlite3';
 import { licencesDB as databasePath } from '../../data/databasePaths.js';
 import * as licencesDB from '../licencesDB.js';
-export default function updateEvent(requestBody, requestSession) {
+export default function updateEvent(requestBody, requestUser) {
     const database = sqlite(databasePath);
     const nowMillis = Date.now();
     const info = database
@@ -24,7 +24,7 @@ export default function updateEvent(requestBody, requestSession) {
         ? undefined
         : requestBody.bank_accountBalance, requestBody.costs_amountDonated === ''
         ? undefined
-        : requestBody.costs_amountDonated, requestSession.user.userName, nowMillis, requestBody.licenceID, requestBody.eventDate);
+        : requestBody.costs_amountDonated, requestUser.userName, nowMillis, requestBody.licenceID, requestBody.eventDate);
     const changeCount = info.changes;
     if (!changeCount) {
         database.close();

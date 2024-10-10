@@ -1,44 +1,48 @@
-import sqlite from "better-sqlite3";
+import * as dateTimeFns from '@cityssm/expressjs-server-js/dateTimeFns.js'
+import sqlite from 'better-sqlite3'
 
-import { getMaxOrganizationRemarkIndexWithDB } from "./getMaxOrganizationRemarkIndex.js";
+import { licencesDB as databasePath } from '../../data/databasePaths.js'
+import type { OrganizationRemark, User } from '../../types/recordTypes'
 
-import { licencesDB as databasePath } from "../../data/databasePaths.js";
+import { getMaxOrganizationRemarkIndexWithDB } from './getMaxOrganizationRemarkIndex.js'
 
-import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
+export default function addOrganizationRemark(
+  requestBody: OrganizationRemark,
+  requestUser: User
+): number {
+  const database = sqlite(databasePath)
 
-import type * as llm from "../../types/recordTypes";
-import type * as expressSession from "express-session";
+  const newRemarkIndex =
+    getMaxOrganizationRemarkIndexWithDB(database, requestBody.organizationID) +
+    1
 
+  const rightNow = new Date()
 
-export const addOrganizationRemark = (requestBody: llm.OrganizationRemark, requestSession: expressSession.Session): number => {
+  const remarkDate = dateTimeFns.dateToInteger(rightNow)
+  const remarkTime = dateTimeFns.dateToTimeInteger(rightNow)
 
-  const database = sqlite(databasePath);
-
-  const newRemarkIndex = getMaxOrganizationRemarkIndexWithDB(database, requestBody.organizationID) + 1;
-
-  const rightNow = new Date();
-
-  const remarkDate = dateTimeFns.dateToInteger(rightNow);
-  const remarkTime = dateTimeFns.dateToTimeInteger(rightNow);
-
-  database.prepare("insert into OrganizationRemarks (" +
-    "organizationID, remarkIndex," +
-    " remarkDate, remarkTime, remark, isImportant," +
-    " recordCreate_userName, recordCreate_timeMillis," +
-    " recordUpdate_userName, recordUpdate_timeMillis)" +
-    " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
+  database
+    .prepare(
+      `insert into OrganizationRemarks (
+        organizationID, remarkIndex,
+        remarkDate, remarkTime, remark, isImportant,
+        recordCreate_userName, recordCreate_timeMillis, recordUpdate_userName, recordUpdate_timeMillis)
+        values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+    )
     .run(
-      requestBody.organizationID, newRemarkIndex,
-      remarkDate, remarkTime,
+      requestBody.organizationID,
+      newRemarkIndex,
+      remarkDate,
+      remarkTime,
       requestBody.remark,
       requestBody.isImportant ? 1 : 0,
-      requestSession.user.userName,
+      requestUser.userName,
       rightNow.getTime(),
-      requestSession.user.userName,
+      requestUser.userName,
       rightNow.getTime()
-    );
+    )
 
-  database.close();
+  database.close()
 
-  return newRemarkIndex;
-};
+  return newRemarkIndex
+}

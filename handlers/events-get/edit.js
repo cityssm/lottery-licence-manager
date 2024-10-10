@@ -14,7 +14,7 @@ export default function handler(request, response, next) {
         response.redirect(`${urlPrefix}/events/${licenceID.toString()}/${eventDate.toString()}/?error=accessDenied`);
         return;
     }
-    const eventObject = getEvent(licenceID, eventDate, request.session);
+    const eventObject = getEvent(licenceID, eventDate, request.session.user);
     if (eventObject === undefined) {
         response.redirect(`${urlPrefix}/events/?error=eventNotFound`);
         return;
@@ -23,12 +23,12 @@ export default function handler(request, response, next) {
         response.redirect(`${urlPrefix}/events/${licenceID.toString()}/${eventDate.toString()}/?error=accessDenied`);
         return;
     }
-    const licence = getLicence(licenceID, request.session);
+    const licence = getLicence(licenceID, request.session.user);
     if (licence === undefined) {
         response.redirect(`${urlPrefix}/events/?error=licenceNotFound`);
         return;
     }
-    const organization = getOrganization(licence.organizationID, request.session);
+    const organization = getOrganization(licence.organizationID, request.session.user);
     response.render('event-edit', {
         headTitle: 'Event Update',
         event: eventObject,

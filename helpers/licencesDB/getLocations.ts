@@ -1,18 +1,17 @@
 import * as dateTimeFns from '@cityssm/expressjs-server-js/dateTimeFns.js'
 import sqlite from 'better-sqlite3'
-import type * as expressSession from 'express-session'
 
 import { licencesDB as databasePath } from '../../data/databasePaths.js'
-import type * as llm from '../../types/recordTypes'
+import type { Location, User } from '../../types/recordTypes.js'
 import { canUpdateObject } from '../licencesDB.js'
 
 export interface GetLocationsReturn {
   count: number
-  locations: llm.Location[]
+  locations: Location[]
 }
 
 export default function getLocations(
-  requestSession: expressSession.Session,
+  requestUser: User,
   queryOptions: {
     limit: number
     offset: number
@@ -123,7 +122,7 @@ export default function getLocations(
       ` limit ${queryOptions.limit.toString()} offset ${queryOptions.offset.toString()}`
   }
 
-  const rows = database.prepare(sql).all(sqlParameters) as llm.Location[]
+  const rows = database.prepare(sql).all(sqlParameters) as Location[]
 
   database.close()
 
@@ -145,7 +144,7 @@ export default function getLocations(
       element.manufacturer_endDateMax
     )
 
-    element.canUpdate = canUpdateObject(element, requestSession)
+    element.canUpdate = canUpdateObject(element, requestUser)
   }
 
   return {

@@ -1,9 +1,9 @@
-import type * as llm from "../../types/recordTypes";
+import type { LotteryEvent, LotteryLicence } from '../../types/recordTypes.js';
 interface GetLicenceActivityByDateRangeReturn {
     startDateString: string;
     endDateString: string;
-    licences?: llm.LotteryLicence[];
-    events?: llm.LotteryEvent[];
+    licences?: LotteryLicence[];
+    events?: LotteryEvent[];
 }
-export declare const getLicenceActivityByDateRange: (startDate: number, endDate: number) => GetLicenceActivityByDateRangeReturn;
+export default function getLicenceActivityByDateRange(startDate: number, endDate: number): GetLicenceActivityByDateRangeReturn;
 export {};

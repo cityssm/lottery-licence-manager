@@ -1,16 +1,20 @@
 import * as dateTimeFns from '@cityssm/expressjs-server-js/dateTimeFns.js'
 import sqlite from 'better-sqlite3'
-import type * as expressSession from 'express-session'
 
 import { licencesDB as databasePath } from '../../data/databasePaths.js'
-import type * as llm from '../../types/recordTypes.js'
+import type {
+  FieldData,
+  LotteryEvent,
+  LotteryEventCosts,
+  User
+} from '../../types/recordTypes.js'
 import { canUpdateObject } from '../licencesDB.js'
 
 export default function getEvent(
   licenceID: number,
   eventDate: number,
-  requestSession: expressSession.Session
-): llm.LotteryEvent | undefined {
+  requestUser: User
+): LotteryEvent | undefined {
   const database = sqlite(databasePath, {
     readonly: true
   })
@@ -23,7 +27,7 @@ export default function getEvent(
         and licenceID = ?
         and eventDate = ?`
     )
-    .get(licenceID, eventDate) as llm.LotteryEvent | undefined
+    .get(licenceID, eventDate) as LotteryEvent | undefined
 
   if (eventObject !== undefined) {
     eventObject.recordType = 'event'
@@ -43,43 +47,41 @@ export default function getEvent(
       eventObject.endTime || 0
     )
 
-    eventObject.canUpdate = canUpdateObject(eventObject, requestSession)
+    eventObject.canUpdate = canUpdateObject(eventObject, requestUser)
 
     const fieldRows = database
       .prepare(
-        'select fieldKey, fieldValue' +
-          ' from LotteryEventFields' +
-          ' where licenceID = ? and eventDate = ?'
+        `select fieldKey, fieldValue
+          from LotteryEventFields
+          where licenceID = ? and eventDate = ?`
       )
-      .all(licenceID, eventDate) as llm.FieldData[] | undefined
+      .all(licenceID, eventDate) as FieldData[] | undefined
 
     eventObject.eventFields = fieldRows ?? []
 
     let costRows = database
       .prepare(
-        'select distinct t.ticketType,' +
-          ' c.costs_receipts, c.costs_admin, c.costs_prizesAwarded' +
-          ' from LotteryLicenceTicketTypes t' +
-          ' left join LotteryEventCosts c on t.licenceID = c.licenceID and t.ticketType = c.ticketType and c.eventDate = ?' +
-          ' where t.licenceID = ?' +
-          ' and (t.recordDelete_timeMillis is null or c.ticketType is not null)' +
-          ' order by t.ticketType'
+        `select distinct t.ticketType,
+          c.costs_receipts, c.costs_admin, c.costs_prizesAwarded
+          from LotteryLicenceTicketTypes t
+          left join LotteryEventCosts c on t.licenceID = c.licenceID and t.ticketType = c.ticketType and c.eventDate = ?
+          where t.licenceID = ?
+          and (t.recordDelete_timeMillis is null or c.ticketType is not null)
+          order by t.ticketType`
       )
-      .all(eventDate, licenceID) as llm.LotteryEventCosts[] | undefined
+      .all(eventDate, licenceID) as LotteryEventCosts[] | undefined
 
     eventObject.eventCosts = costRows ?? []
 
     if (eventObject.eventCosts.length === 0) {
       costRows = database
         .prepare(
-          'select c.ticketType,' +
-            ' c.costs_receipts, c.costs_admin, c.costs_prizesAwarded' +
-            ' from LotteryEventCosts c' +
-            ' where c.licenceID = ?' +
-            ' and c.eventDate = ?' +
-            ' order by c.ticketType'
+          `select c.ticketType,
+            c.costs_receipts, c.costs_admin, c.costs_prizesAwarded
+            from LotteryEventCosts c
+            where c.licenceID = ? and c.eventDate = ? order by c.ticketType`
         )
-        .all(licenceID, eventDate) as llm.LotteryEventCosts[] | undefined
+        .all(licenceID, eventDate) as LotteryEventCosts[] | undefined
 
       eventObject.eventCosts = costRows ?? []
     }

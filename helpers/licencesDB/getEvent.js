@@ -2,7 +2,7 @@ import * as dateTimeFns from '@cityssm/expressjs-server-js/dateTimeFns.js';
 import sqlite from 'better-sqlite3';
 import { licencesDB as databasePath } from '../../data/databasePaths.js';
 import { canUpdateObject } from '../licencesDB.js';
-export default function getEvent(licenceID, eventDate, requestSession) {
+export default function getEvent(licenceID, eventDate, requestUser) {
     const database = sqlite(databasePath, {
         readonly: true
     });
@@ -19,31 +19,29 @@ export default function getEvent(licenceID, eventDate, requestSession) {
         eventObject.reportDateString = dateTimeFns.dateIntegerToString(eventObject.reportDate);
         eventObject.startTimeString = dateTimeFns.timeIntegerToString(eventObject.startTime || 0);
         eventObject.endTimeString = dateTimeFns.timeIntegerToString(eventObject.endTime || 0);
-        eventObject.canUpdate = canUpdateObject(eventObject, requestSession);
+        eventObject.canUpdate = canUpdateObject(eventObject, requestUser);
         const fieldRows = database
-            .prepare('select fieldKey, fieldValue' +
-            ' from LotteryEventFields' +
-            ' where licenceID = ? and eventDate = ?')
+            .prepare(`select fieldKey, fieldValue
+          from LotteryEventFields
+          where licenceID = ? and eventDate = ?`)
             .all(licenceID, eventDate);
         eventObject.eventFields = fieldRows ?? [];
         let costRows = database
-            .prepare('select distinct t.ticketType,' +
-            ' c.costs_receipts, c.costs_admin, c.costs_prizesAwarded' +
-            ' from LotteryLicenceTicketTypes t' +
-            ' left join LotteryEventCosts c on t.licenceID = c.licenceID and t.ticketType = c.ticketType and c.eventDate = ?' +
-            ' where t.licenceID = ?' +
-            ' and (t.recordDelete_timeMillis is null or c.ticketType is not null)' +
-            ' order by t.ticketType')
+            .prepare(`select distinct t.ticketType,
+          c.costs_receipts, c.costs_admin, c.costs_prizesAwarded
+          from LotteryLicenceTicketTypes t
+          left join LotteryEventCosts c on t.licenceID = c.licenceID and t.ticketType = c.ticketType and c.eventDate = ?
+          where t.licenceID = ?
+          and (t.recordDelete_timeMillis is null or c.ticketType is not null)
+          order by t.ticketType`)
             .all(eventDate, licenceID);
         eventObject.eventCosts = costRows ?? [];
         if (eventObject.eventCosts.length === 0) {
             costRows = database
-                .prepare('select c.ticketType,' +
-                ' c.costs_receipts, c.costs_admin, c.costs_prizesAwarded' +
-                ' from LotteryEventCosts c' +
-                ' where c.licenceID = ?' +
-                ' and c.eventDate = ?' +
-                ' order by c.ticketType')
+                .prepare(`select c.ticketType,
+            c.costs_receipts, c.costs_admin, c.costs_prizesAwarded
+            from LotteryEventCosts c
+            where c.licenceID = ? and c.eventDate = ? order by c.ticketType`)
                 .all(licenceID, eventDate);
             eventObject.eventCosts = costRows ?? [];
         }

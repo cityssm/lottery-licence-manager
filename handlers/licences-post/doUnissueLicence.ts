@@ -6,7 +6,7 @@ export default function handler(
   request: Request<unknown, unknown, { licenceID: string }>,
   response: Response
 ): void {
-  const success = unissueLicence(request.body.licenceID, request.session)
+  const success = unissueLicence(request.body.licenceID, request.session.user)
 
   if (success) {
     response.json({

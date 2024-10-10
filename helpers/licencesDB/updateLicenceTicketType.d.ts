@@ -1,6 +1,6 @@
-import type sqlite from "better-sqlite3";
-import type * as expressSession from "express-session";
-export declare const updateLicenceTicketTypeWithDB: (database: sqlite.Database, ticketTypeDefinition: {
+import type sqlite from 'better-sqlite3';
+import type { User } from '../../types/recordTypes.js';
+export declare function updateLicenceTicketTypeWithDB(database: sqlite.Database, ticketTypeDefinition: {
     licenceID: number | string;
     eventDateString: string;
     ticketType: string;
@@ -8,4 +8,4 @@ export declare const updateLicenceTicketTypeWithDB: (database: sqlite.Database, 
     licenceFee: number | string;
     distributorLocationID: number | string;
     manufacturerLocationID: number | string;
-}, requestSession: expressSession.Session) => void;
+}, requestUser: User): void;

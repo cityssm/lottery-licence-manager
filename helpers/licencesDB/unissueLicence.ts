@@ -1,13 +1,13 @@
 import sqlite from 'better-sqlite3'
-import type * as expressSession from 'express-session'
 
 import { licencesDB as databasePath } from '../../data/databasePaths.js'
+import type { User } from '../../types/recordTypes.js'
 
 import { addLicenceAmendmentWithDB } from './addLicenceAmendment.js'
 
 export default function unissueLicence(
   licenceID: number | string,
-  requestSession: expressSession.Session
+  requestUser: User
 ): boolean {
   const database = sqlite(databasePath)
 
@@ -24,18 +24,20 @@ export default function unissueLicence(
         and recordDelete_timeMillis is null
         and issueDate is not null`
     )
-    .run(requestSession.user.userName, nowMillis, licenceID)
+    .run(requestUser.userName, nowMillis, licenceID)
 
   const changeCount = info.changes
 
   if (changeCount) {
     addLicenceAmendmentWithDB(
       database,
-      licenceID,
-      'Unissue Licence',
-      '',
-      1,
-      requestSession
+      {
+        licenceID,
+        amendmentType: 'Unissue Licence',
+        amendment: '',
+        isHidden: 1
+      },
+      requestUser
     )
   }
 

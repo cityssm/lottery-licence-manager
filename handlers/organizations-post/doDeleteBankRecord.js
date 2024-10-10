@@ -1,14 +1,16 @@
-import { deleteOrganizationBankRecord } from "../../helpers/licencesDB/deleteOrganizationBankRecord.js";
-export const handler = (request, response) => {
-    const success = deleteOrganizationBankRecord(request.body.organizationID, request.body.recordIndex, request.session);
-    return success
-        ? response.json({
+import deleteOrganizationBankRecord from '../../helpers/licencesDB/deleteOrganizationBankRecord.js';
+export default function handler(request, response) {
+    const success = deleteOrganizationBankRecord(request.body.organizationID, request.body.recordIndex, request.session.user);
+    if (success) {
+        response.json({
             success: true,
-            message: "Organization updated successfully."
-        })
-        : response.json({
-            success: false,
-            message: "Record Not Saved"
+            message: 'Organization updated successfully.'
         });
-};
-export default handler;
+    }
+    else {
+        response.json({
+            success: false,
+            message: 'Record Not Saved'
+        });
+    }
+}

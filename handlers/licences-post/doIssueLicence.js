@@ -1,6 +1,6 @@
 import issueLicence from '../../helpers/licencesDB/issueLicence.js';
 export default function handler(request, response) {
-    const success = issueLicence(request.body.licenceID, request.session);
+    const success = issueLicence(request.body.licenceID, request.session.user);
     if (success) {
         response.json({
             success: true,

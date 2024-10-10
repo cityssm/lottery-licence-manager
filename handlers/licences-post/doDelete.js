@@ -7,7 +7,7 @@ export default function handler(request, response) {
         });
     }
     else {
-        const changeCount = deleteLicence(request.body.licenceID, request.session);
+        const changeCount = deleteLicence(request.body.licenceID, request.session.user);
         if (changeCount) {
             response.json({
                 success: true,

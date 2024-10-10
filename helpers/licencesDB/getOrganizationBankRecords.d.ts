@@ -1,2 +1,2 @@
-import type * as llm from "../../types/recordTypes";
-export declare const getOrganizationBankRecords: (organizationID: number, accountNumber: string, bankingYear: number) => llm.OrganizationBankRecord[];
+import type { OrganizationBankRecord } from '../../types/recordTypes';
+export default function getOrganizationBankRecords(organizationID: number | string, accountNumber: string, bankingYear: number | string): OrganizationBankRecord[];

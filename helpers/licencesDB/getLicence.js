@@ -4,7 +4,7 @@ import { licencesDB as databasePath } from '../../data/databasePaths.js';
 import { canUpdateObject } from '../licencesDB.js';
 import { getLicenceAmendmentsWithDB } from './getLicenceAmendments.js';
 import { getLicenceTicketTypesWithDB } from './getLicenceTicketTypes.js';
-export function getLicenceWithDB(database, licenceID, requestSession, queryOptions = {}) {
+export function getLicenceWithDB(database, licenceID, requestUser, queryOptions = {}) {
     const licenceObject = database
         .prepare(`select l.*,
         lo.locationName, lo.locationAddress1
@@ -28,7 +28,7 @@ export function getLicenceWithDB(database, licenceID, requestSession, queryOptio
         licenceObject.locationName === ''
             ? licenceObject.locationAddress1
             : licenceObject.locationName;
-    licenceObject.canUpdate = canUpdateObject(licenceObject, requestSession);
+    licenceObject.canUpdate = canUpdateObject(licenceObject, requestUser);
     if ('includeTicketTypes' in queryOptions && queryOptions.includeTicketTypes) {
         licenceObject.licenceTicketTypes = getLicenceTicketTypesWithDB(database, licenceID);
     }
@@ -74,11 +74,11 @@ export function getLicenceWithDB(database, licenceID, requestSession, queryOptio
     }
     return licenceObject;
 }
-export default function getLicence(licenceID, requestSession) {
+export default function getLicence(licenceID, requestUser) {
     const database = sqlite(databasePath, {
         readonly: true
     });
-    const licenceObject = getLicenceWithDB(database, licenceID, requestSession, {
+    const licenceObject = getLicenceWithDB(database, licenceID, requestUser, {
         includeTicketTypes: true,
         includeFields: true,
         includeEvents: true,

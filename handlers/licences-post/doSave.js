@@ -2,14 +2,14 @@ import createLicence from '../../helpers/licencesDB/createLicence.js';
 import updateLicence from '../../helpers/licencesDB/updateLicence.js';
 export default function handler(request, response) {
     if (request.body.licenceID === '') {
-        const newLicenceID = createLicence(request.body, request.session);
+        const newLicenceID = createLicence(request.body, request.session.user);
         response.json({
             success: true,
             licenceID: newLicenceID
         });
     }
     else {
-        const changeCount = updateLicence(request.body, request.session);
+        const changeCount = updateLicence(request.body, request.session.user);
         if (changeCount) {
             response.json({
                 success: true,

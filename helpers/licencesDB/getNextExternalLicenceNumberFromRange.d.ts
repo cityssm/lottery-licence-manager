@@ -1,1 +1,1 @@
-export declare const getNextExternalLicenceNumberFromRange: () => number;
+export default function getNextExternalLicenceNumberFromRange(): number;

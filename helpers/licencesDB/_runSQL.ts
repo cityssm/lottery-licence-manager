@@ -1,3 +1,4 @@
+// eslint-disable-next-line @eslint-community/eslint-comments/disable-enable-pair
 /* eslint-disable unicorn/filename-case */
 
 import sqlite from 'better-sqlite3'

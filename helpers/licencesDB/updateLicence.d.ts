@@ -1,4 +1,4 @@
-import type * as expressSession from 'express-session';
+import type { User } from '../../types/recordTypes.js';
 interface ParseTicketTypeKeyReturn {
     eventDate: number;
     eventDateString: string;
@@ -33,5 +33,5 @@ export interface LotteryLicenceForm {
 }
 export default function updateLicence(requestBody: LotteryLicenceForm & {
     licenceID: string;
-}, requestSession: expressSession.Session): boolean;
+}, requestUser: User): boolean;
 export {};

@@ -1,2 +1,2 @@
-import type * as llm from "../../types/recordTypes";
-export declare const updateOrganizationRepresentative: (organizationID: number, requestBody: llm.OrganizationRepresentative) => llm.OrganizationRepresentative;
+import type { OrganizationRepresentative } from '../../types/recordTypes.js';
+export default function updateOrganizationRepresentative(organizationID: number, requestBody: OrganizationRepresentative): OrganizationRepresentative;

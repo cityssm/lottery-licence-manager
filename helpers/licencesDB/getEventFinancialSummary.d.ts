@@ -5,7 +5,7 @@ export interface EventFinancialSummary {
     reportDateCount: number;
     licenceFeeSum: number;
 }
-export declare const getEventFinancialSummary: (requestBody: {
+export default function getEventFinancialSummary(requestBody: {
     eventDateStartString: string;
     eventDateEndString: string;
-}) => EventFinancialSummary[];
+}): EventFinancialSummary[];

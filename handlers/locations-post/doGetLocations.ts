@@ -17,7 +17,7 @@ export default function handler(
   request: Request<unknown, unknown, DoGetLocationsRequest>,
   response: Response<GetLocationsReturn>
 ): void {
-  const locations = getLocations(request.session, {
+  const locations = getLocations(request.session.user, {
     limit: Number.parseInt(request.body.limit, 10),
     offset: Number.parseInt(request.body.offset, 10),
     locationNameAddress: request.body.locationNameAddress,

@@ -1,79 +1,91 @@
-import type { RequestHandler, Response } from "express";
+import type { NextFunction, Request, Response } from 'express'
 
-import * as configFunctions from "../helpers/functions.config.js";
+import { getProperty } from '../helpers/functions.config.js'
+import * as userFunctions from '../helpers/functions.user.js'
 
-import * as userFunctions from "../helpers/functions.user.js";
+const urlPrefix = getProperty('reverseProxy.urlPrefix')
 
+export function forbiddenJSON(response: Response): Response {
+  return response.status(403).json({
+    success: false,
+    message: 'Forbidden'
+  })
+}
 
-const urlPrefix = configFunctions.getProperty("reverseProxy.urlPrefix");
-
-
-export const forbiddenJSON = (response: Response): Response => {
-
-  return response
-    .status(403)
-    .json({
-      success: false,
-      message: "Forbidden"
-    });
-};
-
-
-export const adminGetHandler: RequestHandler = (request, response, next) => {
-
+export function adminGetHandler(
+  request: Request,
+  response: Response,
+  next: NextFunction
+): void {
   if (userFunctions.userIsAdmin(request)) {
-    return next();
+    next()
+    return
   }
 
-  return response.redirect(urlPrefix + "/dashboard");
-};
+  response.redirect(`${urlPrefix}/dashboard`)
+}
 
-
-export const adminPostHandler: RequestHandler = (request, response, next) => {
-
+export function adminPostHandler(
+  request: Request,
+  response: Response,
+  next: NextFunction
+): void {
   if (userFunctions.userIsAdmin(request)) {
-    return next();
+    next()
+    return
   }
 
-  return response.json(forbiddenJSON);
-};
+  response.json(forbiddenJSON)
+}
 
-
-export const updateGetHandler: RequestHandler = (request, response, next) => {
-
+export function updateGetHandler(
+  request: Request,
+  response: Response,
+  next: NextFunction
+): void {
   if (userFunctions.userCanUpdate(request)) {
-    return next();
+    next()
+    return
   }
 
-  return response.redirect(urlPrefix + "/dashboard");
-};
+  response.redirect(`${urlPrefix}/dashboard`)
+}
 
-
-export const updatePostHandler: RequestHandler = (request, response, next) => {
-
+export function updatePostHandler(
+  request: Request,
+  response: Response,
+  next: NextFunction
+): void {
   if (userFunctions.userCanUpdate(request)) {
-    return next();
+    next()
+    return
   }
 
-  return response.json(forbiddenJSON);
-};
+  response.json(forbiddenJSON)
+}
 
-
-export const createGetHandler: RequestHandler = (request, response, next) => {
-
+export function createGetHandler(
+  request: Request,
+  response: Response,
+  next: NextFunction
+): void {
   if (userFunctions.userCanCreate(request)) {
-    return next();
+    next()
+    return
   }
 
-  return response.redirect(urlPrefix + "/dashboard");
-};
+  response.redirect(`${urlPrefix}/dashboard`)
+}
 
-
-export const createPostHandler: RequestHandler = (request, response, next) => {
-
+export function createPostHandler(
+  request: Request,
+  response: Response,
+  next: NextFunction
+): void {
   if (userFunctions.userCanCreate(request)) {
-    return next();
+    next()
+    return
   }
 
-  return response.json(forbiddenJSON);
-};
+  response.json(forbiddenJSON)
+}

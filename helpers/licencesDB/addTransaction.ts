@@ -1,8 +1,8 @@
 import * as dateTimeFns from '@cityssm/expressjs-server-js/dateTimeFns.js'
 import sqlite from 'better-sqlite3'
-import type * as expressSession from 'express-session'
 
 import { licencesDB as databasePath } from '../../data/databasePaths.js'
+import type { User } from '../../types/recordTypes.js'
 
 import { addLicenceAmendmentWithDB } from './addLicenceAmendment.js'
 import { getLicenceWithDB } from './getLicence.js'
@@ -18,14 +18,14 @@ export interface AddTransactionForm {
 
 export default function addTransaction(
   requestBody: AddTransactionForm,
-  requestSession: expressSession.Session
+  requestUser: User
 ): number {
   const database = sqlite(databasePath)
 
   const licenceObject = getLicenceWithDB(
     database,
     requestBody.licenceID,
-    requestSession,
+    requestUser,
     {
       includeTicketTypes: false,
       includeFields: false,
@@ -60,20 +60,22 @@ export default function addTransaction(
       requestBody.externalReceiptNumber,
       requestBody.transactionAmount,
       requestBody.transactionNote,
-      requestSession.user.userName,
+      requestUser.userName,
       rightNow.getTime(),
-      requestSession.user.userName,
+      requestUser.userName,
       rightNow.getTime()
     )
 
-  if (licenceObject.trackUpdatesAsAmendments) {
+  if (licenceObject?.trackUpdatesAsAmendments) {
     addLicenceAmendmentWithDB(
       database,
-      requestBody.licenceID,
-      'New Transaction',
-      '',
-      1,
-      requestSession
+      {
+        licenceID: requestBody.licenceID,
+        amendmentType: 'New Transaction',
+        amendment: '',
+        isHidden: 1
+      },
+      requestUser
     )
   }
 
@@ -93,7 +95,7 @@ export default function addTransaction(
       .run(
         transactionDate,
         transactionTime,
-        requestSession.user.userName,
+        requestUser.userName,
         rightNow.getTime(),
         requestBody.licenceID
       )

@@ -1,2 +1,2 @@
-import type * as expressSession from "express-session";
-export declare const pokeLicence: (licenceID: number, requestSession: expressSession.Session) => boolean;
+import type { User } from '../../types/recordTypes.js';
+export default function pokeLicence(licenceID: number, requestUser: User): boolean;

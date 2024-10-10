@@ -1,25 +1,23 @@
-import type { RequestHandler } from "express";
+import type { NextFunction, Request, Response } from 'express'
 
-import * as configFunctions from "../../helpers/functions.config.js";
+import { getProperty } from '../../helpers/functions.config.js'
+import pokeLicence from '../../helpers/licencesDB/pokeLicence.js'
 
-import { pokeLicence } from "../../helpers/licencesDB/pokeLicence.js";
+const urlPrefix = getProperty('reverseProxy.urlPrefix')
 
-
-const urlPrefix = configFunctions.getProperty("reverseProxy.urlPrefix");
-
-
-export const handler: RequestHandler = (request, response, next) => {
-
-  const licenceID = Number(request.params.licenceID);
+export default function handler(
+  request: Request,
+  response: Response,
+  next: NextFunction
+): void {
+  const licenceID = Number(request.params.licenceID)
 
   if (Number.isNaN(licenceID)) {
-    return next();
+    next()
+    return
   }
 
-  pokeLicence(licenceID, request.session);
+  pokeLicence(licenceID, request.session.user)
 
-  return response.redirect(urlPrefix + "/licences/" + licenceID.toString());
-};
-
-
-export default handler;
+  response.redirect(`${urlPrefix}/licences/${licenceID.toString()}`)
+}

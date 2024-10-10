@@ -1,5 +1,5 @@
 export interface Record {
-    recordType: "location" | "organization" | "remark" | "reminder" | "bankRecord" | "licence" | "event";
+    recordType: 'location' | 'organization' | 'remark' | 'reminder' | 'bankRecord' | 'licence' | 'event';
     success?: true;
     recordCreate_userName?: string;
     recordCreate_timeMillis?: number;
@@ -14,7 +14,7 @@ export interface Record {
     canUpdate?: boolean;
 }
 export interface Location extends Record {
-    recordType: "location" | "licence" | "event";
+    recordType: 'location' | 'licence' | 'event';
     locationID: number;
     locationDisplayName: string;
     locationName: string;
@@ -36,8 +36,8 @@ export interface Location extends Record {
     manufacturer_endDateMaxString: string;
 }
 export interface Organization extends Record {
-    recordType: "organization";
-    organizationID: number;
+    recordType: 'organization';
+    organizationID: number | string;
     organizationName: string;
     organizationAddress1: string;
     organizationAddress2: string;
@@ -74,7 +74,7 @@ export interface OrganizationRepresentative {
     isDefault: boolean | string;
 }
 export interface OrganizationRemark extends Record {
-    recordType: "remark";
+    recordType: 'remark';
     organizationID: number;
     remarkIndex: number;
     remarkDate: number;
@@ -85,7 +85,7 @@ export interface OrganizationRemark extends Record {
     isImportant: boolean;
 }
 export interface OrganizationReminder extends Record {
-    recordType: "reminder";
+    recordType: 'reminder';
     organizationID: number;
     organizationName?: string;
     reminderIndex: number;
@@ -98,20 +98,21 @@ export interface OrganizationReminder extends Record {
     reminderNote: string;
 }
 export interface OrganizationBankRecord extends Record {
-    recordType: "bankRecord";
+    recordType: 'bankRecord';
     organizationID: number;
     recordIndex: number;
     bankingYear: number;
     bankingMonth: number;
-    bankRecordType: "statement" | "cheques" | "receipts";
+    bankRecordType: OrganizationBankRecordType;
     accountNumber: string;
     recordDate?: number;
     recordDateString: string;
     recordNote: string;
     recordIsNA: boolean;
 }
+export type OrganizationBankRecordType = 'statement' | 'cheques' | 'receipts';
 export interface LotteryLicence extends Location, Record {
-    recordType: "licence" | "event";
+    recordType: 'licence' | 'event';
     licenceID: number;
     organizationID: number;
     organizationName?: string;
@@ -184,7 +185,7 @@ export interface LotteryLicenceAmendment extends Record {
     isHidden: boolean;
 }
 export interface LotteryEvent extends LotteryLicence {
-    recordType: "event";
+    recordType: 'event';
     eventDate: number;
     eventDateString: string;
     reportDate: number;
@@ -237,7 +238,7 @@ export interface UserProperties {
     canUpdate: boolean;
     isAdmin: boolean;
 }
-declare module "express-session" {
+declare module 'express-session' {
     interface Session {
         user: User;
     }

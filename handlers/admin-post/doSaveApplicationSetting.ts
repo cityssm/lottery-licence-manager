@@ -1,6 +1,6 @@
 import type { Request, Response } from 'express'
 
-import { updateApplicationSetting } from '../../helpers/licencesDB/updateApplicationSetting.js'
+import updateApplicationSetting from '../../helpers/licencesDB/updateApplicationSetting.js'
 
 export default function handler(
   request: Request<
@@ -16,7 +16,7 @@ export default function handler(
   const success = updateApplicationSetting(
     settingKey,
     settingValue,
-    request.session
+    request.session.user
   )
 
   response.json({

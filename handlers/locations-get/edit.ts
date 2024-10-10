@@ -19,7 +19,7 @@ export default function handler(
     return
   }
 
-  const location = getLocation(locationID, request.session)
+  const location = getLocation(locationID, request.session.user)
 
   if (location === undefined) {
     response.redirect(`${urlPrefix}/locations/?error=locationNotFound`)
@@ -37,7 +37,7 @@ export default function handler(
     {
       locationID
     },
-    request.session,
+    request.session.user,
     {
       includeOrganization: true,
       limit: -1

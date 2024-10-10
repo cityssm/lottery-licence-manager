@@ -2,7 +2,7 @@ import * as dateTimeFns from '@cityssm/expressjs-server-js/dateTimeFns.js';
 import sqlite from 'better-sqlite3';
 import { licencesDB as databasePath } from '../../data/databasePaths.js';
 import { canUpdateObject } from '../licencesDB.js';
-export default function getLicences(requestBodyOrParametersObject, requestSession, includeOptions) {
+export default function getLicences(requestBodyOrParametersObject, requestUser, includeOptions) {
     if ((requestBodyOrParametersObject.organizationName ?? '') !== '') {
         includeOptions.includeOrganization = true;
     }
@@ -109,7 +109,7 @@ export default function getLicences(requestBodyOrParametersObject, requestSessio
     const rows = database.prepare(sql).all(sqlParameters);
     database.close();
     for (const element of rows) {
-        element.canUpdate = canUpdateObject(element, requestSession);
+        element.canUpdate = canUpdateObject(element, requestUser);
     }
     return {
         count: includeOptions.limit === -1 ? rows.length : count,

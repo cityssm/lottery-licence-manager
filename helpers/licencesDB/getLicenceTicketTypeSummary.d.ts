@@ -7,5 +7,5 @@ interface LotteryLicenceTicketTypeSummary {
     unitCountSum: number;
     licenceFeeSum: number;
 }
-export declare const getLicenceTicketTypeSummary: (licenceID: number | string) => LotteryLicenceTicketTypeSummary[];
+export default function getLicenceTicketTypeSummary(licenceID: number | string): LotteryLicenceTicketTypeSummary[];
 export {};

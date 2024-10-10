@@ -1,17 +1,12 @@
-import type { RequestHandler } from "express";
+import type { Request, Response } from 'express'
 
-import { getDeletedOrganizations } from "../../helpers/licencesDB/getDeletedOrganizations.js";
+import getDeletedOrganizations from '../../helpers/licencesDB/getDeletedOrganizations.js'
 
+export default function handler(_request: Request, response: Response): void {
+  const organizations = getDeletedOrganizations()
 
-export const handler: RequestHandler = (_request, response) => {
-
-  const organizations = getDeletedOrganizations();
-
-  response.render("organization-recovery", {
-    headTitle: "Organization Recovery",
+  response.render('organization-recovery', {
+    headTitle: 'Organization Recovery',
     organizations
-  });
-};
-
-
-export default handler;
+  })
+}

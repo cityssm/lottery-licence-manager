@@ -1,14 +1,12 @@
-import type { RequestHandler } from "express";
+import type { Request, Response } from 'express'
 
-import { getInactiveOrganizations } from "../../helpers/licencesDB/getInactiveOrganizations.js";
+import getInactiveOrganizations from '../../helpers/licencesDB/getInactiveOrganizations.js'
 
+export default function handler(
+  request: Request<unknown, unknown, { inactiveYears: string }>,
+  response: Response
+): void {
+  const inactiveYears = Number.parseInt(request.body.inactiveYears, 10)
 
-export const handler: RequestHandler = (request, response) => {
-
-  const inactiveYears = Number.parseInt(request.body.inactiveYears, 10);
-
-  response.json(getInactiveOrganizations(inactiveYears));
-};
-
-
-export default handler;
+  response.json(getInactiveOrganizations(inactiveYears))
+}

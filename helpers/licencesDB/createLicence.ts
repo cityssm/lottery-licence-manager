@@ -1,8 +1,8 @@
 import * as dateTimeFns from '@cityssm/expressjs-server-js/dateTimeFns.js'
 import sqlite from 'better-sqlite3'
-import type * as expressSession from 'express-session'
 
 import { licencesDB as databasePath } from '../../data/databasePaths.js'
+import type { User } from '../../types/recordTypes.js'
 import * as configFunctions from '../functions.config.js'
 import { resetEventTableStats, resetLicenceTableStats } from '../licencesDB.js'
 
@@ -13,7 +13,7 @@ import type { LotteryLicenceForm } from './updateLicence.js'
 
 export default function createLicence(
   requestBody: LotteryLicenceForm,
-  requestSession: expressSession.Session
+  requestUser: User
 ): number {
   const database = sqlite(databasePath)
 
@@ -58,9 +58,9 @@ export default function createLicence(
       requestBody.totalPrizeValue,
       requestBody.externalLicenceNumber,
       externalLicenceNumberInteger,
-      requestSession.user.userName,
+      requestUser.userName,
       nowMillis,
-      requestSession.user.userName,
+      requestUser.userName,
       nowMillis
     )
 
@@ -96,7 +96,7 @@ export default function createLicence(
 
   if (eventDateStrings_toAdd) {
     for (const eventDate of eventDateStrings_toAdd) {
-      createEventWithDB(database, licenceID, eventDate, requestSession)
+      createEventWithDB(database, licenceID, eventDate, requestUser)
     }
   }
 
@@ -116,7 +116,7 @@ export default function createLicence(
         manufacturerLocationID:
           requestBody.ticketType_manufacturerLocationID as string
       },
-      requestSession
+      requestUser
     )
   } else if (typeof requestBody.ticketType_ticketType === 'object') {
     for (const [
@@ -136,12 +136,12 @@ export default function createLicence(
           requestBody.ticketType_manufacturerLocationID[ticketTypeIndex]
       }
 
-      addLicenceTicketTypeWithDB(database, ticketTypeDefinition, requestSession)
+      addLicenceTicketTypeWithDB(database, ticketTypeDefinition, requestUser)
     }
   }
 
   // Calculate licence fee
-  const licenceObject = getLicenceWithDB(database, licenceID, requestSession, {
+  const licenceObject = getLicenceWithDB(database, licenceID, requestUser, {
     includeTicketTypes: true,
     includeFields: true,
     includeEvents: true,
@@ -154,9 +154,7 @@ export default function createLicence(
   )(licenceObject)
 
   database
-    .prepare(
-      'update LotteryLicences' + ' set licenceFee = ?' + ' where licenceID = ?'
-    )
+    .prepare('update LotteryLicences set licenceFee = ? where licenceID = ?')
     .run(feeCalculation.fee, licenceID)
 
   database.close()

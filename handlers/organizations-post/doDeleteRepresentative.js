@@ -1,13 +1,13 @@
-import { deleteOrganizationRepresentative } from "../../helpers/licencesDB/deleteOrganizationRepresentative.js";
-export const handler = (request, response, next) => {
-    const organizationID = Number(request.params.organizationID);
-    const representativeIndex = Number(request.body.representativeIndex);
+import deleteOrganizationRepresentative from '../../helpers/licencesDB/deleteOrganizationRepresentative.js';
+export default function handler(request, response, next) {
+    const organizationID = Number.parseInt(request.params.organizationID, 10);
+    const representativeIndex = Number.parseInt(request.body.representativeIndex, 10);
     if (Number.isNaN(organizationID) || Number.isNaN(representativeIndex)) {
-        return next();
+        next();
+        return;
     }
     const success = deleteOrganizationRepresentative(organizationID, representativeIndex);
     response.json({
         success
     });
-};
-export default handler;
+}

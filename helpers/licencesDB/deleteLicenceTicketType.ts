@@ -1,23 +1,25 @@
-import type * as expressSession from "express-session";
-import type * as sqlite from "better-sqlite3";
+import type * as sqlite from 'better-sqlite3'
 
+import type { User } from '../../types/recordTypes.js'
 
-export const deleteLicenceTicketTypeWithDB = (database: sqlite.Database,
+export function deleteLicenceTicketTypeWithDB(
+  database: sqlite.Database,
   ticketTypeDefinition: {
-    licenceID: number | string;
-    ticketTypeIndex: number | string;
+    licenceID: number | string
+    ticketTypeIndex: number | string
   },
-  requestSession: expressSession.Session): sqlite.RunResult => {
-
-  return database.prepare("update LotteryLicenceTicketTypes" +
-    " set recordDelete_userName = ?," +
-    " recordDelete_timeMillis = ?" +
-    " where licenceID = ?" +
-    " and ticketTypeIndex = ?")
+  requestUser: User
+): sqlite.RunResult {
+  return database
+    .prepare(
+      `update LotteryLicenceTicketTypes
+        set recordDelete_userName = ?, recordDelete_timeMillis = ?
+        where licenceID = ? and ticketTypeIndex = ?`
+    )
     .run(
-      requestSession.user.userName,
+      requestUser.userName,
       Date.now(),
       ticketTypeDefinition.licenceID,
       ticketTypeDefinition.ticketTypeIndex
-    );
-};
+    )
+}

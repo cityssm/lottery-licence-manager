@@ -1,39 +1,41 @@
-import sqlite from "better-sqlite3";
+import * as dateTimeFns from '@cityssm/expressjs-server-js/dateTimeFns.js'
+import sqlite from 'better-sqlite3'
 
-import { licencesDB as databasePath } from "../../data/databasePaths.js";
+import { licencesDB as databasePath } from '../../data/databasePaths.js'
+import type { OrganizationReminder, User } from '../../types/recordTypes.js'
+import { canUpdateObject } from '../licencesDB.js'
 
-import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
-import { canUpdateObject } from "../licencesDB.js";
+export default function getOrganizationReminder(
+  organizationID: number | string,
+  reminderIndex: number | string,
+  requestUser: User
+): OrganizationReminder | undefined {
+  const database = sqlite(databasePath, {
+    readonly: true
+  })
 
-import type * as llm from "../../types/recordTypes";
-import type * as expressSession from "express-session";
+  const reminder = database
+    .prepare(
+      `select * from OrganizationReminders
+        where recordDelete_timeMillis is null
+        and organizationID = ? and reminderIndex = ?`
+    )
+    .get(organizationID, reminderIndex) as OrganizationReminder | undefined
 
+  database.close()
 
-export const getOrganizationReminder =
-  (organizationID: number, reminderIndex: number, requestSession: expressSession.Session): llm.OrganizationReminder => {
+  if (reminder !== undefined) {
+    reminder.recordType = 'reminder'
 
-    const database = sqlite(databasePath, {
-      readonly: true
-    });
+    reminder.dueDateString = dateTimeFns.dateIntegerToString(
+      reminder.dueDate || 0
+    )
+    reminder.dismissedDateString = dateTimeFns.dateIntegerToString(
+      reminder.dismissedDate || 0
+    )
 
-    const reminder: llm.OrganizationReminder =
-      database.prepare("select * from OrganizationReminders" +
-        " where recordDelete_timeMillis is null" +
-        " and organizationID = ?" +
-        " and reminderIndex = ?")
-        .get(organizationID, reminderIndex);
+    reminder.canUpdate = canUpdateObject(reminder, requestUser)
+  }
 
-    database.close();
-
-    if (reminder) {
-
-      reminder.recordType = "reminder";
-
-      reminder.dueDateString = dateTimeFns.dateIntegerToString(reminder.dueDate || 0);
-      reminder.dismissedDateString = dateTimeFns.dateIntegerToString(reminder.dismissedDate || 0);
-
-      reminder.canUpdate = canUpdateObject(reminder, requestSession);
-    }
-
-    return reminder;
-  };
+  return reminder
+}

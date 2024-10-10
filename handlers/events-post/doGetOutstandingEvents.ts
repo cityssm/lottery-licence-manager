@@ -1,6 +1,6 @@
 import type { Request, Response } from 'express'
 
-import { getOutstandingEvents } from '../../helpers/licencesDB/getOutstandingEvents.js'
+import getOutstandingEvents from '../../helpers/licencesDB/getOutstandingEvents.js'
 
 export default function handler(
   request: Request<
@@ -10,6 +10,6 @@ export default function handler(
   >,
   response: Response
 ): void {
-  const events = getOutstandingEvents(request.body, request.session)
+  const events = getOutstandingEvents(request.body, request.session.user)
   response.json(events)
 }

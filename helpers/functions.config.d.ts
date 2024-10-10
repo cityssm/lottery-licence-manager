@@ -1,6 +1,6 @@
+import type { CountryCode } from 'libphonenumber-js';
 import type * as configTypes from '../types/configTypes';
 import type * as recordTypes from '../types/recordTypes';
-import type { CountryCode } from 'libphonenumber-js';
 export declare function getProperty(propertyName: 'activeDirectory'): configTypes.ConfigActiveDirectory;
 export declare function getProperty(propertyName: 'amendments.displayCount'): number;
 export declare function getProperty(propertyName: 'amendments.trackLicenceFeeUpdate'): boolean;
@@ -48,8 +48,6 @@ export declare function getProperty(propertyName: 'users.canUpdate'): string[];
 export declare function getProperty(propertyName: 'users.isAdmin'): string[];
 export declare function getProperty(propertyName: 'user.defaultProperties'): recordTypes.UserProperties;
 export declare const keepAliveMillis: number;
-export declare const getReminderType: (reminderTypeKey: string) => configTypes.ConfigReminderType;
+export declare function getReminderType(reminderTypeKey: string): configTypes.ConfigReminderType;
 export declare function getLicenceType(licenceTypeKey: string): configTypes.ConfigLicenceType | undefined;
-export declare const getLicenceTypeKeyToNameObject: () => {
-    [licenceTpyeKey: string]: string;
-};
+export declare function getLicenceTypeKeyToNameObject(): Record<string, string>;

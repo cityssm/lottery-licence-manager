@@ -20,21 +20,24 @@ export default function handler(
     return
   }
 
-  const eventObject = getEvent(licenceID, eventDate, request.session)
+  const eventObject = getEvent(licenceID, eventDate, request.session.user)
 
   if (eventObject === undefined) {
     response.redirect(`${urlPrefix}/events/?error=eventNotFound`)
     return
   }
 
-  const licence = getLicence(licenceID, request.session)
+  const licence = getLicence(licenceID, request.session.user)
 
   if (licence === undefined) {
     response.redirect(`${urlPrefix}/events/?error=licenceNotFound`)
     return
   }
 
-  const organization = getOrganization(licence.organizationID, request.session)
+  const organization = getOrganization(
+    licence.organizationID,
+    request.session.user
+  )
 
   response.render('event-view', {
     headTitle: 'Event View',

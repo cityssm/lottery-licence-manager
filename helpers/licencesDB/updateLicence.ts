@@ -1,8 +1,8 @@
 import * as dateTimeFns from '@cityssm/expressjs-server-js/dateTimeFns.js'
 import sqlite from 'better-sqlite3'
-import type * as expressSession from 'express-session'
 
 import { licencesDB as databasePath } from '../../data/databasePaths.js'
+import type { User } from '../../types/recordTypes.js'
 import * as configFunctions from '../functions.config.js'
 import { resetEventTableStats, resetLicenceTableStats } from '../licencesDB.js'
 
@@ -63,7 +63,7 @@ export interface LotteryLicenceForm {
 
 export default function updateLicence(
   requestBody: LotteryLicenceForm & { licenceID: string },
-  requestSession: expressSession.Session
+  requestUser: User
 ): boolean {
   // Check if can update
 
@@ -72,7 +72,7 @@ export default function updateLicence(
   const pastLicenceObject = getLicenceWithDB(
     database,
     requestBody.licenceID,
-    requestSession,
+    requestUser,
     {
       includeTicketTypes: true,
       includeFields: true,
@@ -82,7 +82,7 @@ export default function updateLicence(
     }
   )
 
-  if (!pastLicenceObject.canUpdate) {
+  if (!pastLicenceObject?.canUpdate) {
     database.close()
     return false
   }
@@ -150,7 +150,7 @@ export default function updateLicence(
       requestBody.licenceFee,
       requestBody.externalLicenceNumber,
       externalLicenceNumberInteger,
-      requestSession.user.userName,
+      requestUser.userName,
       nowMillis,
       requestBody.licenceID
     ).changes
@@ -190,11 +190,13 @@ export default function updateLicence(
 
       addLicenceAmendmentWithDB(
         database,
-        requestBody.licenceID,
-        'Date Update',
-        amendment,
-        0,
-        requestSession
+        {
+          licenceID: requestBody.licenceID,
+          amendmentType: 'Date Update',
+          amendment,
+          isHidden: 0
+        },
+        requestUser
       )
     }
 
@@ -205,11 +207,13 @@ export default function updateLicence(
     ) {
       addLicenceAmendmentWithDB(
         database,
-        requestBody.licenceID,
-        'Organization Change',
-        '',
-        0,
-        requestSession
+        {
+          licenceID: requestBody.licenceID,
+          amendmentType: 'Organization Change',
+          amendment: '',
+          isHidden: 0
+        },
+        requestUser
       )
     }
 
@@ -220,11 +224,13 @@ export default function updateLicence(
     ) {
       addLicenceAmendmentWithDB(
         database,
-        requestBody.licenceID,
-        'Location Change',
-        '',
-        0,
-        requestSession
+        {
+          licenceID: requestBody.licenceID,
+          amendmentType: 'Location Change',
+          amendment: '',
+          isHidden: 0
+        },
+        requestUser
       )
     }
 
@@ -235,14 +241,17 @@ export default function updateLicence(
     ) {
       addLicenceAmendmentWithDB(
         database,
-        requestBody.licenceID,
-        'Licence Fee Change',
-        '$' +
-          pastLicenceObject.licenceFee.toFixed(2) +
-          ' -> $' +
-          Number.parseFloat(requestBody.licenceFee).toFixed(2),
-        0,
-        requestSession
+        {
+          licenceID: requestBody.licenceID,
+          amendmentType: 'Licence Fee Change',
+          amendment:
+            '$' +
+            pastLicenceObject.licenceFee.toFixed(2) +
+            ' -> $' +
+            Number.parseFloat(requestBody.licenceFee).toFixed(2),
+          isHidden: 0
+        },
+        requestUser
       )
     }
   }
@@ -279,29 +288,25 @@ export default function updateLicence(
     // Purge any deleted events to avoid conflicts
     database
       .prepare(
-        'delete from LotteryEventFields' +
-          ' where licenceID = ?' +
-          (' and eventDate in (' +
-            'select eventDate from LotteryEvents where licenceID = ? and recordDelete_timeMillis is not null' +
-            ')')
+        `delete from LotteryEventFields
+          where licenceID = ?
+          and eventDate in (select eventDate from LotteryEvents where licenceID = ? and recordDelete_timeMillis is not null)`
       )
       .run(requestBody.licenceID, requestBody.licenceID)
 
     database
       .prepare(
-        'delete from LotteryEventCosts' +
-          ' where licenceID = ?' +
-          (' and eventDate in (' +
-            'select eventDate from LotteryEvents where licenceID = ? and recordDelete_timeMillis is not null' +
-            ')')
+        `delete from LotteryEventCosts
+          where licenceID = ?
+          and eventDate in (select eventDate from LotteryEvents where licenceID = ? and recordDelete_timeMillis is not null)`
       )
       .run(requestBody.licenceID, requestBody.licenceID)
 
     database
       .prepare(
-        'delete from LotteryEvents' +
-          ' where licenceID = ?' +
-          ' and recordDelete_timeMillis is not null'
+        `delete from LotteryEvents
+          where licenceID = ?
+          and recordDelete_timeMillis is not null`
       )
       .run(requestBody.licenceID)
   }
@@ -316,12 +321,7 @@ export default function updateLicence(
 
   if (eventDateStrings_toAdd) {
     for (const eventDate of eventDateStrings_toAdd) {
-      createEventWithDB(
-        database,
-        requestBody.licenceID,
-        eventDate,
-        requestSession
-      )
+      createEventWithDB(database, requestBody.licenceID, eventDate, requestUser)
     }
   }
 
@@ -345,7 +345,7 @@ export default function updateLicence(
           licenceID: requestBody.licenceID,
           ticketTypeIndex: ticketTypeIndex_toDelete
         },
-        requestSession
+        requestUser
       )
 
       if (
@@ -354,11 +354,14 @@ export default function updateLicence(
       ) {
         addLicenceAmendmentWithDB(
           database,
-          requestBody.licenceID,
-          'Ticket Type Removed',
-          'Removed ' + ticketTypeIndex_toDelete + '.',
-          0,
-          requestSession
+          {
+            licenceID: requestBody.licenceID,
+            amendmentType: 'Ticket Type Removed',
+            amendment: `Removed ${ticketTypeIndex_toDelete}.`,
+            isHidden: 0
+          },
+
+          requestUser
         )
       }
     }
@@ -383,7 +386,7 @@ export default function updateLicence(
         manufacturerLocationID:
           requestBody.ticketType_manufacturerLocationID as string
       },
-      requestSession
+      requestUser
     )
 
     if (
@@ -392,11 +395,13 @@ export default function updateLicence(
     ) {
       addLicenceAmendmentWithDB(
         database,
-        requestBody.licenceID,
-        'Added Ticket Type',
-        requestBody.ticketType_ticketType,
-        0,
-        requestSession
+        {
+          licenceID: requestBody.licenceID,
+          amendmentType: 'Added Ticket Type',
+          amendment: requestBody.ticketType_ticketType,
+          isHidden: 0
+        },
+        requestUser
       )
     }
   } else if (typeof requestBody.ticketType_ticketType === 'object') {
@@ -421,7 +426,7 @@ export default function updateLicence(
           manufacturerLocationID:
             requestBody.ticketType_manufacturerLocationID[ticketTypeIndex]
         },
-        requestSession
+        requestUser
       )
 
       if (
@@ -430,11 +435,13 @@ export default function updateLicence(
       ) {
         addLicenceAmendmentWithDB(
           database,
-          requestBody.licenceID,
-          'Added Ticket Type',
-          ticketType,
-          0,
-          requestSession
+          {
+            licenceID: requestBody.licenceID,
+            amendmentType: 'Added Ticket Type',
+            amendment: ticketType,
+            isHidden: 0
+          },
+          requestUser
         )
       }
     }

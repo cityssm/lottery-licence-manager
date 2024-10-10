@@ -7,7 +7,7 @@ export default function handler(request, response) {
         });
         return;
     }
-    const madeChanges = deleteEvent(request.body.licenceID, request.body.eventDate, request.session);
+    const madeChanges = deleteEvent(request.body.licenceID, request.body.eventDate, request.session.user);
     if (madeChanges) {
         response.json({
             success: true,

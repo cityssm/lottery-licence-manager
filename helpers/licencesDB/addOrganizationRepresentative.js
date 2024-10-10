@@ -1,22 +1,23 @@
-import sqlite from "better-sqlite3";
-import { licencesDB as databasePath } from "../../data/databasePaths.js";
-export const addOrganizationRepresentative = (organizationID, requestBody) => {
+import sqlite from 'better-sqlite3';
+import { licencesDB as databasePath } from '../../data/databasePaths.js';
+export default function addOrganizationRepresentative(organizationID, requestBody) {
     const database = sqlite(databasePath);
-    const row = database.prepare("select count(representativeIndex) as indexCount," +
-        " ifnull(max(representativeIndex), -1) as maxIndex" +
-        " from OrganizationRepresentatives" +
-        " where organizationID = ?")
+    const row = database
+        .prepare(`select count(representativeIndex) as indexCount,
+        ifnull(max(representativeIndex), -1) as maxIndex
+        from OrganizationRepresentatives
+        where organizationID = ?`)
         .get(organizationID);
     const newRepresentativeIndex = row.maxIndex + 1;
-    const newIsDefault = (row.indexCount === 0 ? 1 : 0);
-    database.prepare("insert into OrganizationRepresentatives (" +
-        "organizationID, representativeIndex," +
-        " representativeName, representativeTitle," +
-        " representativeAddress1, representativeAddress2," +
-        " representativeCity, representativeProvince, representativePostalCode," +
-        " representativePhoneNumber, representativePhoneNumber2, representativeEmailAddress," +
-        " isDefault)" +
-        " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
+    const newIsDefault = row.indexCount === 0 ? 1 : 0;
+    database
+        .prepare(`insert into OrganizationRepresentatives (
+        organizationID, representativeIndex,
+        representativeName, representativeTitle,
+        representativeAddress1, representativeAddress2,
+        representativeCity, representativeProvince, representativePostalCode,
+        representativePhoneNumber, representativePhoneNumber2, representativeEmailAddress, isDefault)
+        values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
         .run(organizationID, newRepresentativeIndex, requestBody.representativeName, requestBody.representativeTitle, requestBody.representativeAddress1, requestBody.representativeAddress2, requestBody.representativeCity, requestBody.representativeProvince, requestBody.representativePostalCode, requestBody.representativePhoneNumber, requestBody.representativePhoneNumber2, requestBody.representativeEmailAddress, newIsDefault);
     database.close();
     const representativeObject = {
@@ -35,4 +36,4 @@ export const addOrganizationRepresentative = (organizationID, requestBody) => {
         isDefault: newIsDefault === 1
     };
     return representativeObject;
-};
+}

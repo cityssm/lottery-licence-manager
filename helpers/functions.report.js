@@ -1,15 +1,13 @@
-import * as configFunctions from "./functions.config.js";
+import * as configFunctions from './functions.config.js';
 export const userFn_reminderTypeKeyToReminderType = (reminderTypeKey) => {
     const reminderTypeDefinition = configFunctions.getReminderType(reminderTypeKey);
-    return (reminderTypeDefinition
+    return reminderTypeDefinition
         ? reminderTypeDefinition.reminderType
-        : undefined);
+        : undefined;
 };
 export const userFn_licenceTypeKeyToLicenceType = (licenceTypeKey) => {
     const licenceTypeDefinition = configFunctions.getLicenceType(licenceTypeKey);
-    return (licenceTypeDefinition
-        ? licenceTypeDefinition.licenceType
-        : undefined);
+    return licenceTypeDefinition ? licenceTypeDefinition.licenceType : undefined;
 };
 export const userFn_ticketTypeField = (licenceTypeKey, ticketTypeKey, fieldName) => {
     const licenceType = configFunctions.getLicenceType(licenceTypeKey);

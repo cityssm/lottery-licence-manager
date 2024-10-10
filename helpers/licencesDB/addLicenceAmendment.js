@@ -1,14 +1,15 @@
-import { getMaxLicenceAmendmentIndexWithDB } from "./getMaxLicenceAmendmentIndex.js";
-import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
-export const addLicenceAmendmentWithDB = (database, licenceID, amendmentType, amendment, isHidden, requestSession) => {
-    const newAmendmentIndex = getMaxLicenceAmendmentIndexWithDB(database, licenceID) + 1;
+import * as dateTimeFns from '@cityssm/expressjs-server-js/dateTimeFns.js';
+import { getMaxLicenceAmendmentIndexWithDB } from './getMaxLicenceAmendmentIndex.js';
+export function addLicenceAmendmentWithDB(database, licenceAmendment, requestUser) {
+    const newAmendmentIndex = getMaxLicenceAmendmentIndexWithDB(database, licenceAmendment.licenceID) + 1;
     const nowDate = new Date();
     const amendmentDate = dateTimeFns.dateToInteger(nowDate);
     const amendmentTime = dateTimeFns.dateToTimeInteger(nowDate);
-    database.prepare("insert into LotteryLicenceAmendments" +
-        " (licenceID, amendmentIndex, amendmentDate, amendmentTime, amendmentType, amendment, isHidden," +
-        " recordCreate_userName, recordCreate_timeMillis, recordUpdate_userName, recordUpdate_timeMillis)" +
-        " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
-        .run(licenceID, newAmendmentIndex, amendmentDate, amendmentTime, amendmentType, amendment, isHidden, requestSession.user.userName, nowDate.getTime(), requestSession.user.userName, nowDate.getTime());
+    database
+        .prepare(`insert into LotteryLicenceAmendments (
+        licenceID, amendmentIndex, amendmentDate, amendmentTime, amendmentType, amendment, isHidden,
+        recordCreate_userName, recordCreate_timeMillis, recordUpdate_userName, recordUpdate_timeMillis)
+        values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
+        .run(licenceAmendment.licenceID, newAmendmentIndex, amendmentDate, amendmentTime, licenceAmendment.amendmentType, licenceAmendment.amendment, licenceAmendment.isHidden, requestUser.userName, nowDate.getTime(), requestUser.userName, nowDate.getTime());
     return newAmendmentIndex;
-};
+}

@@ -1,11 +1,11 @@
-import type * as llm from "../../types/recordTypes";
-import type * as expressSession from "express-session";
-export declare const getOrganizations: (requestBody: {
+import type { Organization, User } from '../../types/recordTypes.js';
+export interface GetOrganizationsFilters {
     organizationName?: string;
     representativeName?: string;
     isEligibleForLicences?: string;
     organizationIsActive?: string;
-}, requestSession: expressSession.Session, includeOptions: {
+}
+export default function getOrganizations(requestBody: GetOrganizationsFilters, requestUser: User, includeOptions: {
     limit: number;
     offset?: number;
-}) => llm.Organization[];
+}): Organization[];

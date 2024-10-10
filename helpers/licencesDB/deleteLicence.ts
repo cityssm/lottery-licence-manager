@@ -1,12 +1,12 @@
 import sqlite from 'better-sqlite3'
-import type * as expressSession from 'express-session'
 
 import { licencesDB as databasePath } from '../../data/databasePaths.js'
+import type { User } from '../../types/recordTypes.js'
 import { resetEventTableStats, resetLicenceTableStats } from '../licencesDB.js'
 
 export default function deleteLicence(
   licenceID: number | string,
-  requestSession: expressSession.Session
+  requestUser: User
 ): boolean {
   const database = sqlite(databasePath)
 
@@ -20,7 +20,7 @@ export default function deleteLicence(
         where licenceID = ?
           and recordDelete_timeMillis is null`
     )
-    .run(requestSession.user.userName, nowMillis, licenceID)
+    .run(requestUser.userName, nowMillis, licenceID)
 
   const changeCount = info.changes
 
@@ -33,7 +33,7 @@ export default function deleteLicence(
           where licenceID = ?
           and recordDelete_timeMillis is null`
       )
-      .run(requestSession.user.userName, nowMillis, licenceID)
+      .run(requestUser.userName, nowMillis, licenceID)
   }
 
   database.close()

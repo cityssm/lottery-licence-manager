@@ -4,9 +4,9 @@ import { licencesDB as databasePath } from '../../data/databasePaths.js';
 import { addLicenceAmendmentWithDB } from './addLicenceAmendment.js';
 import { getLicenceWithDB } from './getLicence.js';
 import { getMaxTransactionIndexWithDB } from './getMaxTransactionIndex.js';
-export default function addTransaction(requestBody, requestSession) {
+export default function addTransaction(requestBody, requestUser) {
     const database = sqlite(databasePath);
-    const licenceObject = getLicenceWithDB(database, requestBody.licenceID, requestSession, {
+    const licenceObject = getLicenceWithDB(database, requestBody.licenceID, requestUser, {
         includeTicketTypes: false,
         includeFields: false,
         includeEvents: false,
@@ -24,9 +24,14 @@ export default function addTransaction(requestBody, requestSession) {
         externalReceiptNumber, transactionAmount, transactionNote,
         recordCreate_userName, recordCreate_timeMillis, recordUpdate_userName, recordUpdate_timeMillis)
         values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
-        .run(requestBody.licenceID, newTransactionIndex, transactionDate, transactionTime, requestBody.externalReceiptNumber, requestBody.transactionAmount, requestBody.transactionNote, requestSession.user.userName, rightNow.getTime(), requestSession.user.userName, rightNow.getTime());
-    if (licenceObject.trackUpdatesAsAmendments) {
-        addLicenceAmendmentWithDB(database, requestBody.licenceID, 'New Transaction', '', 1, requestSession);
+        .run(requestBody.licenceID, newTransactionIndex, transactionDate, transactionTime, requestBody.externalReceiptNumber, requestBody.transactionAmount, requestBody.transactionNote, requestUser.userName, rightNow.getTime(), requestUser.userName, rightNow.getTime());
+    if (licenceObject?.trackUpdatesAsAmendments) {
+        addLicenceAmendmentWithDB(database, {
+            licenceID: requestBody.licenceID,
+            amendmentType: 'New Transaction',
+            amendment: '',
+            isHidden: 1
+        }, requestUser);
     }
     if (requestBody.issueLicence === 'true') {
         database
@@ -39,7 +44,7 @@ export default function addTransaction(requestBody, requestSession) {
             where licenceID = ?
             and recordDelete_timeMillis is null
             and issueDate is null`)
-            .run(transactionDate, transactionTime, requestSession.user.userName, rightNow.getTime(), requestBody.licenceID);
+            .run(transactionDate, transactionTime, requestUser.userName, rightNow.getTime(), requestBody.licenceID);
     }
     database.close();
     return newTransactionIndex;

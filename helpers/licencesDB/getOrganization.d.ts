@@ -1,3 +1,2 @@
-import type * as expressSession from 'express-session';
-import type * as llm from '../../types/recordTypes.js';
-export default function getOrganization(organizationID: number, requestSession: expressSession.Session): llm.Organization | undefined;
+import type { Organization, User } from '../../types/recordTypes.js';
+export default function getOrganization(organizationID: number, requestUser: User): Organization | undefined;

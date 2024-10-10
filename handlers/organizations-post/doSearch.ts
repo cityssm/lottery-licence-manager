@@ -1,15 +1,17 @@
-import type { RequestHandler } from "express";
+import type { Request, Response } from 'express'
 
-import { getOrganizations } from "../../helpers/licencesDB/getOrganizations.js";
+import getOrganizations, {
+  type GetOrganizationsFilters
+} from '../../helpers/licencesDB/getOrganizations.js'
 
-
-export const handler: RequestHandler = (request, response) => {
-
-  response.json(getOrganizations(request.body, request.session, {
-    limit: 100,
-    offset: 0
-  }));
-};
-
-
-export default handler;
+export default function handler(
+  request: Request<unknown, unknown, GetOrganizationsFilters>,
+  response: Response
+): void {
+  response.json(
+    getOrganizations(request.body, request.session.user, {
+      limit: 100,
+      offset: 0
+    })
+  )
+}

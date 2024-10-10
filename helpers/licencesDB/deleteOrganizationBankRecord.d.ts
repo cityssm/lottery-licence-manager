@@ -1,2 +1,2 @@
-import type * as expressSession from "express-session";
-export declare const deleteOrganizationBankRecord: (organizationID: number, recordIndex: number, requestSession: expressSession.Session) => boolean;
+import type { User } from '../../types/recordTypes.js';
+export default function deleteOrganizationBankRecord(organizationID: number | string, recordIndex: number | string, requestUser: User): boolean;

@@ -1,2 +1,2 @@
-import type * as sqlite from "better-sqlite3";
-export declare const getMaxLicenceTicketTypeIndexWithDB: (database: sqlite.Database, licenceID: number | string) => number;
+import type sqlite from 'better-sqlite3';
+export declare function getMaxLicenceTicketTypeIndexWithDB(database: sqlite.Database, licenceID: number | string): number;

@@ -1,7 +1,7 @@
 import * as dateTimeFns from '@cityssm/expressjs-server-js/dateTimeFns.js'
 import type { Request, Response } from 'express'
 
-import { getLicenceActivityByDateRange } from '../../helpers/licencesDB/getLicenceActivityByDateRange.js'
+import getLicenceActivityByDateRange from '../../helpers/licencesDB/getLicenceActivityByDateRange.js'
 
 export default function handler(
   request: Request<unknown, unknown, { eventDate: string }>,

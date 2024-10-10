@@ -1,16 +1,22 @@
-import type { RequestHandler } from "express";
+import type { Request, Response } from 'express'
 
-import { getOrganizationBankRecords } from "../../helpers/licencesDB/getOrganizationBankRecords.js";
+import getOrganizationBankRecords from '../../helpers/licencesDB/getOrganizationBankRecords.js'
 
+interface DoGetBankRecordsRequest {
+  organizationID: string
+  bankingYear: string
+  accountNumber: string
+}
 
-export const handler: RequestHandler = (request, response) => {
+export default function handler(
+  request: Request<unknown, unknown, DoGetBankRecordsRequest>,
+  response: Response
+): void {
+  const organizationID = request.body.organizationID
+  const bankingYear = request.body.bankingYear
+  const accountNumber = request.body.accountNumber
 
-  const organizationID = request.body.organizationID;
-  const bankingYear = request.body.bankingYear;
-  const accountNumber = request.body.accountNumber;
-
-  response.json(getOrganizationBankRecords(organizationID, accountNumber, bankingYear));
-};
-
-
-export default handler;
+  response.json(
+    getOrganizationBankRecords(organizationID, accountNumber, bankingYear)
+  )
+}

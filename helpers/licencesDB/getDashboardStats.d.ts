@@ -1,4 +1,4 @@
-import type * as llm from "../../types/recordTypes";
+import type { LotteryEvent, OrganizationReminder } from '../../types/recordTypes';
 interface LicenceStats {
     licenceCount: number;
     distinctOrganizationCount: number;
@@ -23,9 +23,9 @@ interface GetDashboardStatsReturn {
     windowEndDateString: string;
     licenceStats: LicenceStats;
     eventStats: EventStats;
-    events: llm.LotteryEvent[];
+    events: LotteryEvent[];
     reminderStats: ReminderStats;
-    reminders: llm.OrganizationReminder[];
+    reminders: OrganizationReminder[];
 }
-export declare const getDashboardStats: () => GetDashboardStatsReturn;
+export default function getDashboardStats(): GetDashboardStatsReturn;
 export {};

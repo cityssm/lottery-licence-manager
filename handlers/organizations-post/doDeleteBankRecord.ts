@@ -1,23 +1,31 @@
-import type { RequestHandler } from "express";
+import type { Request, Response } from 'express'
 
-import { deleteOrganizationBankRecord } from "../../helpers/licencesDB/deleteOrganizationBankRecord.js";
+import deleteOrganizationBankRecord from '../../helpers/licencesDB/deleteOrganizationBankRecord.js'
 
+interface DoDeleteBankRecordRequest {
+  organizationID: string
+  recordIndex: string
+}
 
-export const handler: RequestHandler = (request, response) => {
+export default function handler(
+  request: Request<unknown, unknown, DoDeleteBankRecordRequest>,
+  response: Response
+): void {
+  const success = deleteOrganizationBankRecord(
+    request.body.organizationID,
+    request.body.recordIndex,
+    request.session.user
+  )
 
-  const success =
-    deleteOrganizationBankRecord(request.body.organizationID, request.body.recordIndex, request.session);
-
-  return success
-    ? response.json({
+  if (success) {
+    response.json({
       success: true,
-      message: "Organization updated successfully."
+      message: 'Organization updated successfully.'
     })
-    : response.json({
+  } else {
+    response.json({
       success: false,
-      message: "Record Not Saved"
-    });
-};
-
-
-export default handler;
+      message: 'Record Not Saved'
+    })
+  }
+}

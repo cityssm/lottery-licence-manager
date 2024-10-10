@@ -1,5 +1,4 @@
-import type * as expressSession from 'express-session'
-
+import type { User } from '../../types/recordTypes.js'
 import * as licencesDB from '../licencesDB.js'
 
 import { runSQL } from './_runSQL.js'
@@ -7,7 +6,7 @@ import { runSQL } from './_runSQL.js'
 export default function deleteEvent(
   licenceID: number | string,
   eventDate: number | string,
-  requestSession: expressSession.Session
+  requestUser: User
 ): boolean {
   const nowMillis = Date.now()
 
@@ -18,7 +17,7 @@ export default function deleteEvent(
       where licenceID = ?
       and eventDate = ?
       and recordDelete_timeMillis is null`,
-    [requestSession.user.userName, nowMillis, licenceID, eventDate]
+    [requestUser.userName, nowMillis, licenceID, eventDate]
   )
 
   const changeCount = result === undefined ? 0 : result.changes

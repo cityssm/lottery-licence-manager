@@ -4,7 +4,7 @@ import getEvents, {
   type GetEventsFilters
 } from '../../helpers/licencesDB/getEvents.js'
 
-export function handler(
+export default function handler(
   request: Request<
     unknown,
     unknown,
@@ -13,11 +13,9 @@ export function handler(
   response: Response
 ): void {
   response.json(
-    getEvents(request.body, request.session, {
+    getEvents(request.body, request.session.user, {
       limit: Number.parseInt(request.body.limit, 10),
       offset: Number.parseInt(request.body.offset, 10)
     })
   )
 }
-
-export default handler

@@ -1,25 +1,34 @@
-import type { RequestHandler } from "express";
+import type { Request, Response } from 'express'
 
-import { deleteOrganizationRemark } from "../../helpers/licencesDB/deleteOrganizationRemark.js";
+import deleteOrganizationRemark from '../../helpers/licencesDB/deleteOrganizationRemark.js'
 
+interface DoDeleteRemarkRequest {
+  organizationID: string
+  remarkIndex: string
+}
 
-export const handler: RequestHandler = (request, response) => {
+export default function handler(
+  request: Request<unknown, unknown, DoDeleteRemarkRequest>,
+  response: Response
+): void {
+  const organizationID = request.body.organizationID
+  const remarkIndex = request.body.remarkIndex
 
-  const organizationID = request.body.organizationID;
-  const remarkIndex = request.body.remarkIndex;
+  const success = deleteOrganizationRemark(
+    organizationID,
+    remarkIndex,
+    request.session.user
+  )
 
-  const success = deleteOrganizationRemark(organizationID, remarkIndex, request.session);
-
-  return success
-    ? response.json({
+  if (success) {
+    response.json({
       success: true,
-      message: "Remark deleted successfully."
+      message: 'Remark deleted successfully.'
     })
-    : response.json({
+  } else {
+    response.json({
       success: false,
-      message: "Remark could not be deleted."
-    });
-};
-
-
-export default handler;
+      message: 'Remark could not be deleted.'
+    })
+  }
+}

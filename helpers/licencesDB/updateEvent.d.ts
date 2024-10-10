@@ -1,4 +1,4 @@
-import type * as expressSession from 'express-session';
+import type { User } from '../../types/recordTypes.js';
 export interface UpdateEventForm {
     licenceID: string;
     eventDate: string;
@@ -11,4 +11,4 @@ export interface UpdateEventForm {
     fieldKeys: string;
     ticketTypes: string;
 }
-export default function updateEvent(requestBody: UpdateEventForm, requestSession: expressSession.Session): boolean;
+export default function updateEvent(requestBody: UpdateEventForm, requestUser: User): boolean;

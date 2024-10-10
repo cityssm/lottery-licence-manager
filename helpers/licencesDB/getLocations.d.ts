@@ -1,10 +1,9 @@
-import type * as expressSession from 'express-session';
-import type * as llm from '../../types/recordTypes';
+import type { Location, User } from '../../types/recordTypes.js';
 export interface GetLocationsReturn {
     count: number;
-    locations: llm.Location[];
+    locations: Location[];
 }
-export default function getLocations(requestSession: expressSession.Session, queryOptions: {
+export default function getLocations(requestUser: User, queryOptions: {
     limit: number;
     offset: number;
     locationNameAddress?: string;

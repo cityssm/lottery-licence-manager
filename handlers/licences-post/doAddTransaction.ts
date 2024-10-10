@@ -8,7 +8,7 @@ export default function handler(
   request: Request<unknown, unknown, AddTransactionForm>,
   response: Response
 ): void {
-  const newTransactionIndex = addTransaction(request.body, request.session)
+  const newTransactionIndex = addTransaction(request.body, request.session.user)
 
   response.json({
     success: true,

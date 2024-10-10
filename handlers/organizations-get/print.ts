@@ -1,11 +1,11 @@
 import * as dateTimeFns from '@cityssm/expressjs-server-js/dateTimeFns.js'
 import type { NextFunction, Request, Response } from 'express'
 
-import * as configFunctions from '../../helpers/functions.config.js'
+import { getProperty } from '../../helpers/functions.config.js'
 import getLicences from '../../helpers/licencesDB/getLicences.js'
 import getOrganization from '../../helpers/licencesDB/getOrganization.js'
 
-const urlPrefix = configFunctions.getProperty('reverseProxy.urlPrefix')
+const urlPrefix = getProperty('reverseProxy.urlPrefix')
 
 export default function handler(
   request: Request,
@@ -19,14 +19,14 @@ export default function handler(
     return
   }
 
-  const organization = getOrganization(organizationID, request.session)
+  const organization = getOrganization(organizationID, request.session.user)
 
   if (!organization) {
     response.redirect(`${urlPrefix}/organizations/?error=organizationNotFound`)
     return
   }
 
-  const licences = getLicences({ organizationID }, request.session, {
+  const licences = getLicences({ organizationID }, request.session.user, {
     includeOrganization: false,
     limit: -1
   }).licences

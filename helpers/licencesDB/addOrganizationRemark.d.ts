@@ -1,3 +1,2 @@
-import type * as llm from "../../types/recordTypes";
-import type * as expressSession from "express-session";
-export declare const addOrganizationRemark: (requestBody: llm.OrganizationRemark, requestSession: expressSession.Session) => number;
+import type { OrganizationRemark, User } from '../../types/recordTypes';
+export default function addOrganizationRemark(requestBody: OrganizationRemark, requestUser: User): number;

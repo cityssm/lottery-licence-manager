@@ -1,22 +1,26 @@
-import type { RequestHandler } from "express";
+import type { Request, Response } from 'express'
 
-import { updateOrganizationBankRecord } from "../../helpers/licencesDB/updateOrganizationBankRecord.js";
+import updateOrganizationBankRecord from '../../helpers/licencesDB/updateOrganizationBankRecord.js'
+import type { OrganizationBankRecord } from '../../types/recordTypes.js'
 
+export default function handler(
+  request: Request<unknown, unknown, OrganizationBankRecord>,
+  response: Response
+): void {
+  const success = updateOrganizationBankRecord(
+    request.body,
+    request.session.user
+  )
 
-export const handler: RequestHandler = (request, response) => {
-
-  const success = updateOrganizationBankRecord(request.body, request.session);
-
-  return success
-    ? response.json({
+  if (success) {
+    response.json({
       success: true,
-      message: "Record updated successfully."
+      message: 'Record updated successfully.'
     })
-    : response.json({
+  } else {
+    response.json({
       success: false,
-      message: "Please try again."
-    });
-};
-
-
-export default handler;
+      message: 'Please try again.'
+    })
+  }
+}

@@ -1,3 +1,3 @@
-import type { Session } from "express-session";
-import type * as sqlite from "better-sqlite3";
-export declare const createEventWithDB: (database: sqlite.Database, licenceID: string | number, eventDateString: string, requestSession: Session) => void;
+import type * as sqlite from 'better-sqlite3';
+import type { User } from '../../types/recordTypes.js';
+export declare function createEventWithDB(database: sqlite.Database, licenceID: string | number, eventDateString: string, requestUser: User): void;

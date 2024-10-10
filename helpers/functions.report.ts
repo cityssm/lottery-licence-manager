@@ -1,43 +1,47 @@
-import * as configFunctions from "./functions.config.js";
+// eslint-disable-next-line @eslint-community/eslint-comments/disable-enable-pair
+/* eslint-disable @typescript-eslint/naming-convention, unicorn/prevent-abbreviations */
 
-import type * as configTypes from "../types/configTypes";
+import type * as configTypes from '../types/configTypes.js'
 
+import * as configFunctions from './functions.config.js'
 
-export const userFn_reminderTypeKeyToReminderType = (reminderTypeKey: string): string => {
+export const userFn_reminderTypeKeyToReminderType = (
+  reminderTypeKey: string
+): string => {
+  const reminderTypeDefinition =
+    configFunctions.getReminderType(reminderTypeKey)
 
-  const reminderTypeDefinition = configFunctions.getReminderType(reminderTypeKey);
-
-  return (reminderTypeDefinition
+  return reminderTypeDefinition
     ? reminderTypeDefinition.reminderType
-    : undefined);
-};
+    : undefined
+}
 
+export const userFn_licenceTypeKeyToLicenceType = (
+  licenceTypeKey: string
+): string => {
+  const licenceTypeDefinition = configFunctions.getLicenceType(licenceTypeKey)
 
-export const userFn_licenceTypeKeyToLicenceType = (licenceTypeKey: string): string => {
+  return licenceTypeDefinition ? licenceTypeDefinition.licenceType : undefined
+}
 
-  const licenceTypeDefinition = configFunctions.getLicenceType(licenceTypeKey);
-
-  return (licenceTypeDefinition
-    ? licenceTypeDefinition.licenceType
-    : undefined);
-};
-
-
-export const userFn_ticketTypeField = (licenceTypeKey: string,
+export const userFn_ticketTypeField = (
+  licenceTypeKey: string,
   ticketTypeKey: string,
-  fieldName: "ticketPrice" | "ticketCount" | "prizesPerDeal" | "feePerUnit"): unknown => {
-
-  const licenceType = configFunctions.getLicenceType(licenceTypeKey);
+  fieldName: 'ticketPrice' | 'ticketCount' | 'prizesPerDeal' | 'feePerUnit'
+): unknown => {
+  const licenceType = configFunctions.getLicenceType(licenceTypeKey)
 
   if (!licenceType) {
-    return undefined;
+    return undefined
   }
 
-  const ticketType: configTypes.ConfigTicketType = (licenceType.ticketTypes || []).find((element) => element.ticketType === ticketTypeKey);
+  const ticketType: configTypes.ConfigTicketType = (
+    licenceType.ticketTypes || []
+  ).find((element) => element.ticketType === ticketTypeKey)
 
   if (!ticketType) {
-    return undefined;
+    return undefined
   }
 
-  return ticketType[fieldName];
-};
+  return ticketType[fieldName]
+}

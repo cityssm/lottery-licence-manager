@@ -1,22 +1,24 @@
-import type { RequestHandler } from "express";
+import type { Request, Response } from 'express'
 
-import { addOrganizationBankRecord } from "../../helpers/licencesDB/addOrganizationBankRecord.js";
+import addOrganizationBankRecord from '../../helpers/licencesDB/addOrganizationBankRecord.js'
+import type { OrganizationBankRecord } from '../../types/recordTypes.js'
 
+export default function handler(
+  request: Request<unknown, unknown, OrganizationBankRecord>,
+  response: Response
+): void {
+  const success = addOrganizationBankRecord(request.body, request.session.user)
 
-export const handler: RequestHandler = (request, response) => {
-
-  const success = addOrganizationBankRecord(request.body, request.session);
-
-  return success
-    ? response.json({
+  if (success) {
+    response.json({
       success: true,
-      message: "Record added successfully."
+      message: 'Record added successfully.'
     })
-    : response.json({
+  } else {
+    response.json({
       success: false,
-      message: "Please make sure that the record you are trying to create does not already exist."
-    });
-};
-
-
-export default handler;
+      message:
+        'Please make sure that the record you are trying to create does not already exist.'
+    })
+  }
+}

@@ -18,7 +18,7 @@ export default function handler(
   const madeChanges = deleteEvent(
     request.body.licenceID,
     request.body.eventDate,
-    request.session
+    request.session.user
   )
 
   if (madeChanges) {

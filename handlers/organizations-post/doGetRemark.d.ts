@@ -1,3 +1,7 @@
-import type { RequestHandler } from "express";
-export declare const handler: RequestHandler;
-export default handler;
+import type { Request, Response } from 'express';
+interface DoGetRemarkRequest {
+    organizationID: string;
+    remarkIndex: string;
+}
+export default function handler(request: Request<unknown, unknown, DoGetRemarkRequest>, response: Response): void;
+export {};

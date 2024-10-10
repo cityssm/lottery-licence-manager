@@ -1,13 +1,11 @@
-import sqlite from "better-sqlite3";
-import type * as llm from "../../types/recordTypes";
-import type * as expressSession from "express-session";
-interface ReminderData {
+import sqlite from 'better-sqlite3';
+import type { OrganizationReminder, User } from '../../types/recordTypes';
+export interface ReminderData {
     organizationID: string;
     reminderTypeKey: string;
     dueDateString?: string;
     reminderStatus: string;
     reminderNote: string;
 }
-export declare const addOrganizationReminderWithDB: (database: sqlite.Database, reminderData: ReminderData, requestSession: expressSession.Session) => llm.OrganizationReminder;
-export declare const addOrganizationReminder: (requestBody: ReminderData, requestSession: expressSession.Session) => llm.OrganizationReminder;
-export {};
+export declare function addOrganizationReminderWithDB(database: sqlite.Database, reminderData: ReminderData, requestUser: User): OrganizationReminder;
+export default function addOrganizationReminder(requestBody: ReminderData, requestUser: User): OrganizationReminder;

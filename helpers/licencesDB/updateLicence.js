@@ -17,16 +17,16 @@ export const parseTicketTypeKey = (unparsedTicketTypeKey) => {
         ticketType: unparsedTicketTypeKey.slice(11)
     };
 };
-export default function updateLicence(requestBody, requestSession) {
+export default function updateLicence(requestBody, requestUser) {
     const database = sqlite(databasePath);
-    const pastLicenceObject = getLicenceWithDB(database, requestBody.licenceID, requestSession, {
+    const pastLicenceObject = getLicenceWithDB(database, requestBody.licenceID, requestUser, {
         includeTicketTypes: true,
         includeFields: true,
         includeEvents: true,
         includeAmendments: false,
         includeTransactions: true
     });
-    if (!pastLicenceObject.canUpdate) {
+    if (!pastLicenceObject?.canUpdate) {
         database.close();
         return false;
     }
@@ -62,7 +62,7 @@ export default function updateLicence(requestBody, requestSession) {
           recordUpdate_timeMillis = ?
         where licenceID = ?
           and recordDelete_timeMillis is null`)
-        .run(requestBody.organizationID, dateTimeFns.dateStringToInteger(requestBody.applicationDateString), requestBody.licenceTypeKey, startDate_now, endDate_now, startTime_now, endTime_now, requestBody.locationID === '' ? undefined : requestBody.locationID, requestBody.municipality, requestBody.licenceDetails, requestBody.termsConditions, requestBody.totalPrizeValue, requestBody.licenceFee, requestBody.externalLicenceNumber, externalLicenceNumberInteger, requestSession.user.userName, nowMillis, requestBody.licenceID).changes;
+        .run(requestBody.organizationID, dateTimeFns.dateStringToInteger(requestBody.applicationDateString), requestBody.licenceTypeKey, startDate_now, endDate_now, startTime_now, endTime_now, requestBody.locationID === '' ? undefined : requestBody.locationID, requestBody.municipality, requestBody.licenceDetails, requestBody.termsConditions, requestBody.totalPrizeValue, requestBody.licenceFee, requestBody.externalLicenceNumber, externalLicenceNumberInteger, requestUser.userName, nowMillis, requestBody.licenceID).changes;
     if (!changeCount) {
         database.close();
         return false;
@@ -89,25 +89,45 @@ export default function updateLicence(requestBody, requestSession) {
                     ? ''
                     : `End Time: ${pastLicenceObject.endTime.toString()} -> ${endTime_now.toString()}` +
                         '\n')).trim();
-            addLicenceAmendmentWithDB(database, requestBody.licenceID, 'Date Update', amendment, 0, requestSession);
+            addLicenceAmendmentWithDB(database, {
+                licenceID: requestBody.licenceID,
+                amendmentType: 'Date Update',
+                amendment,
+                isHidden: 0
+            }, requestUser);
         }
         if (pastLicenceObject.organizationID !==
             Number.parseInt(requestBody.organizationID, 10) &&
             configFunctions.getProperty('amendments.trackOrganizationUpdate')) {
-            addLicenceAmendmentWithDB(database, requestBody.licenceID, 'Organization Change', '', 0, requestSession);
+            addLicenceAmendmentWithDB(database, {
+                licenceID: requestBody.licenceID,
+                amendmentType: 'Organization Change',
+                amendment: '',
+                isHidden: 0
+            }, requestUser);
         }
         if (pastLicenceObject.locationID !==
             Number.parseInt(requestBody.locationID, 10) &&
             configFunctions.getProperty('amendments.trackLocationUpdate')) {
-            addLicenceAmendmentWithDB(database, requestBody.licenceID, 'Location Change', '', 0, requestSession);
+            addLicenceAmendmentWithDB(database, {
+                licenceID: requestBody.licenceID,
+                amendmentType: 'Location Change',
+                amendment: '',
+                isHidden: 0
+            }, requestUser);
         }
         if (pastLicenceObject.licenceFee !==
             Number.parseFloat(requestBody.licenceFee) &&
             configFunctions.getProperty('amendments.trackLicenceFeeUpdate')) {
-            addLicenceAmendmentWithDB(database, requestBody.licenceID, 'Licence Fee Change', '$' +
-                pastLicenceObject.licenceFee.toFixed(2) +
-                ' -> $' +
-                Number.parseFloat(requestBody.licenceFee).toFixed(2), 0, requestSession);
+            addLicenceAmendmentWithDB(database, {
+                licenceID: requestBody.licenceID,
+                amendmentType: 'Licence Fee Change',
+                amendment: '$' +
+                    pastLicenceObject.licenceFee.toFixed(2) +
+                    ' -> $' +
+                    Number.parseFloat(requestBody.licenceFee).toFixed(2),
+                isHidden: 0
+            }, requestUser);
         }
     }
     database
@@ -127,23 +147,19 @@ export default function updateLicence(requestBody, requestSession) {
     }
     if (requestBody.eventDateString !== undefined) {
         database
-            .prepare('delete from LotteryEventFields' +
-            ' where licenceID = ?' +
-            (' and eventDate in (' +
-                'select eventDate from LotteryEvents where licenceID = ? and recordDelete_timeMillis is not null' +
-                ')'))
+            .prepare(`delete from LotteryEventFields
+          where licenceID = ?
+          and eventDate in (select eventDate from LotteryEvents where licenceID = ? and recordDelete_timeMillis is not null)`)
             .run(requestBody.licenceID, requestBody.licenceID);
         database
-            .prepare('delete from LotteryEventCosts' +
-            ' where licenceID = ?' +
-            (' and eventDate in (' +
-                'select eventDate from LotteryEvents where licenceID = ? and recordDelete_timeMillis is not null' +
-                ')'))
+            .prepare(`delete from LotteryEventCosts
+          where licenceID = ?
+          and eventDate in (select eventDate from LotteryEvents where licenceID = ? and recordDelete_timeMillis is not null)`)
             .run(requestBody.licenceID, requestBody.licenceID);
         database
-            .prepare('delete from LotteryEvents' +
-            ' where licenceID = ?' +
-            ' and recordDelete_timeMillis is not null')
+            .prepare(`delete from LotteryEvents
+          where licenceID = ?
+          and recordDelete_timeMillis is not null`)
             .run(requestBody.licenceID);
     }
     let eventDateStrings_toAdd;
@@ -155,7 +171,7 @@ export default function updateLicence(requestBody, requestSession) {
     }
     if (eventDateStrings_toAdd) {
         for (const eventDate of eventDateStrings_toAdd) {
-            createEventWithDB(database, requestBody.licenceID, eventDate, requestSession);
+            createEventWithDB(database, requestBody.licenceID, eventDate, requestUser);
         }
     }
     let ticketTypeIndexes_toDelete;
@@ -170,10 +186,15 @@ export default function updateLicence(requestBody, requestSession) {
             deleteLicenceTicketTypeWithDB(database, {
                 licenceID: requestBody.licenceID,
                 ticketTypeIndex: ticketTypeIndex_toDelete
-            }, requestSession);
+            }, requestUser);
             if (pastLicenceObject.trackUpdatesAsAmendments &&
                 configFunctions.getProperty('amendments.trackTicketTypeDelete')) {
-                addLicenceAmendmentWithDB(database, requestBody.licenceID, 'Ticket Type Removed', 'Removed ' + ticketTypeIndex_toDelete + '.', 0, requestSession);
+                addLicenceAmendmentWithDB(database, {
+                    licenceID: requestBody.licenceID,
+                    amendmentType: 'Ticket Type Removed',
+                    amendment: `Removed ${ticketTypeIndex_toDelete}.`,
+                    isHidden: 0
+                }, requestUser);
             }
         }
     }
@@ -188,10 +209,15 @@ export default function updateLicence(requestBody, requestSession) {
             licenceFee: requestBody.ticketType_licenceFee,
             distributorLocationID: requestBody.ticketType_distributorLocationID,
             manufacturerLocationID: requestBody.ticketType_manufacturerLocationID
-        }, requestSession);
+        }, requestUser);
         if (pastLicenceObject.trackUpdatesAsAmendments &&
             configFunctions.getProperty('amendments.trackTicketTypeNew')) {
-            addLicenceAmendmentWithDB(database, requestBody.licenceID, 'Added Ticket Type', requestBody.ticketType_ticketType, 0, requestSession);
+            addLicenceAmendmentWithDB(database, {
+                licenceID: requestBody.licenceID,
+                amendmentType: 'Added Ticket Type',
+                amendment: requestBody.ticketType_ticketType,
+                isHidden: 0
+            }, requestUser);
         }
     }
     else if (typeof requestBody.ticketType_ticketType === 'object') {
@@ -206,10 +232,15 @@ export default function updateLicence(requestBody, requestSession) {
                 licenceFee: requestBody.ticketType_licenceFee[ticketTypeIndex],
                 distributorLocationID: requestBody.ticketType_distributorLocationID[ticketTypeIndex],
                 manufacturerLocationID: requestBody.ticketType_manufacturerLocationID[ticketTypeIndex]
-            }, requestSession);
+            }, requestUser);
             if (pastLicenceObject.trackUpdatesAsAmendments &&
                 configFunctions.getProperty('amendments.trackTicketTypeNew')) {
-                addLicenceAmendmentWithDB(database, requestBody.licenceID, 'Added Ticket Type', ticketType, 0, requestSession);
+                addLicenceAmendmentWithDB(database, {
+                    licenceID: requestBody.licenceID,
+                    amendmentType: 'Added Ticket Type',
+                    amendment: ticketType,
+                    isHidden: 0
+                }, requestUser);
             }
         }
     }

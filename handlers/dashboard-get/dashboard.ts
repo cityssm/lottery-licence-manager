@@ -1,9 +1,9 @@
 import type { Request, Response } from 'express'
 
 import * as configFunctions from '../../helpers/functions.config.js'
-import { getApplicationSetting } from '../../helpers/licencesDB/getApplicationSetting.js'
-import { getDashboardStats } from '../../helpers/licencesDB/getDashboardStats.js'
-import { getNextExternalLicenceNumberFromRange } from '../../helpers/licencesDB/getNextExternalLicenceNumberFromRange.js'
+import getApplicationSetting from '../../helpers/licencesDB/getApplicationSetting.js'
+import getDashboardStats from '../../helpers/licencesDB/getDashboardStats.js'
+import getNextExternalLicenceNumberFromRange from '../../helpers/licencesDB/getNextExternalLicenceNumberFromRange.js'
 
 export default function handler(_request: Request, response: Response): void {
   const stats = getDashboardStats()

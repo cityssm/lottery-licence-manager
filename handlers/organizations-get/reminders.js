@@ -1,9 +1,8 @@
-import { getUndismissedOrganizationReminders } from "../../helpers/licencesDB/getUndismissedOrganizationReminders.js";
-export const handler = (request, response) => {
-    const reminders = getUndismissedOrganizationReminders(request.session);
-    response.render("organization-reminders", {
-        headTitle: "Organization Reminders",
+import getUndismissedOrganizationReminders from '../../helpers/licencesDB/getUndismissedOrganizationReminders.js';
+export default function handler(request, response) {
+    const reminders = getUndismissedOrganizationReminders(request.session.user);
+    response.render('organization-reminders', {
+        headTitle: 'Organization Reminders',
         reminders
     });
-};
-export default handler;
+}

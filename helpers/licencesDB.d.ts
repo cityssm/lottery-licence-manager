@@ -1,11 +1,10 @@
-import type * as llm from "../types/recordTypes";
-import type { RawRowsColumnsReturn } from "@cityssm/expressjs-server-js/types";
-import type * as expressSession from "express-session";
-export declare const canUpdateObject: (object: llm.Record, requestSession: expressSession.Session) => boolean;
-export declare const getRawRowsColumns: (sql: string, parameters: unknown[], userFunctions: Map<string, (...parameters: unknown[]) => unknown>) => RawRowsColumnsReturn;
-export declare const resetEventTableStats: () => void;
-export declare const resetLicenceTableStats: () => void;
-export declare const getLicenceTableStats: () => llm.LotteryLicenceStats;
+import type { RawRowsColumnsReturn } from '@cityssm/expressjs-server-js/types';
+import type * as llm from '../types/recordTypes';
+export declare function canUpdateObject(object: llm.Record, requestUser: llm.User | undefined): boolean;
+export declare function getRawRowsColumns(sql: string, parameters: unknown[], userFunctions: Map<string, (...parameters: unknown[]) => unknown>): RawRowsColumnsReturn;
+export declare function resetEventTableStats(): void;
+export declare function resetLicenceTableStats(): void;
+export declare function getLicenceTableStats(): llm.LotteryLicenceStats;
 interface GetLicenceTypeSummmaryReturn {
     licenceID: number;
     externalLicenceNumber: string;
@@ -23,15 +22,15 @@ interface GetLicenceTypeSummmaryReturn {
     licenceFee: number;
     transactionAmountSum: number;
 }
-export declare const getLicenceTypeSummary: (requestBody: {
+export declare function getLicenceTypeSummary(requestBody: {
     applicationDateStartString?: string;
     applicationDateEndString?: string;
     licenceTypeKey?: string;
-}) => GetLicenceTypeSummmaryReturn[];
-export declare const getActiveLicenceSummary: (requestBody: {
+}): GetLicenceTypeSummmaryReturn[];
+export declare function getActiveLicenceSummary(requestBody: {
     startEndDateStartString: string;
     startEndDateEndString: string;
-}, requestSession: expressSession.Session) => llm.LotteryLicence[];
-export declare const getEventTableStats: () => llm.LotteryEventStats;
-export declare const getRecentlyUpdateEvents: (requestSession: expressSession.Session) => llm.LotteryEvent[];
+}, requestUser: llm.User): llm.LotteryLicence[];
+export declare function getEventTableStats(): llm.LotteryEventStats;
+export declare function getRecentlyUpdateEvents(requestUser: llm.User): llm.LotteryEvent[];
 export {};

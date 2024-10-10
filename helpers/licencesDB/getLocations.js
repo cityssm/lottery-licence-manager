@@ -2,7 +2,7 @@ import * as dateTimeFns from '@cityssm/expressjs-server-js/dateTimeFns.js';
 import sqlite from 'better-sqlite3';
 import { licencesDB as databasePath } from '../../data/databasePaths.js';
 import { canUpdateObject } from '../licencesDB.js';
-export default function getLocations(requestSession, queryOptions) {
+export default function getLocations(requestUser, queryOptions) {
     const database = sqlite(databasePath, {
         readonly: true
     });
@@ -95,7 +95,7 @@ export default function getLocations(requestSession, queryOptions) {
         element.licences_endDateMaxString = dateTimeFns.dateIntegerToString(element.licences_endDateMax);
         element.distributor_endDateMaxString = dateTimeFns.dateIntegerToString(element.distributor_endDateMax);
         element.manufacturer_endDateMaxString = dateTimeFns.dateIntegerToString(element.manufacturer_endDateMax);
-        element.canUpdate = canUpdateObject(element, requestSession);
+        element.canUpdate = canUpdateObject(element, requestUser);
     }
     return {
         count: queryOptions.limit === -1 ? rows.length : count,

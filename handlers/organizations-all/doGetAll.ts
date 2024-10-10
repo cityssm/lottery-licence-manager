@@ -1,14 +1,11 @@
-import type { RequestHandler } from "express";
+import type { Request, Response } from 'express'
 
-import { getOrganizations } from "../../helpers/licencesDB/getOrganizations.js";
+import getOrganizations from '../../helpers/licencesDB/getOrganizations.js'
 
-
-export const handler: RequestHandler = (request, response) => {
-
-  response.json(getOrganizations({}, request.session, {
-    limit: -1
-  }));
-};
-
-
-export default handler;
+export default function handler(request: Request, response: Response): void {
+  response.json(
+    getOrganizations({}, request.session.user, {
+      limit: -1
+    })
+  )
+}

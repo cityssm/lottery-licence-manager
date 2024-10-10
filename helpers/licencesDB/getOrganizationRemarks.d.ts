@@ -1,3 +1,2 @@
-import type * as llm from "../../types/recordTypes";
-import type * as expressSession from "express-session";
-export declare const getOrganizationRemarks: (organizationID: number, requestSession: expressSession.Session) => llm.OrganizationRemark[];
+import type { OrganizationRemark, User } from '../../types/recordTypes.js';
+export default function getOrganizationRemarks(organizationID: number | string, requestUser: User): OrganizationRemark[];

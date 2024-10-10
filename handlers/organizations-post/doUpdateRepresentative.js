@@ -1,17 +1,13 @@
-import { updateOrganizationRepresentative } from "../../helpers/licencesDB/updateOrganizationRepresentative.js";
-export const handler = (request, response, next) => {
-    const organizationID = Number(request.params.organizationID);
+import updateOrganizationRepresentative from '../../helpers/licencesDB/updateOrganizationRepresentative.js';
+export default function handler(request, response, next) {
+    const organizationID = Number.parseInt(request.params.organizationID, 10);
     if (Number.isNaN(organizationID)) {
-        return next();
+        next();
+        return;
     }
     const representativeObject = updateOrganizationRepresentative(organizationID, request.body);
-    return representativeObject
-        ? response.json({
-            success: true,
-            organizationRepresentative: representativeObject
-        })
-        : response.json({
-            success: false
-        });
-};
-export default handler;
+    response.json({
+        success: true,
+        organizationRepresentative: representativeObject
+    });
+}

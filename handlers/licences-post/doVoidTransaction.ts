@@ -19,7 +19,7 @@ export default function handler(
   const success = voidTransaction(
     request.body.licenceID,
     request.body.transactionIndex,
-    request.session
+    request.session.user
   )
 
   if (success) {

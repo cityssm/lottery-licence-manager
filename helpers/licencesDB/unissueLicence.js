@@ -1,7 +1,7 @@
 import sqlite from 'better-sqlite3';
 import { licencesDB as databasePath } from '../../data/databasePaths.js';
 import { addLicenceAmendmentWithDB } from './addLicenceAmendment.js';
-export default function unissueLicence(licenceID, requestSession) {
+export default function unissueLicence(licenceID, requestUser) {
     const database = sqlite(databasePath);
     const nowMillis = Date.now();
     const info = database
@@ -13,10 +13,15 @@ export default function unissueLicence(licenceID, requestSession) {
         where licenceID = ?
         and recordDelete_timeMillis is null
         and issueDate is not null`)
-        .run(requestSession.user.userName, nowMillis, licenceID);
+        .run(requestUser.userName, nowMillis, licenceID);
     const changeCount = info.changes;
     if (changeCount) {
-        addLicenceAmendmentWithDB(database, licenceID, 'Unissue Licence', '', 1, requestSession);
+        addLicenceAmendmentWithDB(database, {
+            licenceID,
+            amendmentType: 'Unissue Licence',
+            amendment: '',
+            isHidden: 1
+        }, requestUser);
     }
     database.close();
     return changeCount > 0;

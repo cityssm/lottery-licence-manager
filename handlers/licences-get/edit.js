@@ -8,7 +8,7 @@ export default function handler(request, response, next) {
         next();
         return;
     }
-    const licence = getLicence(licenceID, request.session);
+    const licence = getLicence(licenceID, request.session.user);
     if (licence === undefined) {
         response.redirect(`${urlPrefix}/licences/?error=licenceNotFound`);
         return;
@@ -17,7 +17,7 @@ export default function handler(request, response, next) {
         response.redirect(`${urlPrefix}/licences/${licenceID.toString()}/?error=accessDenied`);
         return;
     }
-    const organization = getOrganization(licence.organizationID, request.session);
+    const organization = getOrganization(licence.organizationID, request.session.user);
     const feeCalculation = getProperty('licences.feeCalculationFn')(licence);
     const headTitle = getProperty('licences.externalLicenceNumber.isPreferredID')
         ? `Licence ${licence.externalLicenceNumber}`

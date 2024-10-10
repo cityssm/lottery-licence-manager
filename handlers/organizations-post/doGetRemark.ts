@@ -1,15 +1,20 @@
-import type { RequestHandler } from "express";
+import type { Request, Response } from 'express'
 
-import { getOrganizationRemark } from "../../helpers/licencesDB/getOrganizationRemark.js";
+import getOrganizationRemark from '../../helpers/licencesDB/getOrganizationRemark.js'
 
+interface DoGetRemarkRequest {
+  organizationID: string
+  remarkIndex: string
+}
 
-export const handler: RequestHandler = (request, response) => {
+export default function handler(
+  request: Request<unknown, unknown, DoGetRemarkRequest>,
+  response: Response
+): void {
+  const organizationID = request.body.organizationID
+  const remarkIndex = request.body.remarkIndex
 
-  const organizationID = request.body.organizationID;
-  const remarkIndex = request.body.remarkIndex;
-
-  response.json(getOrganizationRemark(organizationID, remarkIndex, request.session));
-};
-
-
-export default handler;
+  response.json(
+    getOrganizationRemark(organizationID, remarkIndex, request.session.user)
+  )
+}

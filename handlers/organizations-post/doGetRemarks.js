@@ -1,6 +1,5 @@
-import { getOrganizationRemarks } from "../../helpers/licencesDB/getOrganizationRemarks.js";
-export const handler = (request, response) => {
+import getOrganizationRemarks from '../../helpers/licencesDB/getOrganizationRemarks.js';
+export default function handler(request, response) {
     const organizationID = request.body.organizationID;
-    response.json(getOrganizationRemarks(organizationID, request.session));
-};
-export default handler;
+    response.json(getOrganizationRemarks(organizationID, request.session.user));
+}

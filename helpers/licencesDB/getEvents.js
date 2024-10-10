@@ -2,7 +2,7 @@ import * as dateTimeFns from '@cityssm/expressjs-server-js/dateTimeFns.js';
 import sqlite from 'better-sqlite3';
 import { licencesDB as databasePath } from '../../data/databasePaths.js';
 import { canUpdateObject } from '../licencesDB.js';
-export default function getEvents(requestBody, requestSession, options) {
+export default function getEvents(requestBody, requestUser, options) {
     const database = sqlite(databasePath, {
         readonly: true
     });
@@ -78,15 +78,14 @@ export default function getEvents(requestBody, requestSession, options) {
         e.recordCreate_userName, e.recordCreate_timeMillis, e.recordUpdate_userName, e.recordUpdate_timeMillis
       order by e.eventDate, l.startTime`;
     if (options.limit !== -1) {
-        sql +=
-            ` limit ${options.limit.toString()} offset ${(options.offset || 0).toString()}`;
+        sql += ` limit ${options.limit.toString()} offset ${(options.offset || 0).toString()}`;
     }
     database.function('userFn_dateIntegerToString', dateTimeFns.dateIntegerToString);
     database.function('userFn_timeIntegerToString', dateTimeFns.timeIntegerToString);
     const events = database.prepare(sql).all(sqlParameters);
     database.close();
     for (const lotteryEvent of events) {
-        lotteryEvent.canUpdate = canUpdateObject(lotteryEvent, requestSession);
+        lotteryEvent.canUpdate = canUpdateObject(lotteryEvent, requestUser);
         delete lotteryEvent.bank_name;
     }
     return {

@@ -1,22 +1,28 @@
-import type { RequestHandler } from "express";
+import type { Request, Response } from 'express'
 
-import { rollForwardOrganization } from "../../helpers/licencesDB/rollForwardOrganization.js";
+import rollForwardOrganization from '../../helpers/licencesDB/rollForwardOrganization.js'
 
+interface DoRollForwardRequest {
+  organizationID: string
+  updateFiscalYear: string
+  updateReminders: string
+}
 
-export const handler: RequestHandler = (request, response) => {
+export default function handler(
+  request: Request<unknown, unknown, DoRollForwardRequest>,
+  response: Response
+): void {
+  const organizationID = Number.parseInt(request.body.organizationID, 10)
 
-  const organizationID = Number.parseInt(request.body.organizationID, 10);
+  const updateFiscalYear = request.body.updateFiscalYear === '1'
+  const updateReminders = request.body.updateReminders === '1'
 
-  const updateFiscalYear = request.body.updateFiscalYear === "1";
-  const updateReminders = request.body.updateReminders === "1";
-
-  const result = rollForwardOrganization(organizationID,
+  const result = rollForwardOrganization(
+    organizationID,
     updateFiscalYear,
     updateReminders,
-    request.session);
+    request.session.user
+  )
 
-  return response.json(result);
-};
-
-
-export default handler;
+  response.json(result)
+}

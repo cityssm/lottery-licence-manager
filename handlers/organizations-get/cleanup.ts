@@ -1,12 +1,7 @@
-import type { RequestHandler } from "express";
+import type { Request, Response } from 'express'
 
-
-export const handler: RequestHandler = (_request, response) => {
-
-  response.render("organization-cleanup", {
-    headTitle: "Organization Cleanup"
-  });
-};
-
-
-export default handler;
+export default function handler(_request: Request, response: Response): void {
+  response.render('organization-cleanup', {
+    headTitle: 'Organization Cleanup'
+  })
+}

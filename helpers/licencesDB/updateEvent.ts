@@ -1,8 +1,8 @@
 import * as dateTimeFns from '@cityssm/expressjs-server-js/dateTimeFns.js'
 import sqlite from 'better-sqlite3'
-import type * as expressSession from 'express-session'
 
 import { licencesDB as databasePath } from '../../data/databasePaths.js'
+import type { User } from '../../types/recordTypes.js'
 import * as licencesDB from '../licencesDB.js'
 
 export interface UpdateEventForm {
@@ -20,7 +20,7 @@ export interface UpdateEventForm {
 
 export default function updateEvent(
   requestBody: UpdateEventForm,
-  requestSession: expressSession.Session
+  requestUser: User
 ): boolean {
   const database = sqlite(databasePath)
 
@@ -54,7 +54,7 @@ export default function updateEvent(
       requestBody.costs_amountDonated === ''
         ? undefined
         : requestBody.costs_amountDonated,
-      requestSession.user.userName,
+      requestUser.userName,
       nowMillis,
       requestBody.licenceID,
       requestBody.eventDate

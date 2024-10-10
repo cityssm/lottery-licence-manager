@@ -1,7 +1,6 @@
-import { getOrganizations } from "../../helpers/licencesDB/getOrganizations.js";
-export const handler = (request, response) => {
-    response.json(getOrganizations({}, request.session, {
+import getOrganizations from '../../helpers/licencesDB/getOrganizations.js';
+export default function handler(request, response) {
+    response.json(getOrganizations({}, request.session.user, {
         limit: -1
     }));
-};
-export default handler;
+}

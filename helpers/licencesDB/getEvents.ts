@@ -1,9 +1,8 @@
 import * as dateTimeFns from '@cityssm/expressjs-server-js/dateTimeFns.js'
 import sqlite from 'better-sqlite3'
-import type * as expressSession from 'express-session'
 
 import { licencesDB as databasePath } from '../../data/databasePaths.js'
-import type * as llm from '../../types/recordTypes'
+import type { LotteryEvent, User } from '../../types/recordTypes'
 import { canUpdateObject } from '../licencesDB.js'
 
 export interface GetEventsFilters {
@@ -16,12 +15,12 @@ export interface GetEventsFilters {
 
 interface GetEventsReturn {
   count: number
-  events: llm.LotteryEvent[]
+  events: LotteryEvent[]
 }
 
 export default function getEvents(
   requestBody: GetEventsFilters,
-  requestSession: expressSession.Session,
+  requestUser: User,
   options: {
     limit: number
     offset: number
@@ -96,8 +95,7 @@ export default function getEvents(
       .get(sqlParameters) as number
   }
 
-  let sql =
-    `select
+  let sql = `select
         'event' as recordType,
         e.eventDate, userFn_dateIntegerToString(e.eventDate) as eventDateString,
         e.reportDate, e.bank_name,
@@ -124,8 +122,7 @@ export default function getEvents(
       order by e.eventDate, l.startTime`
 
   if (options.limit !== -1) {
-    sql +=
-      ` limit ${options.limit.toString()} offset ${(options.offset || 0).toString()}`
+    sql += ` limit ${options.limit.toString()} offset ${(options.offset || 0).toString()}`
   }
 
   database.function(
@@ -137,12 +134,12 @@ export default function getEvents(
     dateTimeFns.timeIntegerToString
   )
 
-  const events = database.prepare(sql).all(sqlParameters) as llm.LotteryEvent[]
+  const events = database.prepare(sql).all(sqlParameters) as LotteryEvent[]
 
   database.close()
 
   for (const lotteryEvent of events) {
-    lotteryEvent.canUpdate = canUpdateObject(lotteryEvent, requestSession)
+    lotteryEvent.canUpdate = canUpdateObject(lotteryEvent, requestUser)
 
     delete lotteryEvent.bank_name
   }

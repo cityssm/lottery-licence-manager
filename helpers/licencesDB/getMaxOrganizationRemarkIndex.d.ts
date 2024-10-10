@@ -1,2 +1,2 @@
-import type * as sqlite from "better-sqlite3";
-export declare const getMaxOrganizationRemarkIndexWithDB: (database: sqlite.Database, organizationID: number) => number;
+import type sqlite from 'better-sqlite3';
+export declare function getMaxOrganizationRemarkIndexWithDB(database: sqlite.Database, organizationID: number): number;

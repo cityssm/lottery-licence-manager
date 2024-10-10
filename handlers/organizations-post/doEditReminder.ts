@@ -1,29 +1,30 @@
-import type { RequestHandler } from "express";
+import type { Request, Response } from 'express'
 
-import { updateOrganizationReminder } from "../../helpers/licencesDB/updateOrganizationReminder.js";
-import { getOrganizationReminder } from "../../helpers/licencesDB/getOrganizationReminder.js";
+import getOrganizationReminder from '../../helpers/licencesDB/getOrganizationReminder.js'
+import updateOrganizationReminder, {
+  type UpdateOrganizationReminderForm
+} from '../../helpers/licencesDB/updateOrganizationReminder.js'
 
-
-export const handler: RequestHandler = (request, response) => {
-
-  const success = updateOrganizationReminder(request.body, request.session);
+export default function handler(
+  request: Request<unknown, unknown, UpdateOrganizationReminderForm>,
+  response: Response
+): void {
+  const success = updateOrganizationReminder(request.body, request.session.user)
 
   if (success) {
+    const reminder = getOrganizationReminder(
+      request.body.organizationID,
+      request.body.reminderIndex,
+      request.session.user
+    )
 
-    const reminder =
-      getOrganizationReminder(request.body.organizationID, request.body.reminderIndex, request.session);
-
-    return response.json({
+    response.json({
       success: true,
       reminder
-    });
-
+    })
   } else {
-    return response.json({
+    response.json({
       success: false
-    });
+    })
   }
-};
-
-
-export default handler;
+}

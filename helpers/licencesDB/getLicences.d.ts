@@ -1,5 +1,4 @@
-import type * as expressSession from 'express-session';
-import type * as llm from '../../types/recordTypes';
+import type { LotteryLicence, User } from '../../types/recordTypes';
 export interface GetLicencesFilters {
     externalLicenceNumber?: string;
     licenceTypeKey?: string;
@@ -11,9 +10,9 @@ export interface GetLicencesFilters {
 }
 interface GetLicencesReturn {
     count: number;
-    licences: llm.LotteryLicence[];
+    licences: LotteryLicence[];
 }
-export default function getLicences(requestBodyOrParametersObject: GetLicencesFilters, requestSession: expressSession.Session, includeOptions: {
+export default function getLicences(requestBodyOrParametersObject: GetLicencesFilters, requestUser: User, includeOptions: {
     includeOrganization: boolean;
     limit: number;
     offset?: number;

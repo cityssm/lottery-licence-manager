@@ -1,17 +1,12 @@
-import type { RequestHandler } from "express";
+import type { Request, Response } from 'express'
 
-import { getUndismissedOrganizationReminders } from "../../helpers/licencesDB/getUndismissedOrganizationReminders.js";
+import getUndismissedOrganizationReminders from '../../helpers/licencesDB/getUndismissedOrganizationReminders.js'
 
+export default function handler(request: Request, response: Response): void {
+  const reminders = getUndismissedOrganizationReminders(request.session.user)
 
-export const handler: RequestHandler = (request, response) => {
-
-  const reminders = getUndismissedOrganizationReminders(request.session);
-
-  response.render("organization-reminders", {
-    headTitle: "Organization Reminders",
+  response.render('organization-reminders', {
+    headTitle: 'Organization Reminders',
     reminders
-  });
-};
-
-
-export default handler;
+  })
+}

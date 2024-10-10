@@ -1,3 +1,2 @@
-import type * as llm from "../../types/recordTypes";
-import type * as expressSession from "express-session";
-export declare const updateOrganizationRemark: (requestBody: llm.OrganizationRemark, requestSession: expressSession.Session) => boolean;
+import type { OrganizationRemark, User } from '../../types/recordTypes.js';
+export default function updateOrganizationRemark(requestBody: OrganizationRemark, requestUser: User): boolean;

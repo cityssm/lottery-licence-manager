@@ -1,11 +1,12 @@
 import * as dateTimeFns from '@cityssm/expressjs-server-js/dateTimeFns.js'
-import type * as expressSession from 'express-session'
+
+import type { User } from '../../types/recordTypes.js'
 
 import { runSQL_hasChanges } from './_runSQL.js'
 
 export default function issueLicence(
   licenceID: number | string,
-  requestSession: expressSession.Session
+  requestUser: User
 ): boolean {
   const nowDate = new Date()
 
@@ -25,7 +26,7 @@ export default function issueLicence(
     [
       issueDate,
       issueTime,
-      requestSession.user.userName,
+      requestUser.userName,
       nowDate.getTime(),
       licenceID
     ]

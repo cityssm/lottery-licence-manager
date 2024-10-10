@@ -1,2 +1,2 @@
-import type * as expressSession from 'express-session';
-export default function issueLicence(licenceID: number | string, requestSession: expressSession.Session): boolean;
+import type { User } from '../../types/recordTypes.js';
+export default function issueLicence(licenceID: number | string, requestUser: User): boolean;

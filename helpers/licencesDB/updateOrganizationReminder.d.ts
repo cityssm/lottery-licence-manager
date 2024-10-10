@@ -1,5 +1,5 @@
-import type * as expressSession from "express-session";
-export declare const updateOrganizationReminder: (requestBody: {
+import type { User } from '../../types/recordTypes.js';
+export interface UpdateOrganizationReminderForm {
     organizationID: string;
     reminderIndex: string;
     reminderTypeKey: string;
@@ -7,4 +7,5 @@ export declare const updateOrganizationReminder: (requestBody: {
     reminderStatus: string;
     reminderNote: string;
     dismissedDateString: string;
-}, requestSession: expressSession.Session) => boolean;
+}
+export default function updateOrganizationReminder(requestBody: UpdateOrganizationReminderForm, requestUser: User): boolean;

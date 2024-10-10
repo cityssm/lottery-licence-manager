@@ -18,7 +18,7 @@ export default function handler(
     return
   }
 
-  const licence = getLicence(licenceID, request.session)
+  const licence = getLicence(licenceID, request.session.user)
 
   if (licence === undefined) {
     response.redirect(`${urlPrefix}/licences/?error=licenceNotFound`)
@@ -30,7 +30,10 @@ export default function handler(
     return
   }
 
-  const organization = getOrganization(licence.organizationID, request.session)
+  const organization = getOrganization(
+    licence.organizationID,
+    request.session.user
+  )
 
   const feeCalculation = getProperty('licences.feeCalculationFn')(licence)
 

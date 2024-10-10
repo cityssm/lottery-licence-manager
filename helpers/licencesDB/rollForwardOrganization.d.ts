@@ -1,7 +1,7 @@
-import type * as expressSession from "express-session";
+import type { User } from '../../types/recordTypes.js';
 interface RollForwardOrganizationReturn {
     success: boolean;
     message?: string;
 }
-export declare const rollForwardOrganization: (organizationID: number, updateFiscalYear: boolean, updateReminders: boolean, requestSession: expressSession.Session) => RollForwardOrganizationReturn;
+export default function rollForwardOrganization(organizationID: number, updateFiscalYear: boolean, updateReminders: boolean, requestUser: User): RollForwardOrganizationReturn;
 export {};

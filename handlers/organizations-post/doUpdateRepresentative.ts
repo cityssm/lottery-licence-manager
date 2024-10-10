@@ -1,27 +1,31 @@
-import type { RequestHandler } from "express";
+import type { NextFunction, Request, Response } from 'express'
 
-import { updateOrganizationRepresentative } from "../../helpers/licencesDB/updateOrganizationRepresentative.js";
+import updateOrganizationRepresentative from '../../helpers/licencesDB/updateOrganizationRepresentative.js'
+import type { OrganizationRepresentative } from '../../types/recordTypes.js'
 
-
-export const handler: RequestHandler = (request, response, next) => {
-
-  const organizationID = Number(request.params.organizationID);
+export default function handler(
+  request: Request<
+    { organizationID: string },
+    unknown,
+    OrganizationRepresentative
+  >,
+  response: Response,
+  next: NextFunction
+): void {
+  const organizationID = Number.parseInt(request.params.organizationID, 10)
 
   if (Number.isNaN(organizationID)) {
-    return next();
+    next()
+    return
   }
 
-  const representativeObject = updateOrganizationRepresentative(organizationID, request.body);
+  const representativeObject = updateOrganizationRepresentative(
+    organizationID,
+    request.body
+  )
 
-  return representativeObject
-    ? response.json({
-      success: true,
-      organizationRepresentative: representativeObject
-    })
-    : response.json({
-      success: false
-    });
-};
-
-
-export default handler;
+  response.json({
+    success: true,
+    organizationRepresentative: representativeObject
+  })
+}

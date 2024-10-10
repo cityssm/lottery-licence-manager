@@ -1,29 +1,33 @@
-import { runSQL_hasChanges } from "./_runSQL.js";
+import * as dateTimeFns from '@cityssm/expressjs-server-js/dateTimeFns.js'
 
-import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
+import type { OrganizationBankRecord, User } from '../../types/recordTypes.js'
 
-import type * as llm from "../../types/recordTypes";
-import type * as expressSession from "express-session";
+import { runSQL_hasChanges } from './_runSQL.js'
 
-
-export const updateOrganizationBankRecord = (requestBody: llm.OrganizationBankRecord, requestSession: expressSession.Session): boolean => {
-
-  return runSQL_hasChanges("update OrganizationBankRecords" +
-    " set recordDate = ?," +
-    " recordIsNA = ?," +
-    " recordNote = ?," +
-    " recordUpdate_userName = ?," +
-    " recordUpdate_timeMillis = ?" +
-    " where organizationID = ?" +
-    " and recordIndex = ?" +
-    " and recordDelete_timeMillis is null", [
-      (requestBody.recordDateString === ""
+export default function updateOrganizationBankRecord(
+  requestBody: OrganizationBankRecord,
+  requestUser: User
+): boolean {
+  return runSQL_hasChanges(
+    `update OrganizationBankRecords
+      set recordDate = ?,
+      recordIsNA = ?,
+      recordNote = ?,
+      recordUpdate_userName = ?,
+      recordUpdate_timeMillis = ?
+      where organizationID = ?
+      and recordIndex = ?
+      and recordDelete_timeMillis is null`,
+    [
+      requestBody.recordDateString === ''
         ? undefined
-        : dateTimeFns.dateStringToInteger(requestBody.recordDateString)),
+        : dateTimeFns.dateStringToInteger(requestBody.recordDateString),
       requestBody.recordIsNA ? 1 : 0,
       requestBody.recordNote,
-      requestSession.user.userName,
+      requestUser.userName,
       Date.now(),
       requestBody.organizationID,
-      requestBody.recordIndex]);
-};
+      requestBody.recordIndex
+    ]
+  )
+}

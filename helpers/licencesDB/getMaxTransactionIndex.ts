@@ -1,18 +1,22 @@
-import type * as sqlite from "better-sqlite3";
+import type sqlite from 'better-sqlite3'
 
+export function getMaxTransactionIndexWithDB(
+  database: sqlite.Database,
+  licenceID: number | string
+): number {
+  const result = database
+    .prepare(
+      `select transactionIndex
+        from LotteryLicenceTransactions
+        where licenceID = ?
+        order by transactionIndex desc
+        limit 1`
+    )
+    .get(licenceID) as
+    | {
+        transactionIndex: number
+      }
+    | undefined
 
-export const getMaxTransactionIndexWithDB = (database: sqlite.Database, licenceID: number | string): number => {
-
-  const result: {
-    transactionIndex: number;
-  } = database.prepare("select transactionIndex" +
-    " from LotteryLicenceTransactions" +
-    " where licenceID = ?" +
-    " order by transactionIndex desc" +
-    " limit 1")
-    .get(licenceID);
-
-  return (result
-    ? result.transactionIndex
-    : -1);
-};
+  return result === undefined ? -1 : result.transactionIndex
+}

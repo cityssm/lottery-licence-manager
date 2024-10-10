@@ -18,14 +18,14 @@ export default function handler(
     return
   }
 
-  const licence = getLicence(licenceID, request.session)
+  const licence = getLicence(licenceID, request.session.user)
 
   if (licence === undefined) {
     response.redirect(urlPrefix + '/licences/?error=licenceNotFound')
     return
   }
 
-  const organization = getOrganization(licence.organizationID, request.session)
+  const organization = getOrganization(licence.organizationID, request.session.user)
 
   const headTitle = getProperty('licences.externalLicenceNumber.isPreferredID')
     ? `Licence ${licence.externalLicenceNumber}`

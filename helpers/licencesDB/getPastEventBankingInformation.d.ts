@@ -5,4 +5,4 @@ export interface PastEventBankingInformation {
     eventDateMax: number;
     eventDateMaxString: string;
 }
-export declare const getPastEventBankingInformation: (licenceID: number | string) => PastEventBankingInformation[];
+export default function getPastEventBankingInformation(licenceID: number | string): PastEventBankingInformation[];

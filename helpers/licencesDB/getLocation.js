@@ -1,12 +1,12 @@
 import sqlite from 'better-sqlite3';
 import { licencesDB as databasePath } from '../../data/databasePaths.js';
 import { canUpdateObject } from '../licencesDB.js';
-export default function getLocation(locationID, requestSession) {
+export default function getLocation(locationID, requestUser) {
     const database = sqlite(databasePath, {
         readonly: true
     });
     const locationObject = database
-        .prepare('select * from Locations' + ' where locationID = ?')
+        .prepare('select * from Locations where locationID = ?')
         .get(locationID);
     if (locationObject !== undefined) {
         locationObject.recordType = 'location';
@@ -14,7 +14,7 @@ export default function getLocation(locationID, requestSession) {
             locationObject.locationName === ''
                 ? locationObject.locationAddress1
                 : locationObject.locationName;
-        locationObject.canUpdate = canUpdateObject(locationObject, requestSession);
+        locationObject.canUpdate = canUpdateObject(locationObject, requestUser);
     }
     database.close();
     return locationObject;

@@ -12,7 +12,7 @@ export default function handler(
       message: 'Licence ID Unavailable'
     })
   } else {
-    const changeCount = deleteLicence(request.body.licenceID, request.session)
+    const changeCount = deleteLicence(request.body.licenceID, request.session.user)
 
     if (changeCount) {
       response.json({

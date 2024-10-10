@@ -1,6 +1,6 @@
 import updateEvent from '../../helpers/licencesDB/updateEvent.js';
 export default function handler(request, response) {
-    const changeCount = updateEvent(request.body, request.session);
+    const changeCount = updateEvent(request.body, request.session.user);
     if (changeCount) {
         response.json({
             success: true,

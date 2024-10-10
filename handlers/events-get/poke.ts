@@ -1,7 +1,7 @@
 import type { NextFunction, Request, Response } from 'express'
 
 import * as configFunctions from '../../helpers/functions.config.js'
-import { pokeEvent } from '../../helpers/licencesDB/pokeEvent.js'
+import pokeEvent from '../../helpers/licencesDB/pokeEvent.js'
 
 const urlPrefix = configFunctions.getProperty('reverseProxy.urlPrefix')
 
@@ -18,7 +18,7 @@ export default function handler(
     return
   }
 
-  pokeEvent(licenceID, eventDate, request.session)
+  pokeEvent(licenceID, eventDate, request.session.user)
 
   response.redirect(
     `${urlPrefix}/events/${licenceID.toString()}/${eventDate.toString()}`

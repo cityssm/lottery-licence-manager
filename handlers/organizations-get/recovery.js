@@ -1,9 +1,8 @@
-import { getDeletedOrganizations } from "../../helpers/licencesDB/getDeletedOrganizations.js";
-export const handler = (_request, response) => {
+import getDeletedOrganizations from '../../helpers/licencesDB/getDeletedOrganizations.js';
+export default function handler(_request, response) {
     const organizations = getDeletedOrganizations();
-    response.render("organization-recovery", {
-        headTitle: "Organization Recovery",
+    response.render('organization-recovery', {
+        headTitle: 'Organization Recovery',
         organizations
     });
-};
-export default handler;
+}

@@ -1,9 +1,8 @@
 import * as dateTimeFns from '@cityssm/expressjs-server-js/dateTimeFns.js'
 import sqlite from 'better-sqlite3'
-import type * as expressSession from 'express-session'
 
 import { licencesDB as databasePath } from '../../data/databasePaths.js'
-import type * as llm from '../../types/recordTypes'
+import type { LotteryLicence, User } from '../../types/recordTypes'
 import { canUpdateObject } from '../licencesDB.js'
 
 export interface GetLicencesFilters {
@@ -18,12 +17,12 @@ export interface GetLicencesFilters {
 
 interface GetLicencesReturn {
   count: number
-  licences: llm.LotteryLicence[]
+  licences: LotteryLicence[]
 }
 
 export default function getLicences(
   requestBodyOrParametersObject: GetLicencesFilters,
-  requestSession: expressSession.Session,
+  requestUser: User,
   includeOptions: {
     includeOrganization: boolean
     limit: number
@@ -175,12 +174,12 @@ export default function getLicences(
     dateTimeFns.timeIntegerToString
   )
 
-  const rows = database.prepare(sql).all(sqlParameters) as llm.LotteryLicence[]
+  const rows = database.prepare(sql).all(sqlParameters) as LotteryLicence[]
 
   database.close()
 
   for (const element of rows) {
-    element.canUpdate = canUpdateObject(element, requestSession)
+    element.canUpdate = canUpdateObject(element, requestUser)
   }
 
   return {

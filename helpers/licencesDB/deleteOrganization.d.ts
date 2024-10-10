@@ -1,2 +1,2 @@
-import type * as expressSession from "express-session";
-export declare const deleteOrganization: (organizationID: number, requestSession: expressSession.Session) => boolean;
+import type { User } from '../../types/recordTypes.js';
+export declare function deleteOrganization(organizationID: number | string, requestUser: User): boolean;

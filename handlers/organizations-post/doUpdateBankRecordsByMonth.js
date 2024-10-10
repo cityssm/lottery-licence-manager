@@ -1,10 +1,10 @@
-import { addOrganizationBankRecord } from "../../helpers/licencesDB/addOrganizationBankRecord.js";
-import { updateOrganizationBankRecord } from "../../helpers/licencesDB/updateOrganizationBankRecord.js";
-import { deleteOrganizationBankRecord } from "../../helpers/licencesDB/deleteOrganizationBankRecord.js";
-const bankRecordIsBlank = (_bankRecord) => {
+import addOrganizationBankRecord from '../../helpers/licencesDB/addOrganizationBankRecord.js';
+import deleteOrganizationBankRecord from '../../helpers/licencesDB/deleteOrganizationBankRecord.js';
+import updateOrganizationBankRecord from '../../helpers/licencesDB/updateOrganizationBankRecord.js';
+function bankRecordIsBlank(_bankRecord) {
     return false;
-};
-export const handler = (request, response) => {
+}
+export default function handler(request, response) {
     const organizationID = Number.parseInt(request.body.organizationID, 10);
     const accountNumber = request.body.accountNumber;
     const bankingYear = Number.parseInt(request.body.bankingYear, 10);
@@ -13,51 +13,51 @@ export const handler = (request, response) => {
     let success = true;
     for (let typeIndex = 0; typeIndex <= maxBankRecordTypeIndex; typeIndex += 1) {
         const typeIndexString = typeIndex.toString();
-        const recordIndex = (request.body["recordIndex-" + typeIndexString] === ""
+        const recordIndex = request.body[`recordIndex-${typeIndexString}`] === ''
             ? undefined
-            : Number.parseInt(request.body["recordIndex-" + typeIndexString], 10));
+            : Number.parseInt(request.body[`recordIndex-${typeIndexString}`], 10);
         const bankRecord = {
-            recordType: "bankRecord",
+            recordType: 'bankRecord',
             organizationID,
             accountNumber,
             bankingYear,
             bankingMonth,
             recordIndex,
-            bankRecordType: request.body["bankRecordType-" + typeIndexString],
-            recordDateString: request.body["recordDateString-" + typeIndexString],
-            recordNote: request.body["recordNote-" + typeIndexString],
-            recordIsNA: (request.body["recordIsNA-" + typeIndexString] === "1")
+            bankRecordType: request.body[`bankRecordType-${typeIndexString}`],
+            recordDateString: request.body[`recordDateString-${typeIndexString}`],
+            recordNote: request.body[`recordNote-${typeIndexString}`],
+            recordIsNA: request.body[`recordIsNA-${typeIndexString}`] === '1'
         };
-        if (request.body["recordIndex-" + typeIndexString] === "") {
+        if (request.body['recordIndex-' + typeIndexString] === '') {
             if (!bankRecordIsBlank(bankRecord)) {
-                const addSuccess = addOrganizationBankRecord(bankRecord, request.session);
+                const addSuccess = addOrganizationBankRecord(bankRecord, request.session.user);
                 if (!addSuccess) {
                     success = false;
                 }
             }
         }
-        else {
-            if (bankRecordIsBlank(bankRecord)) {
-                const deleteSuccess = deleteOrganizationBankRecord(organizationID, recordIndex, request.session);
-                if (!deleteSuccess) {
-                    success = false;
-                }
+        else if (bankRecordIsBlank(bankRecord)) {
+            const deleteSuccess = deleteOrganizationBankRecord(organizationID, recordIndex, request.session);
+            if (!deleteSuccess) {
+                success = false;
             }
-            else {
-                const updateSuccess = updateOrganizationBankRecord(bankRecord, request.session);
-                if (!updateSuccess) {
-                    success = false;
-                }
+        }
+        else {
+            const updateSuccess = updateOrganizationBankRecord(bankRecord, request.session.user);
+            if (!updateSuccess) {
+                success = false;
             }
         }
     }
-    return success
-        ? response.json({
+    if (success) {
+        response.json({
             success: true
-        })
-        : response.json({
-            success: false,
-            message: "Please try again."
         });
-};
-export default handler;
+    }
+    else {
+        response.json({
+            success: false,
+            message: 'Please try again.'
+        });
+    }
+}

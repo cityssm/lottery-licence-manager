@@ -1,6 +1,6 @@
 import type { Request, Response } from 'express'
 
-import { getPastEventBankingInformation } from '../../helpers/licencesDB/getPastEventBankingInformation.js'
+import getPastEventBankingInformation from '../../helpers/licencesDB/getPastEventBankingInformation.js'
 
 export default function handler(
   request: Request<unknown, unknown, { licenceID: string }>,

@@ -6,7 +6,7 @@ import { resetEventTableStats, resetLicenceTableStats } from '../licencesDB.js';
 import { addLicenceTicketTypeWithDB } from './addLicenceTicketType.js';
 import { createEventWithDB } from './createEvent.js';
 import { getLicenceWithDB } from './getLicence.js';
-export default function createLicence(requestBody, requestSession) {
+export default function createLicence(requestBody, requestUser) {
     const database = sqlite(databasePath);
     const nowDate = new Date();
     const nowMillis = nowDate.getTime();
@@ -27,7 +27,7 @@ export default function createLicence(requestBody, requestSession) {
         externalLicenceNumber, externalLicenceNumberInteger,
         recordCreate_userName, recordCreate_timeMillis, recordUpdate_userName, recordUpdate_timeMillis)
         values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
-        .run(requestBody.organizationID, dateTimeFns.dateStringToInteger(requestBody.applicationDateString), requestBody.licenceTypeKey, dateTimeFns.dateStringToInteger(requestBody.startDateString), dateTimeFns.dateStringToInteger(requestBody.endDateString), dateTimeFns.timeStringToInteger(requestBody.startTimeString), dateTimeFns.timeStringToInteger(requestBody.endTimeString), requestBody.locationID === '' ? undefined : requestBody.locationID, requestBody.municipality, requestBody.licenceDetails, requestBody.termsConditions, requestBody.totalPrizeValue, requestBody.externalLicenceNumber, externalLicenceNumberInteger, requestSession.user.userName, nowMillis, requestSession.user.userName, nowMillis);
+        .run(requestBody.organizationID, dateTimeFns.dateStringToInteger(requestBody.applicationDateString), requestBody.licenceTypeKey, dateTimeFns.dateStringToInteger(requestBody.startDateString), dateTimeFns.dateStringToInteger(requestBody.endDateString), dateTimeFns.timeStringToInteger(requestBody.startTimeString), dateTimeFns.timeStringToInteger(requestBody.endTimeString), requestBody.locationID === '' ? undefined : requestBody.locationID, requestBody.municipality, requestBody.licenceDetails, requestBody.termsConditions, requestBody.totalPrizeValue, requestBody.externalLicenceNumber, externalLicenceNumberInteger, requestUser.userName, nowMillis, requestUser.userName, nowMillis);
     const licenceID = Number(info.lastInsertRowid);
     const fieldKeys = requestBody.fieldKeys.slice(1).split(',');
     for (const fieldKey of fieldKeys) {
@@ -50,7 +50,7 @@ export default function createLicence(requestBody, requestSession) {
     }
     if (eventDateStrings_toAdd) {
         for (const eventDate of eventDateStrings_toAdd) {
-            createEventWithDB(database, licenceID, eventDate, requestSession);
+            createEventWithDB(database, licenceID, eventDate, requestUser);
         }
     }
     if (typeof requestBody.ticketType_ticketType === 'string') {
@@ -63,7 +63,7 @@ export default function createLicence(requestBody, requestSession) {
             licenceFee: requestBody.ticketType_licenceFee,
             distributorLocationID: requestBody.ticketType_distributorLocationID,
             manufacturerLocationID: requestBody.ticketType_manufacturerLocationID
-        }, requestSession);
+        }, requestUser);
     }
     else if (typeof requestBody.ticketType_ticketType === 'object') {
         for (const [ticketTypeIndex, ticketType] of requestBody.ticketType_ticketType.entries()) {
@@ -77,10 +77,10 @@ export default function createLicence(requestBody, requestSession) {
                 distributorLocationID: requestBody.ticketType_distributorLocationID[ticketTypeIndex],
                 manufacturerLocationID: requestBody.ticketType_manufacturerLocationID[ticketTypeIndex]
             };
-            addLicenceTicketTypeWithDB(database, ticketTypeDefinition, requestSession);
+            addLicenceTicketTypeWithDB(database, ticketTypeDefinition, requestUser);
         }
     }
-    const licenceObject = getLicenceWithDB(database, licenceID, requestSession, {
+    const licenceObject = getLicenceWithDB(database, licenceID, requestUser, {
         includeTicketTypes: true,
         includeFields: true,
         includeEvents: true,
@@ -89,7 +89,7 @@ export default function createLicence(requestBody, requestSession) {
     });
     const feeCalculation = configFunctions.getProperty('licences.feeCalculationFn')(licenceObject);
     database
-        .prepare('update LotteryLicences' + ' set licenceFee = ?' + ' where licenceID = ?')
+        .prepare('update LotteryLicences set licenceFee = ? where licenceID = ?')
         .run(feeCalculation.fee, licenceID);
     database.close();
     resetLicenceTableStats();

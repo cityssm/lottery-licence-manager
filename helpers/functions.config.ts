@@ -1,9 +1,8 @@
-// eslint-disable-next-line node/no-unpublished-import
-import { config } from '../data/config.js'
+import type { CountryCode } from 'libphonenumber-js'
 
+import { config } from '../data/config.js'
 import type * as configTypes from '../types/configTypes'
 import type * as recordTypes from '../types/recordTypes'
-import type { CountryCode } from 'libphonenumber-js'
 
 /*
  * SET UP FALLBACK VALUES
@@ -173,9 +172,9 @@ export function getProperty(
   propertyName: 'licences.externalReceiptNumber.fieldLabel'
 ): string
 
-export function getProperty(
-  propertyName: 'licences.feeCalculationFn'
-): (licenceObject: recordTypes.LotteryLicence) => {
+export function getProperty(propertyName: 'licences.feeCalculationFn'): (
+  licenceObject: recordTypes.LotteryLicence
+) => {
   fee: number
   message: string
   licenceHasErrors: boolean
@@ -245,9 +244,9 @@ export const keepAliveMillis = getProperty('session.doKeepAlive')
 
 const reminderTypeCache = new Map<string, configTypes.ConfigReminderType>()
 
-export const getReminderType = (
+export function getReminderType(
   reminderTypeKey: string
-): configTypes.ConfigReminderType => {
+): configTypes.ConfigReminderType {
   if (reminderTypeCache.size === 0) {
     for (const reminderCategory of getProperty('reminderCategories')) {
       for (const reminderType of reminderCategory.reminderTypes) {
@@ -283,9 +282,7 @@ export function getLicenceType(
   return licenceTypeCache.get(licenceTypeKey)
 }
 
-export const getLicenceTypeKeyToNameObject = (): {
-  [licenceTpyeKey: string]: string
-} => {
+export function getLicenceTypeKeyToNameObject(): Record<string, string> {
   if (Object.keys(licenceTypeKeyNameObject).length === 0) {
     const list = {}
 

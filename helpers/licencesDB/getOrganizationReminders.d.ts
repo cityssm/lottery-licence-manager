@@ -1,5 +1,4 @@
-import sqlite from "better-sqlite3";
-import type * as llm from "../../types/recordTypes";
-import type * as expressSession from "express-session";
-export declare const getOrganizationRemindersWithDB: (database: sqlite.Database, organizationID: number, requestSession: expressSession.Session) => llm.OrganizationReminder[];
-export declare const getOrganizationReminders: (organizationID: number, requestSession: expressSession.Session) => llm.OrganizationReminder[];
+import sqlite from 'better-sqlite3';
+import type { OrganizationReminder, User } from '../../types/recordTypes.js';
+export declare function getOrganizationRemindersWithDB(database: sqlite.Database, organizationID: number | string, requestUser: User): OrganizationReminder[];
+export default function getOrganizationReminders(organizationID: number | string, requestUser: User): OrganizationReminder[];

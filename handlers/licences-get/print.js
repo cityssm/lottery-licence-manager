@@ -1,19 +1,19 @@
 import path from 'node:path';
 import { convertHTMLToPDF } from '@cityssm/pdf-puppeteer';
-import * as ejs from 'ejs';
+import ejs from 'ejs';
 import * as configFunctions from '../../helpers/functions.config.js';
 import getLicence from '../../helpers/licencesDB/getLicence.js';
-import { getLicenceTicketTypeSummary } from '../../helpers/licencesDB/getLicenceTicketTypeSummary.js';
+import getLicenceTicketTypeSummary from '../../helpers/licencesDB/getLicenceTicketTypeSummary.js';
 import getOrganization from '../../helpers/licencesDB/getOrganization.js';
 const urlPrefix = configFunctions.getProperty('reverseProxy.urlPrefix');
 const printTemplate = configFunctions.getProperty('licences.printTemplate');
-export async function handler(request, response, next) {
+export default async function handler(request, response, next) {
     const licenceID = Number(request.params.licenceID);
     if (Number.isNaN(licenceID)) {
         next();
         return;
     }
-    const licence = getLicence(licenceID, request.session);
+    const licence = getLicence(licenceID, request.session.user);
     if (licence === undefined) {
         response.redirect(`${urlPrefix}/licences/?error=licenceNotFound`);
         return;
@@ -26,7 +26,7 @@ export async function handler(request, response, next) {
     if (licence.licenceTicketTypes && licence.licenceTicketTypes.length > 0) {
         licenceTicketTypeSummary = getLicenceTicketTypeSummary(licenceID);
     }
-    const organization = getOrganization(licence.organizationID, request.session);
+    const organization = getOrganization(licence.organizationID, request.session.user);
     const reportPath = path.join('reports', printTemplate);
     const ejsData = await ejs.renderFile(reportPath, {
         configFunctions,
@@ -43,4 +43,3 @@ export async function handler(request, response, next) {
     response.setHeader('Content-Type', 'application/pdf');
     response.send(Buffer.from(pdf));
 }
-export default handler;

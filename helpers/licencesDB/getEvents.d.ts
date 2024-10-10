@@ -1,5 +1,4 @@
-import type * as expressSession from 'express-session';
-import type * as llm from '../../types/recordTypes';
+import type { LotteryEvent, User } from '../../types/recordTypes';
 export interface GetEventsFilters {
     externalLicenceNumber?: string;
     licenceTypeKey?: string;
@@ -9,9 +8,9 @@ export interface GetEventsFilters {
 }
 interface GetEventsReturn {
     count: number;
-    events: llm.LotteryEvent[];
+    events: LotteryEvent[];
 }
-export default function getEvents(requestBody: GetEventsFilters, requestSession: expressSession.Session, options: {
+export default function getEvents(requestBody: GetEventsFilters, requestUser: User, options: {
     limit: number;
     offset: number;
 }): GetEventsReturn;

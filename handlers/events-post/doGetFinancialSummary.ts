@@ -1,6 +1,6 @@
 import type { Request, Response } from 'express'
 
-import { getEventFinancialSummary } from '../../helpers/licencesDB/getEventFinancialSummary.js'
+import getEventFinancialSummary from '../../helpers/licencesDB/getEventFinancialSummary.js'
 
 export default function handler(
   request: Request<

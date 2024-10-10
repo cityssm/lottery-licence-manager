@@ -1,44 +1,49 @@
-import sqlite from "better-sqlite3";
-import { licencesDB as databasePath } from "../../data/databasePaths.js";
+import * as dateTimeFns from '@cityssm/expressjs-server-js/dateTimeFns.js'
+import sqlite from 'better-sqlite3'
 
-import * as configFunctions from "../functions.config.js";
-import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
-import { canUpdateObject } from "../licencesDB.js";
+import { licencesDB as databasePath } from '../../data/databasePaths.js'
+import type { OrganizationReminder, User } from '../../types/recordTypes.js'
+import * as configFunctions from '../functions.config.js'
+import { canUpdateObject } from '../licencesDB.js'
 
-import type * as llm from "../../types/recordTypes";
-import type * as expressSession from "express-session";
+const reminderTypeOrdering: Record<string, number> = {}
 
+const reminderCategories = configFunctions.getProperty('reminderCategories')
 
-const reminderTypeOrdering: { [reminderTypeKey: string]: number } = {};
-
-const reminderCategories = configFunctions.getProperty("reminderCategories");
-
-(() => {
-  let typeIndex = 0;
+;(() => {
+  let typeIndex = 0
 
   for (const reminderCategory of reminderCategories) {
     for (const reminderType of reminderCategory.reminderTypes) {
-      typeIndex += 1;
-      reminderTypeOrdering[reminderType.reminderTypeKey] = typeIndex;
+      typeIndex += 1
+      reminderTypeOrdering[reminderType.reminderTypeKey] = typeIndex
     }
   }
-})();
+})()
 
-
-const sortFunction_byDate = (reminderA: llm.OrganizationReminder, reminderB: llm.OrganizationReminder) => {
-
+// eslint-disable-next-line @typescript-eslint/naming-convention
+function sortFunction_byDate(
+  reminderA: OrganizationReminder,
+  reminderB: OrganizationReminder
+): number {
   /*
    * Dismissed Date
    */
 
   // A is not dismissed, B is, A comes first
-  if (reminderA.dismissedDateString === "" && reminderB.dismissedDateString !== "") {
-    return -1;
+  if (
+    reminderA.dismissedDateString === '' &&
+    reminderB.dismissedDateString !== ''
+  ) {
+    return -1
   }
 
   // B is not dismissed, A is, B comes first
-  if (reminderB.dismissedDateString === "" && reminderA.dismissedDateString !== "") {
-    return 1;
+  if (
+    reminderB.dismissedDateString === '' &&
+    reminderA.dismissedDateString !== ''
+  ) {
+    return 1
   }
 
   /*
@@ -46,13 +51,13 @@ const sortFunction_byDate = (reminderA: llm.OrganizationReminder, reminderB: llm
    */
 
   // A has no reminder, B has one, B comes first
-  if (reminderA.dueDateString === "" && reminderB.dueDateString !== "") {
-    return 1;
+  if (reminderA.dueDateString === '' && reminderB.dueDateString !== '') {
+    return 1
   }
 
   // B has no reminder, A has one, A comes first
-  if (reminderB.dueDateString === "" && reminderA.dueDateString !== "") {
-    return -1;
+  if (reminderB.dueDateString === '' && reminderA.dueDateString !== '') {
+    return -1
   }
 
   /*
@@ -60,72 +65,94 @@ const sortFunction_byDate = (reminderA: llm.OrganizationReminder, reminderB: llm
    */
 
   if (reminderA.dismissedDate !== reminderB.dismissedDate) {
-    return reminderB.dueDate - reminderA.dismissedDate;
+    return reminderB.dueDate - reminderA.dismissedDate
   }
 
   /*
    * Config File Ordering
    */
 
-  return reminderTypeOrdering[reminderA.reminderTypeKey] - reminderTypeOrdering[reminderB.reminderTypeKey];
-};
+  return (
+    reminderTypeOrdering[reminderA.reminderTypeKey] -
+    reminderTypeOrdering[reminderB.reminderTypeKey]
+  )
+}
 
-const sortFunction_byConfig = (reminderA: llm.OrganizationReminder, reminderB: llm.OrganizationReminder) => {
-
+// eslint-disable-next-line @typescript-eslint/naming-convention
+function sortFunction_byConfig(
+  reminderA: OrganizationReminder,
+  reminderB: OrganizationReminder
+): number {
   if (reminderA.reminderTypeKey !== reminderB.reminderTypeKey) {
-    return reminderTypeOrdering[reminderA.reminderTypeKey] - reminderTypeOrdering[reminderB.reminderTypeKey];
+    return (
+      reminderTypeOrdering[reminderA.reminderTypeKey] -
+      reminderTypeOrdering[reminderB.reminderTypeKey]
+    )
   }
 
-  return sortFunction_byDate(reminderA, reminderB);
-};
+  return sortFunction_byDate(reminderA, reminderB)
+}
 
-
-export const getOrganizationRemindersWithDB = (database: sqlite.Database, organizationID: number, requestSession: expressSession.Session): llm.OrganizationReminder[] => {
-
-  const reminders: llm.OrganizationReminder[] =
-    database.prepare("select reminderIndex," +
-      " reminderTypeKey, dueDate, dismissedDate," +
-      " reminderStatus, reminderNote," +
-      " recordCreate_userName, recordCreate_timeMillis, recordUpdate_userName, recordUpdate_timeMillis" +
-      " from OrganizationReminders" +
-      " where recordDelete_timeMillis is null" +
-      " and organizationID = ?")
-      .all(organizationID);
+export function getOrganizationRemindersWithDB(
+  database: sqlite.Database,
+  organizationID: number | string,
+  requestUser: User
+): OrganizationReminder[] {
+  const reminders = database
+    .prepare(
+      `select reminderIndex, reminderTypeKey,
+        dueDate, dismissedDate,
+        reminderStatus, reminderNote,
+        recordCreate_userName, recordCreate_timeMillis,
+        recordUpdate_userName, recordUpdate_timeMillis
+        from OrganizationReminders
+        where recordDelete_timeMillis is null and organizationID = ?`
+    )
+    .all(organizationID) as OrganizationReminder[]
 
   for (const reminder of reminders) {
+    reminder.recordType = 'reminder'
 
-    reminder.recordType = "reminder";
+    reminder.dueDateString = dateTimeFns.dateIntegerToString(
+      reminder.dueDate || 0
+    )
+    reminder.dismissedDateString = dateTimeFns.dateIntegerToString(
+      reminder.dismissedDate || 0
+    )
 
-    reminder.dueDateString = dateTimeFns.dateIntegerToString(reminder.dueDate || 0);
-    reminder.dismissedDateString = dateTimeFns.dateIntegerToString(reminder.dismissedDate || 0);
-
-    reminder.canUpdate = canUpdateObject(reminder, requestSession);
+    reminder.canUpdate = canUpdateObject(reminder, requestUser)
   }
 
-  switch (configFunctions.getProperty("reminders.preferredSortOrder")) {
+  switch (configFunctions.getProperty('reminders.preferredSortOrder')) {
+    case 'date': {
+      reminders.sort(sortFunction_byDate)
+      break
+    }
 
-    case "date":
-      reminders.sort(sortFunction_byDate);
-      break;
-
-    case "config":
-      reminders.sort(sortFunction_byConfig);
-      break;
+    case 'config': {
+      reminders.sort(sortFunction_byConfig)
+      break
+    }
   }
 
-  return reminders;
-};
+  return reminders
+}
 
-
-export const getOrganizationReminders = (organizationID: number, requestSession: expressSession.Session): llm.OrganizationReminder[] => {
-
+export default function getOrganizationReminders(
+  organizationID: number | string,
+  requestUser: User
+): OrganizationReminder[] {
   const database = sqlite(databasePath, {
     readonly: true
-  });
+  })
 
-  const reminders = getOrganizationRemindersWithDB(database, organizationID, requestSession);
+  const reminders = getOrganizationRemindersWithDB(
+    database,
+    organizationID,
+    requestUser
+  )
 
-  database.close();
+  database.close()
 
-  return reminders;
-};
+  return reminders
+}

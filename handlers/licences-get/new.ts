@@ -2,7 +2,7 @@ import * as dateTimeFns from '@cityssm/expressjs-server-js/dateTimeFns.js'
 import type { Request, Response } from 'express'
 
 import * as configFunctions from '../../helpers/functions.config.js'
-import { getNextExternalLicenceNumberFromRange } from '../../helpers/licencesDB/getNextExternalLicenceNumberFromRange.js'
+import getNextExternalLicenceNumberFromRange from '../../helpers/licencesDB/getNextExternalLicenceNumberFromRange.js'
 import getOrganization from '../../helpers/licencesDB/getOrganization.js'
 import type { Organization } from '../../types/recordTypes'
 
@@ -14,7 +14,7 @@ export default function handler(request: Request, response: Response): void {
   let organization: Organization | undefined
 
   if (!Number.isNaN(organizationID)) {
-    organization = getOrganization(organizationID, request.session)
+    organization = getOrganization(organizationID, request.session.user)
 
     if (organization !== undefined && !organization.isEligibleForLicences) {
       organization = undefined

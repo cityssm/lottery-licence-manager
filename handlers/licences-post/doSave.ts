@@ -14,14 +14,14 @@ export default function handler(
   response: Response<{ success: boolean; licenceID?: number; message?: string }>
 ): void {
   if (request.body.licenceID === '') {
-    const newLicenceID = createLicence(request.body, request.session)
+    const newLicenceID = createLicence(request.body, request.session.user)
 
     response.json({
       success: true,
       licenceID: newLicenceID
     })
   } else {
-    const changeCount = updateLicence(request.body, request.session)
+    const changeCount = updateLicence(request.body, request.session.user)
 
     if (changeCount) {
       response.json({

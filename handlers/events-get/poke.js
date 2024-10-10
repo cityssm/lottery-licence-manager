@@ -1,5 +1,5 @@
 import * as configFunctions from '../../helpers/functions.config.js';
-import { pokeEvent } from '../../helpers/licencesDB/pokeEvent.js';
+import pokeEvent from '../../helpers/licencesDB/pokeEvent.js';
 const urlPrefix = configFunctions.getProperty('reverseProxy.urlPrefix');
 export default function handler(request, response, next) {
     const licenceID = Number(request.params.licenceID);
@@ -8,6 +8,6 @@ export default function handler(request, response, next) {
         next();
         return;
     }
-    pokeEvent(licenceID, eventDate, request.session);
+    pokeEvent(licenceID, eventDate, request.session.user);
     response.redirect(`${urlPrefix}/events/${licenceID.toString()}/${eventDate.toString()}`);
 }

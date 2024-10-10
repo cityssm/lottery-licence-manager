@@ -1,1 +1,1 @@
-export declare const setDefaultOrganizationRepresentative: (organizationID: number, representativeIndex: number) => boolean;
+export default function setDefaultOrganizationRepresentative(organizationID: number, representativeIndex: number): boolean;

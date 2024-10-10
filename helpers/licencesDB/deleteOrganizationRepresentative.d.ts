@@ -1,1 +1,1 @@
-export declare const deleteOrganizationRepresentative: (organizationID: number, representativeIndex: number) => boolean;
+export default function deleteOrganizationRepresentative(organizationID: number, representativeIndex: number): boolean;

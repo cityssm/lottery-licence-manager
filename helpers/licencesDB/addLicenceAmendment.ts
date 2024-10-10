@@ -1,40 +1,48 @@
-import sqlite from "better-sqlite3";
+import * as dateTimeFns from '@cityssm/expressjs-server-js/dateTimeFns.js'
+import type sqlite from 'better-sqlite3'
 
-import { getMaxLicenceAmendmentIndexWithDB } from "./getMaxLicenceAmendmentIndex.js";
+import type { User } from '../../types/recordTypes.js'
 
-import * as dateTimeFns from "@cityssm/expressjs-server-js/dateTimeFns.js";
+import { getMaxLicenceAmendmentIndexWithDB } from './getMaxLicenceAmendmentIndex.js'
 
-import type * as expressSession from "express-session";
+export function addLicenceAmendmentWithDB(
+  database: sqlite.Database,
+  licenceAmendment: {
+    licenceID: number | string
+    amendmentType: string
+    amendment: string
+    isHidden: number
+  },
+  requestUser: User
+): number {
+  const newAmendmentIndex =
+    getMaxLicenceAmendmentIndexWithDB(database, licenceAmendment.licenceID) + 1
 
+  const nowDate = new Date()
 
-export const addLicenceAmendmentWithDB = (database: sqlite.Database,
-  licenceID: number | string, amendmentType: string, amendment: string, isHidden: number,
-  requestSession: expressSession.Session): number => {
+  const amendmentDate = dateTimeFns.dateToInteger(nowDate)
+  const amendmentTime = dateTimeFns.dateToTimeInteger(nowDate)
 
-  const newAmendmentIndex = getMaxLicenceAmendmentIndexWithDB(database, licenceID) + 1;
-
-  const nowDate = new Date();
-
-  const amendmentDate = dateTimeFns.dateToInteger(nowDate);
-  const amendmentTime = dateTimeFns.dateToTimeInteger(nowDate);
-
-  database.prepare("insert into LotteryLicenceAmendments" +
-    " (licenceID, amendmentIndex, amendmentDate, amendmentTime, amendmentType, amendment, isHidden," +
-    " recordCreate_userName, recordCreate_timeMillis, recordUpdate_userName, recordUpdate_timeMillis)" +
-    " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
+  database
+    .prepare(
+      `insert into LotteryLicenceAmendments (
+        licenceID, amendmentIndex, amendmentDate, amendmentTime, amendmentType, amendment, isHidden,
+        recordCreate_userName, recordCreate_timeMillis, recordUpdate_userName, recordUpdate_timeMillis)
+        values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+    )
     .run(
-      licenceID,
+      licenceAmendment.licenceID,
       newAmendmentIndex,
       amendmentDate,
       amendmentTime,
-      amendmentType,
-      amendment,
-      isHidden,
-      requestSession.user.userName,
+      licenceAmendment.amendmentType,
+      licenceAmendment.amendment,
+      licenceAmendment.isHidden,
+      requestUser.userName,
       nowDate.getTime(),
-      requestSession.user.userName,
+      requestUser.userName,
       nowDate.getTime()
-    );
+    )
 
-  return newAmendmentIndex;
-};
+  return newAmendmentIndex
+}

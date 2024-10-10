@@ -1,23 +1,33 @@
-import type { RequestHandler } from "express";
+import type { NextFunction, Request, Response } from 'express'
 
-import { deleteOrganizationRepresentative } from "../../helpers/licencesDB/deleteOrganizationRepresentative.js";
+import deleteOrganizationRepresentative from '../../helpers/licencesDB/deleteOrganizationRepresentative.js'
 
-
-export const handler: RequestHandler = (request, response, next) => {
-
-  const organizationID = Number(request.params.organizationID);
-  const representativeIndex = Number(request.body.representativeIndex);
+export default function handler(
+  request: Request<
+    { organizationID: string },
+    unknown,
+    { representativeIndex: string }
+  >,
+  response: Response,
+  next: NextFunction
+): void {
+  const organizationID = Number.parseInt(request.params.organizationID, 10)
+  const representativeIndex = Number.parseInt(
+    request.body.representativeIndex,
+    10
+  )
 
   if (Number.isNaN(organizationID) || Number.isNaN(representativeIndex)) {
-    return next();
+    next()
+    return
   }
 
-  const success = deleteOrganizationRepresentative(organizationID, representativeIndex);
+  const success = deleteOrganizationRepresentative(
+    organizationID,
+    representativeIndex
+  )
 
   response.json({
     success
-  });
-};
-
-
-export default handler;
+  })
+}

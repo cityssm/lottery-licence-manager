@@ -1,3 +1,2 @@
-import type * as llm from "../../types/recordTypes";
-import type * as expressSession from "express-session";
-export declare const getUndismissedOrganizationReminders: (requestSession: expressSession.Session) => llm.OrganizationReminder[];
+import type { OrganizationReminder, User } from '../../types/recordTypes.js';
+export default function getUndismissedOrganizationReminders(requestUser: User): OrganizationReminder[];

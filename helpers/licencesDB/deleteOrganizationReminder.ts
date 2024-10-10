@@ -1,37 +1,40 @@
-import { licencesDB as databasePath } from "../../data/databasePaths.js";
-import sqlite from "better-sqlite3";
+import sqlite from 'better-sqlite3'
 
-import type * as expressSession from "express-session";
+import { licencesDB as databasePath } from '../../data/databasePaths.js'
+import type { User } from '../../types/recordTypes.js'
 
+export function deleteOrganizationReminderWithDB(
+  database: sqlite.Database,
+  organizationID: number | string,
+  reminderIndex: number | string,
+  requestUser: User
+): boolean {
+  const result = database
+    .prepare(
+      `update OrganizationReminders
+        set recordDelete_userName = ?, recordDelete_timeMillis = ?
+        where organizationID = ? and reminderIndex = ? and recordDelete_timeMillis is null`
+    )
+    .run(requestUser.userName, Date.now(), organizationID, reminderIndex)
 
-export const deleteOrganizationReminderWithDB =
-  (database: sqlite.Database, organizationID: number, reminderIndex: number, requestSession: expressSession.Session): boolean => {
+  return result.changes > 0
+}
 
-    const result = database.prepare("update OrganizationReminders" +
-      " set recordDelete_userName = ?," +
-      " recordDelete_timeMillis = ?" +
-      " where organizationID = ?" +
-      " and reminderIndex = ?" +
-      " and recordDelete_timeMillis is null")
-      .run(requestSession.user.userName,
-        Date.now(),
-        organizationID,
-        reminderIndex);
+export default function deleteOrganizationReminder(
+  organizationID: number | string,
+  reminderIndex: number | string,
+  requestUser: User
+): boolean {
+  const database = sqlite(databasePath)
 
-    return result.changes > 0;
-  };
+  const hasChanges = deleteOrganizationReminderWithDB(
+    database,
+    organizationID,
+    reminderIndex,
+    requestUser
+  )
 
+  database.close()
 
-export const deleteOrganizationReminder =
-  (organizationID: number, reminderIndex: number, requestSession: expressSession.Session): boolean => {
-
-    const database = sqlite(databasePath);
-
-    const hasChanges = deleteOrganizationReminderWithDB(database,
-      organizationID, reminderIndex,
-      requestSession);
-
-    database.close();
-
-    return hasChanges;
-  };
+  return hasChanges
+}

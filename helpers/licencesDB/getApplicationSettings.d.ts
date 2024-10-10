@@ -7,5 +7,5 @@ interface GetApplicationSettingsReturn {
     recordUpdate_userName: string;
     recordUpdate_timeMillis: number;
 }
-export declare const getApplicationSettings: () => GetApplicationSettingsReturn[];
+export default function getApplicationSettings(): GetApplicationSettingsReturn[];
 export {};

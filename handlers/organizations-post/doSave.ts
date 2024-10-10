@@ -1,35 +1,36 @@
-import type { RequestHandler } from "express";
+import type { Request, Response } from 'express'
 
-import { createOrganization } from "../../helpers/licencesDB/createOrganization.js";
-import { updateOrganization } from "../../helpers/licencesDB/updateOrganization.js";
+import createOrganization from '../../helpers/licencesDB/createOrganization.js'
+import updateOrganization from '../../helpers/licencesDB/updateOrganization.js'
+import type { Organization } from '../../types/recordTypes.js'
 
+export default function handler(
+  request: Request<unknown, unknown, Organization>,
+  response: Response
+): void {
+  if (request.body.organizationID === '') {
+    const newOrganizationID = createOrganization(
+      request.body,
+      request.session.user
+    )
 
-export const handler: RequestHandler = (request, response) => {
-
-  if (request.body.organizationID === "") {
-
-    const newOrganizationID = createOrganization(request.body, request.session);
-
-    return response.json({
+    response.json({
       success: true,
       organizationID: newOrganizationID
-    });
-
+    })
   } else {
+    const success = updateOrganization(request.body, request.session.user)
 
-    const success = updateOrganization(request.body, request.session);
-
-    return success
-      ? response.json({
+    if (success) {
+      response.json({
         success: true,
-        message: "Organization updated successfully."
+        message: 'Organization updated successfully.'
       })
-      : response.json({
+    } else {
+      response.json({
         success: false,
-        message: "Record Not Saved"
-      });
+        message: 'Record Not Saved'
+      })
+    }
   }
-};
-
-
-export default handler;
+}

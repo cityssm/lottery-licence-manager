@@ -9,7 +9,7 @@ export default function handler(request, response, next) {
         next();
         return;
     }
-    const location = getLocation(locationID, request.session);
+    const location = getLocation(locationID, request.session.user);
     if (location === undefined) {
         response.redirect(`${urlPrefix}/locations/?error=locationNotFound`);
         return;
@@ -20,7 +20,7 @@ export default function handler(request, response, next) {
     }
     const licences = getLicences({
         locationID
-    }, request.session, {
+    }, request.session.user, {
         includeOrganization: true,
         limit: -1
     }).licences;

@@ -1,14 +1,12 @@
-import type { RequestHandler } from "express";
+import type { Request, Response } from 'express'
 
-import { getOrganizationRemarks } from "../../helpers/licencesDB/getOrganizationRemarks.js";
+import getOrganizationRemarks from '../../helpers/licencesDB/getOrganizationRemarks.js'
 
+export default function handler(
+  request: Request<unknown, unknown, { organizationID: string }>,
+  response: Response
+): void {
+  const organizationID = request.body.organizationID
 
-export const handler: RequestHandler = (request, response) => {
-
-  const organizationID = request.body.organizationID;
-
-  response.json(getOrganizationRemarks(organizationID, request.session));
-};
-
-
-export default handler;
+  response.json(getOrganizationRemarks(organizationID, request.session.user))
+}
