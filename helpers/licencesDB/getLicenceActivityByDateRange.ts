@@ -4,11 +4,11 @@ import sqlite from 'better-sqlite3'
 import { licencesDB as databasePath } from '../../data/databasePaths.js'
 import type { LotteryEvent, LotteryLicence } from '../../types/recordTypes.js'
 
-interface GetLicenceActivityByDateRangeReturn {
+export interface GetLicenceActivityByDateRangeReturn {
   startDateString: string
   endDateString: string
-  licences?: LotteryLicence[]
-  events?: LotteryEvent[]
+  licences: LotteryLicence[]
+  events: LotteryEvent[]
 }
 
 export default function getLicenceActivityByDateRange(
@@ -21,7 +21,9 @@ export default function getLicenceActivityByDateRange(
 
   const activity: GetLicenceActivityByDateRangeReturn = {
     startDateString: dateTimeFns.dateIntegerToString(startDate),
-    endDateString: dateTimeFns.dateIntegerToString(endDate)
+    endDateString: dateTimeFns.dateIntegerToString(endDate),
+    licences: [],
+    events: []
   }
 
   // Get licences

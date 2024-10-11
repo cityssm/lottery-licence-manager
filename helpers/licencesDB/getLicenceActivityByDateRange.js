@@ -7,7 +7,9 @@ export default function getLicenceActivityByDateRange(startDate, endDate) {
     });
     const activity = {
         startDateString: dateTimeFns.dateIntegerToString(startDate),
-        endDateString: dateTimeFns.dateIntegerToString(endDate)
+        endDateString: dateTimeFns.dateIntegerToString(endDate),
+        licences: [],
+        events: []
     };
     activity.licences = database
         .prepare(`select l.licenceID, l.externalLicenceNumber,
