@@ -1,21 +1,23 @@
-/* eslint-disable unicorn/filename-case */
+/* eslint-disable unicorn/filename-case, @eslint-community/eslint-comments/disable-enable-pair */
 
-(() => {
-
+;(() => {
   // Switch dates nav
 
-  const eventDateSelectElement = document.querySelector("#eventNav--eventDate") as HTMLSelectElement;
+  const eventDateSelectElement = document.querySelector(
+    '#eventNav--eventDate'
+  ) as HTMLSelectElement | null
 
-  if (eventDateSelectElement) {
+  if (eventDateSelectElement !== null) {
+    eventDateSelectElement.addEventListener('change', () => {
+      const urlPrefix = document.querySelector('main')?.dataset.urlPrefix
 
-    eventDateSelectElement.addEventListener("change", () => {
+      const licenceID = eventDateSelectElement.dataset.licenceId
 
-      const urlPrefix = document.querySelector("main").getAttribute("data-url-prefix");
-      const licenceID = eventDateSelectElement.getAttribute("data-licence-id");
-      const newEventDate = eventDateSelectElement.value;
-      const isEdit = eventDateSelectElement.getAttribute("data-is-edit") === "true";
+      const newEventDate = eventDateSelectElement.value
 
-      window.location.href = urlPrefix + "/events/" + licenceID + "/" + newEventDate + (isEdit ? "/edit" : "");
-    });
+      const isEdit = eventDateSelectElement.dataset.isEdit === 'true'
+
+      globalThis.location.href = `${urlPrefix}/events/${licenceID}/${newEventDate}${isEdit ? '/edit' : ''}`
+    })
   }
-})();
+})()
