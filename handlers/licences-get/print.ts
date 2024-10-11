@@ -6,7 +6,9 @@ import type { NextFunction, Request, Response } from 'express'
 
 import * as configFunctions from '../../helpers/functions.config.js'
 import getLicence from '../../helpers/licencesDB/getLicence.js'
-import getLicenceTicketTypeSummary from '../../helpers/licencesDB/getLicenceTicketTypeSummary.js'
+import getLicenceTicketTypeSummary, {
+  type LotteryLicenceTicketTypeSummary
+} from '../../helpers/licencesDB/getLicenceTicketTypeSummary.js'
 import getOrganization from '../../helpers/licencesDB/getOrganization.js'
 
 const urlPrefix = configFunctions.getProperty('reverseProxy.urlPrefix')
@@ -17,7 +19,7 @@ export default async function handler(
   response: Response,
   next: NextFunction
 ): Promise<void> {
-  const licenceID = Number(request.params.licenceID)
+  const licenceID = Number.parseInt(request.params.licenceID, 10)
 
   if (Number.isNaN(licenceID)) {
     next()
@@ -34,7 +36,7 @@ export default async function handler(
     return
   }
 
-  let licenceTicketTypeSummary = []
+  let licenceTicketTypeSummary: LotteryLicenceTicketTypeSummary[] = []
 
   if (licence.licenceTicketTypes && licence.licenceTicketTypes.length > 0) {
     licenceTicketTypeSummary = getLicenceTicketTypeSummary(licenceID)

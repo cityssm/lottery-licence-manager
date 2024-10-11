@@ -245,7 +245,7 @@ export interface LotteryEvent extends LotteryLicence {
 
   eventDate: number
   eventDateString: string
-  reportDate: number
+  reportDate: number | null
   reportDateString: string
 
   bank_name: string
@@ -256,7 +256,7 @@ export interface LotteryEvent extends LotteryLicence {
 
   costs_amountDonated: number
 
-  costs_receiptsSum?: number
+  costs_receiptsSum?: number | null
   costs_adminSum?: number
   costs_prizesAwardedSum?: number
 

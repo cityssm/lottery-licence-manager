@@ -8,7 +8,7 @@ import getOrganization from '../../helpers/licencesDB/getOrganization.js';
 const urlPrefix = configFunctions.getProperty('reverseProxy.urlPrefix');
 const printTemplate = configFunctions.getProperty('licences.printTemplate');
 export default async function handler(request, response, next) {
-    const licenceID = Number(request.params.licenceID);
+    const licenceID = Number.parseInt(request.params.licenceID, 10);
     if (Number.isNaN(licenceID)) {
         next();
         return;

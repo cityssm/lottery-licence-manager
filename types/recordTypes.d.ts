@@ -188,7 +188,7 @@ export interface LotteryEvent extends LotteryLicence {
     recordType: 'event';
     eventDate: number;
     eventDateString: string;
-    reportDate: number;
+    reportDate: number | null;
     reportDateString: string;
     bank_name: string;
     bank_name_isOutstanding: boolean;
@@ -196,7 +196,7 @@ export interface LotteryEvent extends LotteryLicence {
     bank_accountNumber: string;
     bank_accountBalance: string;
     costs_amountDonated: number;
-    costs_receiptsSum?: number;
+    costs_receiptsSum?: number | null;
     costs_adminSum?: number;
     costs_prizesAwardedSum?: number;
     eventFields: FieldData[];

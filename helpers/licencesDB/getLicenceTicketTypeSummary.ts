@@ -3,7 +3,7 @@ import sqlite from 'better-sqlite3'
 
 import { licencesDB as databasePath } from '../../data/databasePaths.js'
 
-interface LotteryLicenceTicketTypeSummary {
+export interface LotteryLicenceTicketTypeSummary {
   ticketType: string
   distributorLocationID: number
   distributorLocationDisplayName: string

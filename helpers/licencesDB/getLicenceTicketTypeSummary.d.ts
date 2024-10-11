@@ -1,4 +1,4 @@
-interface LotteryLicenceTicketTypeSummary {
+export interface LotteryLicenceTicketTypeSummary {
     ticketType: string;
     distributorLocationID: number;
     distributorLocationDisplayName: string;
@@ -8,4 +8,3 @@ interface LotteryLicenceTicketTypeSummary {
     licenceFeeSum: number;
 }
 export default function getLicenceTicketTypeSummary(licenceID: number | string): LotteryLicenceTicketTypeSummary[];
-export {};
