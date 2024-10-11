@@ -9,21 +9,21 @@ export default function getEvents(requestBody, requestUser, options) {
     const sqlParameters = [];
     let sqlWhereClause = ` where e.recordDelete_timeMillis is null
     and l.recordDelete_timeMillis is null`;
-    if (requestBody.eventYear && requestBody.eventYear !== '') {
+    if (requestBody.eventYear !== undefined && requestBody.eventYear !== '') {
         sqlWhereClause += ` and e.eventDate > (? * 10000)
       and e.eventDate < (? * 10000) + 9999`;
         sqlParameters.push(requestBody.eventYear, requestBody.eventYear);
     }
-    if (requestBody.externalLicenceNumber &&
+    if (requestBody.externalLicenceNumber !== undefined &&
         requestBody.externalLicenceNumber !== '') {
         sqlWhereClause += ' and instr(lower(l.externalLicenceNumber), ?) > 0';
         sqlParameters.push(requestBody.externalLicenceNumber);
     }
-    if (requestBody.licenceTypeKey && requestBody.licenceTypeKey !== '') {
+    if (requestBody.licenceTypeKey !== undefined && requestBody.licenceTypeKey !== '') {
         sqlWhereClause += ' and l.licenceTypeKey = ?';
         sqlParameters.push(requestBody.licenceTypeKey);
     }
-    if (requestBody.organizationName && requestBody.organizationName !== '') {
+    if (requestBody.organizationName !== undefined && requestBody.organizationName !== '') {
         const organizationNamePieces = requestBody.organizationName
             .toLowerCase()
             .split(' ');
@@ -32,7 +32,7 @@ export default function getEvents(requestBody, requestUser, options) {
             sqlParameters.push(organizationNamePiece);
         }
     }
-    if (requestBody.locationName && requestBody.locationName !== '') {
+    if (requestBody.locationName !== undefined && requestBody.locationName !== '') {
         const locationNamePieces = requestBody.locationName.toLowerCase().split(' ');
         for (const locationNamePiece of locationNamePieces) {
             sqlWhereClause +=
