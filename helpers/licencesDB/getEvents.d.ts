@@ -6,7 +6,7 @@ export interface GetEventsFilters {
     locationName?: string;
     eventYear?: string;
 }
-interface GetEventsReturn {
+export interface GetEventsReturn {
     count: number;
     events: LotteryEvent[];
 }
@@ -14,4 +14,3 @@ export default function getEvents(requestBody: GetEventsFilters, requestUser: Us
     limit: number;
     offset: number;
 }): GetEventsReturn;
-export {};

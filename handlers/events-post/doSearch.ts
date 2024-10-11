@@ -1,7 +1,8 @@
 import type { Request, Response } from 'express'
 
 import getEvents, {
-  type GetEventsFilters
+  type GetEventsFilters,
+  type GetEventsReturn
 } from '../../helpers/licencesDB/getEvents.js'
 
 export default function handler(
@@ -10,7 +11,7 @@ export default function handler(
     unknown,
     GetEventsFilters & { limit: string; offset: string }
   >,
-  response: Response
+  response: Response<GetEventsReturn>
 ): void {
   response.json(
     getEvents(request.body, request.session.user, {
@@ -19,3 +20,5 @@ export default function handler(
     })
   )
 }
+
+export type { GetEventsReturn as DoSearchEventsResponse } from '../../helpers/licencesDB/getEvents.js'

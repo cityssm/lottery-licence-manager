@@ -13,7 +13,7 @@ export interface GetEventsFilters {
   eventYear?: string
 }
 
-interface GetEventsReturn {
+export interface GetEventsReturn {
   count: number
   events: LotteryEvent[]
 }
