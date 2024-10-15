@@ -1,4 +1,4 @@
-import { ticketTypes as nevadaTicketTypes } from './agco.approvedBreakOpenTicketTypes.js';
+import { ticketTypes as nevadaTicketTypes } from '@cityssm/agco-break-open-ticket-types';
 export const config = {};
 config.defaults = {
     city: '',
@@ -197,7 +197,7 @@ config.licenceTypes = [
         licenceType: 'Nevada',
         totalPrizeValueMax: 300_000,
         isActive: true,
-        ticketTypes: nevadaTicketTypes,
+        ticketTypes: Object.values(nevadaTicketTypes),
         licenceFields: [],
         eventFields: [
             {
