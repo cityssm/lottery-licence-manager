@@ -1,11 +1,11 @@
-import type * as recordTypes from "../types/recordTypes";
-import type * as configTypes from "../types/configTypes";
+import type * as configTypes from '../types/configTypes.js';
+import type * as recordTypes from '../types/recordTypes.js';
 export interface llmGlobal {
-    arrayToObject?: (array: [], objectKey: string | number) => Record<string | number, unknown>;
-    formatDollarsAsHTML?: (dollarAmt: number) => string;
-    getDefaultConfigProperty?: (propertyName: string, propertyValueCallbackFunction: (propertyValue: unknown) => void) => void;
-    initializeDateRangeSelector?: (containerElement: HTMLElement, changeFunction: () => void) => void;
-    initializeTabs?: (tabsListElement: HTMLElement, callbackFunctions?: {
+    arrayToObject: (array: [], objectKey: string | number) => Record<string | number, unknown>;
+    formatDollarsAsHTML: (dollarAmt: number) => string;
+    getDefaultConfigProperty: (propertyName: string, propertyValueCallbackFunction: (propertyValue: unknown) => void) => void;
+    initializeDateRangeSelector: (containerElement: HTMLElement, changeFunction: () => void) => void;
+    initializeTabs: (tabsListElement: HTMLElement, callbackFunctions?: {
         onshown?: (tabContentElement: HTMLElement) => void;
     }) => void;
     organizationRemarks?: {
