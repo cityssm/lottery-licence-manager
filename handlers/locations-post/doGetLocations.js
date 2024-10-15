@@ -1,8 +1,8 @@
 import getLocations from '../../helpers/licencesDB/getLocations.js';
 export default function handler(request, response) {
     const locations = getLocations(request.session.user, {
-        limit: Number.parseInt(request.body.limit, 10),
-        offset: Number.parseInt(request.body.offset, 10),
+        limit: Number.parseInt(request.body.limit ?? '-1', 10),
+        offset: Number.parseInt(request.body.offset ?? '0', 10),
         locationNameAddress: request.body.locationNameAddress,
         locationIsDistributor: request.body.locationIsDistributor === ''
             ? -1

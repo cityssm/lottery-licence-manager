@@ -5,8 +5,8 @@ import getLocations, {
 } from '../../helpers/licencesDB/getLocations.js'
 
 export interface DoGetLocationsRequest {
-  limit: string
-  offset: string
+  limit?: string
+  offset?: string
   locationNameAddress: string
   locationIsManufacturer: '' | '0' | '1'
   locationIsDistributor: '' | '0' | '1'
@@ -18,8 +18,8 @@ export default function handler(
   response: Response<GetLocationsReturn>
 ): void {
   const locations = getLocations(request.session.user, {
-    limit: Number.parseInt(request.body.limit, 10),
-    offset: Number.parseInt(request.body.offset, 10),
+    limit: Number.parseInt(request.body.limit ?? '-1', 10),
+    offset: Number.parseInt(request.body.offset ?? '0', 10),
     locationNameAddress: request.body.locationNameAddress,
     locationIsDistributor:
       request.body.locationIsDistributor === ''
