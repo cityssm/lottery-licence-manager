@@ -36,7 +36,7 @@
     "@fortawesome/fontawesome-free": "^5.15.4",
     "activedirectory2": "^2.2.0",
     "bcrypt": "^5.1.1",
-    "better-sqlite3": "^11.3.0",
+    "better-sqlite3": "^11.4.0",
     "compression": "^1.7.4",
     "cookie-parser": "^1.4.7",
     "cross-env": "^7.0.3",
