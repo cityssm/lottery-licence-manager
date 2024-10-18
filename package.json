@@ -81,7 +81,7 @@
     "gulp-sass": "^5.1.0",
     "nodemon": "^3.1.7",
     "prettier-config-cityssm": "^1.0.0",
-    "sass": "^1.79.4"
+    "sass": "^1.80.2"
   },
   "private": true
 }
