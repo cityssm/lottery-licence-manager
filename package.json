@@ -73,7 +73,7 @@
     "@types/session-file-store": "^1.2.6",
     "cypress": "^15.13.0",
     "cypress-axe": "^1.7.0",
-    "eslint-config-cityssm": "^38.5.1",
+    "eslint-config-cityssm": "^38.5.2",
     "gulp": "^5.0.1",
     "gulp-changed": "^5.0.4",
     "gulp-concat": "^2.6.1",
