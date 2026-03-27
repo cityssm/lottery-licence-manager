@@ -1,6 +1,6 @@
 import path from 'node:path'
 
-import { convertHTMLToPDF } from '@cityssm/pdf-puppeteer'
+import PdfPuppeteer from '@cityssm/pdf-puppeteer'
 import ejs from 'ejs'
 import type { NextFunction, Request, Response } from 'express'
 
@@ -13,6 +13,11 @@ import getOrganization from '../../helpers/licencesDB/getOrganization.js'
 
 const urlPrefix = configFunctions.getProperty('reverseProxy.urlPrefix')
 const printTemplate = configFunctions.getProperty('licences.printTemplate')
+
+const pdfPuppeteer = new PdfPuppeteer({
+  browser: 'chrome',
+  disableSandbox: true
+})
 
 export default async function handler(
   request: Request,
@@ -60,7 +65,7 @@ export default async function handler(
     { async: true }
   )
 
-  const pdf = await convertHTMLToPDF(ejsData, {
+  const pdf = await pdfPuppeteer.fromHtml(ejsData, {
     format: 'letter',
     printBackground: true,
     preferCSSPageSize: true
