@@ -27,7 +27,8 @@ jobs:
       - name: Install Application
         run: |
           npm ci
-          npm install -g mocha c8 cypress@13
+          npm config set allow-scripts=cypress --location=user
+          npm install -g mocha c8 cypress@15
 
       - name: Copy Test Config
         run: cp ./data/configTesting.js ./data/config.js
