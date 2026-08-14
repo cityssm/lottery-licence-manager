@@ -24,10 +24,13 @@ jobs:
           node-version: ${{ matrix.node }}
           cache: 'npm'
 
+      - name: Allow Scripts
+        if: ${{ matrix.node > 22 }}
+        run: npm config set allow-scripts=cypress --location=user
+
       - name: Install Application
         run: |
           npm ci
-          npm config set allow-scripts=cypress --location=user
           npm install -g mocha c8 cypress@15
 
       - name: Copy Test Config
@@ -44,7 +47,7 @@ jobs:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
 
       - name: Codecov
-        if: ${{ github.event_name != 'pull_request' && env.CODECOV_TOKEN != '' && matrix.node == 20 }}
+        if: ${{ github.event_name != 'pull_request' && env.CODECOV_TOKEN != '' && matrix.node == 22 }}
         run: |
           curl -Os https://uploader.codecov.io/latest/linux/codecov
           chmod +x codecov
