@@ -1,31 +1,31 @@
 {
   "name": "lottery-licence-manager",
-  "version": "1.3.0",
-  "type": "module",
-  "exports": "./app.js",
-  "engines": {
-    "node": ">=18.0.0"
-  },
-  "scripts": {
-    "build": "npx genversion --es6 --semi version.js",
-    "start": "cross-env NODE_ENV=production node ./bin/www",
-    "dev:live": "cross-env NODE_ENV=dev DEBUG=lottery-licence-manager:* nodemon ./bin/www",
-    "dev:test": "cross-env NODE_ENV=dev DEBUG=lottery-licence-manager:* TEST_DATABASES=true nodemon ./bin/www",
-    "cy:open": "cypress open --config-file cypress.config.ts",
-    "cy:run": "cypress run --config-file cypress.config.ts",
-    "test": "cross-env NODE_ENV=dev DEBUG=lottery-licence-manager:* TEST_DATABASES=true mocha --timeout 15000",
-    "coverage": "cross-env NODE_ENV=dev DEBUG=lottery-licence-manager:* TEST_DATABASES=true c8 --reporter=lcov --reporter=text --reporter=text-summary mocha --timeout 15000"
+  "version": "1.3.1",
+  "private": true,
+  "homepage": "https://github.com/cityssm/lottery-licence-manager#readme",
+  "bugs": {
+    "url": "https://github.com/cityssm/lottery-licence-manager/issues"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/cityssm/lottery-licence-manager.git"
   },
-  "author": "The Corporation of the City of Sault Ste. Marie",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/cityssm/lottery-licence-manager/issues"
+  "author": "The Corporation of the City of Sault Ste. Marie",
+  "type": "module",
+  "exports": {
+    ".": "./app.js"
   },
-  "homepage": "https://github.com/cityssm/lottery-licence-manager#readme",
+  "scripts": {
+    "build": "npx genversion --es6 --semi version.js",
+    "coverage": "cross-env NODE_ENV=dev DEBUG=lottery-licence-manager:* TEST_DATABASES=true c8 --reporter=lcov --reporter=text --reporter=text-summary mocha --timeout 15000",
+    "cy:open": "cypress open --config-file cypress.config.ts",
+    "cy:run": "cypress run --config-file cypress.config.ts",
+    "dev:live": "cross-env NODE_ENV=dev DEBUG=lottery-licence-manager:* nodemon ./bin/www",
+    "dev:test": "cross-env NODE_ENV=dev DEBUG=lottery-licence-manager:* TEST_DATABASES=true nodemon ./bin/www",
+    "start": "cross-env NODE_ENV=production node ./bin/www",
+    "test": "cross-env NODE_ENV=dev DEBUG=lottery-licence-manager:* TEST_DATABASES=true mocha --timeout 15000"
+  },
   "dependencies": {
     "@cityssm/agco-break-open-ticket-types": "^0.2.0",
     "@cityssm/bulma-js": "^0.5.0",
@@ -83,7 +83,9 @@
     "prettier-config-cityssm": "^2.1.3",
     "sass": "^1.102.0"
   },
-  "private": true,
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "allowScripts": {
     "@cityssm/pdf-puppeteer@6.4.1": true,
     "@parcel/watcher@2.5.6": true,
