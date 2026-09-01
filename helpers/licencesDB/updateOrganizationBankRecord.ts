@@ -11,18 +11,20 @@ export default function updateOrganizationBankRecord(
   return runSQL_hasChanges(
     `update OrganizationBankRecords
       set recordDate = ?,
-      recordIsNA = ?,
-      recordNote = ?,
-      recordUpdate_userName = ?,
-      recordUpdate_timeMillis = ?
+          recordIsNA = ?,
+          accountNumber = ?,
+          recordNote = ?,
+          recordUpdate_userName = ?,
+          recordUpdate_timeMillis = ?
       where organizationID = ?
-      and recordIndex = ?
-      and recordDelete_timeMillis is null`,
+        and recordIndex = ?
+        and recordDelete_timeMillis is null`,
     [
       requestBody.recordDateString === ''
         ? undefined
         : dateTimeFns.dateStringToInteger(requestBody.recordDateString),
       requestBody.recordIsNA ? 1 : 0,
+      requestBody.accountNumber,
       requestBody.recordNote,
       requestUser.userName,
       Date.now(),

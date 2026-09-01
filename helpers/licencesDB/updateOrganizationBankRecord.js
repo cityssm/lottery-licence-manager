@@ -4,6 +4,7 @@ export default function updateOrganizationBankRecord(requestBody, requestUser) {
     return runSQL_hasChanges(`update OrganizationBankRecords
       set recordDate = ?,
       recordIsNA = ?,
+      accountNumber = ?,
       recordNote = ?,
       recordUpdate_userName = ?,
       recordUpdate_timeMillis = ?
@@ -14,6 +15,7 @@ export default function updateOrganizationBankRecord(requestBody, requestUser) {
             ? undefined
             : dateTimeFns.dateStringToInteger(requestBody.recordDateString),
         requestBody.recordIsNA ? 1 : 0,
+        requestBody.accountNumber,
         requestBody.recordNote,
         requestUser.userName,
         Date.now(),
